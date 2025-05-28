@@ -1,15 +1,12 @@
 package com.fy.navi.service.adapter.search.bls;
 
 
-import android.util.Log;
 import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.aosclient.BLAosService;
 import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryReqStartPoints;
 import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryRequestParam;
@@ -32,10 +29,13 @@ import com.autonavi.gbl.search.model.SearchLineDeepInfoResult;
 import com.autonavi.gbl.search.model.SearchMode;
 import com.autonavi.gbl.search.model.SearchNearestParam;
 import com.autonavi.gbl.search.model.SearchNearestResult;
+import com.autonavi.gbl.search.model.SearchPoiChildInfo;
 import com.autonavi.gbl.search.model.SearchPoiDetailParam;
 import com.autonavi.gbl.search.model.SearchResult;
 import com.autonavi.gbl.search.model.SearchSuggestionParam;
 import com.autonavi.gbl.search.model.SuggestionSearchResult;
+import com.autonavi.gbl.search.observer.IKeyWordSearchObserverV2;
+import com.autonavi.gbl.util.errorcode.common.Service;
 import com.autonavi.gbl.util.model.TaskResult;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
@@ -46,28 +46,26 @@ import com.fy.navi.service.adapter.search.cloudByPatac.api.SearchRepository;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.adapter.search.cloudByPatac.req.StationReq;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.patac.netlib.callback.NetDisposableObserver;
 import com.patac.netlib.exception.ApiException;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -856,4 +854,63 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
             notifyTipDialog("timeOut");
         }
     }
+
+
+    /**
+     * 获取预计到达时间、剩余距离、到达剩余电量
+     *
+     * @param searchRequestParameterBuilder SearchRequestParameter
+     * @return distance ，travelTime
+     */
+    @Override
+    public CompletableFuture<ChildInfo> setGrandChildInfoList(final SearchRequestParameter searchRequestParameterBuilder, final ChildInfo childInfo) {
+        final KeywordSearchIdqParam param = SearchRequestParamV2.getInstance().convertToKeywordSearchIdqParam(searchRequestParameterBuilder);
+        final CompletableFuture<ChildInfo> future = new CompletableFuture<>();
+
+        getSearchServiceV2().keyWordSearchIdq(param, new IKeyWordSearchObserverV2() {
+            @Override
+            public void onGetKeyWordResult(final int taskId, final int errorCode, final KeywordSearchResultV2 keywordSearchResultV2) {
+                if (errorCode == Service.ErrorCodeOK) {
+                    getGrandChildList(keywordSearchResultV2, childInfo);
+                    future.complete(childInfo);
+                } else {
+                    future.completeExceptionally(new Exception("No valid child data found"));
+                }
+            }
+        }, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+
+        return future;
+    }
+
+    /**
+     * 给当前子点赋值孙节点列表数据
+     * @param result 搜索结果回调
+     * @param childInfo 当前子点
+     */
+    private void getGrandChildList(final KeywordSearchResultV2 result, final ChildInfo childInfo) {
+        //子节点信息
+        final List<ChildInfo> grandChildInfos = Optional.ofNullable(result.poiList.get(0).childInfoList)
+                .orElse(new ArrayList<>())
+                .stream()
+                .map(this::mapSearchPoiChildInfo)
+                .collect(Collectors.toList());
+        childInfo.setMGrandChildInfoList(grandChildInfos);
+    }
+
+    /**
+     * 映射 SearchPoiChildInfo 到 ChildInfo
+     * @param searchPoiChildInfo SearchPoiChildInfo
+     * @return ChildInfo
+     */
+    private ChildInfo mapSearchPoiChildInfo(final SearchPoiChildInfo searchPoiChildInfo) {
+        return new ChildInfo()
+                .setName(searchPoiChildInfo.name)
+                .setShortName(searchPoiChildInfo.shortName)
+                .setRatio(searchPoiChildInfo.ratio)
+                .setLabel(searchPoiChildInfo.label)
+                .setPoiId(searchPoiChildInfo.poiId)
+                .setLocation(new GeoPoint(searchPoiChildInfo.location.lon, searchPoiChildInfo.location.lat))
+                .setAddress(searchPoiChildInfo.address);
+    }
+
 }

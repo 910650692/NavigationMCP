@@ -14,11 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.path.model.JamBubblesSegmentDeepInfo;
 import com.autonavi.gbl.layer.BizGuideRouteControl;
 import com.autonavi.gbl.layer.BizLabelControl;
 import com.autonavi.gbl.layer.BizRoadCrossControl;
 import com.autonavi.gbl.layer.BizRoadFacilityControl;
+import com.autonavi.gbl.layer.GuideLabelLayerItem;
+import com.autonavi.gbl.layer.RouteJamBubblesLayerItem;
 import com.autonavi.gbl.layer.RoutePathPointItem;
 import com.autonavi.gbl.layer.ViaChargeStationLayerItem;
 import com.autonavi.gbl.layer.model.BizRoadCrossType;
@@ -28,6 +32,7 @@ import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.layer.bls.bean.RasterImageBean;
 import com.fy.navi.service.adapter.layer.bls.bean.VectorCrossBean;
+import com.fy.navi.service.adapter.layer.bls.utils.CommonUtil;
 import com.fy.navi.service.define.layer.refix.LayerItemData;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteReplaceChargePoint;
@@ -561,14 +566,294 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
 
     @Override
     public List<CustomUpdatePair> createUpdatePair(LayerItem item) {
-
         switch (item.getBusinessType()) {
             case BizRouteType.BizRouteTypeGuideLabel:
-                List<CustomUpdatePair> guideLabelPairs = new ArrayList<>();
-                //TODO 构建内容
-
-                return guideLabelPairs;
+                Logger.d(TAG, "多备选路线卡片内容填充");
+                GuideLabelLayerItem labelItem = (GuideLabelLayerItem) item;
+                return addCardGuideLabelMarker(labelItem);
+            case BizRouteType.BizRouteTypeRouteJamBubbles:
+                RouteJamBubblesLayerItem jamBubblesLayerItem = (RouteJamBubblesLayerItem) item;
+                return addCardGuideJamBubblesMarker(jamBubblesLayerItem);
         }
         return super.createUpdatePair(item);
+    }
+
+    private List<CustomUpdatePair> addCardGuideJamBubblesMarker(RouteJamBubblesLayerItem jamBubblesLayerItem) {
+        List<CustomUpdatePair> jamBubblesList = new ArrayList<>();
+        long bubbleIndexId = jamBubblesLayerItem.getBubbleIndexId();
+        JamBubblesSegmentDeepInfo deepInfo = jamBubblesLayerItem.getDeepInfo();
+        JamBubblesSegmentDeepInfo cost = jamBubblesLayerItem.getCost();
+        JamBubblesSegmentDeepInfo degree = jamBubblesLayerItem.getDegree();
+        String picPath = jamBubblesLayerItem.getPicPath();
+        JamBubblesSegmentDeepInfo trend = jamBubblesLayerItem.getTrend();
+        int directionStyle = jamBubblesLayerItem.getDirectionStyle();
+
+        Logger.d(TAG, "addCardGuideJamBubblesMarker \n bubbleIndexId " + bubbleIndexId +
+                "\n deepInfo " + GsonUtils.toJson(deepInfo) +
+                "\n cost " + GsonUtils.toJson(cost) +
+                "\n degree " + GsonUtils.toJson(degree) +
+                "\n picPath " + picPath +
+                "\n trend " + GsonUtils.toJson(trend) +
+                "\n directionStyle " + directionStyle);
+        int deepInfoSceneType = deepInfo.sceneType;
+        String deepInfoText = deepInfo.text;
+        if (ConvertUtils.isEmpty(deepInfoText)) {
+            jamBubblesList.add(createUpdateStylePair("main_title_smooth", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("main_title_slow", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("main_title_congested", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("main_title_default", "display: none;"));
+        } else {
+            switch (deepInfoSceneType) {
+                case 0 -> {
+                    jamBubblesList.add(createUpdatePair("main_title_smooth", deepInfoText));
+                    jamBubblesList.add(createUpdateStylePair("main_title_smooth", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_default", "display: none;"));
+
+                    jamBubblesList.add(createUpdateStylePair("icon_image_smooth", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("icon_image_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("icon_image_congested", "display: none;"));
+                }
+                case 1 -> {
+                    jamBubblesList.add(createUpdatePair("main_title_slow", deepInfoText));
+                    jamBubblesList.add(createUpdateStylePair("main_title_slow", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_default", "display: none;"));
+
+                    jamBubblesList.add(createUpdateStylePair("icon_image_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("icon_image_slow", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("icon_image_congested", "display: none;"));
+                }
+                case 2 -> {
+
+                    jamBubblesList.add(createUpdatePair("main_title_congested", deepInfoText));
+                    jamBubblesList.add(createUpdateStylePair("main_title_congested", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_default", "display: none;"));
+
+                    jamBubblesList.add(createUpdateStylePair("icon_image_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("icon_image_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("icon_image_congested", "display: flex;"));
+                }
+                case 3 -> {
+                    jamBubblesList.add(createUpdatePair("main_title_default", deepInfoText));
+                    jamBubblesList.add(createUpdateStylePair("main_title_default", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("main_title_congested", "display: none;"));
+
+                    jamBubblesList.add(createUpdateStylePair("icon_image_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("icon_image_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("icon_image_congested", "display: none;"));
+                }
+            }
+        }
+        String costText = cost.text;
+        int costSceneType = cost.sceneType;
+        if (ConvertUtils.isEmpty(costText)) {
+            jamBubblesList.add(createUpdateStylePair("time_col_smooth", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("time_col_slow", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("time_col_congested", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("time_col_default", "display: none;"));
+
+            jamBubblesList.add(createUpdateStylePair("line_image_smooth", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("line_image_slow", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("line_image_congested", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("line_image_default", "display: none;"));
+        } else {
+            switch (costSceneType) {
+                case 0 -> {
+                    jamBubblesList.add(createUpdatePair("time_col_smooth", costText));
+                    jamBubblesList.add(createUpdateStylePair("time_col_smooth", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_default", "display: none;"));
+
+                    jamBubblesList.add(createUpdateStylePair("line_image_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_default", "display: none;"));
+                }
+                case 1 -> {
+                    jamBubblesList.add(createUpdatePair("time_col_slow", costText));
+                    jamBubblesList.add(createUpdateStylePair("time_col_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_slow", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_default", "display: none;"));
+
+                    jamBubblesList.add(createUpdateStylePair("line_image_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_default", "display: none;"));
+                }
+                case 2 -> {
+                    jamBubblesList.add(createUpdatePair("time_col_congested", costText));
+                    jamBubblesList.add(createUpdateStylePair("time_col_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_congested", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_default", "display: none;"));
+
+                    jamBubblesList.add(createUpdateStylePair("line_image_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_default", "display: none;"));
+                }
+                case 3 -> {
+                    jamBubblesList.add(createUpdatePair("time_col_default", costText));
+                    jamBubblesList.add(createUpdateStylePair("time_col_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_col_default", "display: flex;"));
+
+                    jamBubblesList.add(createUpdateStylePair("line_image_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("line_image_default", "display: none;"));
+                }
+            }
+        }
+        if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText)) {
+            jamBubblesList.add(createUpdateStylePair("icon_image_smooth", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("icon_image_slow", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("icon_image_congested", "display: none;"));
+        }
+        int degreeSceneType = degree.sceneType;
+        String degreeText = degree.text;
+        if (ConvertUtils.isEmpty(degreeText)) {
+            jamBubblesList.add(createUpdateStylePair("sub_title_smooth", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("sub_title_slow", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("sub_title_congested", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("sub_title_default", "display: none;"));
+        } else {
+            switch (degreeSceneType) {
+                case 0 -> {
+                    jamBubblesList.add(createUpdatePair("sub_title_smooth", degreeText));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_smooth", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_default", "display: none;"));
+                }
+                case 1 -> {
+                    jamBubblesList.add(createUpdatePair("sub_title_slow", degreeText));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_slow", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_default", "display: none;"));
+                }
+                case 2 -> {
+                    jamBubblesList.add(createUpdatePair("sub_title_congested", degreeText));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_congested", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_default", "display: none;"));
+                }
+                case 3 -> {
+                    jamBubblesList.add(createUpdatePair("sub_title_default", degreeText));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("sub_title_default", "display: flex;"));
+                }
+            }
+        }
+        String trendText = trend.text;
+        int trendSceneType = trend.sceneType;
+        if (ConvertUtils.isEmpty(trendText)) {
+            jamBubblesList.add(createUpdateStylePair("time_row_smooth", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("time_row_slow", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("time_row_congested", "display: none;"));
+            jamBubblesList.add(createUpdateStylePair("time_row_default", "display: none;"));
+        } else {
+            switch (trendSceneType) {
+                case 0 -> {
+                    jamBubblesList.add(createUpdatePair("time_row_smooth", trendText));
+                    jamBubblesList.add(createUpdateStylePair("time_row_smooth", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_default", "display: none;"));
+                }
+                case 1 -> {
+                    jamBubblesList.add(createUpdatePair("time_row_slow", trendText));
+                    jamBubblesList.add(createUpdateStylePair("time_row_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_slow", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_default", "display: none;"));
+                }
+                case 2 -> {
+                    jamBubblesList.add(createUpdatePair("time_row_congested", trendText));
+                    jamBubblesList.add(createUpdateStylePair("time_row_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_congested", "display: flex;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_default", "display: none;"));
+                }
+                case 3 -> {
+                    jamBubblesList.add(createUpdatePair("time_row_default", trendText));
+                    jamBubblesList.add(createUpdateStylePair("time_row_smooth", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_slow", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_congested", "display: none;"));
+                    jamBubblesList.add(createUpdateStylePair("time_row_default", "display: flex;"));
+                }
+            }
+        }
+        return jamBubblesList;
+    }
+
+    private List<CustomUpdatePair> addCardGuideLabelMarker(GuideLabelLayerItem item) {
+        List<CustomUpdatePair> guideLabelPairs = new ArrayList<>();
+        String time;
+        int travelTimeDiff = item.getMTravelTimeDiff();
+        if (travelTimeDiff > 0) {
+            time = "慢";
+        } else {
+            time = "快";
+        }
+        time += CommonUtil.formatTimeBySecond(Math.abs(travelTimeDiff));
+
+        String distance;
+        int distanceDiff = item.getMDistanceDiff();
+        if (distanceDiff > 0) {
+            distance = "多";
+        } else {
+            distance = "少";
+        }
+        distance += CommonUtil.distanceUnitTransform(Math.abs(distanceDiff));
+
+        String trafficLight;
+        int trafficLightDiff = item.getMTrafficLightDiff();
+        if (trafficLightDiff > 0) {
+            trafficLight = "多%d个";
+        } else {
+            trafficLight = "少%d个";
+        }
+        if (trafficLightDiff == 0) {
+            trafficLight = "一致";
+        } else {
+            trafficLight = String.format(trafficLight, Math.abs(trafficLightDiff));
+        }
+
+        String cost;
+        int costDiff = item.getMCostDiff();
+        if (costDiff > 0) {
+            cost = "多%d元";
+        } else {
+            cost = "少%d元";
+        }
+        cost = String.format(cost, Math.abs(costDiff));
+        if (costDiff == 0) {
+            guideLabelPairs.add(createUpdateStylePair("cost_text1", "display: none;"));
+            guideLabelPairs.add(createUpdateStylePair("cost_text2", "display: none;"));
+            guideLabelPairs.add(createUpdateStylePair("cost_image1", "display: none;"));
+            guideLabelPairs.add(createUpdateStylePair("cost_image2", "display: none;"));
+        }
+
+        Logger.d(TAG, "addCardGuideLabelMarker time " + time + " distance " + distance + " trafficLight " + trafficLight + " cost " + cost);
+        guideLabelPairs.add(createUpdatePair("time_diff_text", time));
+        guideLabelPairs.add(createUpdatePair("cost_text1", item.getMPathCost() + "元"));
+        guideLabelPairs.add(createUpdatePair("distance_diff_text", distance));
+        guideLabelPairs.add(createUpdatePair("traffic_light_text", trafficLight));
+        return guideLabelPairs;
     }
 }

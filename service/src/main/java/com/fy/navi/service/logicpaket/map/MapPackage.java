@@ -88,7 +88,11 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         mMapAdapter.registerCallback(mapSurfaceView.provideMapTypeId(), this);
     }
 
+    /**
+     * 绑定HudMapView  并注册IMapAdapterCallback接口回调
+     */
     public void initCallback(MapType mapType) {
+        mMapAdapter.initHudMapView();
         mMapAdapter.registerCallback(mapType, this);
     }
 
@@ -146,6 +150,13 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     public void setMapCenterInScreen(MapType mapTypeId, int x, int y) {
         mMapAdapter.setMapCenterInScreen(mapTypeId, x, y);
     }
+    /**
+     * 设置Hud地图中线点在屏幕中的位置
+     */
+    public void setHudMapCenterInScreen(MapType mapTypeId, int x, int y) {
+        mMapAdapter.setHudMapCenterInScreen(mapTypeId, x, y);
+    }
+
 
     public void changMapCenterInScreen(MapType mapTypeId, MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = MapVisibleAreaDataManager.getInstance().getDataByKey(mapVisibleAreaType);

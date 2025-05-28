@@ -76,6 +76,8 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import lombok.Getter;
+
 /**
  * @author fy
  * @version $Revision.*$
@@ -96,6 +98,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private boolean mIsNopOpen = false;
     private int mCurrentImmersiveStatus = -1;
     private boolean mIsPreview = false;
+    @Getter
     private NaviEtaInfo mCurrentNaviEtaInfo;
     private boolean mIsFixedOverView;
     private boolean mCruiseVoiceIsOpen = true; // 巡航播报是否开启

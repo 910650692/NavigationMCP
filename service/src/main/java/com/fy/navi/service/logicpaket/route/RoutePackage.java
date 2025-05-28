@@ -1,5 +1,6 @@
 package com.fy.navi.service.logicpaket.route;
 
+import android.graphics.Rect;
 import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
@@ -1165,6 +1166,29 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         previewParams.setScreenRight(600);
         previewParams.setScreenTop(210);
         previewParams.setScreenBottom(200);
+        mMapAdapter.showPreview(mapTypeId, previewParams);
+    }
+
+    /**
+     * 1/3屏页面路线全览
+     *
+     * @param mapTypeId 屏幕ID
+     */
+    public void oneThirdScreeShowPreview(final MapType mapTypeId, Rect rect) {
+        Logger.i(TAG, "oneThirdScreeShowPreview mapTypeId = " + mapTypeId);
+        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
+            return;
+        }
+        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
+        final PreviewParams previewParams = mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList());
+        if (ConvertUtils.isEmpty(previewParams)) {
+            Logger.e(TAG, "previewParams is null");
+            return;
+        }
+        previewParams.setScreenLeft(rect.left);
+        previewParams.setScreenRight(rect.right);
+        previewParams.setScreenTop(rect.top);
+        previewParams.setScreenBottom(rect.bottom);
         mMapAdapter.showPreview(mapTypeId, previewParams);
     }
 

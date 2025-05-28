@@ -43,6 +43,8 @@ import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.ui.base.StackManager;
 
+import java.util.Objects;
+
 /**
  * @author: QiuYaWei
  * $Revision.1.0\$

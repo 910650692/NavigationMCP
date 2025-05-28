@@ -2,11 +2,8 @@ package com.fy.navi.service.adapter.search;
 
 import android.util.Pair;
 
-import com.android.utils.ConvertUtils;
-import com.android.utils.TimeUtils;
-import com.android.utils.log.Logger;
 import com.fy.navi.service.AdapterConfig;
-import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
@@ -14,8 +11,6 @@ import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -248,6 +243,17 @@ final public class SearchAdapter {
                     mCalibrationPackage.highVoltageBatteryPropulsionTotalRangeNavi() / 100;
         }
         return mSearchApi.getTravelTimeFutureIncludeChargeLeft(searchRequestParameter);
+    }
+
+    /**
+     * 获取当前子点的孙节点
+     * @param searchRequestParameter SearchRequestParameter
+     * @param childInfo 当前子点
+     * @return CompletableFuture
+     */
+    public CompletableFuture<ChildInfo> setGrandChildInfoList(final SearchRequestParameter searchRequestParameter,
+                                                                           final ChildInfo childInfo) {
+        return mSearchApi.setGrandChildInfoList(searchRequestParameter, childInfo);
     }
 
     // 查询收藏充电站

@@ -475,6 +475,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mRefreshable = true;
         }
     };
+    //动态设置参数
+    private int MsgDialogTop = 41;
+    private int MsgDialogLeft = 1097;
 
     public BaseRouteViewModel(final Application application) {
         super(application);
@@ -529,6 +532,23 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRouteProgressChargeVisibility = new ObservableField<>(false);
         mRouteProgressChargeExhaustVisibility = new ObservableField<>(true);
         mRouteProgressChargeExhaust = new ObservableField<>(0);
+    }
+
+
+    public int getMsgDialogTop() {
+        return MsgDialogTop;
+    }
+
+    public void setMsgDialogTop(final int msgDialogTop) {
+        MsgDialogTop = msgDialogTop;
+    }
+
+    public int getMsgDialogLeft() {
+        return MsgDialogLeft;
+    }
+
+    public void setMsgDialogLeft(final int msgDialogLeft) {
+        MsgDialogLeft = msgDialogLeft;
     }
 
     /***

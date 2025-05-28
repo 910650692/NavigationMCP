@@ -1,6 +1,14 @@
 package com.fy.navi.service.adapter.signal;
 
 import android.content.Context;
+import android.hardware.automotive.vehicle.V2_0.VehicleArea;
+
+import com.android.utils.log.Logger;
+import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
+import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
+import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
+
+import vendor.patac.vehicle.V1_0.PatacProperty;
 
 public interface SignalApi {
 
@@ -124,4 +132,34 @@ public interface SignalApi {
      * @param volume 0-63
      */
     void setNaviVolume(int volume);
+
+    void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup);
+
+    void setNavigationOnAdasButtonSettingRequest(int value);
+
+    void setNavigationOnAdasInfoNavigationStatus(int value);
+
+    void setDistanceToTrafficJamRoad(int value);
+
+    void setDistanceToTrafficJamRoadAvailability(int value);
+
+    void setDistanceOnTrafficJamRoad(int value);
+
+    void setDistanceOnTrafficJamRoadAvailability(int value);
+
+    void setTrafficJamRoadAverageSpeed(int value) ;
+
+    void setTrafficJamRoadAverageSpeedAvailability(int value);
+
+    void setRoadConditionGroupFirst(RoadConditionGroupFirst roadConditionGroupFirst);
+
+    void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond);
+
+    void setTotalDistanceFromStartToDestinationOnNavigation(int value);
+
+    void setTotalPredictedTimeFromStartToDestinationOnNavigation(int value);
+
+    void setRemainDistanceToChargingStation(int value);
+
+    void setRemainTimeToChargingStationy(int value);
 }

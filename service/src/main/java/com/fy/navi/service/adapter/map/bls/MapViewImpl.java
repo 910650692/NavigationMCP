@@ -84,6 +84,8 @@ import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.fy.navi.ui.BaseApplication;
+import com.fy.navi.ui.IsAppInForegroundCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +99,7 @@ import lombok.Getter;
  * @date 2024/12/3
  */
 public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
-        IMapGestureObserver, IDeviceObserver, IBLMapViewProxy, IBLMapEngineObserver, IAnimationObserver, IBLMapBusinessDataObserver ,  IEGLScreenshotObserver{
+        IMapGestureObserver, IDeviceObserver, IBLMapViewProxy, IBLMapEngineObserver, IAnimationObserver, IBLMapBusinessDataObserver ,  IEGLScreenshotObserver, IsAppInForegroundCallback {
 
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
 
@@ -141,12 +143,14 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         this.mapViewParams = mapViewParams;
         createMapService();
         createMapDevice(mapViewParams);
-        createMapView();
+        if (mapType == MapType.HUD_MAP) createHudMapView(); else createMapView();
         initTheme();
         initOperatorPosture();
         initOperatorBusiness();
         initOperatorGesture();
         initSkyBox();
+        //注册前后台监听接口
+        BaseApplication.addIsAppInForegroundCallback(this);
     }
 
     private void createMapService() {
@@ -186,7 +190,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         }
     }
 
-    private void createMapView() {
+    private void createMapViewInternal(long x, long y, long width, long height, long screenWidth, long screenHeight) {
         MapViewParam mapViewParam = new MapViewParam();
         if (!ConvertUtils.isNull(getDefaultDevice())) {
             mapViewParam.deviceId = getDefaultDevice().getDeviceId();
@@ -194,32 +198,42 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         Logger.i(TAG, "mapViewParam.deviceId -> " + mapViewParam.deviceId);
         mapViewParam.engineId = EnginePackage.getInstance().getEngineID(mapType);
         Logger.i(TAG, "mapViewParam.engineId -> " + mapViewParam.engineId);
-        mapViewParam.x = mapViewParams.getX();
-        Logger.i(TAG, "mapViewParam.x -> " + mapViewParam.x);
-        mapViewParam.y = mapViewParams.getY();
-        Logger.i(TAG, "mapViewParam.y -> " + mapViewParam.y);
-        mapViewParam.width = mapViewParams.getWidth();
-        Logger.i(TAG, "mapViewParam.width -> " + mapViewParam.width);
-        mapViewParam.height = mapViewParams.getHeight();
-        Logger.i(TAG, "mapViewParam.height -> " + mapViewParam.height);
-        mapViewParam.screenWidth = mapViewParams.getScreenWidth();
-        Logger.i(TAG, "mapViewParam.screenWidth -> " + mapViewParam.screenWidth);
-        mapViewParam.screenHeight = mapViewParams.getScreenHeight();
-        Logger.i(TAG, "mapViewParam.screenWidth -> " + mapViewParam.screenHeight);
+
+        mapViewParam.x = x;
+        mapViewParam.y = y;
+        mapViewParam.width = width;
+        mapViewParam.height = height;
+        mapViewParam.screenWidth = screenWidth;
+        mapViewParam.screenHeight = screenHeight;
+
         mapViewParam.cacheCountFactor = 2.0F;
         mapViewParam.zoomScaleMode = MapZoomScaleMode.PhysicalAdaptiveMode;
         mapViewParam.mapProfileName = "mapprofile_fa1"; // 星河效果指定性能模式
         if (!ConvertUtils.isNull(getMapService())) {
-            setDefaultMapView(getMapService().createMapView(mapViewParam,
-                    this, this, this, this));
+            setDefaultMapView(getMapService().createMapView(mapViewParam, this, this, this, this));
         } else {
             Logger.e(TAG, "mapService is null");
         }
     }
 
+    private void createMapView() {
+        createMapViewInternal(
+                mapViewParams.getX(),
+                mapViewParams.getY(),
+                mapViewParams.getWidth(),
+                mapViewParams.getHeight(),
+                mapViewParams.getScreenWidth(),
+                mapViewParams.getScreenHeight()
+        );
+    }
+    private void createHudMapView() {
+        createMapViewInternal(0, 0, 328, 172, 328, 172);
+    }
+
     @Override
     public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
-        startScreenshot(mapType,mMapDevice,width,height,deviceId);
+        Logger.d(TAG, "onSurfaceChanged -> deviceId:" + deviceId, "width:" + width, "height:" + height);
+        startScreenshot(mapType,mMapDevice,ScreenUtils.Companion.getInstance().getScreenWidth(),ScreenUtils.Companion.getInstance().getScreenHeight());
     }
 
     private void createMapDevice(MapViewParams params) {
@@ -385,6 +399,9 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     }
 
     public void setMapCenterInScreen(int x, int y) {
+        getMapview().setMapLeftTop(x, y);
+    }
+    public void setHudMapCenterInScreen(int x, int y) {
         getMapview().setMapLeftTop(x, y);
     }
 
@@ -808,12 +825,20 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
 
     public void changeMapViewParams(MapViewParams mapViewParams) {
         this.mapViewParams = mapViewParams;
-        long x = mapViewParams.getX(); //左上角 左偏置
-        long y = mapViewParams.getY(); //左上角 顶偏置
-        long width = mapViewParams.getWidth(); //地图宽
-        long height = mapViewParams.getHeight(); //地图高
-        long screenWidth = mapViewParams.getScreenWidth(); //屏幕宽
-        long screenHeight = mapViewParams.getScreenHeight(); //屏幕高
+        updateMapPortParams(
+                mapViewParams.getX(),
+                mapViewParams.getY(),
+                mapViewParams.getWidth(),
+                mapViewParams.getHeight(),
+                mapViewParams.getScreenWidth(),
+                mapViewParams.getScreenHeight()
+        );
+    }
+    public void changeHudMapViewParams(MapViewParams mapViewParams) {
+        this.mapViewParams = mapViewParams;
+        updateMapPortParams(0, 0, 328, 172, 328, 172);
+    }
+    private void updateMapPortParams(long x, long y, long width, long height, long screenWidth, long screenHeight) {
         MapViewPortParam mapViewPortParam = new MapViewPortParam(x, y, width, height, screenWidth, screenHeight);
         getMapview().setMapviewPort(mapViewPortParam);
     }
@@ -829,36 +854,51 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         Logger.d(TAG, "attachSurfaceToDevice"+mapType);
         // 设置 EGL Surface 属性
         EGLSurfaceAttr eglSurfaceAttr = new EGLSurfaceAttr();
-        //eglSurfaceAttr.nativeWindow = -1;
+        eglSurfaceAttr.nativeWindow = -1;
         eglSurfaceAttr.isOnlyCreatePBSurface = true;
         eglSurfaceAttr.width = 328;
         eglSurfaceAttr.height = 172;
         mapDevice.attachSurfaceToDevice(eglSurfaceAttr);
     }
-    public void startScreenshot(MapType mapType, MapDevice mapDevice,int width, int height,int deviceId){
+    public void startScreenshot(MapType mapType, MapDevice mapDevice,int width, int height){
+        Logger.d(TAG, "startScreenshot mapType=="+mapType+"mapDevice=="+mapDevice+"width=="+width+"height=="+height);
         if (mapType == MapType.MAIN_SCREEN_MAIN_MAP){
             // 这里裁剪的区域不要随意改变，现在是整个屏幕，如果需要某一部分，需要在回调后自己再次裁剪
             mapDevice.setScreenshotRect(0, 0, width, height);
-        }else if (mapType == MapType.HUD_MAP && deviceId == EngineAdapter.getInstance().mapDeviceID(MapType.HUD_MAP)){
+        }else if (mapType == MapType.HUD_MAP ){
             mapDevice.setScreenshotRect(0, 0, 328, 172);
         }
+        if (mapType == MapType.MAIN_SCREEN_MAIN_MAP){
+            if (BaseApplication.isAppInForeground() == 3){
+                mapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeFront,this);
+            }else {
+                mapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround,this);
+            }
+        } else if (mapType == MapType.HUD_MAP){
+            mapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround,this);
+        }
         mapDevice.setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
-        //截图模式
-        mapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround,this);
-        Logger.d(TAG, "takeMapScreenshot mode");
-
     }
+
 
     @Override
     public void onEGLScreenshot(int i, byte[] pBitmapBuffer, ScreenShotDataInfo screenShotDataInfo, int i1, long l) {
-        Logger.d(TAG, "onEGLScreenshot");
         if (pBitmapBuffer == null) {
+            Logger.d(TAG, "pBitmapBuffer==null");
             return;
         }
-        Logger.d(TAG, "onEGLScreenshot"+pBitmapBuffer.length);
         for (IMapAdapterCallback callback : callbacks) {
             Logger.d(TAG, "onEGLScreenshot"+mapType);
             callback.onEGLScreenshot(mapType,pBitmapBuffer);
         }
+    }
+
+    /**
+     * 前后台切换是 重新调用截图 并设置截图模式
+     * @param isInForeground boolean
+     */
+    @Override
+    public void isAppInForeground(int isInForeground) {
+        startScreenshot(mapType,mMapDevice,ScreenUtils.Companion.getInstance().getScreenWidth(),ScreenUtils.Companion.getInstance().getScreenHeight());
     }
 }

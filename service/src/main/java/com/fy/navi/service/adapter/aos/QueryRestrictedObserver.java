@@ -4,6 +4,8 @@ import com.fy.navi.service.define.aos.FyCriticism;
 import com.fy.navi.service.define.aos.FyGTraEventDetail;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 
+import java.util.ArrayList;
+
 /**
  * @Description TODO
  * @Author lww
@@ -20,5 +22,8 @@ public interface QueryRestrictedObserver {
 
     default void onDynamicPraiseQueryFinished(FyCriticism fyCriticism) {
 
+    }
+
+    default void onRecvAck(ArrayList<String> data){
     }
 }

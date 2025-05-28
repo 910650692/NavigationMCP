@@ -18,6 +18,8 @@ import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
+import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.ui.base.BaseModel;
@@ -33,7 +35,8 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     private final SearchPackage mSearchPackage;
     private final LayerPackage mLayerPackage;
     private final String mCallbackId;
-
+    private final RoutePackage mRoutePackage;
+    private IRouteResultObserver mRouteResultObserver;
     private int mTaskId;
     private SearchResultEntity mSearchResultEntity;
 
@@ -42,6 +45,28 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
         mCallbackId = UUID.randomUUID().toString();
         mSearchPackage = SearchPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
+        mRoutePackage = RoutePackage.getInstance();
+        initRouteCallback();
+    }
+
+    /**
+     * 注册路线变化回调
+     */
+    public void registerRouteCallback() {
+        mRoutePackage.registerRouteObserver(mCallbackId, mRouteResultObserver);
+    }
+
+    /**
+     * 初始化路线规划接口回调.
+     */
+    private void initRouteCallback() {
+        mRouteResultObserver = new IRouteResultObserver() {
+
+            @Override
+            public void onRouteSlected(MapType mapTypeId, int routeIndex) {
+                mViewModel.onRouteSelected();
+            }
+        };
     }
 
     /**
@@ -133,6 +158,7 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     public void onDestroy() {
         super.onDestroy();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "SearchResultModel 销毁");
+        RoutePackage.getInstance().unRegisterRouteObserver(mCallbackId);
         if (mSearchPackage != null) {
             mSearchPackage.unRegisterCallBack(mCallbackId);
         }

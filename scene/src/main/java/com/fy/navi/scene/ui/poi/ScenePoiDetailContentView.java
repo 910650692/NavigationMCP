@@ -19,6 +19,7 @@ import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,6 +29,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
@@ -500,6 +502,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     .setName(childInfo.getName())
                     .setAddress(childInfo.getAddress())
                     .setPid(childInfo.getPoiId())
+                    .setChildInfoList(childInfo.getMGrandChildInfoList())
                     .setPoint(childInfo.getLocation());
             for (int i = 0; i < mChildList.size(); i++) {
                 if (i == index) {
@@ -837,6 +840,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             final String fastInfo = fastPower + "." + fastVolt;
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(fastFree);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(fastTotal);
+            if(chargeInfo.getFast_free() == 0){
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setVisibility(GONE);
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(fastTotal.replace("/",""));
+            }
+
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.
                     setText(fastInfo);
             final String slowFree = chargeInfo.getSlow_free() == 0 ?
@@ -850,6 +858,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             final String slowInfo = slowPower + "." + slowVolt;
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(slowFree);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal.setText(slowTotal);
+            if(chargeInfo.getSlow_free() == 0){
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setVisibility(GONE);
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal.setText(slowTotal.replace("/",""));
+            }
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot.
                     setText(slowInfo);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargePrice.setText(
@@ -1162,6 +1174,25 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
         mScenicChildAdapter = new PoiDetailsScenicChildAdapter();
         if (childInfoList != null && !childInfoList.isEmpty()) {
+            for (ChildInfo childInfo : childInfoList) {
+                mScreenViewModel.setGrandChildInfoList(childInfo)
+                        .thenAccept(childInfoNew -> {
+                            ThreadManager.getInstance().postUi(new Runnable() {
+                                @Override
+                                public void run() {
+                                    childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
+                                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
+                                }
+                            });
+
+                        })
+                        .exceptionally(error -> {
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" + error);
+                            return null;
+                        });
+            }
+
+
             if (mChildSelectIndex != -1 && mChildSelectIndex < childInfoList.size()) {
                 childInfoList.get(mChildSelectIndex).setChecked(1);
                 final ChildInfo childInfo = childInfoList.get(mChildSelectIndex);
@@ -1169,6 +1200,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         .setName(childInfo.getName())
                         .setAddress(childInfo.getAddress())
                         .setPid(childInfo.getPoiId())
+                        .setMChildInfoList(childInfo.getMGrandChildInfoList())
                         .setPoint(childInfo.getLocation());
             }
             mScenicChildAdapter.setChildInfoList(childInfoList);
@@ -1194,12 +1226,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             .setName(childInfo.getName())
                             .setAddress(childInfo.getAddress())
                             .setPid(childInfo.getPoiId())
+                            .setMChildInfoList(childInfo.getMGrandChildInfoList())
                             .setPoint(childInfo.getLocation());
                     mScreenViewModel.setChildIndex(index);
                 } else {
                     mChildSelectInfo = null;
                 }
-                refreshPoiView(mPoiType,mPoiInfoEntity);
+                refreshPoiView(mPoiType,mPoiInfoEntity,false);
             });
         } else {
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
@@ -1340,6 +1373,23 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
         final PoiDetailsScenicChildAdapter scenicChildAdapter = new PoiDetailsScenicChildAdapter();
         if (childInfoList != null && !childInfoList.isEmpty()) {
+            for (ChildInfo childInfo : childInfoList) {
+                mScreenViewModel.setGrandChildInfoList(childInfo)
+                        .thenAccept(childInfoNew -> {
+                            ThreadManager.getInstance().postUi(new Runnable() {
+                                @Override
+                                public void run() {
+                                    childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
+                                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
+                                }
+                            });
+
+                        })
+                        .exceptionally(error -> {
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" + error);
+                            return null;
+                        });
+            }
             scenicChildAdapter.setChildInfoList(childInfoList);
             mViewBinding.scenePoiDetailsNormalView.poiChildList.setLayoutManager(
                     new GridLayoutManager(getContext(), mSpanCount));
@@ -1362,12 +1412,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             .setName(childInfo.getName())
                             .setAddress(childInfo.getAddress())
                             .setPid(childInfo.getPoiId())
+                            .setMChildInfoList(childInfo.getMGrandChildInfoList())
                             .setPoint(childInfo.getLocation());
                     mScreenViewModel.setChildIndex(index);
                 } else {
                     mChildSelectInfo = null;
                 }
-                refreshPoiView(mPoiType,mPoiInfoEntity);
+                refreshPoiView(mPoiType,mPoiInfoEntity,false);
             });
         } else {
             mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
@@ -1503,8 +1554,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      *                POI_MAP_CLICK = 7; // 地图点击
      *                POI_MAP_CAR_CLICK = 9;//自车位点击事件
      * @param poiInfoEntity poi信息
+     * @param isNeedRefreshNormalView 是否需要刷新NormalView
      */
-    public void refreshPoiView(final int poiType, final PoiInfoEntity poiInfoEntity) {
+    public void refreshPoiView(final int poiType, final PoiInfoEntity poiInfoEntity, final boolean isNeedRefreshNormalView) {
         if (mViewBinding == null) {
             return;
         }
@@ -1512,7 +1564,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " + poiType);
         final int pointTypeCode = mScreenViewModel.getPointTypeCode(poiInfoEntity.getPointTypeCode());
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId: "+poiInfoEntity.getOperatorId());
-        if(ConvertUtils.isEmpty(poiInfoEntity.getOperatorId())){
+        if(ConvertUtils.isEmpty(poiInfoEntity.getOperatorId()) && isNeedRefreshNormalView){
             refreshNormalView();
         }
         //刷新View

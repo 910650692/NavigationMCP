@@ -148,6 +148,8 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
                 return Long.compare(poiInfoEntity2.getFavoriteInfo().getUpdateTime(), poiInfoEntity1.getFavoriteInfo().getUpdateTime());
             });
         }
+
+        Logger.d(TAG, "favorite list is " + GsonUtils.toJson(dataList));
         return dataList;
     }
 

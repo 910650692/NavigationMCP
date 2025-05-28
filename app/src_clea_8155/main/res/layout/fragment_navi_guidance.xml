@@ -15,7 +15,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/dp_153">
+        android:layout_marginBottom="@dimen/dp_96">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/navi_scene_container"

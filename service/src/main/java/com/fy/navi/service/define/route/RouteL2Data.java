@@ -209,6 +209,10 @@ public class RouteL2Data {
         private Integer mDirection;
         @SerializedName("laneNum")
         private Integer mLaneNum;
+        @SerializedName("speedLimit")
+        private Integer mSpeedLimit;
+        @SerializedName("roadOwnerShip")
+        private Integer mRoadOwnerShip;
     }
 
     @NoArgsConstructor

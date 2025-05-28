@@ -58,6 +58,13 @@ public class MapAdapter {
         mIMapApi.bindMapView(mapSurfaceView);
     }
 
+    /**
+     * 绑定HudMapView
+     */
+    public void initHudMapView() {
+        mIMapApi.bindHudMapView();
+    }
+
     public void unInitMapService(MapType mapTypeId) {
         mIMapApi.unitMapService(mapTypeId);
     }
@@ -80,6 +87,12 @@ public class MapAdapter {
 
     public void setMapCenterInScreen(MapType mapTypeId, int x, int y) {
         mIMapApi.setMapCenterInScreen(mapTypeId, x, y);
+    }
+    /**
+     * 设置Hud地图中线点在屏幕中的位置
+     */
+    public void setHudMapCenterInScreen(MapType mapTypeId, int x, int y) {
+        mIMapApi.setHudMapCenterInScreen(mapTypeId, x, y);
     }
 
     public void setMapCenter(MapType mapTypeId, GeoPoint geoPoint) {

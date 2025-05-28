@@ -4312,4 +4312,6 @@
     <dimen name="navi_tbt_height">@dimen/dp_158</dimen>
     <dimen name="navi_tbt_height_short">@dimen/dp_138</dimen>
     <dimen name="navi_tbt_with">@dimen/dp_820</dimen>
+    <!--1/3屏路口大图高度-->
+    <dimen name="one_third_screen_cross_pic_height">@dimen/dp_349</dimen>
 </resources>

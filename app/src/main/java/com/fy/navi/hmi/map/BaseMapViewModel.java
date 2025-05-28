@@ -504,6 +504,24 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(visible);
     }
 
+    public void addSceneGoHomeCallBackVieModel(int type){
+        if (type == AutoMapConstant.HomeCompanyType.HOME) {
+            PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
+            if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
+                //直接进入导航到家
+                SearchPackage.getInstance().clearLabelMark();
+                startRoute(poiInfoEntity);
+            }
+        }else if(type == AutoMapConstant.HomeCompanyType.COMPANY){
+            PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_COMPANY);
+            if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
+                //直接进入导航到公司
+                SearchPackage.getInstance().clearLabelMark();
+                startRoute(poiInfoEntity);
+            }
+        }
+    }
+
     /**
      * UE单位是公里
      *
@@ -932,6 +950,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void setTMCView(RouteTMCParam param) {
+
+        if(mModel.showNdGoHomeView() && Boolean.FALSE.equals(param.isMIsShort())){
+            mGoHomeVisible.set(true);
+            mView.setNdGoHomeView(param);
+        }
+
+        //0代表家  1代表公司
         if (Boolean.TRUE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
             homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
         }

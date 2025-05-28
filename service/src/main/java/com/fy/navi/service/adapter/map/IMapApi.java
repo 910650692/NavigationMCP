@@ -36,6 +36,11 @@ public interface IMapApi {
     void bindMapView(IBaseScreenMapView mapView);
 
     /**
+     * 绑定HudMapView
+     */
+    void bindHudMapView();
+
+    /**
      * 解绑一个map
      *
      * @param mapView
@@ -83,6 +88,10 @@ public interface IMapApi {
 
     /*** 设置地图中线点在屏幕中的位置 **/
     void setMapCenterInScreen(MapType mapTypeId, int x, int y);
+    /**
+     * 设置Hud地图中线点在屏幕中的位置
+     */
+    void setHudMapCenterInScreen(MapType mapTypeId, int x, int y);
 
     /*** 设置地图中线点 **/
     void setMapCenter(MapType mapTypeId, GeoPoint coord3DDoubleBean);

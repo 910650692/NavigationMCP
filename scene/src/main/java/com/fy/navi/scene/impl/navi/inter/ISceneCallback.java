@@ -227,4 +227,8 @@ public interface ISceneCallback {
     default void updateNextText(String text) {
 
     }
+
+
+    default void clickGoHomeBtn(int type){};
+
 }

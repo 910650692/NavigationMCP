@@ -479,6 +479,7 @@ public class RouteAdapterImplHelper {
                 routeResult.setMType(info.getType());
                 routeResult.setMLength(TimeUtils.getInstance().getDistanceString(info.getLength()));
                 routeResult.setMDistance(info.getLength());
+                routeResult.setMTotalTime(info.getTravelTime());
                 routeResult.setMTravelTime(TimeUtils.getInstance().getTimeStr(info.getTravelTime()));
                 routeResult.setMStaticTravelTime(TimeUtils.getInstance().getTimeStr(info.getStaticTravelTime()));
                 routeResult.setMTollCost("" + info.getTollCost());
@@ -899,6 +900,7 @@ public class RouteAdapterImplHelper {
         if (!ConvertUtils.isEmpty(pathInfoList)) {
             final int allDis = (int) pathInfoList.get(0).getLength();
             param.setMTime(TimeUtils.getInstance().getTimeStr(pathInfoList.get(0).getTravelTime()));
+            param.setMTimeArrive(TimeUtils.getInstance().getCurrentTimePlusSeconds(pathInfoList.get(0).getTravelTime()));
             param.setMIsShort(allDis <= 1000);
             final ArrayList<LightBarItem> lightBarItems = pathInfoList.get(0).getLightBarItems();
             int allPercent = 100;
@@ -1545,6 +1547,8 @@ public class RouteAdapterImplHelper {
                         dto.setMPntBegIdx(startIndex);
                         dto.setMPntCnt(linkInfo.getPoints().size());
                         dto.setMLaneNum((int) linkInfo.getLaneNum());
+                        dto.setMSpeedLimit((int) linkInfo.getSpeedLimit());
+                        dto.setMRoadOwnerShip(linkInfo.getOwnership());
                         startIndex += linkInfo.getPoints().size() - 1;
                         linksDTOS.add(dto);
                         final ArrayList<Coord2DInt32> points = linkInfo.getPoints();

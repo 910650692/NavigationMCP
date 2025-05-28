@@ -186,6 +186,7 @@
     <color name="setting_button_disable">#802461EA</color>
     <color name="setting_back_top">#E3E5EC</color>
     <color name="bg_setting_car_number_selector">#338E97B9</color>
+    <color name="bg_setting_favorite_rename">#26B2AFC2</color>
 
     <color name="offline_hint_text">#80000000</color>
     <color name="offline_recommend_download">#80000000</color>

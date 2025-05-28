@@ -326,6 +326,9 @@ public class ClsLinkManager {
                 mpilotSdRouteLinks.setMainAction(link.getMMainAction());
                 mpilotSdRouteLinks.setHasParallel(link.getMHasParallel());
                 mpilotSdRouteLinks.setDirection(link.getMDirection());
+                mpilotSdRouteLinks.setLaneNum(link.getMLaneNum());
+                mpilotSdRouteLinks.setSpeedLimit(link.getMSpeedLimit());
+                mpilotSdRouteLinks.setRoadOwnership(link.getMRoadOwnerShip());
                 mpilotSdRoute.addMpilotSdRouteLinks(mpilotSdRouteLinks);
             });
 

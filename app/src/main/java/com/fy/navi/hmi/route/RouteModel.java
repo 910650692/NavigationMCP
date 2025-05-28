@@ -935,6 +935,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.updateSelectRouteUI(routeIndex);
+                mViewModel.showNomalRouteUI();
             }
             mSearchPackage.clearLabelMark();
             clearWeatherView();
@@ -1183,7 +1184,7 @@ public void setPoint() {
         label = mRouteLineInfos.get(index).getMLabel();
     }
     final BuryProperty property = new BuryProperty.Builder()
-            .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, Integer.toString(index))
+            .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, Integer.toString(index + 1))
             .setParams(BuryConstant.ProperType.BURY_KEY_ROUTE_PREFERENCE, label)
             .build();
     BuryPointController.getInstance().setBuryProps(property);

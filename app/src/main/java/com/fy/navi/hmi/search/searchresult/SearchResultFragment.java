@@ -90,6 +90,9 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         mBinding.scenePoiList.setRange(range);
         mBinding.scenePoiList.setCityCode(cityCode);
         mBinding.scenePoiList.setEditText(searchType, keyword);
+        if (searchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
+            mViewModel.registerRouteCallback();
+        }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sourceFragmentTag : " + mSourceFragmentTag);
     }
 
@@ -136,6 +139,13 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
      */
     public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
         mBinding.scenePoiList.notifySilentSearchResult(searchResultEntity);
+    }
+
+    /**
+     * 路线变化回调
+     */
+    public void onRouteSelected() {
+        closeAllFragmentUpRoute();
     }
 
     /**

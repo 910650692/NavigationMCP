@@ -86,6 +86,13 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         mSettingManager.insertOrReplace(SettingController.KEY_SETTING_SYNC_TIME, syncTime);
     }
 
+    @Override
+    public void onUpdateName(String name) {
+        if (mViewModel != null) {
+            mViewModel.updateFavoriteName(name);
+        }
+    }
+
     /**
      * setHomeCompanyDisplay
      * @param isHomeCompanyDisplay

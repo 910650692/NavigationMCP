@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.user.behavior.bls;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
@@ -210,6 +211,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         final FavoriteItem favoriteItem = mBehaviorService.getFavorite(baseItem);
         //HMI进行业务处理
         if (favoriteItem != null) {
+            final String poiId = favoriteItem.poiid;
             final FavoriteInfo favoriteInfo = new FavoriteInfo()
                     .setItemId(favoriteItem.item_id)
                     .setCommonName(favoriteItem.common_name)
@@ -220,13 +222,23 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                     .setClassification(favoriteItem.classification)
                     .setTop_time(favoriteItem.top_time);
             final PoiInfoEntity info = new PoiInfoEntity()
-                    .setPid(String.valueOf(favoriteItem.poiid))
+                    .setPid(poiId)
                     .setAdCode(ConvertUtils.str2Int(favoriteItem.city_code))
                     .setAddress(favoriteItem.address)
                     .setPhone(favoriteItem.phone_numbers)
                     .setName(favoriteItem.name)
-                    .setPoint(new GeoPoint(baseItem.point_x / BASE_POINT, baseItem.point_y / BASE_POINT))
                     .setFavoriteInfo(favoriteInfo);
+
+            if (!TextUtils.isEmpty(poiId) && poiId.contains("_")) {
+                String[] points = poiId.split("_");
+                if (points.length == 2) {
+                    final double x = Double.parseDouble(points[0]);
+                    final double y = Double.parseDouble(points[1]);
+                    info.setPoint(new GeoPoint(x, y));
+                }
+            }else {
+                info.setPoint(new GeoPoint(baseInfo.getPoint().getLon(), baseInfo.getPoint().getLat()));
+            }
             return info;
         }
         return baseInfo;
@@ -290,7 +302,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
             return "";
         }
         final FavoriteBaseItem favoriteInfo = new FavoriteBaseItem();
-        favoriteInfo.poiid = poiInfo.getPid();
+        if (!TextUtils.isEmpty(poiInfo.getPid()) && !poiInfo.getPid().contains(".")) {
+            favoriteInfo.poiid = poiInfo.getPid();
+        }
         favoriteInfo.point_x = (int) (poiInfo.getPoint().getLon() * BASE_POINT);
         favoriteInfo.point_y = (int) (poiInfo.getPoint().getLat() * BASE_POINT);
         favoriteInfo.name = poiInfo.getName();

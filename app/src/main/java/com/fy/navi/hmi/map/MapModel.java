@@ -1130,6 +1130,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         return false;
     }
 
+    public boolean showNdGoHomeView(){
+        return mViewModel.showNdGoHomeView();
+    }
+
     /**
      * 离线地图是否45天未更新
      */
@@ -1410,7 +1414,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         stopCruise();
         mapPackage.mfcMoveMap(MapType.MAIN_SCREEN_MAIN_MAP, mfcController, moveDis);
     }
-
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_WAKEUP)
     private void sendBuryPointForWakeup() {
         //Empty body
@@ -1422,6 +1425,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, msg)
                 .build();
         BuryPointController.getInstance().setBuryProps(property);
+    }
+
+    public void addSceneGoHomeCallBack(int type){
+        mViewModel.addSceneGoHomeCallBackVieModel(type);
     }
 
     public void addGestureListening(){

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="km">公里</string>
+    <string name="meter">米</string>
+    <string name="minute">分钟</string>
+    <string name="hour">小时</string>
     <!--  终点类型  -->
     <string name="layer_route_end_pop_title">终</string>
     <string name="layer_route_end_pop_detail">%s剩余%d%%</string>

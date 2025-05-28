@@ -201,4 +201,9 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
                 break;
         }
     }
+
+    @Override
+    public void onRouteSlected(final MapType mapTypeId, final int routeIndex) {
+        mViewModel.getClosePage().call();
+    }
 }

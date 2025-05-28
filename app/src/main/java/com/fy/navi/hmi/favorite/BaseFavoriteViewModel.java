@@ -2,6 +2,7 @@ package com.fy.navi.hmi.favorite;
 
 import android.app.Application;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -342,6 +343,23 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
             put("frequentY", -130);
             put("addButtonMargin", 20);
         }};
+    }
+
+    /**
+     * ND打开新的fragment, 其他车型打开popup
+     * @param poiInfo
+     * @param view
+     */
+    public void showRenameDialog(final PoiInfoEntity poiInfo, final View view) {
+        mView.showRenameDialog(poiInfo, view);
+    }
+
+    /**
+     * 更新名称
+     * @param name
+     */
+    public void updateFavoriteName(String name) {
+        mView.updateFavoriteName(name);
     }
 
 }

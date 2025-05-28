@@ -80,7 +80,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
             mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType " + poiType);
-            mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity);
+            mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity,true);
             mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
             mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
             mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
@@ -105,7 +105,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
         final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
         final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
-        mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity);
+        mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity,true);
         mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
         mBinding.scenePoiDetailContentView.doSearch(poiInfoEntity);
         mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
@@ -127,7 +127,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
                 final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
                 final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
                 mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
-                mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity);
+                mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity, true);
             }
             mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
             if(mViewModel.calcDistanceBetweenPoints()){

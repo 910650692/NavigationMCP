@@ -589,7 +589,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         }
         mViewModel.cancelTimer();
         mMsgTopDialog = new MsgTopDialog(
-                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()), TripID.ROUTE_LOW_BATTER);
+                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()), TripID.ROUTE_LOW_BATTER,
+                mViewModel.getMsgDialogTop(), mViewModel.getMsgDialogLeft());
         mMsgTopDialog.setTitle(title);
         mMsgTopDialog.setContent(content);
         mMsgTopDialog.setDialogClickListener(new IBaseDialogClickListener() {

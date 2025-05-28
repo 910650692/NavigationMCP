@@ -71,6 +71,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:paddingVertical="@dimen/dp_22"
             android:maxWidth="@dimen/dp_506">
 
             <com.fy.navi.ui.view.SkinTextView
@@ -85,7 +87,6 @@
                 app:layout_constraintVertical_bias="0.5"
                 android:textSize="@dimen/sp_29"
                 android:textColor="@color/message_center_title"
-                android:layout_marginTop="@dimen/dp_24"
                 />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -96,8 +97,6 @@
                 android:text="@{ViewModel.messageCenterContent}"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:layout_marginTop="@dimen/dp_7"
-                android:layout_marginBottom="@dimen/dp_20"
                 android:textColor="@color/message_center_content"
                 android:visibility="@{ViewModel.messageCenterContentVisibility ? View.VISIBLE : View.GONE}"
                 android:textSize="@dimen/sp_26"/>

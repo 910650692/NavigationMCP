@@ -57,6 +57,10 @@ public class BlAosAdapter {
         return mBlAosApi.queryDynamicInfoEvent(eventId);
     }
 
+    public void sendReqHolidayList(){
+        mBlAosApi.sendReqHolidayList();
+    }
+
     public static final class Helper {
         private static final BlAosAdapter blAos = new BlAosAdapter();
     }

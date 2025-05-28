@@ -271,4 +271,18 @@
     <color name="scene_route_preference_txt_color">#000000</color>
 
     <color name="navi_one_third_screen_icon_color">#ffffff</color>
+
+    <color name="clear_dialog_bg_start">#FFF0F2F8</color>
+    <color name="clear_dialog_bg_end">#FFE1E5EA</color>
+    <color name="clear_dialog_confim_color">#FFFFFF</color>
+    <color name="clear_dialog_cancel_color">#33787880</color>
+
+    <color name="bg_blue_mfc_default">#2461EA</color>
+    <color name="bg_blue_mfc_selected">#6192FF</color>
+    <color name="bg_blue_mfc_pressed">#992461EA</color>
+
+    <color name="bg_gery_mfc_default">#338E97B9</color>
+    <color name="bg_gery_mfc_selected">#33C4C9DB</color>
+    <color name="bg_gery_mfc_pressed">#1E8E97B9</color>
+
 </resources>

@@ -1,6 +1,8 @@
 package com.fy.navi.service.logicpaket.aos;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.TimeUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.service.adapter.aos.BlAosAdapter;
 import com.fy.navi.service.adapter.aos.QueryRestrictedObserver;
 import com.fy.navi.service.adapter.map.MapAdapter;
@@ -14,6 +16,7 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -66,6 +69,10 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
 
     public long updateTrafficEvent(FyTrafficUploadParameter parameter) {
         return mBlAosAdapter.updateTrafficEvent(parameter);
+    }
+
+    public void sendReqHolidayList(){
+        mBlAosAdapter.sendReqHolidayList();
     }
 
     public static AosRestrictedPackage getInstance() {
@@ -121,6 +128,30 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
         for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
             observer.onDynamicPraiseQueryFinished(fyCriticism);
         }
+    }
+
+    @Override
+    public void onRecvAck(ArrayList<String> data) {
+        boolean isHoliday = false;
+        if(!ConvertUtils.isEmpty(data)){
+            //判断当前日期是否是节假日
+            final String currentDay = TimeUtils.convertYMD();
+            Logger.d("onRecvAck---"+currentDay);
+
+            for (int i = 0; i < data.size(); i++) {
+                String holiday = data.get(i).replace("-","");
+                Logger.d("onRecvAck+++"+holiday);
+                if(ConvertUtils.equals(currentDay,holiday)){
+                    isHoliday = true;
+                    break;
+                }
+            }
+        }
+
+        for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
+            observer.isHoliday(isHoliday);
+        }
+
     }
 
     private static final class Helper {

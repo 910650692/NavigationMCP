@@ -33,6 +33,8 @@ public class TimeUtils {
 
     public static final String FORMAT_Y_M_D_H_M = "yyyy-MM-dd HH:mm";
 
+    public static final String FORMAT_H_M = "HH:mm";
+
     public static final String FORMAT_Y_M_D_H_M_S = "yyyy-MM-dd HH:mm:ss";
 
     public static final String FORMAT_Y_M_D_E_H_M_S = "yyyy-MM-dd EE HH:mm:ss";
@@ -45,6 +47,8 @@ public class TimeUtils {
     public static final String FORMAT_YYMMDD = "yyyyMMdd";
 
     private String dateFormat = FORMAT_Y_M_D_H_M_S;
+
+    private String dateFormatHM = FORMAT_H_M;
 
     private static final long MILLSEC = 1000;
 
@@ -601,6 +605,19 @@ public class TimeUtils {
     public String addDate(long millSec) {
         millSec += getCurrentMillSeconds();
         return convertMill2Date(millSec);
+    }
+
+    /**
+     * 获取当前时间加上指定秒数后的时间，并以 HH:mm 格式返回
+     *
+     * @param seconds 要添加的秒数，例如 660 表示加 11 分钟
+     * @return 格式为 "HH:mm" 的时间字符串
+     */
+    public String getCurrentTimePlusSeconds(long seconds) {
+        long currentTimeMillis = getCurrentMillSeconds();
+        long newTimeMillis = currentTimeMillis + (seconds) * 1000L;
+        setDateFormat(FORMAT_H_M); // 设置格式为 HH:mm
+        return simpleDateFormat.format(new Date(newTimeMillis));
     }
 
     public String getTimeStr(long second) {

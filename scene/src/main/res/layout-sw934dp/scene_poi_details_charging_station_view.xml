@@ -68,8 +68,8 @@
                     android:layout_marginTop="@dimen/dp_12"
                     android:textColor="@color/route_charge_param_total_color"
                     android:textSize="@dimen/sp_34"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/poi_charge_fast_occupied"
-                    app:layout_constraintBottom_toBottomOf="@+id/poi_charge_fast_occupied"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_goneMarginStart="@dimen/dp_12"
                     app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_occupied"
                     tools:text="/36" />
 
@@ -79,8 +79,9 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/route_charge_param_total_color"
                     android:textSize="@dimen/sp_26"
+                    app:layout_goneMarginStart="@dimen/dp_12"
                     app:layout_constraintStart_toStartOf="@+id/poi_charge_fast_occupied"
-                    app:layout_constraintTop_toBottomOf="@+id/poi_charge_fast_occupied"
+                    app:layout_constraintTop_toBottomOf="@+id/poi_charge_fast_total"
                     tools:text="21kw.800v" />
 
                 <com.fy.navi.ui.view.SkinImageView
@@ -139,8 +140,8 @@
                     android:layout_marginTop="@dimen/dp_12"
                     android:textColor="@color/route_charge_param_total_color"
                     android:textSize="@dimen/sp_34"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/poi_charge_slow_occupied"
-                    app:layout_constraintBottom_toBottomOf="@+id/poi_charge_slow_occupied"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_goneMarginStart="@dimen/dp_12"
                     app:layout_constraintStart_toEndOf="@+id/poi_charge_slow_occupied"
                     tools:text="/36" />
 
@@ -150,8 +151,9 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/route_charge_param_total_color"
                     android:textSize="@dimen/sp_26"
+                    app:layout_goneMarginStart="@dimen/dp_12"
                     app:layout_constraintStart_toStartOf="@+id/poi_charge_slow_occupied"
-                    app:layout_constraintTop_toBottomOf="@+id/poi_charge_slow_occupied"
+                    app:layout_constraintTop_toBottomOf="@+id/poi_charge_slow_total"
                     tools:text="21kw.800v" />
 
                 <com.fy.navi.ui.view.SkinImageView
@@ -256,6 +258,7 @@
                 android:id="@+id/poi_business_icon"
                 android:layout_width="@dimen/dp_45"
                 android:layout_height="@dimen/dp_45"
+                android:visibility="gone"
                 android:src="@drawable/img_under_the_48" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -274,6 +277,7 @@
             android:id="@+id/poi_phone_icon"
             android:layout_width="@dimen/dp_45"
             android:layout_height="@dimen/dp_45"
+            android:visibility="gone"
             android:src="@drawable/img_under_the_48"
             app:layout_constraintStart_toEndOf="@+id/poi_charge_area_phone"
             app:layout_constraintTop_toTopOf="@+id/poi_charge_area_phone"/>

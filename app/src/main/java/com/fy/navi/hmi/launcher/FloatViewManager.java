@@ -129,7 +129,7 @@ public class FloatViewManager {
     public void processPicture(byte[] bytes) {
         Bitmap orginBitmap = null;
         Bitmap flippedBitmap = null;
-        Bitmap cropBitmap;
+        Bitmap cropBitmap = null;
         try {
             // 注意：这个宽高要和API里面设置的裁剪区域大小一致
             int width = ScreenUtils.Companion.getInstance().getScreenWidth();
@@ -143,7 +143,7 @@ public class FloatViewManager {
             flippedBitmap = Bitmap.createBitmap(orginBitmap, 0, 0, orginBitmap.getWidth(), orginBitmap.getHeight(), matrix, true);
             cropBitmap = Bitmap.createBitmap(flippedBitmap, 310, 195, 750, 400);// 数值来自UI（1.12-11）
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Logger.e(TAG, "processPicture failed:" + e.getMessage());
         } finally {
             if (!ConvertUtils.isNull(orginBitmap)) {
                 orginBitmap.recycle();

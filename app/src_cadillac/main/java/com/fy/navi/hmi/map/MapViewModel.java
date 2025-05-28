@@ -79,6 +79,10 @@ public class MapViewModel extends BaseMapViewModel {
         return false;
     }
 
+    public void addSceneGoHomeCallBack(int type){
+        mModel.addSceneGoHomeCallBack(type);
+    }
+
     private void initMFC() {
         if (!ConvertUtils.isEmpty(mView) && !ConvertUtils.isEmpty(mView.getMapView())) {
             mapView = (MainScreenMapView) mView.getMapView();

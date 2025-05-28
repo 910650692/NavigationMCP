@@ -20,6 +20,7 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
+import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -263,6 +264,15 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      */
     public CompletableFuture<ETAInfo> getTravelTimeFuture(final GeoPoint geoPoint) {
         return mSearchPackage.getTravelTimeFutureIncludeChargeLeft(geoPoint);
+    }
+
+    /**
+     * 更新子点孙节点列表数据
+     * @param childInfo 当前子点
+     * @return 携带孙节点数据的子点
+     */
+    public CompletableFuture<ChildInfo> setGrandChildInfoList(final ChildInfo childInfo) {
+        return mSearchPackage.setGrandChildInfoList(childInfo);
     }
 
     /**

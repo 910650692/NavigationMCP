@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -349,5 +350,9 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
         // 确保返回值为0-控件长度之间的整数
         return Math.max(0, Math.min(mLength, progressLength));
+    }
+
+    public void showOrHideGpsSign(boolean isShow) {
+        mViewBinding.sivGps.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 }

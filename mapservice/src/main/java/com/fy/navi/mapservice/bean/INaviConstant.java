@@ -136,6 +136,7 @@ public interface INaviConstant {
         int GO_HOME = 4;
         int GO_COMPANY = 5;
         int START_NAVIGATION = 6;
+        int SEARCH_RESULT_PAGE = 7; // 搜索结果页
     }
 
     interface GuidePanelStatus {

@@ -3,6 +3,9 @@ package com.fy.navi.service.adapter.signal;
 import android.content.Context;
 
 import com.fy.navi.service.AdapterConfig;
+import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
+import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
+import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
 
 import java.util.Objects;
 
@@ -93,5 +96,65 @@ public final class SignalAdapter {
 
     public void setNaviVolume(int volume) {
         mSignalApi.setNaviVolume(volume);
+    }
+
+    public void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup) {
+        mSignalApi.setSdNavigationStatus(sdNavigationStatusGroup);
+    }
+
+    public void setNavigationOnAdasButtonSettingRequest(int value) {
+        mSignalApi.setNavigationOnAdasButtonSettingRequest(value);
+    }
+
+    public void setNavigationOnAdasInfoNavigationStatus(int value) {
+        mSignalApi.setNavigationOnAdasInfoNavigationStatus(value);
+    }
+
+    public void setDistanceToTrafficJamRoad(int value) {
+        mSignalApi.setDistanceToTrafficJamRoad(value);
+    }
+
+    public void setDistanceToTrafficJamRoadAvailability(int value) {
+        mSignalApi.setDistanceToTrafficJamRoadAvailability(value);
+    }
+
+    public void setDistanceOnTrafficJamRoad(int value) {
+        mSignalApi.setDistanceOnTrafficJamRoad(value);
+    }
+
+    public void setDistanceOnTrafficJamRoadAvailability(int value) {
+        mSignalApi.setDistanceOnTrafficJamRoadAvailability(value);
+    }
+
+    public void setTrafficJamRoadAverageSpeed(int value) {
+        mSignalApi.setTrafficJamRoadAverageSpeed(value);
+    }
+
+    public void setTrafficJamRoadAverageSpeedAvailability(int value) {
+        mSignalApi.setTrafficJamRoadAverageSpeedAvailability(value);
+    }
+
+    public void setRoadConditionGroupFirst(RoadConditionGroupFirst roadConditionGroupFirst) {
+        mSignalApi.setRoadConditionGroupFirst(roadConditionGroupFirst);
+    }
+
+    public void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond) {
+        mSignalApi.setRoadConditionGroupSecond(roadConditionGroupSecond);
+    }
+
+    public void setTotalDistanceFromStartToDestinationOnNavigation(int value) {
+        mSignalApi.setTotalDistanceFromStartToDestinationOnNavigation(value);
+    }
+
+    public void setTotalPredictedTimeFromStartToDestinationOnNavigation(int value) {
+        mSignalApi.setTotalPredictedTimeFromStartToDestinationOnNavigation(value);
+    }
+
+    public void setRemainDistanceToChargingStation(int value) {
+        mSignalApi.setRemainDistanceToChargingStation(value);
+    }
+
+    public void setRemainTimeToChargingStationy(int value) {
+        mSignalApi.setRemainTimeToChargingStationy(value);
     }
 }

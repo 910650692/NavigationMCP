@@ -21,6 +21,10 @@ import com.fy.navi.mapservice.callback.OnSpeedLimitChangeListener;
 import com.fy.navi.mapservice.callback.OnTurnInfoChangeListener;
 import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
+import com.fy.navi.mapservice.common.INaviAutoLocationCallback;
+import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
+import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
+import com.fy.navi.mapservice.common.INaviAutoStatusCallback;
 import com.fy.navi.mapservice.util.Logger;
 
 import java.util.ArrayList;
@@ -126,6 +130,10 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         if (checkBinder()) {
             try {
                 mBinder.addNaviAutoApiCallback(mPkgName, mNaviAutoCallback);
+                mBinder.addNaviAutoLocationCallback(mPkgName, mNaviAutoLocationCallback);
+                mBinder.addNaviAutoRouteCallback(mPkgName, mNaviAutoRouteCallback);
+                mBinder.addNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
+                mBinder.addNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "registerNaviAutoApiCallback error: " + exception.getMessage());
             }
@@ -137,29 +145,36 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         if (checkBinder()) {
             try {
                 mBinder.removeNaviAutoApiCallback(mPkgName, mNaviAutoCallback);
+                mBinder.removeNaviAutoLocationCallback(mPkgName, mNaviAutoLocationCallback);
+                mBinder.removeNaviAutoRouteCallback(mPkgName, mNaviAutoRouteCallback);
+                mBinder.removeNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
+                mBinder.removeNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "unRegisterNaviAutoApiCallback error: " + exception.getMessage());
             }
         }
     }
 
-    private final INaviAutoApiCallback.Stub mNaviAutoCallback = new INaviAutoApiCallback.Stub() {
-
+    //Map状态
+    private final INaviAutoStatusCallback.Stub mNaviApiStatusCallback = new INaviAutoStatusCallback.Stub() {
         @Override
-        public void onNaviStatusChange(final String naviStatus) {
-            Logger.d(TAG, mPkgName + " : onNaviStatusChange: " + naviStatus);
+        public void onNaviStatusChange(final String status) {
+            Logger.d(TAG, mPkgName + " : onNaviStatusChange: " + status);
             for (OnNaviStatusChangeListener listener : mNaviStatusListenerList) {
                 if (null != listener) {
                     try {
-                        listener.onNaviStatusChange(naviStatus);
+                        listener.onNaviStatusChange(status);
                     } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                             IllegalStateException exception) {
                         Logger.e(TAG, "dispatch naviStatus error: " + exception.getMessage());
                     }
                 }
             }
         }
+    };
 
+    //定位信息
+    private final INaviAutoLocationCallback mNaviAutoLocationCallback = new INaviAutoLocationCallback.Stub() {
         @Override
         public void onLocationInfoChange(final String locationInfo) {
             Logger.d(TAG, mPkgName + " : onLocationInfoChange: " + locationInfo);
@@ -168,7 +183,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                     try {
                         listener.onLocationChange(locationInfo);
                     } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                             IllegalStateException exception) {
                         Logger.e(TAG, "dispatch locationInfo error: " + exception.getMessage());
                     }
                 }
@@ -183,13 +198,16 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                     try {
                         listener.onDistrictInfoChange(districtInfo);
                     } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                             IllegalStateException exception) {
                         Logger.e(TAG, "dispatch districtInfo error: " + exception.getMessage());
                     }
                 }
             }
         }
+    };
 
+    //搜索结果
+    private final INaviAutoSearchCallback mNaviAutoSearchCallback = new INaviAutoSearchCallback.Stub() {
         @Override
         public void onSearchFailed(final boolean silent, final int errorCode) {
             Logger.d(TAG, mPkgName + " : onSearchFailed: silent = " + silent + "; errorCode = " + errorCode);
@@ -198,7 +216,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                     try {
                         listener.onSearchError(silent, errorCode);
                     } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                             IllegalStateException exception) {
                         Logger.e(TAG, "dispatch searchFailed error: " + exception.getMessage());
                     }
                 }
@@ -213,7 +231,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                     try {
                         listener.onSearchResult(silent, searchResult);
                     } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                             IllegalStateException exception) {
                         Logger.e(TAG, "dispatch searchResult error: " + exception.getMessage());
                     }
                 }
@@ -228,13 +246,16 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                     try {
                         listener.onReverseGeoSearchResult(taskId, reverseResult);
                     } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                             IllegalStateException exception) {
                         Logger.e(TAG, "dispatch searchResult error: " + exception.getMessage());
                     }
                 }
             }
         }
+    };
 
+    //路线规划结果
+    private final INaviAutoRouteCallback mNaviAutoRouteCallback = new INaviAutoRouteCallback.Stub() {
         @Override
         public void onRoutePlanFailed(final int code, final String errorMsg) {
             Logger.d(TAG, mPkgName + " : onRoutePlanFailed: code = " + code);
@@ -243,7 +264,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                     try {
                         listener.onRoutePlanError(code, errorMsg);
                     } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                             IllegalStateException exception) {
                         Logger.e(TAG, "dispatch routePlanFailed error: " + exception.getMessage());
                     }
                 }
@@ -251,19 +272,23 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onRoutePlanResult(final String routeResult) {
+        public void onRoutePlanResult(final String routeResult) throws RemoteException {
             Logger.d(TAG, mPkgName + " : onRoutePlanResult: " + routeResult);
             for (OnRoutePlanResultListener listener : mRoutePlanListenerList) {
                 if (null != listener) {
                     try {
                         listener.onRoutePlanResult(routeResult);
                     } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                             IllegalStateException exception) {
                         Logger.e(TAG, "dispatch routePlanResult error: " + exception.getMessage());
                     }
                 }
             }
         }
+    };
+
+    //引导信息
+    private final INaviAutoApiCallback.Stub mNaviAutoCallback = new INaviAutoApiCallback.Stub() {
 
         @Override
         public void onPanelData(final int panelDataStatus) {

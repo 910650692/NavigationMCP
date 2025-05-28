@@ -140,6 +140,13 @@ public class BuryConstant {
         public static final String FIRST_HIGHWAY = "高速优先";
         public static final String FIRST_MAIN_ROAD = "大路优先";
         public static final String FAST_SPEED = "时间优先";
+        public static final String AVOID_CONGESTION_AND_LESS_CHARGE = "躲避拥堵+少收费";
+        public static final String AVOID_CONGESTION_AND_NOT_HIGHWAY = "躲避拥堵+不走高速";
+        public static final String AVOID_CONGESTION_AND_FIRST_HIGHWAY = "躲避拥堵+高速优先";
+        public static final String LESS_CHARGE_AND_NOT_HIGHWAY = "少收费+不走高速";
+        public static final String AVOID_CONGESTION_AND_LESS_CHARGE_AND_NOT_HIGHWAY = "躲避拥堵+少收费+不走高速";
+        public static final String AVOID_CONGESTION_AND_FIRST_MAIN_ROAD = "躲避拥堵+大路优先";
+        public static final String AVOID_CONGESTION_AND_FAST_SPEED = "躲避拥堵+时间优先";
     }
 
     public static class SearchType{

@@ -1,28 +1,42 @@
 package com.fy.navi.hmi.splitscreen;
 
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.view.MotionEvent;
+
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
+import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
+import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
+import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
+import com.fy.navi.service.define.navi.NextManeuverEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
+import com.fy.navi.service.logicpaket.map.IEglScreenshotCallBack;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
-import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
+import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseModel;
+
+import java.nio.ByteBuffer;
 
 /**
  * @author: QiuYaWei
@@ -30,34 +44,52 @@ import com.fy.navi.ui.base.BaseModel;
  * Date: 2025/5/21
  * Description: [在这里描述文件功能]
  */
-public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> implements IMapPackageCallback, IGuidanceObserver {
+public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> implements IMapPackageCallback, IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback {
     private static final String TAG = "OneThirdScreenModel";
     private MapPackage mMapPackage;
     private NaviPackage mNaviPackage;
     private PositionPackage mPositionPackage;
     private LayerPackage mLayerPackage;
     private RoutePackage mRoutePackage;
+    private CalibrationPackage mCalibrationPackage;
+    private SettingPackage mSettingPackage;
     private boolean isMapLoadSuccess = false;
     private final MapType MAP_TYPE = MapType.LAUNCHER_DESK_MAP;
     private final String CALLBACK_KEY = "OneThirdScreenModel";
     private final NavistatusAdapter mNaviStatusAdapter;
     private final ImmersiveStatusScene mImmersiveStatusScene;
-    private CrossImageEntity mCrossImageEntity;
+    private boolean mPreviewIsOnShowing = false; // 全览状态，true代表正在全览
+    private CrossImageEntity lastCrossImgEntity;
+    private NextManeuverEntity mNextManeuverEntity;
+
     public OneThirdScreenModel() {
         mMapPackage = MapPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
         mPositionPackage = PositionPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
-        mMapPackage.registerCallback(MAP_TYPE, this);
         mNaviPackage.registerObserver(CALLBACK_KEY, this);
         mNaviStatusAdapter = NavistatusAdapter.getInstance();
         mRoutePackage = RoutePackage.getInstance();
         mImmersiveStatusScene = ImmersiveStatusScene.getInstance();
+        mCalibrationPackage = CalibrationPackage.getInstance();
+        mImmersiveStatusScene.registerCallback(CALLBACK_KEY, this);
+        mSettingPackage = SettingPackage.getInstance();
+        clearCacheInfo();
+        mNextManeuverEntity = new NextManeuverEntity();
+    }
+
+    private void clearCacheInfo() {
+        if (!isOnNavigating()) {
+            mRoutePackage.removeAllRouteInfo(MAP_TYPE);
+            mLayerPackage.setVisibleGuideSignalLight(MAP_TYPE, false);
+            mRoutePackage.clearRouteLine(MAP_TYPE);
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mImmersiveStatusScene.unRegisterCallback(CALLBACK_KEY);
         mNaviPackage.unregisterObserver(CALLBACK_KEY);
         mMapPackage.unRegisterCallback(MAP_TYPE, this);
         isMapLoadSuccess = false;
@@ -67,6 +99,7 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
     public void loadMapView() {
         Logger.i(TAG, "loadMapView:" + isMapLoadSuccess);
         mMapPackage.initMapView(mViewModel.getMapView());
+        mMapPackage.registerCallback(MAP_TYPE, this);
     }
 
     @Override
@@ -75,17 +108,18 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
         Logger.i(TAG, "onMapLoadSuccess:" + mapTypeId.name(), "isMapLoadSuccess:" + isMapLoadSuccess);
         if (mapTypeId == MAP_TYPE && !isMapLoadSuccess) {
             isMapLoadSuccess = true;
-            mMapPackage.setMapCenter(getMapType(), new GeoPoint(mPositionPackage.getLastCarLocation().getLongitude(),
-                    mPositionPackage.getLastCarLocation().getLatitude()));
-            mMapPackage.goToCarPosition(getMapType());
-            mMapPackage.setMapCenterInScreen(getMapType(), mViewModel.getLogoPosition()[0], mViewModel.getLogoPosition()[1]);
+            gotoCarPosition();
             mLayerPackage.setDefaultCarMode(getMapType());
         }
     }
 
     @Override
+    public void onManeuverInfo(final NaviManeuverInfo info) {
+        mViewModel.onManeuverInfo(info);
+    }
+
+    @Override
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
-        Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo = " + naviTmcInfo.toString());
         mNaviPackage.setTmcData(naviTmcInfo);
         mViewModel.onUpdateTMCLightBar(naviTmcInfo, false);
     }
@@ -97,12 +131,6 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
     }
 
     @Override
-    public void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
-        IGuidanceObserver.super.onCrossImageInfo(isShowImage, naviImageInfo);
-        mViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
-    }
-
-    @Override
     public void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
         IGuidanceObserver.super.onLaneInfo(isShowLane, laneInfoEntity);
         mViewModel.onLaneInfo(isShowLane, laneInfoEntity);
@@ -111,12 +139,75 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
     @Override
     public void onNaviStop() {
         IGuidanceObserver.super.onNaviStop();
+        Logger.i(TAG, "onNaviStop");
+        clearCacheInfo();
         mViewModel.onNaviStop();
+        openOrCloseImmersive(true);
+        gotoCarPosition();
+    }
+
+    // 回自车位
+    private void gotoCarPosition() {
+        mMapPackage.setMapCenter(getMapType(), new GeoPoint(mPositionPackage.getLastCarLocation().getLongitude(),
+                mPositionPackage.getLastCarLocation().getLatitude()));
+        mMapPackage.goToCarPosition(getMapType());
+        mMapPackage.setMapCenterInScreen(getMapType(), mViewModel.getLogoPosition()[0], mViewModel.getLogoPosition()[1]);
     }
 
     @Override
     public void onMapInitSuccess(MapType mapTypeId, boolean success) {
         IMapPackageCallback.super.onMapInitSuccess(mapTypeId, success);
+    }
+
+    @Override
+    public void onMapClickPoi(final MapType mapTypeId, final PoiInfoEntity poiInfo) {
+        Logger.d(TAG, "onMapClickPoi:" + mapTypeId.name());
+        if (mapTypeId == MAP_TYPE) {
+            mViewModel.startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
+        }
+    }
+
+    @Override
+    public void onReversePoiClick(final MapType mapTypeId, final PoiInfoEntity poiInfo) {
+        Logger.d(TAG, "onReversePoiClick:" + mapTypeId.name());
+        if (mapTypeId == MAP_TYPE) {
+            mViewModel.startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
+        }
+    }
+
+    @Override
+    public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
+        IMapPackageCallback.super.onMapTouchEvent(mapTypeId, touchEvent);
+        Logger.i(TAG, "onMapTouchEvent:" + mapTypeId.name(), "isOnNavigating:" + isOnNavigating(), "isOnImmersive:" + isOnImmersive());
+        openOrCloseImmersive(false);
+    }
+
+    @Override
+    public void updateNextIcon(int resource, BitmapDrawable drawable) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextIconResource(resource);
+            mNextManeuverEntity.setNextIconDrawable(drawable);
+        }
+    }
+
+    @Override
+    public void updateNextStatus(boolean isVisible, boolean isOffLine) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextManeuverVisible(isVisible);
+            mNextManeuverEntity.setNextManeuverOffLine(isOffLine);
+        }
+    }
+
+    @Override
+    public NextManeuverEntity getNextManeuverEntity() {
+        return mNextManeuverEntity;
+    }
+
+    @Override
+    public void updateNextText(String text) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextText(text);
+        }
     }
 
     private MapType getMapType() {
@@ -134,7 +225,7 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
      * @return 是否处于沉浸态
      */
     public boolean isOnImmersive() {
-        return ImmersiveStatusScene.getInstance().getCurrentImersiveStatus(MAP_TYPE) == ImersiveStatus.IMERSIVE;
+        return mImmersiveStatusScene.getCurrentImersiveStatus(MAP_TYPE) == ImersiveStatus.IMERSIVE;
     }
 
     public void stopNavi() {
@@ -142,7 +233,24 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
     }
 
     public void showPreview() {
-        OpenApiHelper.enterPreview(MAP_TYPE);
+        Logger.i(TAG, "showPreview");
+        mPreviewIsOnShowing = true;
+        openOrCloseImmersive(false);
+        mNaviPackage.setPreviewStatus(true);
+        mLayerPackage.setFollowMode(MAP_TYPE, false);
+        mLayerPackage.setPreviewMode(MAP_TYPE, true);
+        mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+        mRoutePackage.oneThirdScreeShowPreview(MAP_TYPE, getPreviewRect());
+    }
+
+    public void closePreview() {
+        mPreviewIsOnShowing = false;
+        openOrCloseImmersive(true);
+        mNaviPackage.setPreviewStatus(false);
+        mLayerPackage.setFollowMode(MAP_TYPE, true);
+        mLayerPackage.setPreviewMode(MAP_TYPE, false);
+        mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, false);
+        mMapPackage.exitPreview(MAP_TYPE);
     }
 
     public void muteOrUnMute() {
@@ -153,12 +261,74 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
         return mNaviPackage.isMute();
     }
 
-    public void naviContinue() {
-        mImmersiveStatusScene.setImmersiveStatus(MAP_TYPE, ImersiveStatus.IMERSIVE);
-        OpenApiHelper.exitPreview(MAP_TYPE);
+    public int getPowerType() {
+        return mCalibrationPackage.powerType();
     }
 
-    public void setRoadCrossRect(Rect rect) {
+    @Override
+    public void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
+        IGuidanceObserver.super.onCrossImageInfo(isShowImage, naviImageInfo);
+        mViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
+        if (isShowImage) {
+            LayerItemCrossEntity entity = new LayerItemCrossEntity();
+            entity.setCrossImageEntity(naviImageInfo);
+            final boolean isSuccess = mLayerPackage.showCross(MAP_TYPE, entity);
+            mViewModel.showNextManeuver(isSuccess, mNextManeuverEntity);
+        } else {
+            if (!ConvertUtils.isNull(lastCrossImgEntity)) {
+                mLayerPackage.hideCross(MAP_TYPE, lastCrossImgEntity.getType());
+            }
+        }
+        lastCrossImgEntity = naviImageInfo;
+    }
+
+    @Override
+    public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus lastImersiveStatus) {
+        Logger.i(TAG, "onImmersiveStatusChange", "mapTypeId:" + mapTypeId.name(), "lastImersiveStatus:" + lastImersiveStatus.name());
+        if (mapTypeId == MAP_TYPE) {
+            mViewModel.onImmersiveStatusChange(lastImersiveStatus);
+        }
+    }
+
+    public void openOrCloseImmersive(boolean isOpenImmersive) {
+        Logger.i(TAG, "openOrCloseImmersive:" + isOpenImmersive, "mPreviewIsOnShowing:" + mPreviewIsOnShowing);
+        final ImersiveStatus status = isOpenImmersive ? ImersiveStatus.IMERSIVE : ImersiveStatus.TOUCH;
+        if (mImmersiveStatusScene.getCurrentImersiveStatus(MAP_TYPE) != status) {
+            mImmersiveStatusScene.setImmersiveStatus(MAP_TYPE, status);
+        }
+        afterImmersiveChanged();
+    }
+
+    /***
+     * 如果切换到沉浸态且处于全览，那么要退出全览
+     */
+    private void afterImmersiveChanged() {
+        Logger.i(TAG, "currentImmersive:" + isOnImmersive(), "mPreviewIsOnShowing:" + mPreviewIsOnShowing);
+        // 如果进入沉浸态且此刻正在全览，那么主动关闭全览
+        if (isOnImmersive() && mPreviewIsOnShowing) {
+            closePreview();
+        }
+        // 触摸态关闭锁住比例尺
+        if (!isOnImmersive() && isOnNavigating()) {
+            mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+            mLayerPackage.setFollowMode(MAP_TYPE, false);
+        }
+        // 导航中沉浸态开启自动比例尺
+        if (isOnImmersive() && isOnNavigating()) {
+            mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, false);
+            mLayerPackage.setFollowMode(MAP_TYPE, true);
+        }
+    }
+
+    public Rect getPreviewRect() {
+        return mViewModel.getPreviewRect();
+    }
+
+    public NaviEtaInfo getCurrentNaviEtaInfo() {
+        return mNaviPackage.getCurrentNaviEtaInfo();
+    }
+
+    public void setCrossRect(Rect rect) {
         mNaviPackage.setRoadCrossRect(MAP_TYPE, rect);
     }
 }

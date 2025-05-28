@@ -1,6 +1,10 @@
 package com.fy.navi.mapservice.common;
 
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
+import com.fy.navi.mapservice.common.INaviAutoLocationCallback;
+import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
+import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
+import com.fy.navi.mapservice.common.INaviAutoStatusCallback;
 import com.fy.navi.mapservice.bean.common.BaseGeoPoint;
 import com.fy.navi.mapservice.bean.common.BaseSearchPoi;
 import com.fy.navi.mapservice.bean.common.BaseTurnInfo;
@@ -42,6 +46,26 @@ interface INaviAutoApiBinder {
     void openSrTbt(String pkgName, boolean open);
 
     boolean stopNavi(String pkgName);
+
+    void addNaviAutoLocationCallback(String pkgName, INaviAutoLocationCallback naviAutoLocationCallback);
+
+    void removeNaviAutoLocationCallback(String pkgName, INaviAutoLocationCallback naviAutoLocationCallback);
+
+    void addNaviAutoRouteCallback(String pkgName, INaviAutoRouteCallback naviAutoRouteCallback);
+
+    void removeNaviAutoRouteCallback(String pkgName, INaviAutoRouteCallback naviAutoRouteCallback);
+
+    void addNaviAutoSearchCallback(String pkgName, INaviAutoSearchCallback naviAutoSearchCallback);
+
+    void removeNaviAutoSearchCallback(String pkgName, INaviAutoSearchCallback naviAutoSearchCallback);
+
+    void addNaviAutoStatusCallback(String pkgName, INaviAutoStatusCallback naviAutoStatusCallback);
+
+    void removeNaviAutoStatusCallback(String pkgName, INaviAutoStatusCallback naviAutoStatusCallback);
+
+
+
+
 
 
 }

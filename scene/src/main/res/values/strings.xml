@@ -9,6 +9,10 @@
 
     <!-- 主图相关 -->
     <string name="main_level_scale">200米</string>
+    <string name="main_go_home">回家</string>
+    <string name="main_go_company">去公司</string>
+    <string name="main_go_home_text">回家%s</string>
+    <string name="main_go_company_text">预计%s到达</string>
 
     <!-- 搜索相关 -->
     <string name="main_search_hint">搜索目的地</string>

@@ -83,7 +83,7 @@ public class EngineAdapterImpl implements IEngineApi {
         final int initBaseLibsResult = initEngineParam();
         if (!ConvertUtils.equals(0, initBaseLibsResult)) {
             onEngineObserver(10004);
-        }else {
+        } else {
             onEngineObserver(10005);
         }
     }
@@ -256,9 +256,15 @@ public class EngineAdapterImpl implements IEngineApi {
         baseInitParam.userDataPath = GBLCacheFilePath.USER_CACHE_PATH;
         baseInitParam.channelName = mChanelName;
         baseInitParam.setIPlatformInterface(PLAT_FORM_INTERFACE);
-
-        FileUtils.getInstance().createDir(baseInitParam.logPath);
-        Logger.i(TAG, "create log file path", baseInitParam.logPath);
+        if (FileUtils.getInstance().checkFileDir(GBLCacheFilePath.GM_LOG_ROOT_PATH) &&
+                FileUtils.getInstance().setFullPermissions(GBLCacheFilePath.GM_LOG_ROOT_PATH)) {
+            baseInitParam.logPath = GBLCacheFilePath.BLS_LOG_DATA;
+        } else {
+            baseInitParam.logPath = GBLCacheFilePath.BLS_LOG;
+            FileUtils.getInstance().setFullPermissions(GBLCacheFilePath.GBL_MAP);
+        }
+        boolean dir = FileUtils.getInstance().createDir(baseInitParam.logPath);
+        Logger.i(TAG, "create log file path", baseInitParam.logPath + ",dir：" + dir);
         final int result = ServiceMgr.getServiceMgrInstance().initBaseLibs(baseInitParam, AppContext.getInstance().getMApplication());
         Logger.i(TAG, "initEngineParam result", result);
         return result;

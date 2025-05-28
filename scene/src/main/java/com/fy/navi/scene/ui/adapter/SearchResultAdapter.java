@@ -281,8 +281,14 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      * @param resultHolder holder
      */
     private void refreshScenicSpotView(final ResultHolder resultHolder) {
-        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.VISIBLE);
-        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.VISIBLE);
+        final int pointTypeCode = mSearchPackage.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
+        if (pointTypeCode == AutoMapConstant.PointTypeCode.OTHERS) {
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.GONE);
+        } else {
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.VISIBLE);
+        }
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(View.VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setAdapter(null);

@@ -27,4 +27,7 @@ public interface IAosRestrictedObserver {
     default void  onDynamicPraiseQueryFinished(FyCriticism fyCriticism) {
 
     }
+
+    default void isHoliday(boolean holiday){
+    }
 }

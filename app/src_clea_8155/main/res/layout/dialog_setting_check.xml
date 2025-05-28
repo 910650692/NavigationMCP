@@ -72,6 +72,7 @@
                     android:text="@string/favorite_item_delete"
                     android:background="@drawable/bg_shape_setting_dialog_confirm"
                     android:textColor="@color/setting_dialog_confirm"
+                    android:stateListAnimator="@null"
                     android:textSize="@dimen/sp_29" />
 
                 <com.fy.navi.ui.view.SkinView
@@ -89,6 +90,7 @@
                     android:background="@drawable/bg_shape_setting_dialog_cancel"
                     android:text="@string/permission_quest_dialog_cancel"
                     android:textColor="@color/setting_dialog_cancel"
+                    android:stateListAnimator="@null"
                     android:textSize="@dimen/sp_29" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>

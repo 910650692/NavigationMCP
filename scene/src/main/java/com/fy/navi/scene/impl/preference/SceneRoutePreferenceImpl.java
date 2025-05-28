@@ -183,24 +183,31 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView>
         }
         mLastRoutePreferenceID = mRoutePreferenceID;
 
-        sendBuryPointForSelectingRP(mode, source);
+        sendBuryPointForSelectingRP(mRoutePreferenceID, source);
     }
 
     @HookMethod()
-    private void sendBuryPointForSelectingRP(String mode, int source) {
+    private void sendBuryPointForSelectingRP(RoutePreferenceID mode, int source) {
         String eventName = switch (source) {
             case 0 -> BuryConstant.EventName.AMAP_SETTING_ROUTEPREFERENCE;
             case 1 -> BuryConstant.EventName.AMAP_ROUTE_PREFERENCE;
             default -> "";
         };
         String routePreference = switch (mode) {
-            case RECOMMEND -> BuryConstant.RoutePreference.RECOMMEND;
-            case AVOIDCONGESTION -> BuryConstant.RoutePreference.AVOID_CONGESTION;
-            case LESSCHARGE -> BuryConstant.RoutePreference.LESS_CHARGE;
-            case NOTHIGHWAY -> BuryConstant.RoutePreference.NOT_HIGHWAY;
-            case FIRSTHIGHWAY -> BuryConstant.RoutePreference.FIRST_HIGHWAY;
-            case FIRSTMAINROAD -> BuryConstant.RoutePreference.FIRST_MAIN_ROAD;
-            case FASTESTSPEED -> BuryConstant.RoutePreference.FAST_SPEED;
+            case PREFERENCE_RECOMMEND -> BuryConstant.RoutePreference.RECOMMEND;
+            case PREFERENCE_AVOIDCONGESTION -> BuryConstant.RoutePreference.AVOID_CONGESTION;
+            case PREFERENCE_LESSCHARGE -> BuryConstant.RoutePreference.LESS_CHARGE;
+            case PREFERENCE_NOTHIGHWAY -> BuryConstant.RoutePreference.NOT_HIGHWAY;
+            case PREFERENCE_FIRSTHIGHWAY -> BuryConstant.RoutePreference.FIRST_HIGHWAY;
+            case PREFERENCE_FIRSTMAINROAD -> BuryConstant.RoutePreference.FIRST_MAIN_ROAD;
+            case PREFERENCE_FASTESTSPEED -> BuryConstant.RoutePreference.FAST_SPEED;
+            case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE -> BuryConstant.RoutePreference.AVOID_CONGESTION_AND_LESS_CHARGE;
+            case PREFERENCE_AVOIDCONGESTION_AND_NOTHIGHWAY -> BuryConstant.RoutePreference.AVOID_CONGESTION_AND_NOT_HIGHWAY;
+            case PREFERENCE_AVOIDCONGESTION_AND_FIRSTHIGHWAY -> BuryConstant.RoutePreference.AVOID_CONGESTION_AND_FIRST_HIGHWAY;
+            case PREFERENCE_LESSCHARGE_AND_NOTHIGHWAY -> BuryConstant.RoutePreference.LESS_CHARGE_AND_NOT_HIGHWAY;
+            case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE_AND_NOTHIGHWAY -> BuryConstant.RoutePreference.AVOID_CONGESTION_AND_LESS_CHARGE_AND_NOT_HIGHWAY;
+            case PREFERENCE_AVOIDCONGESTION_AND_FIRSTMAINROAD -> BuryConstant.RoutePreference.AVOID_CONGESTION_AND_FIRST_MAIN_ROAD;
+            case PREFERENCE_AVOIDCONGESTION_AND_FASTESTSPEED -> BuryConstant.RoutePreference.AVOID_CONGESTION_AND_FAST_SPEED;
             default -> "";
         };
         BuryPointController.getInstance().setEventName(eventName);

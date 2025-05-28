@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,10 +22,10 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
-import com.fy.navi.hmi.launcher.LauncherWindowService;
-import com.fy.navi.hmi.test.TestWindow;
+import com.fy.navi.hmi.hud.HudMapManager;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.dialog.MsgTopDialog;
+import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
@@ -36,9 +35,9 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.route.RouteLightBarItem;
+import com.fy.navi.service.define.route.RouteTMCParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.account.AccessTokenParam;
-import com.fy.navi.hmi.hud.HudMapManager;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.FragmentIntent;
@@ -55,8 +54,6 @@ import java.util.List;
  */
 public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> {
     private static final String TAG = "MapActivity";
-    private long lastClickTime = 0;
-    private int testClickNum = 0;
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
     private MainScreenMapView mapView;
     private MsgTopDialog mMsgTopDialog;
@@ -120,9 +117,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
-    public void onInitView() {//,mBinding.hudMapview
+    public void onInitView() {
         mViewModel.loadMapView(mBinding.mainMapview);
-//        HudMapManager.getInstance().init(mBinding.hudMapview);
+        //初始化HudMapManager
+        HudMapManager.getInstance().init();
         // 给限行设置点击事件
         mBinding.includeLimit.setViewModel(mViewModel);
         mBinding.cruiseLayout.setViewModel(mViewModel);
@@ -134,11 +132,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mBinding.skIvBasicRouting.setImageResource(R.drawable.img_basic_ic_gas_charging);
         }
         mBinding.includeMessageCenter.setViewModel(mViewModel);
-        initTestWindow();
         mViewModel.startListenMsg();
         mViewModel.offlineMap15Day();
         mViewModel.offlineMap45Day();
         mViewModel.checkPopGuideLogin();
+        addSceneGoHomeCallBack();
     }
 
     @Override
@@ -174,25 +172,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void showParkingView() {
         mViewModel.showParkingView();
-    }
-
-    private void initTestWindow() {
-        mBinding.testButton.setOnClickListener(v -> {
-            long now = System.currentTimeMillis();
-            if (now - lastClickTime < 500) {
-                lastClickTime = now;
-                if (testClickNum >= 6) {
-                    testClickNum = 0;
-                } else {
-                    testClickNum++;
-                    return;
-                }
-            } else {
-                lastClickTime = now;
-                return;
-            }
-            TestWindow.getInstance().show(this);
-        });
     }
 
     // 更新当前的比例尺数值
@@ -357,12 +336,28 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         );
     }
 
+
+
+    public void setNdGoHomeView(RouteTMCParam routeTMCParam){
+        mBinding.sceneGoHome.setNdGoHomeView(routeTMCParam);
+    }
+
+    private void addSceneGoHomeCallBack() {
+        mBinding.sceneGoHome.setCallback(new ISceneCallback() {
+            @Override
+            public void clickGoHomeBtn(int type) {
+                mViewModel.addSceneGoHomeCallBack(type);
+            }
+        });
+    }
+
     public void showTripDialog(String title,String content){
         if(!ConvertUtils.isEmpty(mMsgTopDialog) && mMsgTopDialog.isShowing()){
             return;
         }
         mMsgTopDialog = new MsgTopDialog(
-                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()), TripID.ROUTE_LOW_BATTER);
+                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()), TripID.ROUTE_LOW_BATTER,
+                41, 1097);
         mMsgTopDialog.setTitle(title);
         mMsgTopDialog.setContent(content);
         mMsgTopDialog.setDialogClickListener(new IBaseDialogClickListener() {

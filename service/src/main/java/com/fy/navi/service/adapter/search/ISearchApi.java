@@ -3,6 +3,7 @@ package com.fy.navi.service.adapter.search;
 import android.util.Pair;
 
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 
@@ -165,6 +166,14 @@ public interface ISearchApi {
      * @return CompletableFuture
      */
     CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(SearchRequestParameter searchRequestParameterBuilder);
+
+    /**
+     * 获取当前子点的孙节点
+     * @param searchRequestParameterBuilder SearchRequestParameter
+     * @param childInfo 当前子点
+     * @return CompletableFuture
+     */
+    CompletableFuture<ChildInfo> setGrandChildInfoList(SearchRequestParameter searchRequestParameterBuilder, ChildInfo childInfo);
 
     void calcTip(Long lastTime, Long travelTime);
 }

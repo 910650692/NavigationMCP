@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.favorite.FavoriteRenameViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:clickable="true"
+        android:padding="@dimen/dp_34">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/setting_close"
+            clickCommand="@{ViewModel.mCloseFragment}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_22"
+            android:layout_marginTop="@dimen/dp_32"
+            android:src="@drawable/img_setting_close"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_34"
+            android:text="@string/favorite_item_rename"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinEditText
+            android:id="@+id/setting_favorite_rename"
+            android:layout_width="@dimen/dp_798"
+            android:layout_height="@dimen/dp_86"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_126"
+            android:background="@drawable/bg_favorite_rename_edittext"
+            android:gravity="center_vertical"
+            android:hint="@string/favorite_item_rename_hint"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="@dimen/dp_27"
+            android:paddingEnd="@dimen/dp_100"
+            android:textColor="@color/black"
+            android:textColorHint="@color/color_black_70"
+            android:textCursorDrawable="@drawable/shape_edittext_cursor"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            clickCommand="@{ViewModel.mRenameFinish}"
+            android:layout_width="@dimen/dp_155"
+            android:layout_height="@dimen/dp_76"
+            android:layout_marginEnd="@dimen/dp_34"
+            android:background="@drawable/bg_setting_preference_select"
+            android:gravity="center"
+            android:text="@string/favorite_item_rename_confirm"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintBottom_toBottomOf="@+id/setting_favorite_rename"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/setting_favorite_rename" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_22"
+            android:src="@drawable/img_off"
+            app:layout_constraintBottom_toBottomOf="@+id/setting_favorite_rename"
+            app:layout_constraintEnd_toEndOf="@+id/setting_favorite_rename"
+            app:layout_constraintTop_toTopOf="@+id/setting_favorite_rename" />
+
+        <com.fy.navi.ui.view.SkinView
+            clickCommand="@{ViewModel.mClearName}"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintBottom_toBottomOf="@+id/setting_favorite_rename"
+            app:layout_constraintEnd_toEndOf="@+id/setting_favorite_rename"
+            app:layout_constraintTop_toTopOf="@+id/setting_favorite_rename"/>
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

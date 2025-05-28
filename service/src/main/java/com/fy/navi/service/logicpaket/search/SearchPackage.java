@@ -36,6 +36,7 @@ import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.ConnectorInfoItem;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.EquipmentInfo;
@@ -980,6 +981,33 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
 
         return mSearchAdapter.getTravelTimeFutureIncludeChargeLeft(requestParameterBuilder);
     }
+
+    /**
+     * 更新子点孙节点列表数据
+     * @param childInfo 当前子点
+     * @return 赋值孙节点数据后的子点
+     */
+    public CompletableFuture<ChildInfo> setGrandChildInfoList(final ChildInfo childInfo) {
+        if (childInfo == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "childInfo is null");
+            return null;
+        }
+
+        final GeoPoint userLoc = new GeoPoint();
+        userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "pid is: " + childInfo.getPoiId());
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .poiId(childInfo.getPoiId())
+                .queryType(AutoMapConstant.SearchQueryType.ID)
+                .searchType(AutoMapConstant.SearchType.POI_SEARCH)
+                .userLoc(userLoc)
+                .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
+                .build();
+        return mSearchAdapter.setGrandChildInfoList(requestParameterBuilder, childInfo);
+    }
+
+
 
     /**
      *

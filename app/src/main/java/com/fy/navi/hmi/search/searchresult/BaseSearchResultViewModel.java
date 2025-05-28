@@ -62,6 +62,13 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     }
 
     /**
+     * 路线变化回调
+     */
+    public void onRouteSelected() {
+        mView.onRouteSelected();
+    }
+
+    /**
      * 静默搜索回调
      * @param searchResultEntity 搜索结果实体类
      */
@@ -108,6 +115,13 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
      */
     public void saveData(final int taskId, final SearchResultEntity searchResultEntity) {
         mModel.saveData(taskId, searchResultEntity);
+    }
+
+    /**
+     * 注册路线变化回调
+     */
+    public void registerRouteCallback() {
+        mModel.registerRouteCallback();
     }
 
     public void notifyNetSearchResult(int taskId,BaseRep result){

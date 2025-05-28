@@ -24,4 +24,8 @@ public class MapViewModel extends BaseMapViewModel {
     public boolean showNdGoHomeView(){
         return false;
     }
+
+    public void addSceneGoHomeCallBack(int type){
+        mModel.addSceneGoHomeCallBack(type);
+    }
 }

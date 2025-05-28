@@ -7,6 +7,8 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.aosclient.BLAosService;
 import com.autonavi.gbl.aosclient.model.GCoord3DDouble;
+import com.autonavi.gbl.aosclient.model.GHolidayListRequestParam;
+import com.autonavi.gbl.aosclient.model.GHolidayListResponseParam;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaDataRes;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaRequestParam;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaResponseParam;
@@ -19,6 +21,7 @@ import com.autonavi.gbl.aosclient.model.GTrafficEventDetailRequestParam;
 import com.autonavi.gbl.aosclient.model.GTrafficEventDetailResponseParam;
 import com.autonavi.gbl.aosclient.model.GWsDynamicInfoEventPraiseStampStatusQueryRequestParam;
 import com.autonavi.gbl.aosclient.model.GWsDynamicInfoEventPraiseStampStatusQueryResponseParam;
+import com.autonavi.gbl.aosclient.observer.ICallBackHolidayList;
 import com.autonavi.gbl.aosclient.observer.ICallBackReStrictedArea;
 import com.autonavi.gbl.aosclient.observer.ICallBackTrafficEventComment;
 import com.autonavi.gbl.aosclient.observer.ICallBackTrafficEventDetail;
@@ -45,7 +48,8 @@ import java.util.List;
  * @Author lww
  * @date 2025/2/6
  */
-public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICallBackTrafficEventDetail, ICallBackTrafficEventComment, ICallBackWsDynamicInfoEventPraiseStampStatusQuery {
+public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICallBackTrafficEventDetail, ICallBackTrafficEventComment, ICallBackWsDynamicInfoEventPraiseStampStatusQuery
+, ICallBackHolidayList {
     private static final String TAG = BlAosAdapterImpl.class.getSimpleName();
     private BLAosService mBLAosService;
     private final Hashtable<String, QueryRestrictedObserver> restrictedObserver;
@@ -259,6 +263,20 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
         for (QueryRestrictedObserver resultObserver : restrictedObserver.values()) {
             if (resultObserver == null) continue;
             resultObserver.onDynamicPraiseQueryFinished(fyCriticism);
+        }
+    }
+
+    @Override
+    public void sendReqHolidayList(){
+        GHolidayListRequestParam param = new GHolidayListRequestParam();
+        mBLAosService.sendReqHolidayList(param,this);
+    }
+
+    @Override
+    public void onRecvAck(GHolidayListResponseParam gHolidayListResponseParam) {
+        for (QueryRestrictedObserver resultObserver : restrictedObserver.values()) {
+            if (resultObserver == null) continue;
+            resultObserver.onRecvAck(gHolidayListResponseParam.lstHoliday);
         }
     }
 }

@@ -14,9 +14,7 @@ public interface AutoMapConstant {
     String AUTO_MAP_PATH = SD_PATH + "AutoMap" + File.separator;
     /*** 高德地图文件缓存位置 sdcard/Android/data/your_package/files/AutoMap/Gbl/**/
     String GBL_MAP = AUTO_MAP_PATH + "Gbl" + File.separator;
-    // TODO: 2025/2/28 定位测试用
-//    String POS = FileUtils.APP_FILE_PATH + "Gbl" + File.separator;
-
+    String GM_LOG_ROOT_PATH = "/data/gmlogger/proclog/";
     float MAP_ZOOM_LEVEL_MAX = 20F;
     float MAP_ZOOM_LEVEL_MIN = 3F;
     float MAP_ZOOM_LEVEL_CHANGE_FLAG = 1F;
@@ -353,7 +351,7 @@ public interface AutoMapConstant {
         String IDP_USER_ID = "com.patac.hmi.account.idpUserId";
         String NICK_NAME = "com.patac.hmi.account.nickName";
         String PHONE = "com.patac.hmi.account.phone";
-        String ACCOUNT= "com.patac.hmi.account";
+        String ACCOUNT = "com.patac.hmi.account";
     }
 
     @interface AccountLogin {

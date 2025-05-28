@@ -32,6 +32,9 @@ public class MapViewModel extends BaseMapViewModel {
         return true;
     }
 
+    public void addSceneGoHomeCallBack(int type){
+        mModel.addSceneGoHomeCallBack(type);
+    }
 
     @Override
     void setScreenType(int right) {

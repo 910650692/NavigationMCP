@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.R;
@@ -173,7 +174,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         });
 
         holder.mResultItemBinding.poiToNavi.setOnClickListener(v -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 算路/添加常用地址/添加收到的点");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click " + GsonUtils.toJson(mPoiEntities.get(position)));
             if (mOnItemClickListener != null) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click1 算路/添加常用地址/添加收到的点");
                 mOnItemClickListener.onNaviClick(position, mPoiEntities.get(position));

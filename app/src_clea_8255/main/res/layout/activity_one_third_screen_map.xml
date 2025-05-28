@@ -34,6 +34,7 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_home"
+                clickCommand="@{ViewModel.goHome}"
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
                 android:layout_marginStart="@dimen/dp_47"
@@ -44,6 +45,7 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_bus"
+                clickCommand="@{ViewModel.goCompany}"
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
                 android:layout_marginStart="@dimen/dp_62"
@@ -54,6 +56,7 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_search"
+                clickCommand="@{ViewModel.doSearch}"
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
                 android:layout_marginStart="@dimen/dp_62"
@@ -113,7 +116,7 @@
                 android:id="@+id/iv_station"
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
-                android:src="@drawable/img_home_gas_station"
+                android:src="@{ViewModel.mIsGasCar ? @drawable/img_home_gas_station : @drawable/img_basic_ic_gas_charging}"
                 app:layout_constraintBottom_toTopOf="@id/tv_stationDesc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +127,7 @@
                 android:id="@+id/tv_stationDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/navi_gas_station"
+                android:text="@{ViewModel.mIsGasCar ? @string/st_quick_search_station : @string/st_quick_search_charge}"
                 android:textColor="@color/main_route_home_text"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -213,7 +216,7 @@
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_overview_switch"
                 style="@style/style_one_third_navi_action_text"
-                android:text="@string/navi_overview_switch"
+                android:text="@{ViewModel.mIsOnShowPreview  ? @string/navi_overview_out : @string/navi_overview_switch}"
                 app:layout_constraintBottom_toBottomOf="@id/view_switch_preview"
                 app:layout_constraintEnd_toEndOf="@id/view_switch_preview"
                 app:layout_constraintStart_toStartOf="@id/view_switch_preview"
@@ -248,7 +251,7 @@
             android:layout_marginStart="@dimen/dp_m_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
-            android:visibility="@{ViewModel.mNaviActionBarVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="@{ViewModel.mIsOnTouch ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/sl_zhiJia"
             app:layout_constraintStart_toEndOf="@id/scl_guidance_action"
             app:layout_constraintTop_toTopOf="@id/sl_zhiJia">
@@ -279,38 +282,88 @@
             android:id="@+id/ll_guidance_board"
             android:layout_width="@dimen/dp_613"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_55"
-            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155_transparent"
             android:orientation="vertical"
             android:padding="@dimen/dp_34"
-            android:visibility="@{ViewModel.mNaviActionBarVisibility ? View.VISIBLE : View.GONE}">
+            android:visibility="@{ViewModel.mNaviActionBarVisibility ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <!--tbt-->
             <com.fy.navi.scene.ui.navi.SceneNaviTbtView
                 android:id="@+id/scene_navi_tbt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_navi_tbt_top"
                 android:minHeight="@dimen/dp_1" />
 
             <!--路口大图-->
-            <com.fy.navi.scene.ui.navi.SceneNaviCrossImageView
-                android:id="@+id/cross_image_view"
+            <com.fy.navi.ui.view.SkinFrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_306"
-                android:visibility="@{ViewModel.mCrossImageVisibility?View.VISIBLE:View.GONE}" />
+                android:layout_height="@dimen/one_third_screen_cross_pic_height"
+                android:background="@color/transparent"
+                android:visibility="@{ViewModel.mCrossImageVisibility?View.VISIBLE:View.GONE}">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/cross_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY" />
+
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/next_maneuver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:background="@drawable/bg_navi_com"
+                    android:paddingVertical="@dimen/dp_11"
+                    android:visibility="@{ViewModel.mNextManeuverVisible ? View.VISIBLE : View.GONE}">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/stv_text_next"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_24"
+                        android:text="@string/navi_normal_tip"
+                        android:textColor="@color/navi_color_000000_70"
+                        android:textSize="@dimen/sp_34"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="随后" />
+
+                    <com.fy.navi.ui.view.SkinImageView
+                        android:id="@+id/siv_hud_sou31"
+                        android:layout_width="@dimen/dp_50"
+                        android:layout_height="@dimen/dp_50"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:layout_marginEnd="@dimen/dp_24"
+                        android:alpha="0.6"
+                        android:background="@drawable/img_tbt_hud_sou3_day"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/stv_text_next"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+
+            </com.fy.navi.ui.view.SkinFrameLayout>
 
             <!--eta信息-->
             <com.fy.navi.scene.ui.navi.SceneNaviEtaView
                 android:id="@+id/scene_navi_eta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_navi_tbt_middle"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/scene_navi_cross_image" />
             <!--路况条-->
             <com.fy.navi.scene.ui.navi.SceneNaviTmcView
                 android:id="@+id/scene_navi_tmc"
-                android:layout_width="@dimen/dp_545"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_navi_tbt_middle"
                 android:paddingStart="@dimen/dp_31"
                 android:paddingEnd="@dimen/dp_30"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
@@ -319,12 +372,18 @@
             <!--车道线-->
             <com.fy.navi.scene.ui.navi.SceneNaviLanesView
                 android:id="@+id/scene_navi_lanes"
-                android:layout_width="@dimen/dp_545"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingBottom="@dimen/dp_30"
+                android:background="@drawable/bg_navi_tbt_middle"
+                android:visibility="@{ViewModel.mLanesVisibility ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/scene_navi_via_list" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_30"
+                android:background="@drawable/bg_navi_tbt_bottom" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 

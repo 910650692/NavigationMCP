@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.fy.navi.service.define.bean.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,8 @@ public class ChildInfo implements Parcelable {
     private int mChecked;
     //子点充电站信息列表,当POI是景区或者商场且子点是停车场时有该信息
     private ArrayList<ChildChargingInfo> mChargingStationList;
+    //孙节点列表
+    private List<ChildInfo> mGrandChildInfoList;
 
     public String getPoiId() {
         return mPoiId;
@@ -223,6 +226,7 @@ public class ChildInfo implements Parcelable {
         mRatio = in.readDouble();
         mChecked = in.readInt();
         mChargingStationList = in.createTypedArrayList(ChildChargingInfo.CREATOR);
+        mGrandChildInfoList = in.createTypedArrayList(ChildInfo.CREATOR);
     }
 
     public static final Creator<ChildInfo> CREATOR = new Creator<ChildInfo>() {
@@ -256,5 +260,6 @@ public class ChildInfo implements Parcelable {
         parcel.writeDouble(mRatio);
         parcel.writeInt(mChecked);
         parcel.writeTypedList(mChargingStationList);
+        parcel.writeTypedList(mGrandChildInfoList);
     }
 }

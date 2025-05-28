@@ -492,8 +492,8 @@
                     layout="@layout/item_limit_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_70"
-                    android:layout_marginEnd="@dimen/dp_436"
+                    android:layout_marginTop="@dimen/dp_140"
+                    android:layout_marginEnd="@dimen/dp_900"
                     android:focusable="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

@@ -93,6 +93,11 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
+    public void onBackPressed() {
+        Logger.i(getClass().getSimpleName(), "阻止返回键");
+    }
+
+    @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle) {
         onFragmentSizeChanged();
         FragmentIntent.addFragment(mScreenId, onFragmentId(), getSupportFragmentManager(),

@@ -44,4 +44,10 @@ public interface IBlAosApi {
      * @return
      */
     long queryDynamicInfoEvent(String trafficEventId);
+
+    /***
+     * 查询是否是节假日
+     * @return
+     */
+    void sendReqHolidayList();
 }

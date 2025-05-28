@@ -8,7 +8,11 @@ public class BaseTurnInfo implements Parcelable {
 
     private int mType;
     private int mAllTime; //剩余距离/m
+    private String mFormatTime; //格式化后的剩余时间
     private int mAllDist; //剩余时间/s
+    private String mFormatDist; //格式化后的剩余距离
+    private String mFormatArrive; //格式化后的到达时间
+    private String mFormatDay; //到达天数，为空不显示 eg +1  +2
     private String mCurRouteName = ""; //当前道路名
     private int mCurRoadClass; //当前道路等级
     /**
@@ -41,7 +45,11 @@ public class BaseTurnInfo implements Parcelable {
     public BaseTurnInfo (final Parcel in) {
         mType = in.readInt();
         mAllTime = in.readInt();
+        mFormatTime = in.readString();
         mAllDist = in.readInt();
+        mFormatDist = in.readString();
+        mFormatArrive = in.readString();
+        mFormatDay = in.readString();
         mCurRouteName = in.readString();
         mCurRoadClass = in.readInt();
         mCurManeuverID = in.readInt();
@@ -56,7 +64,11 @@ public class BaseTurnInfo implements Parcelable {
     public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeInt(mType);
         dest.writeInt(mAllTime);
+        dest.writeString(mFormatTime);
         dest.writeInt(mAllDist);
+        dest.writeString(mFormatDist);
+        dest.writeString(mFormatArrive);
+        dest.writeString(mFormatDay);
         dest.writeString(mCurRouteName);
         dest.writeInt(mCurRoadClass);
         dest.writeInt(mCurManeuverID);
@@ -77,7 +89,11 @@ public class BaseTurnInfo implements Parcelable {
         return "BaseTurnInfo{" +
                 "mType=" + mType +
                 ", mAllTime=" + mAllTime +
+                ", mFormatTime='" + mFormatTime + '\'' +
                 ", mAllDist=" + mAllDist +
+                ", mFormatDist='" + mFormatDist + '\'' +
+                ", mFormatArrive='" + mFormatArrive + '\'' +
+                ", mFormatDay='" + mFormatDay + '\'' +
                 ", mCurRouteName='" + mCurRouteName + '\'' +
                 ", mCurRoadClass=" + mCurRoadClass +
                 ", mCurManeuverID=" + mCurManeuverID +
@@ -104,12 +120,44 @@ public class BaseTurnInfo implements Parcelable {
         mAllTime = allTime;
     }
 
+    public String getFormatTime() {
+        return mFormatTime;
+    }
+
+    public void setFormatTime(final String formatTime) {
+        mFormatTime = formatTime;
+    }
+
     public int getAllDist() {
         return mAllDist;
     }
 
     public void setAllDist(final int allDist) {
         mAllDist = allDist;
+    }
+
+    public String getFormatDist() {
+        return mFormatDist;
+    }
+
+    public void setFormatDist(final String formatDist) {
+        mFormatDist = formatDist;
+    }
+
+    public String getFormatArrive() {
+        return mFormatArrive;
+    }
+
+    public void setFormatArrive(final String formatArrive) {
+        mFormatArrive = formatArrive;
+    }
+
+    public String getFormatDay() {
+        return mFormatDay;
+    }
+
+    public void setFormatDay(final String formatDay) {
+        mFormatDay = formatDay;
     }
 
     public String getCurRouteName() {

@@ -10,7 +10,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -128,6 +127,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             @Override
             public void onItemNaviClick(final int index) {
                 final PoiInfoEntity poiInfoEntity = mFavoriteList.get(index);
+                Logger.d(TAG, "navi click " + GsonUtils.toJson(poiInfoEntity));
                 if (mViewModel != null) {
                     mViewModel.startRoute(poiInfoEntity);
                 }
@@ -336,7 +336,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * @param address
      * @param itemView
      */
-    private void showRenameDialog(final PoiInfoEntity address, final View itemView) {
+    public void showRenameDialog(final PoiInfoEntity address, final View itemView) {
         final SkinTextView tvName = itemView.findViewById(R.id.tv_frequent_address_text);
         final SkinEditText etName = itemView.findViewById(R.id.tv_frequent_address_title);
 
@@ -398,7 +398,27 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         initFrequentAddressList();
     }
 
+    /**
+     * 更新名称
+     * @param name
+     */
+    public void updateFavoriteName(String name) {
+        if (mIndex >= mFrequentAddressList.size()) {
+            return;
+        }
+        final PoiInfoEntity poiInfoEntity = mFrequentAddressList.get(mIndex);
+        mViewModel.modifyFavoriteData(poiInfoEntity.getFavoriteInfo().getItemId(), name);
+        initFrequentAddressList();
+    }
 
+    /**
+     * 打开重命名Fragment
+     */
+    public void openFavoriteRenameFragment(final PoiInfoEntity poiInfo) {
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable("rename", poiInfo);
+        addFragment(new FavoriteRenameFragment(), bundle);
+    }
 
     /**
      * 更新常去地址
@@ -557,7 +577,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         mFrequentPopupWindow.setBackgroundDrawable(null); // 使PopupWindow背景透明
 
         mRenameBtn.setOnClickListener(v -> {
-            showRenameDialog(mFrequentAddressList.get(mIndex), mAnchorView);
+            mViewModel.showRenameDialog(mFrequentAddressList.get(mIndex), mAnchorView);
             mFrequentPopupWindow.dismiss();
         });
 

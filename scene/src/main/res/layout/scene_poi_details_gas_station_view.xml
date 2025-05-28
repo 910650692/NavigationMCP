@@ -59,6 +59,7 @@
                 android:id="@+id/poi_business_icon"
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
+                android:visibility="gone"
                 android:src="@drawable/img_under_the_48" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
@@ -82,6 +83,7 @@
             android:layout_width="@dimen/dp_52"
             android:layout_height="@dimen/dp_52"
             android:src="@drawable/img_under_the_48"
+            android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/poi_gas_phone"
             app:layout_constraintTop_toTopOf="@+id/poi_gas_phone"/>
     </com.fy.navi.ui.view.SkinConstraintLayout>

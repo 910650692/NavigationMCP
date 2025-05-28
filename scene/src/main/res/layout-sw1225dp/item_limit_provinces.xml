@@ -39,6 +39,7 @@
             android:layout_height="0dp"
             android:numColumns="3"
             android:paddingHorizontal="@dimen/dp_27"
+            android:paddingBottom="@dimen/dp_26"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

@@ -4,23 +4,18 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.baidu.oneos.protocol.bean.ArrivalBean;
 import com.baidu.oneos.protocol.bean.CallResponse;
 import com.baidu.oneos.protocol.bean.PoiBean;
-import com.baidu.oneos.protocol.bean.TrafficAskBean;
 import com.baidu.oneos.protocol.callback.PoiCallback;
 import com.baidu.oneos.protocol.callback.RespCallback;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
-import com.fy.navi.service.define.route.RouteCurrentPathParam;
-import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
 import com.fy.navi.service.define.search.FavoriteInfo;
@@ -42,7 +37,6 @@ import com.fy.navi.vrbridge.bean.SingleDestInfo;
 import com.fy.navi.vrbridge.bean.VoiceSearchConditions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -85,14 +79,6 @@ public final class VoiceSearchManager {
     private boolean mListPageOpened; //搜索结果页面是否展示
 
     private boolean mShouldPlayRouteMsg; //是否应该播报路线规划结果
-
-    //用于路况查询
-    private int mTrafficConditionResult = -2;//-1：无数据 0:未知状态 1:通畅 2:缓慢 3:拥堵 4:严重拥堵 5:极度通畅
-    private boolean mIsInRoute = false;//判断点位是否是导航线路上的
-    private boolean mHasProcessed = false;//判断有没有处理
-    private String mTtsContentForCondition = "";//回复内容
-    private List<RouteParam> mAllPoiParamList;
-    private Map<RouteParam, String> mNameMap;
 
 
     public static VoiceSearchManager getInstance() {
@@ -1858,293 +1844,6 @@ public final class VoiceSearchManager {
             sortResultResponse.setNeedPlayMessage(true);
             mRespCallback.onResponse(sortResultResponse);
         }
-    }
-
-    /**
-     * 处理前方如何走
-     *
-     * @param isNavi       是否导航
-     * @param respCallBack respCallBack
-     * @return CallResponse
-     */
-    public CallResponse handleForwardAsk(final boolean isNavi, final RespCallback respCallBack) {
-
-        if (!isNavi) {
-            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 非导航模式");
-            return CallResponse.createFailResponse("当前不在导航状态，没有行程相关信息哦");
-        }
-
-        final NaviEtaInfo etaInfo = NaviPackage.getInstance().getCurrentNaviEtaInfo();
-        String ttsContent = "";
-        final int id = etaInfo.getCurManeuverID();
-        Logger.d(IVrBridgeConstant.TAG, "转向id = " + id);
-        ttsContent = switch (id) {
-            case 2 -> "下一个路口需要左转";
-            case 3 -> "下一个路口需要右转";
-            case 4 -> "下一个路口向左前方行驶";
-            case 5 -> "下一个路口向右前方行驶";
-            case 6 -> "下一个路口向左后方行驶";
-            case 7 -> "下一个路口向右后方行驶";
-            case 8 -> "下一个路口左转掉头";
-            case 9 -> "下一个路口直行";
-            case 10 -> "前方到达途径点";
-            case 11 -> "下一个路口右拐驶入环岛";
-            case 12 -> "下一个路口右拐驶出环岛";
-            case 13 -> "前方到达服务区";
-            case 14 -> "前方到达收费站";
-            case 15 -> "前方到达目的地";
-            case 16 -> "前方进入隧道";
-            case 17 -> "下一个路口左拐驶入环岛";
-            case 18 -> "下一个路口左拐驶出环岛";
-            case 19 -> "下一个路口右转掉头";
-            case 20 -> "前方顺行路段，无需转向";
-            case 21 -> "前方右转驶入环岛后，需左转驶出环岛";
-            case 22 -> "前方右转驶入环岛后，需右转驶出环岛";
-            case 23 -> "前方右转驶入环岛后，需直行驶出环岛";
-            case 24 -> "前方右转驶入环岛后，需掉头驶出环岛";
-            case 25 -> "前方左转驶入环岛后，需左转驶出环岛";
-            case 26 -> "前方左转驶入环岛后，需右转驶出环岛";
-            case 27 -> "前方左转驶入环岛后，需直行驶出环岛";
-            case 28 -> "前方左转驶入环岛后，需掉头驶出环岛";
-            case 68 -> "驶入环岛入口1";
-            case 69 -> "驶入环岛入口2";
-            case 70 -> "驶入环岛入口3";
-            case 71 -> "驶入环岛入口4";
-            case 72 -> "驶入环岛入口5";
-            case 73 -> "驶入环岛入口6";
-            case 74 -> "驶入环岛入口7";
-            case 75 -> "驶入环岛入口8";
-            case 76 -> "驶入环岛入口9";
-            case 77 -> "驶入环岛入口10";
-            case 79 -> "驶出环岛出口1";
-            case 80 -> "驶出环岛出口2";
-            case 81 -> "驶出环岛出口3";
-            case 82 -> "驶出环岛出口4";
-            case 83 -> "驶出环岛出口5";
-            case 84 -> "驶出环岛出口6";
-            case 85 -> "驶出环岛出口7";
-            case 86 -> "驶出环岛出口8";
-            case 87 -> "驶出环岛出口9";
-            case 88 -> "驶出环岛出口10";
-            case 65 -> "前方需靠左行驶";
-            case 66 -> "前方需靠右行驶";
-            default -> "未知道路信息，请稍后再试";
-        };
-
-        if (!ConvertUtils.isEmpty(respCallBack)) {
-            Logger.d(IVrBridgeConstant.TAG, "转向ttsContent = " + ttsContent);
-            final CallResponse response = CallResponse.createSuccessResponse(ttsContent);
-            response.setNeedPlayMessage(true);
-            respCallBack.onResponse(response);
-        }
-        return CallResponse.createSuccessResponse();
-    }
-
-    /**
-     * 处理前方路况询问
-     *
-     * @param isInNavi     是否导航
-     * @param respCallback 结果异步回调.
-     * @return CallResponse，指令回复.
-     */
-    public CallResponse handleForwardCondition(final boolean isInNavi, final RespCallback respCallback) {
-        Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 转为查询前方路况");
-        final CallResponse callResponse;
-        if (isInNavi) {
-            Logger.d(IVrBridgeConstant.TAG, "onForwardAsk: navi state");
-            final RouteCurrentPathParam curPath
-                    = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
-            if (null != curPath && !curPath.isMIsOnlineRoute()) {
-                return CallResponse.createFailResponse("离线导航，路况查询不可用");
-            }
-            final String tmcStatus = NaviPackage.getInstance().getFrontTmcStatus();
-            if (ConvertUtils.isEmpty(tmcStatus)) {
-                callResponse = CallResponse.createSuccessResponse("暂无路况信息，请稍后再试");
-            } else {
-                callResponse = CallResponse.createSuccessResponse(tmcStatus);
-            }
-        } else {
-            callResponse = CallResponse.createSuccessResponse("当前不在导航状态，没有行程相关信息哦");
-        }
-        callResponse.setNeedPlayMessage(true);
-        if (null != respCallback) {
-            respCallback.onResponse(callResponse);
-        }
-        return CallResponse.createSuccessResponse();
-    }
-
-    /**
-     * 处理路况查询
-     *
-     * @param trafficAskBean trafficAskBean
-     * @param respCallback   respCallback
-     * @return CallResponse
-     */
-    public CallResponse handleTrafficConditionAsk(final TrafficAskBean trafficAskBean, final RespCallback respCallback) {
-        mTrafficConditionResult = -2;//重置变量
-        mIsInRoute = false;
-        mHasProcessed = false;
-        mTtsContentForCondition = "";
-        mAllPoiParamList = null;
-        mNameMap = new HashMap<>();
-        if (trafficAskBean == null) {
-            return CallResponse.createFailResponse("地点信息异常，请重试");
-        }
-        final boolean isInNavi = Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING);
-        String strPoi = trafficAskBean.getPoi();
-        String strStart = trafficAskBean.getStart();
-        String strArrival = trafficAskBean.getArrival();
-        if (ConvertUtils.isEmpty(strArrival) && ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart)) {
-            //trafficAskBean的成员变量全是空
-            return handleForwardCondition(isInNavi, respCallback);
-        }
-        /*以下为有地点信息的查询*/
-        if (!isInNavi) {
-            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 非导航模式");
-            return CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦");
-        }
-        mAllPoiParamList = RoutePackage.getInstance().getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (mAllPoiParamList.isEmpty()) {
-            return CallResponse.createFailResponse("缺少线路信息，请重试");
-        }
-        mAllPoiParamList.remove(0);
-        Logger.d(IVrBridgeConstant.TAG, "poiListSize -> " + mAllPoiParamList.size());
-        for (RouteParam poi : mAllPoiParamList) {
-            final String name = poi.getName();
-            if (!ConvertUtils.isEmpty(poi.getName())) {
-                mNameMap.put(poi, name.replace("(", "").replace(")", ""));
-            }
-            Logger.d(IVrBridgeConstant.TAG, poi.getName() + " -> " + mNameMap.get(poi));
-        }
-
-        if (ConvertUtils.equals(strPoi, IVrBridgeConstant.PoiType.DESTINATION)) {
-            strPoi = mNameMap.get(mAllPoiParamList.get(mAllPoiParamList.size() - 1));
-            Logger.d(IVrBridgeConstant.TAG, "POI DESTINATION -> " + strPoi);
-        } else if (ConvertUtils.equals(strPoi, IVrBridgeConstant.PoiType.PASS_BY)) {
-            strPoi = mNameMap.get(mAllPoiParamList.get(0));
-            Logger.d(IVrBridgeConstant.TAG, "POI PASSBY -> " + strPoi);
-        }
-
-        if (ConvertUtils.equals(strStart, "我的位置") && ConvertUtils.equals(strArrival, IVrBridgeConstant.PoiType.DESTINATION)) {
-            strArrival = mNameMap.get(mAllPoiParamList.get(mAllPoiParamList.size() - 1));
-            strStart = null;
-            Logger.d(IVrBridgeConstant.TAG, "我的位置 -> null; ARRIVAL DESTINATION -> " + strArrival);
-        } else if (ConvertUtils.equals(strStart, "我的位置") && ConvertUtils.equals(strArrival, IVrBridgeConstant.PoiType.PASS_BY)) {
-            strArrival = mNameMap.get(mAllPoiParamList.get(0));
-            strStart = null;
-            Logger.d(IVrBridgeConstant.TAG, "我的位置 -> null; ARRIVAL PASSBY -> " + strArrival);
-        }
-
-        handlePOI(strPoi, strStart, strArrival);
-
-        if (ConvertUtils.equals(mTrafficConditionResult, -2)) {
-            handlePath(strPoi, strStart, strArrival);
-        }
-
-        Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: conditionResult = " + mTrafficConditionResult);
-        mTtsContentForCondition = mapTtsContent(mTtsContentForCondition, mTrafficConditionResult);
-        if (!mIsInRoute && mHasProcessed) {
-            return CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦");
-        } else {
-            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: ttsContent = " + mTtsContentForCondition);
-            final CallResponse callResponse = CallResponse.createSuccessResponse(mTtsContentForCondition);
-            callResponse.setNeedPlayMessage(true);
-            if (null != respCallback) {
-                respCallback.onResponse(callResponse);
-            }
-        }
-        return CallResponse.createSuccessResponse();
-    }
-
-    /**
-     * 处理线路上的道路信息
-     *
-     * @param strPoi     strPoi
-     * @param strStart   strStart
-     * @param strArrival strArrival
-     */
-    private void handlePath(final String strPoi, final String strStart, final String strArrival) {
-
-    }
-
-    /**
-     * 处理线路上的地点
-     *
-     * @param strPoi     strPoi
-     * @param strStart   strStart
-     * @param strArrival strArrival
-     */
-    private void handlePOI(final String strPoi, final String strStart, final String strArrival) {
-        if (!ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart) && ConvertUtils.isEmpty(strArrival)) {
-            mHasProcessed = true; // 查询A地附近的路况或A道路的路况
-            for (RouteParam poi : mAllPoiParamList) {
-                if (!ConvertUtils.isEmpty(poi.getName()) && mNameMap.get(poi).contains(strPoi)) {
-                    Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: A地附近情况");
-                    mTrafficConditionResult = NaviPackage.getInstance().getTmcStatus(
-                            poi.getName(), strStart, strArrival, MapType.MAIN_SCREEN_MAIN_MAP
-                    );
-                    mIsInRoute = true;
-                    mTtsContentForCondition = strPoi + "路况 ";
-                }
-            }
-        }
-        if (ConvertUtils.isEmpty(strPoi) && !ConvertUtils.isEmpty(strStart) && !ConvertUtils.isEmpty(strArrival)) {
-            mHasProcessed = true;// 查询A点-B点的路况
-            RouteParam startPoi = null;
-            RouteParam arrivalPoi = null;
-            for (RouteParam poi : mAllPoiParamList) {
-                if (!ConvertUtils.isEmpty(poi.getName()) && mNameMap.get(poi).contains(strStart)) {
-                    Logger.d(IVrBridgeConstant.TAG, "allPoiParamList: 找到起始点");
-                    startPoi = poi;
-                }
-                if (!ConvertUtils.isEmpty(poi.getName()) && mNameMap.get(poi).contains(strArrival)) {
-                    Logger.d(IVrBridgeConstant.TAG, "allPoiParamList: 找到终点");
-                    arrivalPoi = poi;
-                }
-            }
-            if (startPoi != null && arrivalPoi != null) {
-                Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: A到B的情况");
-                Logger.d(IVrBridgeConstant.TAG, "startPoi name: " + startPoi.getName() + "; arrivalPoi name: " + arrivalPoi.getName());
-                mTrafficConditionResult = NaviPackage.getInstance().getTmcStatus(
-                        strPoi, startPoi.getName(), arrivalPoi.getName(), MapType.MAIN_SCREEN_MAIN_MAP
-                );
-                mIsInRoute = true;
-                mTtsContentForCondition = strStart + "到" + strArrival + "路况";
-            }
-        }
-        if (ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart) && !ConvertUtils.isEmpty(strArrival)) {
-            mHasProcessed = true;// 查询到B的路况
-            for (RouteParam poi : mAllPoiParamList) {
-                if (!ConvertUtils.isEmpty(poi.getName()) && mNameMap.get(poi).contains(strArrival)) {
-                    Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 当前位置到B的情况");
-                    mTrafficConditionResult = NaviPackage.getInstance().getTmcStatus(
-                            strPoi, strStart, poi.getName(), MapType.MAIN_SCREEN_MAIN_MAP
-                    );
-                    mIsInRoute = true;
-                    mTtsContentForCondition = "当前位置到" + strArrival + "路况";
-                }
-            }
-        }
-    }
-
-    /**
-     * 映射tts内容
-     *
-     * @param orgTtsContent   原tts
-     * @param conditionResult 路况结果
-     * @return 映射后的tts
-     */
-    private String mapTtsContent(final String orgTtsContent, final int conditionResult) {
-        return switch (conditionResult) {
-            case 1 -> orgTtsContent + "畅通";
-            case 2 -> orgTtsContent + "缓行";
-            case 3 -> orgTtsContent + "拥堵";
-            case 4 -> orgTtsContent + "严重拥堵";
-            case 5 -> orgTtsContent + "极度通畅";
-            case -1 -> "暂未查询到相应路况信息，请稍后再试";
-            case 0 -> "未知状态，请稍后再试";
-            default -> "未知查询条件，请稍后再试";
-        };
     }
 
 }

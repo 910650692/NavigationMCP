@@ -535,6 +535,33 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 设置目录及文件权限为 777
+     * @param dirPath 目录
+     * @return 是否成功
+     */
+    public boolean setFullPermissions(String dirPath) {
+        if (ConvertUtils.isEmpty(dirPath)) {
+            Logger.i(TAG, "initEngineParam dirPath isEmpty");
+            return false;
+        }
+        try {
+            File file = new File(dirPath);
+            // 设置可读、可写、可执行权限给所有者、组和其他用户
+            @SuppressLint("SetWorldReadable")
+            boolean readable = file.setReadable(true, false);
+            @SuppressLint("SetWorldWritable")
+            boolean writable = file.setWritable(true, false);
+            boolean executable = file.setExecutable(true, false);
+            Logger.i(TAG, "initEngineParam isDirectory：" + file.isDirectory() + " isFile:" + file.isFile() + " exists:" + file.exists()
+                    + " readable:" + readable + " writable:" + writable + " executable:" + executable + " dirPath:" + dirPath);
+            return readable && writable && executable;
+        } catch (Exception e) {
+            Logger.e(TAG, "initEngineParam error：" + e.getMessage());
+            return false;
+        }
+    }
+
     public void close() {
         mContext = null;
     }

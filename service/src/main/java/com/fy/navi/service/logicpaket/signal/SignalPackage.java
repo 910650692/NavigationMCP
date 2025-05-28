@@ -1,15 +1,21 @@
 package com.fy.navi.service.logicpaket.signal;
 
 import android.content.Context;
+import android.hardware.automotive.vehicle.V2_0.VehicleArea;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.adapter.signal.SignalAdapter;
 import com.fy.navi.service.adapter.signal.SignalAdapterCallback;
+import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
+import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
+import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.Hashtable;
+
+import vendor.patac.vehicle.V1_0.PatacProperty;
 
 public final class SignalPackage implements SignalAdapterCallback {
     public static final String TAG = SignalPackage.class.getSimpleName();
@@ -313,4 +319,109 @@ public final class SignalPackage implements SignalAdapterCallback {
     public void setNaviVolume(int volume) {
         mSignalAdapter.setNaviVolume(volume);
     }
+
+    /**
+     * 导航状态
+     * @param sdNavigationStatusGroup
+     */
+    public void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup) {
+        mSignalAdapter.setSdNavigationStatus(sdNavigationStatusGroup);
+    }
+
+    /**
+     * 距离拥堵路段的行驶距离
+     * @param value
+     */
+    public void setDistanceToTrafficJamRoad(int value) {
+        mSignalAdapter.setDistanceToTrafficJamRoad(value);
+    }
+
+    /**
+     * 距离拥堵路段的行驶距离的可用性
+     * @param value
+     */
+    public void setDistanceToTrafficJamRoadAvailability(int value) {
+        mSignalAdapter.setDistanceToTrafficJamRoadAvailability(value);
+    }
+
+    /**
+     * 在拥堵路段行驶的距离
+     * @param value
+     */
+    public void setDistanceOnTrafficJamRoad(int value) {
+        mSignalAdapter.setDistanceOnTrafficJamRoad(value);
+    }
+
+    /**
+     * 在拥堵路段行驶的距离的可用性
+     * @param value
+     */
+    public void setDistanceOnTrafficJamRoadAvailability(int value) {
+        mSignalAdapter.setDistanceOnTrafficJamRoadAvailability(value);
+    }
+
+    /**
+     * 拥堵路段的平均速度
+     * @param value
+     */
+    public void setTrafficJamRoadAverageSpeed(int value) {
+        mSignalAdapter.setTrafficJamRoadAverageSpeed(value);
+    }
+
+    /**
+     * 拥堵路段的平均速度的可用性
+     * @param value
+     */
+    public void setTrafficJamRoadAverageSpeedAvailability(int value) {
+        mSignalAdapter.setTrafficJamRoadAverageSpeedAvailability(value);
+    }
+
+    /**
+     * 设置道路状态
+     * @param roadConditionGroupFirst
+     */
+    public void setRoadConditionGroupFirst(RoadConditionGroupFirst roadConditionGroupFirst) {
+        mSignalAdapter.setRoadConditionGroupFirst(roadConditionGroupFirst);
+    }
+
+    /**
+     * 设置道路状态
+     * @param roadConditionGroupSecond
+     */
+    public void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond) {
+        mSignalAdapter.setRoadConditionGroupSecond(roadConditionGroupSecond);
+    }
+
+    /**
+     * 总距离导航到目的地
+     * @param value
+     */
+    public void setTotalDistanceFromStartToDestinationOnNavigation(int value) {
+        mSignalAdapter.setTotalDistanceFromStartToDestinationOnNavigation(value);
+    }
+
+    /**
+     * 总时间导航到目的地
+     * @param value
+     */
+    public void setTotalPredictedTimeFromStartToDestinationOnNavigation(int value) {
+        mSignalAdapter.setTotalPredictedTimeFromStartToDestinationOnNavigation(value);
+    }
+
+    /**
+     * 剩余充电站距离
+     * @param value
+     */
+    public void setRemainDistanceToChargingStation(int value) {
+        mSignalAdapter.setRemainDistanceToChargingStation(value);
+    }
+
+    /**
+     * 剩余充电站时间
+     * @param value
+     */
+    public void setRemainTimeToChargingStationy(int value) {
+        mSignalAdapter.setRemainTimeToChargingStationy(value);
+    }
+
 }

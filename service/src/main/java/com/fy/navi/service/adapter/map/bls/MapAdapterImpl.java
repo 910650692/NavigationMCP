@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.map.bls;
 
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.map.IMapAdapterCallback;
@@ -44,13 +45,35 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public void bindMapView(IBaseScreenMapView mapView) {
-        MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),
+        bindMapViewInternal(
+                mapView.provideMapTypeId(),
+                mapView.getMapViewX(), mapView.getMapViewY(),
                 mapView.getMapViewWidth(), mapView.getMapViewHeight(),
                 mapView.getScreenWidth(), mapView.getScreenHeight(),
-                mapView.getScreenDensityDpi());
-        MapViewImpl mapSurfaceViewImp = mapViewPoolManager.get(mapView.provideMapTypeId(), mapViewParams);
-        mapSurfaceViewImp.changeMapViewParams(mapViewParams);
-        mapView.bindMapView(mapSurfaceViewImp);
+                mapView.getScreenDensityDpi(),mapView
+        );
+    }
+    @Override
+    public void bindHudMapView() {
+        long width = 328;
+        long height = 172;
+        long screenWidth = 328;
+        long screenHeight = 172;
+        int densityDpi = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().densityDpi;
+        bindMapViewInternal(MapType.HUD_MAP, 0, 0, width, height, screenWidth, screenHeight, densityDpi,null);
+    }
+
+    private void bindMapViewInternal(MapType mapType, long x, long y, long width, long height, long screenWidth, long screenHeight, int densityDpi,IBaseScreenMapView mapView) {
+        MapViewParams mapViewParams = new MapViewParams(x, y, width, height, screenWidth, screenHeight, densityDpi);
+        MapViewImpl mapSurfaceViewImp = mapViewPoolManager.get(mapType, mapViewParams);
+        if (mapType == MapType.HUD_MAP) {
+            mapSurfaceViewImp.changeHudMapViewParams(mapViewParams);
+        } else {
+            mapSurfaceViewImp.changeMapViewParams(mapViewParams);
+        }
+        if (mapType != MapType.HUD_MAP && mapView != null) {
+            mapView.bindMapView(mapSurfaceViewImp);
+        }
     }
 
     @Override
@@ -91,6 +114,14 @@ public class MapAdapterImpl implements IMapApi {
     public void setMapCenterInScreen(MapType mapTypeId, int x, int y) {
         Logger.d(TAG, "map left: " + x, "map top: " + y);
         mapViewPoolManager.get(mapTypeId).setMapCenterInScreen(x, y);
+    }
+    /**
+     * 设置Hud地图中线点在屏幕中的位置
+     */
+    @Override
+    public void setHudMapCenterInScreen(MapType mapTypeId, int x, int y) {
+        Logger.d(TAG, "map left: " + x, "map top: " + y);
+        mapViewPoolManager.get(mapTypeId).setHudMapCenterInScreen(x, y);
     }
 
     @Override

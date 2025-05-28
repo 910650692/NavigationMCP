@@ -37,6 +37,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.READ_SETTINGS" />
+    <uses-permission android:name="gm.permission.RECEIVE_KEY_EVENT" />
 
     <queries>
         <intent>
@@ -126,6 +127,14 @@
             android:exported="true"
             android:foregroundServiceType="shortService" />
 
+        <receiver
+            android:name="com.fy.navi.broadcast.NaviMfcHardKeyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="gm.intent.ACTION_BROADCAST_KEY_MFC_NAVIGATION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

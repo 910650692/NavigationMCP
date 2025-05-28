@@ -75,6 +75,16 @@ public final class SettingUpdateObservable {
         }
     }
 
+    /**
+     * 重命名
+     * @param name
+     */
+    public void onUpdateRename(final String name) {
+        for (SettingUpdateObserver listener : mObservers.values()) {
+            listener.onUpdateName(name);
+        }
+    }
+
 
     public interface SettingUpdateObserver{
         /**
@@ -99,6 +109,14 @@ public final class SettingUpdateObservable {
          * @param syncTime 同步时间
          */
        default void onUpdateSyncTime(String syncTime){
+
+       }
+
+        /**
+         * 重命名
+         * @param name
+         */
+       default void onUpdateName(String name) {
 
        }
     }

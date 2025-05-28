@@ -15,6 +15,7 @@
     <color name="main_map_limit_bg_color">#26B2AFC2</color>
     <color name="main_map_limit_number_color">#FFF8F8FA</color>
     <color name="main_map_limit_retry_button_color">#FF2461EA</color>
+    <color name="message_center_operate">#FF2461EA</color>
 
     <color name="setting_bg_line">#B3000000</color>
 

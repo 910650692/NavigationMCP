@@ -1,19 +1,25 @@
 package com.fy.navi.fsa;
 
+import static kotlin.text.Typography.amp;
+
 import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.view.Display;
 
+import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -67,14 +73,21 @@ import com.gm.fsa.service.catalog.FSACatalog;
 import com.iauto.vtserver.VTDescription;
 import com.iauto.vtserver.VTServerBQJni;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -147,6 +160,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_CHARGING_STATIONS_POI));
         mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_PARKING_LOT_POI));
         mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_SERVICE_POI));
+        mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_VISIBLE_ENLARGE));
+        mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_GAS_STATION_POI));
+        mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE));//挖洞
 
         mService.changeState(FSAService.ServiceState.INACTIVE);
     }
@@ -624,7 +640,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             }
         }
     };
-
+    private boolean isShowCross = false;
     //引导信息
     private final IGuidanceObserver mGuidanceObserver = new IGuidanceObserver() {
         @Override
@@ -652,6 +668,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         @Override
         public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
             FsaNaviScene.getInstance().updateEnlargeMap(MyFsaService.this, isShowImage, naviImageInfo);
+            isShowCross = isShowImage;
         }
 
         @Override
@@ -700,7 +717,6 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         }
     };
 
-
     //巡航信息
     private final ICruiseObserver mCruiseObserver = new ICruiseObserver() {
         public void onShowCruiseCameraExt(final CruiseInfoEntity cruiseInfoEntity) {
@@ -723,16 +739,146 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private IEglScreenshotCallBack mEglShotCallBack = new IEglScreenshotCallBack() {
         @Override
         public void onEGLScreenshot(MapType mapType, byte[] bytes) {
-            if (mapType != MapType.HUD_MAP) {
+            if (bytes == null){
+                Logger.d(TAG,"onEGLScreenshot-->bytes==null");
                 return;
             }
             if (!mIsHudServiceStart) {
+                Logger.d(TAG,"onEGLScreenshot-->!mIsHudServiceStart");
                 return;
             }
-            byte[] bytes1 = processPicture(bytes);
-            VTServerBQJni.getInstance().nativeNotifyVideoData(bytes1);
+            if (!NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())){
+                Logger.d(TAG,"onEGLScreenshot-->!NaviStatus.NaviStatusType.NAVING");
+                return;
+            }
+            if (mapType == MapType.HUD_MAP){//HUD路网图
+                byte[] bytes1 = processPicture(bytes);
+                VTServerBQJni.getInstance().nativeNotifyVideoData(bytes1);
+            }else if (mapType == MapType.MAIN_SCREEN_MAIN_MAP){//主图的路口大图
+                Logger.d(TAG,"MapType.MAIN_SCREEN_MAIN_MAP bytes.length=="+bytes.length);
+               ThreadManager.getInstance().execute(new Runnable() {
+                   @Override
+                   public void run() {
+                       processMapCrossPicture(bytes);
+                   }
+               });
+            }
         }
     };
+    private long lastProcessTime = 0;
+    private static final long MIN_INTERVAL = 600;
+    private final Queue<Bitmap> mBitmapPool = new LinkedList<>();
+    private final Object mLock = new Object();
+
+    @WorkerThread
+    public void processMapCrossPicture(byte[] bytes) {
+        if (!isShowCross){
+            Logger.d(TAG, "isShowImage=="+ false);
+            return;
+        }
+        long now = System.currentTimeMillis();
+        if (now - lastProcessTime < MIN_INTERVAL) {
+            return;
+        }
+        lastProcessTime = now;
+        Bitmap orginBitmap = null;
+        Bitmap flippedBitmap = null;
+        Bitmap cropBitmap = null;
+        try {
+            int width = ScreenUtils.Companion.getInstance().getScreenWidth();
+            int height = ScreenUtils.Companion.getInstance().getScreenHeight();
+            Logger.d(TAG, "startScreenshot width=="+width+"height=="+height);
+            orginBitmap = getBitmapFromPool(width, height);
+            if (orginBitmap != null){
+                Logger.d(TAG,"processMapCrossPicture orginBitmap != null");
+            }
+            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            buffer.position(0);
+            orginBitmap.copyPixelsFromBuffer(buffer);
+            Matrix matrix = new Matrix();
+            matrix.postScale(1, -1);
+            matrix.postTranslate(orginBitmap.getWidth(), orginBitmap.getHeight());
+            flippedBitmap = Bitmap.createBitmap(orginBitmap, 0, 0,
+                    orginBitmap.getWidth(), orginBitmap.getHeight(), matrix, true);
+            cropBitmap = Bitmap.createBitmap(flippedBitmap, 466, 174, 640, 384);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            cropBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            setCrossImg(byteArray);
+        } catch (Exception e) {
+            Logger.e(TAG, "Image processing error", e);
+        } finally {
+            safeRecycle(orginBitmap);
+            safeRecycle(flippedBitmap);
+            safeRecycle(cropBitmap);
+        }
+    }
+
+
+    private Bitmap getBitmapFromPool(int width, int height) {
+        synchronized (mLock) {
+            for (Bitmap bitmap : mBitmapPool) {
+                if (!bitmap.isRecycled() && bitmap.getWidth() == width && bitmap.getHeight() == height) {
+                    mBitmapPool.remove(bitmap);
+                    return bitmap;
+                }
+            }
+            return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        }
+    }
+
+    private void safeRecycle(Bitmap bitmap) {
+        if (bitmap != null && !bitmap.isRecycled()) {
+            try {
+                bitmap.recycle();
+            } catch (Exception ignored) {}
+        }
+    }
+
+
+//    @WorkerThread
+//    public void processMapCrossPicture(byte[] bytes) {
+//        Bitmap orginBitmap = null;
+//        Bitmap flippedBitmap = null;
+//        Bitmap cropBitmap;
+//        try {
+//            int width = ScreenUtils.Companion.getInstance().getScreenWidth();
+//            int height = ScreenUtils.Companion.getInstance().getScreenHeight();
+//            orginBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+//            orginBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));
+//            // 翻转图像
+//            Matrix matrix = new Matrix();
+//            matrix.postScale(1, -1);
+//            matrix.postTranslate(orginBitmap.getWidth(), orginBitmap.getHeight());
+//            flippedBitmap = Bitmap.createBitmap(orginBitmap, 0, 0, orginBitmap.getWidth(), orginBitmap.getHeight(), matrix, true);
+//            cropBitmap = Bitmap.createBitmap(flippedBitmap, 466, 174, 1106-466, 558-174);
+//            final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            cropBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+//            byte[] byteArray = byteArrayOutputStream.toByteArray();
+//            setCrossImg(byteArray);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        } finally {
+//            if (!ConvertUtils.isNull(orginBitmap)) {
+//                orginBitmap.recycle();
+//            }
+//            if (!ConvertUtils.isNull(flippedBitmap)) {
+//                flippedBitmap.recycle();
+//            }
+//        }
+//    }
+
+    //路口大图数据
+    private byte[] crossImgRef;
+
+    //设置路口大图数据
+    public void setCrossImg(byte[] cropBitmap) {
+        this.crossImgRef = cropBitmap;
+    }
+    //获取路口大图数据
+    public byte[] getCrossImg() {
+        return crossImgRef;
+    }
 
     private IRouteResultObserver mRouteResultObserver = new IRouteResultObserver() {
         @Override

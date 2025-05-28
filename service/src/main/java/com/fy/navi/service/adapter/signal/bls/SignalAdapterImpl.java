@@ -15,6 +15,9 @@ import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.signal.SignalAdapterCallback;
 import com.fy.navi.service.adapter.signal.SignalApi;
+import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
+import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
+import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
 import com.fy.navi.service.define.signal.SignalConst;
 import com.patac.vehicle.DriveAssistController;
 import com.patac.vehicle.HvacController;
@@ -617,6 +620,177 @@ public class SignalAdapterImpl implements SignalApi {
     public void setNaviVolume(int volume) {
         Logger.d(TAG, volume);
         mCarAudioManager.setGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1, volume, 0);
+    }
+
+    @Override
+    public void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup) {
+        try {
+            Integer[] integers = new Integer[]{sdNavigationStatusGroup.getNaviStat()};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.SD_NAVIGATION_STATUS_GROUP,
+                    VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setNavigationOnAdasButtonSettingRequest(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.NAVIGATION_ON_ADAS_BUTTON_SETTING_REQUEST,
+                    VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setNavigationOnAdasInfoNavigationStatus(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.NAVIGATION_ON_ADAS_INFO_NAVIGATION_STATUS,
+                    VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setDistanceToTrafficJamRoad(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_TO_TRAFFIC_JAM_ROAD
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setDistanceToTrafficJamRoadAvailability(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_TO_TRAFFIC_JAM_ROAD_AVAILABILITY
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setDistanceOnTrafficJamRoad(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setDistanceOnTrafficJamRoadAvailability(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD_AVAILABILITY
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setTrafficJamRoadAverageSpeed(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.TRAFFIC_JAM_ROAD_AVERAGE_SPEED
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setTrafficJamRoadAverageSpeedAvailability(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.TRAFFIC_JAM_ROAD_AVERAGE_SPEED_AVAILABILITY
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setRoadConditionGroupFirst(RoadConditionGroupFirst roadConditionGroupFirst) {
+        try {
+            Integer[] integers = new Integer[]{roadConditionGroupFirst.getIndxOfDynmInftAryNavRut(),
+                    roadConditionGroupFirst.getEstimDistnCorpToIndxRut(),
+                    roadConditionGroupFirst.getEstimTimCorpToIndxRut(),
+                    roadConditionGroupFirst.getEstimRodCndtnCorpToIndxRut()};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.ROAD_CONDITION_GROUP_FIRST
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond) {
+        try {
+            Integer[] integers = new Integer[]{roadConditionGroupSecond.getLngthDynInfmAryOfNavRut(),
+                    roadConditionGroupSecond.getEstimRemnDistn(),
+                    roadConditionGroupSecond.getEstimRemnTim(),
+                    roadConditionGroupSecond.getDataInv()};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.ROAD_CONDITION_GROUP_SECOND
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setTotalDistanceFromStartToDestinationOnNavigation(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.TOTAL_DISTANCE_FROM_START_TO_DESTINATION_ON_NAVIGATION
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setTotalPredictedTimeFromStartToDestinationOnNavigation(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.TOTAL_PREDICTED_TIME_FROM_START_TO_DESTINATION_ON_NAVIGATION
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setRemainDistanceToChargingStation(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.REMAIN_DISTANCE_TO_CHARGING_STATION
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setRemainTimeToChargingStationy(int value) {
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.REMAIN_TIME_TO_CHARGING_STATION
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
     }
 
     /**
