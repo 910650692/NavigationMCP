@@ -1,24 +1,53 @@
 package com.fy.navi.hmi.favorite;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.IntentFilter;
+
+import androidx.core.content.ContextCompat;
+
 import com.alibaba.android.arouter.utils.TextUtils;
+import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.setting.SettingController;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorCallBack;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.ui.base.BaseModel;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class FavoriteModel extends BaseModel<FavoriteViewModel> implements BehaviorCallBack, SettingUpdateObservable.SettingUpdateObserver {
+import java.util.ArrayList;
+import java.util.List;
+
+public class FavoriteModel extends BaseModel<FavoriteViewModel> implements BehaviorCallBack, SettingUpdateObservable.SettingUpdateObserver, SearchResultCallback {
     private static final String TAG = FavoriteModel.class.getName();
     private final BehaviorPackage mBehaviorPackage;
     private final SettingManager mSettingManager;
+    private final AccountPackage mAccountPackage;
+    private final SearchPackage mSearchPackage;
 
     public FavoriteModel() {
         mBehaviorPackage = BehaviorPackage.getInstance();
+        mAccountPackage = AccountPackage.getInstance();
+        mSearchPackage = SearchPackage.getInstance();
         mSettingManager = new SettingManager();
         mSettingManager.init();
     }
@@ -27,6 +56,7 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
     public void onCreate() {
         super.onCreate();
         mBehaviorPackage.registerCallBack(this);
+        mSearchPackage.registerCallBack(TAG, this);
         SettingUpdateObservable.getInstance().addObserver("FavoriteModel", this);
     }
 
@@ -49,7 +79,7 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         if (mViewModel == null) {
             return;
         }
-        mViewModel.updateFavoriteView(mBehaviorPackage.getFavoritePoiData());
+        mViewModel.updateFavoriteView(mBehaviorPackage.getFavoritePoiData(), 0);
     }
 
     /**
@@ -171,7 +201,7 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
 
     @Override
     public void notifyFavoriteAsync(final int type, final ArrayList<PoiInfoEntity> data, final boolean sorted) {
-        mViewModel.updateFavoriteView(data);
+        mViewModel.updateFavoriteView(data, 0);
     }
 
     @Override
@@ -200,5 +230,77 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         mBehaviorPackage.updateFavoriteTopTime(itemId, topTime);
     }
 
+    /**
+     * 判断SGM账号是否登录
+     * @return 是否登录
+     */
+    public boolean isSGMLogin() {
+        final boolean sgmLogin = mAccountPackage.isSGMLogin();
+        Logger.d(TAG, "isSGMLogin: " + sgmLogin);
+        return sgmLogin;
+    }
+
+    /**
+     * 登录SGM
+     * @param context
+     */
+    public void sendSGMLogin(Context context) {
+        mAccountPackage.sendSGMLoginRequest(context);
+    }
+
+    /**
+     * 查询专属充电站
+     */
+    public void queryCollectStation(final Activity activity) {
+        final AccessTokenParam param = new AccessTokenParam(
+            AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+            AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+            null,
+            activity,
+            null,
+            null,
+            null,
+            null);
+
+        ThreadManager.getInstance().runAsync(() -> {
+            final String vehicleBrand = mSearchPackage.getBrandName(CalibrationPackage.getInstance().brand());
+            mSearchPackage.queryCollectStation(mAccountPackage.getUserId(), mAccountPackage.getAccessToken(param), vehicleBrand);
+        });
+    }
+
+    /**
+     * 取消收藏当前专属充电站
+     * @param activity
+     * @param poiInfo
+     */
+    public void removeCurrentStation(final Activity activity, final PoiInfoEntity poiInfo) {
+        final AccessTokenParam param = new AccessTokenParam(
+            AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+            AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+            null,
+            activity,
+            null,
+            null,
+            null,
+            null);
+
+        ThreadManager.getInstance().runAsync(() -> {
+            final String vehicleBrand = mSearchPackage.getBrandName(CalibrationPackage.getInstance().brand());
+            poiInfo.setIsCollect(true);
+            mSearchPackage.updateCollectStatus(mAccountPackage.getUserId(), mAccountPackage.getAccessToken(param), vehicleBrand, poiInfo);
+        });
+    }
+
+    @Override
+    public void onNetSearchResult(int taskId, String searchKey, BaseRep result) {
+        if(AutoMapConstant.NetSearchKey.QUERY_STATION_LIST.equals(searchKey)){
+            Logger.d(TAG, "station list result is  " + GsonUtils.toJson(result));
+            if (AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
+                mViewModel.notifyConnectStationResult(result);
+            }else {
+                mViewModel.notifyConnectStationError();
+            }
+        }
+    }
 }
 

@@ -7,6 +7,10 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.option.PathInfo;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.aos.BlAosAdapter;
 import com.fy.navi.service.adapter.aos.QueryRestrictedObserver;
@@ -427,9 +431,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     @Override
-    public void onRouteFail(final RequestRouteResult requestRouteResult, final int errorCode, final String errorMsg) {
+    public void onRouteFail(final RequestRouteResult requestRouteResult, final int errorCode, final String errorMsg, final long requestId) {
         Logger.i(TAG, "onRouteFail");
-        if (ConvertUtils.isEmpty(requestRouteResult)) {
+        if (ConvertUtils.isEmpty(requestRouteResult) || mRouteAdapter.getRequestRouteId() != requestId) {
+            Logger.i(TAG, "onRouteFail requestRouteResult is null or exists multiple times");
             return;
         }
         if (isNeedAutoOfflineRoute(errorCode) && requestRouteResult.isMIsOnlineRoute()) {
@@ -669,6 +674,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         param.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_VIA);
         param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
         requestRoute(param);
+        sendBuryPointForAddMiddle(poiInfoEntity.getName());
     }
 
     /**
@@ -700,6 +706,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         param.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_VIA);
         param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
         requestRoute(param);
+        sendBuryPointForAddMiddle(poiInfoEntity.getName());
     }
 
     /**
@@ -738,11 +745,27 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             } else {
                 mRouteAdapter.saveAllPoiParamList(mapTypeId, getCurrentParamsList(mapTypeId));
             }
+            sendBuryPointForDeleteMiddle(poiInfoEntity.getName());
             return true;
         }
         return false;
     }
 
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_ROUTE_ADD_MIDDLE)
+    private void sendBuryPointForAddMiddle(final String msg) {
+        BuryProperty property = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, msg)
+                .build();
+        BuryPointController.getInstance().setBuryProps(property);
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_ROUTE_DELETE_MIDDLE)
+    private void sendBuryPointForDeleteMiddle(final String msg) {
+        BuryProperty property = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, msg)
+                .build();
+        BuryPointController.getInstance().setBuryProps(property);
+    }
     /**
      * send2car 算路请求
      *

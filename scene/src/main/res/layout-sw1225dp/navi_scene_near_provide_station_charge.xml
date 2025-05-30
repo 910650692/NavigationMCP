@@ -9,7 +9,7 @@
 
     <com.fy.navi.ui.view.SwipeDeleteLayout
         android:id="@+id/swipeDeleteView"
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_545"
         android:layout_height="@dimen/dp_104"
         android:background="@drawable/bg_scene_charge_tip"
         android:clickable="true">
@@ -35,7 +35,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/tv_title"
-                android:layout_width="@dimen/dp_357"
+                android:layout_width="@dimen/dp_350"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:ellipsize="end"
@@ -89,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_4"
-                android:layout_marginEnd="@dimen/dp_31"
+                android:layout_marginEnd="@dimen/dp_16"
                 android:minWidth="@dimen/dp_88"
                 android:textColor="@color/traffic_sub_title_color"
                 android:textSize="@dimen/sp_26"

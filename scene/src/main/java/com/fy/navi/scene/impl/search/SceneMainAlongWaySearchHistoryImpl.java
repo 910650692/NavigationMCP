@@ -42,6 +42,16 @@ public class SceneMainAlongWaySearchHistoryImpl extends BaseSceneModel<SceneSear
         return mBehaviorPackage.isFavorite(poiInfo);
     }
 
+    /**
+     * 是否常去地址
+     *
+     * @param poiInfo PoiInfoEntity
+     * @return true 是 否 不是
+     */
+    public boolean isFrequentAddress(final PoiInfoEntity poiInfo) {
+        return mBehaviorPackage.isFrequentAddress(poiInfo);
+    }
+
     @Override
     public void clearSearchKeywordRecord() {
         mSearchPackage.clearSearchKeywordRecord();

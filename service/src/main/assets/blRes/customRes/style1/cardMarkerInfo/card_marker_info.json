@@ -1,0 +1,710 @@
+{
+  "marker_info": {
+    "marker_info_route_jam_bubbles_left_down": {
+      "anchor": 11,
+      "day_style": {
+        "color": [{
+          "main_title_smooth": "#ff00804e"
+        }, {
+          "time_row_smooth": "#ff00804e"
+        }, {
+          "time_col_smooth": "#ff00804e"
+        }, {
+          "text_line_smooth": "#ff00804e"
+        }, {
+          "sub_title_smooth": "#e6000000"
+        }, {
+          "main_title_slow": "#ffed390d"
+        }, {
+          "time_row_slow": "#ffed390d"
+        }, {
+          "time_col_slow": "#ffed390d"
+        }, {
+          "text_line_slow": "#ffed390d"
+        }, {
+          "sub_title_slow": "#e6000000"
+        }, {
+          "main_title_congested": "#ff930506"
+        }, {
+          "time_row_congested": "#ff930506"
+        }, {
+          "time_col_congested": "#ff930506"
+        }, {
+          "text_line_congested": "#ff930506"
+        }, {
+          "sub_title_congested": "#e6000000"
+        }, {
+          "main_title_default": "#e6000000"
+        }, {
+          "time_row_default": "#e6000000"
+        }, {
+          "time_col_default": "#e6000000"
+        }, {
+          "text_line_default": "#e6000000"
+        }, {
+          "sub_title_default": "#e6000000"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "jam_bubbles": "global_image_bubble_left_bottom_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "main_title_smooth": "#ff4bdb97"
+        }, {
+          "time_row_smooth": "#ff4bdb97"
+        }, {
+          "time_col_smooth": "#ff4bdb97"
+        }, {
+          "text_line_smooth": "#ff4bdb97"
+        }, {
+          "sub_title_smooth": "#e6ffffff"
+        }, {
+          "main_title_slow": "#fffb665e"
+        }, {
+          "time_row_slow": "#fffb665e"
+        }, {
+          "time_col_slow": "#fffb665e"
+        }, {
+          "text_line_slow": "#fffb665e"
+        }, {
+          "sub_title_slow": "#e6ffffff"
+        }, {
+          "main_title_congested": "#ffff3b6a"
+        }, {
+          "time_row_congested": "#ffff3b6a"
+        }, {
+          "time_col_congested": "#ffff3b6a"
+        }, {
+          "text_line_congested": "#ffff3b6a"
+        }, {
+          "sub_title_congested": "#e6ffffff"
+        }, {
+          "main_title_default": "#e6ffffff"
+        }, {
+          "time_row_default": "#e6ffffff"
+        }, {
+          "time_col_default": "#e6ffffff"
+        }, {
+          "text_line_default": "#e6ffffff"
+        }, {
+          "sub_title_default": "#e6ffffff"
+        }]
+      },
+      "y_offset": 12,
+      "x_offset": 20
+    },
+    "marker_info_route_jam_bubbles_left_up": {
+      "anchor": 13,
+      "day_style": {
+        "color": [{
+          "main_title_smooth": "#ff00804e"
+        }, {
+          "time_row_smooth": "#ff00804e"
+        }, {
+          "time_col_smooth": "#ff00804e"
+        }, {
+          "text_line_smooth": "#ff00804e"
+        }, {
+          "sub_title_smooth": "#e6000000"
+        }, {
+          "main_title_slow": "#ffed390d"
+        }, {
+          "time_row_slow": "#ffed390d"
+        }, {
+          "time_col_slow": "#ffed390d"
+        }, {
+          "text_line_slow": "#ffed390d"
+        }, {
+          "sub_title_slow": "#e6000000"
+        }, {
+          "main_title_congested": "#ff930506"
+        }, {
+          "time_row_congested": "#ff930506"
+        }, {
+          "time_col_congested": "#ff930506"
+        }, {
+          "text_line_congested": "#ff930506"
+        }, {
+          "sub_title_congested": "#e6000000"
+        }, {
+          "main_title_default": "#e6000000"
+        }, {
+          "time_row_default": "#e6000000"
+        }, {
+          "time_col_default": "#e6000000"
+        }, {
+          "text_line_default": "#e6000000"
+        }, {
+          "sub_title_default": "#e6000000"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "jam_bubbles": "global_image_bubble_left_top_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "main_title_smooth": "#ff4bdb97"
+        }, {
+          "time_row_smooth": "#ff4bdb97"
+        }, {
+          "time_col_smooth": "#ff4bdb97"
+        }, {
+          "text_line_smooth": "#ff4bdb97"
+        }, {
+          "sub_title_smooth": "#e6ffffff"
+        }, {
+          "main_title_slow": "#fffb665e"
+        }, {
+          "time_row_slow": "#fffb665e"
+        }, {
+          "time_col_slow": "#fffb665e"
+        }, {
+          "text_line_slow": "#fffb665e"
+        }, {
+          "sub_title_slow": "#e6ffffff"
+        }, {
+          "main_title_congested": "#ffff3b6a"
+        }, {
+          "time_row_congested": "#ffff3b6a"
+        }, {
+          "time_col_congested": "#ffff3b6a"
+        }, {
+          "text_line_congested": "#ffff3b6a"
+        }, {
+          "sub_title_congested": "#e6ffffff"
+        }, {
+          "main_title_default": "#e6ffffff"
+        }, {
+          "time_row_default": "#e6ffffff"
+        }, {
+          "time_col_default": "#e6ffffff"
+        }, {
+          "text_line_default": "#e6ffffff"
+        }, {
+          "sub_title_default": "#e6ffffff"
+        }]
+      },
+      "y_offset": 15,
+      "x_offset": 20
+    },
+    "marker_info_route_jam_bubbles_right_down": {
+      "anchor": 10,
+      "day_style": {
+        "color": [{
+          "main_title_smooth": "#ff00804e"
+        }, {
+          "time_row_smooth": "#ff00804e"
+        }, {
+          "time_col_smooth": "#ff00804e"
+        }, {
+          "text_line_smooth": "#ff00804e"
+        }, {
+          "sub_title_smooth": "#e6000000"
+        }, {
+          "main_title_slow": "#ffed390d"
+        }, {
+          "time_row_slow": "#ffed390d"
+        }, {
+          "time_col_slow": "#ffed390d"
+        }, {
+          "text_line_slow": "#ffed390d"
+        }, {
+          "sub_title_slow": "#e6000000"
+        }, {
+          "main_title_congested": "#ff930506"
+        }, {
+          "time_row_congested": "#ff930506"
+        }, {
+          "time_col_congested": "#ff930506"
+        }, {
+          "text_line_congested": "#ff930506"
+        }, {
+          "sub_title_congested": "#e6000000"
+        }, {
+          "main_title_default": "#e6000000"
+        }, {
+          "time_row_default": "#e6000000"
+        }, {
+          "time_col_default": "#e6000000"
+        }, {
+          "text_line_default": "#e6000000"
+        }, {
+          "sub_title_default": "#e6000000"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "jam_bubbles": "global_image_bubble_right_bottom_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "main_title_smooth": "#ff4bdb97"
+        }, {
+          "time_row_smooth": "#ff4bdb97"
+        }, {
+          "time_col_smooth": "#ff4bdb97"
+        }, {
+          "text_line_smooth": "#ff4bdb97"
+        }, {
+          "sub_title_smooth": "#e6ffffff"
+        }, {
+          "main_title_slow": "#fffb665e"
+        }, {
+          "time_row_slow": "#fffb665e"
+        }, {
+          "time_col_slow": "#fffb665e"
+        }, {
+          "text_line_slow": "#fffb665e"
+        }, {
+          "sub_title_slow": "#e6ffffff"
+        }, {
+          "main_title_congested": "#ffff3b6a"
+        }, {
+          "time_row_congested": "#ffff3b6a"
+        }, {
+          "time_col_congested": "#ffff3b6a"
+        }, {
+          "text_line_congested": "#ffff3b6a"
+        }, {
+          "sub_title_congested": "#e6ffffff"
+        }, {
+          "main_title_default": "#e6ffffff"
+        }, {
+          "time_row_default": "#e6ffffff"
+        }, {
+          "time_col_default": "#e6ffffff"
+        }, {
+          "text_line_default": "#e6ffffff"
+        }, {
+          "sub_title_default": "#e6ffffff"
+        }]
+      },
+      "y_offset": 12,
+      "x_offset": 20
+    },
+    "marker_info_route_jam_bubbles_right_up": {
+      "anchor": 12,
+      "day_style": {
+        "color": [{
+          "main_title_smooth": "#ff00804e"
+        }, {
+          "time_row_smooth": "#ff00804e"
+        }, {
+          "time_col_smooth": "#ff00804e"
+        }, {
+          "text_line_smooth": "#ff00804e"
+        }, {
+          "sub_title_smooth": "#e6000000"
+        }, {
+          "main_title_slow": "#ffed390d"
+        }, {
+          "time_row_slow": "#ffed390d"
+        }, {
+          "time_col_slow": "#ffed390d"
+        }, {
+          "text_line_slow": "#ffed390d"
+        }, {
+          "sub_title_slow": "#e6000000"
+        }, {
+          "main_title_congested": "#ff930506"
+        }, {
+          "time_row_congested": "#ff930506"
+        }, {
+          "time_col_congested": "#ff930506"
+        }, {
+          "text_line_congested": "#ff930506"
+        }, {
+          "sub_title_congested": "#e6000000"
+        }, {
+          "main_title_default": "#e6000000"
+        }, {
+          "time_row_default": "#e6000000"
+        }, {
+          "time_col_default": "#e6000000"
+        }, {
+          "text_line_default": "#e6000000"
+        }, {
+          "sub_title_default": "#e6000000"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "jam_bubbles": "global_image_bubble_right_top_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "main_title_smooth": "#ff4bdb97"
+        }, {
+          "time_row_smooth": "#ff4bdb97"
+        }, {
+          "time_col_smooth": "#ff4bdb97"
+        }, {
+          "text_line_smooth": "#ff4bdb97"
+        }, {
+          "sub_title_smooth": "#e6ffffff"
+        }, {
+          "main_title_slow": "#fffb665e"
+        }, {
+          "time_row_slow": "#fffb665e"
+        }, {
+          "time_col_slow": "#fffb665e"
+        }, {
+          "text_line_slow": "#fffb665e"
+        }, {
+          "sub_title_slow": "#e6ffffff"
+        }, {
+          "main_title_congested": "#ffff3b6a"
+        }, {
+          "time_row_congested": "#ffff3b6a"
+        }, {
+          "time_col_congested": "#ffff3b6a"
+        }, {
+          "text_line_congested": "#ffff3b6a"
+        }, {
+          "sub_title_congested": "#e6ffffff"
+        }, {
+          "main_title_default": "#e6ffffff"
+        }, {
+          "time_row_default": "#e6ffffff"
+        }, {
+          "time_col_default": "#e6ffffff"
+        }, {
+          "text_line_default": "#e6ffffff"
+        }, {
+          "sub_title_default": "#e6ffffff"
+        }]
+      },
+      "y_offset": 15,
+      "x_offset": 20
+    },
+    "marker_info_guide_label_right_down_fast": {
+      "anchor": 10,
+      "day_style": {
+        "color": [{
+          "time_diff_text": "#ff1a66ff"
+        }, {
+          "cost_text1": "#ff1a66ff"
+        }, {
+          "distance_diff_text": "#ff1a66ff"
+        }, {
+          "traffic_light_text": "#ff1a66ff"
+        }, {
+          "cost_text2": "#ff1a66ff"
+        }, {
+          "label_text": "#ffffffff"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "guide_label_background_image": "global_image_navi_bg_route_label_right_down_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "time_diff_text": "#f0619cff"
+        }, {
+          "cost_text1": "#f0619cff"
+        }, {
+          "distance_diff_text": "#f0619cff"
+        }, {
+          "traffic_light_text": "#f0619cff"
+        }, {
+          "cost_text2": "#f0619cff"
+        }, {
+          "label_text": "#f0ffffff"
+        }]
+      },
+      "y_offset": 8,
+      "x_offset": 8
+    },
+    "marker_info_guide_label_right_down_slow": {
+      "anchor": 10,
+      "day_style": {
+        "color": [{
+          "time_diff_text": "#ff000000"
+        }, {
+          "cost_text1": "#ff000000"
+        }, {
+          "distance_diff_text": "#ff000000"
+        }, {
+          "traffic_light_text": "#ff000000"
+        }, {
+          "cost_text2": "#ff000000"
+        }, {
+          "label_text": "#ff094dd8"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "guide_label_background_image": "global_image_navi_bg_route_label_right_down_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "time_diff_text": "#f0ced5e6"
+        }, {
+          "cost_text1": "#f0ced5e6"
+        }, {
+          "distance_diff_text": "#f0ced5e6"
+        }, {
+          "traffic_light_text": "#f0ced5e6"
+        }, {
+          "cost_text2": "#f0ced5e6"
+        }, {
+          "label_text": "#ff659fff"
+        }]
+      },
+      "y_offset": 8,
+      "x_offset": 8
+    },
+    "marker_info_guide_label_right_up_slow": {
+      "anchor": 12,
+      "day_style": {
+        "color": [{
+          "time_diff_text": "#ff000000"
+        }, {
+          "cost_text1": "#ff000000"
+        }, {
+          "distance_diff_text": "#ff000000"
+        }, {
+          "traffic_light_text": "#ff000000"
+        }, {
+          "cost_text2": "#ff000000"
+        }, {
+          "label_text": "#ff094dd8"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "guide_label_background_image": "global_image_navi_bg_route_label_right_up_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "time_diff_text": "#f0ced5e6"
+        }, {
+          "cost_text1": "#f0ced5e6"
+        }, {
+          "distance_diff_text": "#f0ced5e6"
+        }, {
+          "traffic_light_text": "#f0ced5e6"
+        }, {
+          "cost_text2": "#f0ced5e6"
+        }, {
+          "label_text": "#ff659fff"
+        }]
+      },
+      "y_offset": 12,
+      "x_offset": 12
+    },
+    "marker_info_guide_label_right_up_fast": {
+      "anchor": 12,
+      "day_style": {
+        "color": [{
+          "time_diff_text": "#ff1a66ff"
+        }, {
+          "cost_text1": "#ff1a66ff"
+        }, {
+          "distance_diff_text": "#ff1a66ff"
+        }, {
+          "traffic_light_text": "#ff1a66ff"
+        }, {
+          "cost_text2": "#ff1a66ff"
+        }, {
+          "label_text": "#ffffffff"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "guide_label_background_image": "global_image_navi_bg_route_label_right_up_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "time_diff_text": "#f0619cff"
+        }, {
+          "cost_text1": "#f0619cff"
+        }, {
+          "distance_diff_text": "#f0619cff"
+        }, {
+          "traffic_light_text": "#f0619cff"
+        }, {
+          "cost_text2": "#f0619cff"
+        }, {
+          "label_text": "#f0ffffff"
+        }]
+      },
+      "y_offset": 12,
+      "x_offset": 12
+    },
+    "marker_info_guide_label_left_up_fast": {
+      "anchor": 13,
+      "day_style": {
+        "color": [{
+          "time_diff_text": "#ff1a66ff"
+        }, {
+          "cost_text1": "#ff1a66ff"
+        }, {
+          "distance_diff_text": "#ff1a66ff"
+        }, {
+          "traffic_light_text": "#ff1a66ff"
+        }, {
+          "cost_text2": "#ff1a66ff"
+        }, {
+          "label_text": "#ffffffff"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "guide_label_background_image": "global_image_navi_bg_route_label_left_up_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "time_diff_text": "#f0619cff"
+        }, {
+          "cost_text1": "#f0619cff"
+        }, {
+          "distance_diff_text": "#f0619cff"
+        }, {
+          "traffic_light_text": "#f0619cff"
+        }, {
+          "cost_text2": "#f0619cff"
+        }, {
+          "label_text": "#f0ffffff"
+        }]
+      },
+      "y_offset": 12,
+      "x_offset": 12
+    },
+    "marker_info_guide_label_left_down_fast": {
+      "anchor": 11,
+      "day_style": {
+        "color": [{
+          "time_diff_text": "#ff1a66ff"
+        }, {
+          "cost_text1": "#ff1a66ff"
+        }, {
+          "distance_diff_text": "#ff1a66ff"
+        }, {
+          "traffic_light_text": "#ff1a66ff"
+        }, {
+          "cost_text2": "#ff1a66ff"
+        }, {
+          "label_text": "#ffffffff"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "guide_label_background_image": "global_image_navi_bg_route_label_left_down_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "time_diff_text": "#f0619cff"
+        }, {
+          "cost_text1": "#f0619cff"
+        }, {
+          "distance_diff_text": "#f0619cff"
+        }, {
+          "traffic_light_text": "#f0619cff"
+        }, {
+          "cost_text2": "#f0619cff"
+        }, {
+          "label_text": "#f0ffffff"
+        }]
+      },
+      "y_offset": 8,
+      "x_offset": 8
+    },
+    "marker_info_guide_label_left_down_slow": {
+      "anchor": 11,
+      "day_style": {
+        "color": [{
+          "time_diff_text": "#ff000000"
+        }, {
+          "cost_text1": "#ff000000"
+        }, {
+          "distance_diff_text": "#ff000000"
+        }, {
+          "traffic_light_text": "#ff000000"
+        }, {
+          "cost_text2": "#ff000000"
+        }, {
+          "label_text": "#ff094dd8"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "guide_label_background_image": "global_image_navi_bg_route_label_left_down_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "time_diff_text": "#f0ced5e6"
+        }, {
+          "cost_text1": "#f0ced5e6"
+        }, {
+          "distance_diff_text": "#f0ced5e6"
+        }, {
+          "traffic_light_text": "#f0ced5e6"
+        }, {
+          "cost_text2": "#f0ced5e6"
+        }, {
+          "label_text": "#ff659fff"
+        }]
+      },
+      "y_offset": 8,
+      "x_offset": 8
+    },
+    "marker_info_guide_label_left_up_slow": {
+      "anchor": 13,
+      "day_style": {
+        "color": [{
+          "time_diff_text": "#ff000000"
+        }, {
+          "cost_text1": "#ff000000"
+        }, {
+          "distance_diff_text": "#ff000000"
+        }, {
+          "traffic_light_text": "#ff000000"
+        }, {
+          "cost_text2": "#ff000000"
+        }, {
+          "label_text": "#ff094dd8"
+        }]
+      },
+      "style": {
+        "background-image": [{
+          "guide_label_background_image": "global_image_navi_bg_route_label_left_up_day_night"
+        }]
+      },
+      "night_style": {
+        "color": [{
+          "time_diff_text": "#f0ced5e6"
+        }, {
+          "cost_text1": "#f0ced5e6"
+        }, {
+          "distance_diff_text": "#f0ced5e6"
+        }, {
+          "traffic_light_text": "#f0ced5e6"
+        }, {
+          "cost_text2": "#f0ced5e6"
+        }, {
+          "label_text": "#ff659fff"
+        }]
+      },
+      "y_offset": 12,
+      "x_offset": 12
+    }
+  },
+  "layer_item_info": {},
+  "demo_info": {}
+}

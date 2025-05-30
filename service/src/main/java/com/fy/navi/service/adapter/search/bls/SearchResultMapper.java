@@ -127,6 +127,7 @@ public final class SearchResultMapper {
                 .stream()
                 .map(this::mapSearchSuggestionPoiChildTip)
                 .collect(Collectors.toList());
+
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapSuggestionPoiTip childList: " + suggestionPoiTip.basicInfo.childInfoList);
         return new PoiInfoEntity()
                 .setPid(suggestionPoiTip.basicInfo.poiId)
@@ -405,7 +406,7 @@ public final class SearchResultMapper {
             poiAoiBounds.add(points);
         }
         return new PoiInfoEntity()
-                .setPid(point.getLon() + point.getLat() + "")
+                .setPid(point.getLon() + "_" + point.getLat())
                 .setName(searchDistrict.name)
                 .setAddress(searchDistrict.address)
                 .setPoint(point)
@@ -467,6 +468,10 @@ public final class SearchResultMapper {
                 .stream()
                 .map(this::mapSearchPoiChildInfo)
                 .collect(Collectors.toList());
+        int childType = AutoMapConstant.ChildType.DEFAULT;
+        if (!ConvertUtils.isEmpty(childInfoList)) {
+            childType = AutoMapConstant.ChildType.HAS_CHILD_NO_GRAND;
+        }
         //区域边界点信息
         final ArrayList<ArrayList<GeoPoint>> poiAoiBounds = new ArrayList<>();
         for (ArrayList<Coord2DDouble> coord2DDouble : searchPoiInfo.basicInfo.poiAoiBounds) {
@@ -509,6 +514,7 @@ public final class SearchResultMapper {
                 .setPoiTag(isParking(searchPoiInfo.basicInfo.typeCode) ? "停车场" : searchPoiInfo.basicInfo.tag)
                 .setParkingInfoList(getParkingList(searchPoiInfo))
                 .setChildInfoList(childInfoList)
+                .setMChildType(childType)
                 .setStationList(gasStationInfos)
                 .setSort_distance(ConvertUtils.str2Int(searchPoiInfo.basicInfo.distance))
                 .setSort_rate(ConvertUtils.str2Int(searchPoiInfo.rankInfo.rankNo))

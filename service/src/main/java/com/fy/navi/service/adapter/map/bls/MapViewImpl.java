@@ -66,6 +66,7 @@ import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
+import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -82,6 +83,7 @@ import com.fy.navi.service.define.map.PointDataInfo;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.utils.HudMapConfigUtils;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.BaseApplication;
@@ -200,11 +202,17 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         Logger.i(TAG, "mapViewParam.engineId -> " + mapViewParam.engineId);
 
         mapViewParam.x = x;
+        Logger.i(TAG, "mapViewParam.x -> " + x);
         mapViewParam.y = y;
+        Logger.i(TAG, "mapViewParam.y -> " + y);
         mapViewParam.width = width;
+        Logger.i(TAG, "mapViewParam.width -> " + width);
         mapViewParam.height = height;
+        Logger.i(TAG, "mapViewParam.height -> " + height);
         mapViewParam.screenWidth = screenWidth;
+        Logger.i(TAG, "mapViewParam.screenWidth -> " + screenWidth);
         mapViewParam.screenHeight = screenHeight;
+        Logger.i(TAG, "mapViewParam.screenHeight -> " + screenHeight);
 
         mapViewParam.cacheCountFactor = 2.0F;
         mapViewParam.zoomScaleMode = MapZoomScaleMode.PhysicalAdaptiveMode;
@@ -217,6 +225,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     }
 
     private void createMapView() {
+        Logger.i(TAG,"createMapView----------mapViewParams.x=="+mapViewParams.getX()+"--mapViewParams.y=="+mapViewParams.getY()+"--mapViewParams.width=="+mapViewParams.getWidth()+"--mapViewParams.screenWidth=="+mapViewParams.getScreenWidth()+"--mapViewParams.screenHeight=="+mapViewParams.getScreenHeight());
         createMapViewInternal(
                 mapViewParams.getX(),
                 mapViewParams.getY(),
@@ -227,13 +236,22 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         );
     }
     private void createHudMapView() {
-        createMapViewInternal(0, 0, 328, 172, 328, 172);
+        Logger.d(TAG, "createHudMapView----------map left: " + HudMapConfigUtils.getX(), "map top: " + HudMapConfigUtils.getY()+"map width: " + HudMapConfigUtils.getWidth(), "map height: " + HudMapConfigUtils.getHeight()
+                +  "map screenWidth: " + HudMapConfigUtils.getScreenWidth(), "map screenHeight: " + HudMapConfigUtils.getScreenHeight());
+        createMapViewInternal(
+                HudMapConfigUtils.getX(),
+                HudMapConfigUtils.getY(),
+                HudMapConfigUtils.getWidth(),
+                HudMapConfigUtils.getHeight(),
+                HudMapConfigUtils.getScreenWidth(),
+                HudMapConfigUtils.getScreenHeight()
+        );
     }
 
     @Override
     public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
         Logger.d(TAG, "onSurfaceChanged -> deviceId:" + deviceId, "width:" + width, "height:" + height);
-        startScreenshot(mapType,mMapDevice,ScreenUtils.Companion.getInstance().getScreenWidth(),ScreenUtils.Companion.getInstance().getScreenHeight());
+        startScreenshot(mapType,mMapDevice);
     }
 
     private void createMapDevice(MapViewParams params) {
@@ -860,11 +878,16 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         eglSurfaceAttr.height = 172;
         mapDevice.attachSurfaceToDevice(eglSurfaceAttr);
     }
-    public void startScreenshot(MapType mapType, MapDevice mapDevice,int width, int height){
-        Logger.d(TAG, "startScreenshot mapType=="+mapType+"mapDevice=="+mapDevice+"width=="+width+"height=="+height);
+    public void startScreenshot(MapType mapType, MapDevice mapDevice){
+        Logger.d(TAG, "startScreenshot mapType=="+mapType+"mapDevice=="+mapDevice);
         if (mapType == MapType.MAIN_SCREEN_MAIN_MAP){
             // 这里裁剪的区域不要随意改变，现在是整个屏幕，如果需要某一部分，需要在回调后自己再次裁剪
-            mapDevice.setScreenshotRect(0, 0, width, height);
+            mapDevice.setScreenshotRect(
+                    0,
+                    0,
+                    ScreenUtils.Companion.getInstance().getRealScreenWidth(AppContext.getInstance().getMContext()),
+                    ScreenUtils.Companion.getInstance().getRealScreenHeight(AppContext.getInstance().getMContext())
+            );
         }else if (mapType == MapType.HUD_MAP ){
             mapDevice.setScreenshotRect(0, 0, 328, 172);
         }
@@ -899,6 +922,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
      */
     @Override
     public void isAppInForeground(int isInForeground) {
-        startScreenshot(mapType,mMapDevice,ScreenUtils.Companion.getInstance().getScreenWidth(),ScreenUtils.Companion.getInstance().getScreenHeight());
+        startScreenshot(mapType,mMapDevice);
     }
 }

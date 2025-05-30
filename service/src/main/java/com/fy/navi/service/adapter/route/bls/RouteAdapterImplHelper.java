@@ -644,13 +644,14 @@ public class RouteAdapterImplHelper {
                 return;
             }
             final long requestId = pathResultData.requestId;
-            mRequsetId = requestId;
             Logger.i(TAG, "route plane result id " + requestId);
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, requestId);
             Logger.i(TAG, "从请求队列中获取结果对象 " + requestRouteResult);
             if (null == requestRouteResult) {
+                //除了reRoute/requestRoute外其余一概不处理
                 return;
             }
+            mRequsetId = requestId;
             //专为通勤模式添加回调
             if (requestRouteResult.getMRouteRequestCallBackType() != -1) {
                 handlerTMCForMap(pathInfoList, requestId, requestRouteResult.getMMapTypeId()
@@ -658,7 +659,6 @@ public class RouteAdapterImplHelper {
                 return;
             }
             handResultSuccess(getMsgs(requestRouteResult.getMRouteWay(), false));
-            sendBuryPointForViaPoint(requestRouteResult.getMRouteWay());
             handlerRouteResult(requestRouteResult, pathInfoList);
             handlerChargingStation(requestRouteResult.getMRouteChargeStationParam(), pathInfoList,
                     requestId, requestRouteResult.getMMapTypeId());
@@ -700,18 +700,8 @@ public class RouteAdapterImplHelper {
                         Logger.d(TAG, "resultObserver is null ");
                         continue;
                     }
-                    resultObserver.onRouteFail(requestRouteResult, pathResultData.errorCode, errorMsg + errorMsgDetail);
+                    resultObserver.onRouteFail(requestRouteResult, pathResultData.errorCode, errorMsg + errorMsgDetail, pathResultData.requestId);
                 }
-            }
-        }
-
-        @HookMethod
-        private void sendBuryPointForViaPoint(RouteWayID routeWay) {
-            if (routeWay == RouteWayID.ROUTE_WAY_ADD_VIA) {
-                BuryPointController.getInstance().setEventName(BuryConstant.EventName.AMAP_ROUTE_ADD_MIDDLE);
-            }
-            if (routeWay == RouteWayID.ROUTE_WAY_DELETE_VIA) {
-                BuryPointController.getInstance().setEventName(BuryConstant.EventName.AMAP_ROUTE_DELETE_MIDDLE);
             }
         }
 
@@ -1536,6 +1526,7 @@ public class RouteAdapterImplHelper {
                         dto.setMRoadclass(linkInfo.getRoadClass());
                         dto.setMRoadname(linkInfo.getRoadName());
                         dto.setMIsToll(linkInfo.isToll());
+                        dto.setMUrid(linkInfo.getURID());
                         dto.setMAdminCode((int) linkInfo.getAdcode());
                         dto.setMHasMixFork(linkInfo.hasMixFork());
                         dto.setMHasTrafficLight(linkInfo.hasTrafficLight());
@@ -1622,7 +1613,7 @@ public class RouteAdapterImplHelper {
                         linkIndex = linkIndex + (int)segmentInfo.getLinkCount();
                         dto.setMDescription("行驶" + TimeUtils.getInstance().getDistanceString(segmentInfo.getLength())
                                 + iconId2String(segmentInfo) + "进入" + segmentInfo.getLinkInfo(0).getRoadName());
-                        dto.setMIsArriveWayPoint(groupSegment.isViaPoint);
+                        dto.setMIsArriveWayPoint(groupSegment.isViaPoint || lightIndex == num -1);
                         dto.setMNavigationMainAction(segmentInfo.getMainAction());
                         dto.setMNavigationAssistAction(segmentInfo.getAssistantAction());
                         dto.setMNavigationNextRoadName(segmentInfo.getCrossingName());
@@ -1720,6 +1711,9 @@ public class RouteAdapterImplHelper {
                         dto.setMCoordinate(coordinateDTO);
                         for (int t = 0; t < count; t++) {
                             final SegmentInfo segmentInfo = pathInfo.getSegmentInfo(startIndex + t);
+                            if (segmentInfo.getLinkInfo(0) == null) {
+                                continue;
+                            }
                             final short speed = segmentInfo.getLinkInfo(0).getSpeed();
                             if (t == 0) {
                                 maxSpeed = speed;

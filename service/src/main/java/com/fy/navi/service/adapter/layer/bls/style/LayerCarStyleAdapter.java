@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.layer.bls.style;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class LayerCarStyleAdapter extends BaseStyleAdapter {
     private static final String KEY_LAYER_CAR_DEFAULT = "car_logo_base";
     private static final String KEY_LAYER_CAR_OTHER = "car_logo_other";
     private static final String KEY_LAYER_CAR_SPEED = "car_logo_speed";
+    private static final String KEY_LAYER_CAR_SPEED_ARROW = "car_logo_speed_arrow";
 
     private BizCarControl bizCarControl;
 
@@ -38,12 +40,13 @@ public class LayerCarStyleAdapter extends BaseStyleAdapter {
         }
         switch (bizCarControl.getCarMode()) {
             case CarMode.CarModeSpeed -> {
-                if (item.getItemType() == LayerItemType.LayerItemPointType) {
-                    Logger.d(TAG, "车速车标");
+                if(item instanceof SpeedCarLayerItem){
+                    Logger.d("ForTest", "返回车速车标");
                     return KEY_LAYER_CAR_SPEED;
-                } else if (item.getItemType() == LayerItemType.LayerItemNaviCarType) {
-                    Logger.d(TAG, "车速车标其他信息");
-                    return KEY_LAYER_CAR_OTHER;
+                }
+                if (item.getItemType() == LayerItemType.LayerItemNaviCarType) {
+                    Logger.d("ForTest", "返回罗盘和箭头");
+                    return KEY_LAYER_CAR_SPEED_ARROW;
                 }
             }
             case CarMode.CarMode2D -> {

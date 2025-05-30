@@ -2,8 +2,6 @@ package com.fy.navi.service.define.navi;
 
 import androidx.annotation.NonNull;
 
-import com.autonavi.gbl.guide.model.LightState;
-
 import java.util.ArrayList;
 
 import lombok.Getter;

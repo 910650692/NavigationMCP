@@ -13,7 +13,9 @@ import com.fy.navi.service.adapter.cruise.CruiseObserver;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.speech.SpeechAdapter;
+import com.fy.navi.service.define.cruise.CruiseFacilityEntity;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
+import com.fy.navi.service.define.cruise.CruiseIntervalvelocity;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
@@ -159,6 +161,11 @@ public class CruisePackage implements CruiseObserver {
     @Override
     public void setConfigKeyDriveWarn(boolean driveWarn) {
         mCruiseAdapter.setConfigKeyDriveWarn(driveWarn);
+    }
+
+    @Override
+    public void onUpdateCruiseFacility(CruiseFacilityEntity cruiseFacilityEntity) {
+
     }
 
     @Override

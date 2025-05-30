@@ -18,6 +18,7 @@ import com.fy.navi.mapservice.callback.OnNaviStatusChangeListener;
 import com.fy.navi.mapservice.callback.OnRoutePlanResultListener;
 import com.fy.navi.mapservice.callback.OnSearchResultListener;
 import com.fy.navi.mapservice.callback.OnSpeedLimitChangeListener;
+import com.fy.navi.mapservice.callback.OnSrNaviInfoChangeListener;
 import com.fy.navi.mapservice.callback.OnTurnInfoChangeListener;
 import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
@@ -46,6 +47,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     private final List<OnGuidePanelDataListener> mGuidePanelDataListenerList = new ArrayList<>();
     private final List<OnSpeedLimitChangeListener> mSpeedLimitListenerList = new ArrayList<>();
     private final List<OnTurnInfoChangeListener> mTurnInfoListenerList = new ArrayList<>();
+    private final List<OnSrNaviInfoChangeListener> mSrNaviInfoListenerList = new ArrayList<>();
 
     public static NaviAutoAPIManager getInstance() {
         return SingleHolder.INSTANCE;
@@ -117,8 +119,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                         mInitStatus = false;
                         initStateChangeListener.onFailure();
                     }
-                } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                         | IllegalStateException exception) {
                     Logger.d(TAG, "dispatch initSuccess: " + exception.getMessage());
                 }
             }
@@ -164,9 +166,39 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != listener) {
                     try {
                         listener.onNaviStatusChange(status);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                             IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch naviStatus error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onPanelData(final int panelDataStatus) {
+            Logger.d(TAG, mPkgName + " : onPanelData: " + panelDataStatus);
+            for (OnGuidePanelDataListener listener : mGuidePanelDataListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onPanelData(panelDataStatus);
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch onPanelData error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onCountDownLightInfo(final String lightInfo) {
+            Logger.d(TAG, mPkgName + " :onCountDownLightInfo");
+            for (OnSrNaviInfoChangeListener srNaviInfoChangeListener : mSrNaviInfoListenerList) {
+                if (null != srNaviInfoChangeListener) {
+                    try {
+                        srNaviInfoChangeListener.onCountDownLightInfo(lightInfo);
+                    } catch (NullPointerException | IllegalStateException | IllegalArgumentException
+                            | ClassCastException exception) {
+                        Logger.e(TAG, "dispatch onCountDownLightInfo error: " + exception.getMessage());
                     }
                 }
             }
@@ -182,8 +214,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != listener) {
                     try {
                         listener.onLocationChange(locationInfo);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                             IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch locationInfo error: " + exception.getMessage());
                     }
                 }
@@ -197,8 +229,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != listener) {
                     try {
                         listener.onDistrictInfoChange(districtInfo);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                             IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch districtInfo error: " + exception.getMessage());
                     }
                 }
@@ -215,8 +247,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != listener) {
                     try {
                         listener.onSearchError(silent, errorCode);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                             IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch searchFailed error: " + exception.getMessage());
                     }
                 }
@@ -230,8 +262,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != listener) {
                     try {
                         listener.onSearchResult(silent, searchResult);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                             IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch searchResult error: " + exception.getMessage());
                     }
                 }
@@ -245,8 +277,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != listener) {
                     try {
                         listener.onReverseGeoSearchResult(taskId, reverseResult);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                             IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch searchResult error: " + exception.getMessage());
                     }
                 }
@@ -263,8 +295,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != listener) {
                     try {
                         listener.onRoutePlanError(code, errorMsg);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                             IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch routePlanFailed error: " + exception.getMessage());
                     }
                 }
@@ -278,8 +310,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != listener) {
                     try {
                         listener.onRoutePlanResult(routeResult);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                             IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch routePlanResult error: " + exception.getMessage());
                     }
                 }
@@ -291,29 +323,14 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     private final INaviAutoApiCallback.Stub mNaviAutoCallback = new INaviAutoApiCallback.Stub() {
 
         @Override
-        public void onPanelData(final int panelDataStatus) {
-            Logger.d(TAG, mPkgName + " : onPanelData: " + panelDataStatus);
-            for (OnGuidePanelDataListener listener : mGuidePanelDataListenerList) {
-                if (null != listener) {
-                    try {
-                        listener.onPanelData(panelDataStatus);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
-                        Logger.e(TAG, "dispatch onPanelData error: " + exception.getMessage());
-                    }
-                }
-            }
-        }
-
-        @Override
         public void onSpeedLimitChange(final int curSpeed, final int limitSpeed) {
-            Logger.d(TAG, mPkgName + " : onSpeedLimitChange: ");
+            Logger.d(TAG, mPkgName + " : onSpeedLimitChange");
             for (OnSpeedLimitChangeListener listener : mSpeedLimitListenerList) {
                 if (null != listener) {
                     try {
                         listener.onSpeedLimitChange(curSpeed, limitSpeed);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch speedLimitChange error: " + exception.getMessage());
                     }
                 }
@@ -327,9 +344,37 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != listener) {
                     try {
                         listener.onTurnInfoUpdated(turnInfo);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException |
-                         IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch turnInfo error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onNaviArrival() {
+            Logger.d(TAG, mPkgName + " :onNaviArrival");
+            for (OnSrNaviInfoChangeListener srNaviInfoChangeListener : mSrNaviInfoListenerList) {
+                if (null != srNaviInfoChangeListener) {
+                    try {
+                        srNaviInfoChangeListener.onNaviArrival();
+                    } catch (NullPointerException | IllegalArgumentException exception) {
+                        Logger.e(TAG, "dispatch onNaviArrival error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onNaviStop() {
+            Logger.d(TAG, mPkgName + " :onNaviStop");
+            for (OnSrNaviInfoChangeListener srNaviInfoChangeListener : mSrNaviInfoListenerList) {
+                if (null != srNaviInfoChangeListener) {
+                    try {
+                        srNaviInfoChangeListener.onNaviStop();
+                    } catch (NullPointerException | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch onNaviStop error: " + exception.getMessage());
                     }
                 }
             }
@@ -394,7 +439,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param initStateChangeListener OnInitStateChangeListener.
      */
     public void setOnInitStateChangeListener(final OnInitStateChangeListener initStateChangeListener) {
-        if (!mInitStateListenerList.contains(initStateChangeListener)) {
+        if (!(null == initStateChangeListener || mInitStateListenerList.contains(initStateChangeListener))) {
             mInitStateListenerList.add(initStateChangeListener);
         }
     }
@@ -405,7 +450,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param locationChangeListener OnLocationChangeListener.
      */
     public void setOnLocationChangeListener(final OnLocationChangeListener locationChangeListener) {
-        if (mInitStatus &&  !mLocationListenerList.contains(locationChangeListener)) {
+        if (mInitStatus && null != locationChangeListener && !mLocationListenerList.contains(locationChangeListener)) {
             mLocationListenerList.add(locationChangeListener);
         }
     }
@@ -416,7 +461,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param locationChangeListener OnLocationChangeListener.
      */
     public void removeOnLocationChangeListener(final OnLocationChangeListener locationChangeListener) {
-        if (mInitStatus) {
+        if (mInitStatus && null != locationChangeListener) {
             mLocationListenerList.remove(locationChangeListener);
         }
     }
@@ -427,7 +472,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param districtInfoChangeListener OnDistrictInfoChangeListener.
      */
     public void setOnDistrictInfoChangeListener(final OnDistrictInfoChangeListener districtInfoChangeListener) {
-        if (mInitStatus && !mDistrictInfoList.contains(districtInfoChangeListener)) {
+        if (mInitStatus && null != districtInfoChangeListener && !mDistrictInfoList.contains(districtInfoChangeListener)) {
             mDistrictInfoList.add(districtInfoChangeListener);
         }
     }
@@ -438,7 +483,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param districtInfoChangeListener OnDistrictInfoChangeListener.
      */
     public void removeOnDistrictInfoChangeListener(final OnDistrictInfoChangeListener districtInfoChangeListener) {
-        if (mInitStatus) {
+        if (mInitStatus && null != districtInfoChangeListener) {
             mDistrictInfoList.remove(districtInfoChangeListener);
         }
     }
@@ -449,7 +494,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param naviStatusChangeListener OnNaviStatusChangeListener.
      */
     public void setOnNaviStatusChangeListener(final OnNaviStatusChangeListener naviStatusChangeListener) {
-        if (mInitStatus && !mNaviStatusListenerList.contains(naviStatusChangeListener)) {
+        if (mInitStatus && null != naviStatusChangeListener && !mNaviStatusListenerList.contains(naviStatusChangeListener)) {
             mNaviStatusListenerList.add(naviStatusChangeListener);
         }
     }
@@ -460,7 +505,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param naviStatusChangeListener OnNaviStatusChangeListener.
      */
     public void removeOnNaviStatusChangeListener(final OnNaviStatusChangeListener naviStatusChangeListener) {
-        if (mInitStatus) {
+        if (mInitStatus && null != naviStatusChangeListener) {
             mNaviStatusListenerList.remove(naviStatusChangeListener);
         }
     }
@@ -471,7 +516,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param searchResultListener OnSearchResultListener.
      */
     public void setOnSearchResultListener(final OnSearchResultListener searchResultListener) {
-        if (mInitStatus && !mSearchResultListenerList.contains(searchResultListener)) {
+        if (mInitStatus && null != searchResultListener && !mSearchResultListenerList.contains(searchResultListener)) {
             mSearchResultListenerList.add(searchResultListener);
         }
     }
@@ -482,7 +527,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param searchResultListener OnSearchResultListener.
      */
     public void removeOnSearchResultListener(final OnSearchResultListener searchResultListener) {
-        if (mInitStatus) {
+        if (mInitStatus && null != searchResultListener) {
             mSearchResultListenerList.remove(searchResultListener);
         }
     }
@@ -493,7 +538,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param routePlanResultListener OnRoutePlanResultListener.
      */
     public void addRoutePlanResultListener(final OnRoutePlanResultListener routePlanResultListener) {
-        if (mInitStatus && !mRoutePlanListenerList.contains(routePlanResultListener)) {
+        if (mInitStatus && null != routePlanResultListener && !mRoutePlanListenerList.contains(routePlanResultListener)) {
             mRoutePlanListenerList.add(routePlanResultListener);
         }
     }
@@ -504,7 +549,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param routePlanResultListener OnRoutePlanResultListener.
      */
     public void removeRoutePlanResultListener(final OnRoutePlanResultListener routePlanResultListener) {
-        if (mInitStatus) {
+        if (mInitStatus && null != routePlanResultListener) {
             mRoutePlanListenerList.remove(routePlanResultListener);
         }
     }
@@ -515,7 +560,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param guidePanelDataListener OnGuidePanelDataListener.
      */
     public void setGuidePanelDataChangeListener(final OnGuidePanelDataListener guidePanelDataListener) {
-        if (mInitStatus && !mGuidePanelDataListenerList.contains(guidePanelDataListener)) {
+        if (mInitStatus && null != guidePanelDataListener && !mGuidePanelDataListenerList.contains(guidePanelDataListener)) {
             mGuidePanelDataListenerList.add(guidePanelDataListener);
         }
     }
@@ -526,7 +571,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param guidePanelDataListener OnGuidePanelDataListener.
      */
     public void removeGuidePanelDataChangeListener(final OnGuidePanelDataListener guidePanelDataListener) {
-        if (mInitStatus) {
+        if (mInitStatus && null != guidePanelDataListener) {
             mGuidePanelDataListenerList.remove(guidePanelDataListener);
         }
     }
@@ -537,7 +582,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param speedLimitChangeListener OnSpeedLimitChangeListener.
      */
     public void setOnSpeedLimitChangeListener(final OnSpeedLimitChangeListener speedLimitChangeListener) {
-        if (mInitStatus && !mSpeedLimitListenerList.contains(speedLimitChangeListener)) {
+        if (mInitStatus && null != speedLimitChangeListener && !mSpeedLimitListenerList.contains(speedLimitChangeListener)) {
             mSpeedLimitListenerList.add(speedLimitChangeListener);
         }
     }
@@ -548,7 +593,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param speedLimitChangeListener OnSpeedLimitChangeListener.
      */
     public void removeOnSpeedLimitChangeListener(final OnSpeedLimitChangeListener speedLimitChangeListener) {
-        if (mInitStatus) {
+        if (mInitStatus && null != speedLimitChangeListener) {
             mSpeedLimitListenerList.remove(speedLimitChangeListener);
         }
     }
@@ -559,7 +604,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param turnInfoChangeListener OnTurnInfoChangeListener.
      */
     public void addOnTurnInfoChangeListener(final OnTurnInfoChangeListener turnInfoChangeListener) {
-        if (mInitStatus && !mTurnInfoListenerList.contains(turnInfoChangeListener)) {
+        if (mInitStatus && null != turnInfoChangeListener && !mTurnInfoListenerList.contains(turnInfoChangeListener)) {
             mTurnInfoListenerList.add(turnInfoChangeListener);
         }
     }
@@ -570,8 +615,30 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param turnInfoChangeListener OnTurnInfoChangeListener.
      */
     public void removeOnTurnInfoChangeListener(final OnTurnInfoChangeListener turnInfoChangeListener) {
-        if (mInitStatus) {
+        if (mInitStatus && null != turnInfoChangeListener) {
             mTurnInfoListenerList.remove(turnInfoChangeListener);
+        }
+    }
+
+    /**
+     * 添加SR引导信息变更监听.
+     *
+     * @param srNaviInfoChangeListener OnSrNaviInfoChangeListener.
+     */
+    public void addOnSrNaviInfoChangeListener(final OnSrNaviInfoChangeListener srNaviInfoChangeListener) {
+        if (mInitStatus && null != srNaviInfoChangeListener && !mSrNaviInfoListenerList.contains(srNaviInfoChangeListener)) {
+            mSrNaviInfoListenerList.add(srNaviInfoChangeListener);
+        }
+    }
+
+    /**
+     * 移除SR引导信息监听.
+     *
+     * @param srNaviInfoChangeListener OnSrNaviInfoChangeListener.
+     */
+    public void removeOnSrNaviInfoChangeListener(final OnSrNaviInfoChangeListener srNaviInfoChangeListener) {
+        if (mInitStatus && null != srNaviInfoChangeListener) {
+            mSrNaviInfoListenerList.remove(srNaviInfoChangeListener);
         }
     }
 

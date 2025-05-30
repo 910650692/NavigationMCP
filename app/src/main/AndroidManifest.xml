@@ -38,6 +38,7 @@
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.READ_SETTINGS" />
     <uses-permission android:name="gm.permission.RECEIVE_KEY_EVENT" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <queries>
         <intent>
@@ -133,6 +134,16 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="gm.intent.ACTION_BROADCAST_KEY_MFC_NAVIGATION"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.fy.navi.broadcast.BootCompletedReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>

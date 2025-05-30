@@ -106,6 +106,11 @@ public class RouteAdapterImpl implements IRouteApi {
     }
 
     @Override
+    public long getRequestRouteId() {
+        return mRequestRouteId;
+    }
+
+    @Override
     public long requestRoute(final RouteRequestParam param, final List<RouteParam> paramList) {
         mAdapterImplHelper.checkoutRouteServer();
         final RequestRouteResult requestRouteResult = new RequestRouteResult();

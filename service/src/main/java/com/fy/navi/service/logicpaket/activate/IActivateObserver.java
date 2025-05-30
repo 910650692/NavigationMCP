@@ -20,7 +20,10 @@ public interface IActivateObserver {
 
     /**
      * 激活出错
+     *
+     * @param msg 错误信息
+     * @param errCode 错误码
      */
-    void onActivatedError();
+    void onActivatedError(int errCode, String msg);
 
 }

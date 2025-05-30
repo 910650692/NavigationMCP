@@ -9,7 +9,6 @@ import com.android.utils.log.Logger;
 import com.autonavi.gbl.activation.ActivationModule;
 import com.autonavi.gbl.activation.model.ActivateReturnParam;
 import com.autonavi.gbl.activation.model.ActivationInitParam;
-import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.fy.navi.patacnetlib.NetQueryManager;
 import com.fy.navi.patacnetlib.request.navibean.activate.AppKeyRequest;
 import com.fy.navi.patacnetlib.request.navibean.activate.CreateOrderRequest;
@@ -47,7 +46,7 @@ public final class ActivationManager {
     private static String UUID;
     private static String ORDER_ID;
     private final static String SD = "SD";
-    private static int QUERY_ORDER_NUM = 0;
+    private static int CREATE_ORDER_NUM = 0;
 
     private final static String EXCEPTION_CODE = "Exception code : ";
     private final static String EXCEPTION_MSG = "Exception msg : ";
@@ -75,13 +74,14 @@ public final class ActivationManager {
      * 重置变量
      */
     private void resetVar() {
-        QUERY_ORDER_NUM = 0;
+        CREATE_ORDER_NUM = 0;
         SYS_VERSION = "1.0";
         API_VERSION = "1.0";
         DEVICES_ID = "";
         APP_KEY = "";
         UUID = "";
         ORDER_ID = "";
+        testFlag = false;
     }
 
     /**
@@ -131,17 +131,15 @@ public final class ActivationManager {
         if (!ConvertUtils.isEmpty(APP_KEY)) {
             Logger.d(TAG, "APP_KEY静态变量不为空 = " + APP_KEY);
             NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
-            testFlag = true;
             //mActivateListener.onNetActivated(true);
             postUUID();
             return;
         }
-
+        CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.APP_KEY, "");
         if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY))) {
             APP_KEY = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY);
             Logger.d(TAG, "APP_KEY静态变量为空，数据库存有APP_KEY = " + APP_KEY);
             NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
-            testFlag = true;
             //mActivateListener.onNetActivated(true);
             postUUID();
             return;
@@ -155,7 +153,6 @@ public final class ActivationManager {
                 APP_KEY = response.getMAppKey();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.APP_KEY, APP_KEY);
                 NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
-                testFlag = true;
                 //mActivateListener.onNetActivated(true);
                 postUUID();
             }
@@ -163,6 +160,7 @@ public final class ActivationManager {
             @Override
             public void onFailed() {
                 Logger.d(TAG, "AppKey请求失败");
+                mActivateListener.onNetFailed();
             }
         });
     }
@@ -178,7 +176,7 @@ public final class ActivationManager {
             mActivateListener.onUUIDGet(UUID);
             return;
         }
-
+        CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, "");
         if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
             UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
             Logger.d(TAG, "UUID静态变量为空，数据库存有UUID = " + UUID);
@@ -201,6 +199,7 @@ public final class ActivationManager {
             @Override
             public void onFailed() {
                 Logger.d(TAG, "Uuid请求失败");
+                mActivateListener.onNetFailed();
             }
         });
 
@@ -266,7 +265,8 @@ public final class ActivationManager {
 
         final int activateStatus = mActivationService.getActivateStatus();
         Logger.d(TAG, "激活状态码 = " + activateStatus);
-        return ConvertUtils.equals(0, activateStatus);
+        return testFlag;
+        //return ConvertUtils.equals(0, activateStatus);
     }
 
     /**
@@ -299,9 +299,7 @@ public final class ActivationManager {
 
             @Override
             public void onFailed() {
-                ++QUERY_ORDER_NUM;
-                Logger.e(TAG, "下单失败" + QUERY_ORDER_NUM + "次");
-                mActivateListener.onOrderCreated(false);
+                mActivateListener.onNetFailed();
             }
         });
 
@@ -341,8 +339,8 @@ public final class ActivationManager {
                                 future.complete(true);
                                 executor.shutdownNow();
                                 manualActivate(statusBean.getMSerialNumber(), statusBean.getMActiveCode());
-                            } else {
-                                Logger.d(TAG, "返回订单未成功");
+                            } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "1")) {
+                                Logger.d(TAG, "已下单/等待交付");
                                 final int currentCount = retryCount.incrementAndGet();
                                 Logger.d(TAG, "轮询次数 : " + currentCount);
                                 if (currentCount > maxRetries) {
@@ -351,6 +349,11 @@ public final class ActivationManager {
                                 } else {
                                     executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
                                 }
+                            } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
+                                Logger.d(TAG, "下单失败");
+                                future.complete(false);
+                                executor.shutdownNow();
+                                mActivateListener.onOrderCreated(false);
                             }
                         }
 
@@ -363,6 +366,7 @@ public final class ActivationManager {
                             if (currentCount > maxRetries) {
                                 future.complete(false);
                                 executor.shutdownNow();
+                                mActivateListener.onNetFailed();
                             } else {
                                 executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
                             }
@@ -472,15 +476,17 @@ public final class ActivationManager {
             return;
         }
         Logger.d(TAG, "activateReturnParam.iErrorCode = " + activateReturnParam.iErrorCode);
-        mActivateListener.onManualActivated(ConvertUtils.equals(0, activateReturnParam.iErrorCode));
+        //mActivateListener.onManualActivated(ConvertUtils.equals(0, activateReturnParam.iErrorCode));
+        testFlag = true;
+        mActivateListener.onManualActivated(testFlag);
     }
 
-    public static int getQueryOrderNum() {
-        return QUERY_ORDER_NUM;
+    public static int getCreateOrderNum() {
+        return CREATE_ORDER_NUM;
     }
 
-    public static void setQueryOrderNum(final int queryOrderNum) {
-        QUERY_ORDER_NUM = queryOrderNum;
+    public static void setCreateOrderNum(final int createOrderNum) {
+        CREATE_ORDER_NUM = createOrderNum;
     }
 
 
@@ -513,5 +519,10 @@ public final class ActivationManager {
          * @param isSuccess 是否成功
          */
         void onOrderCreated(final boolean isSuccess);
+
+        /**
+         * 网络请求失败
+         */
+        void onNetFailed();
     }
 }

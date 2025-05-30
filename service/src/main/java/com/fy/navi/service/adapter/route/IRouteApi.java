@@ -132,8 +132,14 @@ public interface IRouteApi {
     long requestSwitchParallelRoute(int switchRoadType, LocInfoBean locInfoBean, BigInteger roadID, short flag, short hwFlag);
 
     /**
+     * 获取请求id
+     */
+    long getRequestRouteId();
+
+    /**
      * 发送L2++数据
      * @param routeCurrentPathParam L2
      */
     void sendL2Data(RouteCurrentPathParam routeCurrentPathParam);
+
 }

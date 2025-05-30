@@ -1,7 +1,6 @@
 package com.fy.navi.service.logicpaket.navi;
 
 
-import android.graphics.Path;
 import android.graphics.Rect;
 
 import com.android.utils.ConvertUtils;
@@ -11,7 +10,6 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.path.option.PathInfo;
-import com.autonavi.gbl.guide.model.NaviInfo;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
@@ -186,11 +184,17 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             ArrayList<PathInfo> list = new ArrayList<>();
             list.add(pathInfo);
             if (!ConvertUtils.isEmpty(list) && null != pathInfo) {
-                updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, list, 0);
-                updatePathInfo(MapType.LAUNCHER_WIDGET_MAP, list, 0);
-                updatePathInfo(MapType.LAUNCHER_DESK_MAP, list, 0);
-                updatePathInfo(MapType.CLUSTER_MAP, list, 0);
-                updatePathInfo(MapType.HUD_MAP, list, 0);
+                //1046394 导航启动慢优化
+                ThreadManager.getInstance().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, list, 0);
+                        updatePathInfo(MapType.LAUNCHER_WIDGET_MAP, list, 0);
+                        updatePathInfo(MapType.LAUNCHER_DESK_MAP, list, 0);
+                        updatePathInfo(MapType.CLUSTER_MAP, list, 0);
+                        updatePathInfo(MapType.HUD_MAP, list, 0);
+                    }
+                });
             }
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;

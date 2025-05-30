@@ -94,7 +94,12 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
     @Override
     public void onBindViewHolder(@NonNull final ResultHolder holder, final int position) {
         holder.itemView.setSelected(position == mSelectedPosition);
-
+        holder.mTerminalParkingItemBinding.sktvParkingItemRecommended.setVisibility(View.GONE);
+        if (position == 0) {
+            holder.mTerminalParkingItemBinding.sktvParkingItemRecommended.setVisibility(View.VISIBLE);
+        } else {
+            holder.mTerminalParkingItemBinding.sktvParkingItemRecommended.setVisibility(View.GONE);
+        }
         // 获取当前 POI 信息
         final PoiInfoEntity poiEntity = mPoiEntities.get(position);
         final ParkingInfo parkingInfo = poiEntity.getParkingInfoList().get(0);

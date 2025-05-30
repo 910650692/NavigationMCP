@@ -987,24 +987,26 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 请求成功-初始页面
      */
     public void showNomalRouteUI() {
-        mView.clearSceneTabUI();
-        mIsChargingSelect = false;
-        mIsGasSelect = false;
-        mView.clearSceneTabUI(false);
-        mView.clearSceneGasTabUI(false);
-        mCurrentPageHistory.clear();
-        mCurrentPageHistory.add("0");
-        mIncludePageVisibility.set(getCurrentPageUI());
-        mRoutePreferenceVisibility.set(false);
-        mRoutePreferenceDrawableVisibility.set(Boolean.TRUE.equals(mRoutePreferenceVisibility.get())
-                ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_up)
-                : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
-        mRouteDetailsVisibility.set(true);
-        mAvoidBackground.set(false);
-        mAvoidTestColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
-        mAvoidClickable.set(false);
-        mView.setAvoidStatusUI(false);
-        updateRestrictionTextUI(-1);
+        ThreadManager.getInstance().postUi(() -> {
+            mView.clearSceneTabUI();
+            mIsChargingSelect = false;
+            mIsGasSelect = false;
+            mView.clearSceneTabUI(false);
+            mView.clearSceneGasTabUI(false);
+            mCurrentPageHistory.clear();
+            mCurrentPageHistory.add("0");
+            mIncludePageVisibility.set(getCurrentPageUI());
+            mRoutePreferenceVisibility.set(false);
+            mRoutePreferenceDrawableVisibility.set(Boolean.TRUE.equals(mRoutePreferenceVisibility.get())
+                    ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_up)
+                    : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
+            mRouteDetailsVisibility.set(true);
+            mAvoidBackground.set(false);
+            mAvoidTestColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
+            mAvoidClickable.set(false);
+            mView.setAvoidStatusUI(false);
+            updateRestrictionTextUI(-1);
+        });
     }
 
     /***

@@ -322,9 +322,9 @@ public class StartService {
         Logger.i(TAG, "Current engineErrorCode: " + engineErrorCode);
 
         String activationCode = jsonObject.getJSONObject("activation_code").toString();
-        Map<Integer, String> activityErrorCode = formJsonCode(activationCode);
-        errorCode.setActivityCode(activityErrorCode);
-        Logger.i(TAG, "Current activityErrorCode: " + activityErrorCode);
+        Map<Integer, String> activationErrorCode = formJsonCode(activationCode);
+        errorCode.setActivateCode(activationErrorCode);
+        Logger.i(TAG, "Current activationErrorCode: " + activationErrorCode);
 
         String positionCode = jsonObject.getJSONObject("position_code").toString();
         Map<Integer, String> positionErrorCode = formJsonCode(positionCode);
@@ -415,7 +415,7 @@ public class StartService {
         }
 
         @Override
-        public void onActivatedError() {
+        public void onActivatedError(final int errCode, final String msg) {
         }
     };
 

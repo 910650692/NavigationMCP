@@ -457,6 +457,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
+            mViewBinding.skPoiName.setText(R.string.shc_my_point);
             mViewBinding.poiDistanceTime.setVisibility(View.GONE);
             mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
             mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
@@ -504,6 +505,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     .setPid(childInfo.getPoiId())
                     .setChildInfoList(childInfo.getMGrandChildInfoList())
                     .setPoint(childInfo.getLocation());
+            if (ConvertUtils.isEmpty(childInfo.getMGrandChildInfoList())) {
+                mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_NO_GRAND);
+            } else {
+                mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
+            }
             for (int i = 0; i < mChildList.size(); i++) {
                 if (i == index) {
                     mChildList.get(i).setChecked(1);
@@ -1180,6 +1186,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             ThreadManager.getInstance().postUi(new Runnable() {
                                 @Override
                                 public void run() {
+                                    if (!ConvertUtils.isEmpty(childInfoNew.getMGrandChildInfoList())) {
+                                        mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
+                                    }
                                     childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
                                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
                                 }
@@ -1229,6 +1238,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             .setMChildInfoList(childInfo.getMGrandChildInfoList())
                             .setPoint(childInfo.getLocation());
                     mScreenViewModel.setChildIndex(index);
+                    if (ConvertUtils.isEmpty(childInfo.getMGrandChildInfoList())) {
+                        mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_NO_GRAND);
+                    } else {
+                        mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
+                    }
                 } else {
                     mChildSelectInfo = null;
                 }
@@ -1379,6 +1393,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             ThreadManager.getInstance().postUi(new Runnable() {
                                 @Override
                                 public void run() {
+                                    if (!ConvertUtils.isEmpty(childInfoNew.getMGrandChildInfoList())) {
+                                        mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
+                                    }
                                     childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
                                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
                                 }
@@ -1414,6 +1431,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             .setPid(childInfo.getPoiId())
                             .setMChildInfoList(childInfo.getMGrandChildInfoList())
                             .setPoint(childInfo.getLocation());
+                    if (ConvertUtils.isEmpty(childInfo.getMGrandChildInfoList())) {
+                        mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_NO_GRAND);
+                    } else {
+                        mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
+                    }
                     mScreenViewModel.setChildIndex(index);
                 } else {
                     mChildSelectInfo = null;
@@ -1512,6 +1534,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mScreenViewModel.doSearchByNet(poiInfo);
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
+            mViewBinding.skPoiName.setText(R.string.shc_my_point);
             mViewBinding.poiDistanceTime.setVisibility(View.GONE);
             mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
             mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
@@ -1623,6 +1646,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 if (poiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
                     //地图选点不需要展示电话和营业时间界面
                     mViewBinding.poiContentLayout.setVisibility(View.GONE);
+                    mViewBinding.scenePoiDetailsBottomView.stlPhone.setVisibility(View.GONE);
                     mViewBinding.poiDetailsSubLine.setVisibility(View.GONE);
                 }
                 break;

@@ -1,15 +1,16 @@
 package com.fy.navi.service.adapter.l2;
 
+import androidx.annotation.NonNull;
+
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
-import com.autonavi.gbl.common.model.Coord2DDouble;
+import com.autonavi.gbl.common.path.model.Formway;
 import com.autonavi.gbl.common.path.model.LinkType;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.SegmentInfo;
-import com.autonavi.gbl.guide.model.ManeuverIconID;
-import com.autonavi.gbl.guide.model.TrafficLightCountdown;
-import com.autonavi.gbl.layer.model.BizLayerUtil;
+import com.autonavi.gbl.guide.model.NaviFacilityType;
 import com.fy.navi.service.adapter.cruise.CruiseAdapter;
 import com.fy.navi.service.adapter.cruise.CruiseObserver;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
@@ -20,14 +21,15 @@ import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
 import com.fy.navi.service.adapter.position.PositionAdapter;
 import com.fy.navi.service.adapter.route.RouteAdapter;
-import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.adapter.route.RouteResultObserver;
+import com.fy.navi.service.define.cruise.CruiseFacilityEntity;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
+import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.L2NaviBean;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
-import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
 import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
@@ -35,17 +37,33 @@ import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
+import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
+import com.fy.navi.service.define.route.RequestRouteResult;
+import com.fy.navi.service.define.route.RouteAlongCityParam;
+import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
+import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
+import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.route.RouteRestAreaParam;
+import com.fy.navi.service.define.route.RouteRestTollGateParam;
+import com.fy.navi.service.define.route.RouteRestrictionParam;
+import com.fy.navi.service.define.route.RouteTMCParam;
+import com.fy.navi.service.define.route.RouteTrafficIncidentParam;
+import com.fy.navi.service.define.route.RouteWeatherParam;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchParkInOutInfo;
-import com.fy.navi.service.logicpaket.position.PositionPackage;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -64,6 +82,7 @@ public class L2Adapter {
     private ScheduledExecutorService mScheduler;
     private NaviEtaInfo mNaviEtaInfo;
     private int mTaskId;
+    private L2NaviBean.EndParkingInfo mEndParkingInfo = new L2NaviBean.EndParkingInfo();
 
     private L2Adapter() {
         l2NaviBean = new L2NaviBean();
@@ -71,12 +90,11 @@ public class L2Adapter {
         l2NaviBean.setVehiclePosition(new L2NaviBean.VehiclePositionBean()); // 组合
         l2NaviBean.setIntervalCameraData(new L2NaviBean.IntervalCameraDataBean());
         l2NaviBean.setLimitCameraData(new L2NaviBean.LimitCameraDataBean());
-        l2NaviBean.setTunnelInfo(new L2NaviBean.TunnelInfoBean()); // 隧道，暂缺少隧道长度
+        l2NaviBean.setTunnelInfo(new L2NaviBean.TunnelInfoBean()); // 隧道
         l2NaviBean.setGuidePointInfo(new L2NaviBean.GuidePointInfoBean());
-        l2NaviBean.setWarningFacility(new L2NaviBean.WarningFacilityBean()); // 警示牌，
+        l2NaviBean.setWarningFacility(new L2NaviBean.WarningFacilityBean()); // 警示牌
         l2NaviBean.setAheadIntersections(new ArrayList<>());
         l2NaviBean.setMixForks(new ArrayList<>());
-//        l2NaviBean.setEndParkingInfo(new L2NaviBean.EndParkingInfo());
         registerAdapterCallback();
         mScheduler = Executors.newScheduledThreadPool(1);
         mScheduler.scheduleWithFixedDelay(mTask, 0, 1, TimeUnit.SECONDS);
@@ -98,6 +116,8 @@ public class L2Adapter {
         NavistatusAdapter.getInstance().registerCallback(mINaviStatusCallback);
         PositionAdapter.getInstance().registerCallback(mIPositionAdapterCallback);
         CruiseAdapter.getInstance().registerObserver(TAG, mCruiseObserver);
+        RouteAdapter.getInstance().registerRouteObserver(TAG, mRouteResultObserver);
+        SearchPackage.getInstance().registerCallBack(TAG, mSearchResultCallback);
     }
 
     /**
@@ -107,6 +127,152 @@ public class L2Adapter {
         NaviAdapter.getInstance().unregisterObserver(getClass().getSimpleName());
         NavistatusAdapter.getInstance().unRegisterCallback(mINaviStatusCallback);
         PositionAdapter.getInstance().unregisterCallback(mIPositionAdapterCallback);
+    }
+
+    private final SearchResultCallback mSearchResultCallback = new SearchResultCallback() {
+        @Override
+        public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
+        }
+
+        @Override
+        public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
+            if (taskId != mTaskId) {
+                return;
+            }
+            Logger.i(TAG, "收到停车场信息");
+            if (searchResultEntity == null) {
+                return;
+            }
+            List<PoiInfoEntity> mPoiList = searchResultEntity.getMPoiList();
+            if (mPoiList == null || mPoiList.isEmpty()) {
+                return;
+            }
+            PoiInfoEntity poiInfoEntity = mPoiList.get(0);
+            if (poiInfoEntity == null) {
+                return;
+            }
+            List<ParkingInfo> parkingInfoList = poiInfoEntity.getParkingInfoList();
+            if (parkingInfoList == null || parkingInfoList.isEmpty()) {
+                return;
+            }
+            Logger.i(TAG, "收到停车场信息", parkingInfoList);
+            ParkingInfo parkingInfo = parkingInfoList.get(0);
+            if (parkingInfo == null) {
+                return;
+            }
+            List<SearchParkInOutInfo> mSearchParkInOutInfos = parkingInfo.getMSearchParkInOutInfos();
+            if (mSearchParkInOutInfos == null) {
+                return;
+            }
+            for (int i = 0; i < mSearchParkInOutInfos.size(); i++) {
+                SearchParkInOutInfo searchParkInOutInfo = mSearchParkInOutInfos.get(i);
+                if (searchParkInOutInfo == null) {
+                    continue;
+                }
+                if ("出口".equals(searchParkInOutInfo.getKeytype())) {
+                    mEndParkingInfo.setMParkingExit(searchParkInOutInfo.getX(), searchParkInOutInfo.getY());
+                } else if ("入口".equals(searchParkInOutInfo.getKeytype())) {
+                    mEndParkingInfo.setMParkingEnter(searchParkInOutInfo.getX(), searchParkInOutInfo.getY());
+                }
+            }
+        }
+    };
+
+    private final RouteResultObserver mRouteResultObserver = new RouteResultObserver() {
+        @Override
+        public void onRouteSuccess(String successMsg) {
+
+        }
+
+        @Override
+        public void onRouteResult(RequestRouteResult requestRouteResult) {
+            if (requestRouteResult == null) {
+                return;
+            }
+            if (Objects.equals(NavistatusAdapter.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
+                searchParking();
+            }
+        }
+
+        @Override
+        public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
+
+        }
+
+        @Override
+        public void onRouteRestAreaInfo(RouteRestAreaParam routeRestAreaParam) {
+
+        }
+
+        @Override
+        public void onRouteWeatherInfo(RouteWeatherParam routeWeatherParam) {
+
+        }
+
+        @Override
+        public void onRouteChargeStationInfo(RouteChargeStationParam routeChargeStationParam) {
+
+        }
+
+        @Override
+        public void onRouteAlterChargeStationInfo(RouteAlterChargeStationParam routeAlterChargeStationParam) {
+
+        }
+
+        @Override
+        public void onRouteRestrictionInfo(RouteRestrictionParam routeRestrictionParam) {
+
+        }
+
+        @Override
+        public void onRouteRestTollGateInfo(RouteRestTollGateParam routeRestTollGateParam) {
+
+        }
+
+        @Override
+        public void onRouteCityInfo(RouteAlongCityParam routeAlongCityParam) {
+
+        }
+
+        @Override
+        public void onRouteTrafficIncidentInfo(RouteTrafficIncidentParam routeTrafficIncidentParam) {
+
+        }
+
+        @Override
+        public void onRouteRanges(ArrayList<EvRangeOnRouteInfo> evRangeOnRouteInfos) {
+
+        }
+
+        @Override
+        public void onRouteFail(RequestRouteResult requestRouteResult, int errorCode, String errorMsg, long requestId) {
+
+        }
+
+        @Override
+        public void onRouteL2Info(RouteL2Data routeL2Data) {
+
+        }
+
+        @Override
+        public void onRouteTMCInfo(RouteTMCParam param) {
+
+        }
+
+        @Override
+        public void onReRoute() {
+
+        }
+    };
+
+    private void searchParking() {
+        RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (endPoint == null) {
+            return;
+        }
+//        Logger.i(TAG, "开始搜索停车场");
+//        mTaskId = SearchPackage.getInstance().aroundSearch(1, "停车场",
+//                endPoint.getRealPos(), "2000", true);
     }
 
     private final GuidanceObserver mGuidanceObserver = new GuidanceObserver() {
@@ -128,28 +294,21 @@ public class L2Adapter {
             vehiclePosition.setRoadClass(naviEtaInfo.curRoadClass); // 当前自车所在道路等级
 
             L2NaviBean.GuidePointInfoBean guidePointInfo = l2NaviBean.getGuidePointInfo();
-            guidePointInfo.setNextGuideDist(naviEtaInfo.getNextDist()); // 到下一个引导点的剩余距离（导航：2000米以内发出）
+            int dist = naviEtaInfo.NaviInfoData.get(naviEtaInfo.NaviInfoFlag).segmentRemain.dist;
+            guidePointInfo.setNextGuideDist(dist); // 到下一个引导点的剩余距离（导航：2000米以内发出）
             int maneuverId = naviEtaInfo.getNextManeuverID();
             if (maneuverId == -1) {
                 maneuverId = 0;
             }
             guidePointInfo.setNextGuideType(maneuverId); // 引导点动作高德原始接口（导航：2000米以内发出）.
 
-            L2NaviBean.TunnelInfoBean tunnelInfoBean = l2NaviBean.getTunnelInfo();
-            if (ManeuverIconID.ManeuverIconTunnel == maneuverId) {
-                tunnelInfoBean.setTunnelDist(naviEtaInfo.getNextDist());
-                tunnelInfoBean.setTunnelLength(0);
-                LinkInfo linkInfo = getCurLinkInfo();
-                if (linkInfo != null) {
-                    if (linkInfo.getLinkType() == LinkType.LinkTypeTunnel) {
-                        tunnelInfoBean.setTunnelLength(linkInfo.getLength());
-                    }
-                }
-            } else {
-                tunnelInfoBean.setTunnelDist(0xFFFF);
-                tunnelInfoBean.setTunnelLength(0);
-            }
-            Logger.i(TAG, "引导信息", naviEtaInfo.getNextDist(), guidePointInfo, tunnelInfoBean, vehiclePosition);
+            L2NaviBean.TunnelInfoBean tunnelInfo = getTunnelInfo(naviEtaInfo);
+            l2NaviBean.setMTunnelInfo(tunnelInfo);
+            int rampDist = getRampDist(naviEtaInfo);
+            l2NaviBean.setRampDist(rampDist);
+
+            Logger.i(TAG, "引导信息", naviEtaInfo.getNextDist(), guidePointInfo, tunnelInfo, rampDist, vehiclePosition);
+
             if (naviEtaInfo.getAllDist() <= 2000) {
                 RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
                 if (endPoint != null) {
@@ -182,6 +341,7 @@ public class L2Adapter {
                         }
                     }
                 }
+//                l2NaviBean.setEndParkingInfo(mEndParkingInfo);
             }
         }
 
@@ -205,6 +365,10 @@ public class L2Adapter {
             aheadIntersections.clear();
             for (int i = 0; i < laneInfoList.size(); i++) {
                 LaneInfoEntity laneInfoEntity = laneInfoList.get(i);
+                long linkIndexDist = getLinkIndexDist(laneInfoEntity.getSegmentIdx(), laneInfoEntity.getLinkIdx());
+                if (linkIndexDist < 0) {
+                    continue;
+                }
                 L2NaviBean.AheadIntersectionsBean aheadIntersectionsBean = new L2NaviBean.AheadIntersectionsBean();
                 aheadIntersectionsBean.setLaneNum(laneInfoEntity.getBackLane().size()); // 下个路口车道数
                 aheadIntersectionsBean.setSegmentIndex(laneInfoEntity.getSegmentIdx()); // 与link_index结合使用，用于映射到导航路径上
@@ -215,7 +379,6 @@ public class L2Adapter {
                 aheadIntersectionsBean.setFrontLaneType(laneInfoEntity.getFrontLaneType()); // 引导点处可通行车道的类型信息
                 aheadIntersectionsBean.setBackLaneType(laneInfoEntity.getBackLaneType()); // 引导点处所有车道的类型信息
                 aheadIntersections.add(aheadIntersectionsBean);
-                break; // 暂时仅显示一个路口
             }
             Logger.i(TAG, "下一个路口车道信息", laneInfoList);
         }
@@ -225,17 +388,16 @@ public class L2Adapter {
             L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
             if (!isShowLane) {
                 Logger.i(TAG, "lane hide");
-                crossInfoDataBean.setHighLightLanes(null);
-                crossInfoDataBean.setHighLightLaneTypes(null);
-                crossInfoDataBean.setBackLaneType(null);
-                crossInfoDataBean.setFrontLaneType(null);
+                crossInfoDataBean.setHighLightLanes(new ArrayList<>());
+                crossInfoDataBean.setHighLightLaneTypes(new ArrayList<>());
+                crossInfoDataBean.setBackLaneType(new ArrayList<>());
+                crossInfoDataBean.setFrontLaneType(new ArrayList<>());
                 crossInfoDataBean.setSegmentIndex(-1);
                 crossInfoDataBean.setLinkIndex(-1);
-                crossInfoDataBean.setTimestamp(System.currentTimeMillis());
+                crossInfoDataBean.setTimestamp(0);
                 crossInfoDataBean.setLaneNum(0);
-                crossInfoDataBean.setLaneTypes(null);
+                crossInfoDataBean.setLaneTypes(new ArrayList<>());
                 l2NaviBean.setHasTidalLane(0);
-                l2NaviBean.setAheadIntersections(new ArrayList<>());
                 return;
             }
             if (ConvertUtils.isEmpty(laneInfoEntity)) {
@@ -274,28 +436,23 @@ public class L2Adapter {
 
         @Override
         public void onUpdateTrafficLightCountdown(final ArrayList<TrafficLightCountdownEntity> list) {
-            int isHaveTrafficLight = 0;
-            if (!ConvertUtils.isEmpty(list)) {
-                isHaveTrafficLight = list.size();
+            if (ConvertUtils.isEmpty(list)) {
+                Logger.i(TAG, "红绿灯 null 1");
+                l2NaviBean.getCrossInfoData().setTrafficLightPosition(0xFFFF);
+                l2NaviBean.getCrossInfoData().setHasTrafficLight(0);
+                return;
             }
-            GeoPoint geoPoint = new GeoPoint();
-            if (!ConvertUtils.isEmpty(list)) {
-                final TrafficLightCountdownEntity lightCountdown = list.get(0);
-                geoPoint = lightCountdown.getMPosition();
+            TrafficLightCountdownEntity lightCountdown = list.get(0);
+            if (lightCountdown == null) {
+                Logger.i(TAG, "红绿灯 null 2");
+                l2NaviBean.getCrossInfoData().setTrafficLightPosition(0xFFFF);
+                l2NaviBean.getCrossInfoData().setHasTrafficLight(0);
+                return;
             }
-            l2NaviBean.getCrossInfoData().setHasTrafficLight(isHaveTrafficLight == 0 ? 0 : 1); // 路口是否有红绿灯
-            if (isHaveTrafficLight == 0) {
-                l2NaviBean.getCrossInfoData().setTrafficLightPosition(0);
-                Logger.i(TAG, "红绿灯", isHaveTrafficLight);
-            } else {
-                GeoPoint currentGeo = PositionPackage.getInstance().currentGeo;
-                if (currentGeo == null) {
-                    return;
-                }
-                double distance = BizLayerUtil.calcDistanceBetweenPoints(new Coord2DDouble(currentGeo.getLon(), currentGeo.getLat()), new Coord2DDouble(geoPoint.getLon(), geoPoint.getLat()));
-                l2NaviBean.getCrossInfoData().setTrafficLightPosition((int) distance);
-                Logger.i(TAG, "红绿灯", isHaveTrafficLight, distance);
-            }
+            int trafficLightDis = getTrafficLightDis(lightCountdown.getMSegmentIndex(), lightCountdown.getMLinkIndex());
+            l2NaviBean.getCrossInfoData().setTrafficLightPosition(trafficLightDis);
+            l2NaviBean.getCrossInfoData().setHasTrafficLight(1);
+            Logger.i(TAG, "红绿灯", trafficLightDis);
         }
 
         @Override
@@ -386,11 +543,19 @@ public class L2Adapter {
         public void onCurrentRoadSpeed(int speed) {
             L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
             vehiclePosition.setCurrentSpeedLimit(speed);
+
+            L2NaviBean.WarningFacilityBean warningFacility = l2NaviBean.getWarningFacility();
+            if (warningFacility.getBoardSignType() == 10) {
+                warningFacility.setLimitSpeed(speed);
+            } else {
+                warningFacility.setLimitSpeed(0);
+            }
             Logger.i(TAG, "当前限速", speed);
         }
 
         @Override
         public void onNaviSAPAInfo(SapaInfoEntity sapaInfoEntity) {
+            Logger.i(TAG, sapaInfoEntity);
             if (ConvertUtils.isEmpty(sapaInfoEntity)) {
                 Logger.i(TAG, "sapaInfoEntity null");
                 l2NaviBean.setTollStationDist(0xFFFF);
@@ -398,41 +563,31 @@ public class L2Adapter {
             }
             ArrayList<SapaInfoEntity.SAPAItem> sapaItems = sapaInfoEntity.getList();
             if (ConvertUtils.isEmpty(sapaItems)) {
+                Logger.i(TAG, "sapaItems null");
                 l2NaviBean.setTollStationDist(0xFFFF); // 集合为空，代表没有收费站信息
+                return;
             } else {
-                int tollStationDist = -1;
+                int tollStationDist = Integer.MAX_VALUE;
                 for (int i = 0; i < sapaItems.size(); i++) {
                     SapaInfoEntity.SAPAItem sapaItem = sapaItems.get(i);
+                    if (sapaItem == null) {
+                        continue;
+                    }
+                    if (sapaItem.getType() != NaviFacilityType.NaviFacilityTypeTollGate) {
+                        continue;
+                    }
                     int distance = sapaItem.getRemainDist();
-                    // 隐含条件是按距离最近排序
-                    if (NaviConstant.SapaItemsType.SPAS_LIST == sapaItem.getType() && tollStationDist == -1) {
+                    if (distance != 0 && distance < 2000 && distance < tollStationDist) {
                         tollStationDist = distance;
                     }
                 }
-                if (tollStationDist != -1) {
+                if (tollStationDist != Integer.MAX_VALUE) {
                     l2NaviBean.setTollStationDist(tollStationDist); // 收费站距离
                 } else {
                     l2NaviBean.setTollStationDist(0xFFFF); // 与前方收费站剩余距离 0xFFFF表示没有收费站
                 }
             }
             Logger.i(TAG, "收费站距离", l2NaviBean.getTollStationDist());
-        }
-
-        @Override
-        public void onManeuverInfo(NaviManeuverInfo respData) {
-            if (ConvertUtils.isEmpty(respData)) {
-                l2NaviBean.setRampDist(0xFFFF);
-            } else {
-                int disToCurrentPos = respData.getDisToCurrentPos();
-                if (disToCurrentPos == 0) {
-                    l2NaviBean.setRampDist(0xFFFF);
-                } else if (disToCurrentPos < 2000) {
-                    l2NaviBean.setRampDist(disToCurrentPos); // 到前方匝道口距离
-                } else {
-                    l2NaviBean.setRampDist(0xFFFF);
-                }
-            }
-            Logger.i(TAG, "匝道信息", l2NaviBean.getRampDist());
         }
 
         @Override
@@ -446,7 +601,7 @@ public class L2Adapter {
             if (naviRoadFacilityEntitys == null || naviRoadFacilityEntitys.isEmpty()) {
                 Logger.i(TAG, "道路设施", "null");
                 warningFacility.setBoardSignType(0);
-                warningFacility.setBoardSignDist(0);
+                warningFacility.setBoardSignDist(0xFFFF);
                 return;
             }
             NaviRoadFacilityEntity naviRoadFacilityEntity = naviRoadFacilityEntitys.get(0);
@@ -471,7 +626,6 @@ public class L2Adapter {
                 }
             }
             l2NaviBean.clear();
-            mTaskId = 0;
             mNaviEtaInfo = null;
             L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
             switch (naviStatus) {
@@ -483,6 +637,7 @@ public class L2Adapter {
                     break;
                 case NaviStatus.NaviStatusType.NAVING:
                     vehiclePosition.setNaviStatus(1);
+                    searchParking();
                     break;
                 case NaviStatus.NaviStatusType.CRUISE:
                     vehiclePosition.setNaviStatus(3);
@@ -504,11 +659,45 @@ public class L2Adapter {
             vpb.setMainSideRots(entity.getFlag());
             Logger.i(TAG, "主辅路", vpb.getMainSideRots());
         }
+
+        @Override
+        public void onLocationInfo(LocInfoBean locationInfo) {
+            L2NaviBean.VehiclePositionBean vpb = l2NaviBean.getVehiclePosition();
+            vpb.setLocationLongitude(locationInfo.getLongitude());
+            vpb.setLocationLatitude(locationInfo.getLatitude());
+            vpb.setFormWay(locationInfo.getFormway());
+            vpb.setLinkType(locationInfo.getLinkType());
+            vpb.setRoadOwnership(locationInfo.getOwnership());
+            Logger.i(TAG, "位置信息", locationInfo.getLongitude(), locationInfo.getLatitude(), locationInfo.getFormway(), locationInfo.getLinkType(), locationInfo.getOwnership());
+        }
     };
 
     private final CruiseObserver mCruiseObserver = new CruiseObserver() {
         @Override
-        public void onCruiseLaneInfo(boolean isShowLane, LaneInfoEntity laneInfo) {
+        public void onCruiseLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
+            L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
+            if (!isShowLane) {
+                Logger.i(TAG, "lane hide");
+                crossInfoDataBean.setTimestamp(0);
+                crossInfoDataBean.setLaneNum(0);
+                crossInfoDataBean.setLaneTypes(new ArrayList<>());
+                return;
+            }
+            if (ConvertUtils.isEmpty(laneInfoEntity)) {
+                Logger.i(TAG, "laneInfoEntity null");
+                crossInfoDataBean.setTimestamp(0);
+                crossInfoDataBean.setLaneNum(0);
+                crossInfoDataBean.setLaneTypes(new ArrayList<>());
+
+                return;
+            }
+            ArrayList<Integer> backLanes = laneInfoEntity.getBackLane();
+            if (ConvertUtils.isEmpty(backLanes)) return;
+            int LaneNum = backLanes.size();
+            crossInfoDataBean.setTimestamp(System.currentTimeMillis());
+            crossInfoDataBean.setLaneNum(LaneNum);
+            crossInfoDataBean.setLaneTypes(backLanes);
+            Logger.i(TAG, "巡航车道线", LaneNum, backLanes);
         }
 
         @Override
@@ -579,6 +768,26 @@ public class L2Adapter {
         }
 
         @Override
+        public void onUpdateCruiseFacility(CruiseFacilityEntity cruiseFacilityEntity) {
+            L2NaviBean.WarningFacilityBean warningFacility = l2NaviBean.getWarningFacility();
+            if (cruiseFacilityEntity == null) {
+                Logger.i(TAG, "道路设施", "null");
+                warningFacility.setBoardSignType(0);
+                warningFacility.setBoardSignDist(0xFFFF);
+                warningFacility.setLimitSpeed(0);
+                return;
+            }
+            warningFacility.setBoardSignDist(cruiseFacilityEntity.getDistance());
+            warningFacility.setBoardSignType(cruiseFacilityEntity.getType());
+            if (warningFacility.getBoardSignType() == 10) {
+                warningFacility.setLimitSpeed(cruiseFacilityEntity.getLimitSpeed());
+            } else {
+                warningFacility.setLimitSpeed(0);
+            }
+            Logger.i(TAG, "道路设施", warningFacility);
+        }
+
+        @Override
         public void onPlayTTS(SoundInfoEntity info) {
 
         }
@@ -588,14 +797,6 @@ public class L2Adapter {
 
         }
     };
-
-    /*** 道路属性 **/
-    public void graspRouteResult(L2NaviBean.VehiclePositionBean value) {
-        L2NaviBean.VehiclePositionBean vpb = l2NaviBean.getVehiclePosition();
-        vpb.setLocationLongitude(value.getLocationLongitude()); // 自车经度坐标（在sd route上的）
-        vpb.setLocationLatitude(value.getLocationLatitude()); // 自车纬度坐标（在sd route上的
-        Logger.i(TAG, "道路属性", vpb.getLocationLinkOffset(), vpb.getLocationLongitude(), vpb.getLocationLatitude(), vpb.getRoadOwnership());
-    }
 
     private final Runnable mTask = new Runnable() {
         @Override
@@ -629,11 +830,17 @@ public class L2Adapter {
 
             LinkInfo linkInfo = getCurLinkInfo();
             if (linkInfo != null) {
-                L2NaviBean.VehiclePositionBean vpb = l2NaviBean.getVehiclePosition();
-                vpb.setFormWay(linkInfo.getFormway());
-                vpb.setLinkType(linkInfo.getLinkType());
-                vpb.setRoadOwnership(linkInfo.getOwnership());
                 l2NaviBean.setIsServiceAreaRoad(linkInfo.isAtService() ? 1 : 0);
+//                if (linkInfo.hasTrafficLight() && mNaviEtaInfo != null) {
+//                    l2NaviBean.getCrossInfoData().setHasTrafficLight(1);
+//                    l2NaviBean.getCrossInfoData().setTrafficLightPosition(mNaviEtaInfo.getLinkRemainDist());
+//                } else {
+//                    l2NaviBean.getCrossInfoData().setHasTrafficLight(0);
+//                    l2NaviBean.getCrossInfoData().setTrafficLightPosition(0xFFFF);
+//                }
+            }
+            if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                l2NaviBean.getVehiclePosition().setNaviStatus(0x9);
             }
             // 为防止并发问题，发送消息时暂停接口回调，防止修改l2NaviBean对象
             // unRegisterAdapterCallback();
@@ -642,22 +849,33 @@ public class L2Adapter {
         }
     }
 
-    private LinkInfo getCurLinkInfo() {
-        if (mNaviEtaInfo != null) {
-            int curSegIdx = mNaviEtaInfo.getCurSegIdx();
-            int curLinkIdx = mNaviEtaInfo.getCurLinkIdx();
-            RouteCurrentPathParam currentPath = RouteAdapter.getInstance().getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP);
-            if (currentPath != null) {
-                PathInfo pathInfo = (PathInfo) currentPath.getMPathInfo();
-                if (pathInfo != null) {
-                    SegmentInfo segmentInfo = pathInfo.getSegmentInfo(curSegIdx);
-                    if (segmentInfo != null) {
-                        return segmentInfo.getLinkInfo(curLinkIdx);
-                    }
-                }
-            }
+    private PathInfo getPathInfo() {
+        RouteCurrentPathParam currentPath = RouteAdapter.getInstance().getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (currentPath == null) {
+            return null;
         }
-        return null;
+        return (PathInfo) currentPath.getMPathInfo();
+    }
+
+    private LinkInfo getLinkInfo(int curSegIdx, int curLinkIdx) {
+        PathInfo pathInfo = getPathInfo();
+        if (pathInfo == null) {
+            return null;
+        }
+        SegmentInfo segmentInfo = pathInfo.getSegmentInfo(curSegIdx);
+        if (segmentInfo == null) {
+            return null;
+        }
+        return segmentInfo.getLinkInfo(curLinkIdx);
+    }
+
+    private LinkInfo getCurLinkInfo() {
+        if (mNaviEtaInfo == null) {
+            return null;
+        }
+        int curSegIdx = mNaviEtaInfo.getCurSegIdx();
+        int curLinkIdx = mNaviEtaInfo.getCurLinkIdx();
+        return getLinkInfo(curSegIdx, curLinkIdx);
     }
 
     private long getLocationLinkIndex(int curSegIdx, int curLinkIdx) {
@@ -678,19 +896,230 @@ public class L2Adapter {
     }
 
     private int getLinkLength(int curSegIdx, int curLinkIdx) {
+        LinkInfo linkInfo = getLinkInfo(curSegIdx, curLinkIdx);
+        if (linkInfo == null) {
+            return -1;
+        }
+        return linkInfo.getLength();
+    }
+
+    private int getRampDist(@NonNull NaviEtaInfo naviEtaInfo) {
         RouteCurrentPathParam currentPath = RouteAdapter.getInstance().getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (currentPath != null) {
-            PathInfo pathInfo = (PathInfo) currentPath.getMPathInfo();
-            if (pathInfo != null) {
-                SegmentInfo segmentInfo = pathInfo.getSegmentInfo(curSegIdx);
-                if (segmentInfo != null) {
-                    LinkInfo linkInfo = segmentInfo.getLinkInfo(curLinkIdx);
-                    if (linkInfo != null) {
-                        return linkInfo.getLength();
+        if (currentPath == null) {
+            return 0xFFFF;
+        }
+        PathInfo pathInfo = (PathInfo) currentPath.getMPathInfo();
+        if (pathInfo == null) {
+            return 0xFFFF;
+        }
+        int curSegIdx = naviEtaInfo.getCurSegIdx();
+        int curLinkIdx = naviEtaInfo.getCurLinkIdx();
+        int rampDist = 0;
+        for (int i = curSegIdx; i < pathInfo.getSegmentCount(); i++) {
+            SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
+            if (segmentInfo == null) {
+                continue;
+            }
+            if (i != curSegIdx) {
+                curLinkIdx = 0;
+            }
+            for (int j = curLinkIdx; j < segmentInfo.getLinkCount(); j++) {
+                LinkInfo linkInfo = segmentInfo.getLinkInfo(j);
+                if (linkInfo == null) {
+                    continue;
+                }
+                if (i == curSegIdx && j == curLinkIdx) {
+                    // 起始link
+                    int formway = linkInfo.getFormway();
+                    if (formway == Formway.FormwayJCT || formway == Formway.FormwaySlipRoad || formway == Formway.FormwaySlipJCT || formway == Formway.FormwayEntranceLink) {
+                        // 匝道
+                        return 0xFFFF;
+                    } else {
+                        // 目前未处于匝道
+                        rampDist += naviEtaInfo.linkRemainDist;
+                        if (rampDist > 2000) {
+                            return 0xFFFF;
+                        }
+                    }
+                } else {
+                    // 非起始link
+                    int formway = linkInfo.getFormway();
+                    if (formway == Formway.FormwayJCT || formway == Formway.FormwaySlipRoad || formway == Formway.FormwaySlipJCT || formway == Formway.FormwayEntranceLink) {
+                        // 遍历到匝道
+                        return rampDist;
+                    } else {
+                        rampDist += linkInfo.getLength();
+                        if (rampDist > 2000) {
+                            return 0xFFFF;
+                        }
                     }
                 }
             }
         }
-        return 0;
+        return 0xFFFF;
+    }
+
+    private L2NaviBean.TunnelInfoBean getTunnelInfo(@NonNull NaviEtaInfo naviEtaInfo) {
+        RouteCurrentPathParam currentPath = RouteAdapter.getInstance().getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (currentPath == null) {
+            return new L2NaviBean.TunnelInfoBean(0xFFFF, 0);
+        }
+        PathInfo pathInfo = (PathInfo) currentPath.getMPathInfo();
+        if (pathInfo == null) {
+            return new L2NaviBean.TunnelInfoBean(0xFFFF, 0);
+        }
+        int curSegIdx = naviEtaInfo.getCurSegIdx();
+        int curLinkIdx = naviEtaInfo.getCurLinkIdx();
+        int tunnelLength = 0;
+        int tunnelDistance = 0;
+        int prevLinkType = -1;
+        for (int i = curSegIdx; i < pathInfo.getSegmentCount(); i++) {
+            SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
+            if (segmentInfo == null) {
+                continue;
+            }
+            if (i != curSegIdx) {
+                curLinkIdx = 0;
+            }
+            for (int j = curLinkIdx; j < segmentInfo.getLinkCount(); j++) {
+                LinkInfo linkInfo = segmentInfo.getLinkInfo(j);
+                if (linkInfo == null) {
+                    continue;
+                }
+                if (i == curSegIdx && j == curLinkIdx) {
+                    // 起始link
+                    if (linkInfo.getLinkType() == LinkType.LinkTypeTunnel) {
+                        // 目前处于隧道
+                        tunnelLength += naviEtaInfo.linkRemainDist;
+                    } else {
+                        // 目前未处于隧道
+                        tunnelDistance += naviEtaInfo.linkRemainDist;
+                        if (tunnelDistance > 2000) {
+                            tunnelDistance = 0xFFFF;
+                            tunnelLength = 0;
+                            return new L2NaviBean.TunnelInfoBean(tunnelDistance, tunnelLength);
+                        }
+                    }
+                } else {
+                    // 非起始link
+                    if (linkInfo.getLinkType() == LinkType.LinkTypeTunnel) {
+                        // 遍历到隧道
+                        tunnelLength += linkInfo.getLength();
+                    } else {
+                        if (prevLinkType == LinkType.LinkTypeTunnel) {
+                            // 遍历到隧道
+                            tunnelLength += linkInfo.getLength();
+                            if (tunnelDistance == 0) {
+                                tunnelDistance = 0xFFFF;
+                            }
+                            return new L2NaviBean.TunnelInfoBean(tunnelDistance, tunnelLength);
+                        } else {
+                            // 未遍历到隧道
+                            tunnelDistance += linkInfo.getLength();
+                            if (tunnelDistance > 2000) {
+                                tunnelDistance = 0xFFFF;
+                                tunnelLength = 0;
+                                return new L2NaviBean.TunnelInfoBean(tunnelDistance, tunnelLength);
+                            }
+                        }
+                    }
+                }
+                prevLinkType = linkInfo.getLinkType();
+            }
+        }
+        return new L2NaviBean.TunnelInfoBean(0xFFFF, 0);
+    }
+
+    public int getTrafficLightDis(long segIdx, long linkIdx) {
+        if (mNaviEtaInfo == null) {
+            return 0;
+        }
+        if (mNaviEtaInfo.curSegIdx > segIdx) {
+            return 0;
+        } else if (mNaviEtaInfo.curSegIdx == segIdx) {
+            if (mNaviEtaInfo.curLinkIdx > linkIdx) {
+                return 0;
+            } else if (mNaviEtaInfo.curLinkIdx == linkIdx) {
+                return mNaviEtaInfo.linkRemainDist;
+            }
+        }
+        int trafficLightDis = 0;
+        RouteCurrentPathParam currentPath = RouteAdapter.getInstance().getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (currentPath != null) {
+            PathInfo pathInfo = (PathInfo) currentPath.getMPathInfo();
+            if (pathInfo != null) {
+                for (int i = mNaviEtaInfo.curSegIdx; i < pathInfo.getSegmentCount(); i++) {
+                    SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
+                    long linkCount = segmentInfo.getLinkCount();
+                    int startLinkIdx = mNaviEtaInfo.curLinkIdx;
+                    if (mNaviEtaInfo.curSegIdx != i) {
+                        startLinkIdx = 0;
+                    }
+                    for (int j = startLinkIdx; j < linkCount; j++) {
+                        LinkInfo infoLinkInfo = segmentInfo.getLinkInfo(j);
+                        if (i > segIdx) {
+                            return trafficLightDis;
+                        } else if (i == segIdx) {
+                            if (j > linkIdx) {
+                                return trafficLightDis;
+                            }
+                        }
+                        trafficLightDis += infoLinkInfo.getLength();
+
+                    }
+                }
+            }
+        }
+        return trafficLightDis;
+    }
+
+    private long getLinkIndexDist(int curSegIdx, int curLinkIdx) {
+        if (mNaviEtaInfo.getCurSegIdx() == curSegIdx) {
+            if (mNaviEtaInfo.getCurLinkIdx() == curLinkIdx) {
+                return mNaviEtaInfo.linkRemainDist;
+            }
+            if (mNaviEtaInfo.getCurSegIdx() > curSegIdx) {
+                return -1;
+            }
+        }
+        if (mNaviEtaInfo.getCurSegIdx() > curSegIdx) {
+            return -1;
+        }
+        long dist = 0;
+        RouteCurrentPathParam currentPath = RouteAdapter.getInstance().getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (currentPath != null) {
+            PathInfo pathInfo = (PathInfo) currentPath.getMPathInfo();
+            if (pathInfo != null) {
+                for (int i = mNaviEtaInfo.getCurSegIdx(); i < pathInfo.getSegmentCount(); i++) {
+                    SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
+                    long linkCount = segmentInfo.getLinkCount();
+                    int startLinkIdx = mNaviEtaInfo.getCurLinkIdx();
+                    if (mNaviEtaInfo.getCurSegIdx() != i) {
+                        startLinkIdx = 0;
+                    }
+                    for (int j = startLinkIdx; j < linkCount; j++) {
+                        if (i == mNaviEtaInfo.getCurSegIdx() && j == mNaviEtaInfo.getCurLinkIdx()) {
+                            dist += mNaviEtaInfo.linkRemainDist;
+                        } else {
+                            if (segmentInfo.getLinkInfo(j) == null) {
+                                continue;
+                            }
+                            dist += segmentInfo.getLinkInfo(j).getLength();
+                        }
+                        if (i == curSegIdx && j == curLinkIdx) {
+                            if (dist > 2000) {
+                                return -1;
+                            } else {
+                                return dist;
+                            }
+                        }
+                        if (dist > 2000) {
+                            return -1;
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
     }
 }

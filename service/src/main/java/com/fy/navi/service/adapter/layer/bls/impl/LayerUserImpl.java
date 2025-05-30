@@ -34,7 +34,6 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
         super(bizService, mapView, context,mapType);
         getLayerUserControl().setStyle(this);
         getLayerUserControl().addClickObserver(this);
-        getLayerUserControl().addFocusChangeObserver(this);
     }
 
     @Override

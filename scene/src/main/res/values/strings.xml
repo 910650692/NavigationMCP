@@ -12,7 +12,8 @@
     <string name="main_go_home">回家</string>
     <string name="main_go_company">去公司</string>
     <string name="main_go_home_text">回家%s</string>
-    <string name="main_go_company_text">预计%s到达</string>
+    <string name="main_go_company_text">去公司%s</string>
+    <string name="main_go_arriver_time">预计%s到达</string>
 
     <!-- 搜索相关 -->
     <string name="main_search_hint">搜索目的地</string>
@@ -122,6 +123,10 @@
     <string name="navi_broadcast_switch">已切换为%s</string>
     <string name="quick_charge">快</string>
     <string name="slow_charge">慢</string>
+    <string name="slash">/</string>
+    <string name="navi_gas_92">#92</string>
+    <string name="navi_gas_95">#95</string>
+    <string name="navi_gas_98">#98</string>
     <string name="toll">收费站</string>
     <string name="current_newest_path">当前已是最新路线</string>
     <string name="switch_car_angle">已切换至%s视角</string>
@@ -236,7 +241,7 @@
     <string name="scenic_ratio">%d%%选择</string>
     <string name="business_hour">营业时间：%s</string>
     <string name="business_hour_title">营业时间：</string>
-    <string name="poi_phone">电话 :%s</string>
+    <string name="poi_phone">电\u3000\u3000话: %s</string>
     <string name="sha_no_data">暂无数据</string>
     <string name="sha_cancel">取消</string>
     <string name="sha_favorite">收藏</string>

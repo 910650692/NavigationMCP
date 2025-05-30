@@ -133,6 +133,10 @@ final public class RouteAdapter {
         return routeParams;
     }
 
+    public long getRequestRouteId() {
+        return mRouteApi.getRequestRouteId();
+    }
+
     /**
      * 请求路线上的天气
      *

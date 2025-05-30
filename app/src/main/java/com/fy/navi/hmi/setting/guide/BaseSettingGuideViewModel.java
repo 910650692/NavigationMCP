@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
@@ -285,15 +286,20 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
      */
     public void onPlateNumberChanged(final String plateNumber) {
         final boolean isPlateNumberEmpty = Objects.equals(plateNumber, "");
+        int setConfigKeyAvoidLimitResult;
         if (!isPlateNumberEmpty) {
             mIsAvoidLimit.setValue(true);
             mView.onPlateNumberChanged(plateNumber);
             mIsPlateNumber.setValue(true);
+            setConfigKeyAvoidLimitResult = mModel.setConfigKeyAvoidLimit(true);
         } else {
             mIsAvoidLimit.setValue(false);
             setPlateNumber(plateNumber);
             mIsPlateNumber.setValue(false);
+            setConfigKeyAvoidLimitResult = mModel.setConfigKeyAvoidLimit(false);
         }
+        Logger.d("onPlateNumberChanged: setConfigKeyAvoidLimitResult = "
+                + setConfigKeyAvoidLimitResult);
     }
 
     /**

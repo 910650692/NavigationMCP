@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.cruise.bls;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.guide.model.CruiseFacilityInfo;
 import com.autonavi.gbl.guide.model.CruiseInfo;
 import com.autonavi.gbl.guide.model.LaneInfo;
 import com.autonavi.gbl.guide.model.NaviCameraExt;
@@ -60,11 +61,22 @@ public class CruiseCallback implements ICruiseObserver{
             for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
                 if (cruiseObserver != null) {
                     cruiseObserver.onShowCruiseCameraExt(NaviDataFormatHelper.formatCruiseCameraExt(cameraInfoList));
+//                    cruiseObserver.onCruiseIntervalvelocity(NaviDataFormatHelper.formatCruiseIntervalvelocity(cameraInfoList));
                 }
             }
         }
     }
 
+    @Override
+    public void onUpdateCruiseFacility(ArrayList<CruiseFacilityInfo> facilityInfoList) {
+        if (!ConvertUtils.isEmpty(mCruiseObservers)) {
+            for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
+                if (cruiseObserver != null) {
+                    cruiseObserver.onUpdateCruiseFacility(NaviDataFormatHelper.formatCruiseFacility(facilityInfoList));
+                }
+            }
+        }
+    }
 
     /**
      * 巡航过程中传出巡航状态下的信息

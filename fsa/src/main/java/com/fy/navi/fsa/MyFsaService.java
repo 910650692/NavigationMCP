@@ -1,15 +1,13 @@
 package com.fy.navi.fsa;
 
-import static kotlin.text.Typography.amp;
-
 import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.view.Display;
@@ -28,10 +26,12 @@ import com.fy.navi.fsa.bean.DestInfo;
 import com.fy.navi.fsa.bean.GeoPoint;
 import com.fy.navi.fsa.bean.LaneLineInfo;
 import com.fy.navi.fsa.bean.RemainInfo;
+import com.fy.navi.fsa.bean.TrafficLightInfo;
 import com.fy.navi.fsa.bean.TurnInfo;
 import com.fy.navi.fsa.scene.FsaNaviScene;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.StartService;
+import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.MapType;
@@ -39,11 +39,13 @@ import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
+import com.fy.navi.service.define.navi.LightInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
@@ -52,6 +54,7 @@ import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
+import com.fy.navi.service.logicpaket.l2.L2Package;
 import com.fy.navi.service.logicpaket.map.IEglScreenshotCallBack;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
@@ -68,6 +71,7 @@ import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.signal.SignalCallback;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
+import com.fy.navi.utils.ActivityCloseManager;
 import com.gm.fsa.service.FSAService;
 import com.gm.fsa.service.catalog.FSACatalog;
 import com.iauto.vtserver.VTDescription;
@@ -91,7 +95,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
+import com.fy.navi.utils.ClusterMapOpenCloseManager;
 public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListener {
     private static final String TAG = "MyFsaService";
 
@@ -163,6 +167,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_VISIBLE_ENLARGE));
         mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_GAS_STATION_POI));
         mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE));//挖洞
+        mService.addEvent(new FsaServiceEvent(FsaConstant.FsaFunction.ID_TRAFFIC_LIGHT_INFO));
 
         mService.changeState(FSAService.ServiceState.INACTIVE);
     }
@@ -276,9 +281,11 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         switch (payload) {
             case FsaConstant.FsaEventPayload.OPEN_HUD_MAP:
                 updateMapDisplayStatus(true);
+                ClusterMapOpenCloseManager.getInstance().triggerOpenOrClose(true);
                 break;
             case FsaConstant.FsaEventPayload.CLOSE_HUD_MAP:
                 updateMapDisplayStatus(false);
+                ClusterMapOpenCloseManager.getInstance().triggerOpenOrClose(false);
                 break;
             case FsaConstant.FsaEventPayload.OPEN_HUD_VIDEO:
                 if (mIsHudServiceStart) {
@@ -625,7 +632,11 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     private final SearchResultCallback mSearchResultCallback = new SearchResultCallback() {
         @Override
-        public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+        public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
+        }
+
+        @Override
+        public void onSilentSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
             if (searchResultEntity == null) {
                 return;
             }
@@ -715,6 +726,69 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         public void onCurrentRoadSpeed(final int speed) {
             FsaNaviScene.getInstance().updateSpeedLimitSignData(MyFsaService.this, speed);
         }
+
+        @Override
+        public void onUpdateTrafficLightCountdown(ArrayList<TrafficLightCountdownEntity> list) {
+            if (list == null || list.isEmpty()) {
+                return;
+            }
+            ArrayList<TrafficLightInfo> trafficLightInfoList = new ArrayList<>();
+            for (TrafficLightCountdownEntity trafficLightCountdownEntity : list) {
+                if (trafficLightCountdownEntity == null) {
+                    continue;
+                }
+                TrafficLightInfo trafficLightInfo = new TrafficLightInfo();
+                int trafficLightDis = L2Package.getInstance().getTrafficLightDis(trafficLightCountdownEntity.getMSegmentIndex(), trafficLightCountdownEntity.getMLinkIndex());
+                trafficLightInfo.setDistanceTrafficLight(trafficLightDis);
+                LightInfoEntity lightInfoEntity = trafficLightCountdownEntity.getMLightInfo();
+                if (lightInfoEntity == null) {
+                    continue;
+                }
+                switch (lightInfoEntity.getMDir()) {
+                    case 1:
+                        trafficLightInfo.setTrafficLightAssignment(2);
+                        break;
+                    case 2:
+                        trafficLightInfo.setTrafficLightAssignment(1);
+                        break;
+                    case 8:
+                        trafficLightInfo.setTrafficLightAssignment(3);
+                        break;
+                    case 7:
+                        trafficLightInfo.setTrafficLightAssignment(4);
+                        break;
+                    default:
+                        trafficLightInfo.setTrafficLightAssignment(0);
+                        break;
+                }
+                ArrayList<LightInfoEntity.LightStateEntity> lightStateEntities = lightInfoEntity.mLightStates;
+                if (lightStateEntities == null || lightStateEntities.isEmpty()) {
+                    continue;
+                }
+                LightInfoEntity.LightStateEntity lightStateEntity = lightStateEntities.get(0);
+                if (lightStateEntity == null) {
+                    continue;
+                }
+                switch (lightStateEntity.mLightType) {
+                    case 2:
+                        trafficLightInfo.setTrafficLightColor(1);
+                        break;
+                    case 3:
+                        trafficLightInfo.setTrafficLightColor(3);
+                        break;
+                    case 4:
+                        trafficLightInfo.setTrafficLightColor(2);
+                        break;
+                    default:
+                        trafficLightInfo.setTrafficLightColor(0);
+                        break;
+                }
+                trafficLightInfo.setTrafficLightTime((int) (System.currentTimeMillis() / 1000 - lightStateEntity.getMEtime()));
+                trafficLightInfoList.add(trafficLightInfo);
+            }
+            String json = GsonUtils.toJson(trafficLightInfoList);
+            sendEvent(FsaConstant.FsaFunction.ID_TRAFFIC_LIGHT_INFO, json);
+        }
     };
 
     //巡航信息
@@ -755,13 +829,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 byte[] bytes1 = processPicture(bytes);
                 VTServerBQJni.getInstance().nativeNotifyVideoData(bytes1);
             }else if (mapType == MapType.MAIN_SCREEN_MAIN_MAP){//主图的路口大图
-                Logger.d(TAG,"MapType.MAIN_SCREEN_MAIN_MAP bytes.length=="+bytes.length);
-               ThreadManager.getInstance().execute(new Runnable() {
-                   @Override
-                   public void run() {
-                       processMapCrossPicture(bytes);
-                   }
-               });
+               processMapCrossPicture(bytes);
             }
         }
     };
@@ -785,22 +853,26 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         Bitmap flippedBitmap = null;
         Bitmap cropBitmap = null;
         try {
-            int width = ScreenUtils.Companion.getInstance().getScreenWidth();
-            int height = ScreenUtils.Companion.getInstance().getScreenHeight();
+            int width = ScreenUtils.Companion.getInstance().getRealScreenWidth(AppContext.getInstance().getMContext());
+            int height = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppContext.getInstance().getMContext());
             Logger.d(TAG, "startScreenshot width=="+width+"height=="+height);
             orginBitmap = getBitmapFromPool(width, height);
             if (orginBitmap != null){
                 Logger.d(TAG,"processMapCrossPicture orginBitmap != null");
             }
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
-            buffer.position(0);
+            Logger.d(TAG, "Bitmap size = " + orginBitmap.getByteCount());
+            Logger.d(TAG, "Buffer size = " + buffer.capacity());
+            //buffer.position(0);
+            //buffer.rewind();
             orginBitmap.copyPixelsFromBuffer(buffer);
             Matrix matrix = new Matrix();
             matrix.postScale(1, -1);
             matrix.postTranslate(orginBitmap.getWidth(), orginBitmap.getHeight());
             flippedBitmap = Bitmap.createBitmap(orginBitmap, 0, 0,
                     orginBitmap.getWidth(), orginBitmap.getHeight(), matrix, true);
-            cropBitmap = Bitmap.createBitmap(flippedBitmap, 466, 174, 640, 384);
+            Rect roadCrossRect = LayerAdapter.getInstance().getRoadCrossRect(MapType.MAIN_SCREEN_MAIN_MAP);
+            cropBitmap = Bitmap.createBitmap(flippedBitmap, roadCrossRect.left, roadCrossRect.top, roadCrossRect.right - roadCrossRect.left, roadCrossRect.bottom - roadCrossRect.top);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             cropBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
@@ -1056,9 +1128,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             intent.putExtra("isOpen", isOpen);
             AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
         } else {
-            Logger.d(FsaConstant.FSA_TAG, "close ClusterActivity");
-            Intent closeIntent = new Intent("com.fy.navi.hmi.cluster_map.ClusterActivity");
-            AppContext.getInstance().getMContext().sendBroadcast(closeIntent);
+            ActivityCloseManager.getInstance().triggerClose();
         }
     }
 

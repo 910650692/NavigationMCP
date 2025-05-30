@@ -9,8 +9,8 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/top_dialog_view"
-            android:layout_width="@dimen/dp_1106"
-            android:layout_height="@dimen/dp_92"
+            android:layout_width="@dimen/dp_941"
+            android:layout_height="@dimen/dp_87"
             android:background="@drawable/dialog_shape_bg_msg_top"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -19,11 +19,11 @@
                 android:id="@+id/top_dialog_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingTop="@dimen/dp_21"
-                android:paddingStart="@dimen/dp_40"
-                android:paddingEnd="@dimen/dp_42"
+                android:gravity="center"
+                android:paddingStart="@dimen/dp_34"
+                android:paddingEnd="@dimen/dp_36"
                 android:textColor="@color/dialog_msg_top_button_color"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_32"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +47,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/dialog_msg_top_text_color"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_29"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/line"
                 app:layout_constraintTop_toTopOf="parent"
@@ -55,9 +55,9 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/top_dialog_img_close"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
-                android:layout_marginEnd="@dimen/dp_36"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:layout_marginEnd="@dimen/dp_31"
                 android:src="@drawable/img_dialog_top_close"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

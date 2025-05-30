@@ -212,9 +212,15 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "current poi isFav,just return");
                             return;
                         }
-                        BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
-                        ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
                     }
+                    if (mHomeCompanyType == 3) {
+                        if (mScreenViewModel.isFrequentAddress(poiInfoEntity)) {
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "current poi isFre,just return");
+                            return;
+                        }
+                    }
+                    BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
+                    ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
                     showCurrentFragment();

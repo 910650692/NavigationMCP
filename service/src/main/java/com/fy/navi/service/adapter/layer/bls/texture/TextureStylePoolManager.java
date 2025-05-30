@@ -41,7 +41,7 @@ public final class TextureStylePoolManager {
 
     private final ConcurrentHashMap<String, String> allStyleHtml = new ConcurrentHashMap<>();
 
-    public String getLayerStyle(MapType mapType, LayerItem item, BaseStyleAdapter styleAdapter) {
+    public String getLayerStyleJson(MapType mapType, LayerItem item, BaseStyleAdapter styleAdapter) {
         String styleJson = null;
         String jsonPathName = styleAdapter.provideLayerItemStyleJson(item);
         if (!TextUtils.isEmpty(jsonPathName)) {

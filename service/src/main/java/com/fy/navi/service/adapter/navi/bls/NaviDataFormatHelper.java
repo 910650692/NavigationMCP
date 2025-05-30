@@ -6,11 +6,13 @@ import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.path.model.LightBarItem;
 import com.autonavi.gbl.common.path.model.RoadClass;
+import com.autonavi.gbl.common.path.model.SubCameraExtType;
 import com.autonavi.gbl.common.path.model.TollGateInfo;
 import com.autonavi.gbl.common.path.model.TrafficItem;
 import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.autonavi.gbl.guide.model.CrossNaviInfo;
 import com.autonavi.gbl.guide.model.CrossType;
+import com.autonavi.gbl.guide.model.CruiseFacilityInfo;
 import com.autonavi.gbl.guide.model.CruiseInfo;
 import com.autonavi.gbl.guide.model.DriveReport;
 import com.autonavi.gbl.guide.model.ExitDirectionInfo;
@@ -41,6 +43,8 @@ import com.autonavi.gbl.guide.model.VectorCrossImageType;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.cruise.CruiseFacilityEntity;
+import com.fy.navi.service.define.cruise.CruiseIntervalvelocity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.LightInfoEntity;
@@ -209,6 +213,7 @@ public final class NaviDataFormatHelper {
             naviExitDirectionInfo.setExitNameInfo(directionInfo.exitNameInfo);
             naviExitDirectionInfo.setDirectionInfo(directionInfo.directionInfo);
             naviExitDirectionInfo.setEntranceExit(directionInfo.entranceExit);
+            naviExitDirectionInfo.setDisToCurrentPos(directionInfo.disToCurrentPos);
         }
         return naviExitDirectionInfo;
     }
@@ -980,5 +985,49 @@ public final class NaviDataFormatHelper {
             entity.setMSegmentIndex(trafficLightCountdown.segmentIndex);
         }
         return entity;
+    }
+
+    public static CruiseFacilityEntity formatCruiseFacility(ArrayList<CruiseFacilityInfo> facilityInfoList) {
+        if (facilityInfoList == null || facilityInfoList.isEmpty()) {
+            return null;
+        }
+        CruiseFacilityEntity cruiseFacilityEntity = new CruiseFacilityEntity();
+        CruiseFacilityInfo cruiseFacilityInfo = facilityInfoList.get(0);
+        cruiseFacilityEntity.setDistance(cruiseFacilityInfo.distance);
+        cruiseFacilityEntity.setLimitSpeed(cruiseFacilityInfo.limitSpeed);
+        cruiseFacilityEntity.setType(cruiseFacilityInfo.type);
+        return cruiseFacilityEntity;
+    }
+
+    public static CruiseIntervalvelocity formatCruiseIntervalvelocity(ArrayList<NaviCameraExt> cameraInfoList) {
+        if (ConvertUtils.isEmpty(cameraInfoList)) {
+            return null;
+        }
+        CruiseIntervalvelocity cruiseIntervalvelocity = new CruiseIntervalvelocity();
+        for (NaviCameraExt naviCameraExt : cameraInfoList) {
+            if (ConvertUtils.isEmpty(naviCameraExt.subCameras)) {
+                continue;
+            }
+            for (NaviSubCameraExt naviSubCameraExt : naviCameraExt.subCameras) {
+                ArrayList<Short> speeds = naviSubCameraExt.speed;
+                if (ConvertUtils.isEmpty(speeds)) {
+                    continue;
+                }
+                for (Short speed : speeds) {
+                    if (isValidSpeed(speed)) {
+                        if (naviSubCameraExt.cameraId == SubCameraExtType.SubCameraExtTypeIntervalvelocityStart) {
+                            cruiseIntervalvelocity.setStartPointDist(naviCameraExt.distance);
+                            cruiseIntervalvelocity.setSpeedValue(speed);
+                        }
+                        if (naviSubCameraExt.cameraId == SubCameraExtType.SubCameraExtTypeIntervalvelocityEnd) {
+                            cruiseIntervalvelocity.setEndPointDist(naviCameraExt.distance);
+                            cruiseIntervalvelocity.setSpeedValue(speed);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return cruiseIntervalvelocity;
     }
 }

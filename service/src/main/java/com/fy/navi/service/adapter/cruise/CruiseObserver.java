@@ -1,6 +1,8 @@
 package com.fy.navi.service.adapter.cruise;
 
 import com.fy.navi.service.adapter.navi.BaseNaviObserver;
+import com.fy.navi.service.define.cruise.CruiseFacilityEntity;
+import com.fy.navi.service.define.cruise.CruiseIntervalvelocity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 
@@ -27,4 +29,8 @@ public interface CruiseObserver extends BaseNaviObserver {
 
     /*巡航播报安全提醒 true：开启 false：关闭*/
     void setConfigKeyDriveWarn(boolean driveWarn);
+
+    void onUpdateCruiseFacility(CruiseFacilityEntity cruiseFacilityEntity);
+
+//    void onCruiseIntervalvelocity(CruiseIntervalvelocity cruiseIntervalvelocity);
 }

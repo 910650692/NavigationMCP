@@ -47,18 +47,18 @@ public class StringUtils {
     public static String formatSize(BigInteger byteCount) {
         BigDecimal sizeInGB = new BigDecimal(byteCount).divide(new BigDecimal(1024 * 1024 * 1024), 2, RoundingMode.HALF_UP);
         if (sizeInGB.compareTo(BigDecimal.ZERO) > 1) {
-            return sizeInGB.toPlainString() + " GB";
+            return sizeInGB.toPlainString() + "GB";
         }
         BigDecimal sizeInMB = new BigDecimal(byteCount).divide(new BigDecimal(1024 * 1024), 2, RoundingMode.HALF_UP);
         if (sizeInMB.compareTo(BigDecimal.ZERO) > 0) {
-            return sizeInMB.toPlainString() + " MB";
+            return sizeInMB.toPlainString() + "MB";
         }
         BigDecimal sizeInKB = new BigDecimal(byteCount).divide(new BigDecimal(1024), 2, RoundingMode.HALF_UP);
         if (sizeInKB.compareTo(BigDecimal.ZERO) > 0) {
-            return sizeInKB.toPlainString() + " KB";
+            return sizeInKB.toPlainString() + "KB";
         }
         // 如果都不满足，则返回字节数
-        return byteCount.toString() + " B";
+        return byteCount.toString() + "B";
     }
 
     /**

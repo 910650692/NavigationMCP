@@ -17,7 +17,6 @@
             android:id="@+id/textViewTimeRemaining"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/main_go_home"
             android:textSize="@dimen/sp_32"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +26,6 @@
             android:id="@+id/textViewEstimatedArrival"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/main_go_home"
             android:layout_marginTop="@dimen/dp_14"
             android:textSize="@dimen/sp_26"
             android:textColor="@color/search_color_ffffff_70"
@@ -38,15 +36,14 @@
             android:id="@+id/buttonGoHome"
             android:layout_width="@dimen/dp_111"
             android:layout_height="@dimen/dp_65"
-            android:text="@string/main_go_home"
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_13"
-            android:background="@drawable/bg_navi_to_home_bg"
+            android:background="@drawable/bg_navi_go_charge"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_26"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-           />
+            />
 
         <com.fy.navi.scene.ui.map.component.MultiStageProgressBar
             android:id="@+id/sk_iv_basic_home_progress"

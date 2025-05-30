@@ -1,6 +1,7 @@
 package com.fy.navi.service.logicpaket.navi;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.model.TrafficStatus;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.PathInfo;
@@ -18,8 +19,10 @@ import java.util.HashMap;
  */
 public class RoadNameAndTmcHelper {
 
+    public static final String TAG = "RoadNameAndTmcHelper";
+
     public RoadName getAllRoadName(MapType mapType, RoadName roadName, long pathId) {
-        if (roadName.getPathId() == pathId && !ConvertUtils.isEmpty(roadName)) {
+        if (!ConvertUtils.isEmpty(roadName) && roadName.getPathId() == pathId) {
             return roadName;
         }
         return getAllRoadName(mapType, pathId);
@@ -34,16 +37,19 @@ public class RoadNameAndTmcHelper {
             // 遍历所有的导航段
             for (long i = 0; i < segmentCount; i++) {
                 SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
+                int segmentIndex = segmentInfo.getSegmentIndex();
                 long linkCount = segmentInfo.getLinkCount();
                 LinkInfo linkInfoLongest = segmentInfo.getLinkInfo(0);
                 // 根据SDK的建议，取最长的link作为导航段的道路名称
                 for (long j = 1; j < linkCount; j++) {
-                    LinkInfo linkInfo = segmentInfo.getLinkInfo(0);
+                    LinkInfo linkInfo = segmentInfo.getLinkInfo(j);
                     if (linkInfo.getLength() > linkInfoLongest.getLength()) {
                         linkInfoLongest = linkInfo;
                     }
                 }
-                roadNameMap.put(linkInfoLongest.getRoadName(), linkInfoLongest.getLinkIndex());
+                Logger.i(TAG, "roadName:" + linkInfoLongest.getRoadName() +
+                        " segmentIndex:" + segmentIndex);
+                roadNameMap.put(linkInfoLongest.getRoadName(), segmentIndex);
             }
             roadName.setRoadNameMap(roadNameMap);
             roadName.setPathId(pathId);
@@ -58,8 +64,8 @@ public class RoadNameAndTmcHelper {
                 getItemList();
         if (!ConvertUtils.isEmpty(naviLightBarItems)) {
             for (NaviTmcInfo.NaviLightBarItem naviLightBarItem : naviLightBarItems) {
-                if (linkIndex >= naviLightBarItem.getStartLinkIdx() &&
-                        linkIndex <= naviLightBarItem.getEndLinkIndex()) {
+                if (linkIndex >= naviLightBarItem.getStartSegmentIdx() &&
+                        linkIndex <= naviLightBarItem.getEndSegmentIdx()) {
                     if (naviLightBarItem.getStatusFlag() == 0x00) {
                         return naviLightBarItem.getStatus();
                     } else {

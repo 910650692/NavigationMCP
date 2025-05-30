@@ -120,7 +120,14 @@ public final class MapStateManager {
         public void onNaviStatusChange(final String naviStatus) {
             mCurNaviStatus = naviStatus;
             updateNaviStatus(naviStatus);
-            AMapStateUtils.saveMapState(mBuilder.build());
+            if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(naviStatus)) {
+                final int size = mRouteList.size();
+                mBuilder.setPathCount(size);
+                AMapStateUtils.saveMapState(mBuilder.build());
+                VoiceSearchManager.getInstance().playRouteResult();
+            } else {
+                AMapStateUtils.saveMapState(mBuilder.build());
+            }
         }
     };
 
@@ -153,7 +160,6 @@ public final class MapStateManager {
         @Override
         public void onRouteFail(final MapType mapTypeId, final String errorMsg) {
             mRouteList.clear();
-            VoiceSearchManager.getInstance().playRouteResult(0);
         }
 
         @Override
@@ -161,20 +167,17 @@ public final class MapStateManager {
             if (null != requestRouteResult && null != requestRouteResult.getMRouteLineInfos()
                     && !requestRouteResult.getMRouteLineInfos().isEmpty()) {
                 final List<RouteLineInfo> routeLineInfos = requestRouteResult.getMRouteLineInfos();
-                final int size = routeLineInfos.size();
                 mRouteList.addAll(routeLineInfos);
-                mBuilder.setPathCount(size);
-                AMapStateUtils.saveMapState(mBuilder.build());
-                VoiceSearchManager.getInstance().playRouteResult(size);
+                Logger.e(IVrBridgeConstant.TAG, "----------RouteResult 多结果更新-----------");
             } else {
                 mRouteList.clear();
-                VoiceSearchManager.getInstance().playRouteResult(0);
             }
         }
 
         @Override
         public void onSpeechViaNum(final int size) {
             mBuilder.setViaPointsCount(size);
+            Logger.e(IVrBridgeConstant.TAG, "----------SpeechViaNum更新-----------");
             AMapStateUtils.saveMapState(mBuilder.build());
         }
 

@@ -72,6 +72,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     private int mOldScrollY;
     private boolean mIsStopScroll;
     private boolean mIsTouchEvent;
+    private long mFlingTime;    //惯性滑动时间
 
     @Override
     public int onLayoutId() {
@@ -434,12 +435,13 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
     /**
      * 更新收藏点列表
-     * @param list 普通收藏点
+     * @param list 收藏点集合
+     * @param type o: favorite list, 1: station list
      */
-    public void updateFavoriteView(final ArrayList<PoiInfoEntity> list) {
+    public void updateFavoriteView(final ArrayList<PoiInfoEntity> list, final int type) {
         mFavoriteList = list;
         Logger.i(TAG, "setFavoriteData -> " + GsonUtils.toJson(mFavoriteList));
-        mFavoriteDataAdapter.setData(mFavoriteList);
+        mFavoriteDataAdapter.setData(mFavoriteList, type);
     }
 
     /**
@@ -601,6 +603,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         final int y = mViewModel.getPopupData().get("frequentY");
         mFrequentPopupWindow.showAsDropDown(anchorView, 0, y , Gravity.END);
     }
+
     /**
      * backToTop
      */
@@ -608,7 +611,6 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     private void backToTop() {
 
         mThreeScreenHeight = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_714)  * 3;
-
         mBinding.favoriteScroll.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, final MotionEvent event) {
@@ -617,6 +619,8 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
                         mIsTouchEvent = true;
                         break;
                     case  MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        mFlingTime = System.currentTimeMillis();
                         mIsTouchEvent = false;
                         break;
                     default:
@@ -626,12 +630,13 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             }
         });
 
+
         // 设置滚动监听
         mBinding.favoriteScroll.getViewTreeObserver().addOnScrollChangedListener(
                 () -> {
                     final int scrollY = mBinding.favoriteScroll.getScrollY();
                     final int scrollX = mBinding.favoriteScroll.getScrollX();
-                    if (scrollY == 0 && mIsStopScroll && !mIsTouchEvent) {
+                    if (scrollY == 0 && mIsStopScroll && !(mIsTouchEvent || System.currentTimeMillis() - mFlingTime < 300)) {
                         mBinding.favoriteScroll.scrollTo(scrollX, mOldScrollY);
                         return;
                     }

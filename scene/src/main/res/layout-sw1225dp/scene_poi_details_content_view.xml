@@ -96,14 +96,15 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_offline_hint"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/dp_422"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
-            android:textColor="@color/poi_details_bottom_ff_00"
+            android:layout_marginTop="@dimen/dp_20"
+            android:textColor="@color/search_color_ffffff_70"
             android:background="@drawable/bg_offline"
-            android:textSize="@dimen/sp_29"
+            android:textSize="@dimen/sp_26"
             android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@+id/end_guideline"
+            android:paddingVertical="@dimen/dp_14"
+            android:paddingHorizontal="@dimen/dp_26"
             app:layout_constraintStart_toStartOf="@+id/start_guideline"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/search_offline_hint"
@@ -113,7 +114,7 @@
             android:id="@+id/sk_poi_name"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_26"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/poi_details_bottom_ff_00"
@@ -130,10 +131,10 @@
             android:layout_width="@dimen/dp_49"
             android:layout_height="@dimen/dp_49"
             android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_22"
             android:src="@drawable/icon_poi_close"
-            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/poi_offline_hint"
-            app:layout_goneMarginTop="@dimen/dp_30" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.fy.navi.scene.ui.search.MaxHeightScrollView
             android:id="@+id/poi_details_scroll"

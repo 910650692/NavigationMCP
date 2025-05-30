@@ -391,6 +391,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onUpdateTrafficLightCountdown(final ArrayList<TrafficLightCountdown> list) {
+        Logger.e(MapDefaultFinalTag.LAYER_SERVICE_TAG, "红绿灯倒计时回调接口信息 = " + GsonUtils.toJson(list));
         if (ConvertUtils.isEmpty(mGuidanceObservers)) {
             return;
         }
@@ -504,7 +505,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         }
         ArrayList<LaneInfoEntity> laneInfoList = new ArrayList<>();
         for (int i = 0; i < laneInfo.size(); i++) {
-            LaneInfo info =  laneInfo.get(i);
+            LaneInfo info = laneInfo.get(i);
             if (ConvertUtils.isEmpty(info)) {
                 continue;
             }

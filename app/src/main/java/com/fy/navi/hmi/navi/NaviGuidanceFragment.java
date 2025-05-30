@@ -89,6 +89,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         list.add(mBinding.sceneNaviChargeTip.getSceneState());
         list.add(mBinding.sceneNaviContinue.getSceneState());
         list.add(mBinding.sceneNaviCardDetail.getSceneState());
+        list.add(mBinding.sceneNaviViaDetail.getSceneState());
+        list.add(mBinding.sceneHandingCard.getSceneState());
     }
 
     @Override
@@ -107,6 +109,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviViaArrive.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviSapaDetail.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneHandingCard.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviViaDetail.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviPreference.registerRoutePreferenceObserver("navi fragment", mViewModel);
     }
 
@@ -157,6 +160,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviChargeTip.setSceneState(list.get(15));
         mBinding.sceneNaviContinue.setSceneState(list.get(16));
         mBinding.sceneNaviCardDetail.setSceneState(list.get(17));
+        mBinding.sceneNaviViaDetail.setSceneState(list.get(18));
+        mBinding.sceneHandingCard.setSceneState(list.get(19));
         NaviSceneManager.getInstance().restoreList();
     }
 
@@ -343,6 +348,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviContinue.addSceneCallback(sceneCallback);
         mBinding.sceneHandingCard.addSceneCallback(sceneCallback);
         mBinding.sceneNaviCardDetail.addSceneCallback(sceneCallback);
+        mBinding.sceneNaviViaDetail.addSceneCallback(sceneCallback);
         // 经纬度添加途经点失败的测试广播
 //        ContextCompat.registerReceiver(getContext(), new BroadcastReceiver() {
 //            @Override
@@ -613,5 +619,17 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     public void onCurrentRoadSpeed(int speed) {
         mBinding.sceneNaviSpeed.onCurrentRoadSpeed(speed);
+    }
+
+    public void showViaDetail(boolean b) {
+        if (null != mBinding.sceneNaviViaDetail) {
+            mBinding.sceneNaviViaDetail.showViaDetail(b);
+        }
+    }
+
+    public void updateNewestViaPoint(NaviViaEntity naviViaEntity) {
+        if (null != mBinding.sceneNaviViaDetail) {
+            mBinding.sceneNaviViaDetail.updateNewestViaPoint(naviViaEntity);
+        }
     }
 }

@@ -8,6 +8,7 @@ import com.autonavi.gbl.map.layer.model.CustomTextureParam;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.autonavi.gbl.map.layer.model.ItemStyleInfo;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.layer.bls.bean.MarkerInfoBean;
 import com.fy.navi.service.define.layer.refix.LayerItemData;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         return result;
     }
 
-    public List<CustomUpdatePair> createUpdatePair(LayerItem item) {
+    public List<CustomUpdatePair> createUpdatePair(LayerItem item,String markerInfo) {
         return new ArrayList<>();
     }
 
@@ -106,5 +107,9 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         updatePair.newValue = value;
         updatePair.newStyle = style;
         return updatePair;
+    }
+
+    public MarkerInfoBean createMarkerInfoBean(LayerItem item, String markerInfo) {
+        return new MarkerInfoBean();
     }
 }

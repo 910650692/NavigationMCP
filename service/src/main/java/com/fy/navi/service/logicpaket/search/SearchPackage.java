@@ -888,9 +888,19 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @return 导航记录
      */
     public List<History> getNaviRecord() {
-        final List<History> historyList = mManager.getValueByType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(historyList));
-        return historyList;
+        if (isLogin()) {
+            final ArrayList<HistoryRouteItemBean> historyRouteItemBeans = mUserTrackAdapter.getHistoryRoute();
+            final List<History> historyList = Optional.ofNullable(historyRouteItemBeans)
+                    .orElse(new ArrayList<>())
+                    .stream()
+                    .map(this::convertHistoryRouteItemBeanToHistory)
+                    .collect(Collectors.toList());
+            return historyList;
+        } else {
+            final List<History> historyList = mManager.getValueByType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(historyList));
+            return historyList;
+        }
     }
 
     private History convertSearchHistoryItemBeanToHistory(final SearchHistoryItemBean searchHistoryItemBean) {
@@ -912,7 +922,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         history.setMEndPoiName(item.getToPoi().getName());
         history.setMKeyWord(item.getToPoi().getName());
         history.setMIsCompleted(item.getIsCompleted());
-        history.setMUpdateTime(item.getTime() == null ? new Date() : item.getTime());
+        history.setMUpdateTime(item.getUpdateTime() == 0 ? new Date() : new Date(item.getUpdateTime()));
         return history;
     }
 

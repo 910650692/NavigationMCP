@@ -101,8 +101,9 @@ public interface RouteResultObserver {
      * @param requestRouteResult 路线结果类
      * @param errorCode 错误码
      * @param errorMsg 失败信息
+     * @param requestId 请求id
      */
-    void onRouteFail(RequestRouteResult requestRouteResult, int errorCode, String errorMsg);
+    void onRouteFail(RequestRouteResult requestRouteResult, int errorCode, String errorMsg, long requestId);
 
     /**
      * 路线上充电站数据回调    、

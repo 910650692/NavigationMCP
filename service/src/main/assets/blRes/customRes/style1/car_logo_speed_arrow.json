@@ -1,0 +1,41 @@
+{
+  "car_layer_style": {
+    "car_marker": {
+      "compass_marker_id": "global_image_navi_direction_day_night",
+      "compass_indicator_marker_id": "global_image_navi_direction_day_night",
+      "track_marker_id": "-1",
+      "track_arc_marker_id": "layer_image_car_speed",
+      "shine_marker_id": "navi_day_light"
+    },
+    "compass_marker_info": {
+      "east_marker_id": "global_image_navi_direction_east_day_night",
+      "south_marker_id": "global_image_navi_direction_south_day_night",
+      "west_marker_id": "global_image_navi_direction_west_day_night",
+      "north_marker_id": "global_image_navi_direction_north",
+      "relative_distance": 75
+    },
+    "car_animation_style": {
+      "car_style": 1,
+      "no_net": {
+        "animation_duration": 2000,
+        "from_zoom": 0.7,
+        "end_zoom": 1,
+        "from_alpha": 1,
+        "end_alpha": 0
+      },
+      "net": {
+        "animation_duration": 2000,
+        "from_zoom": 0.7,
+        "end_zoom": 1,
+        "from_alpha": 1,
+        "end_alpha": 0
+      }
+    },
+    "car_priority": {
+      "compass": 3,
+      "compass_indicator": 0,
+      "shine": 1,
+      "track": 2
+    }
+  }
+}

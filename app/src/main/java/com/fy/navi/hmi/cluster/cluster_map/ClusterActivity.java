@@ -1,19 +1,15 @@
 package com.fy.navi.hmi.cluster.cluster_map;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -22,25 +18,29 @@ import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.cluster.ClusterViewModel;
 import com.fy.navi.hmi.databinding.ActivityClusterBinding;
-import com.fy.navi.scene.impl.navi.common.AutoUIString;
+import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.base.BaseActivity;
+import com.fy.navi.utils.ActivityCloseManager;
 
 import java.util.Objects;
-public class ClusterActivity extends BaseActivity<ActivityClusterBinding, ClusterViewModel>   {
 
-    /**
-     * TAG
-     */
+public class ClusterActivity extends BaseActivity<ActivityClusterBinding, ClusterViewModel> {
+
     private static final String TAG = "ClusterActivityTAG";
-    /**
-     * 通过广播关闭Activity
-     */
     private BroadcastReceiver mBroadcastReceiver;
+
+    // ETA 相关字段
+    private String mArriveTime = "";      // 到达时间
+    private String mArriveDay = "";       // 到达天数
+    private String mRemainInfo = "";      // 剩余距离
+    private String mLastArriveTime = "";  // 上一次到达时间
+    private String mLastRemainInfo = "";  // 上一次剩余距离
 
     @Override
     public int onLayoutId() {
@@ -56,10 +56,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.d(TAG, "onCreate");
-        //注册关闭Activity广播
-        registerBroadcastReceiver();
-        //添加 ClusterNaviInfoFragment 导航信息Fragment
-        //addNaviInfoFragment();
+        registerCloseListener();
     }
 
     @Override
@@ -71,41 +68,37 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     @Override
     protected void onResume() {
         super.onResume();
+        Logger.d(TAG, "onResume");
         setVS(NaviStatusPackage.getInstance().getCurrentNaviStatus());
-        //toast提示（MsgType: 3s Timeout +Anykey):
-        if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
-            //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
-            //OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
-            ThreadManager.getInstance().postUi(() ->
-                    ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(com.fy.navi.fsa.R.string.open_cluster_map_toast),  3000));
+        if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
+            showClusterMapToast();
         }
-
     }
 
     @Override
     public int onInitVariableId() {
+        Logger.d(TAG, "onInitVariableId");
         return BR.ViewModel;
     }
 
     @Override
     public void onInitView() {
         Logger.d(TAG, "onInitView");
-        //mViewModel.loadMapView();
         mViewModel.loadMapView();
+        updateMapThemeType();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Logger.d(TAG,"pause");
+        Logger.d(TAG, "onPause");
     }
-
 
     @Override
     protected void onStop() {
         super.onStop();
-        //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
-        if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
+        Logger.d(TAG, "onStop");
+        if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
             //OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
         }
     }
@@ -114,7 +107,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     protected void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy");
-        unregisterReceiver(mBroadcastReceiver);
+        ActivityCloseManager.getInstance().removeListener();
     }
 
     @Override
@@ -122,120 +115,65 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         Logger.d(TAG, "onInitData");
     }
 
-    public IBaseScreenMapView getMapView() {
-        Logger.d(TAG, "getMapView");
-        return mBinding.clusterMapview;
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Logger.d(TAG, "onConfigurationChanged");
+        updateMapThemeType();
     }
 
-    /**
-     * 注册关闭Activity广播
-     */
-    @SuppressLint({"WrongConstant", "UnspecifiedRegisterReceiverFlag"})
-    private void registerBroadcastReceiver() {
-        Logger.d(TAG, "registerBroadcastReceiver");
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Logger.d(TAG, "onReceive: " + intent.getAction());
-                //com.fy.navi.hmi.cluster_map.ClusterActivity
-                if ("com.fy.navi.hmi.cluster_map.ClusterActivity".equals(intent.getAction())) {
-                    Logger.d(TAG, "onReceive: com.fy.navi.hmi.cluster.ClusterActivity");
-                    ClusterActivity.this.finish(); // 关闭当前 Activity
-                }
-            }
-        };
-        //registerReceiver(mBroadcastReceiver, new IntentFilter("com.fy.navi.hmi.cluster_map.ClusterActivity"));
-        //防止不安全的广播暴露行为
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(mBroadcastReceiver, new IntentFilter("com.fy.navi.hmi.cluster_map.ClusterActivity"), Context.RECEIVER_NOT_EXPORTED);
-        }else {
-            registerReceiver(mBroadcastReceiver, new IntentFilter("com.fy.navi.hmi.cluster_map.ClusterActivity"));
-        }
+    private void registerCloseListener() {
+        ActivityCloseManager.getInstance().setOnCloseListener(this::finish);
     }
 
-    //  到达时间
-    private String mArriveTime = "";
-    // 到达天数
-    private String mArriveDay = "";
-    //  剩余信息
-    private String mRemainInfo = "";
+    private void showClusterMapToast() {
+        ThreadManager.getInstance().postUi(() ->
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(com.fy.navi.fsa.R.string.open_cluster_map_toast),
+                        3000));
+    }
 
-    //  上一次显示的到达时间
-    private String mLastArriveTime = "";
-    //  上一次显示的剩余信息
-    private String mLastRemainInfo = "";
-    /**
-     * 更新ETA信息
-     *
-     * @param distance
-     * @param time
-     */
+    private void updateMapThemeType() {
+        boolean nightModeEnabled = ThemeUtils.INSTANCE.isNightModeEnabled(this);
+        Logger.d(TAG, "updateMapThemeType:nightModeEnabled:" + nightModeEnabled);
+        ThemeType colorMode = nightModeEnabled ? ThemeType.NIGHT : ThemeType.DAY;
+        MapAdapter.getInstance().updateUiStyle(MapType.CLUSTER_MAP, colorMode);
+    }
+
     public void updateEta(final int distance, final int time) {
-        if (distance <= 0 && time <= 0) {
-            return;
-        }
-        //天数
+        if (distance <= 0 && time <= 0) return;
         mArriveDay = TimeUtils.getArriveDay(time);
-        //时间
         mArriveTime = TimeUtils.getArriveTime(this, time);
-        //剩余距离
         mRemainInfo = TimeUtils.getRemainingMileage(this, distance);
-        // 到达或者剩余信息有变化才更新界面
         if (!Objects.equals(mLastArriveTime, mArriveTime) || !Objects.equals(mLastRemainInfo, mRemainInfo)) {
             showArriveInfo();
         }
     }
-    public void updateRouteName(String mCurrRouteName) {
-        mBinding.stvNaviRouteName.setText(mCurrRouteName);
-    }
 
     private void showArriveInfo() {
-        Logger.i(TAG, " shwoArriveInfo ");
-        // 到达时间
+        Logger.i(TAG, "showArriveInfo");
         if (!TextUtils.isEmpty(mArriveTime)) {
-            setTextStvArriveTime(new AutoUIString(ConvertUtils.digitToBold(mArriveTime)));
+            mBinding.stvArriveTime.setText(ConvertUtils.digitToBold(mArriveTime));
         }
-        setTextStvArrivalDay(new AutoUIString(mArriveDay));
-        setTextremainingMileage(new AutoUIString(ConvertUtils.digitToBold(mRemainInfo)));
+        mBinding.stvArrivalDay.setText(mArriveDay);
+        mBinding.remainingMileage.setText(ConvertUtils.digitToBold(mRemainInfo));
         mLastArriveTime = mArriveTime;
         mLastRemainInfo = mRemainInfo;
     }
 
-    /**
-     * 设置剩余距离
-     */
-    public void setTextremainingMileage(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviEtaRouteRemainDefault：" + textContent.getString(this));
-        mBinding.remainingMileage.setText(textContent.getString(this));
+    public void updateRouteName(String routeName) {
+        mBinding.stvNaviRouteName.setText(routeName);
     }
 
-    /**
-     * 设置到达时间
-     * @param textContent content
-     */
-    @SuppressLint("SetTextI18n")
-    public void setTextStvArriveTime(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviEtaRouteArrivalDefault：" +
-                textContent.getString(this));
-        mBinding.stvArriveTime.setText(textContent.getString(this));
-    }
-
-    /**
-     * 设置到达天数
-     * @param textContent context
-     */
-    public void setTextStvArrivalDay(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviEtaArrivalDay：" + textContent.getString(this));
-        mBinding.stvArrivalDay.setText(textContent.getString(this));
-    }
-
+    // ========= 导航状态控制 =========
     public void setVS(String naviStatus) {
-        if (naviStatus.equals(NaviStatus.NaviStatusType.NAVING)){
-            mBinding.routeNameConstraintLayout.setVisibility(View.VISIBLE);
-            mBinding.remainingMileageConstraintLayout.setVisibility(View.VISIBLE);
-        }else {
-            mBinding.routeNameConstraintLayout.setVisibility(View.GONE);
-            mBinding.remainingMileageConstraintLayout.setVisibility(View.GONE);
-        }
+        boolean isNavigating = NaviStatus.NaviStatusType.NAVING.equals(naviStatus);
+        mBinding.routeNameConstraintLayout.setVisibility(isNavigating ? View.VISIBLE : View.GONE);
+        mBinding.remainingMileageConstraintLayout.setVisibility(isNavigating ? View.VISIBLE : View.GONE);
+    }
+
+    public IBaseScreenMapView getMapView() {
+        Logger.d(TAG, "getMapView");
+        return mBinding.clusterMapview;
     }
 }

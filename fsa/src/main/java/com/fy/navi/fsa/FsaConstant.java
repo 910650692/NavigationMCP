@@ -192,6 +192,8 @@ public interface FsaConstant {
         int ID_VISIBLE_ENLARGE = 9285;
         //低油量，加油站poi数据
         int ID_GAS_STATION_POI = 9286;
+        //红绿灯数据
+        int ID_TRAFFIC_LIGHT_INFO = 9287;
         //挖洞
         int ID_SERVICE_HOLE = 9290;
     }

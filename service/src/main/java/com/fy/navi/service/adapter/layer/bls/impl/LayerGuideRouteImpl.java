@@ -3,9 +3,11 @@ package com.fy.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.common.model.RectDouble;
 import com.autonavi.gbl.common.path.model.RestAreaInfo;
@@ -64,6 +66,7 @@ import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteLinePoints;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapter> {
 
@@ -74,15 +77,13 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         super(bizService, mapView, context, mapType);
         getLayerGuideRouteControl().setStyle(this);
         getLayerRoadCrossControl().setStyle(this);
-        getLayerRoadCrossControl().setStyle(this);
+        getLayerRoadFacilityControl().setStyle(this);
         getLayerGuideRouteControl().addClickObserver(this);
-        getLayerGuideRouteControl().addFocusChangeObserver(this);
         getLayerRoadFacilityControl().addClickObserver(this);
-        getLayerRoadFacilityControl().addFocusChangeObserver(this);
-        getLayerRoadFacilityControl().addObserver(this);
         initDynamicLevel();
         initBizTypeVisible();
         setRouteJamBubblesVisible(true);
+        setGuideTrafficVisible(true);
     }
 
     @Override
@@ -751,15 +752,16 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         return true;
     }
 
+    public void setGuideTrafficVisible(boolean isShow) {
+        getLayerRoadFacilityControl().enableLayer(BizRoadFacilityType.BizRoadFacilityTypeGuideTrafficSignalLight, isShow);
+        getLayerRoadFacilityControl().setVisible(BizRoadFacilityType.BizRoadFacilityTypeGuideTrafficSignalLight, isShow);
+    }
+
     /*设置图元显示、开启碰撞*/
     private void initBizTypeVisible() {
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeGuideLabel, true);
         getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaPoint).enableCollision(true);
         getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeWeather).enableCollision(true);
-        getLayerRoadFacilityControl().enableLayer(BizRoadFacilityType.BizRoadFacilityTypeCruiseTrafficSignalLight, true);
-        getLayerRoadFacilityControl().enableLayer(BizRoadFacilityType.BizRoadFacilityTypeGuideTrafficSignalLight, true);
-        getLayerRoadFacilityControl().setVisible(BizRoadFacilityType.BizRoadFacilityTypeCruiseTrafficSignalLight, true);
-        getLayerRoadFacilityControl().setVisible(BizRoadFacilityType.BizRoadFacilityTypeGuideTrafficSignalLight, true);
     }
 
     /**
@@ -893,6 +895,14 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         }
         Logger.d(TAG, "updateRoadCrossRect");
         getStyleAdapter().updateRoadCrossRect(rect);
+    }
+
+    public Rect getRoadCrossRect() {
+        Rect rect = new Rect();
+        if (!ConvertUtils.isEmpty(getStyleAdapter())) {
+            return getStyleAdapter().getRoadCrossRect();
+        }
+        return rect;
     }
 
     @CrossType.CrossType1

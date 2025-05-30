@@ -67,15 +67,18 @@ public class SceneGoHomeView extends BaseSceneView<SceneMainGoHomeBinding, Scene
         ThreadManager.getInstance().postUi(() -> {
             //0代表家  1代表公司
             this.routeTMCParam = routeTMCParam;
-            mViewBinding.textViewTimeRemaining.setText(String.format(ResourceUtils.Companion.getInstance().getString(
-                    com.fy.navi.scene.R.string.main_go_home_text), routeTMCParam.getMTime()));
+
             mViewBinding.textViewEstimatedArrival.setText(String.format(ResourceUtils.Companion.getInstance().getString(
-                    com.fy.navi.scene.R.string.main_go_company_text), routeTMCParam.getMTimeArrive()));
+                    com.fy.navi.scene.R.string.main_go_arriver_time), routeTMCParam.getMTimeArrive()));
             mViewBinding.skIvBasicHomeProgress.refreshTMC(routeTMCParam.getMRouteLightBarItem());
             if(routeTMCParam.getMKey() == 0){
                 mViewBinding.buttonGoHome.setText(ResourceUtils.Companion.getInstance().getString(R.string.main_go_home));
+                mViewBinding.textViewTimeRemaining.setText(String.format(ResourceUtils.Companion.getInstance().getString(
+                        com.fy.navi.scene.R.string.main_go_home_text), routeTMCParam.getMTime()));
             }else if(routeTMCParam.getMKey() == 1){
                 mViewBinding.buttonGoHome.setText(ResourceUtils.Companion.getInstance().getString(R.string.main_go_company));
+                mViewBinding.textViewTimeRemaining.setText(String.format(ResourceUtils.Companion.getInstance().getString(
+                        com.fy.navi.scene.R.string.main_go_company_text), routeTMCParam.getMTime()));
             }
         });
     }

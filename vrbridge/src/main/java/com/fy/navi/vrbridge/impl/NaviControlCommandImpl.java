@@ -1584,12 +1584,11 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onMapViewSwitch(final String mode, final String tts, final RespCallback respCallback) {
 
-        openMapWhenBackground();
+        final boolean saveCommand = openMapWhenBackground();
         final MapMode curMapMode = MapPackage.getInstance().getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
         Logger.d(IVrBridgeConstant.TAG, "onMapViewSwitch mode:" + mode + ", tts:" + tts + ", curMode:" + curMapMode.name());
 
         final String voiceTargetMode;
-        final CallResponse callResponse;
         final MapMode targetMode;
         final String respTts;
 
@@ -1631,14 +1630,21 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         }
 
         if (targetMode == curMapMode) {
-            callResponse = CallResponse.createNotSupportResponse("当前已是" + respTts);
+            return CallResponse.createNotSupportResponse("当前已是" + respTts);
         } else {
-            Logger.d(IVrBridgeConstant.TAG, "Map view switch successfully !!! ");
-            MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode);
-            callResponse = CallResponse.createSuccessResponse("已切换为" + respTts);
+            if (saveCommand) {
+                mCommandList.add(IVrBridgeConstant.VoiceCommandAction.CHANGE_VIEW);
+                final SingleCommandInfo singleCommandInfo = new SingleCommandInfo();
+                singleCommandInfo.setPoiName(mode);
+                mCommandParamList.add(singleCommandInfo);
+            } else {
+                Logger.d(IVrBridgeConstant.TAG, "Map view switch successfully !!! ");
+                MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode);
+            }
+            final CallResponse callResponse = CallResponse.createSuccessResponse("已切换为" + respTts);
+            callResponse.setNeedPlayMessage(true);
+            respTts(callResponse, respCallback);
         }
-        callResponse.setNeedPlayMessage(true);
-        respTts(callResponse, respCallback);
 
         return CallResponse.createSuccessResponse();
     }
@@ -2179,6 +2185,33 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                             singleCommandInfo.getPoiName(), singleCommandInfo.getPoiCallback());
                 }
                 break;
+            case IVrBridgeConstant.VoiceCommandAction.CHANGE_VIEW:
+                if (null == mCommandParamList || mCommandParamList.isEmpty()) {
+                    return;
+                }
+                final SingleCommandInfo mapModeCommand = mCommandParamList.remove(0);
+                if (null == mapModeCommand || TextUtils.isEmpty(mapModeCommand.getPoiName())) {
+                    return;
+                }
+                final String voiceTargetMode = mapModeCommand.getPoiName();
+                MapMode targetMode = null;
+                switch (voiceTargetMode) {
+                    case IVrBridgeConstant.VoiceMapMode.NORTH_2D:
+                        targetMode = MapMode.NORTH_2D;
+                        break;
+                    case IVrBridgeConstant.VoiceMapMode.CAR_2D:
+                        targetMode = MapMode.UP_2D;
+                        break;
+                    case IVrBridgeConstant.VoiceMapMode.CAR_3D:
+                        targetMode = MapMode.UP_3D;
+                        break;
+                    default:
+                        break;
+                }
+                if (null != targetMode) {
+                    MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode);
+                }
+                break;
             default:
                 break;
         }
@@ -2391,6 +2424,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     private void handlePath(final String strPoi, final String strStart, final String strArrival) {
         if (!ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart) && ConvertUtils.isEmpty(strArrival)) {
             mHasProcessed = true;
+            boolean hasEqual = false;
             final RoadName roadInfo = NaviPackage.getInstance().getAllRoadName(MapType.MAIN_SCREEN_MAIN_MAP);
             if (ConvertUtils.isEmpty(roadInfo) || ConvertUtils.isEmpty(roadInfo.getRoadNameMap())) {
                 Logger.d(IVrBridgeConstant.TAG, "roadInfo error...");
@@ -2399,14 +2433,19 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             final HashMap<String, Integer> roadMap = roadInfo.getRoadNameMap();
             Logger.d(IVrBridgeConstant.TAG, "PathId = " + roadInfo.getPathId());
             for (Map.Entry<String, Integer> entry : roadMap.entrySet()) {
-                Logger.d(IVrBridgeConstant.TAG, "RoadName = " + entry.getKey() + "; LinkIndex = " + entry.getValue());
-            }
-            if (roadMap.containsKey(strPoi) && !ConvertUtils.isEmpty(roadMap.get(strPoi))) {
-                Logger.d(IVrBridgeConstant.TAG, "某道路的路况");
-                mTrafficConditionResult
-                        = NaviPackage.getInstance().getTmcByRoadLinkIndex(MapType.MAIN_SCREEN_MAIN_MAP, roadInfo.getPathId(), roadMap.get(strPoi));
-                mIsInRoute = true;
-                mTtsContentForCondition = strPoi + "路况 ";
+                if (!ConvertUtils.isEmpty(entry.getKey()) && entry.getKey().contains(strPoi)) {
+                    Logger.d(IVrBridgeConstant.TAG, "某道路的路况");
+                    if (hasEqual) {
+                        continue;
+                    }
+                    if (entry.getKey().equals(strPoi)) {
+                        hasEqual = true;
+                    }
+                    mTrafficConditionResult
+                            = NaviPackage.getInstance().getTmcByRoadLinkIndex(MapType.MAIN_SCREEN_MAIN_MAP, roadInfo.getPathId(), entry.getValue());
+                    mIsInRoute = true;
+                    mTtsContentForCondition = strPoi + "路况 ";
+                }
             }
         }
     }

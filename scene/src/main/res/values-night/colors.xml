@@ -121,7 +121,7 @@
     <color name="navi_color_000000_40">#33FFFFFF</color>
     <color name="navi_color_000000_50">#80FFFFFF</color>
     <color name="navi_color_2461EA_10">#1AA3C1F6</color>
-    <color name="navi_color_B2AFC2_15">#1E1F26</color>
+    <color name="navi_color_B2AFC2_15">#FF1E1F26</color>
     <color name="navi_color_F0F2F8_100">#464B60</color>
     <color name="navi_color_E1E5EA_100">#2A2F42</color>
     <color name="navi_color_4B535D_100">#D2D3D7</color>
@@ -184,6 +184,8 @@
     <color name="bg_blue_mfc_default">#2461EA</color>
     <color name="bg_blue_mfc_selected">#6192FF</color>
     <color name="bg_blue_mfc_pressed">#992461EA</color>
+
+    <color name="search_bg">#181A1F</color>
 
     <color name="bg_gery_mfc_default">#338E97B9</color>
     <color name="bg_gery_mfc_selected">#33C4C9DB</color>

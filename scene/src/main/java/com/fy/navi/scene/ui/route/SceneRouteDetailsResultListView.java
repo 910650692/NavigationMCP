@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.route.ISceneRouteDetailsSelectCallBack;
@@ -119,10 +120,19 @@ public class SceneRouteDetailsResultListView extends BaseSceneView<SceneRouteDet
      * */
     public void setAvoidStatus(final boolean isAvoid) {
         this.mIsAvoid = isAvoid;
-        if (ConvertUtils.isEmpty(mRouteLineSegmentInfos)) {
+        if (ConvertUtils.isEmpty(mRouteLineSegmentInfos) || mRouteDetailsResultsAdapter == null) {
             return;
         }
-        mRouteDetailsResultsAdapter.setAdapterResult(mRouteLineSegmentInfos, isAvoid);
+        if (ThreadManager.getInstance().isMainThread()) {
+            mRouteDetailsResultsAdapter.setAdapterResult(mRouteLineSegmentInfos, isAvoid);
+        } else {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    mRouteDetailsResultsAdapter.setAdapterResult(mRouteLineSegmentInfos, isAvoid);
+                }
+            });
+        }
     }
     /**
      * 设置终点名称

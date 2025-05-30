@@ -80,6 +80,7 @@ public class BaseNaviGuidanceViewModel extends
     public ObservableField<Boolean> mNaviSim;
     public ObservableField<Boolean> mHandingCardVisibility;// 悬挂卡
     public ObservableField<Boolean> mHandingCardDetailVisibility;// 悬挂卡-详情
+    public ObservableField<Boolean> mNaviViaDetailVisibility;// 途经点-详情
     //车牌信息
     private String mCurrentPlateNumber;
     //限行信息
@@ -121,6 +122,7 @@ public class BaseNaviGuidanceViewModel extends
         mNaviSim = new ObservableField<>(false);
         mHandingCardVisibility = new ObservableField<>(false);
         mHandingCardDetailVisibility = new ObservableField<>(false);
+        mNaviViaDetailVisibility = new ObservableField<>(false);
         mModelSaveEntity = new NaviModelSaveEntity();
         mSceneStatus = new ArrayList<>();
     }
@@ -250,6 +252,9 @@ public class BaseNaviGuidanceViewModel extends
                 break;
             case NAVI_SUSPEND_CARD_DETAIL:
                 mHandingCardDetailVisibility.set(isVisible);
+                break;
+            case NAVI_SCENE_VIA_DETAIL:
+                mNaviViaDetailVisibility.set(isVisible);
                 break;
             default:
                 break;
@@ -693,6 +698,24 @@ public class BaseNaviGuidanceViewModel extends
     public void onCurrentRoadSpeed(int speed) {
         if (null != mView) {
             mView.onCurrentRoadSpeed(speed);
+        }
+    }
+
+    /**
+     * @param b 是否达到了显示途经点详情的时机
+     */
+    public void showViaDetail(boolean b) {
+        if (null != mView) {
+            mView.showViaDetail(b);
+        }
+    }
+
+    /**
+     * @param naviViaEntity 最新的途经点信息
+     */
+    public void updateNewestViaPoint(NaviViaEntity naviViaEntity) {
+        if (null != mView) {
+            mView.updateNewestViaPoint(naviViaEntity);
         }
     }
 }

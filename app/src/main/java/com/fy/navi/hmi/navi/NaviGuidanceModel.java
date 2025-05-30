@@ -20,9 +20,11 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.launcher.FloatViewManager;
+import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.search.alongway.MainAlongWaySearchFragment;
 import com.fy.navi.hmi.search.searchresult.SearchResultFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
+import com.fy.navi.hmi.splitscreen.SRFloatWindowService;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
@@ -122,6 +124,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private boolean mIsShowAutoAdd = true; // 是否显示自动添加的充电桩
 
     public static final int ONE_SECOND = 1000;
+
+    private boolean mIsViaEmpty = true;
     private List<OnNetStatusChangeListener> mNetStatusChangeListeners =
             new CopyOnWriteArrayList<>();
 
@@ -251,7 +255,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (null != poiInfoEntity) {
             LayerItemRouteEndPoint endPoint = new LayerItemRouteEndPoint();
             endPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS);
-            ChargeInfo chargeInfo = poiInfoEntity.getChargeInfoList().get(0);
+            List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
+            ChargeInfo chargeInfo = chargeInfoList == null ? null : chargeInfoList.get(0);
             String businessTime = poiInfoEntity.getBusinessTime();
             if (!ConvertUtils.isEmpty(chargeInfo)) {
                 int slowTotal = chargeInfo.getMSlowTotal();
@@ -281,6 +286,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onNaviInfo(final NaviEtaInfo naviInfoBean) {
         if (ConvertUtils.isEmpty(naviInfoBean)) return;
+        checkShowViaDetail(naviInfoBean);
         mNaviEtaInfo = naviInfoBean;
         mViewModel.onNaviInfo(naviInfoBean);
         if (mTipManager != null) {
@@ -292,6 +298,32 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViewModel.onCrossProgress(moveDistance);
         } else {
             mMoveStartDistance = naviInfoBean.getAllDist();
+        }
+    }
+
+    private void checkShowViaDetail(final NaviEtaInfo naviInfoBean) {
+        ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = naviInfoBean.getViaRemain();
+        if (!ConvertUtils.isEmpty(viaRemain)) {
+            mIsViaEmpty = false;
+            NaviEtaInfo.NaviTimeAndDist naviTimeAndDist = viaRemain.get(0);
+            if (null != naviTimeAndDist) {
+                int distance = naviTimeAndDist.dist;
+                if (distance <= NumberUtils.NUM_5000) {
+                    if (null != mViewModel) {
+                        mViewModel.showViaDetail(true);
+                    }
+                } else {
+                    if (null != mViewModel) {
+                        mViewModel.showViaDetail(false);
+                    }
+                }
+            }
+        } else {
+            if (mIsViaEmpty) {
+                return;
+            }
+            mIsViaEmpty = true;
+            mViewModel.showViaDetail(false);
         }
     }
 
@@ -522,7 +554,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void updateSceneVisible(final NaviSceneId sceneType, final boolean isVisible) {
         mViewModel.updateSceneVisible(sceneType, isVisible);
         if (sceneType == NaviSceneId.NAVI_SCENE_2D_CROSS || sceneType == NaviSceneId.NAVI_SCENE_3D_CROSS) {
-            FloatViewManager.getInstance().notifyCrossImageView(isVisible);
+            LauncherWindowService.getInstance().changeCrossVisible(isVisible);
+            SRFloatWindowService.getInstance().changeCrossVisible(isVisible);
         }
     }
 
@@ -596,7 +629,17 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViaList.add(NaviDataFormatHelper.getNaviViaEntity(allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo));
         }
         Logger.i(TAG, "mViaList-Size:" + mViaList.size(), "tmSize:" + tmpList.size());
+        if (!ConvertUtils.isEmpty(mViaList)) {
+            NaviViaEntity naviViaEntity = mViaList.get(0);
+            updateNewestViaPoint(naviViaEntity);
+        }
         return mViaList;
+    }
+
+    private void updateNewestViaPoint(NaviViaEntity naviViaEntity) {
+        if (null != mViewModel) {
+            mViewModel.updateNewestViaPoint(naviViaEntity);
+        }
     }
 
     /**

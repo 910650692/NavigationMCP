@@ -12,6 +12,7 @@ import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.map.MapActivity;
+import com.fy.navi.hmi.splitscreen.SRFloatWindowService;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.mapservice.bean.common.BaseCityInfo;
 import com.fy.navi.mapservice.bean.common.BaseDistrictInfo;
@@ -33,6 +34,7 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
+import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.DrBean;
 import com.fy.navi.service.define.position.LocInfoBean;
@@ -155,6 +157,154 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     }
 
     /**
+     * 分发定位信息.
+     */
+    private void dispatchLocationInfo() {
+        if (null == mLocationInfo) {
+            return;
+        }
+
+        try {
+            Logger.d(TAG, "onLocationInfoChange in broadcast");
+            final int count = mLocationCallbackList.beginBroadcast();
+            final String locationData = GsonUtils.toJson(mLocationInfo);
+            for (int i = 0; i < count; i++) {
+                final INaviAutoLocationCallback locationCallback = mLocationCallbackList.getRegisteredCallbackItem(i);
+                if (null != locationCallback) {
+                    try {
+                        locationCallback.onLocationInfoChange(locationData);
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch searchFailed error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } finally {
+            closeLocationCallback();
+        }
+    }
+
+    /**
+     * 根据定位到的经纬度信息获取行政区划信息.
+     *
+     * @param geoPoint GeoPoint，当前定位经纬度.
+     */
+    private void initDistrict(final GeoPoint geoPoint) {
+        if (mGeoSearchInterval > 0) {
+            return;
+        }
+        final SearchPackage searchPackage = SearchPackage.getInstance();
+        if (null != searchPackage) {
+            Logger.d(TAG, "getDistrictInfo by point");
+            mGeoSearchInterval = 20;
+            mCountDownTimer = new Timer();
+            mGeoIntervalTask = new GeoSearchIntervalTask();
+            mCountDownTimer.schedule(mGeoIntervalTask, 1000, 1000);
+            mDistrictSearchId = searchPackage.geoSearch(geoPoint, true);
+        }
+    }
+
+    //收到定位信息后，逆地理搜索倒计时Task
+    private final class GeoSearchIntervalTask extends TimerTask {
+        @Override
+        public void run() {
+            countDownInterval();
+        }
+    }
+
+    /**
+     * 获取行政区划信息间隔倒计时.
+     */
+    private void countDownInterval() {
+        mGeoSearchInterval--;
+        if (mGeoSearchInterval == 0) {
+            if (null != mCountDownTimer) {
+                mCountDownTimer.cancel();
+            }
+            mGeoIntervalTask = null;
+        }
+    }
+
+    /**
+     * 结束定位和行政区划信息透出.
+     */
+    private void closeLocationCallback() {
+        if (null != mLocationCallbackList) {
+            try {
+                mLocationCallbackList.finishBroadcast();
+            } catch (IllegalStateException illegalStateException) {
+                Logger.e(TAG, "finishLocationBroadcast error: " + illegalStateException.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 根据逆地理搜索结果更新行政区域和位置信息.
+     *
+     * @param poiInfo PoiInfoEntity，逆地理搜索结果.
+     */
+    private void updateDistrictAndLocation(final PoiInfoEntity poiInfo) {
+        if (null == poiInfo) {
+            Logger.e(TAG, "poiInfo is null");
+            return;
+        }
+        if (null != mLocationInfo) {
+            mLocationInfo.setName(poiInfo.getName());
+            mLocationInfo.setAddress(poiInfo.getAddress());
+        }
+
+        final CityInfo cityInfo = poiInfo.getCityInfo();
+        Logger.d(TAG, "updateDistrictAndLocation: " + cityInfo);
+        if (null != cityInfo) {
+            if (null == mDistrictInfo) {
+                mDistrictInfo = new BaseDistrictInfo();
+            }
+            mDistrictInfo.setProvince(cityInfo.getProvince());
+            mDistrictInfo.setProvinceId(cityInfo.getProvinceAdCode());
+            mDistrictInfo.setCity(cityInfo.getCityName());
+            final int cityId = cityInfo.getCityCode();
+            final int convertedId = ExportConvertUtil.getInstance().cityIdConvert(cityId);
+            mDistrictInfo.setCityId(convertedId);
+            mDistrictInfo.setDistrict(cityInfo.getDistrict());
+            mDistrictInfo.setDistrictId(cityInfo.getDistrictAdCode());
+            dispatchDistrictInfo();
+        }
+    }
+
+    /**
+     * 分发行政区域信息.
+     */
+    private void dispatchDistrictInfo() {
+        Logger.d(TAG, "dispatchDistrictInfo");
+        if (null == mDistrictInfo) {
+            Logger.d(TAG, "DistrictInfo is null");
+            return;
+        }
+
+        try {
+            final int count = mLocationCallbackList.beginBroadcast();
+            final String districtData = GsonUtils.toJson(mDistrictInfo);
+            Logger.d(TAG, "dispatchDistrictInfo: districtData" + districtData);
+            for (int i = 0; i < count; i++) {
+                final INaviAutoLocationCallback locationCallback = mLocationCallbackList.getRegisteredCallbackItem(i);
+                if (null != locationCallback) {
+                    try {
+                        locationCallback.onDistrictInfoChange(districtData);
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch districtInfo error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
+        } finally {
+            closeLocationCallback();
+        }
+    }
+
+
+    /**
      * 初始化搜索回调.
      */
     private void initSearchCallback() {
@@ -254,34 +404,118 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     }
 
     /**
+     * 分发搜索失败回调.
+     *
+     * @param silent boolean，是否静默搜索.
+     * @param errorCode 错误码.
+     */
+    private void dispatchSearchFailed(final boolean silent, final int errorCode) {
+        try {
+            final int count = mSearchCallbackList.beginBroadcast();
+            Logger.d(TAG, "dispatchSearchFailed: errorCode = " + errorCode);
+            for (int i = 0; i < count; i++) {
+                final INaviAutoSearchCallback searchCallback = mSearchCallbackList.getRegisteredCallbackItem(i);
+                if (null != searchCallback) {
+                    try {
+                        searchCallback.onSearchFailed(silent, errorCode);
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch searchFailed error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
+        } finally {
+            closeSearchCallback();
+        }
+    }
+
+    /**
+     * 关闭搜索结果回调.
+     */
+    private void closeSearchCallback() {
+        try {
+            mSearchCallbackList.finishBroadcast();
+        } catch (IllegalStateException exception) {
+            Logger.e(TAG, "finishLocationBroadcast error: " + exception.getMessage());
+        }
+    }
+
+    /**
+     * 分发搜索成功回调.
+     *
+     * @param silent true-静默搜索  false-非静默搜索
+     * @param searchResultEntity SearchResultEntity，搜索结果实体类.
+     */
+    private void dispatchSearchSuccess(final boolean silent, final SearchResultEntity searchResultEntity) {
+        try {
+            Logger.d(TAG, "onSearchSuccess inCallback, silent: " + silent);
+            final int count = mSearchCallbackList.beginBroadcast();
+            final BaseSearchResult baseSearchResult = GsonUtils.convertToT(searchResultEntity, BaseSearchResult.class);
+            final String searchResultStr = GsonUtils.toJson(baseSearchResult);
+
+            for (int i = 0; i < count; i++) {
+                final INaviAutoSearchCallback searchCallback = mSearchCallbackList.getRegisteredCallbackItem(i);
+                if (null != searchCallback) {
+                    try {
+                        searchCallback.onSearchResult(silent, searchResultStr);
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch searchSuccess error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
+        } finally {
+            closeSearchCallback();
+        }
+    }
+
+    /**
+     * 处理逆地址搜索回调结果.
+     *
+     * @param taskId 搜索接口返回的唯一任务标识.
+     * @param poiInfo 搜索结果.
+     */
+    private void dispatchReverseSearch(final int taskId, final PoiInfoEntity poiInfo) {
+        if (null == poiInfo) {
+            Logger.e(TAG, "reverse info empty");
+            return;
+        }
+
+        try {
+            Logger.d(TAG, "onReverseSearch inCallback");
+            final int count = mSearchCallbackList.beginBroadcast();
+            final BaseSearchPoi baseSearchPoi = GsonUtils.convertToT(poiInfo, BaseSearchPoi.class);
+            final BaseCityInfo cityInfo = baseSearchPoi.getCityInfo();
+            if (null != cityInfo) {
+                final int cityCode = cityInfo.getCityCode();
+                final int bdCode = ExportConvertUtil.getInstance().cityIdConvert(cityCode);
+                cityInfo.setCityCode(bdCode);
+            }
+            final String singlePoiStr = GsonUtils.toJson(baseSearchPoi);
+            for (int i = 0; i < count; i++) {
+                final INaviAutoSearchCallback searchCallback = mSearchCallbackList.getRegisteredCallbackItem(i);
+                if (null != searchCallback) {
+                    try {
+                        searchCallback.onReverseGeoSearchResult(taskId, singlePoiStr);
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch reverseSearch error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } finally {
+            closeLocationCallback();
+        }
+    }
+
+    /**
      * 初始化Map状态回调.
-     * onNaviStatusChange
      */
     private void initNaviStatusCallback() {
         mNaviStatusCallback = naviStatus -> {
-            try {
-                Logger.d(TAG, "onNaviStatusChange inCallback " + naviStatus);
-                final int count = mStatusCallbackList.beginBroadcast();
-                for (int i = 0; i < count; i++) {
-                    final INaviAutoStatusCallback statusCallback = mStatusCallbackList.getRegisteredCallbackItem(i);
-                    if (null != statusCallback) {
-                        try {
-                            statusCallback.onNaviStatusChange(naviStatus);
-                        } catch (RemoteException exception) {
-                            Logger.e(TAG, "dispatch naviStatus or panel error: " + exception.getMessage());
-                        }
-                    }
-                }
-            } catch (IllegalStateException statusException) {
-                Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
-            } finally {
-                try {
-                    mStatusCallbackList.finishBroadcast();
-                } catch (IllegalStateException finishException) {
-                    Logger.e(finishException.getMessage() + Arrays.toString(finishException.getStackTrace()));
-                }
-            }
-
             int guidePanelStatus = INaviConstant.GuidePanelStatus.NOT_IN_NAVIGATION;
             if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(naviStatus)) {
                 guidePanelStatus = INaviConstant.GuidePanelStatus.COMMON_NAVIGATION;
@@ -291,32 +525,39 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                 mGuidePanelStatus = guidePanelStatus;
                 guidePanelChanged = true;
             }
-            if(mInCallback) {
-                Logger.w(TAG, "already inBroadcast, can not process panelData");
-                return;
-            }
-
-            if (guidePanelChanged) {
-                try {
-                    mInCallback = true;
-                    final int naviCount = mNaviAutoCallbackList.beginBroadcast();
-                    for (int i = 0; i < naviCount; i++) {
-                        final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
-                        if (null != naviAutoApiCallback) {
-                            try {
-                                naviAutoApiCallback.onPanelData(guidePanelStatus);
-                            } catch (RemoteException exception) {
-                                Logger.e(TAG, "dispatch naviPanelStatus error: " + exception.getMessage());
+            try {
+                Logger.d(TAG, "onNaviStatusChange inCallback " + naviStatus);
+                final int count = mStatusCallbackList.beginBroadcast();
+                for (int i = 0; i < count; i++) {
+                    final INaviAutoStatusCallback statusCallback = mStatusCallbackList.getRegisteredCallbackItem(i);
+                    if (null != statusCallback) {
+                        try {
+                            statusCallback.onNaviStatusChange(naviStatus);
+                            if (guidePanelChanged) {
+                                statusCallback.onPanelData(mGuidePanelStatus);
                             }
+                        } catch (RemoteException exception) {
+                            Logger.e(TAG, "dispatch naviStatus or panel error: " + exception.getMessage());
                         }
                     }
-                } catch (IllegalStateException exception) {
-                    Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
-                } finally {
-                    closeNavigationList();
                 }
+            } catch (IllegalStateException statusException) {
+                Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+            } finally {
+                closeNaviStatusCallback();
             }
         };
+    }
+
+    /**
+     * 关闭mStatusCallbackList.
+     */
+    private void closeNaviStatusCallback() {
+        try {
+            mStatusCallbackList.finishBroadcast();
+        } catch (IllegalStateException finishException) {
+            Logger.e(finishException.getMessage() + Arrays.toString(finishException.getStackTrace()));
+        }
     }
 
     /**
@@ -447,83 +688,32 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
                 mBaseTurnInfo = GsonUtils.convertToT(naviETAInfo, BaseTurnInfo.class);
                 formatEtaInfo();
-
-                if (mInCallback) {
-                    Logger.e(TAG, "already in broadcast, can't process tbt");
-                    return;
-                }
-
-                try {
-                    mInCallback = true;
-                    Logger.d(TAG, "onNaviInfo inCallback");
-                    final int count = mNaviAutoCallbackList.beginBroadcast();
-                    final String turnInfo = GsonUtils.toJson(mBaseTurnInfo);
-                    Logger.d(TAG, "onNaviInfo: turnInfo + " + turnInfo);
-                    for (int i = 0; i < count; i++) {
-                        final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
-                        if (null != naviAutoApiCallback) {
-                            try {
-                                naviAutoApiCallback.onTurnInfoChange(turnInfo);
-                            } catch (RemoteException exception) {
-                                Logger.e(TAG, "dispatch EtaInfo error: " + exception.getMessage());
-                            }
-                        }
-                    }
-                } catch (IllegalStateException e) {
-                    Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
-                } finally {
-                    closeNavigationList();
-                }
+                dispatchTurnInfo();
             }
 
             @Override
             public void onCurrentRoadSpeed(final int speed) {
                 Logger.d(TAG, "receiveSpeedLimit: " + speed);
-                if (mInCallback) {
-                    Logger.e(TAG, "already in broadcast, can't process roadSpeed");
-                    return;
-                }
+                dispatchRoadSpeed(speed);
+            }
 
-                try {
-                    mInCallback = true;
-                    Logger.d(TAG, "onCurrentRoadSpeed inCallback");
-                    final int count = mNaviAutoCallbackList.beginBroadcast();
-                    //当前道路限速
-                    int curSpeed = 0;
-                    if (null != mLocationInfo) {
-                        curSpeed = (int) mLocationInfo.getSpeed();
-                    } else {
-                        final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
-                        if (null != locInfoBean) {
-                            curSpeed = (int) locInfoBean.getSpeed();
-                        }
-                    }
-                    Logger.d(TAG, "onCurrentRoadSpeed: curSpeed = " + curSpeed);
-                    for (int i = 0; i < count; i++) {
-                        final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
-                        if (null != naviAutoApiCallback) {
-                            try {
-                                naviAutoApiCallback.onSpeedLimitChange(curSpeed, speed);
-                            } catch (RemoteException exception) {
-                                Logger.e(TAG, "dispatch naviStatusChane error: " + exception.getMessage());
-                            }
-                        }
-                    }
-                } catch (IllegalStateException e) {
-                    Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
-                } finally {
-                    closeNavigationList();
-                }
+            @Override
+            public void onUpdateTrafficLightCountdown(final ArrayList<TrafficLightCountdownEntity> lightInfoList) {
+                Logger.d(TAG, "update countdown light");
+                dispatchCountdownLightInfo(lightInfoList);
             }
 
             @Override
             public void onNaviArrive(final long traceId, final int naviType) {
                 mBaseTurnInfo = null;
+                Logger.d(TAG, "onNaviArrival");
+                dispatchArrival();
             }
 
             @Override
             public void onNaviStop() {
                 mBaseTurnInfo = null;
+                dispatchNaviStop();
             }
         };
     }
@@ -559,257 +749,168 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     }
 
     /**
-     * 根据定位到的经纬度信息获取行政区划信息.
-     *
-     * @param geoPoint GeoPoint，当前定位经纬度.
+     * 分发NaviInfo.
      */
-    private void initDistrict(final GeoPoint geoPoint) {
-        if (mGeoSearchInterval > 0) {
-            return;
-        }
-        final SearchPackage searchPackage = SearchPackage.getInstance();
-        if (null != searchPackage) {
-            Logger.d(TAG, "getDistrictInfo by point");
-            mGeoSearchInterval = 20;
-            mCountDownTimer = new Timer();
-            mGeoIntervalTask = new GeoSearchIntervalTask();
-            mCountDownTimer.schedule(mGeoIntervalTask, 1000, 1000);
-            mDistrictSearchId = searchPackage.geoSearch(geoPoint, true);
-        }
-    }
-
-    //收到定位信息后，逆地理搜索倒计时Task
-    private final class GeoSearchIntervalTask extends TimerTask {
-        @Override
-        public void run() {
-            countDownInterval();
-        }
-    }
-
-    /**
-     * 获取行政区划信息间隔倒计时.
-     */
-    private void countDownInterval() {
-        mGeoSearchInterval--;
-        if (mGeoSearchInterval == 0) {
-            if (null != mCountDownTimer) {
-                mCountDownTimer.cancel();
-            }
-            mGeoIntervalTask = null;
-        }
-    }
-
-    /**
-     * 分发定位信息.
-     */
-    private void dispatchLocationInfo() {
-        if (null == mLocationInfo) {
+    private void dispatchTurnInfo() {
+        if (mInCallback) {
+            Logger.e(TAG, "already in broadcast, can't process tbt");
             return;
         }
 
         try {
-            Logger.d(TAG, "onLocationInfoChange in broadcast");
-            final int count = mLocationCallbackList.beginBroadcast();
-            final String locationData = GsonUtils.toJson(mLocationInfo);
+            mInCallback = true;
+            Logger.d(TAG, "onNaviInfo inCallback");
+            final int count = mNaviAutoCallbackList.beginBroadcast();
+            final String turnInfo = GsonUtils.toJson(mBaseTurnInfo);
+            Logger.d(TAG, "onNaviInfo: turnInfo + " + turnInfo);
             for (int i = 0; i < count; i++) {
-                final INaviAutoLocationCallback locationCallback = mLocationCallbackList.getRegisteredCallbackItem(i);
-                if (null != locationCallback) {
+                final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
+                if (null != naviAutoApiCallback) {
                     try {
-                        locationCallback.onLocationInfoChange(locationData);
+                        naviAutoApiCallback.onTurnInfoChange(turnInfo);
                     } catch (RemoteException exception) {
-                        Logger.e(TAG, "dispatch searchFailed error: " + exception.getMessage());
+                        Logger.e(TAG, "dispatch EtaInfo error: " + exception.getMessage());
                     }
                 }
             }
         } catch (IllegalStateException e) {
             Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
-            closeLocationCallback();
+            closeNavigationList();
         }
     }
 
     /**
-     * 结束定位和行政区划信息透出.
-     */
-    private void closeLocationCallback() {
-        if (null != mLocationCallbackList) {
-            try {
-                mLocationCallbackList.finishBroadcast();
-            } catch (IllegalStateException illegalStateException) {
-                Logger.e(TAG, "finishLocationBroadcast error: " + illegalStateException.getMessage());
-            }
-        }
-    }
-
-    /**
-     * 根据逆地理搜索结果更新行政区域和位置信息.
+     * 分发当前道路限速信息.
      *
-     * @param poiInfo PoiInfoEntity，逆地理搜索结果.
+     * @param speed 当前道路限速值，km/h.
      */
-    private void updateDistrictAndLocation(final PoiInfoEntity poiInfo) {
-        if (null == poiInfo) {
-            Logger.e(TAG, "poiInfo is null");
-            return;
-        }
-        if (null != mLocationInfo) {
-            mLocationInfo.setName(poiInfo.getName());
-            mLocationInfo.setAddress(poiInfo.getAddress());
-        }
-
-        final CityInfo cityInfo = poiInfo.getCityInfo();
-        Logger.d(TAG, "updateDistrictAndLocation: " + cityInfo);
-        if (null != cityInfo) {
-            if (null == mDistrictInfo) {
-                mDistrictInfo = new BaseDistrictInfo();
-            }
-            mDistrictInfo.setProvince(cityInfo.getProvince());
-            mDistrictInfo.setProvinceId(cityInfo.getProvinceAdCode());
-            mDistrictInfo.setCity(cityInfo.getCityName());
-            final int cityId = cityInfo.getCityCode();
-            final int convertedId = ExportConvertUtil.getInstance().cityIdConvert(cityId);
-            mDistrictInfo.setCityId(convertedId);
-            mDistrictInfo.setDistrict(cityInfo.getDistrict());
-            mDistrictInfo.setDistrictId(cityInfo.getDistrictAdCode());
-            dispatchDistrictInfo();
-        }
-    }
-
-    /**
-     * 分发行政区域信息.
-     */
-    private void dispatchDistrictInfo() {
-        Logger.d(TAG, "dispatchDistrictInfo");
-        if (null == mDistrictInfo) {
-            Logger.d(TAG, "DistrictInfo is null");
+    private void dispatchRoadSpeed(final int speed) {
+        if (mInCallback) {
+            Logger.e(TAG, "already in broadcast, can't process roadSpeed");
             return;
         }
 
         try {
-            final int count = mLocationCallbackList.beginBroadcast();
-            final String districtData = GsonUtils.toJson(mDistrictInfo);
-            Logger.d(TAG, "dispatchDistrictInfo: districtData" + districtData);
-            for (int i = 0; i < count; i++) {
-                final INaviAutoLocationCallback locationCallback = mLocationCallbackList.getRegisteredCallbackItem(i);
-                if (null != locationCallback) {
-                    try {
-                        locationCallback.onDistrictInfoChange(districtData);
-                    } catch (RemoteException exception) {
-                        Logger.e(TAG, "dispatch districtInfo error: " + exception.getMessage());
-                    }
+            mInCallback = true;
+            Logger.d(TAG, "onCurrentRoadSpeed inCallback");
+            final int count = mNaviAutoCallbackList.beginBroadcast();
+            //当前定位车速
+            int curSpeed = 0;
+            if (null != mLocationInfo) {
+                curSpeed = (int) mLocationInfo.getSpeed();
+            } else {
+                final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
+                if (null != locInfoBean) {
+                    curSpeed = (int) locInfoBean.getSpeed();
                 }
             }
-        } catch (IllegalStateException exception) {
-            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
-        } finally {
-            closeLocationCallback();
-        }
-    }
-
-    /**
-     * 分发搜索失败回调.
-     *
-     * @param silent boolean，是否静默搜索.
-     * @param errorCode 错误码.
-     */
-    private void dispatchSearchFailed(final boolean silent, final int errorCode) {
-        try {
-            final int count = mSearchCallbackList.beginBroadcast();
-            Logger.d(TAG, "dispatchSearchFailed: errorCode = " + errorCode);
+            Logger.d(TAG, "onCurrentRoadSpeed: curSpeed = " + curSpeed);
             for (int i = 0; i < count; i++) {
-                final INaviAutoSearchCallback searchCallback = mSearchCallbackList.getRegisteredCallbackItem(i);
-                if (null != searchCallback) {
+                final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
+                if (null != naviAutoApiCallback) {
                     try {
-                        searchCallback.onSearchFailed(silent, errorCode);
+                        naviAutoApiCallback.onSpeedLimitChange(curSpeed, speed);
                     } catch (RemoteException exception) {
-                        Logger.e(TAG, "dispatch searchFailed error: " + exception.getMessage());
-                    }
-                }
-            }
-        } catch (IllegalStateException exception) {
-            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
-        } finally {
-            closeSearchCallback();
-        }
-    }
-
-    /**
-     * 关闭搜索结果回调.
-     */
-    private void closeSearchCallback() {
-        try {
-            mSearchCallbackList.finishBroadcast();
-        } catch (IllegalStateException exception) {
-            Logger.e(TAG, "finishLocationBroadcast error: " + exception.getMessage());
-        }
-    }
-
-    /**
-     * 分发搜索成功回调.
-     *
-     * @param silent true-静默搜索  false-非静默搜索
-     * @param searchResultEntity SearchResultEntity，搜索结果实体类.
-     */
-    private void dispatchSearchSuccess(final boolean silent, final SearchResultEntity searchResultEntity) {
-        try {
-            Logger.d(TAG, "onSearchSuccess inCallback, silent: " + silent);
-            final int count = mSearchCallbackList.beginBroadcast();
-            final BaseSearchResult baseSearchResult = GsonUtils.convertToT(searchResultEntity, BaseSearchResult.class);
-            final String searchResultStr = GsonUtils.toJson(baseSearchResult);
-
-            for (int i = 0; i < count; i++) {
-                final INaviAutoSearchCallback searchCallback = mSearchCallbackList.getRegisteredCallbackItem(i);
-                if (null != searchCallback) {
-                    try {
-                        searchCallback.onSearchResult(silent, searchResultStr);
-                    } catch (RemoteException exception) {
-                        Logger.e(TAG, "dispatch searchSuccess error: " + exception.getMessage());
-                    }
-                }
-            }
-        } catch (IllegalStateException exception) {
-            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
-        } finally {
-            closeSearchCallback();
-        }
-    }
-
-    /**
-     * 处理逆地址搜索回调结果.
-     *
-     * @param taskId 搜索接口返回的唯一任务标识.
-     * @param poiInfo 搜索结果.
-     */
-    private void dispatchReverseSearch(final int taskId, final PoiInfoEntity poiInfo) {
-        if (null == poiInfo) {
-            Logger.e(TAG, "reverse info empty");
-            return;
-        }
-
-        try {
-            Logger.d(TAG, "onReverseSearch inCallback");
-            final int count = mSearchCallbackList.beginBroadcast();
-            final BaseSearchPoi baseSearchPoi = GsonUtils.convertToT(poiInfo, BaseSearchPoi.class);
-            final BaseCityInfo cityInfo = baseSearchPoi.getCityInfo();
-            if (null != cityInfo) {
-                final int cityCode = cityInfo.getCityCode();
-                final int bdCode = ExportConvertUtil.getInstance().cityIdConvert(cityCode);
-                cityInfo.setCityCode(bdCode);
-            }
-            final String singlePoiStr = GsonUtils.toJson(baseSearchPoi);
-            for (int i = 0; i < count; i++) {
-                final INaviAutoSearchCallback searchCallback = mSearchCallbackList.getRegisteredCallbackItem(i);
-                if (null != searchCallback) {
-                    try {
-                        searchCallback.onReverseGeoSearchResult(taskId, singlePoiStr);
-                    } catch (RemoteException exception) {
-                        Logger.e(TAG, "dispatch reverseSearch error: " + exception.getMessage());
+                        Logger.e(TAG, "dispatch naviStatusChane error: " + exception.getMessage());
                     }
                 }
             }
         } catch (IllegalStateException e) {
             Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
-            closeLocationCallback();
+            closeNavigationList();
+        }
+    }
+
+    /**
+     * 分发红绿灯倒计时信息.
+     */
+    private void dispatchCountdownLightInfo(final ArrayList<TrafficLightCountdownEntity> lightInfoList) {
+        if (null == lightInfoList || lightInfoList.isEmpty()) {
+            Logger.w(TAG, "countdown light is empty");
+            return;
+        }
+
+
+        try {
+            Logger.d(TAG, "countdownLightInfo inCallback");
+            final String lightInfoStr = GsonUtils.toJson(lightInfoList);
+            final int count = mStatusCallbackList.beginBroadcast();
+            for (int i = 0; i < count; i++) {
+                final INaviAutoStatusCallback statusCallback = mStatusCallbackList.getRegisteredCallbackItem(i);
+                if (null != statusCallback) {
+                    try {
+                        statusCallback.onCountDownLightInfo(lightInfoStr);
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch naviStatus or panel error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException statusException) {
+            Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+        } finally {
+            closeNaviStatusCallback();
+        }
+    }
+
+    /**
+     * 分发引导到达目的地信息信息.
+     */
+    private void dispatchArrival() {
+        if (mInCallback) {
+            Logger.e(TAG, "already in broadcast, can't process onNaviArrival");
+            return;
+        }
+
+        try {
+            mInCallback = true;
+            Logger.d(TAG, "onNaviArrival inCallback");
+            final int count = mNaviAutoCallbackList.beginBroadcast();
+            for (int i = 0; i < count; i++) {
+                final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
+                if (null != naviAutoApiCallback) {
+                    try {
+                        naviAutoApiCallback.onNaviArrival();
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch onNaviArrival error:" + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } finally {
+            closeNavigationList();
+        }
+    }
+
+    /**
+     * 分发导航停止信息.
+     */
+    private void dispatchNaviStop() {
+        if (mInCallback) {
+            Logger.e(TAG, "already in broadcast, can't process onNaviStop");
+            return;
+        }
+
+        try {
+            mInCallback = true;
+            Logger.d(TAG, "onNaviStop inCallback");
+            final int count = mNaviAutoCallbackList.beginBroadcast();
+            for (int i = 0; i < count; i++) {
+                final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
+                if (null != naviAutoApiCallback) {
+                    try {
+                        naviAutoApiCallback.onNaviStop();
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch onNaviArrival error:" + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } finally {
+            closeNavigationList();
         }
     }
 
@@ -1116,7 +1217,17 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
      */
     @Override
     public void openSrTbt(final String pkgName, final boolean open) {
+        Logger.d(TAG, pkgName + "open: " + open);
+        if (open && !isNaviStatus("default")) {
+            Logger.w(TAG, "not in navigation, can not show sr tbt");
+            return;
+        }
 
+        try {
+            SRFloatWindowService.getInstance().showOrHideFloatView(open);
+        } catch (IllegalStateException | IllegalArgumentException | NullPointerException exception) {
+            Logger.w(TAG, "controlSrTbt error: " + exception.getMessage());
+        }
     }
 
     /**

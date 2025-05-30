@@ -375,4 +375,12 @@ public interface AutoMapConstant {
         int STOPPED = 5;
     }
 
+    @interface ChildType {
+        int DEFAULT = 0;
+        int HAS_CHILD_NO_GRAND = 1;
+        int HAS_CHILD_HAS_GRAND = 2;
+        int CHILD_NO_GRAND = 3;
+        int CHILD_HAS_GRAND = 4;
+    }
+
 }

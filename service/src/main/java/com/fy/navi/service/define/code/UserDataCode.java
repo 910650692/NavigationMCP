@@ -37,6 +37,9 @@ public final class UserDataCode {
     //已经下载城市
     public static final String MAP_DATA_DOWNLOADED_CITY_LIST = "map_data_downloaded_city_list";
 
+    //nd是否显示回家view
+    public static final String MAP_ND_GO_HOME_KEY = "nd_go_home_key";
+
     // 离线地图数据下载状态
     public static final int TASK_STATUS_CODE_READY = 0;
     public static final int TASK_STATUS_CODE_WAITING = 1; //

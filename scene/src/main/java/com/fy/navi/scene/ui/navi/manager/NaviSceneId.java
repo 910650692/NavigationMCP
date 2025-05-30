@@ -13,7 +13,7 @@ public enum NaviSceneId {
     NAVI_SCENE_LANES(3),//车道线信息
     NAVI_SCENE_TBT(4),//tbt信息
     NAVI_SCENE_VIA_POINT_LIST(5),//途经点列表
-    NAVI_SCENE_VIA_POINT_ARRIVE(6),//(暂时闲置)
+    NAVI_SCENE_VIA_DETAIL(6),//五公里途经点详情展示
     NAVI_SCENE_VIA_DETAIL_INFO(7),//途经点tab显示
     NAVI_SCENE_SERVICE_AREA(8),//服务区/收费站
     NAVI_SCENE_CONTROL(9),//控制tools

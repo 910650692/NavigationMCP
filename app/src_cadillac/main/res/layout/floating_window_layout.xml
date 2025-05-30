@@ -84,7 +84,7 @@
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_cross"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_496"
+                    android:layout_height="wrap_content"
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"

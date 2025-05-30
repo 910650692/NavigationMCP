@@ -168,7 +168,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
             for (CityDataInfo info : cityBeanList) {
                 //获取附近城市数据包大小总和
                 if (info != null && info.getDownLoadInfo() != null) {
-                    sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
+                    if (info.getDownLoadInfo().getFullZipSize() != null) {
+                        sum = sum.add(info.getDownLoadInfo().getFullZipSize());
+                    }
                     map.put(info.getAdcode(), info.getDownLoadInfo().getTaskState());
                 }
             }

@@ -156,11 +156,6 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     }
 
     @Override
-    public void onGraspRouteResult(L2NaviBean.VehiclePositionBean vehiclePosition) {
-        L2Adapter.getInstance().graspRouteResult(vehiclePosition);
-    }
-
-    @Override
     public void onGpsTrackPoint(GpsTrackPointBean gpsTrackPointBean) {
         Logger.i(TAG, "onGpsTrackPoint: " + GsonUtils.toJson(gpsTrackPointBean));
         mGpsTrackPointBean = gpsTrackPointBean;

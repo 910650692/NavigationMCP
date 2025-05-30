@@ -247,7 +247,10 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
         int downloadedCount = 0;
         for (CityDataInfo info : nearCityList) {
             //获取附近城市数据包大小总和
-            sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
+            if (info != null && info.getDownLoadInfo() != null
+                    && info.getDownLoadInfo().getFullZipSize() != null) {
+                sum = sum.add(info.getDownLoadInfo().getFullZipSize());
+            }
             //获取附近城市未下载数量
             if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY) {
                 downloadedCount++;

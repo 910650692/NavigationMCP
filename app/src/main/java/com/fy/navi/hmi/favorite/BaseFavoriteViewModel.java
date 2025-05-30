@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
@@ -18,9 +21,12 @@ import com.fy.navi.hmi.route.RouteFragment;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RoutePoiType;
+import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
@@ -29,14 +35,20 @@ import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseViewModel;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, FavoriteModel> {
-
+    public static final String TAG = BaseFavoriteViewModel.class.getName();
     public MutableLiveData<Boolean> mDataVisibility;
     public MutableLiveData<Boolean> mTipVisibility;
     public MutableLiveData<Boolean> mAddVisibility;
@@ -47,6 +59,8 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     public MutableLiveData<Boolean> mIsHomeCompanyDisplayed;
     public MutableLiveData<Boolean> mIsEVCar;
     public MutableLiveData<String> mSyncTime;
+    public MutableLiveData<Boolean> mFavoriteListChecked = new MutableLiveData<>(true);
+    private final ArrayList<PoiInfoEntity> mStationList = new ArrayList<>();
     private PoiInfoEntity mHome;
     private PoiInfoEntity mCompany;
     private boolean mIsHome;
@@ -68,6 +82,14 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     @Override
     protected FavoriteModel initModel() {
         return new FavoriteModel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Boolean.FALSE.equals(mFavoriteListChecked.getValue())) {
+            mChargingVisibility.setValue(!mModel.isSGMLogin());
+        }
     }
 
     /**
@@ -111,6 +133,12 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         } else {
             startRoute(mCompany);
             goHomeOrCompany(AutoMapConstant.HomeCompanyType.COMPANY);
+        }
+    };
+
+    public Action mSendSGMLogin = () -> {
+        if (mView != null && mView.getContext() != null) {
+            mModel.sendSGMLogin(mView.getContext());
         }
     };
 
@@ -185,21 +213,39 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     };
 
     public Action mFavoriteInfoClick = () -> {
+        if (Boolean.TRUE.equals(mFavoriteListChecked.getValue())) {
+            return;
+        }
+        mFavoriteListChecked.setValue(true);
+        mChargingVisibility.setValue(false);
+        mChargingNoDataVisibility.setValue(false);
+        mChargingOfflineVisibility.setValue(false);
         mModel.getSimpleFavoriteList();
     };
 
     public Action mChargingInfoClick = () -> {
+        if (Boolean.FALSE.equals(mFavoriteListChecked.getValue())) {
+            return;
+        }
+        mFavoriteListChecked.setValue(false);
+        mChargingVisibility.setValue(!mModel.isSGMLogin());
         mTipVisibility.setValue(false);
         mDataVisibility.setValue(false);
         mAddVisibility.setValue(false);
-        mChargingVisibility.setValue(true);
+        mModel.queryCollectStation(mView.getActivity());
     };
 
     /**
      * 获取收藏点列表(普通POI点)
      */
     public void getSimpleFavoriteList() {
-        mModel.getSimpleFavoriteList();
+        if (Boolean.TRUE.equals(mFavoriteListChecked.getValue())) {
+            mModel.getSimpleFavoriteList();
+        } else {
+            if (mModel.isSGMLogin()) {
+                mModel.queryCollectStation(mView.getActivity());
+            }
+        }
     }
 
     /**
@@ -273,24 +319,29 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
      * 获取收藏点列表后更新UI
      *
      * @param list
+     * @param type o: favorite list, 1: station list
      */
 
-    public void updateFavoriteView(final ArrayList<PoiInfoEntity> list) {
+    public void updateFavoriteView(final ArrayList<PoiInfoEntity> list, final int type) {
         ThreadManager.getInstance().postUi(() -> {
-            mChargingVisibility.setValue(false);
-            mChargingNoDataVisibility.setValue(false);
-            mChargingRequestFailedVisibility.setValue(false);
-            mChargingOfflineVisibility.setValue(false);
-
-            if (list == null || list.isEmpty()) {
-                mTipVisibility.setValue(true);
-                mDataVisibility.setValue(false);
-                mAddVisibility.setValue(false);
-            } else {
-                mTipVisibility.setValue(false);
-                mDataVisibility.setValue(true);
-                mAddVisibility.setValue(true);
-                mView.updateFavoriteView(list);
+            if (type == 0) {
+                //常用收藏夹
+                if (Boolean.TRUE.equals(mFavoriteListChecked.getValue())) {
+                    final boolean hasData = !ConvertUtils.isEmpty(list);
+                    mTipVisibility.setValue(!hasData);
+                    mAddVisibility.setValue(!hasData);
+                    mDataVisibility.setValue(hasData);
+                    if (hasData) {
+                        mView.updateFavoriteView(list, type);
+                    }
+                }
+            }else {
+                //专属充电站
+                if (Boolean.FALSE.equals(mFavoriteListChecked.getValue())) {
+                    mDataVisibility.setValue(!list.isEmpty());
+                    mChargingNoDataVisibility.setValue(list.isEmpty());
+                    mView.updateFavoriteView(list, type);
+                }
             }
         });
     }
@@ -360,6 +411,77 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
      */
     public void updateFavoriteName(String name) {
         mView.updateFavoriteName(name);
+    }
+
+
+    /**
+     * notifyConnectStationResult
+     * @param result
+     */
+    public void notifyConnectStationResult(BaseRep result) {
+        parseStationListResult(result);
+        Logger.d(TAG, "station list is " + GsonUtils.toJson(mStationList));
+        updateFavoriteView(mStationList, 1);
+    }
+
+    /**
+     * 网络错误，未获取到数据
+     */
+    public void notifyConnectStationError() {
+        if (Boolean.TRUE.equals(mFavoriteListChecked.getValue())) {
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+            mDataVisibility.setValue(false);
+            mChargingOfflineVisibility.setValue(true);
+        });
+    }
+
+    /**
+     * parseNetworkResult
+     * @param result
+     */
+    private void parseStationListResult(BaseRep result) {
+        mStationList.clear();
+        try {
+            JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
+            JSONArray jsonArray = jsonObject.getJSONArray("resultList");
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    PoiInfoEntity entity = GsonUtils.fromJson(jsonArray.getString(i), PoiInfoEntity.class);
+                    JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
+                    GeoPoint point = new GeoPoint();
+                    point.setLat(ConvertUtils.str2Double(object.getString("stationLat")));
+                    point.setLon(ConvertUtils.str2Double(object.getString("stationLng")));
+                    entity.setPoint(point);
+                    if (!ConvertUtils.isEmpty(object.getDouble("distance"))) {
+                        int distance = ConvertUtils.double2int(object.getDouble("distance") * 1000);
+                        final String[] distanceArray = ConvertUtils.formatDistanceArray(getApplication().getBaseContext(), distance);
+                        entity.setDistance(distanceArray[0] + distanceArray[1]);
+                    }
+                    ChargeInfo chargeInfo = GsonUtils.fromJson(jsonArray.getString(i), ChargeInfo.class);
+                    chargeInfo.setCurrentElePrice(chargeInfo.getLowPrice())
+                        .setFast_free(chargeInfo.getFastChargingFree())
+                        .setFast_total(chargeInfo.getFastChargingTotal())
+                        .setSlow_free(chargeInfo.getSlowChargingFree())
+                        .setSlow_total(chargeInfo.getSlowChargingTotal());
+                    List<ChargeInfo> chargeList = new ArrayList<>();
+
+                    chargeList.add(chargeInfo);
+                    entity.setChargeInfoList(chargeList)
+                        .setName(entity.getStationName())
+                        .setAddress(entity.getStationAddress())
+                        .setPhone(entity.getStationTel())
+                        .setPointTypeCode("011100")
+                        .setBusinessTime(entity.getStationBusinessTime());
+                    mStationList.add(entity);
+                }
+            } else {
+                Logger.d(TAG, "station list is empty");
+            }
+        }catch (JSONException e){
+            Logger.e(TAG, "error is " + e.getMessage());
+        }
     }
 
 }

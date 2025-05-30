@@ -53,6 +53,8 @@ public class PoiInfoEntity implements Parcelable {
     private String mPointTypeCode;  // POI类型（扎标专用）
     private String mIndustry;       // 行业类型
     private boolean mIsVisible;      //是否可见，搜索结果列表页面添加选中效果
+    //是否包含子孙节点?  0:没有子节点  1:有子节点没有孙节点 2:有子节点有孙节点 3:本身是子节点没有孙节点 4:本身是子节点有孙节点
+    private int mChildType;
 
     // -----------语音排序使用------------
     private int mSortDistance;     // 距离，语音使用
@@ -717,20 +719,13 @@ public class PoiInfoEntity implements Parcelable {
         mPoint = in.readParcelable(GeoPoint.class.getClassLoader());
         mPointTypeCode = in.readString();
         mIndustry = in.readString();
+        mOperatorId = in.readString();
+        mStationId = in.readString();
         mSortDistance = in.readInt();
         mSortRate = in.readInt();
         mSortPrice = in.readInt();
-        mStationId = in.readString();
-        mOperatorId = in.readString();
         mIsVisible = in.readBoolean();
-        mOperatorId = in.readString();
-        mStationId = in.readString();
-        mStationName = in.readString();
-        mStationTel = in.readString();
-        mStationAddress = in.readString();
-        mStationBusinessTime = in.readString();
-        mPictures = in.createStringArrayList();
-        mIsCollect = in.readBoolean();
+        mChildType = in.readInt();
         mCityInfo = in.readParcelable(CityInfo.class.getClassLoader());
         mFavoriteInfo = in.readParcelable(FavoriteInfo.class.getClassLoader());
         mRetainParam = in.readParcelable(SearchRetainParamInfo.class.getClassLoader());
@@ -739,6 +734,12 @@ public class PoiInfoEntity implements Parcelable {
         mChargeInfoList = in.createTypedArrayList(ChargeInfo.CREATOR);
         mStationList = in.createTypedArrayList(GasStationInfo.CREATOR);
         mChildInfoList = in.createTypedArrayList(ChildInfo.CREATOR);
+        mStationName = in.readString();
+        mStationTel = in.readString();
+        mStationAddress = in.readString();
+        mStationBusinessTime = in.readString();
+        mPictures = in.createStringArrayList();
+        mIsCollect = in.readBoolean();
         mReservationInfo = in.readParcelable(ReservationInfo.class.getClassLoader());
         // 新增字段 mPoiAoiBounds 的反序列化
         // 读取外层列表的大小
@@ -748,6 +749,7 @@ public class PoiInfoEntity implements Parcelable {
             // 创建内层列表
             final ArrayList<GeoPoint> innerList = new ArrayList<>();
             // 读取内层列表的 GeoPoint 对象
+            in.readInt();
             in.readTypedList(innerList, GeoPoint.CREATOR);
             mPoiAoiBounds.add(innerList);
         }
@@ -756,9 +758,11 @@ public class PoiInfoEntity implements Parcelable {
         // 读取外层列表的大小
         final int outerRoadSize = in.readInt();
         mRoadPolygonBounds = new ArrayList<>();
+
         for (int i = 0; i < outerRoadSize; i++) {
             // 创建内层列表
             final ArrayList<GeoPoint> innerList = new ArrayList<>();
+            in.readInt();
             // 读取内层列表的 GeoPoint 对象
             in.readTypedList(innerList, GeoPoint.CREATOR);
             mRoadPolygonBounds.add(innerList);
@@ -813,6 +817,7 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeInt(mSortRate);
         parcel.writeInt(mSortPrice);
         parcel.writeBoolean(mIsVisible);
+        parcel.writeInt(mChildType);
         parcel.writeParcelable(mCityInfo, i);
         parcel.writeParcelable(mFavoriteInfo, i);
         parcel.writeParcelable(mRetainParam, i);
@@ -821,8 +826,6 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeTypedList(mChargeInfoList);
         parcel.writeTypedList(mStationList);
         parcel.writeTypedList(mChildInfoList);
-        parcel.writeString(mOperatorId);
-        parcel.writeString(mStationId);
         parcel.writeString(mStationName);
         parcel.writeString(mStationTel);
         parcel.writeString(mStationAddress);
@@ -830,28 +833,33 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeStringList(mPictures);
         parcel.writeBoolean(mIsCollect);
         parcel.writeParcelable(mReservationInfo,i);
-        if(ConvertUtils.isEmpty(mPoiAoiBounds)) {
-            return;
-        }
-        parcel.writeInt(mPoiAoiBounds.size());
-        // 遍历每个内层列表
-        for (ArrayList<GeoPoint> innerList : mPoiAoiBounds) {
-            // 写入内层列表的大小
-            parcel.writeInt(innerList.size());
-            // 写入内层列表的 ChildInfo 对象
-            parcel.writeTypedList(innerList);
+
+        final int aoiBoundsSize = ConvertUtils.isEmpty(mPoiAoiBounds) ? 0 : mPoiAoiBounds.size();
+        parcel.writeInt(aoiBoundsSize);
+        if (aoiBoundsSize > 0) {
+            // 遍历每个内层列表
+            for (ArrayList<GeoPoint> innerList : mPoiAoiBounds) {
+                // 写入内层列表的大小
+                parcel.writeInt(innerList.size());
+                // 写入内层列表的 ChildInfo 对象
+                parcel.writeTypedList(innerList);
+            }
         }
 
-        if(ConvertUtils.isEmpty(mRoadPolygonBounds)) {
-            return;
+
+        final int roadPolygonBoundsSize = ConvertUtils.isEmpty(mRoadPolygonBounds)
+                ? 0 : mRoadPolygonBounds.size();
+        parcel.writeInt(roadPolygonBoundsSize);
+        if (roadPolygonBoundsSize > 0) {
+            // 遍历每个内层列表
+            for (ArrayList<GeoPoint> innerList : mRoadPolygonBounds) {
+                // 写入内层列表的大小
+                parcel.writeInt(innerList.size());
+                // 写入内层列表的 ChildInfo 对象
+                parcel.writeTypedList(innerList);
+            }
         }
-        parcel.writeInt(mRoadPolygonBounds.size());
-        // 遍历每个内层列表
-        for (ArrayList<GeoPoint> innerList : mRoadPolygonBounds) {
-            // 写入内层列表的大小
-            parcel.writeInt(innerList.size());
-            // 写入内层列表的 ChildInfo 对象
-            parcel.writeTypedList(innerList);
-        }
+
     }
+
 }

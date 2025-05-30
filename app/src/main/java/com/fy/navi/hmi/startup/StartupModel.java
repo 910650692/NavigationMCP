@@ -63,9 +63,15 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         }
 
         @Override
-        public void onActivatedError() {
+        public void onActivatedError(final int errCode, final String msg) {
             Logger.e(TAG, "激活出现错误");
-            mViewModel.showActivatingView(false);
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    mViewModel.showActivatingView(false);
+                    mViewModel.showActivateFailedDialog(msg);
+                }
+            });
         }
     };
 

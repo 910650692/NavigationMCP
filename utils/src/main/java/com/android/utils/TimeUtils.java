@@ -1008,6 +1008,18 @@ public class TimeUtils {
         }
     }
 
+    /**
+     * 是否是上班时间和下班时间
+     */
+    public static boolean isCurrentTimeInSpecialRange(boolean workHours) {
+        if(workHours){
+            return isCurrentTimeInRange("06:00:00~10:00:00");
+        }else {
+            return isCurrentTimeInRange("17:00:00~24:00:00");
+        }
+    }
+
+
     public static TimeUtils getInstance() {
         return Helper.timeU;
     }

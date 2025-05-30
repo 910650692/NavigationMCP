@@ -87,6 +87,7 @@ public final class ActivateHQ {
      */
     private void postUUID() {
         Logger.d(TAG, "postUUID: ");
+        CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, "");
         if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
             UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
             Logger.d(TAG, "UUID静态变量为空，数据库存有UUID = " + UUID);
@@ -119,6 +120,7 @@ public final class ActivateHQ {
      * 准备下单
      */
     public void readyCreateOrder() {
+        CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID, "");
         final String orderId = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID);
         if (!ConvertUtils.isEmpty(orderId)) {
             Logger.d(TAG, "有订单号记录，直接查询订单 : " + orderId);

@@ -202,6 +202,11 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
      */
     @Override
     public void onLocInfoUpdate(LocInfo locInfo) {
+        if (null != locInfo && !ConvertUtils.isEmpty(locInfo.matchInfo) &&
+                null != locInfo.matchInfo.get(0)) {
+            int isOnRoad = locInfo.matchInfo.get(0).isOnGuideRoad;
+            Logger.i(TAG, "onLocInfoUpdate: isOnRoad = " + isOnRoad);
+        }
         if (null == locInfo) {
             Logger.e(TAG, "onLocInfoUpdate: locInfo=null and return");
             return;

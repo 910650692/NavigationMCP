@@ -26,6 +26,9 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     public static final String BLS_ASSETS_LAYER_PATH = BLS_ASSETS_PATH + "LayerAsset/";
 
     public static final String BLS_ASSETS_LAYER_CARDS_PATH = "blRes/LayerAsset/DynamicCards/";
+
+    /** 自定义图层卡片锚点资源目录 **/
+    public static final String BLS_ASSETS_LAYER_MARKER_INFO_PATH = "blRes/customRes/style1/cardMarkerInfo/card_marker_info.json";
     /*** 自定义图层默认资源文件目录 **/
     public static final String BLS_ASSETS_CUSTOM_STYLE_PATH = "blRes/customRes/style";
 

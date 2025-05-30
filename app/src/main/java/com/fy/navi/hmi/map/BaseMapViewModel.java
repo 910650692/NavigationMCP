@@ -48,6 +48,7 @@ import com.fy.navi.service.AutoMapConstant.PoiType;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedAreaDetail;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
@@ -75,6 +76,7 @@ import com.fy.navi.vrbridge.IVrBridgeConstant;
 
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description TODO
@@ -116,6 +118,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> mGoHomeVisible;
 
     private ScheduledFuture mScheduledFuture;
+    private ScheduledFuture goHomeTimer;
     private final int mTimer = 300;
 
 
@@ -415,6 +418,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
+        mGoHomeVisible.set(false);
     }
 
     public void setMapCenterInScreen(final int frameLayoutWidth, final Bundle bundle) {
@@ -433,6 +437,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
+        mGoHomeVisible.set(false);
         cancelTimer();
     }
 
@@ -458,24 +463,48 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             cancelTimer();
             return;
         }
-        PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
-        PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
-        if (ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
-            homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-            companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-            mView.setTMCView(0, null);
-            mView.setTMCView(1, null);
-        } else if (!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)) {
-            mModel.refreshHomeOfficeTMC(true);
-        } else if (!ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
-            mModel.refreshHomeOfficeTMC(true);
-            companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-            mView.setTMCView(1, null);
-        } else {
-            mModel.refreshHomeOfficeTMC(false);
-            homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-            mView.setTMCView(0, null);
+
+        //Nd车型需要先判断是否是节假日
+        if(mModel.showNdGoHomeView()){
+            tmcModeVisibility.set(false);
+            mModel.sendReqHolidayList();
+        }else {
+            PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
+            PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
+            if (ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
+                homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
+                companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
+                mView.setTMCView(0, null);
+                mView.setTMCView(1, null);
+            } else if (!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)) {
+                mModel.refreshHomeOfficeTMC(true);
+            } else if (!ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
+                mModel.refreshHomeOfficeTMC(true);
+                companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
+                mView.setTMCView(1, null);
+            } else {
+                mModel.refreshHomeOfficeTMC(false);
+                homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
+                mView.setTMCView(0, null);
+            }
         }
+    }
+
+    public GeoPoint nearByHome(boolean home){
+        PoiInfoEntity poiInfoEntity ;
+        if (home) {
+            poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
+        }else {
+            poiInfoEntity = getFavoritePoiInfo(PoiType.POI_COMPANY);
+        }
+        if(!ConvertUtils.isEmpty(poiInfoEntity)){
+           return poiInfoEntity.getMPoint();
+        }
+        return null;
+    }
+
+    public void loadNdOfficeTmc(boolean home){
+        mModel.refreshHomeOfficeTMC(home);
     }
 
     /***
@@ -493,6 +522,25 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (!ConvertUtils.isEmpty(mScheduledFuture)) {
             ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
             mScheduledFuture = null;
+        }
+    }
+
+    private void startGoHomeTimer(){
+        cancelTimerGoHomeTimer();
+        goHomeTimer = ThreadManager.getInstance().asyncAtFixDelay(new Runnable() {
+            @Override
+            public void run() {
+                cancelTimerGoHomeTimer();
+                mGoHomeVisible.set(false);
+            }
+        }, NumberUtils.NUM_30, NumberUtils.NUM_30);
+
+    }
+
+    private void  cancelTimerGoHomeTimer(){
+        if (!ConvertUtils.isEmpty(goHomeTimer)) {
+            ThreadManager.getInstance().cancelDelayRun(goHomeTimer);
+            goHomeTimer = null;
         }
     }
 
@@ -951,11 +999,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void setTMCView(RouteTMCParam param) {
 
-        if(mModel.showNdGoHomeView() && Boolean.FALSE.equals(param.isMIsShort())){
-            mGoHomeVisible.set(true);
-            mView.setNdGoHomeView(param);
-        }
-
         //0代表家  1代表公司
         if (Boolean.TRUE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
             homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
@@ -977,6 +1020,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
             }
             mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
+        }
+
+        if(mModel.showNdGoHomeView()){
+            mGoHomeVisible.set(true);
+            mView.setNdGoHomeView(param);
+            startGoHomeTimer();
+            return;
         }
 
         if (0 == param.getMKey() && !ConvertUtils.isEmpty(getFavoritePoiInfo(PoiType.POI_COMPANY))) {

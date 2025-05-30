@@ -28,11 +28,10 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_713"
                 android:layout_marginTop="@dimen/dp_17"
-                android:minHeight="@dimen/dp_509"
                 android:layout_marginBottom="@dimen/dp_271"
-                android:background="@drawable/bg_search_main_tab">
+                android:background="@drawable/bg_search_main_tab_sw1225">
 
                 <include
                     android:id="@+id/search_filter_view"
@@ -45,19 +44,20 @@
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/search_offline_hint"
                     android:layout_width="match_parent"
-                    android:paddingStart="@dimen/dp_30"
-                    android:paddingEnd="@dimen/dp_30"
-                    android:layout_height="@dimen/dp_110"
+                    android:paddingStart="@dimen/dp_26"
+                    android:paddingEnd="@dimen/dp_26"
+                    android:layout_height="@dimen/dp_94"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_offline"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_20"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:visibility="gone"
                     tools:visibility="visible"
                     android:text="@string/search_offline_hint"
-                    android:textSize="@dimen/sp_29"/>
+                    android:textSize="@dimen/sp_25"
+                    android:textColor="@color/search_color_ffffff_70"/>
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/search_result_no_data"
@@ -87,11 +87,11 @@
                     android:text="@string/search_charge_self"/>
                 <com.fy.navi.ui.view.PullToRefreshLayout
                     android:id="@+id/pull_refresh_layout"
-                    app:layout_constraintTop_toBottomOf="@+id/charge_filter"
+                    app:layout_constraintTop_toBottomOf="@+id/search_offline_hint"
                     android:layout_marginVertical="@dimen/dp_17"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="@dimen/dp_0">
 
                     <com.fy.navi.ui.view.SkinRecyclerView
                         android:id="@+id/recycler_search_result"

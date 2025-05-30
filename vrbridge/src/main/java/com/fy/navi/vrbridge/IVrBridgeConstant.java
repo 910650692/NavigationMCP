@@ -194,6 +194,7 @@ public interface IVrBridgeConstant {
         String OPEN_FAVORITE = "open_favorite"; //打开收藏界面
         String OPEN_HISTORY = "open_history"; //打开历史记录
         String COLLECT_COMMON = "collect_poi"; //收藏指定poi
+        String CHANGE_VIEW = "map_view";
     }
 
 }

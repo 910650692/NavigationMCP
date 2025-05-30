@@ -21,7 +21,9 @@ public interface SearchResultCallback {
      * @param message            错误消息，描述搜索操作的结果信息
      * @param searchResultEntity 搜索结果 {@link SearchResultEntity}，包含具体的搜索结果数据
      */
-    void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity);
+    default void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
+
+    }
 
     /**
      * 静默搜索结果回调方法

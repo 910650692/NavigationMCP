@@ -251,7 +251,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
-        Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, "loadMapView");
+        Logger.i(MapDefaultFinalTag.MAP_SERVICE_TAG, "loadMapView", "mLoadMapSuccess:" + mLoadMapSuccess);
+        mLoadMapSuccess = true;
         mapPackage.initMapView(mapSurfaceView);
         mapPackage.registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         layerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
@@ -1132,6 +1133,59 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public boolean showNdGoHomeView(){
         return mViewModel.showNdGoHomeView();
+    }
+
+    public void sendReqHolidayList(){
+        restrictedPackage.sendReqHolidayList();
+    }
+
+    @Override
+    public void isHoliday(boolean holiday) {
+        //不是节假日 才弹出view
+        Logger.i("isHoliday", "----");
+        if(!holiday){
+            loadNdGoHomeView();
+        }
+    }
+
+    private void loadNdGoHomeView() {
+        if(mViewModel.showNdGoHomeView()){
+            String key = commonManager.getValueByKey(UserDataCode.MAP_ND_GO_HOME_KEY);
+            String currentTime = TimeUtils.getInstance().getCurrentDate().replace("-","");
+            if(ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key,currentTime)){
+                commonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY,currentTime);
+
+                //是否在上班时间段内  在家附近
+                LocInfoBean locInfoBean = positionPackage.getLastCarLocation();
+                boolean workHours = TimeUtils.isCurrentTimeInSpecialRange(true);
+                GeoPoint nearByHome = mViewModel.nearByHome(true);
+                GeoPoint nearByCompany = mViewModel.nearByHome(false);
+                if(workHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)){
+                   //判断距离是否大于等于1km 小于等于50km 去公司
+                   boolean distanceCompany = calcStraightDistance(nearByHome,locInfoBean);
+                   if(distanceCompany){
+                       mViewModel.loadNdOfficeTmc(false);
+                   }
+                   return;
+                }
+
+                //是否在下班时间段内  在公司附近
+                boolean endofWorkHours = TimeUtils.isCurrentTimeInSpecialRange(false);
+                if(endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)){
+                    //判断距离是否大于等于1km 小于等于50km 回家
+                    boolean distanceHome = calcStraightDistance(nearByCompany,locInfoBean);
+                    if(distanceHome){
+                        mViewModel.loadNdOfficeTmc(true);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean calcStraightDistance(GeoPoint nearByHome,LocInfoBean locInfoBean){
+        GeoPoint locGeoPoint = new GeoPoint(locInfoBean.getLongitude(),locInfoBean.getLatitude());
+        double distance = layerPackage.calcStraightDistance(nearByHome,locGeoPoint);
+        return (distance >= 1000 && distance <= 50000);
     }
 
     /**

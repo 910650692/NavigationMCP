@@ -110,7 +110,7 @@ public class L2NaviBean {
         @SerializedName("laneNum")
         private int mLaneNum;
         @SerializedName("trafficLightPosition")
-        private int mTrafficLightPosition;
+        private int mTrafficLightPosition = 0xFFFF;
         @SerializedName("timestamp")
         private long mTimestamp;
         @SerializedName("segmentIndex")
@@ -118,15 +118,15 @@ public class L2NaviBean {
         @SerializedName("linkIndex")
         private int mLinkIndex = -1;
         @SerializedName("highLightLaneTypes")
-        private List<Integer> mHighLightLaneTypes;
+        private List<Integer> mHighLightLaneTypes = new ArrayList<>();
         @SerializedName("highLightLanes")
-        private List<Integer> mHighLightLanes;
+        private List<Integer> mHighLightLanes = new ArrayList<>();
         @SerializedName("laneTypes")
-        private List<Integer> mLaneTypes;
+        private List<Integer> mLaneTypes = new ArrayList<>();
         @SerializedName("frontLaneType")
-        private List<Integer> mFrontLaneType;
+        private List<Integer> mFrontLaneType = new ArrayList<>();
         @SerializedName("backLaneType")
-        private List<Integer> mBackLaneType;
+        private List<Integer> mBackLaneType = new ArrayList<>();
 
         public int getHasTrafficLight() {
             return mHasTrafficLight;
@@ -278,16 +278,16 @@ public class L2NaviBean {
     @Getter
     public static class IntervalCameraDataBean {
         /**
-         * intervalCameraEndPointDist : 0
+         * intervalCameraEndPointDist : 0xFFFF
          * intervalCameraSpeedValue : 0
-         * intervalCameraStartPointDist : 0
+         * intervalCameraStartPointDist : 0xFFFF
          */
         @SerializedName("intervalCameraEndPointDist")
-        private int mIntervalCameraEndPointDist;
+        private int mIntervalCameraEndPointDist = 0xFFFF;
         @SerializedName("intervalCameraSpeedValue")
         private int mIntervalCameraSpeedValue;
         @SerializedName("intervalCameraStartPointDist")
-        private int mIntervalCameraStartPointDist;
+        private int mIntervalCameraStartPointDist = 0xFFFF;
 
         public int getIntervalCameraEndPointDist() {
             return mIntervalCameraEndPointDist;
@@ -372,9 +372,17 @@ public class L2NaviBean {
          * tunnelLength : 0
          */
         @SerializedName("tunnelDist")
-        private int mTunnelDist;
+        private int mTunnelDist = 0xFFFF;
         @SerializedName("tunnelLength")
         private int mTunnelLength;
+
+        public TunnelInfoBean() {
+        }
+
+        public TunnelInfoBean(int mTunnelDist, int mTunnelLength) {
+            this.mTunnelDist = mTunnelDist;
+            this.mTunnelLength = mTunnelLength;
+        }
 
         public int getTunnelDist() {
             return mTunnelDist;
@@ -426,11 +434,11 @@ public class L2NaviBean {
         @SerializedName("currentSpeedLimit")
         private int mCurrentSpeedLimit;
         @SerializedName("distToDestination")
-        private int mDistToDestination;
+        private int mDistToDestination = 0xFFFF;
         @SerializedName("locationLatitude")
         private double mLocationLatitude;
         @SerializedName("locationLinkIndex")
-        private long mLocationLinkIndex;
+        private long mLocationLinkIndex = -1;
         @SerializedName("locationLinkOffset")
         private int mLocationLinkOffset;
         @SerializedName("locationLongitude")
@@ -440,15 +448,15 @@ public class L2NaviBean {
         @SerializedName("naviStatus")
         private int mNaviStatus;
         @SerializedName("roadClass")
-        private int mRoadClass;
+        private int mRoadClass = 0xFF;
         @SerializedName("roadOwnership")
-        private int mRoadOwnership;
+        private int mRoadOwnership = 0xFF;
         @SerializedName("ttsText")
-        private String mTtsText;
+        private String mTtsText = "";
         @SerializedName("formway")
-        private int mFormWay;
+        private int mFormWay = -1;
         @SerializedName("linkType")
-        private int mLinkType;
+        private int mLinkType = -1;
 
         public long getCurPathID() {
             return mCurPathID;
@@ -588,12 +596,12 @@ public class L2NaviBean {
     @Getter
     public static class WarningFacilityBean {
         /**
-         * boardSignDist : 0
+         * boardSignDist : 0xFFFF
          * boardSignType : 0
          * limitSpeed : 0
          */
         @SerializedName("boardSignDist")
-        private int mBoardSignDist;
+        private int mBoardSignDist = 0xFFFF;
         @SerializedName("boardSignType")
         private int mBoardSignType;
         @SerializedName("limitSpeed")
@@ -757,13 +765,13 @@ public class L2NaviBean {
 
 
         @SerializedName("Distance")
-        private int mDistance;
+        private int mDistance = 0xFFFF;
         @SerializedName("Position")
         private PositionBean mPosition = new PositionBean();
         @SerializedName("RoadClass")
         private int mRoadClass;
         @SerializedName("SegmentIndex")
-        private int mSegmentIndex;
+        private int mSegmentIndex = -1;
 
         public int getDistance() {
             return mDistance;

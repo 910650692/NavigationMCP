@@ -15,9 +15,7 @@ import com.autonavi.gbl.layer.BizRoadCrossControl;
 import com.autonavi.gbl.layer.BizRoadFacilityControl;
 import com.autonavi.gbl.layer.BizSearchControl;
 import com.autonavi.gbl.layer.BizUserControl;
-import com.autonavi.gbl.layer.model.CameraFilterInfo;
 import com.autonavi.gbl.layer.model.InnerStyleParam;
-import com.autonavi.gbl.layer.observer.IBizRoadFacilityObserver;
 import com.autonavi.gbl.layer.observer.PrepareLayerStyleInner;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.BaseLayer;
@@ -32,12 +30,11 @@ import com.autonavi.gbl.map.layer.model.LayerTexture;
 import com.autonavi.gbl.map.layer.model.RouteLayerStyle;
 import com.autonavi.gbl.map.layer.observer.ICarObserver;
 import com.autonavi.gbl.map.layer.observer.ILayerClickObserver;
-import com.autonavi.gbl.map.layer.observer.ILayerFocusChangeObserver;
-import com.autonavi.gbl.map.model.TextureLoaderInitParam;
 import com.fy.navi.service.BuildConfig;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
+import com.fy.navi.service.adapter.layer.bls.bean.MarkerInfoBean;
 import com.fy.navi.service.adapter.layer.bls.style.BaseStyleAdapter;
 import com.fy.navi.service.adapter.layer.bls.texture.TexturePoolManager;
 import com.fy.navi.service.adapter.layer.bls.texture.TextureStylePoolManager;
@@ -49,7 +46,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
 
-public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyleInner implements ILayerClickObserver, ICarObserver, ILayerFocusChangeObserver, IBizRoadFacilityObserver {
+public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyleInner implements ILayerClickObserver, ICarObserver {
 
     protected String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
 
@@ -161,15 +158,6 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     }
 
     @Override
-    public void onNotifyFocusChange(BaseLayer baseLayer, LayerItem item, boolean b) {
-    }
-
-
-    @Override
-    public void onNotifyCameraFilterInfo(CameraFilterInfo cameraFilterInfo) {
-    }
-
-    @Override
     public void onCarClick(CarLoc carLoc) {
     }
 
@@ -185,7 +173,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     public boolean getCustomTexture(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, CustomTextureParam customTexture) {
         String html = TextureStylePoolManager.get().getHtml(getMapType(), styleInfo.markerId, item, getStyleAdapter());
         if (TextUtils.isEmpty(html)) {
-            Logger.w(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType()
+            Logger.w(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
                     + "; 解析HTM异常. ");
             return false;
         }
@@ -193,10 +181,16 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         customTexture.markerKey.customXmlStr = html;
         customTexture.cmbFileInfo.vecResPath.add(GBLCacheFilePath.BLS_ASSETS_LAYER_PATH);
         customTexture.cmbFileInfo.strPkgName = GBLCacheFilePath.CMB_FILE_NAME;
-        Logger.e(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType()
+        Logger.e(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
                 + "\n 纹理信息 :{ markerRes = " + styleInfo.markerId + " ; resID = " + customTexture.markerKey.markerKey + " }");
         if (getStyleAdapter() != null) {
-            customTexture.updateList.addAll(styleAdapter.createUpdatePair(item));
+            customTexture.updateList.addAll(styleAdapter.createUpdatePair(item, styleInfo.markerInfo));
+            MarkerInfoBean markerInfoBean = styleAdapter.createMarkerInfoBean(item, styleInfo.markerInfo);
+            customTexture.attrs.anchorType = markerInfoBean.getAnchor();
+            customTexture.attrs.xOffset = markerInfoBean.getX_offset();
+            customTexture.attrs.yOffset = markerInfoBean.getY_offset();
+            customTexture.attrs.xRatio = markerInfoBean.getX_ratio();
+            customTexture.attrs.yRatio = markerInfoBean.getY_ratio();
             return true;
         }
 
@@ -215,21 +209,21 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     public String getLayerStyle(BaseLayer layer, LayerItem item, boolean forJava) {
         String styleJson = null;
         if (getStyleAdapter() != null) {
-            styleJson = TextureStylePoolManager.get().getLayerStyle(getMapType(), item, getStyleAdapter());
+            styleJson = TextureStylePoolManager.get().getLayerStyleJson(getMapType(), item, getStyleAdapter());
             if (!TextUtils.isEmpty(styleJson)) {
                 Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                        + "\n 使用 自定义 样式配置 : \n " + styleJson);
+                        + ";使用 自定义 样式配置 : \n " + styleJson.replaceAll("\\s", ""));
             }
         }
         if (TextUtils.isEmpty(styleJson)) {
             styleJson = super.getLayerStyle(layer, item, forJava);
             Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                    + "\n 使用 默认 样式配置 : \n" + styleJson);
+                    + ";使用 默认 样式配置 : \n" + styleJson);
         }
         if (getStyleAdapter().isNeedRefreshJsonValue(item)) {
             styleJson = getStyleAdapter().refreshOldJsonValue(item, styleJson);
             Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                    + "\n 重新 刷新 样式配置 : \n" + styleJson);
+                    + ";重新 刷新 样式配置 : \n" + styleJson.replaceAll("\\s", ""));
         }
 
         return styleJson;

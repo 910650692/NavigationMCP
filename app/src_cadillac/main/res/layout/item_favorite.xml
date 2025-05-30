@@ -15,7 +15,7 @@
             type="String" />
     </data>
 
-    <com.fy.navi.ui.view.SwipeMenuLayout
+    <com.fy.navi.ui.view.CustomSwipeMenuLayout
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_204"
@@ -219,5 +219,5 @@
 
             </com.fy.navi.ui.view.SkinLinearLayout>
         </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SwipeMenuLayout>
+    </com.fy.navi.ui.view.CustomSwipeMenuLayout>
 </layout>

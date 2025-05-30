@@ -2,7 +2,7 @@
 <com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/download_status"
-    android:layout_width="@dimen/dp_278"
+    android:layout_width="@dimen/dp_240"
     android:layout_height="@dimen/dp_96"
     android:background="@drawable/shape_bg_download_data">
 

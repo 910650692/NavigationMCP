@@ -11,6 +11,7 @@ import com.baidu.oneos.protocol.bean.CallResponse;
 import com.baidu.oneos.protocol.bean.PoiBean;
 import com.baidu.oneos.protocol.callback.PoiCallback;
 import com.baidu.oneos.protocol.callback.RespCallback;
+import com.baidu.oneos.protocol.result.NaviSubCallResult;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
@@ -515,23 +516,14 @@ public final class VoiceSearchManager {
 
     /**
      * 根据路线结果数目回复提示信息.
-     *
-     * @param size int 算路结果数， 0:算路失败  >=1:算路成功
      */
-    public void playRouteResult(final int size) {
+    public void playRouteResult() {
         if (mShouldPlayRouteMsg) {
             mShouldPlayRouteMsg = false;
-            final CallResponse routeResultResponse;
             if (null != mPoiCallback) {
-                if (size >= 2) {
-                    routeResultResponse = CallResponse.createSuccessResponse("为你找到以下导航路线，你要选择第几个");
-                } else if (size == 1) {
-                    routeResultResponse = CallResponse.createSuccessResponse("只有如下一条可选路线，选择这条可以吗");
-                } else {
-                    routeResultResponse = CallResponse.createSuccessResponse("路线规划失败，请稍后重试");
-                }
-                routeResultResponse.setNeedPlayMessage(true);
-                mPoiCallback.onResponse(routeResultResponse);
+                final CallResponse routeResponse = CallResponse.createSuccessResponse();
+                routeResponse.setSubCallResult(NaviSubCallResult.RESP_MULTI_POI_SEARCH_SUCCESS);
+                mPoiCallback.onResponse(CallResponse.createSuccessResponse());
             }
         }
     }

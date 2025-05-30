@@ -227,6 +227,7 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
     public void updateTmcNew(final List<NaviTmcInfo.NaviTmcInfoData> items,
                              final long distanceHasPassed,
                              final long totalDistance, final boolean reRouter) {
+        updateSceneVisible(true);
         if (mNetworkConnected && (items == null || items.size() <= 0)) {
             return;
         }

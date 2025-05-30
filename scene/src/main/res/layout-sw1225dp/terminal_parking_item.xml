@@ -79,7 +79,7 @@
             android:textColor="@color/search_quick_tab_view_color"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_item_recommended"
+            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_name"
             tools:text="105/200" />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -95,7 +95,7 @@
             android:textColor="@color/setting_preference_select"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_leisure_num"
-            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_item_recommended"
+            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_name"
             tools:text="充足" />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -111,7 +111,7 @@
             android:textColor="@color/search_loading_bg_80"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_sufficient_num"
-            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_item_recommended"
+            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_name"
             tools:text="当前终点" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout

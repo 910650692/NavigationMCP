@@ -562,7 +562,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:drawableStart="@mipmap/icon_setting_car_logo_brand"
+                            android:drawableStart="@drawable/icon_setting_car_logo_brand"
                             android:layout_marginStart="@dimen/dp_25"
                             android:button="@null"
                             app:drawableWidth="120"

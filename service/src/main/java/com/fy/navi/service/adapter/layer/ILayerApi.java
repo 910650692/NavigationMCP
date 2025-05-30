@@ -246,6 +246,8 @@ public interface ILayerApi {
     /* 动态更新路口大图显示区域 */
     void updateRoadCrossRect(MapType mapTypeId, Rect rect);
 
+    Rect getRoadCrossRect(MapType mapTypeId);
+
     /*========================================= 路口大图 =========================================*/
 
 

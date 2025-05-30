@@ -117,6 +117,22 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        reBindSurfaceMap();
+    }
+
+    private void reBindSurfaceMap() {
+        // 判断是否SurfaceView已被解绑
+        if (!ConvertUtils.isNull(mBinding) && mBinding.mainMapview.getChildCount() == 0) {
+            Logger.w(TAG, "reBindSurfaceMap-主图地图已被解绑，需要重新绑定！");
+            mViewModel.loadMapView(mBinding.mainMapview);
+        } else {
+            Logger.d(TAG, "reBindSurfaceMap-childCount:" + (mBinding == null ? 0 : mBinding.mainMapview.getChildCount()));
+        }
+    }
+
+    @Override
     public void onInitView() {
         mViewModel.loadMapView(mBinding.mainMapview);
         //初始化HudMapManager
@@ -279,6 +295,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 default:
                     break;
             }
+            intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
         }
     }
 

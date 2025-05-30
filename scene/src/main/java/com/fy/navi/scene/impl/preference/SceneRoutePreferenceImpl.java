@@ -188,11 +188,20 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView>
 
     @HookMethod()
     private void sendBuryPointForSelectingRP(RoutePreferenceID mode, int source) {
-        String eventName = switch (source) {
-            case 0 -> BuryConstant.EventName.AMAP_SETTING_ROUTEPREFERENCE;
-            case 1 -> BuryConstant.EventName.AMAP_ROUTE_PREFERENCE;
-            default -> "";
-        };
+        String eventName = "";
+        String paramKey = "";
+        switch (source) {
+            case 0:
+                eventName = BuryConstant.EventName.AMAP_SETTING_ROUTEPREFERENCE;
+                paramKey = BuryConstant.ProperType.BURY_KEY_SETTING_CONTENT;
+                break;
+            case 1:
+                eventName = BuryConstant.EventName.AMAP_ROUTE_PREFERENCE;
+                paramKey = BuryConstant.ProperType.BURY_KEY_ROUTE_PREFERENCE;
+                break;
+            default:
+                break;
+        }
         String routePreference = switch (mode) {
             case PREFERENCE_RECOMMEND -> BuryConstant.RoutePreference.RECOMMEND;
             case PREFERENCE_AVOIDCONGESTION -> BuryConstant.RoutePreference.AVOID_CONGESTION;
@@ -212,7 +221,7 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView>
         };
         BuryPointController.getInstance().setEventName(eventName);
         BuryProperty properties = new BuryProperty.Builder()
-                .setParams(BuryConstant.ProperType.BURY_KEY_ROUTE_PREFERENCE, routePreference)
+                .setParams(paramKey, routePreference)
                 .build();
         BuryPointController.getInstance().setBuryProps(properties);
     }

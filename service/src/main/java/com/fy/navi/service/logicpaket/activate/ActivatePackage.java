@@ -86,10 +86,10 @@ public final class ActivatePackage implements ActivateObserver {
     }
 
     @Override
-    public void onActivatedError() {
+    public void onActivatedError(final int errCode, final String msg) {
         for (IActivateObserver actObserver : mActObserverList) {
             if (actObserver != null) {
-                actObserver.onActivatedError();
+                actObserver.onActivatedError(errCode, msg);
             }
         }
     }

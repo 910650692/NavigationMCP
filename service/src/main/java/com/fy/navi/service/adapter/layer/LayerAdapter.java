@@ -284,6 +284,10 @@ public class LayerAdapter {
         mLayerApi.updateRoadCrossRect(mapTypeId, rect);
     }
 
+    public Rect getRoadCrossRect(MapType mapTypeId) {
+        return mLayerApi.getRoadCrossRect(mapTypeId);
+    }
+
     /*========================================= 路口大图 =========================================*/
 
 

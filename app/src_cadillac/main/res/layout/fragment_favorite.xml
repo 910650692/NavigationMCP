@@ -341,7 +341,7 @@
                                 android:focusable="true"
                                 android:background="@drawable/bg_setting_checkbox_selector"
                                 android:button="@null"
-                                android:checked="true"
+                                android:checked="@{ViewModel.mFavoriteListChecked}"
                                 android:gravity="center"
                                 android:text="@string/favorite_switch_common"
                                 android:textColor="@drawable/color_setting_checkbox_selector"
@@ -355,6 +355,7 @@
                                 android:focusable="true"
                                 android:layout_weight="1"
                                 android:background="@drawable/bg_setting_checkbox_selector"
+                                android:checked="@{!ViewModel.mFavoriteListChecked}"
                                 android:button="@null"
                                 android:gravity="center"
                                 android:text="@string/favorite_switch_charge"
@@ -442,6 +443,7 @@
                             android:textSize="@dimen/sp_38" />
 
                         <com.fy.navi.ui.view.SkinTextView
+                            clickCommand="@{ViewModel.mSendSGMLogin}"
                             android:layout_width="@dimen/dp_340"
                             android:layout_height="@dimen/dp_96"
                             android:layout_marginTop="@dimen/dp_30"

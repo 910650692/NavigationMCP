@@ -44,6 +44,7 @@
             android:background="@drawable/bg_parking_recommended"
             android:gravity="center"
             android:paddingStart="@dimen/dp_10"
+            tools:visibility=""
             android:paddingEnd="@dimen/dp_10"
             android:text="@string/st_parking_item_recommended"
             android:textColor="@color/setting_downloading_color"
@@ -79,7 +80,7 @@
             android:textColor="@color/search_quick_tab_view_color"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_item_recommended"
+            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_name"
             tools:text="105/200" />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -96,7 +97,7 @@
             android:textColor="@color/poi_details_bottom_ff_00"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_leisure_num"
-            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_item_recommended"
+            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_name"
             tools:text="充足" />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -112,7 +113,7 @@
             android:textColor="@color/poi_details_bottom_ff_00"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_sufficient_num"
-            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_item_recommended"
+            app:layout_constraintTop_toBottomOf="@+id/sktv_parking_name"
             tools:text="当前终点" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout

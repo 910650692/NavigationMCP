@@ -2,7 +2,6 @@ package com.fy.navi.service.adapter.activate.bls;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.thread.ThreadManager;
 import com.fy.navi.patacnetlib.NetQueryManager;
 import com.fy.navi.patacnetlib.response.activate.QueryOrderResponse;
 import com.fy.navi.service.AutoMapConstant;
@@ -31,7 +30,7 @@ public class ActivateAdapterImpl implements IActivateApi {
                 Logger.d(TAG, "uuid获取成功 : " + uuid);
                 if (ConvertUtils.isEmpty(uuid)) {
                     logResult(20005);
-                    onActivatedError();
+                    onActivatedError(20005, CodeManager.getActivateMsg(20005));
                     return;
                 }
                 beginInitActivateService(uuid);
@@ -41,6 +40,7 @@ public class ActivateAdapterImpl implements IActivateApi {
             public void onManualActivated(final boolean isSuccess) {
                 if (!isSuccess) {
                     Logger.e(TAG, "手动激活失败");
+                    onActivatedError(20009,  CodeManager.getActivateMsg(20009));
                     return;
                 }
                 Logger.d(TAG, "手动激活成功，开始BL初始化");
@@ -55,15 +55,23 @@ public class ActivateAdapterImpl implements IActivateApi {
             @Override
             public void onOrderCreated(final boolean isSuccess) {
                 if (!isSuccess) {
-                    if (ActivationManager.getQueryOrderNum() < 3) {
+                    ActivationManager.setCreateOrderNum(ActivationManager.getCreateOrderNum() + 1);
+                    final int times = ActivationManager.getCreateOrderNum();
+                    Logger.e(TAG, "下单失败" + times + "次");
+                    if (times < 2) {
                         ActivationManager.getInstance().createCloudOrder();
                     } else {
                         logResult(20006);
-                        onActivatedError();
+                        onActivatedError(20006, CodeManager.getActivateMsg(20006));
                     }
                     return;
                 }
                 startCheckOrder();
+            }
+
+            @Override
+            public void onNetFailed() {
+                onActivatedError(20008, CodeManager.getActivateMsg(20008));
             }
         };
         ActivationManager.getInstance().addManualActivateListener(manualActivateListener);
@@ -122,7 +130,7 @@ public class ActivateAdapterImpl implements IActivateApi {
         Logger.d(TAG, "uuid = " + uuid);
         if (!ActivationManager.getInstance().initActivationService(uuid)) {
             logResult(20003);
-            onActivatedError();
+            onActivatedError(20003, CodeManager.getActivateMsg(20003));
             return;
         }
         //查询激活状态
@@ -130,6 +138,7 @@ public class ActivateAdapterImpl implements IActivateApi {
         if (!ActivationManager.getInstance().checkActivationStatus()) {
             Logger.d(TAG, "无激活文件，或uuid不正确");
             //先查询订单
+            CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID, "");
             if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID))) {
                 Logger.d(TAG, "有订单号记录，直接查询订单");
                 ActivationManager.getInstance().queryOrderStatus(new NetQueryManager.INetResultCallBack<QueryOrderResponse>() {
@@ -169,7 +178,6 @@ public class ActivateAdapterImpl implements IActivateApi {
     private void startCheckOrder() {
         if (!ActivationManager.getInstance().pollOrderStatusWithRetry()) {
             logResult(20007);
-            return;
         }
     }
 
@@ -193,15 +201,13 @@ public class ActivateAdapterImpl implements IActivateApi {
 
     /**
      * 网络激活出现错误
+     *
+     * @param msg     错误信息
+     * @param errCode 错误码
      */
-    public void onActivatedError() {
+    public void onActivatedError(final int errCode, final String msg) {
         for (ActivateObserver observer : mActObserverList) {
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    observer.onActivatedError();
-                }
-            });
+            observer.onActivatedError(errCode, msg);
         }
     }
 

@@ -204,16 +204,6 @@ public class SignalAdapterImpl implements SignalApi {
                         }
                     }
                 });
-        DriveAssistController.getInstance().registerLaneCenteringWarningIndicationRequestIdcmAListener(
-                new DriveAssistController.LaneCenteringWarningIndicationRequestIdcmAListener() {
-                    @Override
-                    public void onLaneCenteringWarningIndicationRequestIdcmAChanged(final int state) {
-                        Logger.d(TAG, state);
-                        for (SignalAdapterCallback callback : mCallbacks) {
-                            callback.onLaneCenteringWarningIndicationRequestIdcmAChanged(state);
-                        }
-                    }
-                });
     }
 
     private Car.CarServiceLifecycleListener mCarServiceLifecycleListener = new Car.CarServiceLifecycleListener() {
@@ -351,6 +341,25 @@ public class SignalAdapterImpl implements SignalApi {
                     Logger.i(TAG, i, i1);
                 }
             }, PatacProperty.NAVIGATION_ON_ADAS_DEACTIVATION_REASON, 0);
+            mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
+                @Override
+                public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                    if (carPropertyValue == null) {
+                        Logger.i(TAG, "LANE_CENTERING_WARNING_EXTENDED_INDICATION_REQUEST", "carPropertyValue == null");
+                        return;
+                    }
+                    Integer value = (Integer) carPropertyValue.getValue();
+                    Logger.i(TAG, "LANE_CENTERING_WARNING_EXTENDED_INDICATION_REQUEST", value);
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onLaneCenteringWarningIndicationRequestIdcmAChanged(value);
+                    }
+                }
+
+                @Override
+                public void onErrorEvent(int i, int i1) {
+
+                }
+            }, VendorProperty.LANE_CENTERING_WARNING_EXTENDED_INDICATION_REQUEST, 0);
         } else {
             Logger.i(TAG, "mPropertyManager initialized");
         }

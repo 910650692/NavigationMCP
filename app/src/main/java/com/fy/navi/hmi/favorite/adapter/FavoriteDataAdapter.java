@@ -23,6 +23,7 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
     private static final String TAG = FavoriteDataAdapter.class.getSimpleName();
     private List<PoiInfoEntity> mFavoriteInfoList;
     private OnItemClickListener mItemClickListener;
+    private int mType = 0;
 
     public FavoriteDataAdapter() {
         this.mFavoriteInfoList = new ArrayList<>();
@@ -33,8 +34,9 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
      * @param list list
      */
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(final List<PoiInfoEntity> list) {
+    public void setData(final List<PoiInfoEntity> list, final int type) {
         mFavoriteInfoList = list;
+        this.mType = type;
         notifyDataSetChanged();
     }
 
@@ -62,6 +64,7 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
     @Override
     public void onBindViewHolder(final @NonNull Holder holder, final int position) {
         holder.mFavoriteBinding.setModel(mFavoriteInfoList.get(position));
+        holder.mFavoriteBinding.swipeMenuLayout.setSwipeEnabled(mType == 0);
         holder.mFavoriteBinding.setLayoutPosition(String.valueOf(position + 1));
         holder.mFavoriteBinding.itemFavoriteDistance.setText(
             SearchPackage.getInstance().calcStraightDistance(mFavoriteInfoList.get(position).getPoint()));

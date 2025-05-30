@@ -12,15 +12,18 @@ import android.view.animation.LinearInterpolator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityStartupBinding;
 import com.fy.navi.hmi.permission.PermissionUtils;
 import com.fy.navi.mapservice.bean.INaviConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseActivity;
+import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 /**
  * @Description TODO
@@ -30,6 +33,7 @@ import com.fy.navi.ui.base.BaseActivity;
 public class StartupActivity extends BaseActivity<ActivityStartupBinding, StartupViewModel> {
 
     private Animation mRotateAnim;
+    private ActivateFailedDialog mFailedDialog;
 
     @Override
     public void onCreateBefore() {
@@ -58,6 +62,19 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
         mRotateAnim.setRepeatCount(Animation.INFINITE);
         mRotateAnim.setInterpolator(new LinearInterpolator());
         mBinding.mainImg.setVisibility(View.VISIBLE);
+
+        mFailedDialog = new ActivateFailedDialog(this);
+        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "重试激活");
+            }
+
+            @Override
+            public void onCancelClick() {
+                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
+            }
+        });
     }
 
     @Override
@@ -66,6 +83,9 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
             Logger.i("startup onDestroy");
             mRotateAnim.cancel();
             mRotateAnim = null;
+        }
+        if (mFailedDialog.isShowing()) {
+            mFailedDialog.cancel();
         }
         super.onDestroy();
     }
@@ -145,4 +165,18 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
             }
         }
     }
+
+    /**
+     * 显示激活失败弹窗
+     *
+     * @param msg 错误信息
+     */
+    public void showActivateFailedDialog(final String msg) {
+        if (ConvertUtils.isEmpty(mFailedDialog) || mFailedDialog.isShowing()) {
+            Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "dialog null or showing");
+            return;
+        }
+        mFailedDialog.show();
+    }
+
 }

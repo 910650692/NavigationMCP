@@ -424,6 +424,10 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateRoadCrossRect(rect);
     }
 
+    public Rect getRoadCrossRect(MapType mapTypeId) {
+        return layersPoolManager.get(mapTypeId).getLayerGuideRoute().getRoadCrossRect();
+    }
+
     /*========================================= 路口大图 =========================================*/
 
 
