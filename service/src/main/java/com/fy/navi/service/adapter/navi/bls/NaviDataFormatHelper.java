@@ -728,7 +728,9 @@ public final class NaviDataFormatHelper {
      */
     public static NaviViaEntity getNaviViaEntity(final RouteParam routeParam, final Object obj) {
         final NaviViaEntity naviViaEntity = new NaviViaEntity();
-        naviViaEntity.setName(routeParam.getName());
+        String name = routeParam.getName();
+        Logger.i(TAG, "getNaviViaEntity: " + name);
+        naviViaEntity.setName(name);
         naviViaEntity.setAddress(routeParam.getAddress());
         naviViaEntity.setRealPos(routeParam.getRealPos());
         naviViaEntity.setPid(routeParam.getPoiID());

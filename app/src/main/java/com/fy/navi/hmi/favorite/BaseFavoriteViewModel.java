@@ -329,7 +329,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
                 if (Boolean.TRUE.equals(mFavoriteListChecked.getValue())) {
                     final boolean hasData = !ConvertUtils.isEmpty(list);
                     mTipVisibility.setValue(!hasData);
-                    mAddVisibility.setValue(!hasData);
+                    mAddVisibility.setValue(hasData);
                     mDataVisibility.setValue(hasData);
                     if (hasData) {
                         mView.updateFavoriteView(list, type);

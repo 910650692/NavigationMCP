@@ -17,7 +17,12 @@ import com.fy.navi.service.define.screen.ScreenType;
  */
 public class MapViewModel extends BaseMapViewModel {
 
-    private String jsonPath = BuildConfig.MAP_SDK + "/buick_maparea.json";
+    //   ND全屏
+    private String jsonPath = BuildConfig.MAP_SDK + "/nd_maparea.json";
+    //   2/3屏幕
+    private String jsonPath_2_3 = BuildConfig.MAP_SDK + "/nd_2_3_maparea.json";
+    //   1/3屏幕
+    private String jsonPath_1_3 = BuildConfig.MAP_SDK + "/nd_1_3_maparea.json";
 
     private static final String TAG = "NDLB---MapViewModel";
     public MapViewModel(@NonNull Application application) {
@@ -43,14 +48,15 @@ public class MapViewModel extends BaseMapViewModel {
         if (right <= 800) {
             Logger.i(TAG, "切换1/3屏");
             ScreenTypeUtils.setScreenType(ScreenType.SCREEN_1_3);
+            mModel.ndChangeScreen(jsonPath_1_3,true);
             //todo 启动1/3屏activity
         } else if (right > 1100 && right < 1600) {
             Logger.i(TAG, "切换2/3屏");
             ScreenTypeUtils.setScreenType(ScreenType.SCREEN_2_3);
+            mModel.ndChangeScreen(jsonPath_2_3,true);
         } else if (right <= 2179) {
             Logger.i(TAG, "全屏");
-            ScreenTypeUtils.setScreenType(ScreenType.SCREEN_FULL);
+            mModel.ndChangeScreen(jsonPath,false);
         }
-
     }
 }

@@ -228,7 +228,6 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         mNaviViaEntityList.clear();
         mNaviViaEntityList.addAll(list);
         addBatteryLeftData();
-        Logger.i(TAG, "SceneNaviListImpl list：" + list.size());
         if (!ConvertUtils.isEmpty(mNaviViaEntityList)) {
             mNaviViaListAdapter.notifyList(mNaviViaEntityList);
         }

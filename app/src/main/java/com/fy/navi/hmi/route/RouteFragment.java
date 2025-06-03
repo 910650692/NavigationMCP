@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -36,12 +35,11 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.ui.adapter.RoutePOIGasStationAdapter;
 import com.fy.navi.scene.ui.adapter.RoutePOIIconAdapter;
-import com.fy.navi.scene.ui.adapter.RouteSecondaryPoiAdapter;
 import com.fy.navi.scene.ui.adapter.RouteViaPointAdapter;
+import com.fy.navi.scene.ui.route.SceneRouteDescendantsView;
 import com.fy.navi.scene.ui.search.RouteRequestLoadingDialog;
 import com.fy.navi.scene.ui.search.RouteSearchLoadingDialog;
 import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RouteLineSegmentInfo;
@@ -53,7 +51,6 @@ import com.fy.navi.service.define.route.RouteRestAreaDetailsInfo;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.search.ChargeInfo;
-import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.GasStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.ServiceAreaInfo;
@@ -87,7 +84,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private RouteViaPointAdapter mRouteViaPointAdapter;
     private RoutePOIIconAdapter mPoiIconAdapter;
     private RoutePOIGasStationAdapter mGasStationAdapter;
-    private RouteSecondaryPoiAdapter mRouteSecondaryPoiAdapter;
     private MsgTopDialog mMsgTopDialog;
     private Map<PoiInfoEntity, View> mRouteChargeProgressViews;
     private float mStartY;
@@ -214,20 +210,11 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         mGasStationAdapter = new RoutePOIGasStationAdapter();
         mBinding.scenePoiDetailsServiceAreaView.routePoidetailGasStation.setAdapter(mGasStationAdapter);
 
-        final LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
-        layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mBinding.rvSecondaryPoi.setLayoutManager(layoutManager2);
-        mRouteSecondaryPoiAdapter = new RouteSecondaryPoiAdapter();
-        mBinding.rvSecondaryPoi.setAdapter(mRouteSecondaryPoiAdapter);
-        mRouteSecondaryPoiAdapter.setItemClickListener(new RouteSecondaryPoiAdapter.OnItemClickListener() {
+
+        mBinding.lySecondaryPoi.setItemClickListener(new SceneRouteDescendantsView.OnItemClickListener() {
             @Override
-            public void onItemClick(final ChildInfo childInfo) {
+            public void onItemClick(final PoiInfoEntity poiInfo) {
                 mViewModel.cancelTimer();
-                final PoiInfoEntity poiInfo = new PoiInfoEntity();
-                poiInfo.setPid(childInfo.getPoiId());
-                poiInfo.setName(childInfo.getName());
-                poiInfo.setAddress(childInfo.getAddress());
-                poiInfo.setPoint(new GeoPoint(childInfo.getLocation().getLon(), childInfo.getLocation().getLat()));
                 mViewModel.requestChangeEnd(poiInfo);
             }
 
@@ -236,17 +223,10 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 mViewModel.cancelTimer();
                 mViewModel.requestChangeEnd(poiInfoEntity);
             }
-        });
-        mBinding.rvSecondaryPoi.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull final RecyclerView recyclerView, final int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                mViewModel.cancelTimer();
-            }
 
             @Override
-            public void onScrolled(@NonNull final RecyclerView recyclerView, final int dx, final int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+            public void OnScrollListener() {
+                mViewModel.cancelTimer();
             }
         });
     }
@@ -378,9 +358,9 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mViewModel.requestRoute(routeRequestParam);
 
             //子poi显示
-            if (poiInfoEntity.getChildInfoList() != null && !poiInfoEntity.getChildInfoList().isEmpty()) {
+            if (poiInfoEntity.getMChildType() != AutoMapConstant.ChildType.DEFAULT) {
                 mViewModel.setSecondaryPoiInfo(poiInfoEntity);
-                setRouteSecondaryPoiUI(poiInfoEntity);
+                setRouteSecondaryPoiUI(poiInfoEntity.getMChildType() , poiInfoEntity);
                 mViewModel.setSecondaryPoi(true);
                 mViewModel.showSecondaryPoi();
             }
@@ -466,10 +446,11 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
 
     /***
      * 渲染子poi显示界面
+     * @param type type
      * @param poiInfoEntity 数据
      */
-    public void setRouteSecondaryPoiUI(final PoiInfoEntity poiInfoEntity) {
-        mRouteSecondaryPoiAdapter.setChildInfoList(poiInfoEntity.getChildInfoList(), poiInfoEntity);
+    public void setRouteSecondaryPoiUI(final int type, final PoiInfoEntity poiInfoEntity) {
+        mBinding.lySecondaryPoi.setUIMode(type, poiInfoEntity);
     }
 
     /***

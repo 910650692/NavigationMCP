@@ -83,6 +83,16 @@ public class LayerAdapterImpl implements ILayerApi {
         return layersPoolManager.get(mapTypeId).getLayerCar().getCarModeType();
     }
 
+    /* 设置骨骼车标的基础缩放值 */
+    public void setSkeletonBaseScale(MapType mapTypeId, float f) {
+        layersPoolManager.get(mapTypeId).getLayerCar().setSkeletonBaseScale(f);
+    }
+
+    /* 设置3D车模缩放比例 */
+    public void setModelScale(MapType mapTypeId, float f) {
+        layersPoolManager.get(mapTypeId).getLayerCar().setModelScale(f);
+    }
+
     @Override
     public void setPreviewMode(MapType mapTypeId, boolean bPreview) {
         layersPoolManager.get(mapTypeId).getLayerCar().setPreviewMode(bPreview);

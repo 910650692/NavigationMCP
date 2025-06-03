@@ -1113,4 +1113,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         String finalContent = content;
         ThreadManager.getInstance().postUi(() -> mView.showTripDialog(finalTitle, finalContent));
     }
+
+    public void closePoiFragment(){
+        mView.closeAllFragmentsUntilTargetFragment(PoiDetailsFragment.class.getName());
+    }
 }

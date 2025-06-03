@@ -65,6 +65,16 @@ public class LayerAdapter {
         return mLayerApi.getCarModeType(mapTypeId);
     }
 
+    /* 设置骨骼车标的基础缩放值 */
+    public void setSkeletonBaseScale(MapType mapTypeId, float f) {
+        mLayerApi.setSkeletonBaseScale(mapTypeId, f);
+    }
+
+    /* 设置3D车模缩放比例 */
+    public void setModelScale(MapType mapTypeId, float f) {
+        mLayerApi.setModelScale(mapTypeId, f);
+    }
+
     public void setPreviewMode(MapType mapTypeId, boolean bPreview) {
         mLayerApi.setPreviewMode(mapTypeId, bPreview);
     }

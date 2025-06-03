@@ -209,4 +209,7 @@ public class MapAdapter {
         return mIMapApi.getCurrentScale(mapTypeId);
     }
 
+    public void setMapLabelClickable(MapType mapTypeId,boolean enable){
+        mIMapApi.setMapLabelClickable(mapTypeId,enable);
+    }
 }

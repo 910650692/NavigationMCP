@@ -6,8 +6,11 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.map.ISceneScale;
+import com.fy.navi.scene.impl.imersive.ImersiveStatus;
+import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.ui.map.SceneScaleView;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
@@ -24,10 +27,17 @@ public class SceneScaleImpl extends BaseSceneModel<SceneScaleView> implements IS
         mapPackage = MapPackage.getInstance();
     }
 
+    private void naviScaleClick(){
+        if (NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
+        }
+    }
+
     @Override
     public void reduceLevel() {
         Logger.i("lvww", "缩小比例尺");
         mapPackage.reduceLevel(MapType.MAIN_SCREEN_MAIN_MAP);
+        naviScaleClick();
         if(NaviStatusPackage.getInstance().isGuidanceActive()) sendBuryPointForZoomByClick(BuryConstant.ZoomAction.ZOOM_OUT);
     }
 
@@ -35,6 +45,7 @@ public class SceneScaleImpl extends BaseSceneModel<SceneScaleView> implements IS
     public void amplifyLevel() {
         Logger.i("lvww", "放大比例尺");
         mapPackage.amplifyLevel(MapType.MAIN_SCREEN_MAIN_MAP);
+        naviScaleClick();
         if(NaviStatusPackage.getInstance().isGuidanceActive()) sendBuryPointForZoomByClick(BuryConstant.ZoomAction.ZOOM_IN);
     }
 

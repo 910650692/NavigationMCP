@@ -137,6 +137,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     // 记录路口大图出现时的起始距离
     private int mMoveStartDistance;
     private NextManeuverEntity mNextManeuverEntity;
+    private boolean mIsNeedUpdateViaList;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -288,6 +289,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (ConvertUtils.isEmpty(naviInfoBean)) return;
         checkShowViaDetail(naviInfoBean);
         mNaviEtaInfo = naviInfoBean;
+        if (mIsNeedUpdateViaList && null != mViewModel) {
+            mViewModel.updateViaListImm();
+        }
         mViewModel.onNaviInfo(naviInfoBean);
         if (mTipManager != null) {
             mTipManager.setNextViaChargeStation(naviInfoBean);
@@ -595,6 +599,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      */
     public List<NaviViaEntity> getViaList() {
         mViaList.clear();
+        mIsNeedUpdateViaList = false;
         if (null == mNaviEtaInfo) {
             return null;
         }
@@ -609,14 +614,17 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             Logger.i(TAG, "allPoiParamList viaRemain:" + viaRemain.size());
             if (!ConvertUtils.isEmpty(viaRemain)) {
                 final int index = i - 1;
+                Logger.i(TAG, "allPoiParamList index:" + index);
                 if (viaRemain.size() > index) {
                     tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, viaRemain.get(index)));
                 } else {
                     // 因为有时候是静态的 mNaviEtaInfo.viaRemain数据不会实时刷新，所以就算没有导航数据也要添加
                     tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null));
+                    mIsNeedUpdateViaList = true;
                 }
             } else {
                 tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null));
+                mIsNeedUpdateViaList = true;
             }
         }
         if (mIsShowAutoAdd) {

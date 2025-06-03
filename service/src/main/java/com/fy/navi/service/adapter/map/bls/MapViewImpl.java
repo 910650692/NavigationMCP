@@ -458,6 +458,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
 
     public void setMapViewTextSize(float f) {
         getMapview().getOperatorBusiness().setMapTextScale(f);
+        getMapview().resetTickCount(1);
     }
 
     public float getCurrentZoomLevel() {
@@ -901,6 +902,13 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
             mapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround,this);
         }
         mapDevice.setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
+    }
+
+    /**
+     * 设置poi是否可点击
+     */
+    public void setMapLabelClickable(boolean enable){
+        getMapview().getOperatorGesture().setMapLabelClickable(enable);
     }
 
 

@@ -13,7 +13,7 @@
       android:pathData="M48,48m-33.5,0a33.5,33.5 0,1 1,67 0a33.5,33.5 0,1 1,-67 0"
       android:strokeLineJoin="round"
       android:strokeWidth="5"
-      android:fillColor="#F8F8FA"
+      android:fillColor="@color/traffic_event_icon_bg"
       android:fillType="evenOdd"
       android:strokeColor="#C73333"/>
   <path

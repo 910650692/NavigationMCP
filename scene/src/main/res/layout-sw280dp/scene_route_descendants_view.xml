@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="Scene"
+            type="com.fy.navi.scene.api.route.ISceneRouteDetailsResultList" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/ly_descendants_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/scene_route_descendants_top_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_descendants_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_40"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_34"
+                android:text="@string/route_multiple_destinations"/>
+
+            <com.fy.navi.ui.view.SkinRecyclerView
+                android:id="@+id/route_descendants_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/dp_40"
+                app:layout_constraintWidth_max="@dimen/dp_994"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="visible" />
+
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
+
+        <com.fy.navi.ui.view.SkinRecyclerView
+            android:id="@+id/rv_secondary_poi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_goneMarginTop="@dimen/dp_0"
+            app:layout_constraintTop_toBottomOf="@+id/scene_route_descendants_top_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_max="@dimen/dp_994"/>
+
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+
+
+</layout>

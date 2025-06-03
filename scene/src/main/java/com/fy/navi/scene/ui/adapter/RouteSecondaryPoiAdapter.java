@@ -14,7 +14,6 @@ import com.fy.navi.scene.databinding.RouteSecondaryPoiItemBinding;
 import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.view.SkinConstraintLayout;
-import com.fy.navi.ui.view.SkinImageView;
 import com.fy.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
     /***
      * 设置子节点
      * @param childInfoList 子节点列表
+     * @param poiInfoEntity 当前点参数
      */
     public void setChildInfoList(final List<ChildInfo> childInfoList,final PoiInfoEntity poiInfoEntity) {
         if (null == childInfoList) {

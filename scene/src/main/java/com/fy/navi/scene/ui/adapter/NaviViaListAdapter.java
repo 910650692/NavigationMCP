@@ -89,10 +89,18 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
             setChargeUi(mList.get(position).getArriveBatteryLeft(),
                     holder.itemBinding.sivAddViaElec, holder.itemBinding.stvAddViaElec);
         }
-        String name = TextUtils.isEmpty(mList.get(position).getName()) ?
+        NaviViaEntity naviViaEntity = mList.get(position);
+        String name = TextUtils.isEmpty(naviViaEntity.getName()) ?
                 holder.itemBinding.getRoot().getContext().getString(R.string.navi_unknown_address) : mList.get(position).getName();
         holder.itemBinding.stvAddViaName.setText(name);
-        holder.itemBinding.setViaBean(mList.get(position));
+//        holder.itemBinding.setViaBean(naviViaEntity);
+        String distance = naviViaEntity.getDistance();
+        String arriveTime = naviViaEntity.getArriveTime();
+        String arriveDay = naviViaEntity.getArriveDay();
+        String none = holder.itemBinding.getRoot().getContext().getString(R.string.navi_none);
+        holder.itemBinding.stvAddViaDistance.setText(distance == null ? none : distance);
+        holder.itemBinding.stvArriveTime.setText(arriveTime == null ? none : arriveTime);
+        holder.itemBinding.stvArrivalDay.setText(arriveDay);
         if (position == mList.size() - 1) {
             holder.itemBinding.stvAddViaIcon.setBackgroundResource(R.drawable.img_navi_via_item_btn_end);
             holder.itemBinding.stvAddViaIcon.setText(R.string.navi_via_item_end);

@@ -60,6 +60,7 @@ import java.util.List;
 public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding, SceneSearchPoiListImpl>
         implements ISceneRouteGasStationChargeSelectCallBack {
     private static final String TAG = "SceneSearchPoiList";
+    private static final int MAX_LIST_NUMBER = 10;
     private static final String DIVIDER = "_";
     private static final String APPEND = "+";
     private SearchResultAdapter mAdapter;
@@ -574,7 +575,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
             @Override
             public void loadMore() {
-                if (mPageNum >= maxPageNum) {
+                if (mPageNum >= maxPageNum || (!ConvertUtils.isEmpty(mSearchResultEntity) && mSearchResultEntity.getPoiList().size() < MAX_LIST_NUMBER)) {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "没有更多数据了，pageNum: " + mPageNum + " / maxPageNum: " + maxPageNum);
                 } else {
                     performSearch(++mPageNum, getEditText());
@@ -697,9 +698,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         // 处理用户搜索意图
         if(searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())){
             boolean isChargeQuery = isChargeQuery(searchResultEntity.getQueryTypeList());
-//            boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
-            //todo 功能未开发完成，隐藏入口
-            boolean isPowerType = false;
+            boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
             boolean isOffline = searchResultEntity.getPoiType() == 0;
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isChargeQuery: "+isChargeQuery+" isPowerType: "+isPowerType+" isOffline: "+isOffline);
             // 意图为充电站且是电车且非离线才显示自营标签

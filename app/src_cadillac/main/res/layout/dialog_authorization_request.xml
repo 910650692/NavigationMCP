@@ -103,7 +103,7 @@
                     android:layout_marginStart="@dimen/dp_22"
                     android:background="@drawable/bg_shape_cancel_button"
                     android:gravity="center"
-                    android:text="@string/authorization_request_cancel"
+                    android:text="@string/dialog_cancel"
                     android:textColor="@color/dialog_cancel"
                     android:textSize="@dimen/sp_42" />
 

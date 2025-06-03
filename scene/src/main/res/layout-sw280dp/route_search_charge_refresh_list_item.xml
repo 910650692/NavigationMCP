@@ -48,7 +48,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/route_item_charge_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/dp_60"
                 android:layout_marginStart="@dimen/dp_96"
                 android:layout_marginTop="@dimen/dp_22"
@@ -58,13 +58,14 @@
                 android:maxLines="1"
                 android:textColor="@color/text_color_route_item_select"
                 android:textSize="@dimen/sp_45"
+                app:layout_constraintEnd_toStartOf="@+id/route_item_charge_add_bg"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="临港服务区" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/route_item_charge_description"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:ellipsize="end"
@@ -73,6 +74,7 @@
                 android:maxLines="1"
                 android:textColor="@color/text_route_defult"
                 android:textSize="@dimen/sp_38"
+                app:layout_constraintEnd_toEndOf="@+id/route_item_charge_name"
                 app:layout_constraintStart_toStartOf="@+id/route_item_charge_name"
                 app:layout_constraintTop_toBottomOf="@+id/route_item_charge_name"
                 tools:text="198km | 22分钟" />
@@ -81,9 +83,9 @@
                 android:id="@+id/route_item_charge_add_bg"
                 android:layout_width="@dimen/dp_114"
                 android:layout_height="@dimen/dp_130"
-                android:layout_marginTop="@dimen/dp_16"
-                android:focusable="true"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

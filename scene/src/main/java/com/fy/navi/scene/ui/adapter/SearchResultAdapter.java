@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.adapter.GasStationAdapter;
 import com.fy.navi.scene.adapter.GridSpacingItemDecoration;
@@ -302,6 +304,20 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
         final PoiDetailsScenicChildAdapter scenicChildAdapter = new PoiDetailsScenicChildAdapter();
         if (childInfoList != null && !childInfoList.isEmpty()) {
+            for (ChildInfo childInfo : childInfoList) {
+                SearchPackage.getInstance().setGrandChildInfoList(childInfo)
+                        .thenAccept(childInfoNew -> {
+                            if (!ConvertUtils.isEmpty(childInfoNew.getMGrandChildInfoList())) {
+                                mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
+                            }
+                            childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
+                        })
+                        .exceptionally(error -> {
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setGrandChildInfoList error:" + error);
+                            return null;
+                        });
+            }
             scenicChildAdapter.setChildInfoList(childInfoList);
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(View.VISIBLE);
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setLayoutManager(
@@ -336,6 +352,11 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                             .setAddress(childInfo.getAddress())
                             .setPid(childInfo.getPoiId())
                             .setPoint(childInfo.getLocation());
+                    if (ConvertUtils.isEmpty(childInfo.getMGrandChildInfoList())) {
+                        mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_NO_GRAND);
+                    } else {
+                        mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
+                    }
                 } else {
                     mChildSelectInfo = null;
                 }

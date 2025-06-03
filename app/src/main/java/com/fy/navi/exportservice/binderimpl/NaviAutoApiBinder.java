@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
@@ -31,6 +32,7 @@ import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
 import com.fy.navi.mapservice.common.INaviAutoStatusCallback;
 import com.fy.navi.mapservice.util.ExportConvertUtil;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -45,6 +47,7 @@ import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.CityInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
@@ -57,6 +60,7 @@ import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.StackManager;
+import com.fy.navi.vrbridge.IVrBridgeConstant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +72,8 @@ import java.util.TimerTask;
 public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
     private static final String TAG = NaviAutoApiBinder.class.getSimpleName();
+    private static final String INNER_CLIENT = "default";
+
     private final RemoteCallbackList<INaviAutoApiCallback> mNaviAutoCallbackList = new RemoteCallbackList<>();
     private final RemoteCallbackList<INaviAutoLocationCallback> mLocationCallbackList = new RemoteCallbackList<>();
     private final RemoteCallbackList<INaviAutoRouteCallback> mRouteCallbackList = new RemoteCallbackList<>();
@@ -1006,8 +1012,19 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             return;
         }
 
-        //保存keyword匹配搜索结果回调
-        processJumpPage(INaviConstant.OpenIntentPage.SEARCH_PAGE, keyword, null);
+        final int appForeGroundStatus = NaviPackage.getInstance().getIsAppInForeground();
+        if (AutoMapConstant.AppRunStatus.DESTROYED == appForeGroundStatus) {
+            //App未打开状态，启动应用并通过intent传递搜索关键字
+            processJumpPage(INaviConstant.OpenIntentPage.SEARCH_PAGE, keyword, null);
+        } else {
+            //App已经打开 ，打开地图并通过Package回调打开对应界面
+            openMap(INNER_CLIENT);
+            mSearchKeyword = keyword;
+            final Bundle bundle = new Bundle();
+            bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
+            bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mSearchKeyword);
+            MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+        }
     }
 
     @Override
@@ -1218,7 +1235,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     @Override
     public void openSrTbt(final String pkgName, final boolean open) {
         Logger.d(TAG, pkgName + "open: " + open);
-        if (open && !isNaviStatus("default")) {
+        if (open && !isNaviStatus(INNER_CLIENT)) {
             Logger.w(TAG, "not in navigation, can not show sr tbt");
             return;
         }
@@ -1239,7 +1256,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     @Override
     public boolean stopNavi(final String pkgName) {
         boolean result = false;
-        if (isNaviStatus("default")) {
+        if (isNaviStatus(INNER_CLIENT)) {
             result = NaviPackage.getInstance().stopNavigation();
         }
         return result;

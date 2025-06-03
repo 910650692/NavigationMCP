@@ -1,0 +1,10 @@
+{
+  "map_main_car": {
+    "mleftscreenoffer": 675,
+    "mtopscreenoffer": 521
+  },
+  "map_main_naving": {
+    "mleftscreenoffer": 764,
+    "mtopscreenoffer": 521
+  }
+}

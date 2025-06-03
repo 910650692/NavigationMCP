@@ -194,6 +194,12 @@ public interface ILayerApi {
     /* 设置设置跟随模式、自由模式 */
     int setFollowMode(MapType mapTypeId, boolean bFollow);
 
+    /* 设置骨骼车标的基础缩放值 */
+    void setSkeletonBaseScale(MapType mapTypeId, float f);
+
+    /* 设置3D车模缩放比例 */
+    void setModelScale(MapType mapTypeId, float f);
+
     /*========================================= 车标图层接口定义=========================================*/
 
 

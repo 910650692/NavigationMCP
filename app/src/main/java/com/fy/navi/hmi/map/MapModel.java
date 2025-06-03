@@ -2,6 +2,8 @@ package com.fy.navi.hmi.map;
 
 
 import static com.fy.navi.hmi.utils.AiWaysGestureManager.*;
+
+import com.android.utils.ScreenUtils;
 import com.fy.navi.hmi.utils.AiWaysGestureManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -51,6 +53,7 @@ import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
@@ -178,6 +181,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private final AccountPackage mAccountPackage;
     private NaviStatusPackage mNaviStatusPackage;
     private boolean mLoadMapSuccess = true;  //只加载一次
+    private boolean ndScreen = false; //是否进入了ND分屏
     // 24小时对应的毫秒数：24 * 60 * 60 * 1000 = 86,400,000
     private final long MILLIS_IN_24_HOURS = 86400000;
     private History mUncompletedNavi;
@@ -241,13 +245,29 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         cruisePackage.unregisterObserver(mViewModel.mScreenId);
     }
 
+    public void ndChangeScreen(String path,boolean isScreen) {
+        mapVisibleAreaDataManager.loadData(path);
+        ndScreen = isScreen;
+    }
 
     public void loadVisibleAreaJson(String jsonPath){
+        Logger.d("loadVisibleAreaJson", "loadVisibleAreaJson:" + ndScreen);
+        if (ndScreen) {
+            return;
+        }
         mapVisibleAreaDataManager.loadData(jsonPath);
     }
 
     public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType){
-        return mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
+        MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
+        if(mViewModel.showNdGoHomeView()){
+            //如果是ND  需要把数据转换为dp
+            int left = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMleftscreenoffer());
+            int top = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMtopscreenoffer());
+            MapVisibleAreaInfo ndMapArea = new MapVisibleAreaInfo(left,top);
+            return ndMapArea;
+        }
+        return mapVisibleAreaInfo;
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
@@ -494,6 +514,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         return mViewModel.bottomNaviVisibility.get();
     }
 
+    private void clearSearchView(){
+        searchPackage.clearPoiLabelMark();
+        searchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
+        searchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
+        searchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+    }
 
     private void startSelfParkingTimer() {
         cancelSelfParkingTimer();
@@ -503,6 +529,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 if (parkingViewExist()) {
                     ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
                     Logger.d("onFinish-startSelfParkingTimer-true");
+                    if (getTopFragment(PoiDetailsFragment.class)) {
+                        mViewModel.closePoiFragment();
+                        clearSearchView();
+                    }
                 }
                 Logger.d("onFinish-startSelfParkingTimer");
             }, 15, 15);

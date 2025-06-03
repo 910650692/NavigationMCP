@@ -287,7 +287,7 @@
                     <com.fy.navi.ui.view.SkinCheckBox
                         clickCommand="@{viewModel.mChargingStationClick}"
                         android:id="@+id/charging_station"
-                        android:layout_width="@dimen/dp_360"
+                        android:layout_width="@dimen/dp_344"
                         android:layout_height="@dimen/dp_120"
                         android:button="@null"
                         android:checked="@{viewModel.mIsChargingStation}"
@@ -295,7 +295,7 @@
                         android:background="@drawable/bg_setting_broadcast"
                         android:gravity="center"
                         android:focusable="true"
-                        android:layout_marginEnd="@dimen/dp_24"
+                        android:layout_marginEnd="@dimen/dp_36"
                         android:text="@string/setting_guide_charging_station"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_46" />
@@ -303,7 +303,7 @@
                     <com.fy.navi.ui.view.SkinCheckBox
                         clickCommand="@{viewModel.mRoadConditionClick}"
                         android:id="@+id/road_condition"
-                        android:layout_width="@dimen/dp_360"
+                        android:layout_width="@dimen/dp_344"
                         android:layout_height="@dimen/dp_120"
                         android:button="@null"
                         android:checked="@{viewModel.mIsRoadCondition}"
@@ -317,14 +317,14 @@
                     <com.fy.navi.ui.view.SkinCheckBox
                         clickCommand="@{viewModel.mFavoritePointClick}"
                         android:id="@+id/favorite_point"
-                        android:layout_width="@dimen/dp_360"
+                        android:layout_width="@dimen/dp_344"
                         android:layout_height="@dimen/dp_120"
                         android:button="@null"
                         android:checked="@{viewModel.mIsFavoritePoint}"
                         android:background="@drawable/bg_setting_broadcast"
                         android:gravity="center"
                         android:focusable="true"
-                        android:layout_marginStart="@dimen/dp_24"
+                        android:layout_marginStart="@dimen/dp_36"
                         android:text="@string/setting_guide_favorite_point"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_46" />

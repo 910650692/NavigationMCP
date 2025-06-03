@@ -1848,7 +1848,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         showNomalRouteUI();
         mModel.onReStoreFragment();
         if (mSecondaryPoiInfo != null) {
-            mView.setRouteSecondaryPoiUI(mSecondaryPoiInfo);
+            mView.setRouteSecondaryPoiUI(mSecondaryPoiInfo.getMChildType(), mSecondaryPoiInfo);
         }
     }
 }

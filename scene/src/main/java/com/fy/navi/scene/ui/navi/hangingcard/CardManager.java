@@ -19,6 +19,7 @@ import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -190,11 +191,11 @@ public class CardManager {
      * @param searchResultEntity
      * @return
      */
-    public ArrayList<PoiInfoEntity> getStationList(final SearchResultEntity searchResultEntity) {
+    public List<PoiInfoEntity> getStationList(final SearchResultEntity searchResultEntity) {
         if (ConvertUtils.isNull(searchResultEntity) || ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
             return new ArrayList<>();
         } else {
-            return (ArrayList<PoiInfoEntity>) searchResultEntity.getPoiList();
+            return searchResultEntity.getPoiList();
         }
     }
 

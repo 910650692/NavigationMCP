@@ -59,6 +59,7 @@ import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
@@ -84,6 +85,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
     private NaviAdapter mNaviAdapter;
     private LayerAdapter mLayerAdapter;
+    private MapPackage mapPackage;
     private SpeechAdapter mSpeechAdapter;
     private SettingAdapter mSettingAdapter;
     private Hashtable<String, IGuidanceObserver> mGuidanceObservers;
@@ -126,6 +128,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         mNaviAdapter = NaviAdapter.getInstance();
         mNavistatusAdapter = NavistatusAdapter.getInstance();
         mLayerAdapter = LayerAdapter.getInstance();
+        mapPackage = MapPackage.getInstance();
         mRouteAdapter = RouteAdapter.getInstance();
         mSettingAdapter = SettingAdapter.getInstance();
         mUserTrackAdapter = UserTrackAdapter.getInstance();
@@ -175,6 +178,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_DESK_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.CLUSTER_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.HUD_MAP, true);
+            mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP,false);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
             PathInfo pathInfo = mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP) ==
                     null ? null :
@@ -219,6 +223,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
             mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, false);
             mLayerAdapter.setFollowMode(MapType.HUD_MAP, false);
+            mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP,true);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
             sendBuryPointForCloseNavi();
         } else {

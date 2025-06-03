@@ -148,4 +148,16 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
             default -> CarModeType.CAR_MODE_DEFAULT;
         };
     }
+
+    /* 设置骨骼车标的基础缩放值 */
+    public void setSkeletonBaseScale(float f) {
+        Logger.d(TAG, "setSkeletonBaseScale f " + f);
+        getLayerCarControl().setSkeletonBaseScale(f);
+    }
+
+    /* 设置3D车模缩放比例 */
+    public void setModelScale(float f) {
+        Logger.d(TAG, "setModelScale f " + f);
+        getLayerCarControl().setModelScale(f);
+    }
 }

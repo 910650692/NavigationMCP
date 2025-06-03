@@ -219,4 +219,9 @@ public class MapAdapterImpl implements IMapApi {
         return mapViewPoolManager.get(mapTypeId).isPreview();
     }
 
+    @Override
+    public void setMapLabelClickable(MapType mapTypeId,boolean enable) {
+        mapViewPoolManager.get(mapTypeId).setMapLabelClickable(enable);
+    }
+
 }

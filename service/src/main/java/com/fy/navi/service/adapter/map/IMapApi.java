@@ -143,4 +143,6 @@ public interface IMapApi {
      * @return 是否进入全览的状态
      */
     boolean getIsEnterPreview(MapType mapTypeId);
+
+    void setMapLabelClickable(MapType mapTypeId,boolean enable);
 }

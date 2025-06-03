@@ -9,6 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 
@@ -54,7 +58,12 @@ public class LimitCitiesAdapter extends RecyclerView.Adapter<LimitCitiesAdapter.
         holder.mTitle.setText(mDate.get(position).getName());
         holder.mTitle.setOnClickListener(new View.OnClickListener() {
             @Override
+            @HookMethod(eventName = BuryConstant.EventName.AMAP_TRAFFICRESTRICT_CITY)
             public void onClick(final View v) {
+                BuryProperty buryProperty = new BuryProperty.Builder()
+                        .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, mDate.get(position).getName())
+                        .build();
+                BuryPointController.getInstance().setBuryProps(buryProperty);
                 if (mListener != null) {
                     mListener.onClick(String.valueOf(mDate.get(position).getAdcode()));
                 }

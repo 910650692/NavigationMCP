@@ -132,6 +132,7 @@
     <string name="switch_car_angle">已切换至%s视角</string>
     <string name="navi_car_head_switch_while_overview">路线概览时保持正北朝上</string>
     <string name="navi_unknown_address">未知地址</string>
+    <string name="navi_none">--</string>
 
     <!--算路相关-->
     <string name="route_search_loading">路线规划中…</string>
@@ -160,6 +161,7 @@
     <string name="route_preference_avoiding_congestion_and_less_charge_not_highway">躲避拥堵+少收费+不走高速</string>
     <string name="route_preference_avoiding_congestion_and_first_main_road">躲避拥堵+大路优先</string>
     <string name="route_preference_avoiding_congestion_and_fastest_speed">躲避拥堵+时间优先</string>
+    <string name="route_multiple_destinations">终点有多个目的地，请选择前往</string>
     <string name="route_details_list_header">起点：我的位置</string>
     <string name="route_details_list_footer">终点：</string>
     <string name="route_details_light_count">红绿灯</string>

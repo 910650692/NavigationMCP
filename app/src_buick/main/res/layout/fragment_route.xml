@@ -356,32 +356,19 @@
                     app:layout_constraintTop_toBottomOf="@+id/bg_lines" />
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.fy.navi.scene.ui.route.SceneRouteDescendantsView
                 android:id="@+id/ly_secondary_poi"
                 android:layout_width="@dimen/dp_0"
                 android:maxWidth="@dimen/dp_1052"
-                android:layout_height="@dimen/dp_176"
+                android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/dp_29"
-                android:paddingVertical="@dimen/dp_29"
-                android:layout_marginStart="@dimen/dp_669"
+                android:paddingVertical="@dimen/dp_53"
+                android:layout_marginStart="@dimen/dp_660"
                 android:background="@drawable/bg_shadow_navi_buick"
                 android:clickable="true"
                 android:visibility="@{ViewModel.getSecondaryPoiVisibility() == 0 ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.fy.navi.ui.view.SkinRecyclerView
-                    android:id="@+id/rv_secondary_poi"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/dp_40"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintWidth_max="@dimen/dp_994"/>
-
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/route_result_line"

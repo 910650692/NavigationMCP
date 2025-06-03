@@ -27,6 +27,11 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
     public TerminalParkingModel() {
         mCallbackId = UUID.randomUUID().toString();
         mSearchPackage = SearchPackage.getInstance();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
         mSearchPackage.registerCallBack(mCallbackId, this);
     }
 
@@ -43,6 +48,9 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
                 mViewModel.notifySearchResult(searchResultEntity);
 
             });
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onSearchResult mCallbackId: "
+                    + mCallbackId + " ,currentId: " + mSearchPackage.getCurrentCallbackId());
         }
     }
 

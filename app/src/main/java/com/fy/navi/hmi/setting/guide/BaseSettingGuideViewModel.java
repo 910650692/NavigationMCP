@@ -245,7 +245,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODE_DEFAULT);
         mModel.setCarMode(CarModeType.CAR_MODE_DEFAULT);
 
-        sendBuryPointForSettingGuide(BuryConstant.GuideOption.AUTO_SCALE, BuryConstant.CarIcon.DEFAULT);
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.CAR_ICON, BuryConstant.CarIcon.DEFAULT);
     };
 
     // 品牌车标
@@ -253,7 +253,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_BRAND);
         mModel.setCarMode(CarModeType.CAR_MODEL_BRAND);
 
-        sendBuryPointForSettingGuide(BuryConstant.GuideOption.AUTO_SCALE, BuryConstant.CarIcon.BRAND);
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.CAR_ICON, BuryConstant.CarIcon.BRAND);
     };
 
     // 车速车标
@@ -261,7 +261,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_SPEED);
         mModel.setCarMode(CarModeType.CAR_MODEL_SPEED);
 
-        sendBuryPointForSettingGuide(BuryConstant.GuideOption.AUTO_SCALE, BuryConstant.CarIcon.SPEED);
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.CAR_ICON, BuryConstant.CarIcon.SPEED);
     };
 
     // 标准字号

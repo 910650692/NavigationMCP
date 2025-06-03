@@ -1183,20 +1183,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             for (ChildInfo childInfo : childInfoList) {
                 mScreenViewModel.setGrandChildInfoList(childInfo)
                         .thenAccept(childInfoNew -> {
-                            ThreadManager.getInstance().postUi(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (!ConvertUtils.isEmpty(childInfoNew.getMGrandChildInfoList())) {
-                                        mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
-                                    }
-                                    childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
-                                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
-                                }
-                            });
-
+                            if (!ConvertUtils.isEmpty(childInfoNew.getMGrandChildInfoList())) {
+                                mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
+                            }
+                            childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
                         })
                         .exceptionally(error -> {
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" + error);
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setGrandChildInfoList error:" + error);
                             return null;
                         });
             }
@@ -1390,20 +1384,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             for (ChildInfo childInfo : childInfoList) {
                 mScreenViewModel.setGrandChildInfoList(childInfo)
                         .thenAccept(childInfoNew -> {
-                            ThreadManager.getInstance().postUi(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (!ConvertUtils.isEmpty(childInfoNew.getMGrandChildInfoList())) {
-                                        mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
-                                    }
-                                    childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
-                                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
-                                }
-                            });
-
+                            if (!ConvertUtils.isEmpty(childInfoNew.getMGrandChildInfoList())) {
+                                mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
+                            }
+                            childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
                         })
                         .exceptionally(error -> {
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" + error);
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setGrandChildInfoList error:" + error);
                             return null;
                         });
             }
