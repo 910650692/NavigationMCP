@@ -48,6 +48,7 @@ import com.fy.navi.service.AutoMapConstant.PoiType;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedAreaDetail;
+import com.fy.navi.service.define.aos.TrafficRestrictResponseParam;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
@@ -109,8 +110,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Nullable
     private RouteRestrictionParam routeRestrictionParam;
     public ObservableField<Boolean> limitDriverVisibility;
+    public ObservableField<Boolean> limitEndNumVisibility;
     public ObservableField<Boolean> tmcModeVisibility;
     public ObservableField<String> limitDriverTitle;
+    public ObservableField<String> limitEndNumOne;
+    public ObservableField<String> limitEndNumTwo;
     public ObservableField<Boolean> cruiseVisibility;
     public ObservableField<Boolean> cruiseLanesVisibility;
     public ObservableField<Boolean> muteVisibility;
@@ -129,8 +133,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mScaleViewVisibility = new ObservableBoolean(true);
         naviHomeVisibility = new ObservableField<>(false);
         limitDriverVisibility = new ObservableField<>(false);
+        limitEndNumVisibility = new ObservableField<>(false);
         tmcModeVisibility = new ObservableField<>(false);
         limitDriverTitle = new ObservableField<>("");
+        limitEndNumOne = new ObservableField<>("");
+        limitEndNumTwo = new ObservableField<>("");
         carModeImgId = new ObservableInt(R.drawable.img_car_mode_2d_north);
         cruiseVisibility = new ObservableField<>(false);
         muteVisibility = new ObservableField<>(true);
@@ -761,8 +768,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
         if (flag) {
             limitDriverTitle.set(getApplication().getString(R.string.limit_today_drive));
+            limitEndNumVisibility.set(false);
+            limitEndNumOne.set("");
+            limitEndNumTwo.set("");
         } else {
-            limitDriverTitle.set(getApplication().getString(R.string.limit_drive));
+            mModel.getCurrentCityLimitEndNumber();
         }
         limitDriverVisibility.set(restrictedArea != null && statusVis);
 
@@ -776,6 +786,32 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                         ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),
                         "", new Date(), 0));
             }
+        }
+    }
+
+    /**
+     * 更新限行尾号UI
+     * @param param 尾号限行内容
+     */
+    public void updateLimitEndNum(final TrafficRestrictResponseParam param) {
+        if (param == null || param.getPlateNo() == null || param.getPlateNo().isEmpty()) {
+            Logger.d(TAG, "no restricted end number");
+            limitDriverTitle.set(getApplication().getString(R.string.limit_drive));
+            limitEndNumVisibility.set(false);
+            limitEndNumOne.set("");
+            limitEndNumTwo.set("");
+            return;
+        }
+        final String[] nums = param.getPlateNo().split(",");
+        if (nums.length >= 2) {
+            limitEndNumOne.set(nums[0].trim());
+            limitEndNumTwo.set(nums[1].trim());
+            limitDriverTitle.set(getApplication().getString(R.string.limit_with_end_number));
+            limitEndNumVisibility.set(true);
+        } else {
+            limitEndNumOne.set(nums[0].trim());
+            limitDriverTitle.set(getApplication().getString(R.string.limit_with_end_number));
+            limitEndNumVisibility.set(true);
         }
     }
 

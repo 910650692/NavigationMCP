@@ -118,7 +118,7 @@ public interface RouteResultObserver {
     void onRouteTMCInfo(RouteTMCParam param);
 
     /**
-     * 算路偏航消息
+     * 静默算路消息
      */
     void onReRoute();
 }

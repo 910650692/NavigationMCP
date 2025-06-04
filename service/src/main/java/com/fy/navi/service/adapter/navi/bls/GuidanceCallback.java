@@ -4,7 +4,6 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.path.model.ElecVehicleETAInfo;
 import com.autonavi.gbl.common.path.model.TollGateInfo;
 import com.autonavi.gbl.common.path.option.RouteOption;
@@ -40,7 +39,6 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
 import com.fy.navi.service.adapter.navi.NaviAdapter;
-import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -51,7 +49,6 @@ import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
-import com.fy.navi.service.define.route.FyRouteOption;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.tts.NaviAudioPlayer;
 
@@ -387,6 +384,13 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onUpdateTMCCongestionInfo(final NaviCongestionInfo info) {
+        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    guidanceObserver.onUpdateTMCCongestionInfo(NaviDataFormatHelper.formatNaviCongestionInfo(info));
+                }
+            }
+        }
     }
 
     @Override
@@ -441,7 +445,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onPlayTTS(NaviDataFormatHelper.formatSoundInfo(type));
+                    guidanceObserver.onPlayRing(type);
                 }
             }
         }

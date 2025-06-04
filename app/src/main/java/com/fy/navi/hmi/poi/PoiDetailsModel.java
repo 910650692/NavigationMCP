@@ -105,6 +105,13 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     }
 
     @Override
+    public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            mViewModel.onSilentSearchResult(taskId,searchResultEntity);
+        }
+    }
+
+    @Override
     public void onNetSearchResult(final int taskId,String searchKey,BaseRep result) {
         switch (searchKey){
             case AutoMapConstant.NetSearchKey.QUERY_STATION_INFO:

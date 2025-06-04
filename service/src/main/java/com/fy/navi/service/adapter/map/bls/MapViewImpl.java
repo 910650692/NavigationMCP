@@ -112,6 +112,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     private static float MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE = 40F;
 
     private static float MAP_DEFAULT_TEXT_SIZE = 1.3F;
+
+    private static int ROUTERDRAWLABELTIME = 15;
     private MapDevice mMapDevice;
 
     @Getter
@@ -147,6 +149,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         createMapDevice(mapViewParams);
         if (mapType == MapType.HUD_MAP) createHudMapView(); else createMapView();
         initTheme();
+        initRouterDrawLabel();
         initOperatorPosture();
         initOperatorBusiness();
         initOperatorGesture();
@@ -283,6 +286,11 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     public void setDefaultMapView(MapView mapview) {
         super.setDefaultMapView(mapview);
         this.mapview = mapview;
+    }
+
+    private void initRouterDrawLabel() {
+        //设置导航中刷新频率，不让道路名等频繁刷新
+        getMapview().setMapNeedForceDrawLabel(ROUTERDRAWLABELTIME);
     }
 
     /**

@@ -465,6 +465,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @param msg AIMPOI(send2car)推送消息
      */
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_PHONE_DESTINATION_FROM)
     public void notifyMessage(final AimPoiPushMsg msg) {
         MsgPushInfo aimPoiPushMsgInfo = getMsgPushInfo(msg);
 
@@ -476,6 +477,11 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
         for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyAimPoiPushMessage(aimPoiPushMsgInfo);
         }
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS,
+                        aimPoiPushMsgInfo.getName() != null ? aimPoiPushMsgInfo.getName() : "")
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 
     /**

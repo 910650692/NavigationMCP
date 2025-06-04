@@ -136,6 +136,10 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         }
     }
 
+    public void keywordSearch(PoiInfoEntity poiInfo){
+        mSearchPackage.keywordSearch(1,poiInfo.getName(),true);
+    }
+
     // 云端自营站查询详情
     public void doSearchByNet(final PoiInfoEntity poiInfoEntity){
         mTaskId = mSearchPackage.queryStationInfo(poiInfoEntity);

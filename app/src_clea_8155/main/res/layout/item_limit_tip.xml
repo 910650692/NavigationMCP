@@ -13,11 +13,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:minWidth="@dimen/dp_157"
+        android:minWidth="@dimen/dp_112"
         android:minHeight="@dimen/dp_70"
         android:visibility="@{ViewModel.limitDriverVisibility ? View.VISIBLE : View.GONE}"
         clickCommand="@{ViewModel.openLimitDetailFragment}"
-        android:background="@drawable/bg_button_map_limit">
+        android:background="@drawable/bg_button_map_limit"
+        android:paddingHorizontal="@dimen/dp_12"
+        android:paddingVertical="@dimen/dp_12">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_limit_first"
@@ -27,11 +29,12 @@
             android:gravity="center"
             android:textColor="@color/main_map_limit_text_color"
             android:textSize="@dimen/sp_22"
-            android:visibility="gone"
-            android:layout_marginStart="@dimen/dp_12"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="2" />
+            android:visibility="@{ViewModel.limitEndNumVisibility ? View.VISIBLE : View.GONE}"
+            android:text="@{ViewModel.limitEndNumOne}"
+            tools:text="2"
+            tools:visibility="visible" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_limit_second"
@@ -39,14 +42,18 @@
             android:layout_height="@dimen/dp_46"
             android:background="@drawable/bg_item_limit_number"
             android:gravity="center"
-            android:visibility="gone"
+            android:visibility="@{ViewModel.limitEndNumVisibility ? View.VISIBLE : View.GONE}"
             android:layout_marginStart="@dimen/dp_7"
+            android:layout_marginEnd="@dimen/dp_7"
             app:layout_constraintStart_toEndOf="@id/tv_limit_first"
+            app:layout_constraintEnd_toStartOf="@id/tv_desc"
             android:textColor="@color/main_map_limit_text_color"
             android:textSize="@dimen/sp_22"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="6" />
+            android:text="@{ViewModel.limitEndNumTwo}"
+            tools:text="6"
+            tools:visibility="visible" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_desc"
@@ -56,9 +63,9 @@
             android:textSize="@dimen/sp_22"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="@{ViewModel.limitDriverTitle}" />
+            android:text="@{ViewModel.limitDriverTitle}"
+            tools:text="限行"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

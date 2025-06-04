@@ -918,7 +918,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         clearRestrictionView();
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showProgressUI();
-            mViewModel.showNomalRouteUI();
+            mViewModel.showNomalRouteUI(false);
         }
     }
 
@@ -931,11 +931,19 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     @Override
+    public void onReRouteError() {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            Logger.i(TAG, "静默算路失败");
+            mViewModel.hideProgressUI(false);
+        }
+    }
+
+    @Override
     public void onRouteSlected(final MapType mapTypeId, final int routeIndex) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.updateSelectRouteUI(routeIndex);
-                mViewModel.showNomalRouteUI();
+                mViewModel.showNomalRouteUI(true);
             }
             mSearchPackage.clearLabelMark();
             clearWeatherView();

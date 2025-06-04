@@ -137,15 +137,13 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         if (TimerHelper.isCanDo()) {
             if (!mNaviPackage.getFixedOverViewStatus() && mNaviPackage.getPreviewStatus()) {
                 OpenApiHelper.exitPreview(mMapTypeId);
-            } else {
+            } else if (!mNaviPackage.getFixedOverViewStatus()){
                 mMapPackage.goToCarPosition(mMapTypeId, false, false);
                 mLayerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
                 // bugID：1023666 导航中缩放地图然后点击继续导航，恢复到导航跟随态的过程时间太长
                 OpenApiHelper.setCurrentZoomLevel(mMapTypeId);
             }
             mSearchPackage.clearLabelMark();
-            ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId,
-                    ImersiveStatus.IMERSIVE);
             // 隐藏继续当行按钮
             notifySceneStateChange(false);
         }
@@ -158,6 +156,8 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
     public void naviContinueClick() {
         Logger.i(TAG, "naviContinueClick");
         naviContinue();
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId,
+                ImersiveStatus.IMERSIVE);
         if (null != mScreenView) {
             mScreenView.backToNaviFragment();
         }

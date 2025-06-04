@@ -151,7 +151,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         holder.mResultItemBinding.crlPoiDes.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情" + mPoiEntities.get(position).getPid());
             final String input = mPoiEntities.get(position).getPid();
-            if (!ConvertUtils.isEmpty(input) && input.contains(".")) {
+            if (!ConvertUtils.isEmpty(input) && input.contains(".") && !input.startsWith("C")) {
                 // 找到第二个小数点的位置
                 final int firstDotIndex = input.indexOf('.'); // 第一个小数点的位置
                 final int secondDotIndex = input.indexOf('.', firstDotIndex + 1); // 第二个小数点的位置
@@ -167,7 +167,6 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
                     mPoiEntities.get(position).setPoint(geoPoint);
                 }
             }
-
             if (mOnItemClickListener != null) {
                 mOnItemClickListener.onItemClick(position, mPoiEntities.get(position));
             }

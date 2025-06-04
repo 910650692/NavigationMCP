@@ -34,6 +34,8 @@ import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
+import com.fy.navi.service.define.navi.NaviCongestionDetailInfoEntity;
+import com.fy.navi.service.define.navi.NaviCongestionInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviExchangeEntity;
@@ -63,6 +65,7 @@ import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
+import com.fy.navi.service.tts.NaviAudioPlayer;
 import com.fy.navi.service.tts.TTSPlayHelper;
 import com.fy.navi.ui.BaseApplication;
 import com.fy.navi.ui.IsAppInForegroundCallback;
@@ -529,6 +532,25 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
+    public void onPlayRing(int type) {
+        Logger.i(TAG, "onPlayRing type:" + type + " mIsMute:" + mIsMute);
+        // 如果处于巡航态且巡航播报关闭
+        if (Objects.equals(NavistatusAdapter.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE) && !mCruiseVoiceIsOpen) {
+            Logger.d(TAG, "onPlayRing 当前处于巡航态且播报关闭，故不播放声音！");
+            return;
+        }
+        if (mIsMute) {
+            return; // 静音开关
+        }
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                NaviAudioPlayer.getInstance().playNaviWarningSound(type);
+            }
+        });
+    }
+
+    @Override
     public void onManeuverInfo(final NaviManeuverInfo respData) {
         Logger.i(TAG, "onManeuverInfo");
         ThreadManager.getInstance().postUi(() -> {
@@ -811,6 +833,19 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {
                         guidanceObserver.onShowNaviFacility(naviRoadFacilityEntity);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onUpdateTMCCongestionInfo(NaviCongestionInfoEntity naviCongestionInfoEntity) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onUpdateTMCCongestionInfo(naviCongestionInfoEntity);
                     }
                 }
             }

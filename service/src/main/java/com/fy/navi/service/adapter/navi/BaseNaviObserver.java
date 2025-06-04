@@ -9,6 +9,11 @@ public interface BaseNaviObserver {
     void onPlayTTS(SoundInfoEntity info);
 
     /**
+     * @param type 导航叮叮音播报
+     */
+    void onPlayRing(int type);
+
+    /**
      * 导航结束
      */
     void onNaviStop();

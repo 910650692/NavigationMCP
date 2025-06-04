@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/navi_del"
-                android:textColor="@color/navi_color_000000_70"
+                android:textColor="@color/navi_color_FFFFFF_100"
                 android:textSize="@dimen/sp_26" />
         </com.fy.navi.ui.view.SkinLinearLayout>
     </com.fy.navi.ui.view.SwipeMenuLayout>

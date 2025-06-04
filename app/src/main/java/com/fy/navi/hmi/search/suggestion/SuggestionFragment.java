@@ -76,10 +76,11 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
     /**
      * 搜索结果回调
      * @param searchResultEntity 搜索结果实体类
+     * @param isRestore 是否是切换日夜模式导致的更新回调
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final SearchResultEntity searchResultEntity, final boolean isRestore) {
         if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
-            mBinding.sceneSugPoiList.notifySearchResult(searchResultEntity);
+            mBinding.sceneSugPoiList.notifySearchResult(searchResultEntity, isRestore);
         }
     }
 

@@ -12,6 +12,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.LeadingMarginSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ import com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.PoiDetailsScenicChildAdapter;
 import com.fy.navi.scene.ui.adapter.RoutePOIGasStationAdapter;
+import com.fy.navi.scene.ui.route.SceneRouteDescendantsView;
 import com.fy.navi.scene.ui.search.SearchConfirmDialog;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
@@ -98,6 +100,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private final int mChildSpacing = 24;//子POI info item间距
     private final int mSpanCount = 2;//数据列数
     private PoiInfoEntity mChildSelectInfo;
+    private PoiInfoEntity mGrandChildSelectInfo;
     private int mPoiType;
     private boolean mViaAddType = true;
     private PoiDetailsScenicChildAdapter mScenicChildAdapter;
@@ -170,7 +173,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      */
     private void handleRouteClick() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "点击去这里");
-        PoiInfoEntity poiInfo = ConvertUtils.isNull(mChildSelectInfo) ? mPoiInfoEntity : mChildSelectInfo;
+        final PoiInfoEntity poiInfo;
+        if (mGrandChildSelectInfo != null) {
+            poiInfo = mGrandChildSelectInfo;
+        } else if (mChildSelectInfo != null) {
+            poiInfo = mChildSelectInfo;
+        } else {
+            poiInfo = mPoiInfoEntity;
+        }
         if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd) {
             if (mViaAddType) {
                 if(RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
@@ -476,6 +486,16 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
     }
 
+    public void onSilentSearchResult(int taskId,SearchResultEntity mSearchResultEntity){
+        ArrayList<PoiInfoEntity> list = new ArrayList<>();
+        list.add(mSearchResultEntity.getPoiList().get(0));
+        SearchResultEntity searchResultEntity = new SearchResultEntity()
+                .setPoiList(list)
+                .setPoiType(1);
+        onSearchResult(mScreenViewModel.getMTaskId(),searchResultEntity);
+        reloadPoiLabelMarker();
+    }
+
     public void onCollectUpdate(String code){
         if("0000".equals(code)){
             mIsCollectStatus = !mIsCollectStatus;
@@ -507,9 +527,28 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     .setPoint(childInfo.getLocation());
             if (ConvertUtils.isEmpty(childInfo.getMGrandChildInfoList())) {
                 mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_NO_GRAND);
+                mViewBinding.lySecondaryPoi.setVisibility(View.GONE);
             } else {
                 mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
+                mViewBinding.lySecondaryPoi.setVisibility(View.VISIBLE);
+                mViewBinding.lySecondaryPoi.setUIMode(AutoMapConstant.ChildType.CHILD_HAS_GRAND, mChildSelectInfo);
+                mViewBinding.lySecondaryPoi.setItemClickListener(new SceneRouteDescendantsView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(final PoiInfoEntity poiInfo) {
+                        mGrandChildSelectInfo = poiInfo;
+                    }
+
+                    @Override
+                    public void onCancelSelectClick(final PoiInfoEntity poiInfoEntity) {
+                        mGrandChildSelectInfo = null;
+                    }
+
+                    @Override
+                    public void OnScrollListener() {
+                    }
+                });
             }
+            mGrandChildSelectInfo = null;
             for (int i = 0; i < mChildList.size(); i++) {
                 if (i == index) {
                     mChildList.get(i).setChecked(1);
@@ -629,6 +668,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                           final boolean hasMultiple, final String[] businessTimes) {
 
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "initPoiBusinessTimeIconObserver hasMultiple: " + hasMultiple);
+
         // 添加下拉按钮逻辑
         businessTimeIconView.setVisibility(hasMultiple ? View.VISIBLE : View.GONE);
         businessTimeIconView.setOnClickListener(v -> {
@@ -662,13 +702,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
                 mViewBinding.scenePoiDetailsNormalView.poiPhone.setVisibility(View.GONE);
                 mViewBinding.scenePoiDetailsBottomView.stlPhone.setVisibility(View.GONE);
+            }else{
+                final String[] phones = mPoiInfoEntity.getPhone().split(";");
+                final String text = getContext().getString(R.string.poi_phone, phones[0]);
+                initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsNormalView.poiPhoneIcon,
+                        mViewBinding.scenePoiDetailsNormalView.poiPhone,
+                        phones.length > 1, phones);
+                mViewBinding.scenePoiDetailsNormalView.poiPhone.setText(text);
             }
-            final String[] phones = mPoiInfoEntity.getPhone().split(";");
-            final String text = getContext().getString(R.string.poi_phone, phones[0]);
-            initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsNormalView.poiPhoneIcon,
-                    mViewBinding.scenePoiDetailsNormalView.poiPhone,
-                    phones.length > 1, phones);
-            mViewBinding.scenePoiDetailsNormalView.poiPhone.setText(text);
             mViewBinding.scenePoiDetailsBottomView.stlPhone.setOnClickListener(new OnClickListener() {
                 @Override
                 @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_PHONE)
@@ -1234,12 +1275,32 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mScreenViewModel.setChildIndex(index);
                     if (ConvertUtils.isEmpty(childInfo.getMGrandChildInfoList())) {
                         mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_NO_GRAND);
+                        mViewBinding.lySecondaryPoi.setVisibility(View.GONE);
                     } else {
                         mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
+                        mViewBinding.lySecondaryPoi.setVisibility(View.VISIBLE);
+                        mViewBinding.lySecondaryPoi.setUIMode(AutoMapConstant.ChildType.CHILD_HAS_GRAND, mChildSelectInfo);
+                        mViewBinding.lySecondaryPoi.setItemClickListener(new SceneRouteDescendantsView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(final PoiInfoEntity poiInfo) {
+                                mGrandChildSelectInfo = poiInfo;
+                            }
+
+                            @Override
+                            public void onCancelSelectClick(final PoiInfoEntity poiInfoEntity) {
+                                mGrandChildSelectInfo = null;
+                            }
+
+                            @Override
+                            public void OnScrollListener() {
+                            }
+                        });
                     }
                 } else {
                     mChildSelectInfo = null;
+                    mViewBinding.lySecondaryPoi.setVisibility(View.GONE);
                 }
+                mGrandChildSelectInfo = null;
                 refreshPoiView(mPoiType,mPoiInfoEntity,false);
             });
         } else {
@@ -1421,13 +1482,33 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             .setPoint(childInfo.getLocation());
                     if (ConvertUtils.isEmpty(childInfo.getMGrandChildInfoList())) {
                         mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_NO_GRAND);
+                        mViewBinding.lySecondaryPoi.setVisibility(View.GONE);
                     } else {
                         mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
+                        mViewBinding.lySecondaryPoi.setVisibility(View.VISIBLE);
+                        mViewBinding.lySecondaryPoi.setUIMode(AutoMapConstant.ChildType.CHILD_HAS_GRAND, mChildSelectInfo);
+                        mViewBinding.lySecondaryPoi.setItemClickListener(new SceneRouteDescendantsView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(final PoiInfoEntity poiInfo) {
+                                mGrandChildSelectInfo = poiInfo;
+                            }
+
+                            @Override
+                            public void onCancelSelectClick(final PoiInfoEntity poiInfoEntity) {
+                                mGrandChildSelectInfo = null;
+                            }
+
+                            @Override
+                            public void OnScrollListener() {
+                            }
+                        });
                     }
                     mScreenViewModel.setChildIndex(index);
                 } else {
                     mChildSelectInfo = null;
+                    mViewBinding.lySecondaryPoi.setVisibility(View.GONE);
                 }
+                mGrandChildSelectInfo = null;
                 refreshPoiView(mPoiType,mPoiInfoEntity,false);
             });
         } else {
@@ -1453,6 +1534,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mAnimator.cancel();
         }
         mChildSelectInfo = null;
+        mGrandChildSelectInfo = null;
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onDestroy");
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
     }
@@ -1517,7 +1599,19 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         ThreadManager.getInstance().postDelay(mTimeoutTask, 6000);
         mPoiInfoEntity = poiInfo;
         if(ConvertUtils.isEmpty(poiInfo.getOperatorId())){
-            mScreenViewModel.doSearch(poiInfo);
+            if(poiInfo.isIsLocres()){
+                ArrayList<PoiInfoEntity> list = new ArrayList<>();
+                list.add(poiInfo);
+                SearchResultEntity searchResultEntity = new SearchResultEntity()
+                        .setPoiList(list)
+                        .setPoiType(1);
+                onSearchResult(mScreenViewModel.getMTaskId(),searchResultEntity);
+                reloadPoiLabelMarker();
+            }else if(!ConvertUtils.isEmpty(poiInfo.getPid()) && poiInfo.getPid().startsWith("C")){
+                mScreenViewModel.keywordSearch(poiInfo);
+            }else{
+                mScreenViewModel.doSearch(poiInfo);
+            }
         }else{
             mScreenViewModel.doSearchByNet(poiInfo);
         }
@@ -1587,7 +1681,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 if (mScreenViewModel.isAlongWaySearch() && !mIsEnd) {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "添加途径点");
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(null);
-                    PoiInfoEntity poiInfo = ConvertUtils.isNull(mChildSelectInfo) ? poiInfoEntity : mChildSelectInfo;
+                    final PoiInfoEntity poiInfo;
+                    if (mGrandChildSelectInfo != null) {
+                        poiInfo = mGrandChildSelectInfo;
+                    } else if (mChildSelectInfo != null) {
+                        poiInfo = mChildSelectInfo;
+                    } else {
+                        poiInfo = mPoiInfoEntity;
+                    }
                     if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
                         mViaAddType = false;
                         if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
@@ -1781,7 +1882,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
         });
         mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setOnClickListener((view) -> {
-            if (mChildSelectInfo != null) {
+            if (mGrandChildSelectInfo != null) {
+                if (SearchPackage.getInstance().isAlongWaySearch() && !RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
+                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
+                            mGrandChildSelectInfo, 0);
+                }
+            } else if (mChildSelectInfo != null) {
                 if (SearchPackage.getInstance().isAlongWaySearch() && !RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
                     RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                             mChildSelectInfo, 0);

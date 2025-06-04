@@ -10,12 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.databinding.SceneRouteDescendantsViewBinding;
 import com.fy.navi.scene.impl.route.SceneRouteDescendantsImpl;
 import com.fy.navi.scene.ui.adapter.RouteChildPoiAdapter;
 import com.fy.navi.scene.ui.adapter.RouteSecondaryPoiAdapter;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -154,9 +156,11 @@ public class SceneRouteDescendantsView extends BaseSceneView<SceneRouteDescendan
      * @param poiInfoEntity 当前POI数据
      * */
     public void setUIMode(final int type, final PoiInfoEntity poiInfoEntity) {
+        Logger.d(MapDefaultFinalTag.ROUTE_HMI_TAG, "setUIMode：" + type);
         switch (type) {
             //无子孙节点
             case AutoMapConstant.ChildType.DEFAULT:
+            case AutoMapConstant.ChildType.CHILD_NO_GRAND:
                 mViewBinding.lyDescendantsView.setVisibility(View.GONE);
                 break;
             case AutoMapConstant.ChildType.HAS_CHILD_NO_GRAND:

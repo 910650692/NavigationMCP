@@ -334,6 +334,8 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
             mIsClearPlateNumber = true;
         }
         mBinding.settingPlateNumberNumber.setText("");
+        mBinding.settingPlateNumberFinish.setEnabled(false);
+        mBinding.settingPlateNumberFinish.setAlpha(0.5f);
     }
 
     /**

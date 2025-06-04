@@ -22,7 +22,9 @@
         android:minWidth="@dimen/dp_168"
         android:minHeight="@dimen/dp_104"
         android:focusable="false"
-        android:visibility="@{ViewModel.limitDriverVisibility ? View.VISIBLE : View.GONE}">
+        android:visibility="@{ViewModel.limitDriverVisibility ? View.VISIBLE : View.GONE}"
+        android:paddingHorizontal="@dimen/dp_20"
+        android:paddingVertical="@dimen/dp_16">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_limit_first"
@@ -32,23 +34,29 @@
             android:gravity="center"
             android:textColor="@color/main_map_limit_text_color"
             android:textSize="@dimen/sp_32"
-            android:visibility="gone"
             android:focusable="false"
-            tools:text="2" />
+            android:visibility="@{ViewModel.limitEndNumVisibility ? View.VISIBLE : View.GONE}"
+            android:text="@{ViewModel.limitEndNumOne}"
+            tools:text="2"
+            tools:visibility="visible"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_limit_second"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_72"
             android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
             android:background="@drawable/bg_item_limit_number"
             android:gravity="center"
             android:textColor="@color/main_map_limit_text_color"
             android:textSize="@dimen/sp_32"
-            android:visibility="gone"
+            android:visibility="@{ViewModel.limitEndNumVisibility ? View.VISIBLE : View.GONE}"
             android:focusable="false"
             app:layout_constraintStart_toEndOf="@id/tv_limit_first"
-            tools:text="6" />
+            app:layout_constraintEnd_toStartOf="@+id/tv_desc"
+            android:text="@{ViewModel.limitEndNumTwo}"
+            tools:text="6"
+            tools:visibility="visible" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_desc"
@@ -61,7 +69,6 @@
             android:textSize="@dimen/sp_32"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="今日限行" />
 

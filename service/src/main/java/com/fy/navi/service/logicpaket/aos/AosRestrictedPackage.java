@@ -10,7 +10,9 @@ import com.fy.navi.service.define.aos.FyCriticism;
 import com.fy.navi.service.define.aos.FyGTraEventDetail;
 import com.fy.navi.service.define.aos.FyTrafficUploadParameter;
 import com.fy.navi.service.define.aos.RestrictedArea;
+import com.fy.navi.service.define.aos.RestrictedEndNumberParam;
 import com.fy.navi.service.define.aos.RestrictedParam;
+import com.fy.navi.service.define.aos.TrafficRestrictResponseParam;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
@@ -59,6 +61,10 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
         return mBlAosAdapter.queryRestrictedInfo(restrictedParam);
     }
 
+    public long queryRestrictedEndNumber(RestrictedEndNumberParam restrictedParam) {
+        return mBlAosAdapter.queryRestrictedEndNumber(restrictedParam);
+    }
+
     public long queryTrafficEventInfo(String eventId) {
         return mBlAosAdapter.queryTrafficEventInfo(eventId);
     }
@@ -103,6 +109,13 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
     public void onDrawRestrictionAndDetails(RouteRestrictionParam param) {
         for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
             observer.queryLimitResult(param);
+        }
+    }
+
+    @Override
+    public void onTrafficRestrict(TrafficRestrictResponseParam trafficRestrictResponseParam) {
+        for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
+            observer.queryLimitEndNumberResult(trafficRestrictResponseParam);
         }
     }
 

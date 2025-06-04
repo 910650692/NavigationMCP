@@ -145,6 +145,10 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mBinding.scenePoiDetailContentView.onSearchResult(taskId, searchResultEntity);
     }
 
+    public void onSilentSearchResult(final int taskId, final SearchResultEntity searchResultEntity){
+        mBinding.scenePoiDetailContentView.onSilentSearchResult(taskId, searchResultEntity);
+    }
+
     public void onNotifyCollectStatus(BaseRep result){
         mBinding.scenePoiDetailContentView.onCollectUpdate(result.getResultCode());
     }

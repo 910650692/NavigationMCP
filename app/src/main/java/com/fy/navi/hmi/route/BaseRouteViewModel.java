@@ -985,8 +985,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     /***
      * 请求成功-初始页面
+     * @param isRouteSlected 是否是算路切换
      */
-    public void showNomalRouteUI() {
+    public void showNomalRouteUI(final boolean isRouteSlected) {
         ThreadManager.getInstance().postUi(() -> {
             mView.clearSceneTabUI();
             mIsChargingSelect = false;
@@ -1005,7 +1006,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mAvoidTestColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
             mAvoidClickable.set(false);
             mView.setAvoidStatusUI(false);
-            updateRestrictionTextUI(-1);
+            if (!isRouteSlected) {
+                updateRestrictionTextUI(-1);
+            }
         });
     }
 
@@ -1521,7 +1524,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEEXPIREDIMMEDIATELY:
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEWAITLIMITOFF:
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEWAITLIMITOFFSHORT:
-                Logger.i(TAG, "hide restriction");
+                Logger.i(TAG, "hide restriction: " + routeRestrictionType);
                 mRestrictionVisibility.set(false);
                 break;
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPENETWORK:
@@ -1845,7 +1848,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
     public void onReStoreFragment() {
-        showNomalRouteUI();
+        showNomalRouteUI(false);
         mModel.onReStoreFragment();
         if (mSecondaryPoiInfo != null) {
             mView.setRouteSecondaryPoiUI(mSecondaryPoiInfo.getMChildType(), mSecondaryPoiInfo);

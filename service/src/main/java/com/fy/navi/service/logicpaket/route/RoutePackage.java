@@ -67,6 +67,7 @@ import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -433,6 +434,21 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     @Override
     public void onRouteFail(final RequestRouteResult requestRouteResult, final int errorCode, final String errorMsg, final long requestId) {
         Logger.i(TAG, "onRouteFail");
+        //在引导态不是主动触发的算路失败
+        if (mRouteAdapter.getRequestRouteId() != requestId && NaviStatus.NaviStatusType.NAVING
+                .equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
+            Logger.i(TAG, "onReRouteError");
+            if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
+                return;
+            }
+            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+                if (ConvertUtils.isEmpty(routeResultObserver)) {
+                    continue;
+                }
+                routeResultObserver.onReRouteError();
+            }
+        }
+
         if (ConvertUtils.isEmpty(requestRouteResult) || mRouteAdapter.getRequestRouteId() != requestId) {
             Logger.i(TAG, "onRouteFail requestRouteResult is null or exists multiple times");
             return;
@@ -895,11 +911,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     public long requestRestirction(final MapType mapTypeId) {
         if (ConvertUtils.isEmpty(mRequestRouteResults) || ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))
-                || ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId).getMRouteRestrictionParam())) {
+                || ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId).getMRouteRestrictionParam()) || mSelectRouteIndex == null) {
             return -1;
         }
         final List<String> ruleIDs = mRequestRouteResults.get(mapTypeId).getMRouteRestrictionParam().getMRuleIds();
-        if (ruleIDs.size() > mSelectRouteIndex.get(mapTypeId)
+        if (mSelectRouteIndex.get(mapTypeId) != -1 && ruleIDs.size() > mSelectRouteIndex.get(mapTypeId)
                 && !ConvertUtils.isEmpty(ruleIDs.get(mSelectRouteIndex.get(mapTypeId)))) {
             final RestrictedParam restrictedParam = new RestrictedParam();
             restrictedParam.setRestrict_type(9);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -16,13 +17,25 @@
         android:layout_width="@dimen/dp_922"
         android:layout_height="match_parent"
         android:clickable="true"
+        android:focusable="false"
         android:orientation="vertical">
+        <!--MFC___FocusParkingView-->
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <!--MFC___Map FocusArea-->
+        <com.android.car.ui.FocusArea
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:defaultFocusOverridesHistory="true"
+            app:wrapAround="true">
+            <com.fy.navi.scene.ui.favorite.SceneCollectView
+                android:id="@+id/collect_view"
+                android:layout_width="@dimen/dp_922"
+                android:layout_height="match_parent">
 
-        <com.fy.navi.scene.ui.favorite.SceneCollectView
-            android:id="@+id/collect_view"
-            android:layout_width="@dimen/dp_922"
-            android:layout_height="match_parent">
-
-        </com.fy.navi.scene.ui.favorite.SceneCollectView>
+            </com.fy.navi.scene.ui.favorite.SceneCollectView>
+        </com.android.car.ui.FocusArea>
     </com.fy.navi.ui.view.SkinLinearLayout>
 </layout>

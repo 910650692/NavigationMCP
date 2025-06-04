@@ -133,6 +133,13 @@ public interface SignalApi {
      */
     void setNaviVolume(int volume);
 
+    /**
+     * 获取导航音量
+     *
+     * @return volume 0-63
+     */
+    int getNaviVolume();
+
     void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup);
 
     void setNavigationOnAdasButtonSettingRequest(int value);

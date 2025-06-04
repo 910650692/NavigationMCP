@@ -16,8 +16,10 @@ import android.util.SparseArray;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.guide.model.PlayRingType;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.R;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -292,6 +294,64 @@ public class NaviAudioPlayer {
         mISSDKTTSPlaying.postValue(false);
         abandomNaviTTSFocus();
     }
+
+    /**
+     * 导航叮叮音播报
+     *
+     * @param type
+     */
+    public void playNaviWarningSound(int type) {
+        int resId = 0;
+        switch (type) {
+            case PlayRingType.PlayRingTypeDing:         // 导航通过音
+                resId = R.raw.navi_warning;
+                break;
+            case PlayRingType.PlayRingTypeDong:         // 电子眼高速通过音
+                resId = R.raw.camera;
+                break;
+            case PlayRingType.PlayRingTypeElecDing:     // 电子狗的叮咚声
+                resId = R.raw.edog_dingdong;
+                break;
+            case PlayRingType.PlayRingTypeReroute:      // 偏航提示音
+                resId = R.raw.autoreroute;
+                break;
+            default:
+                break;
+        }
+        Logger.i(TAG, "playNaviWarningSound type: " + type + " resId:" + resId);
+        if(resId == 0){
+            return;
+        }
+        MediaPlayer player = MediaPlayer.create(AppContext.getInstance().getMContext(), resId);
+        try {
+            //TODO 叮咚声音量跟随导航 暂无接口
+            float volume = 1.0f;
+            player.setVolume(volume, volume);
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    Logger.i(TAG, "playNaviWarningSound(). onCompletion");
+                    player.stop();
+                    player.release();
+                }
+            });
+            player.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    Logger.e(TAG, "playNaviWarningSound(). onError what:" + what + " extra:" + extra);
+                    player.stop();
+                    player.reset();
+                    player.release();
+                    return false;
+                }
+            });
+            player.start();
+        } catch (Exception e) {
+            Logger.e(TAG, "playNaviWarningSound(). catch " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 
     public boolean isTTSPlaying() {
         return mISSDKTTSPlaying.getValue();

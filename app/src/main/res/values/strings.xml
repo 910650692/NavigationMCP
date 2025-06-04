@@ -571,6 +571,7 @@
 
     <!--主图相关-->
     <string name="map_format_scale">%sm</string>
+    <string name="limit_with_end_number">限行</string>
     <string name="limit_drive">区域限行</string>
     <string name="limit_today_drive">今日限行</string>
     <string name="limit_default_license">高A0000</string>

@@ -21,6 +21,7 @@
         android:layout_width="wrap_content"
         android:minWidth="@dimen/dp_222"
         android:layout_height="@dimen/dp_96"
+        android:focusable="true"
         android:background="@drawable/custom_filter_item_bg_selector_day"
         android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20">
@@ -30,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:focusable="false"
             android:textColor="@drawable/custom_filter_item_text_bg_selector_day"
             android:textSize="@dimen/sp_38"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -44,6 +46,7 @@
             android:layout_height="@dimen/dp_48"
             android:src="@drawable/img_under_the_48"
             android:visibility="gone"
+            android:focusable="false"
             tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

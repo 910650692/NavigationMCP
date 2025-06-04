@@ -15,6 +15,7 @@
         android:layout_height="@dimen/dp_456"
         android:background="@drawable/bg_shadow_navi_cadillac"
         android:padding="@dimen/dp_51"
+        android:focusable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -23,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_152"
             android:layout_marginStart="@dimen/dp_20"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -31,6 +33,8 @@
                 clickCommand="@{SceneHomeCompanyView.closeSearch}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
+                android:focusable="true"
+                android:focusedByDefault="true"
                 android:src="@drawable/img_basic_ic_back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -64,6 +68,7 @@
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:src="@drawable/img_poi_edit_delete"
+                android:focusable="true"
                 android:visibility="invisible"
                 tools:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -76,6 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
             android:background="@color/search_top_line_view_99383839"
+            android:focusable="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/scl_search_top_view" />
@@ -83,6 +89,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
@@ -92,6 +99,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:minWidth="@dimen/dp_153"
+                android:focusable="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/scl_pull_up">
 
@@ -123,6 +131,7 @@
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(1)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toEndOf="@id/scl_gas_station"
                 app:layout_constraintEnd_toStartOf="@id/scl_gourmet">
@@ -155,6 +164,7 @@
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(2)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toEndOf="@id/scl_pull_up"
                 app:layout_constraintEnd_toStartOf="@id/scl_car_washing">
@@ -187,6 +197,7 @@
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(3)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toEndOf="@id/scl_gourmet"
                 app:layout_constraintEnd_toEndOf="parent">

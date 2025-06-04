@@ -98,6 +98,10 @@ public final class SignalAdapter {
         mSignalApi.setNaviVolume(volume);
     }
 
+    public int getNaviVolume() {
+        return mSignalApi.getNaviVolume();
+    }
+
     public void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup) {
         mSignalApi.setSdNavigationStatus(sdNavigationStatusGroup);
     }

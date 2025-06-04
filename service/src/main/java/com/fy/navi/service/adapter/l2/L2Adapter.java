@@ -354,6 +354,11 @@ public class L2Adapter {
         }
 
         @Override
+        public void onPlayRing(int type) {
+
+        }
+
+        @Override
         public void onLaneInfoReceived(ArrayList<LaneInfoEntity> laneInfoList) {
             if (laneInfoList == null || laneInfoList.isEmpty()) {
                 Logger.i(TAG, "lane null");
@@ -789,6 +794,11 @@ public class L2Adapter {
 
         @Override
         public void onPlayTTS(SoundInfoEntity info) {
+
+        }
+
+        @Override
+        public void onPlayRing(int type) {
 
         }
 

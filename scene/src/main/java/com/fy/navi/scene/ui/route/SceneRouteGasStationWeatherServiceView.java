@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.api.route.ISceneRouteGasStationWeatherServiceSelectCallBack;
 import com.fy.navi.scene.databinding.SceneRouteStationWeatherServiceBinding;
@@ -79,11 +80,13 @@ public class SceneRouteGasStationWeatherServiceView extends BaseSceneView<SceneR
      * 取消Tab的状态
      * */
     public void clearSceneTabUI() {
-        mScreenViewModel.setChargingStationSelect(false);
-        mScreenViewModel.setWeatherSelect(false);
-        mScreenViewModel.setServiceSelect(false);
-        mScreenViewModel.setGasStationSelect(false);
-        updateUi();
+        if (mScreenViewModel != null) {
+            mScreenViewModel.setChargingStationSelect(false);
+            mScreenViewModel.setWeatherSelect(false);
+            mScreenViewModel.setServiceSelect(false);
+            mScreenViewModel.setGasStationSelect(false);
+            updateUi();
+        }
     }
 
     /**

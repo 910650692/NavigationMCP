@@ -25,6 +25,8 @@ import com.autonavi.gbl.guide.model.ManeuverIconResponseData;
 import com.autonavi.gbl.guide.model.ManeuverInfo;
 import com.autonavi.gbl.guide.model.MixForkInfo;
 import com.autonavi.gbl.guide.model.NaviCameraExt;
+import com.autonavi.gbl.guide.model.NaviCongestionDetailInfo;
+import com.autonavi.gbl.guide.model.NaviCongestionInfo;
 import com.autonavi.gbl.guide.model.NaviFacility;
 import com.autonavi.gbl.guide.model.NaviFacilityType;
 import com.autonavi.gbl.guide.model.NaviGreenWaveCarSpeed;
@@ -48,6 +50,8 @@ import com.fy.navi.service.define.cruise.CruiseIntervalvelocity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.LightInfoEntity;
+import com.fy.navi.service.define.navi.NaviCongestionDetailInfoEntity;
+import com.fy.navi.service.define.navi.NaviCongestionInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -1031,5 +1035,28 @@ public final class NaviDataFormatHelper {
             }
         }
         return cruiseIntervalvelocity;
+    }
+
+    public static NaviCongestionInfoEntity formatNaviCongestionInfo(NaviCongestionInfo info) {
+        if (info == null || info.congestionInfos == null) {
+            return null;
+        }
+        NaviCongestionInfoEntity naviCongestionInfoEntity = new NaviCongestionInfoEntity();
+        naviCongestionInfoEntity.setTotalRemainDist(info.totalRemainDist);
+        naviCongestionInfoEntity.setTotalTimeOfSeconds(info.totalTimeOfSeconds);
+        naviCongestionInfoEntity.setUnobstructed(info.unobstructed);
+        ArrayList<NaviCongestionDetailInfoEntity> list = new ArrayList<>();
+        ArrayList<NaviCongestionDetailInfo> congestionInfos = info.congestionInfos;
+        for (int i = 0; i < congestionInfos.size(); i++) {
+            NaviCongestionDetailInfo naviCongestionDetailInfo = congestionInfos.get(i);
+            NaviCongestionDetailInfoEntity entity = new NaviCongestionDetailInfoEntity();
+            entity.setBeginSegmentIndex( naviCongestionDetailInfo.beginSegmentIndex);
+            entity.setBeginLinkIndex( naviCongestionDetailInfo.beginLinkIndex);
+            entity.setRemainDist( naviCongestionDetailInfo.remainDist);
+            entity.setStatus( naviCongestionDetailInfo.status);
+            entity.setTimeOfSeconds( naviCongestionDetailInfo.timeOfSeconds);
+        }
+        naviCongestionInfoEntity.setCongestionInfos(list);
+        return naviCongestionInfoEntity;
     }
 }

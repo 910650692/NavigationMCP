@@ -47,7 +47,9 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.aos.RestrictedEndNumberParam;
 import com.fy.navi.service.define.aos.RestrictedParam;
+import com.fy.navi.service.define.aos.TrafficRestrictResponseParam;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.code.UserDataCode;
@@ -154,6 +156,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private CommonManager commonManager;
     private static final String TAG = "MapModel";
     private long limitQueryTaskId;
+    private long limitEndNumberTaskId;
     private String mExtraKeyword;
     private int mCurrentCityCode;
     private int mCompanyOrHomeType;
@@ -321,6 +324,35 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         restrictedParam.setPlate(mLicense);
         restrictedParam.setAdcodes(String.valueOf(mCurrentCityCode));
         limitQueryTaskId = restrictedPackage.queryRestrictedInfo(restrictedParam);
+    }
+
+    /***
+     * 获取设置限行尾号政策
+     */
+    public void getCurrentCityLimitEndNumber() {
+        final boolean avoidLimit = getAvoidLimit();
+        final String license = settingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
+        if (license == null || license.isEmpty() || !avoidLimit) {
+            Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, "The limit switch is turned on but not turned on");
+            mViewModel.setLimitDriverVisibility(false);
+            return;
+        }
+
+        if (positionPackage.getLastCarLocation() == null) {
+            Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, "Limit get position failed");
+            return;
+        }
+        final int currentCityCode = mapDataPackage.getAdCodeByLonLat(positionPackage.getLastCarLocation().getLongitude(),
+                positionPackage.getLastCarLocation().getLatitude());
+
+        Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, "get CurrentCity Limit " + currentCityCode);
+        mCurrentCityCode = currentCityCode;
+        mLicense = license;
+
+        final RestrictedEndNumberParam restrictedParam = new RestrictedEndNumberParam();
+        restrictedParam.setAdcodes(mCurrentCityCode);
+        restrictedParam.setPlate(mLicense);
+        limitEndNumberTaskId = restrictedPackage.queryRestrictedEndNumber(restrictedParam);
     }
 
     /***
@@ -571,6 +603,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         // 限行信息查询成功后更新UI
         if (limitQueryTaskId == param.getMRestrictedArea().getMRequestId()) {
             mViewModel.updateLimitInfo(param);
+        }
+    }
+
+    @Override
+    public void queryLimitEndNumberResult(final TrafficRestrictResponseParam param) {
+        Logger.d(TAG, "queryLimitResult success!", "isMainThread:" + (Looper.getMainLooper() == Looper.myLooper()));
+        // 限行信息查询成功后更新UI
+        if (limitEndNumberTaskId == param.getTaskId()) {
+            mViewModel.updateLimitEndNum(param);
         }
     }
 

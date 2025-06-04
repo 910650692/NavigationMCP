@@ -259,7 +259,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
             ChargeInfo chargeInfo = chargeInfoList == null ? null : chargeInfoList.get(0);
             String businessTime = poiInfoEntity.getBusinessTime();
-            if (!ConvertUtils.isEmpty(chargeInfo)) {
+            int carType = OpenApiHelper.powerType();
+            if (!ConvertUtils.isEmpty(chargeInfo) && carType == 1) {
                 int slowTotal = chargeInfo.getMSlowTotal();
                 int slowFree = chargeInfo.getMSlowFree();
                 int fastTotal = chargeInfo.getMFastTotal();

@@ -38,7 +38,7 @@ public class SuggestionResultModel extends BaseModel<SuggestionResultViewModel> 
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment: " + mSearchResultEntity);
         if (!ConvertUtils.isEmpty(mSearchResultEntity) && !ConvertUtils.isEmpty(mContent)) {
             final ThreadManager threadManager = ThreadManager.getInstance();
-            threadManager.postUi(() -> mViewModel.notifySearchResult(mSearchResultEntity));
+            threadManager.postUi(() -> mViewModel.notifySearchResult(mSearchResultEntity, true));
         }
     }
 
@@ -58,7 +58,7 @@ public class SuggestionResultModel extends BaseModel<SuggestionResultViewModel> 
                 mSearchResultEntity = searchResultEntity;
                 final ThreadManager threadManager = ThreadManager.getInstance();
                 threadManager.postUi(() -> {
-                    mViewModel.notifySearchResult(searchResultEntity);
+                    mViewModel.notifySearchResult(searchResultEntity, false);
                 });
             }
         } else {

@@ -632,6 +632,13 @@ public class SignalAdapterImpl implements SignalApi {
     }
 
     @Override
+    public int getNaviVolume() {
+        int groupVolume = mCarAudioManager.getGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1);
+        Logger.d(TAG, groupVolume);
+        return groupVolume;
+    }
+
+    @Override
     public void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup) {
         try {
             Integer[] integers = new Integer[]{sdNavigationStatusGroup.getNaviStat()};

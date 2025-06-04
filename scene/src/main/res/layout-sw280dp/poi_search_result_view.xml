@@ -12,11 +12,13 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
+        android:focusable="false"
         android:layout_height="match_parent">
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/root_view"
             android:layout_width="wrap_content"
+            android:focusable="false"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -28,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_930"
                 android:layout_marginTop="@dimen/dp_m_82"
+                android:focusable="false"
                 android:background="@drawable/bg_shadow_navi_cadillac">
 
                 <include
@@ -35,6 +38,7 @@
                     layout="@layout/search_filter_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:focusable="false"
                     android:visibility="visible"
                     tools:visibility="gone"/>
 
@@ -45,6 +49,7 @@
                     android:paddingEnd="@dimen/dp_30"
                     android:layout_height="@dimen/dp_110"
                     android:gravity="center_vertical"
+                    android:focusable="false"
                     android:background="@drawable/bg_offline"
                     android:layout_marginTop="@dimen/dp_24"
                     app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:focusable="false"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -75,6 +81,7 @@
                     android:textSize="@dimen/sp_30"
                     android:layout_marginStart="@dimen/dp_40"
                     android:layout_marginTop="@dimen/dp_40"
+                    android:focusable="false"
                     android:visibility="gone"
                     android:background="@drawable/custom_filter_item_bg_selector_day"
                     app:layout_constraintStart_toStartOf="parent"
@@ -85,11 +92,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/charge_filter"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_width="match_parent"
+                    android:focusable="false"
                     android:layout_height="@dimen/dp_0">
 
                     <com.fy.navi.ui.view.SkinRecyclerView
                         android:id="@+id/recycler_search_result"
                         android:layout_width="match_parent"
+                        android:focusable="false"
                         android:layout_height="match_parent" />
                 </com.fy.navi.ui.view.PullToRefreshLayout>
             </com.fy.navi.ui.view.SkinConstraintLayout>
@@ -104,6 +113,7 @@
             android:background="@drawable/bg_shadow_navi_cadillac"
             android:padding="@dimen/dp_51"
             android:clickable="true"
+            android:focusable="false"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/root_view"
             app:layout_constraintStart_toStartOf="parent" />

@@ -55,6 +55,8 @@ public class PoiInfoEntity implements Parcelable {
     private boolean mIsVisible;      //是否可见，搜索结果列表页面添加选中效果
     //是否包含子孙节点?  0:没有子节点  1:有子节点没有孙节点 2:有子节点有孙节点 3:本身是子节点没有孙节点 4:本身是子节点有孙节点
     private int mChildType;
+    // 是否是行政区信息
+    private boolean mIsLocres;
 
     // -----------语音排序使用------------
     private int mSortDistance;     // 距离，语音使用
@@ -695,6 +697,15 @@ public class PoiInfoEntity implements Parcelable {
         return this;
     }
 
+    public boolean isIsLocres() {
+        return mIsLocres;
+    }
+
+    public PoiInfoEntity setIsLocres(boolean mIsLocres) {
+        this.mIsLocres = mIsLocres;
+        return this;
+    }
+
     protected PoiInfoEntity(final Parcel in) {
         mPoiType = in.readInt();
         mPid = in.readString();
@@ -741,6 +752,7 @@ public class PoiInfoEntity implements Parcelable {
         mPictures = in.createStringArrayList();
         mIsCollect = in.readBoolean();
         mReservationInfo = in.readParcelable(ReservationInfo.class.getClassLoader());
+        mIsLocres = in.readBoolean();
         // 新增字段 mPoiAoiBounds 的反序列化
         // 读取外层列表的大小
         final int outerSize = in.readInt();
@@ -833,6 +845,7 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeStringList(mPictures);
         parcel.writeBoolean(mIsCollect);
         parcel.writeParcelable(mReservationInfo,i);
+        parcel.writeBoolean(mIsLocres);
 
         final int aoiBoundsSize = ConvertUtils.isEmpty(mPoiAoiBounds) ? 0 : mPoiAoiBounds.size();
         parcel.writeInt(aoiBoundsSize);
@@ -861,5 +874,4 @@ public class PoiInfoEntity implements Parcelable {
         }
 
     }
-
 }

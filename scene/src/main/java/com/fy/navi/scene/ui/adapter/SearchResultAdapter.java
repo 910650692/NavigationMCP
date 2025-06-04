@@ -249,10 +249,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         holder.mResultItemBinding.getRoot().setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情");
             if (mOnItemClickListener != null) {
-                if (mParentSelectIndex == position && mChildSelectIndex != -1) {
-                    mOnItemClickListener.onChildItemClick(position, mPoiEntities.get(position), mChildSelectIndex);
-                } else {
-                    mOnItemClickListener.onItemClick(position, mPoiEntities.get(position));
+                if (!ConvertUtils.isEmpty(mPoiEntities) && position < mPoiEntities.size()) {
+                    if (mParentSelectIndex == position && mChildSelectIndex != -1) {
+                        mOnItemClickListener.onChildItemClick(position, mPoiEntities.get(position), mChildSelectIndex);
+                    } else {
+                        mOnItemClickListener.onItemClick(position, mPoiEntities.get(position));
+                    }
                 }
             }
         });
@@ -263,7 +265,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 if (mParentSelectIndex == position && mChildSelectIndex != -1 && mChildSelectInfo != null) {
                     mOnItemClickListener.onNaviClick(position, mChildSelectInfo);
                 } else {
-                    mOnItemClickListener.onNaviClick(position, mPoiEntities.get(position));
+                    if (!ConvertUtils.isEmpty(mPoiEntities) && position < mPoiEntities.size()) {
+                        mOnItemClickListener.onNaviClick(position, mPoiEntities.get(position));
+                    }
                 }
             }
         });

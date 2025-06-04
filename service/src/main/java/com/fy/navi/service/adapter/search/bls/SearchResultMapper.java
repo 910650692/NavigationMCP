@@ -2,9 +2,11 @@ package com.fy.navi.service.adapter.search.bls;
 
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.search.model.AggregateSearchResult;
@@ -406,7 +408,8 @@ public final class SearchResultMapper {
             poiAoiBounds.add(points);
         }
         return new PoiInfoEntity()
-                .setPid(point.getLon() + "_" + point.getLat())
+                .setIsLocres(true)
+                .setPid("C" + point.getLon() + "_" + point.getLat())
                 .setName(searchDistrict.name)
                 .setAddress(searchDistrict.address)
                 .setPoint(point)

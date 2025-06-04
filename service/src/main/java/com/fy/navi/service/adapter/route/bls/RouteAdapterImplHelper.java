@@ -649,15 +649,17 @@ public class RouteAdapterImplHelper {
             Logger.i(TAG, "从请求队列中获取结果对象 " + requestRouteResult);
             if (null == requestRouteResult) {
                 //除了reRoute/requestRoute外其余一概不处理
+                Logger.i(TAG, "下发路线");
                 return;
             }
-            mRequsetId = requestId;
             //专为通勤模式添加回调
             if (requestRouteResult.getMRouteRequestCallBackType() != -1) {
                 handlerTMCForMap(pathInfoList, requestId, requestRouteResult.getMMapTypeId()
                         , requestRouteResult.getMRouteRequestCallBackType());
+                Logger.i(TAG, "通勤模式");
                 return;
             }
+            mRequsetId = requestId;
             handResultSuccess(getMsgs(requestRouteResult.getMRouteWay(), false));
             handlerRouteResult(requestRouteResult, pathInfoList);
             handlerChargingStation(requestRouteResult.getMRouteChargeStationParam(), pathInfoList,
@@ -1916,6 +1918,15 @@ public class RouteAdapterImplHelper {
                 }
             } else if (info.option.getRouteType() == RouteType.RouteTypeTMC) {
                 Logger.i(TAG, "onReroute: TMC引发的重算");
+                mRouteResultDataHashtable.put(info.requestId, requestRouteResult);
+                for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
+                    if (resultObserver == null) {
+                        continue;
+                    }
+                    resultObserver.onReRoute();
+                }
+            } else {
+                Logger.i(TAG, "onReroute: 其他情况引发的重算");
                 mRouteResultDataHashtable.put(info.requestId, requestRouteResult);
                 for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
                     if (resultObserver == null) {

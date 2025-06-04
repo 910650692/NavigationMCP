@@ -19,12 +19,15 @@ import com.autonavi.gbl.aosclient.model.GTrafficEventCommentRequestParam;
 import com.autonavi.gbl.aosclient.model.GTrafficEventCommentResponseParam;
 import com.autonavi.gbl.aosclient.model.GTrafficEventDetailRequestParam;
 import com.autonavi.gbl.aosclient.model.GTrafficEventDetailResponseParam;
+import com.autonavi.gbl.aosclient.model.GTrafficRestrictRequestParam;
+import com.autonavi.gbl.aosclient.model.GTrafficRestrictResponseParam;
 import com.autonavi.gbl.aosclient.model.GWsDynamicInfoEventPraiseStampStatusQueryRequestParam;
 import com.autonavi.gbl.aosclient.model.GWsDynamicInfoEventPraiseStampStatusQueryResponseParam;
 import com.autonavi.gbl.aosclient.observer.ICallBackHolidayList;
 import com.autonavi.gbl.aosclient.observer.ICallBackReStrictedArea;
 import com.autonavi.gbl.aosclient.observer.ICallBackTrafficEventComment;
 import com.autonavi.gbl.aosclient.observer.ICallBackTrafficEventDetail;
+import com.autonavi.gbl.aosclient.observer.ICallBackTrafficRestrict;
 import com.autonavi.gbl.aosclient.observer.ICallBackWsDynamicInfoEventPraiseStampStatusQuery;
 import com.autonavi.gbl.util.BlToolPoiID;
 import com.fy.navi.service.adapter.aos.BlAosHelper;
@@ -34,8 +37,10 @@ import com.fy.navi.service.define.aos.FyCriticism;
 import com.fy.navi.service.define.aos.FyGTraEventDetail;
 import com.fy.navi.service.define.aos.FyTrafficUploadParameter;
 import com.fy.navi.service.define.aos.RestrictedArea;
+import com.fy.navi.service.define.aos.RestrictedEndNumberParam;
 import com.fy.navi.service.define.aos.RestrictedParam;
 import com.fy.navi.service.define.aos.RestrictedAreaDetail;
+import com.fy.navi.service.define.aos.TrafficRestrictResponseParam;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 
@@ -49,7 +54,7 @@ import java.util.List;
  * @date 2025/2/6
  */
 public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICallBackTrafficEventDetail, ICallBackTrafficEventComment, ICallBackWsDynamicInfoEventPraiseStampStatusQuery
-, ICallBackHolidayList {
+, ICallBackHolidayList, ICallBackTrafficRestrict {
     private static final String TAG = BlAosAdapterImpl.class.getSimpleName();
     private BLAosService mBLAosService;
     private final Hashtable<String, QueryRestrictedObserver> restrictedObserver;
@@ -93,6 +98,16 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
         long taskId = mBLAosService.sendReqReStrictedArea(gReStrictedAreaRequestParam, this);
         Logger.d(TAG, "请求任务Id", taskId);
         ConvertUtils.push(restrictedAreaDetailMap, taskId, new RestrictedAreaDetail());
+        return taskId;
+    }
+
+    @Override
+    public long queryRestrictedEndNumber(final RestrictedEndNumberParam restrictedParam) {
+        if (!isInit()) initBlAosService();
+        GTrafficRestrictRequestParam requestParam = new GTrafficRestrictRequestParam();
+        requestParam.Adcode = restrictedParam.getAdcodes();
+        requestParam.CarPlate = restrictedParam.getPlate();
+        long taskId = mBLAosService.sendReqTrafficRestrict(requestParam, this);
         return taskId;
     }
 
@@ -277,6 +292,23 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
         for (QueryRestrictedObserver resultObserver : restrictedObserver.values()) {
             if (resultObserver == null) continue;
             resultObserver.onRecvAck(gHolidayListResponseParam.lstHoliday);
+        }
+    }
+
+    @Override
+    public void onRecvAck(final GTrafficRestrictResponseParam gTrafficRestrictResponseParam) {
+        Logger.d(TAG, "请求结果", gTrafficRestrictResponseParam.code, gTrafficRestrictResponseParam.mHttpAckCode, gTrafficRestrictResponseParam.message);
+        if (200 != gTrafficRestrictResponseParam.mHttpAckCode) return;
+        long taskId = gTrafficRestrictResponseParam.mReqHandle;
+        TrafficRestrictResponseParam trafficRestrictResponseParam = new TrafficRestrictResponseParam();
+        trafficRestrictResponseParam.setTaskId(taskId);
+        trafficRestrictResponseParam.setPlateNo(gTrafficRestrictResponseParam.Restrict.m_plateNo);
+        trafficRestrictResponseParam.setInfo(gTrafficRestrictResponseParam.Restrict.m_info);
+        trafficRestrictResponseParam.setCityFlag(gTrafficRestrictResponseParam.Restrict.m_cityFlag);
+        trafficRestrictResponseParam.setRestrictFlag(gTrafficRestrictResponseParam.Restrict.m_restrictFlag);
+        for (QueryRestrictedObserver resultObserver : restrictedObserver.values()) {
+            if (resultObserver == null) continue;
+            resultObserver.onTrafficRestrict(trafficRestrictResponseParam);
         }
     }
 }

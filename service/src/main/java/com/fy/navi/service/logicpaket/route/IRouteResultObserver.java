@@ -187,9 +187,17 @@ public interface IRouteResultObserver {
     }
 
     /**
-     * 算路偏航消息
+     * 静默算路消息
      */
     default void onReroute() {
+
+    }
+
+
+    /**
+     * 静默算路失败
+     */
+    default void onReRouteError() {
 
     }
 }

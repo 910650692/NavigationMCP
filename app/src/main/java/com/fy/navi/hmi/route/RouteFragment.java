@@ -358,7 +358,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mViewModel.requestRoute(routeRequestParam);
 
             //子poi显示
-            if (poiInfoEntity.getMChildType() != AutoMapConstant.ChildType.DEFAULT) {
+            if (poiInfoEntity.getMChildType() != AutoMapConstant.ChildType.DEFAULT
+                    && poiInfoEntity.getMChildType() != AutoMapConstant.ChildType.CHILD_NO_GRAND) {
                 mViewModel.setSecondaryPoiInfo(poiInfoEntity);
                 setRouteSecondaryPoiUI(poiInfoEntity.getMChildType() , poiInfoEntity);
                 mViewModel.setSecondaryPoi(true);

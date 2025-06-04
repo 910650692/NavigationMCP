@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.aos;
 
 import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.define.aos.FyTrafficUploadParameter;
+import com.fy.navi.service.define.aos.RestrictedEndNumberParam;
 import com.fy.navi.service.define.aos.RestrictedParam;
 
 import java.util.Objects;
@@ -39,6 +40,10 @@ public class BlAosAdapter {
 
     public long queryRestrictedInfo(RestrictedParam restrictedParam) {
         return mBlAosApi.queryRestrictedInfo(restrictedParam);
+    }
+
+    public long queryRestrictedEndNumber(RestrictedEndNumberParam restrictedParam) {
+        return mBlAosApi.queryRestrictedEndNumber(restrictedParam);
     }
 
     public long queryTrafficEventInfo(String eventId) {

@@ -137,6 +137,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                         .navigation();
                 addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
                         AutoMapConstant.SourceFragment.SUG_SEARCH_FRAGMENT, AutoMapConstant.PoiType.POI_KEYWORD, poiInfoEntity));
+                hideInput();
             }
 
             @Override
@@ -149,6 +150,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                             .navigation();
                     addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(poiInfoEntity));
                 }
+                hideInput();
             }
         });
     }
@@ -218,6 +220,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                     addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
                             AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, AutoMapConstant.PoiType.POI_KEYWORD, poiInfoEntity));
                 }
+                hideInput();
             }
 
             @Override
@@ -242,6 +245,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                             .navigation();
                     addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(poiInfoEntity));
                 }
+                hideInput();
             }
         });
 
@@ -321,8 +325,9 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
     /**
      * 更新搜索结果
      * @param searchResultEntity 搜索结果实体类
+     * @param isRestore 是否是切换日夜模式导致的更新回调
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final SearchResultEntity searchResultEntity, final boolean isRestore) {
         if ((searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) && !getEditText().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             mViewBinding.recyclerSearchResult.setVisibility(GONE);
@@ -332,7 +337,8 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             return;
         }
         if (searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getKeyword())) {
-            if (ConvertUtils.isEmpty(getEditText()) || !ConvertUtils.equals(getEditText(), searchResultEntity.getKeyword())) {
+            if ((ConvertUtils.isEmpty(getEditText()) || !ConvertUtils.equals(getEditText(), searchResultEntity.getKeyword()))
+                    && isRestore) {
                 mViewBinding.sclSearchTopView.searchBarEditView.setText(searchResultEntity.getKeyword());
             }
         }

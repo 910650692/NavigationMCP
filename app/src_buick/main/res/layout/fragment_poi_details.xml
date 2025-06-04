@@ -11,8 +11,6 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:clickable="true"
-        clickCommand="@{viewModel.rootClick}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">

@@ -3,6 +3,8 @@ package com.fy.navi.navisender;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navi.NaviCongestionDetailInfoEntity;
+import com.fy.navi.service.define.navi.NaviCongestionInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RequestRouteResult;
@@ -10,6 +12,7 @@ import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
 import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
 import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
+import com.fy.navi.service.logicpaket.l2.L2Package;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
@@ -145,6 +148,36 @@ public class NaviSender {
             } catch (NullPointerException e) {
                 Logger.w(TAG, "充电站距离", e);
             }
+        }
+
+        @Override
+        public void onUpdateTMCCongestionInfo(NaviCongestionInfoEntity naviCongestionInfoEntity) {
+            if (naviCongestionInfoEntity == null) {
+                mDistanceToTrafficJamRoad = 0;
+                mDistanceToTrafficJamRoadAvailability = false;
+                mDistanceOnTrafficJamRoad = 0;
+                mDistanceOnTrafficJamRoadAvailability = false;
+                mTrafficJamRoadAverageSpeed = 0;
+                mTrafficJamRoadAverageSpeedAvailability = false;
+                return;
+            }
+            ArrayList<NaviCongestionDetailInfoEntity> congestionInfos = naviCongestionInfoEntity.getCongestionInfos();
+            if (congestionInfos == null || congestionInfos.isEmpty()) {
+                mDistanceToTrafficJamRoad = 0;
+                mDistanceToTrafficJamRoadAvailability = false;
+                mDistanceOnTrafficJamRoad = 0;
+                mDistanceOnTrafficJamRoadAvailability = false;
+                mTrafficJamRoadAverageSpeed = 0;
+                mTrafficJamRoadAverageSpeedAvailability = false;
+                return;
+            }
+            NaviCongestionDetailInfoEntity entity = naviCongestionInfoEntity.getCongestionInfos().get(0);
+            mDistanceToTrafficJamRoad = L2Package.getInstance().getTrafficLightDis(entity.getBeginSegmentIndex(), entity.getBeginLinkIndex());
+            mDistanceToTrafficJamRoadAvailability = true;
+            mDistanceOnTrafficJamRoad = entity.getRemainDist();
+            mDistanceOnTrafficJamRoadAvailability = true;
+            mTrafficJamRoadAverageSpeed = (entity.getRemainDist() / 1000) / (entity.getTimeOfSeconds() / 3600) * 10;
+            mTrafficJamRoadAverageSpeedAvailability = true;
         }
     };
 

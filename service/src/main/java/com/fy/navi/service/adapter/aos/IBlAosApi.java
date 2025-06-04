@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.aos;
 
 import com.fy.navi.service.define.aos.FyTrafficUploadParameter;
+import com.fy.navi.service.define.aos.RestrictedEndNumberParam;
 import com.fy.navi.service.define.aos.RestrictedParam;
 
 /**
@@ -26,6 +27,16 @@ public interface IBlAosApi {
      * @param restrictedParam 查询参数
      */
     long queryRestrictedInfo(RestrictedParam restrictedParam);
+
+    /**
+     * 查询限行尾号
+     * <1>查询指定城市限行信息</>
+     * <2>查询限行城市列表</>
+     * <3>查询指定城市指定规则的限行信息</>
+     *
+     * @param restrictedEndNumberParam 查询参数
+     */
+    long queryRestrictedEndNumber(RestrictedEndNumberParam restrictedEndNumberParam);
 
     /***
      * 查询交通事件详情信息

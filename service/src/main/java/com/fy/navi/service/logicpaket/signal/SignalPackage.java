@@ -321,6 +321,15 @@ public final class SignalPackage implements SignalAdapterCallback {
     }
 
     /**
+     * 获取导航音量
+     *
+     * @retuen volume 0-63
+     */
+    public int getNaviVolume() {
+        return mSignalAdapter.getNaviVolume();
+    }
+
+    /**
      * 导航状态
      * @param sdNavigationStatusGroup
      */

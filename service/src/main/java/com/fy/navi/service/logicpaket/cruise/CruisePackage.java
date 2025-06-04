@@ -187,6 +187,11 @@ public class CruisePackage implements CruiseObserver {
         // 这里不需要处理，统一放在NaviPackage里面处理
     }
 
+    @Override
+    public void onPlayRing(int type) {
+
+    }
+
     @HookMethod
     private void sendBuryPointForCruise(boolean isEnter) {
         String eventName = isEnter ? BuryConstant.EventName.AMAP_CRUISE_ENTER : BuryConstant.EventName.AMAP_CRUISE_EXIT;

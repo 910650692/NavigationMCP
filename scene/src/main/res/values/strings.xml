@@ -206,7 +206,7 @@
     <string name="st_along_way_point_delete">删除途经点</string>
     <string name="mps_set_home">设置为家</string>
     <string name="mps_set_home_success">设置家成功</string>
-    <string name="mps_set_company">设置公司</string>
+    <string name="mps_set_company">设置为公司</string>
     <string name="mps_set_company_success">设置公司成功</string>
     <string name="mps_set_add">添加</string>
     <string name="favorite_item_top">置顶</string>

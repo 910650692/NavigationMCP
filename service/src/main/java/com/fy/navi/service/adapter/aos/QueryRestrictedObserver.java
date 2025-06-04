@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.aos;
 
 import com.fy.navi.service.define.aos.FyCriticism;
 import com.fy.navi.service.define.aos.FyGTraEventDetail;
+import com.fy.navi.service.define.aos.TrafficRestrictResponseParam;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 
 import java.util.ArrayList;
@@ -13,6 +14,10 @@ import java.util.ArrayList;
  */
 public interface QueryRestrictedObserver {
     void onDrawRestrictionAndDetails(RouteRestrictionParam param);
+
+    default void onTrafficRestrict(TrafficRestrictResponseParam trafficRestrictResponseParam) {
+
+    }
     default void onTrafficQueryDetail(FyGTraEventDetail gTraEventDetail) {
 
     }

@@ -17,6 +17,7 @@
             android:layout_height="@dimen/dp_74"
             android:layout_marginStart="@dimen/dp_20"
             android:focusable="true"
+            android:focusedByDefault="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:src="@drawable/img_basic_ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
