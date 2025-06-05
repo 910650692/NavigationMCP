@@ -27,21 +27,26 @@ import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
+import com.fy.navi.service.logicpaket.setting.SettingPackage;
+import com.fy.navi.service.logicpaket.signal.SignalCallback;
+import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> implements
-        ISceneNaviControl {
+        ISceneNaviControl, SignalCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
     private RoutePackage mRoutePackage;
+    private SignalPackage mSignalPackage;
     private ImmersiveStatusScene mImmersiveStatusScene;
     private ScheduledFuture mScheduledFuture;
     private int mTimes = NumberUtils.NUM_8;
     public ObservableField<Boolean> mGroupMoreSetupVisible;
-
     private boolean mIsMute;
+    // 缓存初次进入导航的系统导航音量值，用来做恢复操作
+    private int mLastSystemNaviVolume = NumberUtils.NUM_ERROR;
     private int mVehicleType;
 
     public SceneNaviControlImpl(final SceneNaviControlView screenView) {
@@ -49,6 +54,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         mNaviPackage = NaviPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
         mMapPackage = MapPackage.getInstance();
+        mSignalPackage = SignalPackage.getInstance();
         mGroupMoreSetupVisible = new ObservableField<>(true);
         mImmersiveStatusScene = ImmersiveStatusScene.getInstance();
     }
@@ -60,15 +66,21 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         showMain();
         setScreenId(MapType.MAIN_SCREEN_MAIN_MAP);
         init();
+        if (null != mSignalPackage) {
+            mSignalPackage.registerObserver(this.getClass().getSimpleName(), this);
+        }
     }
 
     /**
      * 初始化设置参数
      */
     private void init() {
-        // 初始化静音状态、每次导航恢复默认播报状态
-        mIsMute = false;
-        mNaviPackage.setMute(false);
+        // 初始化静音状态
+        int muteStatus = SettingPackage.getInstance().getConfigKeyMute();
+        Logger.i(TAG, "init muteStatus:" + muteStatus);
+        mLastSystemNaviVolume = getNaviVolume();
+        mIsMute = muteStatus == 1;
+        mNaviPackage.setMute(mIsMute);
         updateVariationVoice();
         // 初始化地图比例尺
         MapMode currentMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
@@ -107,13 +119,14 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         Logger.i(TAG, "moreSetup");
         initTimer();
         setImmersiveStatus(ImersiveStatus.TOUCH);
-        if(mCallBack != null){
+        if (mCallBack != null) {
             mCallBack.skipNaviControlMoreScene();
         }
     }
 
     @Override
-    public void backControl(){}
+    public void backControl() {
+    }
 
     /**
      * @param type 0:退出全览 1:切换全览
@@ -166,17 +179,30 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         initTimer();
         Logger.i(TAG, "onVariation isPreViewShowing：" + mNaviPackage.getPreviewStatus());
         if (mNaviPackage.getPreviewStatus() && !mNaviPackage.getFixedOverViewStatus()) {//固定全览
-            isShowMoreSetup(true);
-            mScreenView.changeOverViewControlLength(true);
-            updateVariationVoice();
-            mNaviPackage.setFixedOverViewStatus(true);
-            mImmersiveStatusScene.setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
+            onFixedOverView();
         } else {
             setImmersiveStatus(ImersiveStatus.TOUCH);
-            mIsMute = mNaviPackage.isMute();
-            mNaviPackage.setMute(!mIsMute);
-            updateVariationVoice();
+            changeMuteStatus();
+            updateSystemNaviVolume(mIsMute);
         }
+    }
+
+    /**
+     * 改变静音状态
+     */
+    private void changeMuteStatus() {
+        mIsMute = mNaviPackage.isMute();
+        mNaviPackage.setMute(!mIsMute);
+        SettingPackage.getInstance().setConfigKeyMute(!mIsMute ? 1 : 0);
+        updateVariationVoice();
+    }
+
+    public void onFixedOverView() {
+        isShowMoreSetup(true);
+        mScreenView.changeOverViewControlLength(true);
+        updateVariationVoice();
+        mNaviPackage.setFixedOverViewStatus(true);
+        mImmersiveStatusScene.setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
     }
 
     /**
@@ -207,10 +233,12 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     }
 
     @Override
-    public void refreshRoute() {}
+    public void refreshRoute() {
+    }
 
     @Override
-    public void naviBroadcast() {}
+    public void naviBroadcast() {
+    }
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_VOICE_SELECT)
     private void sendBroadcastModeTts(int broadcastMode) {
@@ -227,16 +255,20 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     }
 
     @Override
-    public void routePreference() {}
+    public void routePreference() {
+    }
 
     @Override
-    public void carHead() {}
+    public void carHead() {
+    }
 
     @Override
-    public void naviSetting() {}
+    public void naviSetting() {
+    }
 
     @Override
-    public void alongSearch(final int index) {}
+    public void alongSearch(final int index) {
+    }
 
     @Override
     public ObservableField<Boolean> getGroupMoreSetupField() {
@@ -246,8 +278,13 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mNaviPackage.setPreviewStatus(false);
-        mNaviPackage.setFixedOverViewStatus(false);
+        if (null != mNaviPackage) {
+            mNaviPackage.setPreviewStatus(false);
+            mNaviPackage.setFixedOverViewStatus(false);
+        }
+        if (null != mSignalPackage) {
+            mSignalPackage.unregisterObserver(this.getClass().getSimpleName());
+        }
         mImmersiveStatusScene = null;
         cancelTimer();
     }
@@ -337,6 +374,64 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         }
         if (null != mImmersiveStatusScene) {
             mImmersiveStatusScene.setImmersiveStatus(mMapTypeId, immersiveStatus);
+        }
+    }
+
+    /**
+     * 获取导航音量值
+     * @return 返回导航音量值
+     */
+    private int getNaviVolume() {
+        if (null != mSignalPackage) {
+            return mSignalPackage.getNaviVolume();
+        } else {
+            return NumberUtils.NUM_ERROR;
+        }
+    }
+
+    /**
+     * @param volume 设置导航音量值
+     */
+    private void setNaviVolume(int volume) {
+        if (null != mSignalPackage) {
+            mSignalPackage.setNaviVolume(volume);
+        }
+    }
+
+    private void updateSystemNaviVolume(boolean isMute) {
+        int currentSystemVolume = getNaviVolume();
+        Logger.i(TAG, "updateSystemNaviVolume isMute:" + isMute + " currentSystemVolume:" +
+                currentSystemVolume + " lastSystemNaviVolume:" + mLastSystemNaviVolume);
+        // 当前静音并且系统不是静音状态，进行静音操作
+        if (isMute && currentSystemVolume > NumberUtils.NUM_0) {
+            setNaviVolume(NumberUtils.NUM_0);
+            // 不是静音，但是目前系统音量是静音状态，主动给音量设值
+        } else if (!isMute && currentSystemVolume <= NumberUtils.NUM_0) {
+            // 如果最后一次音量设置是有效值，就设置给系统，不然默认设置为31，即是一半的音量
+            if (mLastSystemNaviVolume > NumberUtils.NUM_0) {
+                setNaviVolume(mLastSystemNaviVolume);
+            } else {
+                setNaviVolume(NumberUtils.NUM_31);
+            }
+        }
+    }
+
+    @Override
+    public void onNaviVolumeChanged(int volume) {
+        Logger.i(TAG, "onNaviVolumeChanged volume:" + volume + " mIsMute:" + mIsMute +
+                " mLastSystemNaviVolume:" + mLastSystemNaviVolume);
+        // 导航音量为0时，导航音量静音
+        if (volume == NumberUtils.NUM_0) {
+            if (!mIsMute) {
+                changeMuteStatus();
+            }
+            // 主动放大音量破除静音状态
+        } else if (volume > NumberUtils.NUM_0) {
+            if (!mIsMute) {
+                mLastSystemNaviVolume = volume;
+            } else {
+                changeMuteStatus();
+            }
         }
     }
 }

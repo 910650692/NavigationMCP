@@ -89,31 +89,22 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     public CallResponse onMapSizeAdjust(final boolean zoomIn, final int size, final RespCallback respCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onMapSizeAdjust: zoomIn = " + zoomIn + ", size = " + size);
 
-        openMapWhenBackground();
-
+        final boolean saveCommand = openMapWhenBackground();
         final CallResponse callResponse;
         final float curSize = MapPackage.getInstance().getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP);
-        final float levelSize;
-        switch (size) {
-            case Integer.MAX_VALUE:
-                levelSize = AutoMapConstant.MAP_ZOOM_LEVEL_MAX;
-                break;
-            case Integer.MIN_VALUE:
-                levelSize = AutoMapConstant.MAP_ZOOM_LEVEL_MIN;
-                break;
-            case 1:
-                levelSize = AutoMapConstant.MAP_ZOOM_LEVEL_CHANGE_FLAG;
-                break;
-            default:
-                Logger.d(IVrBridgeConstant.TAG, "Error zoom action !");
-                return CallResponse.createFailResponse("不支持的的缩放指令");
+        final float levelSize = getZoomLevelBySize(size);
+        if (Float.compare(0.0f, levelSize) > 0) {
+            return CallResponse.createFailResponse("不支持的的缩放指令");
         }
 
         if (zoomIn) {
             if (curSize == AutoMapConstant.MAP_ZOOM_LEVEL_MAX) {
                 callResponse = CallResponse.createSuccessResponse("当前已为最大地图");
             } else {
-                if (levelSize == AutoMapConstant.MAP_ZOOM_LEVEL_MAX) {
+                if (saveCommand) {
+                    saveZoomCommand(true, size, respCallback);
+                    return CallResponse.createSuccessResponse();
+                } else if (levelSize == AutoMapConstant.MAP_ZOOM_LEVEL_MAX) {
                     //直接放到最大
                     Logger.d(IVrBridgeConstant.TAG, "Set map level max");
                     MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, levelSize);
@@ -129,7 +120,10 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             if (curSize == AutoMapConstant.MAP_ZOOM_LEVEL_MIN) {
                 callResponse = CallResponse.createSuccessResponse("当前已为最小地图");
             } else {
-                if (levelSize == AutoMapConstant.MAP_ZOOM_LEVEL_MIN) {
+                if (saveCommand) {
+                    saveZoomCommand(false, size, respCallback);
+                    return CallResponse.createSuccessResponse();
+                } else if (levelSize == AutoMapConstant.MAP_ZOOM_LEVEL_MIN) {
                     Logger.d(IVrBridgeConstant.TAG, "Set map level min");
                     MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, levelSize);
                     callResponse = CallResponse.createSuccessResponse("已缩小地图到最小");
@@ -144,6 +138,46 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         callResponse.setNeedPlayMessage(true);
         respTts(callResponse, respCallback);
         return CallResponse.createSuccessResponse();
+    }
+
+    /**
+     * 根据语音指令参数获取Map缩放值.
+     * @param size int 语音指令传入的缩放值.
+     *
+     * @return levelSize，Map使用的
+     */
+    private float getZoomLevelBySize(final int size) {
+        final float levelSize = switch (size) {
+            case Integer.MAX_VALUE -> AutoMapConstant.MAP_ZOOM_LEVEL_MAX;
+            case Integer.MIN_VALUE -> AutoMapConstant.MAP_ZOOM_LEVEL_MIN;
+            case 1 -> AutoMapConstant.MAP_ZOOM_LEVEL_CHANGE_FLAG;
+            default -> {
+                Logger.d(IVrBridgeConstant.TAG, "Error zoom action !");
+                yield -1.0f;
+            }
+        };
+
+        return levelSize;
+    }
+
+    /**
+     * 保存语音缩放指令，在主图加载完成后再执行.
+     *
+     * @param zoomIn  true:放大; false:缩小
+     * @param size  Integer.MAX_VALUE: 放大到最大；Integer.MIN_VALUE: 缩小到最小；1: 默认放大\缩小
+     * @param respCallback RespCallback 语音执行结果回复.
+     */
+    private void saveZoomCommand(final boolean zoomIn, final int size, final RespCallback respCallback) {
+        mCommandList.add(IVrBridgeConstant.VoiceCommandAction.ZOOM_LEVEL);
+        final SingleCommandInfo singleCommandInfo = new SingleCommandInfo();
+        singleCommandInfo.setRespCallback(respCallback);
+        singleCommandInfo.setIntParam(size);
+        if (zoomIn) {
+            singleCommandInfo.setPoiName("1");
+        } else {
+            singleCommandInfo.setPoiName("0");
+        }
+        mCommandParamList.add(singleCommandInfo);
     }
 
     /**
@@ -2170,12 +2204,15 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         final String nextCommand = mCommandList.remove(0);
         switch (nextCommand) {
             case IVrBridgeConstant.VoiceCommandAction.OPEN_FAVORITE:
+                //打开收藏
                 openFavoritePage();
                 break;
             case IVrBridgeConstant.VoiceCommandAction.OPEN_HISTORY:
+                //打开导航搜索历史记录
                 openHistoryPage();
                 break;
             case IVrBridgeConstant.VoiceCommandAction.COLLECT_COMMON:
+                //收藏普通点
                 if (null == mCommandParamList || mCommandParamList.isEmpty()) {
                     return;
                 }
@@ -2186,6 +2223,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 }
                 break;
             case IVrBridgeConstant.VoiceCommandAction.CHANGE_VIEW:
+                //切换视角
                 if (null == mCommandParamList || mCommandParamList.isEmpty()) {
                     return;
                 }
@@ -2212,11 +2250,67 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode);
                 }
                 break;
+            case IVrBridgeConstant.VoiceCommandAction.ZOOM_LEVEL:
+                //缩放底图
+                final SingleCommandInfo zoomCommand = mCommandParamList.remove(0);
+                if (null == zoomCommand || TextUtils.isEmpty(zoomCommand.getPoiName())
+                        || TextUtils.isEmpty(zoomCommand.getPoiType())) {
+                    return;
+                }
+                final String zoomType = zoomCommand.getPoiName();
+                final int size = zoomCommand.getIntParam();
+                final RespCallback respCallback = zoomCommand.getRespCallback();
+                processZoomCommand(zoomType, size, respCallback);
+                break;
             default:
                 break;
         }
     }
 
+    /**
+     * 打开应用底图加载成功后再执行缩放指令.
+     *
+     * @param zoomType  "1" 放大  "0" 缩小
+     * @param size 语音缩放参数.
+     * @param respCallback 指令执行结果回调.
+     */
+    private void processZoomCommand(final String zoomType, final int size, final RespCallback respCallback) {
+        final float levelSize = getZoomLevelBySize(size);
+        if (Float.compare(0.0f, levelSize) > 0) {
+            return;
+        }
+
+        final String tts;
+        if ("1".equals(zoomType)) {
+            if (levelSize == AutoMapConstant.MAP_ZOOM_LEVEL_MAX) {
+                //直接放到最大
+                Logger.d(IVrBridgeConstant.TAG, "maxLevel");
+                MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, levelSize);
+                tts = "已放大地图到最大";
+            } else {
+                //默认flag提升
+                Logger.d(IVrBridgeConstant.TAG, "amplify mapLevel");
+                MapPackage.getInstance().amplifyLevel(MapType.MAIN_SCREEN_MAIN_MAP);
+                tts = "地图已放大";
+            }
+        } else {
+            //缩小
+            if (levelSize == AutoMapConstant.MAP_ZOOM_LEVEL_MIN) {
+                Logger.d(IVrBridgeConstant.TAG, "minLevel");
+                MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, levelSize);
+                tts = "已缩小地图到最小";
+            } else {
+                Logger.d(IVrBridgeConstant.TAG, "reduce mapLevel");
+                MapPackage.getInstance().reduceLevel(MapType.MAIN_SCREEN_MAIN_MAP);
+                tts = "地图已缩小";
+            }
+        }
+        if (null != respCallback) {
+            final  CallResponse callResponse = CallResponse.createSuccessResponse(tts);
+            callResponse.setNeedPlayMessage(true);
+            respCallback.onResponse(callResponse);
+        }
+    }
 
     /**
      * 处理前方如何走

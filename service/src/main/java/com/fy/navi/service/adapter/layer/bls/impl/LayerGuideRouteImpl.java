@@ -464,6 +464,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             Logger.e(TAG, "updateOddInfo mPathInfoList is Empty");
             return;
         }
+        if (selectedPathIndex < 0 || selectedPathIndex >= mPathInfoList.size()) {
+            Logger.e(TAG, "updateOddInfo selectedPathIndex < 0 || selectedPathIndex >= mPathInfoList.size()");
+            return;
+        }
         PathInfo pathInfo = mPathInfoList.get(selectedPathIndex);
         long pathID = pathInfo.getPathID();
         Logger.d(TAG, "updateOddInfo pathID " + pathID + " pathId " + pathId);
@@ -913,6 +917,12 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             case NaviConstant.CrossType.CROSS_TYPE_3_D -> CrossType.CrossType3D;
             default -> CrossType.AUTO_UNKNOWN_ERROR;
         };
+    }
+
+    /* 设置起点扎标是否显示 */
+    public void setStartPointVisible(boolean visible) {
+        Logger.d(TAG, "setStartPointVisible visible " + visible);
+        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeStartPoint, visible);
     }
 
     /**

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.scene.R;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
@@ -83,6 +84,22 @@ public class CardManager {
     public boolean judgeDestinationIsGasOrChargeStation(final PoiInfoEntity poiInfo) {
         if (ConvertUtils.isNull(poiInfo) || ConvertUtils.isEmpty(poiInfo.getPoiTag())) return false;
         return poiInfo.getPoiTag().contains("充电站") || poiInfo.getPoiTag().contains("加油站");
+    }
+
+    /***
+     * 判断终点是否充电站
+     * @return true 代表终点是充电站
+     */
+    public boolean judgeDestinationIsChargeStation(final PoiInfoEntity poiInfo) {
+        if (!ConvertUtils.isNull(poiInfo)) {
+            if(!ConvertUtils.isEmpty(poiInfo.getPoiTag()) &&
+                    poiInfo.getPoiTag().contains(AppContext.getInstance().getMContext().getString(R.string.st_quick_search_charge))){
+                return true;
+            }
+            return !ConvertUtils.isEmpty(poiInfo.getName()) &&
+                    poiInfo.getName().contains(AppContext.getInstance().getMContext().getString(R.string.st_quick_search_charge));
+        }
+        return false;
     }
 
     private static final class InstanceHolder {

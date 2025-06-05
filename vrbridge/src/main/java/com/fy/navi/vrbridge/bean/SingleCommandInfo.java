@@ -6,10 +6,19 @@ import com.baidu.oneos.protocol.callback.RespCallback;
 //单个语音指令
 public class SingleCommandInfo {
 
+    private int mIntParam;
     private String mPoiName;
     private String mPoiType;
     private PoiCallback mPoiCallback;
     private RespCallback mRespCallback;
+
+    public int getIntParam() {
+        return mIntParam;
+    }
+
+    public void setIntParam(final int intParam) {
+        mIntParam = intParam;
+    }
 
     public String getPoiName() {
         return mPoiName;

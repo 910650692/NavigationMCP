@@ -42,6 +42,7 @@
     <color name="route_charge_param_title_color">#FF1E1F26</color>
     <color name="route_charge_param_total_color">#80FFFFFF</color>
     <color name="route_charge_button_text_color">#B3FFFFFF</color>
+    <color name="route_progressBar_color">#4ABA59</color>
     <color name="route_logo_color">#19181D</color>
     <color name="route_white">#FFFFFFFF</color>
     <color name="floating_search_item_night">#FFFFFF</color>

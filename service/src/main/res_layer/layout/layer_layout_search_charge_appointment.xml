@@ -14,7 +14,7 @@
         android:textStyle="bold"
         android:textColor="@color/layer_search_charge_appointment_color"
         android:layout_marginTop="@dimen/dp_4"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/search_charge_focused"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,6 +24,7 @@
     <ImageView
         android:id="@+id/search_charge_focused"
         android:src="@drawable/layer_icon_search_charge_default_focused"
+        android:layout_marginStart="@dimen/dp_90"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"

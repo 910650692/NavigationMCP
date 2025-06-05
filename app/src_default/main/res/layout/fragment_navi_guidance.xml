@@ -135,7 +135,7 @@
                 app:layout_constraintStart_toStartOf="@id/scl_top_container"
                 app:layout_constraintEnd_toEndOf="@id/scl_top_container"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_m_9"
+                android:layout_marginTop="@dimen/dp_m_40"
                 android:visibility="@{ViewModel.mHandingCardVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
 

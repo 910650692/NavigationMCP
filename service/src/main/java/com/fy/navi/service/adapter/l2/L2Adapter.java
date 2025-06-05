@@ -291,7 +291,12 @@ public class L2Adapter {
             int locationLinkOffset = getLinkLength(naviEtaInfo.curSegIdx, naviEtaInfo.curLinkIdx) - naviEtaInfo.linkRemainDist;
             vehiclePosition.setLocationLinkOffset(Math.max(locationLinkOffset, 0));
 
-            vehiclePosition.setRoadClass(naviEtaInfo.curRoadClass); // 当前自车所在道路等级
+            int curRoadClass = naviEtaInfo.curRoadClass;
+            if (curRoadClass == -1) {
+                vehiclePosition.setRoadClass(0xFF); // 当前自车所在道路等级
+            } else {
+                vehiclePosition.setRoadClass(curRoadClass); // 当前自车所在道路等级
+            }
 
             L2NaviBean.GuidePointInfoBean guidePointInfo = l2NaviBean.getGuidePointInfo();
             int dist = naviEtaInfo.NaviInfoData.get(naviEtaInfo.NaviInfoFlag).segmentRemain.dist;
@@ -672,7 +677,8 @@ public class L2Adapter {
             vpb.setLocationLatitude(locationInfo.getLatitude());
             vpb.setFormWay(locationInfo.getFormway());
             vpb.setLinkType(locationInfo.getLinkType());
-            vpb.setRoadOwnership(locationInfo.getOwnership());
+            int ownership = locationInfo.getOwnership();
+            vpb.setRoadOwnership(ownership == -1 ? 0 : ownership);
             Logger.i(TAG, "位置信息", locationInfo.getLongitude(), locationInfo.getLatitude(), locationInfo.getFormway(), locationInfo.getLinkType(), locationInfo.getOwnership());
         }
     };

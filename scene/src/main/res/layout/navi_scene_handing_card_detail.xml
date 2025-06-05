@@ -8,6 +8,11 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:paddingBottom="@dimen/dp_24">
+        <View
+            android:id="@+id/view_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_scene_charge_tip"/>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"

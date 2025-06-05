@@ -1,7 +1,5 @@
 package com.fy.navi.scene.impl.navi;
 
-import androidx.fragment.app.Fragment;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -21,7 +19,6 @@ import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
-import com.fy.navi.ui.base.StackManager;
 
 import java.util.concurrent.ScheduledFuture;
 
@@ -137,13 +134,10 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         if (TimerHelper.isCanDo()) {
             if (!mNaviPackage.getFixedOverViewStatus() && mNaviPackage.getPreviewStatus()) {
                 OpenApiHelper.exitPreview(mMapTypeId);
-            } else if (!mNaviPackage.getFixedOverViewStatus()){
-                mMapPackage.goToCarPosition(mMapTypeId, false, false);
-                mLayerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
-                // bugID：1023666 导航中缩放地图然后点击继续导航，恢复到导航跟随态的过程时间太长
-                OpenApiHelper.setCurrentZoomLevel(mMapTypeId);
             }
             mSearchPackage.clearLabelMark();
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId,
+                    ImersiveStatus.IMERSIVE);
             // 隐藏继续当行按钮
             notifySceneStateChange(false);
         }
@@ -156,8 +150,13 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
     public void naviContinueClick() {
         Logger.i(TAG, "naviContinueClick");
         naviContinue();
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId,
-                ImersiveStatus.IMERSIVE);
+        //固定全览状态下，移图后显示继续导航，点击回到自车位置
+        if (mNaviPackage.getFixedOverViewStatus()) {
+            mMapPackage.goToCarPosition(mMapTypeId, false, false);
+            mLayerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
+            // bugID：1023666 导航中缩放地图然后点击继续导航，恢复到导航跟随态的过程时间太长
+            OpenApiHelper.setCurrentZoomLevel(mMapTypeId);
+        }
         if (null != mScreenView) {
             mScreenView.backToNaviFragment();
         }

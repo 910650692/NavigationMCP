@@ -83,7 +83,7 @@ public final class L2PPManager {
                 return;
             }
             String json = GsonUtils.toJson(routeL2Data);
-            Logger.d(TAG, "send route data: " + json);
+            Logger.d(TAG, "send route data: ");
 //            JsonLog.print("send route data", json);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
             //通过高级辅助驾驶系统管理类 将高德算出来的路线信息发出去
@@ -103,7 +103,7 @@ public final class L2PPManager {
                 return;
             }
             String json = GsonUtils.toJson(l2NaviBean);
-            Logger.v(TAG, "send tbt data: " + json);
+            Logger.d(TAG, "send tbt data: " + json);
 //            JsonLog.print("send tbt data", json);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
             mAdasManager.sendData(DataType.SDPeriodShortData, json.getBytes());
@@ -129,7 +129,7 @@ public final class L2PPManager {
                 return;
             }
             final String jsonString = new String(bytes, StandardCharsets.UTF_8);
-            JsonLog.saveJsonToCache(jsonString, "odd.json");
+            JsonLog.saveJsonToCache(jsonString, "l2.json", "l2_odd");
             Logger.d(TAG, "onDataCallback: oddBean = " + jsonString);
             OddBean oddBean = null;
             try {

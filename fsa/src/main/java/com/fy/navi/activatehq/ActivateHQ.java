@@ -38,13 +38,19 @@ public final class ActivateHQ {
     private static String ORDER_ID;
     private final static String HQ = "HQ";
     private static int QUERY_ORDER_NUM = 0;
+    private static final int NET_FAILED_RETRY_DELAY = 8;
+    private AtomicInteger mNetFailedRetryCount = new AtomicInteger(0);
 
     private AdasManager mAdasManager;
+    private final ScheduledExecutorService mNetRetryExecutor;
 
     private ActivateHQ() {
         DEVICES_ID = DevicesIdUtil.getInstance().getDeviceId();
         SYS_VERSION = "1.0";
         API_VERSION = "1.0";
+        QUERY_ORDER_NUM = 0;
+        mNetFailedRetryCount.set(0);
+        mNetRetryExecutor = Executors.newScheduledThreadPool(1);
     }
 
     private static final class SingleHolder {
@@ -110,7 +116,21 @@ public final class ActivateHQ {
 
             @Override
             public void onFailed() {
-                Logger.d(TAG, "Uuid请求失败");
+                Logger.d(TAG, "Uuid网络请求失败");
+                if (mNetFailedRetryCount.incrementAndGet() < 3) {
+                    Logger.d(TAG, "网络失败计数: " + mNetFailedRetryCount.get());
+                    mNetRetryExecutor.schedule(new Runnable() {
+                        @Override
+                        public void run() {
+                            postUUID();
+                        }
+                    }, NET_FAILED_RETRY_DELAY , TimeUnit.SECONDS);
+                } else {
+                    Logger.d(TAG, "uuid请求网络失败重试次数用完，等待下次点火");
+                    if (!mNetRetryExecutor.isShutdown()) {
+                        mNetRetryExecutor.shutdown();
+                    }
+                }
             }
         });
 
@@ -130,13 +150,29 @@ public final class ActivateHQ {
                     Logger.d(TAG, "firstCheckOrderStatus success");
                     Logger.d(TAG, statusBean.toString());
                     handleStatus(statusBean.getMOrderStatus());
+                    if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
+                        //首次查询没有订单后下单
+                        createCloudOrder();
+                    }
                 }
 
                 @Override
                 public void onFailed() {
                     Logger.d(TAG, "firstCheckOrderStatus failed");
-                    //首次查询没有订单后下单
-                    createCloudOrder();
+                    if (mNetFailedRetryCount.incrementAndGet() < 3) {
+                        Logger.d(TAG, "网络失败计数 : " + mNetFailedRetryCount.get());
+                        mNetRetryExecutor.schedule(new Runnable() {
+                            @Override
+                            public void run() {
+                                readyCreateOrder();
+                            }
+                        }, NET_FAILED_RETRY_DELAY , TimeUnit.SECONDS);
+                    } else {
+                        Logger.d(TAG, "网络失败重试次数用完，等待下次点火");
+                        if (!mNetRetryExecutor.isShutdown()) {
+                            mNetRetryExecutor.shutdown();
+                        }
+                    }
                 }
             });
         } else {
@@ -175,14 +211,22 @@ public final class ActivateHQ {
 
             @Override
             public void onFailed() {
-                ++QUERY_ORDER_NUM;
-                Logger.e(TAG, "HQ下单失败" + QUERY_ORDER_NUM + "次");
-                if (QUERY_ORDER_NUM <= 3) {
-                    createCloudOrder();
+                if (mNetFailedRetryCount.incrementAndGet() < 3) {
+                    Logger.d(TAG, "网络失败计数 : " + mNetFailedRetryCount.get());
+                    mNetRetryExecutor.schedule(new Runnable() {
+                        @Override
+                        public void run() {
+                            createCloudOrder();
+                        }
+                    }, NET_FAILED_RETRY_DELAY , TimeUnit.SECONDS);
+                } else {
+                    Logger.d(TAG, "下单网络失败重试次数用完，等待下次点火");
+                    if (!mNetRetryExecutor.isShutdown()) {
+                        mNetRetryExecutor.shutdown();
+                    }
                 }
             }
         });
-
     }
 
     /**
@@ -196,12 +240,14 @@ public final class ActivateHQ {
         final AtomicInteger retryCount = new AtomicInteger(0);
         final int maxRetries = 3;
         final long[] delays = {
+                AutoMapConstant.DELAY_MINUTE * 2,
                 AutoMapConstant.DELAY_MINUTE * 5,
-                AutoMapConstant.DELAY_MINUTE * 10,
-                AutoMapConstant.DELAY_MINUTE * 10
+                AutoMapConstant.DELAY_MINUTE * 5
         };
         final AtomicReference<Runnable> taskRef = new AtomicReference<>();
-
+        if (!mNetRetryExecutor.isShutdown()) {
+            mNetRetryExecutor.shutdownNow();
+        }
         final Runnable task = new Runnable() {
             @Override
             public void run() {
@@ -219,18 +265,28 @@ public final class ActivateHQ {
                             if (ConvertUtils.equals(statusBean.getMOrderStatus(), "2")) {
                                 future.complete(true);
                                 executor.shutdownNow();
-                            } else {
+                            } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "1")) {
+                                Logger.d(TAG, "已下单/等待交付");
                                 final int currentCount = retryCount.incrementAndGet();
                                 Logger.d(TAG, "轮询次数 : " + currentCount);
                                 if (currentCount > maxRetries) {
                                     future.complete(false);
                                     executor.shutdownNow();
                                 } else {
-                                    executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
+                                    executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.MINUTES);
                                 }
+                            } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
+                                ++QUERY_ORDER_NUM;
+                                Logger.e(TAG, "HQ下单失败" + QUERY_ORDER_NUM + "次");
+                                if (QUERY_ORDER_NUM <= 3) {
+                                    createCloudOrder();
+                                } else {
+                                    Logger.e(TAG, "云端返回失败订单结果，重新下单次数用完，等待下次启动车辆");
+                                }
+                                future.complete(false);
+                                executor.shutdownNow();
                             }
                         }
-
                         @Override
                         public void onFailed() {
                             Logger.d(TAG, "查询订单网络请求失败");
@@ -240,13 +296,13 @@ public final class ActivateHQ {
                             if (currentCount > maxRetries) {
                                 future.complete(false);
                                 executor.shutdownNow();
+                                Logger.d(TAG, "最后一次查询网络请求失败，等待下次汽车启动重新激活HQ");
                             } else {
-                                executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
+                                executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.MINUTES);
                             }
                         }
                     };
                     getInstance().queryOrderStatus(callBack);
-
                 } catch (NullPointerException | IllegalArgumentException e) {
                     future.completeExceptionally(e);
                     executor.shutdownNow();
@@ -254,12 +310,12 @@ public final class ActivateHQ {
             }
         };
         taskRef.set(task);
-        executor.schedule(task, delays[0], TimeUnit.SECONDS);
+        executor.schedule(task, delays[0], TimeUnit.MINUTES);
 
         try {
             // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
-            final long totalTimeout = Arrays.stream(delays).sum() + 10; // 2+5+5 +1=13分钟
-            return future.get(totalTimeout, TimeUnit.SECONDS);
+            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 2+5+5 +1=13分钟
+            return future.get(totalTimeout, TimeUnit.MINUTES);
         } catch (CancellationException e) {
             executor.shutdownNow();
             Logger.e(TAG, "CancellationException");

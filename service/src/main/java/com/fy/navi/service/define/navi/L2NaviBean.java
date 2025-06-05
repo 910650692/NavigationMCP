@@ -450,7 +450,7 @@ public class L2NaviBean {
         @SerializedName("roadClass")
         private int mRoadClass = 0xFF;
         @SerializedName("roadOwnership")
-        private int mRoadOwnership = 0xFF;
+        private int mRoadOwnership = 0;
         @SerializedName("ttsText")
         private String mTtsText = "";
         @SerializedName("formway")

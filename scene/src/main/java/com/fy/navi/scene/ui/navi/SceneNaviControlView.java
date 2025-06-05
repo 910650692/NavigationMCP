@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BuildConfig;
 import com.fy.navi.scene.R;
@@ -18,11 +19,13 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.SceneNaviControlImpl;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 
 /**
  * 底部控制scene
+ *
  * @author fy
  * @version $Revision.*$
  */
@@ -114,6 +117,7 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
 
     /**
      * 全览页面控制页面会缩短，这边动态调整
+     *
      * @param isShowMoreSet 是否显示更多设置
      */
     public void changeOverViewControlLength(final boolean isShowMoreSet) {
@@ -185,5 +189,11 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      */
     public void showControlDetails() {
         mScreenViewModel.moreSetup();
+    }
+
+    public void onMeterAction() {
+        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getString(R.string.navi_meter_start), 3000);
+        mScreenViewModel.clickToShowOverview();
+        mScreenViewModel.onFixedOverView();
     }
 }

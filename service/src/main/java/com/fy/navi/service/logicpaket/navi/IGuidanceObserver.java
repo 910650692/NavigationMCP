@@ -35,7 +35,7 @@ public interface IGuidanceObserver {
     }
 
     /**
-     * @param isShowLane 是否显示车道线
+     * @param isShowLane     是否显示车道线
      * @param laneInfoEntity 车道线信息
      */
     default void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
@@ -43,7 +43,7 @@ public interface IGuidanceObserver {
     }
 
     /**
-     * @param isShowImage 是否显示大图
+     * @param isShowImage   是否显示大图
      * @param naviImageInfo 路口大图信息
      */
     default void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
@@ -52,7 +52,8 @@ public interface IGuidanceObserver {
 
     /**
      * 导航到达目的地
-     * @param traceId traceId
+     *
+     * @param traceId  traceId
      * @param naviType 导航类型
      */
     default void onNaviArrive(long traceId, int naviType) {
@@ -96,6 +97,7 @@ public interface IGuidanceObserver {
 
     /**
      * 服务区、收费站信息、收费口车道类型信息
+     *
      * @param sapaInfoEntity 服务区、收费站信息、收费口车道类型信息
      */
     default void onNaviSAPAInfo(SapaInfoEntity sapaInfoEntity) {
@@ -104,6 +106,7 @@ public interface IGuidanceObserver {
 
     /**
      * 经过途径点
+     *
      * @param viaIndex 经过途径点
      */
     default void onUpdateViaPass(long viaIndex) {
@@ -112,6 +115,7 @@ public interface IGuidanceObserver {
 
     /**
      * 通知用户切换主导航路线状态，客户端主动SelectMainPathID切换的回调状态
+     *
      * @param pathID 主导航路线ID
      * @param result 状态
      */
@@ -121,6 +125,7 @@ public interface IGuidanceObserver {
 
     /**
      * 当前道路限速设施的限速 0: 隐藏/不显示限速  !=0: 显示当前道路限速设施的限速
+     *
      * @param speed 当前道路限速设施的限速
      */
     default void onCurrentRoadSpeed(int speed) {
@@ -129,8 +134,9 @@ public interface IGuidanceObserver {
 
     /**
      * 语音打开/关闭路线全览，需要HMI模拟全览/退出全览点击操作
+     *
      * @param mapTypeId 屏幕id
-     * @param open 是否开启全览
+     * @param open      是否开启全览
      */
     default void onVoiceOverview(MapType mapTypeId, boolean open) {
 
@@ -138,7 +144,8 @@ public interface IGuidanceObserver {
 
     /**
      * 语音切换主辅路、高架上下
-     * @param mapTypeId 屏幕id
+     *
+     * @param mapTypeId      屏幕id
      * @param parallelOption 平行路切换操作
      */
     default void onVoiceParallelOption(MapType mapTypeId, String parallelOption) {
@@ -147,6 +154,7 @@ public interface IGuidanceObserver {
 
     /**
      * 语音继续导航
+     *
      * @param mapTypeId 屏幕id
      */
     default void onVoiceContinueNavigation(MapType mapTypeId) {
@@ -197,8 +205,9 @@ public interface IGuidanceObserver {
 
     /**
      * 路线切换
+     *
      * @param oldPathId 旧路线
-     * @param pathID 新路线
+     * @param pathID    新路线
      */
     default void onChangeNaviPath(long oldPathId, long pathID) {
 
@@ -206,9 +215,10 @@ public interface IGuidanceObserver {
 
     /**
      * 更优路线回调
+     *
      * @param newPathID 新道路id
      * @param oldPathID 旧道路id
-     * @param reason 原因
+     * @param reason    原因
      */
     default void onSuggestChangePath(long newPathID, long oldPathID,
                                      SuggestChangePathReasonEntity reason) {
@@ -217,6 +227,7 @@ public interface IGuidanceObserver {
 
     /**
      * 导航设施信息回调
+     *
      * @param naviRoadFacilityEntity 导航设施信息
      */
     default void onShowNaviFacility(ArrayList<NaviRoadFacilityEntity> naviRoadFacilityEntity) {
@@ -224,6 +235,11 @@ public interface IGuidanceObserver {
     }
 
     default void onUpdateTMCCongestionInfo(NaviCongestionInfoEntity naviCongestionInfoEntity) {
+
+    }
+
+    /*仪表触发*/
+    default void onMeterAction() {
 
     }
 }

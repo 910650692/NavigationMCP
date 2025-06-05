@@ -28,10 +28,10 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinView
-            android:layout_width="@dimen/dp_206"
-            android:layout_height="@dimen/dp_206"
+            android:layout_width="@dimen/dp_104"
+            android:layout_height="@dimen/dp_104"
             clickCommand="@{Scene.amplifyLevel}"
-            android:focusable="false"
+            android:focusable="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             app:layout_constraintTop_toTopOf="@+id/screen_scale_add"
             app:layout_constraintLeft_toLeftOf="@+id/screen_scale_add"
@@ -53,10 +53,10 @@
             app:layout_constraintTop_toBottomOf="@id/screen_scale_add" />
 
         <com.fy.navi.ui.view.SkinView
-            android:layout_width="@dimen/dp_206"
-            android:layout_height="@dimen/dp_206"
+            android:layout_width="@dimen/dp_104"
+            android:layout_height="@dimen/dp_104"
             clickCommand="@{Scene.reduceLevel}"
-            android:focusable="false"
+            android:focusable="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             app:layout_constraintTop_toTopOf="@+id/screen_scale_reduce"
             app:layout_constraintLeft_toLeftOf="@+id/screen_scale_reduce"

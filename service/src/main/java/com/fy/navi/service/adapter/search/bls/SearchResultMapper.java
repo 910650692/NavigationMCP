@@ -2,11 +2,9 @@ package com.fy.navi.service.adapter.search.bls;
 
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.search.model.AggregateSearchResult;
@@ -31,6 +29,7 @@ import com.autonavi.gbl.search.model.SearchDeepInfoResult;
 import com.autonavi.gbl.search.model.SearchDistrict;
 import com.autonavi.gbl.search.model.SearchEnroutePoiInfo;
 import com.autonavi.gbl.search.model.SearchEnrouteResult;
+import com.autonavi.gbl.search.model.SearchLabelInfo;
 import com.autonavi.gbl.search.model.SearchLineDeepInfoResult;
 import com.autonavi.gbl.search.model.SearchNearestResult;
 import com.autonavi.gbl.search.model.SearchPoiChildInfo;
@@ -48,6 +47,7 @@ import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.CityInfo;
 import com.fy.navi.service.define.search.GasStationInfo;
+import com.fy.navi.service.define.search.LabelInfo;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchCategoryLocalInfo;
@@ -209,6 +209,40 @@ public final class SearchResultMapper {
             searchResultEntity.setRetain(result.classify.retainState);//筛选搜索需要的信息
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 retainState: " + result.classify.retainState);
             if (result.classify.classifyItemInfo != null) {
+                //二筛参数列表
+                final List<SearchCategoryLocalInfo> categoryLocalInfoList2 = Optional.ofNullable(result.classify.classifyItemInfo.level2CategoryInfoList)
+                        .orElse(new ArrayList<>())
+                        .stream()
+                        .map(this::mapSearchCategoryInfo)
+                        .collect(Collectors.toList());
+                if (!categoryLocalInfoList2.isEmpty()) {
+                    for (int i = 0; i < categoryLocalInfoList2.size(); i++) {
+                        final List<SearchChildCategoryLocalInfo> level1Infos = Optional.ofNullable(result.classify.classifyItemInfo.level2CategoryInfoList.
+                                        get(i).childCategoryInfo)
+                                .orElse(new ArrayList<>())
+                                .stream()
+                                .map(this::mapSearchChildCategoryInfo)
+//                                .filter(this::shouldIncludeInResult)//过滤value或者name值不存在的item
+                                .collect(Collectors.toList());
+                        categoryLocalInfoList2.get(i).setCategoryLocalInfos(level1Infos);
+                        if (!level1Infos.isEmpty()) {
+                            for (int j = 0; j < level1Infos.size(); j++) {
+                                final List<SearchChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
+                                                result.classify.classifyItemInfo.level2CategoryInfoList.
+                                                        get(i).childCategoryInfo.
+                                                        get(j).childCategoryInfoList)
+                                        .orElse(new ArrayList<>())
+                                        .stream()
+                                        .map(this::mapSearchChildCategoryInfo)
+//                                        .filter(this::shouldIncludeInResult)//过滤value或者name值不存在的item
+                                        .collect(Collectors.toList());
+                                level1Infos.get(j).setCategoryLocalInfos(level1ChildInfos);
+                            }
+                        }
+                    }
+                }
+
+                //一筛参数列表
                 final List<SearchCategoryLocalInfo> categoryLocalInfoList = Optional.ofNullable(result.classify.classifyItemInfo.categoryInfoList)
                         .orElse(new ArrayList<>())
                         .stream()
@@ -241,7 +275,7 @@ public final class SearchResultMapper {
                     }
                 }
                 //测试log，测试时放开
-//                for (SearchCategoryLocalInfo searchCategoryLocalInfo : categoryLocalInfoList) {
+//                for (SearchCategoryLocalInfo searchCategoryLocalInfo : categoryLocalInfoList2) {
 //                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 name: " + searchCategoryLocalInfo.getName()
 //                            + " checked: " + searchCategoryLocalInfo.getChecked());
 //                    for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo : searchCategoryLocalInfo.getCategoryLocalInfos()) {
@@ -257,7 +291,24 @@ public final class SearchResultMapper {
 //                        }
 //                    }
 //                }
+//                for (SearchCategoryLocalInfo searchCategoryLocalInfo : categoryLocalInfoList) {
+//                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 name: " + searchCategoryLocalInfo.getName()
+//                            + " checked: " + searchCategoryLocalInfo.getChecked());
+//                    for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo : searchCategoryLocalInfo.getCategoryLocalInfos()) {
+//                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 level name: "
+//                                + searchChildCategoryLocalInfo.getName()
+//                                + " checked: " + searchChildCategoryLocalInfo.getChecked()
+//                                + " value: " + searchChildCategoryLocalInfo.getValue());
+//                        for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
+//                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 level child name: "
+//                                    + searchChildCategoryLocalInfo1.getName()
+//                                    + " checked: " + searchChildCategoryLocalInfo1.getChecked()
+//                                    + " value: " + searchChildCategoryLocalInfo1.getValue());
+//                        }
+//                    }
+//                }
                 searchResultEntity.setLocalInfoList(categoryLocalInfoList);
+                searchResultEntity.setMLevel2LocalInfoList(categoryLocalInfoList2);
             }
         }
 
@@ -453,7 +504,8 @@ public final class SearchResultMapper {
                 .setCurrentElePrice(searchPoiInfo.chargingStationInfo.current_ele_price)
                 .setCurrentServicePrice(searchPoiInfo.chargingStationInfo.parkPrice)
                 .setMBrand(searchPoiInfo.chargingStationInfo.brand_desc);
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "brand is: " + searchPoiInfo.chargingStationInfo.brand_desc);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "brand is: " + searchPoiInfo.chargingStationInfo.brand_desc
+                    + " ,park_category: " + searchPoiInfo.chargingStationInfo.park_category);
         for (ChargingPlugInfo chargingPlugInfo : searchPoiInfo.chargingStationInfo.plugsInfo) {
             if (chargingPlugInfo.plugType == AutoMapConstant.PLUG_TYPE_SLOW) {
                 chargeInfo.setSlowVolt(chargingPlugInfo.slowVoltage)
@@ -497,7 +549,7 @@ public final class SearchResultMapper {
         }
         Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "typeCode is: " + searchPoiInfo.basicInfo.typeCode
                 + " ;name is: " + searchPoiInfo.basicInfo.name + " ;searchPoiInfo.basicInfo.pid:" + searchPoiInfo.basicInfo.poiId
-                + " :cityCode is: " + searchPoiInfo.basicInfo.cityCode + " ;adcode is: " + searchPoiInfo.basicInfo.adcode);
+                + " :isFastest: " + searchPoiInfo.basicInfo.isFastest + " ;isClosest: " + searchPoiInfo.basicInfo.isClosest);
         return new PoiInfoEntity()
                 .setPointTypeCode(searchPoiInfo.basicInfo.typeCode)
                 .setPid(searchPoiInfo.basicInfo.poiId)
@@ -981,6 +1033,15 @@ public final class SearchResultMapper {
                 + " ;name is: " + poiInfo.basicInfo.name
                 + "  ;searchPoiInfo.basicInfo.distance:" + poiInfo.basicInfo.distance
                 + " ;searchPoiInfo.basicInfo.tag:" + poiInfo.basicInfo.tag);
+        //标签信息
+        final List<LabelInfo> labelInfos = new ArrayList<>();
+        for (SearchLabelInfo searchLabelInfo : poiInfo.labelInfo) {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, " label info type: " + searchLabelInfo.type + " ,content: " + searchLabelInfo.content);
+            final LabelInfo labelInfo = new LabelInfo()
+                    .setMContent(searchLabelInfo.content)
+                    .setMType(searchLabelInfo.type);
+            labelInfos.add(labelInfo);
+        }
 
         return new PoiInfoEntity()
                 .setPointTypeCode(poiInfo.basicInfo.typeCode)
@@ -999,6 +1060,7 @@ public final class SearchResultMapper {
                 .setBusinessTime(poiInfo.basicInfo.openTime)
                 .setRating(poiInfo.basicInfo.rating)
                 .setAverageCost(poiInfo.basicInfo.averageCost)
+                .setMLableList(labelInfos)
                 .setPoiTag(isParking(poiInfo.basicInfo.typeCode) ? "停车场" : poiInfo.basicInfo.tag)
                 .setSort_distance(ConvertUtils.str2Int(poiInfo.basicInfo.distance))
                 .setChargeInfoList(chargeInfos);

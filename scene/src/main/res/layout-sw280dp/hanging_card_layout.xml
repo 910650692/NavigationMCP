@@ -8,6 +8,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/cl_hanging_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="false"
@@ -17,46 +18,60 @@
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_third"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_104"
+            android:layout_height="@dimen/dp_210"
             android:focusable="false"
+            android:layout_marginTop="@dimen/dp_196"
+            android:background="@drawable/bg_shadow_navi_cadillac_transparent"
+            android:paddingHorizontal="@dimen/dp_51"
+            android:paddingVertical="@dimen/dp_51"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:background="@android:color/holo_blue_dark"
-            tools:layout_height="@dimen/dp_118" />
-
-        <!--第一位的布局-->
-        <com.fy.navi.ui.view.SkinLinearLayout
-            android:id="@+id/ll_first"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:background="@android:color/darker_gray"
-            tools:layout_height="@dimen/dp_104" />
+            tools:layout_height="@dimen/dp_210" />
 
         <!--第二位的布局-->
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_second"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_height="@dimen/dp_210"
             android:focusable="false"
+            android:layout_marginTop="@dimen/dp_98"
+            android:background="@drawable/bg_shadow_navi_cadillac_transparent"
+            android:paddingHorizontal="@dimen/dp_51"
+            android:paddingVertical="@dimen/dp_51"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_first"
+            app:layout_constraintTop_toTopOf="parent"
             tools:background="@android:color/darker_gray"
-            tools:layout_height="@dimen/dp_104" />
+            tools:layout_height="@dimen/dp_210" />
 
+        <!--第一位的布局-->
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/ll_first"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_210"
+            android:focusable="false"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/dp_51"
+            android:paddingVertical="@dimen/dp_51"
+            android:background="@drawable/bg_shadow_navi_cadillac_transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@android:color/darker_gray"
+            tools:layout_height="@dimen/dp_210" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/iv_toggle"
+            android:layout_width="@dimen/dp_168"
+            android:layout_height="@dimen/dp_30"
+            android:focusable="true"
+            android:paddingHorizontal="@dimen/dp_50"
+            android:layout_marginBottom="@dimen/dp_44"
+            android:src="@drawable/bg_hanging_toggle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

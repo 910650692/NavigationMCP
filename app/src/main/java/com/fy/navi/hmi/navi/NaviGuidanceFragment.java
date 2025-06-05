@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
@@ -142,6 +143,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     private void restoreSceneStatus() {
         ArrayList<Integer> list = mViewModel.getSceneStatus();
+        if (ConvertUtils.isEmpty(list)) {
+            Logger.i(TAG, "restoreSceneStatus list is null");
+            return;
+        }
         mBinding.sceneNaviViaInfo.setSceneState(list.get(0));
         mBinding.sceneNaviLastMile.setSceneState(list.get(1));
         mBinding.sceneNaviParallel.setSceneState(list.get(2));
@@ -631,5 +636,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (null != mBinding.sceneNaviViaDetail) {
             mBinding.sceneNaviViaDetail.updateNewestViaPoint(naviViaEntity);
         }
+    }
+
+    public void onMeterAction() {
+        mBinding.sceneNaviControl.onMeterAction();
     }
 }

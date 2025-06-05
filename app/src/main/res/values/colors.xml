@@ -86,6 +86,7 @@
     <color name="route_charge_param_total_color">#80000000</color>
     <color name="route_charge_button_color">#FF2461EA</color>
     <color name="route_charge_button_text_color">#FFFFFFFF</color>
+    <color name="route_progressBar_color">#4ABA59</color>
     <color name="route_logo_color">#FFFFFFFF</color>
     <color name="route_white">#FFFFFFFF</color>
 

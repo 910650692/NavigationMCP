@@ -678,7 +678,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return;
         }
         if (isMaxRouteParam(mapTypeId)) {
-            callBackFailMsg(mapTypeId, "途经点添加失败：途经点超过最大限制");
+            callBackFailMsg(mapTypeId, "途经点添加失败：最多只能添加5个途径点");
             return;
         }
         final List<RouteParam> routeParams = mViaRouteParams.get(mapTypeId);
@@ -706,7 +706,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return;
         }
         if (isMaxRouteParam(mapTypeId)) {
-            callBackFailMsg(mapTypeId, "途经点添加失败：途经点超过最大限制");
+            callBackFailMsg(mapTypeId, "途经点添加失败：最多只能添加5个途径点");
             return;
         }
         final List<RouteParam> routeParams = mViaRouteParams.get(mapTypeId);

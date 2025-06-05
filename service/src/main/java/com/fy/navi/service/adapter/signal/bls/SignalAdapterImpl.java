@@ -628,11 +628,17 @@ public class SignalAdapterImpl implements SignalApi {
     @Override
     public void setNaviVolume(int volume) {
         Logger.d(TAG, volume);
+        if (mCarAudioManager == null) {
+            return;
+        }
         mCarAudioManager.setGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1, volume, 0);
     }
 
     @Override
     public int getNaviVolume() {
+        if (mCarAudioManager == null) {
+            return -1;
+        }
         int groupVolume = mCarAudioManager.getGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1);
         Logger.d(TAG, groupVolume);
         return groupVolume;

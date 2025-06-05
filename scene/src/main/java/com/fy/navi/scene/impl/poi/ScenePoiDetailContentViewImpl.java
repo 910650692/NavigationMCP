@@ -137,7 +137,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     }
 
     public void keywordSearch(PoiInfoEntity poiInfo){
-        mSearchPackage.keywordSearch(1,poiInfo.getName(),true);
+        mTaskId = mSearchPackage.keywordSearch(1,poiInfo.getName(),true);
     }
 
     // 云端自营站查询详情
@@ -205,6 +205,18 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     public void createLabelMarker(final SearchResultEntity searchResultEntity) {
         if (searchResultEntity != null) {
             mSearchPackage.createLabelMarker(searchResultEntity);
+        }
+    }
+
+    /**
+     * 清除POI点所有相关扎标
+     */
+    public void clearAllPoiMarker() {
+        if (mSearchPackage != null) {
+            mSearchPackage.clearPoiLabelMark();
+            mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
+            mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
+            mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
         }
     }
 

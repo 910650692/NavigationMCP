@@ -62,10 +62,17 @@ public class ChargeCardView extends CardView<NaviSceneNearProvideStationChargeBi
         final PoiInfoEntity poiInfo = dataList.get(0);
         final List<ChargeInfo> chargeInfos = poiInfo.getChargeInfoList();
         mBinding.tvTitle.setText(poiInfo.getName());
+        mBinding.tvTitleUnexpand.setText(poiInfo.getName());
         mBinding.tvDistance.setText(poiInfo.getDistance());
         if (!ConvertUtils.isEmpty(chargeInfos)) {
             final ChargeInfo chargeInfo = chargeInfos.get(0);
             setStationInfo(chargeInfo);
+        }
+        if(CardManager.getInstance().judgeDestinationIsChargeStation(poiInfo)){
+            mBinding.layoutChargeDesc.tvAddress.setVisibility(VISIBLE);
+            mBinding.layoutChargeDesc.tvAddress.setText(poiInfo.getAddress());
+        } else {
+            mBinding.layoutChargeDesc.tvAddress.setVisibility(GONE);
         }
     }
 
@@ -100,6 +107,21 @@ public class ChargeCardView extends CardView<NaviSceneNearProvideStationChargeBi
             mBinding.layoutChargeDesc.tvTense.setVisibility(View.VISIBLE);
         } else {
             mBinding.layoutChargeDesc.tvTense.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setExpandState(boolean isExpand){
+        if(mBinding == null){
+            return;
+        }
+        Logger.i(TAG, " setExpandState isExpand:"+isExpand);
+        if(isExpand){
+            mBinding.clChargeExpand.setVisibility(View.VISIBLE);
+            mBinding.clChargeUnexpand.setVisibility(View.GONE);
+        } else {
+            mBinding.clChargeExpand.setVisibility(View.GONE);
+            mBinding.clChargeUnexpand.setVisibility(View.VISIBLE);
         }
     }
 }

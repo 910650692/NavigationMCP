@@ -22,7 +22,7 @@
     <com.fy.navi.ui.view.SwipeMenuLayout
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_168"
+        android:layout_height="wrap_content"
         android:focusable="false"
         android:orientation="horizontal">
 
@@ -90,6 +90,7 @@
                 android:focusable="true"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:orientation="vertical"
+                android:layout_marginVertical="@dimen/dp_22"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
                 app:layout_constraintStart_toEndOf="@id/sk_icon_layout"

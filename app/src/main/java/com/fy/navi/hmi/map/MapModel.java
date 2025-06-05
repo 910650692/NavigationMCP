@@ -546,13 +546,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         return mViewModel.bottomNaviVisibility.get();
     }
 
-    private void clearSearchView(){
-        searchPackage.clearPoiLabelMark();
-        searchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
-        searchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
-        searchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
-    }
-
     private void startSelfParkingTimer() {
         cancelSelfParkingTimer();
         if (parkingViewExist()) {
@@ -562,8 +555,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
                     Logger.d("onFinish-startSelfParkingTimer-true");
                     if (getTopFragment(PoiDetailsFragment.class)) {
-                        mViewModel.closePoiFragment();
-                        clearSearchView();
+                        closeFragment(true);
                     }
                 }
                 Logger.d("onFinish-startSelfParkingTimer");

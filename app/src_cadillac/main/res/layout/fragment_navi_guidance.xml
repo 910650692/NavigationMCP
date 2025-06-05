@@ -175,10 +175,9 @@
             <!--悬挂卡-->
             <com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHangingCard
                 android:id="@+id/scene_handing_card"
-                android:layout_width="@dimen/dp_820"
+                android:layout_width="@dimen/dp_922"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_51"
-                android:layout_marginTop="@dimen/dp_m_31"
+                android:layout_marginTop="@dimen/dp_m_81"
                 android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 android:visibility="@{ViewModel.mHandingCardVisibility?View.VISIBLE:View.GONE}"

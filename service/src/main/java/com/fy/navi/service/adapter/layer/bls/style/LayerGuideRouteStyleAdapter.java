@@ -596,7 +596,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     @Override
     public MarkerInfoBean createMarkerInfoBean(LayerItem item, String markerInfo) {
         Logger.d(TAG, "createMarkerInfoBean markerInfo " + markerInfo);
-        String fileStringFromAssets = FileUtils.getFileStringFromAssets(AppContext.getInstance().getMApplication(), GBLCacheFilePath.BLS_ASSETS_LAYER_MARKER_INFO_PATH);
+        String fileStringFromAssets = FileUtils.getFileStringFromAssets(AppContext.getInstance().getMApplication(), GBLCacheFilePath.BLS_ASSETS_LAYER_CARD_MARKER_INFO_PATH);
         Logger.d(TAG, "createMarkerInfoBean fileStringFromAssets " + fileStringFromAssets);
         StyleJsonAnalysisUtil util = new StyleJsonAnalysisUtil(fileStringFromAssets);
         Logger.d(TAG, "createMarkerInfoBean util " + ConvertUtils.isEmpty(util));

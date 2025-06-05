@@ -47,6 +47,7 @@ public class SearchResultEntity implements Parcelable {
     private float mZoomLeve;
     private String mRetain;
     private List<SearchCategoryLocalInfo> mLocalInfoList;
+    private List<SearchCategoryLocalInfo> mLevel2LocalInfoList;
     //返回的总item数
     private int mTotal;
     private int mPoiType;
@@ -251,6 +252,7 @@ public class SearchResultEntity implements Parcelable {
         mZoomLeve = in.readFloat();
         mRetain = in.readString();
         mLocalInfoList = in.createTypedArrayList(SearchCategoryLocalInfo.CREATOR);
+        mLevel2LocalInfoList = in.createTypedArrayList(SearchCategoryLocalInfo.CREATOR);
         mTotal = in.readInt();
         mPoiType = in.readInt();
         mQueryTypeList = in.createStringArrayList();
@@ -286,6 +288,7 @@ public class SearchResultEntity implements Parcelable {
         dest.writeFloat(mZoomLeve);
         dest.writeString(mRetain);
         dest.writeTypedList(mLocalInfoList);
+        dest.writeTypedList(mLevel2LocalInfoList);
         dest.writeInt(mTotal);
         dest.writeInt(mPoiType);
         dest.writeStringList(mQueryTypeList);

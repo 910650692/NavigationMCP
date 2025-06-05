@@ -273,12 +273,13 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
      * 判断数据是否已收藏或是否是途经点
      */
     private void isFavoriteOrViaPoint() {
-        final boolean mIsFavoriteOrViaPoint;
+        boolean mIsFavoriteOrViaPoint = false;
         if (mPoiType == AutoMapConstant.HomeCompanyType.ALONG_WAY) {
             mIsFavoriteOrViaPoint = RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiInfoEntity);
-        } else {
+        } else if(mPoiType == HomeCompanyType.COLLECTION){
             mIsFavoriteOrViaPoint = !BehaviorPackage.getInstance().isFavorite(mPoiInfoEntity).isEmpty();
         }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"IsFavoriteOrViaPoint: " + mIsFavoriteOrViaPoint);
         if (mIsFavoriteOrViaPoint) {
             mViewBinding.stvSetting.setEnabled(false);
             mViewBinding.stvSetting.setAlpha(0.5f);

@@ -8,6 +8,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/cl_hanging_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -47,6 +48,15 @@
             tools:background="@android:color/darker_gray"
             tools:layout_height="@dimen/dp_104" />
 
-
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/iv_toggle"
+            android:layout_width="@dimen/dp_168"
+            android:layout_height="@dimen/dp_30"
+            android:paddingHorizontal="@dimen/dp_50"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:src="@drawable/bg_hanging_toggle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

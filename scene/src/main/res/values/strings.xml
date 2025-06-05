@@ -107,6 +107,7 @@
     <string name="navi_recommend_parking_adequate">充足</string>
     <string name="navi_recommend_parking_end">当前终点</string>
     <string name="navi_via_num">"%s 等%d个途径点"</string>
+    <string name="navi_meter_start">仪表导航已开启，地图默认显示全程路线</string>
     <string name="navi_send">发送</string>
     <string name="navi_send_request_info">是否需要发送目的地到手机继续导航？</string>
     <string name="navi_arrive_destination">即将达到目的地</string>
@@ -208,6 +209,7 @@
     <string name="mps_set_home_success">设置家成功</string>
     <string name="mps_set_company">设置为公司</string>
     <string name="mps_set_company_success">设置公司成功</string>
+    <string name="mps_set_collect">收藏成功</string>
     <string name="mps_set_add">添加</string>
     <string name="favorite_item_top">置顶</string>
     <string name="oil_type_92">92#</string>

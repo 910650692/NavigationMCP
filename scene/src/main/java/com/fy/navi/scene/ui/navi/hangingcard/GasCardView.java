@@ -60,6 +60,7 @@ public class GasCardView extends CardView<NaviSceneNearProvideStationGasBinding>
         final PoiInfoEntity poiInfo = dataList.get(0);
         final List<GasStationInfo> gasInfos = poiInfo.getStationList();
         mBinding.tvTitle.setText(poiInfo.getName());
+        mBinding.tvTitleUnexpand.setText(poiInfo.getName());
         mBinding.tvDistance.setText(poiInfo.getDistance());
         mBinding.llTypeAndPrice.setVisibility(ConvertUtils.isEmpty(gasInfos) ? View.GONE : View.VISIBLE);
         if (!ConvertUtils.isEmpty(gasInfos)) {
@@ -88,6 +89,20 @@ public class GasCardView extends CardView<NaviSceneNearProvideStationGasBinding>
             mBinding.tv95Price.setText(firstBean.getPrice());
 
             mBinding.tv92.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setExpandState(boolean isExpand){
+        if(mBinding == null){
+            return;
+        }
+        if(isExpand){
+            mBinding.clGasExpand.setVisibility(View.VISIBLE);
+            mBinding.clGasUnexpand.setVisibility(View.GONE);
+        } else {
+            mBinding.clGasExpand.setVisibility(View.GONE);
+            mBinding.clGasUnexpand.setVisibility(View.VISIBLE);
         }
     }
 }

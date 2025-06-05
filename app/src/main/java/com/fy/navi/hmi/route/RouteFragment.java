@@ -743,7 +743,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             final View customViewItem = inflater.inflate(R.layout.item_route_charge_progress, routeChargeProgressLayout, false);
             customViewItem.setId(View.generateViewId());
             final SkinTextView distanceText = customViewItem.findViewById(R.id.tv_route_charge);
-            distanceText.setText(poiInfoEntity.getDistance());
+            distanceText.setText(poiInfoEntity.getDistance().replace("公里", "km").replace("米","m"));
             if (mRouteChargeProgressViews == null) {
                 mRouteChargeProgressViews = new ConcurrentHashMap<>();
             }

@@ -81,4 +81,14 @@
         android:textColor="@color/card_tense_color"
         android:textSize="@dimen/sp_32" />
 
+    <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/tv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/traffic_title_color"
+        android:textSize="@dimen/sp_26"
+        android:text="港城广场充电111-112"/>
 </com.fy.navi.ui.view.SkinLinearLayout>

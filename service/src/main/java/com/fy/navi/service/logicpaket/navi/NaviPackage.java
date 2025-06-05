@@ -145,9 +145,24 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * unInit引导服务
      */
     public void unInitNaviService() {
-        if(mNaviAdapter != null) {
+        if (mNaviAdapter != null) {
             mNaviAdapter.unInitNaviService();
         }
+    }
+
+    /**
+     * 仪表地图触发全览
+     */
+    public void onMeterAction() {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onMeterAction();
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -157,7 +172,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * @return 是否导航成功
      */
     public boolean startNavigation(final boolean isSimulate) {
-        if(mNaviAdapter == null) {
+        if (mNaviAdapter == null) {
             Logger.e(TAG, "startNavigation", "mNaviAdapter == null");
             return false;
         }
@@ -181,7 +196,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_DESK_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.CLUSTER_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.HUD_MAP, true);
-            mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP,false);
+            mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
             PathInfo pathInfo = mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP) ==
                     null ? null :
@@ -215,7 +230,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public boolean stopNavigation() {
         Logger.i(TAG, "stopNavigation");
-        if(mNaviAdapter == null) {
+        if (mNaviAdapter == null) {
             Logger.e(TAG, "stopNavigation", "mNaviAdapter == null");
             return false;
         }
@@ -226,7 +241,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
             mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, false);
             mLayerAdapter.setFollowMode(MapType.HUD_MAP, false);
-            mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP,true);
+            mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
             sendBuryPointForCloseNavi();
         } else {
@@ -236,9 +251,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_END_MANUAL)
-    private void sendBuryPointForCloseNavi(){
+    private void sendBuryPointForCloseNavi() {
         NaviEtaInfo mNaviEtaInfo = getCurrentNaviEtaInfo();
-        if(mNaviEtaInfo == null){
+        if (mNaviEtaInfo == null) {
             Logger.e(MapDefaultFinalTag.NAVI_BURY_POINT, "eventName-" + BuryConstant.EventName.AMAP_NAVI_END_MANUAL + ": mNaviEtaInfo is null");
             return;
         }
@@ -386,7 +401,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public void selectMainPathID(final long pathID) {
         ThreadManager.getInstance().postUi(() -> {
-            if(mNaviAdapter != null) {
+            if (mNaviAdapter != null) {
                 mNaviAdapter.selectMainPathID(pathID);
             }
         });
@@ -408,12 +423,13 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     /*设置静音*/
     public void setMute(final boolean isMute) {
-        mSettingAdapter.setConfigKeyMute(isMute? 1 : 0);
+        mSettingAdapter.setConfigKeyMute(isMute ? 1 : 0);
         mIsMute = isMute;
     }
 
     /*是否静音*/
     public boolean isMute() {
+        Logger.i(TAG, "isMute: " + mIsMute);
         return mIsMute;
     }
 
@@ -424,7 +440,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public void obtainSAPAInfo(final boolean isFindRemainPath) {
         ThreadManager.getInstance().postUi(() -> {
-            if(mNaviAdapter != null) {
+            if (mNaviAdapter != null) {
                 final long l = mNaviAdapter.obtainSAPAInfo(isFindRemainPath);
                 Logger.i(TAG, "obtainSAPAInfo: " + l);
             }
@@ -506,7 +522,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Override
     public void onPlayTTS(final SoundInfoEntity info) {
         Logger.i(TAG, "onPlayTTS: " + (info == null ? "" : info.getText()));
-        if(info == null){
+        if (info == null) {
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
@@ -968,7 +984,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     /**
-     *
      * @return 参考AutoMapConstant.AppRunStatus.
      */
     public int getIsAppInForeground() {
@@ -986,7 +1001,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public void setTmcData(final NaviTmcInfo naviTmcInfo) {
         Logger.i(TAG, "setTmcData");
-        if(mNaviAdapter != null) {
+        if (mNaviAdapter != null) {
             mNaviAdapter.setTmcData(naviTmcInfo);
         }
     }
@@ -1013,14 +1028,14 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public int getTmcStatus(final String a, final String b, final String c,
                             final MapType mapTypeId) {
         Logger.i(TAG, "getTmcStatus a:" + a + " b:" + b + " c:" + c + " mapTypeId:" + mapTypeId);
-        if(mNaviAdapter == null) {
+        if (mNaviAdapter == null) {
             return -1;
         }
         return mNaviAdapter.getTmcStatus(a, b, c, mapTypeId);
     }
 
     public String getFrontTmcStatus() {
-        if(mNaviAdapter == null) {
+        if (mNaviAdapter == null) {
             return "";
         }
         return mNaviAdapter.getFrontTmcStatus();
@@ -1110,8 +1125,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     /**
-     * @param mapType 屏幕ID
-     * @param pathId 道路唯一标识符
+     * @param mapType       屏幕ID
+     * @param pathId        道路唯一标识符
      * @param roadLinkIndex 道路连接索引
      * @return TMC状态值
      */
@@ -1139,7 +1154,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * 更新电量信息
      */
     public void updateBatteryInfo() {
-        if(mNaviAdapter != null) {
+        if (mNaviAdapter != null) {
             mNaviAdapter.updateBatteryInfo();
         }
     }
@@ -1149,7 +1164,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * @return 获取自动添加的途径点信息
      */
     public List<NaviViaEntity> getAllViaPoints() {
-        if(mNaviAdapter == null) {
+        if (mNaviAdapter == null) {
             return null;
         }
         PathInfo pathInfo = OpenApiHelper.getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -1272,21 +1287,21 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     public void pauseNavi() {
-        if(mNaviAdapter == null) {
+        if (mNaviAdapter == null) {
             return;
         }
         mNaviAdapter.pauseNavi();
     }
 
     public void resumeNavi() {
-        if(mNaviAdapter == null) {
+        if (mNaviAdapter == null) {
             return;
         }
         mNaviAdapter.resumeNavi();
     }
 
     public void setSimulationSpeed(int simulationSpeed) {
-        if(mNaviAdapter == null) {
+        if (mNaviAdapter == null) {
             return;
         }
         mNaviAdapter.setSimulationSpeed(simulationSpeed);

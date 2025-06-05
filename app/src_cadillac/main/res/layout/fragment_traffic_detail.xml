@@ -115,14 +115,19 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_desc"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_52"
+            android:layout_marginEnd="@dimen/dp_36"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_46"
             android:focusable="false"
-            app:layout_constraintStart_toStartOf="@id/tv_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_distance" />
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintStart_toStartOf="@id/parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_distance"
+            app:layout_constraintEnd_toEndOf="@id/parent"/>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_pic"

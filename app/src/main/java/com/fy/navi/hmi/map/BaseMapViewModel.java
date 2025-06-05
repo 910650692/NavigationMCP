@@ -203,7 +203,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         @Override
         @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_SEARCH)
         public void call() {
-            addFragment(new MainSearchFragment(), null);
+            Bundle bundle = new Bundle();
+            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON,
+                    AutoMapConstant.SearchType.MAIN_SEARCH_ICON);
+            addFragment(new MainSearchFragment(), bundle);
             mModel.stopCruise();
         }
     };
@@ -417,10 +420,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         Logger.i(TAG, "setMapCenterInScreen");
         mModel.setMapCenterInScreen(frameLayoutWidth);
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
+        boolean exist = StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),MainSearchFragment.class.getSimpleName());
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set(NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
-                NaviStatus.NaviStatusType.NAVING.equals(state));
+                NaviStatus.NaviStatusType.NAVING.equals(state) || exist);
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -430,14 +434,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void setMapCenterInScreen(final int frameLayoutWidth, final Bundle bundle) {
         int type = -1;
+        int searchKey = 0;
         if (bundle != null) {
             type = bundle.getInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, -1);
+            searchKey = bundle.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON, -1);
         }
         Logger.i(TAG, "setMapCenterInScreen type:" + type);
         mModel.setMapCenterInScreen(frameLayoutWidth);
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
-        mScaleViewVisibility.set(type != -1 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
+        mScaleViewVisibility.set(type != -1 || searchKey == AutoMapConstant.SearchType.MAIN_SEARCH_ICON
+                || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
                 NaviStatus.NaviStatusType.NAVING.equals(state));
         mainBTNVisibility.set(false);
@@ -1148,9 +1155,5 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         String finalTitle = title;
         String finalContent = content;
         ThreadManager.getInstance().postUi(() -> mView.showTripDialog(finalTitle, finalContent));
-    }
-
-    public void closePoiFragment(){
-        mView.closeAllFragmentsUntilTargetFragment(PoiDetailsFragment.class.getName());
     }
 }

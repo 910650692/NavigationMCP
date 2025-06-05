@@ -18,6 +18,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/cl_park_expand"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
             <View
                 android:id="@+id/view_bg"
                 android:layout_width="match_parent"
@@ -124,7 +129,55 @@
                 app:layout_constraintEnd_toEndOf="@id/tv_distance"
                 app:layout_constraintStart_toStartOf="@id/tv_distance"
                 app:layout_constraintTop_toTopOf="@id/view_bg" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/cl_park_unexpand"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_icon_unexpand"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:src="@drawable/img_navi_parking"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_title_unexpand"
+                    android:layout_width="@dimen/dp_350"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:layout_marginBottom="@dimen/dp_18"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/traffic_title_color"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/iv_icon_unexpand"
+                    tools:text="国家电网务区充电站充电充电…" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_sub_title_unexpand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_14"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="服务区"
+                    android:textColor="@color/traffic_title_color"
+                    android:textSize="@dimen/sp_22"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_title_unexpand"
+                    tools:text="服务区" />
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
         <include layout="@layout/handup_delete_view" />

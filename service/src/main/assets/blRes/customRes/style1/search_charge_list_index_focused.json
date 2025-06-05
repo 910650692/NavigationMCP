@@ -1,7 +1,8 @@
 {
   "point_layer_item_style": {
     "normal_style": {
-      "poi_marker_id": "layer_layout_search_charge_list_index_focused"
+      "poi_marker_id": "layer_layout_search_charge_list_index_focused",
+      "poi_marker_info": "marker_info_common_point_center"
     }
   }
 }

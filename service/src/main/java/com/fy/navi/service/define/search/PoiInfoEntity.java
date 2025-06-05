@@ -102,6 +102,8 @@ public class PoiInfoEntity implements Parcelable {
     private ArrayList<ArrayList<GeoPoint>> mPoiAoiBounds;
     // 道路边界点列表
     private ArrayList<ArrayList<GeoPoint>> mRoadPolygonBounds;
+    // 标签列表
+    private List<LabelInfo> mLableList;
 
     public int getPoiType() {
         return mPoiType;
@@ -745,6 +747,7 @@ public class PoiInfoEntity implements Parcelable {
         mChargeInfoList = in.createTypedArrayList(ChargeInfo.CREATOR);
         mStationList = in.createTypedArrayList(GasStationInfo.CREATOR);
         mChildInfoList = in.createTypedArrayList(ChildInfo.CREATOR);
+        mLableList = in.createTypedArrayList(LabelInfo.CREATOR);
         mStationName = in.readString();
         mStationTel = in.readString();
         mStationAddress = in.readString();
@@ -838,6 +841,7 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeTypedList(mChargeInfoList);
         parcel.writeTypedList(mStationList);
         parcel.writeTypedList(mChildInfoList);
+        parcel.writeTypedList(mLableList);
         parcel.writeString(mStationName);
         parcel.writeString(mStationTel);
         parcel.writeString(mStationAddress);

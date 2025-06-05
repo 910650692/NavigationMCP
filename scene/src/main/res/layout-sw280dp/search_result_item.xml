@@ -149,7 +149,7 @@
             android:id="@+id/poi_to_navi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_40"
             android:focusable="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:minWidth="@dimen/dp_90"
@@ -199,7 +199,7 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <include
                 android:id="@+id/scene_poi_item_charge_view"

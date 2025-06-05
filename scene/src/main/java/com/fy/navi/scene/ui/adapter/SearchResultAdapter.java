@@ -306,7 +306,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         }
 
         final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
-        final PoiDetailsScenicChildAdapter scenicChildAdapter = new PoiDetailsScenicChildAdapter();
+        final PoiListDetailsScenicChildAdapter scenicChildAdapter = new PoiListDetailsScenicChildAdapter();
         if (childInfoList != null && !childInfoList.isEmpty()) {
             for (ChildInfo childInfo : childInfoList) {
                 SearchPackage.getInstance().setGrandChildInfoList(childInfo)

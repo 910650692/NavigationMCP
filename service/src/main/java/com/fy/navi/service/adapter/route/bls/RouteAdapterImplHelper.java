@@ -1896,7 +1896,7 @@ public class RouteAdapterImplHelper {
         @Override
         public void onRerouteInfo(BLRerouteRequestInfo info) {
             Logger.i(TAG, "平行路切换onRerouteInfo: ", info.errCode + "----" + info.requestId + "----" + info.option.getRouteType() + "----" + info.option.getRouteReqId());
-            if (mRequsetId == -1 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
+            if (mRequsetId == -1 || info.requestId == 0 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
                 Logger.e(TAG, "have no this data");
                 return;
             }
@@ -1928,12 +1928,13 @@ public class RouteAdapterImplHelper {
             } else {
                 Logger.i(TAG, "onReroute: 其他情况引发的重算");
                 mRouteResultDataHashtable.put(info.requestId, requestRouteResult);
-                for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
-                    if (resultObserver == null) {
-                        continue;
-                    }
-                    resultObserver.onReRoute();
-                }
+                //其他回调速度快，用户感知不到，不展示加载框
+//                for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
+//                    if (resultObserver == null) {
+//                        continue;
+//                    }
+//                    resultObserver.onReRoute();
+//                }
             }
         }
 

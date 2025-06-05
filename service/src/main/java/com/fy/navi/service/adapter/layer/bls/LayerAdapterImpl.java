@@ -134,6 +134,11 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().drawRouteLine(routeResult);
     }
 
+    /* 设置起点扎标是否显示 */
+    public void setStartPointVisible(MapType mapTypeId, boolean visible) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().setStartPointVisible(visible);
+    }
+
     /* 路线替换补能扎标 */
     public void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateRouteReplaceChargePoints(chargeStationInfos);

@@ -215,6 +215,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         } else {
             isNaviSuccess = mNaviPackage.startNavigation(false);
         }
+        Logger.i(TAG, "startNavigation isNaviSuccess = " + isNaviSuccess);
         if (isNaviSuccess) {
             final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
             if (isAutoScale) {
@@ -246,6 +247,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mNaviPackage.addNaviRecord(true);
             mMapPackage.goToCarPosition(mapTypeId);
             mLayerPackage.setFollowMode(mapTypeId, true);
+            mLayerPackage.setStartPointVisible(mapTypeId, false);
         }
     }
 
@@ -340,6 +342,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mRoutePackage.removeAllRouteInfo(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
         mLayerPackage.setVisibleGuideSignalLight(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), false);
         mRoutePackage.clearRouteLine(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
+        mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
     }
 
     @Override
@@ -453,6 +456,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ImmersiveStatusScene.getInstance().unRegisterCallback("NaviGuidanceModel");
         mSearchPackage.unRegisterCallBack(NaviConstant.KEY_NAVI_MODEL);
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
+        mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
         if (mNaviPackage != null) {
             mNaviPackage.unregisterObserver(NaviConstant.KEY_NAVI_MODEL);
         }
@@ -893,6 +897,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         centerInfo.setSrcImg(R.drawable.img_message_center_weather);
         centerInfo.setMsgType(MessageCenterType.WEATHER);
         messageCenterManager.pushMessage(centerInfo);
+    }
+
+    @Override
+    public void onMeterAction() {
+        mViewModel.onMeterAction();
     }
 
     private void showDeleteAllTip(final NaviViaEntity entity) {

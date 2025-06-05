@@ -45,6 +45,7 @@ public interface AutoMapConstant {
             SearchType.COMMON_TO_COLLECT_SEARCH,
             SearchType.GET_POINT_TO_COLLECT_SEARCH,
             SearchType.POI_DETAIL_SEARCH,
+            SearchType.MAIN_SEARCH_ICON,
     })
     @interface SearchType {
         int SEARCH_SUGGESTION = 0; // 建议搜索
@@ -64,6 +65,7 @@ public interface AutoMapConstant {
         int GET_POINT_TO_COLLECT_SEARCH = 14; // 收到的点to收藏
         int POI_DETAIL_SEARCH = 15; // POI详情搜索，仅支持洗车，美食和景点
         int TERMINAL_PARK_AROUND_SEARCH = 16; // 终点停车场周边搜索
+        int MAIN_SEARCH_ICON = 17; // 主图页面搜索
     }
 
     /*** ！！！搜索相关,数据传递key,只能添加不能删除！！！ */
@@ -79,6 +81,7 @@ public interface AutoMapConstant {
             SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY,
             SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_COLLECTION,
             SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT,
+            SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON,
 
     })
     @interface SearchBundleKey {
@@ -98,6 +101,7 @@ public interface AutoMapConstant {
         String BUNDLE_KEY_SEARCH_SOURCE_DATA = "bundle_key_search_source_data";
         String BUNDLE_KEY_CHARGE_PRICE_LIST = "bundle_key_charge_price_list";
         String BUNDLE_KEY_CHARGE_EQUIPMENT_TYPE = "bundle_key_charge_equipment_type";
+        String BUNDLE_KEY_MAIN_SEARCH_ICON = "bundle_key_main_search_icon";
     }
 
     @interface NetSearchKey {

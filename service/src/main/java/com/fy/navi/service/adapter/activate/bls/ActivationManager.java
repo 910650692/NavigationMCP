@@ -317,9 +317,9 @@ public final class ActivationManager {
         final AtomicInteger retryCount = new AtomicInteger(0);
         final int maxRetries = 3;
         final long[] delays = {
+                AutoMapConstant.DELAY_MINUTE * 2,
                 AutoMapConstant.DELAY_MINUTE * 5,
-                AutoMapConstant.DELAY_MINUTE * 10,
-                AutoMapConstant.DELAY_MINUTE * 10
+                AutoMapConstant.DELAY_MINUTE * 5
         };
         final AtomicReference<Runnable> taskRef = new AtomicReference<>();
 
@@ -347,7 +347,7 @@ public final class ActivationManager {
                                     future.complete(false);
                                     executor.shutdownNow();
                                 } else {
-                                    executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
+                                    executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.MINUTES);
                                 }
                             } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
                                 Logger.d(TAG, "下单失败");
@@ -368,7 +368,7 @@ public final class ActivationManager {
                                 executor.shutdownNow();
                                 mActivateListener.onNetFailed();
                             } else {
-                                executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
+                                executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.MINUTES);
                             }
                         }
                     };
@@ -381,12 +381,12 @@ public final class ActivationManager {
             }
         };
         taskRef.set(task);
-        executor.schedule(task, delays[0], TimeUnit.SECONDS);
+        executor.schedule(task, delays[0], TimeUnit.MINUTES);
 
         try {
             // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
-            final long totalTimeout = Arrays.stream(delays).sum() + 10; // 2+5+5 +1=13分钟
-            return future.get(totalTimeout, TimeUnit.SECONDS);
+            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 2+5+5 +1=13分钟
+            return future.get(totalTimeout, TimeUnit.MINUTES);
         } catch (CancellationException e) {
             executor.shutdownNow();
             Logger.e(TAG, "CancellationException");

@@ -487,6 +487,16 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     }
 
     public void onSilentSearchResult(int taskId,SearchResultEntity mSearchResultEntity){
+        if (null == mSearchResultEntity || mSearchResultEntity.getPoiList().isEmpty() || ConvertUtils.isEmpty(mScreenViewModel)) {
+            //ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
+                + " currentId: " + mScreenViewModel.getMTaskId());
+
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
+            return;
+        }
         ArrayList<PoiInfoEntity> list = new ArrayList<>();
         list.add(mSearchResultEntity.getPoiList().get(0));
         SearchResultEntity searchResultEntity = new SearchResultEntity()
@@ -1529,6 +1539,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     @Override
     public void onDestroy() {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.clearAllPoiMarker();
+        }
         super.onDestroy();
         if (mAnimator != null) {
             mAnimator.cancel();

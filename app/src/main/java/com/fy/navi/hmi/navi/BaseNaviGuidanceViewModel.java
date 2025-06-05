@@ -718,4 +718,10 @@ public class BaseNaviGuidanceViewModel extends
             mView.updateNewestViaPoint(naviViaEntity);
         }
     }
+
+    public void onMeterAction() {
+        if (null != mView) {
+            mView.onMeterAction();
+        }
+    }
 }

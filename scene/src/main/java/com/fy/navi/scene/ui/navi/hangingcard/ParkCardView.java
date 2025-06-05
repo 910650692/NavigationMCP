@@ -58,6 +58,7 @@ public class ParkCardView extends CardView<NaviSceneNearProvideStationParkBindin
         }
         final PoiInfoEntity poiInfo = dataList.get(0);
         mBinding.tvTitle.setText(poiInfo.getName());
+        mBinding.tvTitleUnexpand.setText(poiInfo.getName());
         mBinding.tvDistance.setText(poiInfo.getDistance());
         List<ParkingInfo> parkingInfos = poiInfo.getParkingInfoList();
         if (!ConvertUtils.isEmpty(parkingInfos)) {
@@ -66,6 +67,20 @@ public class ParkCardView extends CardView<NaviSceneNearProvideStationParkBindin
             mBinding.tvTotalSize.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
             mBinding.tvFreeSize.setText(String.valueOf(parkingInfo.getSpaceFree()));
             mBinding.tvTotalSize.setText("/" + parkingInfo.getSpaceTotal());
+        }
+    }
+
+    @Override
+    public void setExpandState(boolean isExpand){
+        if(mBinding == null){
+            return;
+        }
+        if(isExpand){
+            mBinding.clParkExpand.setVisibility(View.VISIBLE);
+            mBinding.clParkUnexpand.setVisibility(View.GONE);
+        } else {
+            mBinding.clParkExpand.setVisibility(View.GONE);
+            mBinding.clParkUnexpand.setVisibility(View.VISIBLE);
         }
     }
 }

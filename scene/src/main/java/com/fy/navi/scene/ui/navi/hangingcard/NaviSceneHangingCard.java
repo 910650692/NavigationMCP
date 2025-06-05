@@ -5,14 +5,15 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.HangingCardLayoutBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviHangingCardImpl;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
@@ -30,6 +31,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding, SceneNaviHangingCardImpl> {
     private static final String TAG = "NaviSceneHangingCard";
+    //是否展开状态
+    private boolean mIsExpand = false;
+    //折叠时是否隐藏第三个
+    private boolean mIsHideThird = false;
+    //折叠时是否只展示一条
+    private boolean mIsOnlyOne = false;
 
     public NaviSceneHangingCard(@NonNull Context context) {
         super(context);
@@ -70,6 +77,19 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
     @Override
     protected void initObserver() {
 
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mIsHideThird = getResources().getDimensionPixelSize(R.dimen.hanging_card_hide_height) == 0;
+        mViewBinding.ivToggle.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIsExpand = !mIsExpand;
+                assembleExpandLayout(mIsExpand);
+            }
+        });
     }
 
     @Override
@@ -147,27 +167,85 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
      */
     private synchronized void assembleLayout() {
         if (ConvertUtils.isNull(mScreenViewModel)) return;
-        final int showSize = mScreenViewModel.getUiList().size();
         final boolean hasViaTabShow = CardManager.getInstance().getSceneOnShow(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO);
         final boolean hasControlShow = CardManager.getInstance().getSceneOnShow(NaviSceneId.NAVI_SCENE_CONTROL);
-        if (showSize >= 2 && hasViaTabShow && hasControlShow) {
-            assembleExpandLayout();
-        } else {
-            assembleUnExpandLayout();
-        }
+        mIsOnlyOne = hasViaTabShow && hasControlShow && mIsHideThird;
+        Logger.i(TAG, "assembleLayout hasViaTabShow:" + hasViaTabShow + " hasControlShow:" + hasControlShow + " mIsOnlyOne:" + mIsOnlyOne);
+        assembleExpandLayout(mIsExpand);
     }
 
     /***
      * 组装折叠布局
      */
-    private void assembleExpandLayout() {
+    private void assembleExpandLayout(boolean isExpand) {
         if (ConvertUtils.isNull(mScreenViewModel)) {
             return;
         }
         CopyOnWriteArrayList<HandCardType> uiList = mScreenViewModel.getUiList();
-        addChild(uiList.get(0), mViewBinding.llFirst);
-        addChild(uiList.get(1), mViewBinding.llThird);
-        Logger.i(TAG, "assembleExpandLayout");
+        if (ConvertUtils.isEmpty(uiList)) {
+            mViewBinding.llFirst.removeAllViews();
+            mViewBinding.llSecond.removeAllViews();
+            mViewBinding.llThird.removeAllViews();
+            mViewBinding.ivToggle.setVisibility(GONE);
+            notifySceneStateChange(false);
+        } else if (uiList.size() == 1) {
+            addChild(uiList.get(0), mViewBinding.llFirst, true);
+            mViewBinding.llFirst.setVisibility(VISIBLE);
+            mViewBinding.llSecond.removeAllViews();
+            mViewBinding.llThird.removeAllViews();
+            mViewBinding.llSecond.setVisibility(GONE);
+            mViewBinding.llThird.setVisibility(GONE);
+            mViewBinding.ivToggle.setVisibility(GONE);
+        } else if (uiList.size() == 2) {
+            addChild(uiList.get(0), mViewBinding.llFirst, true);
+            addChild(uiList.get(1), mViewBinding.llSecond, isExpand);
+            mViewBinding.llFirst.setVisibility(VISIBLE);
+            mViewBinding.llSecond.setVisibility(VISIBLE);
+            mViewBinding.llThird.removeAllViews();
+            mViewBinding.llThird.setVisibility(GONE);
+            mViewBinding.ivToggle.setVisibility(VISIBLE);
+            int secondTop = getResources().getDimensionPixelSize(R.dimen.hanging_card_second_unexpand);
+            if (isExpand) {
+                secondTop = getResources().getDimensionPixelSize(R.dimen.hanging_card_second_expand);
+            } else {
+                if (mIsOnlyOne) {
+                    secondTop = 0;
+                }
+            }
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(mViewBinding.clHangingCard);
+            constraintSet.connect(mViewBinding.llSecond.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, secondTop);
+            constraintSet.applyTo(mViewBinding.clHangingCard);
+            Logger.i(TAG, "assembleExpandLayout secondTop:" + secondTop);
+        } else if (uiList.size() == 3) {
+            addChild(uiList.get(0), mViewBinding.llFirst, true);
+            addChild(uiList.get(1), mViewBinding.llSecond, isExpand);
+            addChild(uiList.get(2), mViewBinding.llThird, isExpand);
+            mViewBinding.llFirst.setVisibility(VISIBLE);
+            mViewBinding.llSecond.setVisibility(VISIBLE);
+            mViewBinding.llThird.setVisibility(VISIBLE);
+            mViewBinding.ivToggle.setVisibility(VISIBLE);
+            int secondTop = getResources().getDimensionPixelSize(R.dimen.hanging_card_second_unexpand);
+            int thirdTop = getResources().getDimensionPixelSize(R.dimen.hanging_card_third_unexpand);
+            if (isExpand) {
+                secondTop = getResources().getDimensionPixelSize(R.dimen.hanging_card_second_expand);
+                thirdTop = getResources().getDimensionPixelSize(R.dimen.hanging_card_third_expand);
+            } else {
+                if (mIsOnlyOne) {
+                    secondTop = 0;
+                    thirdTop = 0;
+                } else if (mIsHideThird) {
+                    thirdTop = 0;
+                }
+            }
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(mViewBinding.clHangingCard);
+            constraintSet.connect(mViewBinding.llSecond.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, secondTop);
+            constraintSet.connect(mViewBinding.llThird.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, thirdTop);
+            constraintSet.applyTo(mViewBinding.clHangingCard);
+            Logger.i(TAG, "assembleExpandLayout secondTop:" + secondTop + " thirdTop:" + thirdTop);
+        }
+        Logger.i(TAG, "assembleExpandLayout size:" + uiList.size() + " isExpand:" + isExpand + " mIsHideThird:" + mIsHideThird + " mIsOnlyOne:" + mIsOnlyOne);
     }
 
     /***
@@ -184,28 +262,32 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
             mViewBinding.llThird.removeAllViews();
             notifySceneStateChange(false);
         } else if (uiList.size() == 1) {
-            addChild(uiList.get(0), mViewBinding.llFirst);
+            addChild(uiList.get(0), mViewBinding.llFirst, false);
             mViewBinding.llSecond.removeAllViews();
             mViewBinding.llThird.removeAllViews();
         } else if (uiList.size() == 2) {
-            addChild(uiList.get(1), mViewBinding.llSecond);
+            addChild(uiList.get(1), mViewBinding.llSecond, false);
         }
         Logger.i(TAG, "assembleUnExpandLayout");
     }
 
-    private void addChild(HandCardType type, ViewGroup parent) {
+    private void addChild(HandCardType type, ViewGroup parent, boolean isExpand) {
         final CardView newCardView = CardManager.getInstance().createCardViewByType(this, type);
         if (parent.getChildCount() > 0) {
             CardView cardView = (CardView) parent.getChildAt(0);
             if (!ConvertUtils.isNull(cardView) && cardView.mType != type) {
                 parent.removeAllViews();
                 parent.addView(newCardView);
+                newCardView.setExpandState(isExpand);
                 if (isVisible()) {
                     newCardView.startTimer();
                 }
+            } else {
+                cardView.setExpandState(isExpand);
             }
         } else {
             parent.addView(newCardView);
+            newCardView.setExpandState(isExpand);
             if (isVisible()) {
                 newCardView.startTimer();
             }

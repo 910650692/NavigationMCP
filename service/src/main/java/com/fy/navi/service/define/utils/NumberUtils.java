@@ -13,6 +13,7 @@ public class NumberUtils {
     public static final int NUM_8 = 8;
     public static final int NUM_9 = 9;
     public static final int NUM_30 = 30;
+    public static final int NUM_31 = 31;
     public static final int NUM_60 = 60;
     public static final int NUM_200 = 200;
     public static final int NUM_500 = 500;

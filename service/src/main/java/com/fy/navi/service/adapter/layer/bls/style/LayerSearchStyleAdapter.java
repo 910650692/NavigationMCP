@@ -288,8 +288,11 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 @Override
                 public void onFocusProcess(View rootView, LayerItemData data) {
                     SearchChargeStationLayerItem info = (SearchChargeStationLayerItem) item;
+                    LinearLayout linearLayout = rootView.findViewById(R.id.search_charge_detail_linear);
                     TextView fastText = rootView.findViewById(R.id.search_charge_detail_fast);
                     TextView slowText = rootView.findViewById(R.id.search_charge_detail_slow);
+                    boolean isShowFast = true;
+                    boolean isShowSlow = true;
                     int fastFree = info.getMChargeStationInfo().fastFree;
                     int fastTotal = info.getMChargeStationInfo().fastTotal;
                     int slowFree = info.getMChargeStationInfo().slowFree;
@@ -298,22 +301,28 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     if (fastFree == NumberUtils.NUM_0 && fastTotal == NumberUtils.NUM_0) {
                         if (!ConvertUtils.isEmpty(fastText)) {
                             fastText.setVisibility(GONE);
+                            isShowFast = false;
                         }
                     }
                     Context context = rootView.getContext();
                     String fastString = context.getString(R.string.layer_search_along_way_charge_fast, fastFree, fastTotal);
-                    if (!ConvertUtils.isEmpty(fastText)) {
+                    if (!ConvertUtils.isEmpty(fastText) && isShowFast) {
                         fastText.setText(fastString);
                     }
 
                     if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
                         if (!ConvertUtils.isEmpty(slowText)) {
                             slowText.setVisibility(GONE);
+                            isShowSlow = false;
                         }
                     }
                     String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
-                    if (!ConvertUtils.isEmpty(slowText)) {
+                    if (!ConvertUtils.isEmpty(slowText) && isShowSlow) {
                         slowText.setText(slowString);
+                    }
+
+                    if (!isShowFast && !isShowSlow) {
+                        linearLayout.setVisibility(GONE);
                     }
 
                     if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
@@ -363,8 +372,11 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 @Override
                 public void onNormalProcess(View rootView, LayerItemData data) {
                     SearchChargeStationLayerItem info = (SearchChargeStationLayerItem) item;
+                    LinearLayout linearLayout = rootView.findViewById(R.id.search_charge_detail_linear);
                     TextView fastText = rootView.findViewById(R.id.search_charge_detail_fast);
                     TextView slowText = rootView.findViewById(R.id.search_charge_detail_slow);
+                    boolean isShowFast = true;
+                    boolean isShowSlow = true;
                     int fastFree = info.getMChargeStationInfo().fastFree;
                     int fastTotal = info.getMChargeStationInfo().fastTotal;
                     int slowFree = info.getMChargeStationInfo().slowFree;
@@ -373,6 +385,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     if (fastFree == NumberUtils.NUM_0 && fastTotal == NumberUtils.NUM_0) {
                         if (!ConvertUtils.isEmpty(fastText)) {
                             fastText.setVisibility(GONE);
+                            isShowFast = false;
                         }
                     }
                     Context context = rootView.getContext();
@@ -384,11 +397,16 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
                         if (!ConvertUtils.isEmpty(slowText)) {
                             slowText.setVisibility(GONE);
+                            isShowSlow = false;
                         }
                     }
                     String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
                     if (!ConvertUtils.isEmpty(slowText)) {
                         slowText.setText(slowString);
+                    }
+
+                    if (!isShowFast && !isShowSlow) {
+                        linearLayout.setVisibility(GONE);
                     }
 
                     if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {

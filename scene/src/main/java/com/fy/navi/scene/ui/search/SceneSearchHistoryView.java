@@ -219,8 +219,14 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                             return;
                         }
                     }
+                    String toastTip = switch (mHomeCompanyType) {
+                        case 1 -> getResources().getString(R.string.mps_set_home_success);
+                        case 2 -> getResources().getString(R.string.mps_set_company_success);
+                        case 3 -> getResources().getString(R.string.smp_set_add);
+                        default -> getResources().getString(R.string.mps_set_collect);
+                    };
                     BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
-                    ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
+                    ToastUtils.Companion.getInstance().showCustomToastView(toastTip);
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
                     showCurrentFragment();

@@ -160,6 +160,11 @@ public class LayerAdapter {
         mLayerApi.removeViaPoint(mapTypeId, pid);
     }
 
+    /* 设置起点扎标是否显示 */
+    public void setStartPointVisible(MapType mapTypeId, boolean visible) {
+        mLayerApi.setStartPointVisible(mapTypeId, visible);
+    }
+
     /**
      * 更新引导路线数据
      * @param pathInfoList 路线数据

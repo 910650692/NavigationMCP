@@ -12,16 +12,16 @@
         android:layout_height="wrap_content"
         android:text="@string/quick"
         android:textColor="@color/card_quick_color"
-        android:textSize="@dimen/sp_26" />
+        android:textSize="@dimen/sp_22" />
 
     <com.fy.navi.ui.view.SkinTextView
         android:id="@+id/tv_quick_use"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_9"
+        android:layout_marginStart="@dimen/dp_7"
         android:text="@string/quick"
         android:textColor="@color/traffic_title_color"
-        android:textSize="@dimen/sp_26"
+        android:textSize="@dimen/sp_22"
         tools:text="66" />
 
     <com.fy.navi.ui.view.SkinTextView
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:textColor="@color/traffic_title_color"
-        android:textSize="@dimen/sp_26"
+        android:textSize="@dimen/sp_22"
         tools:text="/88" />
 
 
@@ -38,19 +38,19 @@
         android:id="@+id/tv_logo_slow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_17"
+        android:layout_marginStart="@dimen/dp_14"
         android:text="@string/slow"
         android:textColor="@color/card_slow_color"
-        android:textSize="@dimen/sp_26" />
+        android:textSize="@dimen/sp_22" />
 
     <com.fy.navi.ui.view.SkinTextView
         android:id="@+id/tv_slow_use"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_9"
+        android:layout_marginStart="@dimen/dp_7"
         android:text="@string/quick"
         android:textColor="@color/traffic_title_color"
-        android:textSize="@dimen/sp_26"
+        android:textSize="@dimen/sp_22"
         tools:text="66" />
 
     <com.fy.navi.ui.view.SkinTextView
@@ -59,18 +59,29 @@
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:textColor="@color/traffic_title_color"
-        android:textSize="@dimen/sp_26"
+        android:textSize="@dimen/sp_22"
         tools:text="/88" />
 
     <com.fy.navi.ui.view.SkinTextView
         android:id="@+id/tv_tense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_14"
         android:text="@string/tense"
         android:visibility="invisible"
         tools:visibility="visible"
         android:textColor="@color/card_tense_color"
-        android:textSize="@dimen/sp_26" />
+        android:textSize="@dimen/sp_22" />
 
+    <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/tv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:visibility="gone"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/traffic_title_color"
+        android:textSize="@dimen/sp_22"
+        android:text="港城广场充电111-112"/>
 </com.fy.navi.ui.view.SkinLinearLayout>

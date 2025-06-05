@@ -128,6 +128,11 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.openDynamicLevel(mapTypeId, dynamicLevelMode);
     }
 
+    /* 设置起点扎标是否显示 */
+    public void setStartPointVisible(MapType mapTypeId, boolean visible) {
+        mLayerAdapter.setStartPointVisible(mapTypeId, visible);
+    }
+
     /**
      * 搜索图层Item点击回调
      *

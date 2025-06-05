@@ -52,7 +52,7 @@
             android:id="@+id/scl_delete_record"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_0"
-            android:padding="@dimen/dp_20"
+            android:padding="@dimen/dp_16"
             android:focusable="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             app:layout_constraintBottom_toBottomOf="parent"

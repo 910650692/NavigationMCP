@@ -214,4 +214,10 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      * @param dataList
      */
     abstract void updateUi(List<PoiInfoEntity> dataList);
+
+    /**
+     * 是否展开状态
+     * @param isExpand
+     */
+    public void setExpandState(boolean isExpand){}
 }

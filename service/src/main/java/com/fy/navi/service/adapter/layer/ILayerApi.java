@@ -108,6 +108,9 @@ public interface ILayerApi {
      /* 删除途经点 */
     void removeViaPoint(MapType mapTypeId, String pid);
 
+    /* 设置起点扎标是否显示 */
+    void setStartPointVisible(MapType mapTypeId, boolean visible);
+
     /*========================================= ROUTE LAYER START =========================================*/
 
     /*是否打开自动比例尺*/

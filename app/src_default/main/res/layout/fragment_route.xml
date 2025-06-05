@@ -125,7 +125,7 @@
             android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/route_line_info_title"
@@ -786,7 +786,7 @@
             android:layout_height="match_parent"
             android:clickable="false"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 3 ? View.VISIBLE : View.GONE}"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
                 android:id="@+id/route_right_tab_list_charge_scene"
@@ -865,7 +865,7 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/layout_route_charge_progress"
                 android:layout_width="@dimen/dp_946"
-                android:layout_height="@dimen/dp_197"
+                android:layout_height="@dimen/dp_170"
                 android:paddingVertical="@dimen/dp_29"
                 android:paddingHorizontal="@dimen/dp_29"
                 android:background="@drawable/bg_shadow_navi_buick"
@@ -877,7 +877,7 @@
 
                 <ProgressBar
                     android:id="@+id/route_charge_progress"
-                    android:layout_width="@dimen/dp_772"
+                    android:layout_width="@dimen/dp_768"
                     android:layout_height="@dimen/dp_6"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:max="100"
@@ -889,25 +889,25 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:thumb="@android:color/transparent"
+                    android:layout_marginTop="@dimen/dp_35"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/route_charge_start"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
-                    android:src="@drawable/img_route_logo_2d"
+                    android:src="@drawable/img_route_start"
                     android:layout_marginStart="@dimen/dp_40"
                     android:scaleType="centerCrop"
+                    android:layout_marginTop="@dimen/dp_19"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.fy.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/route_charge_progress_icons"
-                    android:layout_width="@dimen/dp_772"
+                    android:layout_width="@dimen/dp_768"
                     android:layout_height="match_parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/route_charge_progress"
@@ -920,12 +920,12 @@
                     android:src="@drawable/img_route_charge_exhaustion_point"
                     android:visibility="@{ViewModel.getRouteProgressChargeExhaustVisibility() ? View.VISIBLE : View.GONE}"
                     android:layout_marginStart="@dimen/dp_60"
-                    android:layout_marginEnd="@dimen/dp_56"
+                    android:layout_marginEnd="@dimen/dp_60"
+                    android:layout_marginTop="@dimen/dp_18"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
@@ -934,20 +934,19 @@
                     android:textColor="@color/text_route_defult"
                     android:textSize="@dimen/sp_26"
                     android:visibility="@{ViewModel.getRouteProgressChargeExhaustVisibility() ? View.VISIBLE : View.GONE}"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    app:layout_constraintBottom_toTopOf="@+id/route_charge_exhaustion_point"
+                    app:layout_constraintTop_toBottomOf="@+id/route_charge_exhaustion_point"
                     app:layout_constraintStart_toStartOf="@+id/route_charge_exhaustion_point"
                     app:layout_constraintEnd_toEndOf="@+id/route_charge_exhaustion_point"/>
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/route_charge_end"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_32"
-                    android:src="@drawable/img_route_charge_end_point"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
+                    android:src="@drawable/img_route_end"
                     android:layout_marginEnd="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_19"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/route_charge_total_mileage"
@@ -956,11 +955,9 @@
                     android:textColor="@color/text_route_defult"
                     android:textSize="@dimen/sp_26"
                     android:text="@{ViewModel.getRouteChargeTotalMileage()}"
-                    android:layout_marginTop="@dimen/dp_3"
                     android:layout_marginEnd="@dimen/dp_40"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/route_charge_end"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/route_charge_end" />
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 

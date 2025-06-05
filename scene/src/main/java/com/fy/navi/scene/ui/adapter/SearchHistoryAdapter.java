@@ -112,6 +112,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             holder.resultItemBinding.sllCollect.setVisibility(View.INVISIBLE);
             holder.resultItemBinding.searchIcon.setVisibility(View.VISIBLE);
             holder.resultItemBinding.poiIcon.setVisibility(View.GONE);
+            holder.resultItemBinding.stvDelete.setVisibility(View.GONE);
             holder.resultItemBinding.searchIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.search_poi_icon));
         } else {
             if (mIsShowIndex) {
@@ -125,6 +126,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             holder.resultItemBinding.poiIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_orientation));
             holder.resultItemBinding.skInfoLayout.setVisibility(View.VISIBLE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.VISIBLE);
+            holder.resultItemBinding.stvDelete.setVisibility(View.VISIBLE);
             holder.resultItemBinding.llActionContainer.setVisibility(mShowActionContainer ? View.VISIBLE : View.GONE);
             if (!ConvertUtils.isEmpty(mPoiEntities.get(position).getMEndPoint())) {
                 holder.resultItemBinding.poiDistance.setText(SearchPackage.getInstance().calcStraightDistance(

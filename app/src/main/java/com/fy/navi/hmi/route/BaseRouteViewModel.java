@@ -87,6 +87,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private final static String ROUTE_ERROR = "异常";
     private static final int HIDE_DELAY_TIME = 20 * 1000;
     private static final int REFRESH_TIME = 2 * 1000;
+    private static final int START_NAVI_TIME = 3 * 1000;
 
     private ObservableField<Integer> mTabVisibility;
 
@@ -475,6 +476,15 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mRefreshable = true;
         }
     };
+
+    private boolean mStartNavi = true;
+    private Runnable mStartNaviTimer = new Runnable() {
+        @Override
+        public void run() {
+            mStartNavi = true;
+        }
+    };
+
     //动态设置参数
     private int MsgDialogTop = 41;
     private int MsgDialogLeft = 1097;
@@ -950,6 +960,13 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param isSimNavi 是否模拟导航
      */
     public void startNavi(final boolean isSimNavi) {
+        //当前导航界面拉起慢，导致用户可以反复点击开始导航
+        if (NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus()) || !mStartNavi) {
+            Logger.d(TAG, "Already in navigation");
+            return;
+        }
+        mStartNavi = false;
+        ThreadManager.getInstance().postDelay(mStartNaviTimer, START_NAVI_TIME);
         final Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, isSimNavi
                 ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
@@ -1284,8 +1301,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "routeLineInfo is null");
                 return;
             }
-            mRouteChargeTotalMileage.set(ResourceUtils.Companion.getInstance().getString(R.string.route_total_mileage)
-                    + routeLineInfo.getMLength());
+            mRouteChargeTotalMileage.set(TimeUtils.getInstance().getDistanceMsg(routeLineInfo.getMDistance()));
             final EvRangeOnRouteInfo evRangeOnRouteInfo = mModel.getRangeOnRouteInfo(mModel.getCurrentIndex());
             mRouteTotalDistance = routeLineInfo.getMDistance();
             if (evRangeOnRouteInfo.isMCanArrived()) {

@@ -9,8 +9,8 @@
         <clip >
 
             <shape >
-                <gradient  android:angle="45" android:startColor="@color/bg_route_button_select_color"
-                    android:endColor="@color/bg_route_button_select_color" android:height="@dimen/dp_6"/>
+                <gradient  android:angle="45" android:startColor="@color/route_progressBar_color"
+                    android:endColor="@color/route_progressBar_color" android:height="@dimen/dp_6"/>
             </shape>
         </clip>
     </item>
