@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="white">#FFFFFFFF</color>
     <color name="layer_route_end_point_detail_color">#DC2B2B</color>
     <color name="layer_car_speed_color">#DC2B2B</color>
     <color name="layer_car_speed_unit_color">#CC000000</color>

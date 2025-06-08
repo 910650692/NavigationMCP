@@ -104,15 +104,16 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_add_via_distance"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_23"
                 android:focusable="false"
                 android:ellipsize="end"
-                android:gravity="center"
+                android:gravity="start"
                 android:maxLines="1"
                 android:textColor="@color/navi_color_000000_70"
                 android:textSize="@dimen/sp_38"
+                app:layout_constraintEnd_toStartOf="@+id/stv_arrive_time"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/stv_add_via_name"
                 tools:text="98公里  42分钟" />

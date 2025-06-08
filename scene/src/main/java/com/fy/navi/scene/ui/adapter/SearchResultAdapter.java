@@ -20,11 +20,15 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.adapter.GasStationAdapter;
 import com.fy.navi.scene.adapter.GridSpacingItemDecoration;
 import com.fy.navi.scene.databinding.SearchResultItemBinding;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
@@ -159,7 +163,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         }
         //预搜索高亮搜索文本
         if (mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
-            holder.mResultItemBinding.poiName.setText(matcherSearchTitle(AppContext.getInstance().
+            holder.mResultItemBinding.poiName.setText(matcherSearchTitle(AppCache.getInstance().
                     getMContext().getResources().getColor(R.color.navi_color_006CFF_100),
                     mPoiEntities.get(position).getName(), mSearchResultEntity.getKeyword()));
         }
@@ -248,6 +252,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private void setOnClickListener(@NonNull final ResultHolder holder, final int position) {
         holder.mResultItemBinding.getRoot().setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情");
+            sendBuryPointForSearchResult(position);
             if (mOnItemClickListener != null) {
                 if (!ConvertUtils.isEmpty(mPoiEntities) && position < mPoiEntities.size()) {
                     if (mParentSelectIndex == position && mChildSelectIndex != -1) {
@@ -273,6 +278,15 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         });
     }
 
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_LIST_SELECT)
+    private void sendBuryPointForSearchResult(int position) {
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, Integer.toString(position + 1))
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, mPoiEntities.get(position).getName())
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
+    }
+
     /**
      * 刷新通用视图
      * @param resultHolder holder
@@ -291,9 +305,13 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         if (pointTypeCode == AutoMapConstant.PointTypeCode.OTHERS) {
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.GONE);
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.GONE);
+            if (ConvertUtils.isEmpty(mPoiInfoEntity) || ConvertUtils.isEmpty(mPoiInfoEntity.getChildInfoList())) {
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+            }
         } else {
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.VISIBLE);
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
         }
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(View.VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
@@ -432,14 +450,17 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "spaceFree :" + spaceFree + " spaceTotal :" + spaceTotal);
         if (spaceFree == -1 && spaceTotal == -1) {
             resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
         } else if (spaceFree == -1) {
             parkString = resultHolder.mResultItemBinding.getRoot().getContext().getString(R.string.parking_lot_total, spaceTotal);
             resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(View.VISIBLE);
             resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.poiParkingFreeTotal.setText(parkString);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
         } else {
             resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(View.VISIBLE);
             parkString = resultHolder.mResultItemBinding.getRoot().getContext().getString(R.string.parking_lot_status, spaceFree, spaceTotal);
             resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.poiParkingFreeTotal.setText(parkString);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
         }
     }
 
@@ -453,9 +474,11 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         resultHolder.mResultItemBinding.scenePoiItemCateringView.poiCateringPrice.setText("");
         if (mPoiInfoEntity.getAverageCost() == -1) {
             resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
         } else {
             resultHolder.mResultItemBinding.scenePoiItemCateringView.poiCateringPrice.setText(String.valueOf(mPoiInfoEntity.getAverageCost()));
             resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
         }
     }
 
@@ -474,6 +497,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshChargeStationView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshChargeStationView");
+        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
         // 重置includeview中视图状态避免数据重用导致数据异常加载
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastRoot.setVisibility(View.VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowRoot.setVisibility(View.VISIBLE);
@@ -485,6 +509,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(View.VISIBLE);
 
         final List<ChargeInfo> chargeInfos = mPoiInfoEntity.getChargeInfoList();
+        if (ConvertUtils.isEmpty(chargeInfos)) {
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+            return;
+        } else {
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+        }
         final ChargeInfo chargeInfo = chargeInfos.get(0);
         final String fastFree = chargeInfo.getFast_free() == 0 ? "" : chargeInfo.getFast_free() + "";
         String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "/" + chargeInfo.getFast_total();
@@ -548,8 +578,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             // 使用ArrayList构造函数创建新的列表
             final ArrayList<GasStationInfo> newList = new ArrayList<>(subList);
             gasStationAdapter.setGasStationList(newList);
-        } else {
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+        } else if (!ConvertUtils.isEmpty(gasStationInfos) && gasStationInfos.size() <= 2) {
             gasStationAdapter.setGasStationList(gasStationInfos);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+        } else {
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
         }
         resultHolder.mResultItemBinding.scenePoiItemGasView.getRoot().setVisibility(View.VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemGasView.poiGasOilList.setLayoutManager(

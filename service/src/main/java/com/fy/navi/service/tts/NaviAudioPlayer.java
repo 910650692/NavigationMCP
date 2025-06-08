@@ -16,8 +16,8 @@ import android.util.SparseArray;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AppCache;
 import com.autonavi.gbl.guide.model.PlayRingType;
-import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.R;
 
@@ -103,7 +103,7 @@ public class NaviAudioPlayer {
 
     public void init() {
         if (null == mAudioManager) {
-            mAudioManager = (AudioManager) AppContext.getInstance().getMContext().getSystemService(Context.AUDIO_SERVICE);
+            mAudioManager = (AudioManager) AppCache.getInstance().getMContext().getSystemService(Context.AUDIO_SERVICE);
             //监听录音配置变化
             mAudioManager.registerAudioRecordingCallback(new AudioManager.AudioRecordingCallback() {
 
@@ -322,7 +322,7 @@ public class NaviAudioPlayer {
         if(resId == 0){
             return;
         }
-        MediaPlayer player = MediaPlayer.create(AppContext.getInstance().getMContext(), resId);
+        MediaPlayer player = MediaPlayer.create(AppCache.getInstance().getMContext(), resId);
         try {
             //TODO 叮咚声音量跟随导航 暂无接口
             float volume = 1.0f;

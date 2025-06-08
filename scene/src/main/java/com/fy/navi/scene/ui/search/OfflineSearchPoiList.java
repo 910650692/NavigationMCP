@@ -242,7 +242,13 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
      * 更新搜索结果
      * @param searchResultEntity 搜索结果实体
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final int taskId,final SearchResultEntity searchResultEntity) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
+                + " currentId: " + mScreenViewModel.getMTaskId());
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
+            return;
+        }
+
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             //若未搜索到数据，弹出提示
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");

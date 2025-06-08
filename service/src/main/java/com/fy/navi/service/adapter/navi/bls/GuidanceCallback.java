@@ -79,12 +79,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
      */
     public void onBatterHotTime() {
         cancelTimer();
-        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(new Runnable() {
-            @Override
-            public void run() {
-                onBatterHotCallBack(false);
-            }
-        }, 0, 10);
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> onBatterHotCallBack(false), 0, 10);
     }
 
     /***
@@ -94,6 +89,16 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         if (!ConvertUtils.isEmpty(mScheduledFuture)) {
             ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
             mScheduledFuture = null;
+        }
+    }
+
+    public void startNavi() {
+        Logger.i(TAG, "onNaviStar 导航开启");
+        if (ConvertUtils.isEmpty(mGuidanceObservers)) return;
+        for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+            if (guidanceObserver != null) {
+                guidanceObserver.onNaviStart();
+            }
         }
     }
 

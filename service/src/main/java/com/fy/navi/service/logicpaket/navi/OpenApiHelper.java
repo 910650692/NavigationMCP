@@ -218,7 +218,7 @@ public final class OpenApiHelper {
         mMapType = mapTypeId;
         mMapMode = mapMode;
         if (!NAVI_PACKAGE.getPreviewStatus()) {
-            MAP_PACKAGE.switchMapMode(mapTypeId, mapMode);
+            MAP_PACKAGE.switchMapMode(mapTypeId, mapMode, true);
         } else {
             Logger.i(TAG, "switchMapMode: getPreviewStatus true");
         }
@@ -265,7 +265,7 @@ public final class OpenApiHelper {
         // 如果全览时，视角和按键设置的有，需要设置一下视角
         if (mMapType != null && mMapMode != null &
                 MAP_PACKAGE.getCurrentMapMode(mMapType) != mMapMode) {
-            MAP_PACKAGE.switchMapMode(mMapType, mMapMode);
+            MAP_PACKAGE.switchMapMode(mMapType, mMapMode, true);
         }
     }
 

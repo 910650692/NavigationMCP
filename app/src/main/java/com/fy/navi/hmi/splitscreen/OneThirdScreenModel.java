@@ -11,11 +11,13 @@ import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
+import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -26,7 +28,6 @@ import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
-import com.fy.navi.service.logicpaket.map.IEglScreenshotCallBack;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
@@ -35,8 +36,6 @@ import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseModel;
-
-import java.nio.ByteBuffer;
 
 /**
  * @author: QiuYaWei
@@ -47,6 +46,7 @@ import java.nio.ByteBuffer;
 public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> implements IMapPackageCallback, IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback {
     private static final String TAG = "OneThirdScreenModel";
     private MapPackage mMapPackage;
+    private MapAdapter mapAdapter;
     private NaviPackage mNaviPackage;
     private PositionPackage mPositionPackage;
     private LayerPackage mLayerPackage;
@@ -60,9 +60,12 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
     private final ImmersiveStatusScene mImmersiveStatusScene;
     private boolean mPreviewIsOnShowing = false; // 全览状态，true代表正在全览
     private CrossImageEntity lastCrossImgEntity;
+
+    private boolean mCrossImgOnShowing = false;
     private NextManeuverEntity mNextManeuverEntity;
 
     public OneThirdScreenModel() {
+        mapAdapter = MapAdapter.getInstance();
         mMapPackage = MapPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
         mPositionPackage = PositionPackage.getInstance();
@@ -76,6 +79,8 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
         mSettingPackage = SettingPackage.getInstance();
         clearCacheInfo();
         mNextManeuverEntity = new NextManeuverEntity();
+        lastCrossImgEntity = mNaviPackage.getLastCrossEntity();
+        mCrossImgOnShowing = mNaviPackage.isMCrossImgIsOnShowing();
     }
 
     private void clearCacheInfo() {
@@ -98,7 +103,7 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
 
     public void loadMapView() {
         Logger.i(TAG, "loadMapView:" + isMapLoadSuccess);
-        mMapPackage.initMapView(mViewModel.getMapView());
+        mMapPackage.loadMapView(mViewModel.getMapView());
         mMapPackage.registerCallback(MAP_TYPE, this);
     }
 
@@ -109,6 +114,7 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
         if (mapTypeId == MAP_TYPE && !isMapLoadSuccess) {
             isMapLoadSuccess = true;
             gotoCarPosition();
+            // TODO 这里暂时无法和主图保持一致，根据主图设置这里无法显示车标
             mLayerPackage.setDefaultCarMode(getMapType());
         }
     }
@@ -152,11 +158,6 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
                 mPositionPackage.getLastCarLocation().getLatitude()));
         mMapPackage.goToCarPosition(getMapType());
         mMapPackage.setMapCenterInScreen(getMapType(), mViewModel.getLogoPosition()[0], mViewModel.getLogoPosition()[1]);
-    }
-
-    @Override
-    public void onMapInitSuccess(MapType mapTypeId, boolean success) {
-        IMapPackageCallback.super.onMapInitSuccess(mapTypeId, success);
     }
 
     @Override
@@ -268,18 +269,8 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
     @Override
     public void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
         IGuidanceObserver.super.onCrossImageInfo(isShowImage, naviImageInfo);
-        mViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
-        if (isShowImage) {
-            LayerItemCrossEntity entity = new LayerItemCrossEntity();
-            entity.setCrossImageEntity(naviImageInfo);
-            final boolean isSuccess = mLayerPackage.showCross(MAP_TYPE, entity);
-            mViewModel.showNextManeuver(isSuccess, mNextManeuverEntity);
-        } else {
-            if (!ConvertUtils.isNull(lastCrossImgEntity)) {
-                mLayerPackage.hideCross(MAP_TYPE, lastCrossImgEntity.getType());
-            }
-        }
-        lastCrossImgEntity = naviImageInfo;
+        mCrossImgOnShowing = isShowImage;
+        showOrHideCross(naviImageInfo);
     }
 
     @Override
@@ -330,5 +321,33 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
 
     public void setCrossRect(Rect rect) {
         mNaviPackage.setRoadCrossRect(MAP_TYPE, rect);
+    }
+
+    public boolean getCrossIsShowing() {
+        return mCrossImgOnShowing;
+    }
+
+    public void showOrHideCross(CrossImageEntity currentEntity) {
+        Logger.i(TAG, "showOrHideCross", "mCrossImgOnShowing:" + mCrossImgOnShowing);
+        mViewModel.onCrossImageInfo(mCrossImgOnShowing);
+        if (mCrossImgOnShowing) {
+            LayerItemCrossEntity entity = new LayerItemCrossEntity();
+            entity.setCrossImageEntity(currentEntity);
+            final boolean isSuccess = mLayerPackage.showCross(MAP_TYPE, entity);
+            mViewModel.showNextManeuver(isSuccess, mNextManeuverEntity);
+        } else {
+            if (!ConvertUtils.isNull(lastCrossImgEntity)) {
+                mLayerPackage.hideCross(MAP_TYPE, lastCrossImgEntity.getType());
+            }
+        }
+        lastCrossImgEntity = currentEntity;
+    }
+
+    public void onConfigurationChanged(ThemeType type) {
+        mapAdapter.updateUiStyle(MAP_TYPE, type);
+    }
+
+    public CrossImageEntity getLastCrossEntity() {
+        return lastCrossImgEntity;
     }
 }

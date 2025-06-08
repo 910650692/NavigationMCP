@@ -15,16 +15,16 @@ import com.android.utils.log.Logger;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
-import com.fy.navi.service.define.navi.CrossImageEntity;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NextManeuverEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.logicpaket.calibration.PowerType;
+import com.fy.navi.service.define.calibration.PowerType;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
@@ -93,6 +93,8 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
         mIsOnTouch.set(!mModel.isOnImmersive() && mModel.isOnNavigating());
         if (mModel.isOnNavigating()) {
             onNaviInfo(mModel.getCurrentNaviEtaInfo());
+            onCrossImageInfo(mModel.getCrossIsShowing());
+            mModel.showOrHideCross(mModel.getLastCrossEntity());
         }
     }
 
@@ -239,7 +241,7 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
      */
     public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
+        Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
         ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
         Bundle bundle = new Bundle();
@@ -249,7 +251,7 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(bundle);
-        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
 
     public void onImmersiveStatusChange(ImersiveStatus lastImersiveStatus) {
@@ -266,7 +268,7 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
     }
 
 
-    public void onCrossImageInfo(boolean isShow, CrossImageEntity crossImageEntity) {
+    public void onCrossImageInfo(boolean isShow) {
         mCrossImageVisibility.set(isShow);
     }
 
@@ -289,5 +291,9 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
 
     public boolean isOnNaviGating() {
         return mModel.isOnNavigating();
+    }
+
+    public void onConfigurationChanged(ThemeType type) {
+        mModel.onConfigurationChanged(type);
     }
 }

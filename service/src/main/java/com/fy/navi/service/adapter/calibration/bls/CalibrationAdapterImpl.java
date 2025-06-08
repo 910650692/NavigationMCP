@@ -32,7 +32,7 @@ public class CalibrationAdapterImpl implements CalibrationApi {
         } else if (!isPetrol && !isElectric && isHybrid) {
             return 2;
         } else {
-            return -1;
+            return 1;
         }
     }
 

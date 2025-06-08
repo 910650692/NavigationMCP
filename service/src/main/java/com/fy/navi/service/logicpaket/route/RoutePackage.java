@@ -28,6 +28,7 @@ import com.fy.navi.service.define.aos.RestrictedParam;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
+import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
@@ -65,7 +66,6 @@ import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
-import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
@@ -89,7 +89,7 @@ import lombok.Getter;
 
 /**
  * @author lvww
- * @version  \$Revision.1.0\$
+ * @version \$Revision.1.0\$
  * date 2024/11/24
  * Description TODO
  */
@@ -118,9 +118,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     private int[] mOfflineRouteErrorCode = {822083585, 822083587, 822083584, 822083590,
             822083592, 822083593, 822083594, 822083595, 822083596, 822083599, 822083600, 822083602};
+    private long mPathID = -1;
 
     /**
      * 获取报错信息是否需要离线
+     *
      * @param errorCode 错误码
      * @return 返回是否
      */
@@ -182,7 +184,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 注册算路回调监听
-     * @param key key
+     *
+     * @param key      key
      * @param observer 回调监听对象
      */
     public void registerRouteObserver(final String key, final IRouteResultObserver observer) {
@@ -196,6 +199,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 解注册算路回调监听
+     *
      * @param key key
      */
     public void unRegisterRouteObserver(final String key) {
@@ -229,6 +233,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     @Override
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
         Logger.i(TAG, "onRouteResult");
+        MapType mapTypeId = requestRouteResult.getMMapTypeId();
+        mSelectRouteIndex.put(mapTypeId, NumberUtils.NUM_0);
         mRequestRouteResults.put(requestRouteResult.getMMapTypeId(), requestRouteResult);
         updateParamList(requestRouteResult.getMMapTypeId());
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
@@ -247,13 +253,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 返回数据
+     *
      * @param mapTypeId 屏幕id
      */
     private void callBackToSpeech(final MapType mapTypeId) {
         final int size = mViaRouteParams.get(mapTypeId).size();
         String cityName = "";
         String endName = "";
-        if (!ConvertUtils.isEmpty(getEndPoint(mapTypeId)) &&  getEndPoint(mapTypeId).getName()!=null) {
+        if (!ConvertUtils.isEmpty(getEndPoint(mapTypeId)) && getEndPoint(mapTypeId).getName() != null) {
             endName = getEndPoint(mapTypeId).getName();
         }
         if (!ConvertUtils.isEmpty(getEndPoint(mapTypeId))
@@ -276,22 +283,26 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
         Logger.i(TAG, "onRouteDrawLine");
-        final RequestRouteResult requestRouteResult = mRequestRouteResults.get(routeLineLayerParam.getMMapTypeId());
+        RequestRouteResult requestRouteResult = mRequestRouteResults.get(routeLineLayerParam.getMMapTypeId());
+        if (!ConvertUtils.isEmpty(requestRouteResult)) {
+            final RouteCurrentPathParam routeCurrentPathParam = requestRouteResult.getMRouteCurrentPathParam();
+            routeCurrentPathParam.setMMapTypeId(requestRouteResult.getMMapTypeId());
+            routeCurrentPathParam.setMRequestId(requestRouteResult.getMRequestId());
+            routeCurrentPathParam.setMPathInfo(routeLineLayerParam.getMPathInfoList().get(0));
+            routeCurrentPathParam.setMIsOnlineRoute(routeLineLayerParam.isMIsOnlineRoute());
+            mRouteAdapter.setCurrentPath(routeCurrentPathParam);
+        }
+        mNaviAdapter.updateNaviPath(routeLineLayerParam);
         for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
             if (ConvertUtils.isEmpty(routeResultObserver)) {
                 continue;
             }
             routeResultObserver.onRouteDrawLine(routeLineLayerParam);
         }
-        if (!ConvertUtils.isEmpty(requestRouteResult)) {
-            if (mNaviStatusAdapter.isGuidanceActive()) {
-                RouteLineLayerParam param = requestRouteResult.getMLineLayerParam();
-                mNaviAdapter.updateNaviPath(NumberUtils.NUM_0, param);
-                if (!ConvertUtils.isEmpty(param)
-                        && !ConvertUtils.isEmpty(param.getMPathInfoList())) {
-                    OpenApiHelper.setCurrentPathInfo((PathInfo) param.getMPathInfoList().get(0));
-                }
-            }
+        if (mNaviStatusAdapter.isGuidanceActive()) {
+            ArrayList<?> mPathInfoList = routeLineLayerParam.getMPathInfoList();
+            if (!ConvertUtils.isEmpty(mPathInfoList)) return;
+            OpenApiHelper.setCurrentPathInfo((PathInfo) mPathInfoList.get(0));
         }
     }
 
@@ -476,7 +487,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 回调所有点的信息
-     * @param mapTypeId 屏幕id
+     *
+     * @param mapTypeId   屏幕id
      * @param routeParams 点信息
      */
     private void savePointAndCallBack(final MapType mapTypeId, final List<RouteParam> routeParams) {
@@ -525,9 +537,22 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 路线上充电站数据回调    、
+     *
      * @param routeL2Data 路线信息
      */
     private void l2DatacallBack(final RouteL2Data routeL2Data) {
+        if (mPathID == routeL2Data.getMPathID()
+                && mNaviStatusAdapter.getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
+            Logger.e(TAG, "新路线和老路线是同一条，不再发送L2++数据");
+            return;
+        }
+        if (routeL2Data.getMPathID() != -1) {
+            mPathID = routeL2Data.getMPathID();
+            Logger.i(TAG, "mPathID:", mPathID);
+        } else {
+            Logger.e(TAG, "没有path id");
+            mPathID = -1;
+        }
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
@@ -619,7 +644,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 设置车辆类别
-     *
      */
     public void setCarType() {
         final int carType = CalibrationAdapter.getInstance().powerType();
@@ -635,7 +659,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     /**
      * 第一次传入多个途经点算路请求
      *
-     * @param mapTypeId 屏幕ID
+     * @param mapTypeId   屏幕ID
      * @param routeParams 途经点列表
      * @return 返回请求的taskId
      */
@@ -652,7 +676,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     /**
      * 修改终点算路请求
      *
-     * @param mapTypeId 屏幕ID
+     * @param mapTypeId     屏幕ID
      * @param poiInfoEntity 终点数据
      * @return 返回请求taskId
      */
@@ -669,7 +693,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     /**
      * 单个添加途经点算路请求
      *
-     * @param mapTypeId 屏幕ID
+     * @param mapTypeId     屏幕ID
      * @param poiInfoEntity 途径点数据
      */
     public void addViaPoint(final MapType mapTypeId, final PoiInfoEntity poiInfoEntity) {
@@ -696,9 +720,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     /**
      * 单个添加途经点带索引算路请求
      *
-     * @param mapTypeId 屏幕ID
+     * @param mapTypeId     屏幕ID
      * @param poiInfoEntity 途径点数据
-     * @param index 添加索引
+     * @param index         添加索引
      */
     public void addViaPoint(final MapType mapTypeId, final PoiInfoEntity poiInfoEntity, final int index) {
         if (isBelongRouteParam(mapTypeId, poiInfoEntity)) {
@@ -728,8 +752,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     /**
      * 单个删除添加途经点算路请求
      *
-     * @param mapTypeId 屏幕ID
-     * @param poiInfoEntity 途径点数据
+     * @param mapTypeId      屏幕ID
+     * @param poiInfoEntity  途径点数据
      * @param isRequestRoute 是否发起算路
      * @return 返回是否成功
      */
@@ -748,7 +772,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 Logger.i(TAG, "have no this point");
                 return false;
             }
-            Logger.i(TAG, "index:" + index + " Name:"+poiInfoEntity.getName());
+            Logger.i(TAG, "index:" + index + " Name:" + poiInfoEntity.getName());
             routeParams.remove(index);
             mViaRouteParams.put(mapTypeId, routeParams);
             if (isRequestRoute) {
@@ -782,11 +806,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 .build();
         BuryPointController.getInstance().setBuryProps(property);
     }
+
     /**
      * send2car 算路请求
      *
      * @param routeMsgPushInfo 算路请求参数
-     * @param mapTypeId 屏幕ID
+     * @param mapTypeId        屏幕ID
      */
     public void requestRouteRestoration(final RouteMsgPushInfo routeMsgPushInfo, final MapType mapTypeId) {
         if (ConvertUtils.isEmpty(routeMsgPushInfo) || ConvertUtils.isEmpty(routeMsgPushInfo.getMPoiInfoEntity())) {
@@ -835,7 +860,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * 请求路线上的天气
      *
      * @param mapTypeId 屏幕ID
-     * @param index 路线ID
+     * @param index     路线ID
      * @return 返回请求的taskId
      */
     public long requestRouteWeather(final MapType mapTypeId, final int index) {
@@ -885,7 +910,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * 请求备选充电站
      *
      * @param mapTypeId 屏幕ID
-     * @param poiId 推荐充电站
+     * @param poiId     推荐充电站
      * @return 返回请求的taskId
      */
     public long requestRouteAlternativeChargeStation(final MapType mapTypeId, final String poiId) {
@@ -960,8 +985,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 数据转化
+     *
      * @param poiInfoEntity 点信息
-     * @param poiType 点的类别
+     * @param poiType       点的类别
      * @return 转换后数据
      */
     public RouteParam getRouteParamFromPoiInfoEntity(final PoiInfoEntity poiInfoEntity, final int poiType) {
@@ -993,6 +1019,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 清空途经点
+     *
      * @param mapTypeId 屏幕id
      */
     private void clearVai(final MapType mapTypeId) {
@@ -1000,16 +1027,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     /**
-     * 发送L2++数据
-     * @param mapTypeId 屏幕id
-     */
-    private void sendL2Data(final MapType mapTypeId) {
-        mRouteAdapter.sendL2Data(mapTypeId);
-    }
-
-    /**
      * 判断是否是路线上的点
-     * @param mapTypeId 屏幕Id
+     *
+     * @param mapTypeId     屏幕Id
      * @param poiInfoEntity 点信息
      * @return 返回是否
      */
@@ -1028,7 +1048,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 是否是起点&终点
-     * @param mapTypeId 屏幕Id
+     *
+     * @param mapTypeId     屏幕Id
      * @param poiInfoEntity 点信息
      * @return 返回是否是起点&终点
      */
@@ -1046,7 +1067,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 是否是同一个点
-     * @param routeParam 点信息
+     *
+     * @param routeParam    点信息
      * @param poiInfoEntity 点信息
      * @return 返回是否是起点&终点
      */
@@ -1065,6 +1087,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 是否超过最大点的数量
+     *
      * @param mapTypeId 屏幕Id
      * @return 返回是否是起点&终点
      */
@@ -1082,20 +1105,16 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void showRouteLine(final MapType mapTypeId) {
-        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
-            return;
-        }
+        RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (ConvertUtils.isEmpty(requestRouteResult)) return;
+        final List<RouteLineInfo> routeLineInfos = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMRouteLineInfos();
+        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMLineLayerParam();
         final ArrayList<String> arrivalTimes = new ArrayList<>();
-        final List<RouteLineInfo> routeLineInfos = mRequestRouteResults.get(mapTypeId).getMRouteLineInfos();
-        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
         for (RouteLineInfo routeLineInfo : routeLineInfos) {
             arrivalTimes.add(routeLineInfo.getMTravelTime());
         }
         routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
-        mLayerAdapter.drawRouteLine(mapTypeId, mRequestRouteResults.get(mapTypeId));
-        mLayerAdapter.drawRouteLine(MapType.LAUNCHER_DESK_MAP, mRequestRouteResults.get(mapTypeId));
-        //绘制路线
-        mLayerAdapter.drawRouteLine(MapType.CLUSTER_MAP, mRequestRouteResults.get(mapTypeId));
+        mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
     }
 
     /*更新终点扎标数据*/
@@ -1126,6 +1145,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 清除路线
+     *
      * @param mapTypeId 屏幕ID
      */
     public void clearRouteLine(final MapType mapTypeId) {
@@ -1137,6 +1157,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 清除终点附近停车场扎标
+     *
      * @param mapTypeId 屏幕ID
      */
     public void clearEndParkPoint(final MapType mapTypeId) {
@@ -1145,8 +1166,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 设置路线样式风格
-     * @param isStartNavi 是否开始导航
-     * @param isOffLine 是否离线
+     *
+     * @param isStartNavi    是否开始导航
+     * @param isOffLine      是否离线
      * @param isMultipleMode 是否多备选模式
      */
     public void setPathStyle(final MapType mapTypeId, final boolean isStartNavi, final boolean isOffLine, final boolean isMultipleMode) {
@@ -1156,7 +1178,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     /**
      * 隐藏分歧备选路线
      *
-     * @param index 隐藏路线下标 -> list下标 默认0开始
+     * @param index     隐藏路线下标 -> list下标 默认0开始
      * @param isVisible 路线是否显示 -> 隐藏需传入false
      */
     public boolean setPathVisible(final MapType mapTypeId, final int index, final boolean isVisible) {
@@ -1165,6 +1187,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 算路页面路线全览
+     *
      * @param mapTypeId 屏幕ID
      */
     public void showPreview(final MapType mapTypeId) {
@@ -1234,7 +1257,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     /**
      * 切换路线
      *
-     * @param mapTypeId 屏幕ID
+     * @param mapTypeId  屏幕ID
      * @param routeIndex 路线id
      */
     public void selectRoute(final MapType mapTypeId, final int routeIndex) {
@@ -1249,24 +1272,28 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             Logger.e(TAG, "no data");
             return;
         }
-        if (routeIndex == -1 || routeIndex >= requestRouteResult.getMLineLayerParam().getMPathInfoList().size()) {
+        RouteLineLayerParam routeLineLayerParam = requestRouteResult.getMLineLayerParam();
+        if (routeIndex == -1 || routeIndex >= routeLineLayerParam.getMPathInfoList().size()) {
             Logger.e(TAG, "out of bounds");
             return;
         }
+        routeLineLayerParam.setMSelectIndex(routeIndex);
         mLayerAdapter.setSelectedPathIndex(mapTypeId, routeIndex);
         mSelectRouteIndex.put(mapTypeId, routeIndex);
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
-            mNaviAdapter.setNaviPath(routeIndex, mRequestRouteResults.get(mapTypeId).getMLineLayerParam());
+            mNaviAdapter.updateNaviPath(routeLineLayerParam);
         }
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
             final RouteCurrentPathParam routeCurrentPathParam = requestRouteResult.getMRouteCurrentPathParam();
             routeCurrentPathParam.setMMapTypeId(mapTypeId);
             routeCurrentPathParam.setMRequestId(requestRouteResult.getMRequestId());
-            routeCurrentPathParam.setMPathInfo(requestRouteResult.getMLineLayerParam().getMPathInfoList().get(routeIndex));
-            routeCurrentPathParam.setMIsOnlineRoute(requestRouteResult.getMLineLayerParam().isMIsOnlineRoute());
+            routeCurrentPathParam.setMPathInfo(routeLineLayerParam.getMPathInfoList().get(routeIndex));
+            routeCurrentPathParam.setMIsOnlineRoute(routeLineLayerParam.isMIsOnlineRoute());
             mRouteAdapter.setCurrentPath(routeCurrentPathParam);
         }
-
+        // TODO: 2025/6/8 暂时先放在这里 后续OpenApiHelper需要删除
+        OpenApiHelper.setCurrentPathInfos((ArrayList<PathInfo>)
+                routeLineLayerParam.getMPathInfoList());
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
@@ -1281,7 +1308,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * 展示路线服务区扎点
      *
      * @param mapTypeId 屏幕ID
-     * @param index 路线
+     * @param index     路线
      */
     public void showRestArea(final MapType mapTypeId, final int index) {
         if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
@@ -1292,6 +1319,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 清除路线服务区扎点
+     *
      * @param mapTypeId 屏幕ID
      */
     public void clearRestArea(final MapType mapTypeId) {
@@ -1323,7 +1351,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * 展示限行图层
      *
      * @param mapTypeId 屏幕ID
-     * @param object 限行数据
+     * @param object    限行数据
      */
     public void showRestrictionView(final MapType mapTypeId, final Object object) {
         mLayerAdapter.showRestrictionView(mapTypeId, object);
@@ -1341,7 +1369,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     /**
      * 途经点全量更新
      *
-     * @param mapTypeId 屏幕ID
+     * @param mapTypeId   屏幕ID
      * @param routeParams 途径点信息
      */
     public void updateViaParamList(final MapType mapTypeId, final List<RouteParam> routeParams) {
@@ -1351,7 +1379,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     /**
      * 获取所有点的信息
      *
-     * @param mapTypeId 屏幕ID
+     * @param mapTypeId  屏幕ID
      * @param routeParam 传入的点
      * @return 返回所有点的信息
      */
@@ -1396,6 +1424,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 把定位点当成起点
+     *
      * @return 返回点信息
      */
     private RouteParam getLocationParam() {
@@ -1425,6 +1454,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 获取路线上所有的点
+     *
      * @param mapTypeId 屏幕Id
      * @return 返回所有点信心
      */
@@ -1437,6 +1467,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 算路成功保存所有点
+     *
      * @param mapTypeId 屏幕Id
      */
     private void updateParamList(final MapType mapTypeId) {
@@ -1451,6 +1482,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 算路失败恢复原始点
+     *
      * @param mapTypeId 屏幕Id
      */
     private void reGetParamList(final MapType mapTypeId) {
@@ -1469,6 +1501,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 获取当前算路数据
+     *
      * @param mapTypeId 屏幕Id
      * @return 当前算路数据
      */
@@ -1490,6 +1523,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 路线结束
+     *
      * @param mapTypeId 屏幕Id
      */
     public void removeAllRouteInfo(final MapType mapTypeId) {
@@ -1504,6 +1538,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 获取终点信息
+     *
      * @param mapTypeId 屏幕Id
      * @return 返回终点信息
      */
@@ -1513,6 +1548,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 获取终点详情信息
+     *
      * @param mapTypeId 屏幕Id
      * @return 返回终点信息
      */
@@ -1522,15 +1558,17 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 设置终点详情信息
-     * @param mapTypeId 屏幕Id
+     *
+     * @param mapTypeId    屏幕Id
      * @param endPoiEntity 终点信息
      */
-    public void setEndEntity(final MapType mapTypeId , final PoiInfoEntity endPoiEntity) {
+    public void setEndEntity(final MapType mapTypeId, final PoiInfoEntity endPoiEntity) {
         mEndPoiEntity.put(mapTypeId, endPoiEntity);
     }
 
     /**
      * 获取当前路线信息
+     *
      * @param mapTypeId 屏幕Id
      * @return 算路信息
      */
@@ -1540,6 +1578,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 获取能量耗尽点信息
+     *
      * @return 返回能耗信息
      */
     public ArrayList<EvRangeOnRouteInfo> getEvRangeOnRouteInfos() {
@@ -1548,9 +1587,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 绘制限行区域
+     *
      * @param mapTypeId 屏幕Id
-     * @param param 绘制参数
-     * @param position index
+     * @param param     绘制参数
+     * @param position  index
      */
     public void drawRestrictionForLimit(final MapType mapTypeId, final Object param, final int position) {
         mLayerAdapter.showRestrictionView(mapTypeId, null);
@@ -1559,6 +1599,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 设置避开道路
+     *
      * @param routeAvoidInfo 避开参数
      */
     public void setAvoidRoad(final RouteAvoidInfo routeAvoidInfo) {
@@ -1567,6 +1608,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 语音请求算路
+     *
      * @param param 算路参数
      * @return taskId
      */
@@ -1600,6 +1642,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 提供给语音--获取途经点个数
+     *
      * @param mapTypeId 屏幕Id
      * @return 途径点个数
      */
@@ -1609,8 +1652,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 提供给语音--获取两个点的距离和时间
+     *
      * @param geoPointStart 起点坐标
-     * @param geoPointend 终点坐标
+     * @param geoPointend   终点坐标
      * @return 距离和时间参数
      */
     public CompletableFuture<Pair<String, String>> getTravelTimeFuture(final GeoPoint geoPointStart, final GeoPoint geoPointend) {
@@ -1624,8 +1668,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 获取两个点的距离和时间和其他参数
+     *
      * @param geoPointStart 起点坐标
-     * @param geoPointend 终点坐标
+     * @param geoPointend   终点坐标
      * @return 距离和时间参数
      */
     public CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(final GeoPoint geoPointStart, final GeoPoint geoPointend) {
@@ -1638,6 +1683,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 取消算路
+     *
      * @param mapTypeId 屏幕ID
      */
     public void abortRequest(final MapType mapTypeId) {
@@ -1649,6 +1695,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 获取主图的通勤TMC
+     *
      * @param mapTypeId 屏幕ID
      */
     public void refreshHomeOfficeTMC(final MapType mapTypeId, final boolean isHome) {

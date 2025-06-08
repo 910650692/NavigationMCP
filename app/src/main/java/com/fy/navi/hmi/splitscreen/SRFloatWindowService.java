@@ -30,7 +30,7 @@ import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.hmi.startup.StartupActivity;
 import com.fy.navi.hmi.utils.CaptureScreenUtils;
 import com.fy.navi.mapservice.bean.INaviConstant;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.map.MapType;
@@ -95,8 +95,8 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
         mMapPackage = MapPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
         mNaviStatusAdapter = NavistatusAdapter.getInstance();
-        mWindowManager = (WindowManager) AppContext.getInstance().getMContext().getSystemService(WINDOW_SERVICE);
-        currentUiMode = AppContext.getInstance().getMContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        mWindowManager = (WindowManager) AppCache.getInstance().getMContext().getSystemService(WINDOW_SERVICE);
+        currentUiMode = AppCache.getInstance().getMContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if (ConvertUtils.equals(mNaviStatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
             mNaviEtaInfo = mNaviPackage.getCurrentNaviEtaInfo();
         }
@@ -106,17 +106,17 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
     private void initCallBacks() {
         mNaviPackage.registerObserver(KEY, this);
         mMapPackage.registerCallback(MAP_TYPE, this);
-        mMapPackage.registerEGLScreenshotCallBack(KEY, this);
-        AppContext.getInstance().getMContext().registerComponentCallbacks(this);
+//        mMapPackage.registerEGLScreenshotCallBack(KEY, this);
+        AppCache.getInstance().getMContext().registerComponentCallbacks(this);
         captureScreenUtils.registerListener(this);
     }
 
     private void unInitCallBacks() {
         Logger.i(TAG, "unInitCallBacks");
-        AppContext.getInstance().getMContext().unregisterComponentCallbacks(this);
+        AppCache.getInstance().getMContext().unregisterComponentCallbacks(this);
         mNaviPackage.unregisterObserver(KEY);
         mMapPackage.unRegisterCallback(MAP_TYPE, this);
-        mMapPackage.unregisterEGLScreenshotCallBack(KEY, this);
+//        mMapPackage.unregisterEGLScreenshotCallBack(KEY, this);
         captureScreenUtils.unRegisterListener(this);
     }
 
@@ -202,7 +202,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
         if (mView != null && mWindowManager != null) {
             mWindowManager.removeView(mView);
         }
-        mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(AppContext.getInstance().getMContext()), null);
+        mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(AppCache.getInstance().getMContext()), null);
         mView = mBinding.getRoot();
 
         final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
@@ -216,8 +216,8 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
         );
 
         layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
-        layoutParams.x = 300;
-        layoutParams.y = 0;
+        layoutParams.x = 34;
+        layoutParams.y = 34;
         mWindowManager.addView(mView, layoutParams);
 //        initClickListener();
         mBinding.cardTbtView.setVisibility(
@@ -256,12 +256,12 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
             startCls = MapActivity.class;
         }
         Logger.i(TAG, "isActivityExist:" + isActivityExist);
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), startCls);
+        Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
         final ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
         intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
 
     /***
@@ -297,7 +297,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
      * @return
      */
     private boolean checkHasOverLay() {
-        return Settings.canDrawOverlays(AppContext.getInstance().getMContext());
+        return Settings.canDrawOverlays(AppCache.getInstance().getMContext());
     }
 
     @Override

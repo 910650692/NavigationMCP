@@ -3,11 +3,9 @@ package com.fy.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.common.model.RectDouble;
 import com.autonavi.gbl.common.path.model.RestAreaInfo;
@@ -48,11 +46,11 @@ import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
-import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEnergyKey;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
 import com.fy.navi.service.define.layer.refix.LayerItemRoutePathInfo;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteRestArea;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteThreeUrgent;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteViaRoad;
@@ -66,7 +64,6 @@ import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteLinePoints;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapter> {
 
@@ -84,6 +81,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         initBizTypeVisible();
         setRouteJamBubblesVisible(true);
         setGuideTrafficVisible(true);
+        Logger.d(TAG, "LayerGuideRouteImpl init");
     }
 
     @Override
@@ -194,7 +192,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      */
     private void updatePaths() {
         int result = getLayerGuideRouteControl().updatePaths();
-        Logger.d(TAG, "updatePaths result : " + result);
+        Logger.d(TAG, "LayerGuideRouteImpl", "updatePaths result : " + result);
         getLayerGuideRouteControl().updatePathArrow();
         setRouteJamBubblesVisible(true);
     }
@@ -210,15 +208,13 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             return;
         }
         Logger.d(TAG, "drawRouteLine");
-        //走过的路线置灰
-        setPassGreyMode(true);
+        //设置路线信息
+        setPathInfoByRouteResult(routeResult);
+        //设置起点终点途经点
+        setPathPoints(routeResult);
         //设置路线样式风格
         setMainMapPathDrawStyle(false, false, true);
-        //绘制起点终点途经点
-        setPathPoints(routeResult);
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyRemainPoint, true);
-        //绘制路线信息
-        setPathInfoByRouteResult(routeResult);
         //更新路线图层数据
         getStyleAdapter().updateRouteResult(routeResult);
         updatePaths();
@@ -242,16 +238,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     }
 
     /**
-     * 走过的路线置灰.
-     *
-     * @param bPassGrey 是否置灰
-     */
-    public void setPassGreyMode(boolean bPassGrey) {
-        Logger.d(TAG, "setPassGreyMode");
-        getLayerGuideRouteControl().setPassGreyMode(bPassGrey);
-    }
-
-    /**
      * 设置样式风格
      *
      * @param isStartNavi    是否开始导航
@@ -268,6 +254,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         drawParam.mIsMultipleMode = isMultipleMode; // 是否是多备选模式
         Logger.i(TAG, "设置主图路线风格 -> " + drawParam);
         getLayerGuideRouteControl().setPathDrawStyle(drawParam);
+        getLayerGuideRouteControl().setPassGreyMode(true);
     }
 
     /**
@@ -690,7 +677,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      * @param selectIndex  选中下标
      */
     public boolean updatePathInfo(ArrayList<?> pathInfoList, int selectIndex) {
-        Logger.d(TAG, "setPathInfo");
+        Logger.d(TAG, "LayerGuideRouteImpl updatePaths setPathInfo");
         setPathInfos(pathInfoList, selectIndex);
         updatePaths();
         return true;
@@ -774,8 +761,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      * @param index 被选路线id
      */
     public void setSelectedPathIndex(int index) {
-        boolean b = getLayerGuideRouteControl().setSelectedPathIndex(index);
-        Logger.d(TAG, "setSelectedPathIndex b" + b + " index " + index);
+        boolean b = getLayerGuideRouteControl().switchSelectedPath(index);
+        Logger.d(TAG, "LayerGuideRouteImpl  updatePaths", "setSelectedPathIndex b" + b + " index " + index);
         updatePaths();
     }
 

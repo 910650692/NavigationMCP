@@ -1,10 +1,8 @@
 package com.fy.navi.hmi.map;
 
+import static com.fy.navi.hmi.utils.AiWaysGestureManager.AiwaysGestureListener;
+import static com.fy.navi.hmi.utils.AiWaysGestureManager.GestureEvent;
 
-import static com.fy.navi.hmi.utils.AiWaysGestureManager.*;
-
-import com.android.utils.ScreenUtils;
-import com.fy.navi.hmi.utils.AiWaysGestureManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -21,6 +19,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
@@ -40,10 +39,11 @@ import com.fy.navi.hmi.navi.ContinueNaviDialog;
 import com.fy.navi.hmi.navi.PhoneAddressDialog;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
 import com.fy.navi.hmi.traffic.TrafficEventFragment;
+import com.fy.navi.hmi.utils.AiWaysGestureManager;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -55,7 +55,6 @@ import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
-import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
@@ -164,7 +163,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private boolean mAvoidLimit = false;
     private String mFilename = "";
     private ScheduledFuture mSelfParkingTimer;//回车位倒计时
-    private SettingPackage settingPackage;
     private SettingManager settingManager;
     private CruisePackage cruisePackage;
     private SignalPackage signalPackage;
@@ -198,7 +196,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         positionPackage = PositionPackage.getInstance();
         mapDataPackage = MapDataPackage.getInstance();
         restrictedPackage = AosRestrictedPackage.getInstance();
-        settingPackage = SettingPackage.getInstance();
         restrictedPackage.addRestrictedObserver(IAosRestrictedObserver.KEY_OBSERVER_LIMIT, this);
         commonManager = CommonManager.getInstance();
         commonManager.init();
@@ -232,11 +229,23 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
         addGestureListening();//添加收拾监听
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
         mViewModel.initVisibleAreaPoint();
         Logger.d("MapViewModelonCreate1");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!ConvertUtils.isEmpty(mExtraKeyword)) {
+            if (null != mViewModel) {
+                mViewModel.searchForExtraKeyword(mExtraKeyword);
+            }
+            mExtraKeyword = null;
+        }
     }
 
     @Override
@@ -248,35 +257,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         cruisePackage.unregisterObserver(mViewModel.mScreenId);
     }
 
-    public void ndChangeScreen(String path,boolean isScreen) {
-        mapVisibleAreaDataManager.loadData(path);
-        ndScreen = isScreen;
-    }
-
-    public void loadVisibleAreaJson(String jsonPath){
-        Logger.d("loadVisibleAreaJson", "loadVisibleAreaJson:" + ndScreen);
-        if (ndScreen) {
-            return;
-        }
-        mapVisibleAreaDataManager.loadData(jsonPath);
-    }
-
-    public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType){
-        MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
-        if(mViewModel.showNdGoHomeView()){
-            //如果是ND  需要把数据转换为dp
-            int left = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMleftscreenoffer());
-            int top = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMtopscreenoffer());
-            MapVisibleAreaInfo ndMapArea = new MapVisibleAreaInfo(left,top);
-            return ndMapArea;
-        }
-        return mapVisibleAreaInfo;
-    }
-
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
-        Logger.i(MapDefaultFinalTag.MAP_SERVICE_TAG, "loadMapView", "mLoadMapSuccess:" + mLoadMapSuccess);
-        mLoadMapSuccess = true;
-        mapPackage.initMapView(mapSurfaceView);
+        boolean mapViewInitResult = MapPackage.getInstance().createMapView(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (!mapViewInitResult) return;
+        mapPackage.loadMapView(mapSurfaceView);
         mapPackage.registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         layerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         ImmersiveStatusScene.getInstance().registerCallback("MapModel", this);
@@ -284,8 +268,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public void startListenMsg() {
         String uid = "";
-        CommonManager commonManager = CommonManager.getInstance();
-        commonManager.init();
         String valueJson = commonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
         Logger.i(TAG, "getUserInfo valueJson = " + valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
@@ -296,6 +278,31 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
     }
 
+    public void ndChangeScreen(String path,boolean isScreen) {
+        mapVisibleAreaDataManager.loadData(path);
+        ndScreen = isScreen;
+    }
+
+    public void loadVisibleAreaJson(String jsonPath) {
+        Logger.d("loadVisibleAreaJson", "loadVisibleAreaJson:" + ndScreen);
+        if (ndScreen) {
+            return;
+        }
+        mapVisibleAreaDataManager.loadData(jsonPath);
+    }
+
+    public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType) {
+        MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
+        if (mViewModel.showNdGoHomeView()) {
+            //如果是ND  需要把数据转换为dp
+            int left = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMleftscreenoffer());
+            int top = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMtopscreenoffer());
+            MapVisibleAreaInfo ndMapArea = new MapVisibleAreaInfo(left, top);
+            return ndMapArea;
+        }
+        return mapVisibleAreaInfo;
+    }
+
     /***
      * 获取设置限行政策
      */
@@ -303,7 +310,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         final boolean avoidLimit = getAvoidLimit();
         final String license = settingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
         if (license == null || license.isEmpty() || !avoidLimit) {
-            Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, "The limit switch is turned on but not turned on");
+            Logger.d(TAG, "The limit switch is turned on but not turned on");
             mViewModel.setLimitDriverVisibility(false);
             return;
         }
@@ -372,8 +379,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     public void setMapCenterInScreen(int frameLayoutWidth) {
         Logger.i(TAG, "setMapCenterInScreen: " + frameLayoutWidth);
-        MapVisibleAreaInfo mapVisibleAreaInfo= getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
-        mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP,mapVisibleAreaInfo.getMleftscreenoffer(),mapVisibleAreaInfo.getMtopscreenoffer());
+        MapVisibleAreaInfo mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+        mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
     }
 
     /**
@@ -389,16 +396,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
-    public void onMapCenterChanged(MapType mapTypeId, double lon, double lat) {
-
-    }
-
-    @Override
-    public void onMapLevelChanged(MapType mapTypeId, float mapLevel) {
-
-    }
-
-    @Override
     public void onMapClickBlank(MapType mapTypeId, float px, float py) {
         stopCruise();
     }
@@ -409,39 +406,22 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
-    public void onMapMove(MapType mapTypeId, long px, long py, boolean moveEnd) {
-    }
-
-    @Override
     public void onMapScaleChanged(MapType mapTypeId, int currentScale) {
         mViewModel.updateOnMapScaleChanged(currentScale);
     }
 
     @Override
-    public void onMapInitSuccess(MapType mapTypeId, boolean success) {
-        //地图加载成功后发起关键字搜
-        if (!ConvertUtils.isEmpty(mExtraKeyword)) {
-            if (null != mViewModel) {
-                String keyword = new String(mExtraKeyword);
-                mViewModel.searchForExtraKeyword(keyword);
-            }
-            mExtraKeyword = null;
-        }
-    }
-
-    @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
-        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP && mLoadMapSuccess) {
-            mLoadMapSuccess = false;
-            settingPackage.setSettingChangeCallback(mapTypeId.name(), this);
+        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            mSettingPackage.setSettingChangeCallback(mapTypeId.name(), this);
             layerPackage.setDefaultCarMode(mapTypeId);
             mapPackage.setMapCenter(mapTypeId, new GeoPoint(positionPackage.getLastCarLocation().getLongitude(),
                     positionPackage.getLastCarLocation().getLatitude()));
             signalPackage.registerObserver(mapTypeId.name(), this);
             mapPackage.goToCarPosition(mapTypeId);
-            Logger.d("MapViewModelonCreate3"+getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR).getMleftscreenoffer()+"--"+getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR).getMtopscreenoffer());
-            MapVisibleAreaInfo mapVisibleAreaInfo= getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
-            mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(),mapVisibleAreaInfo.getMtopscreenoffer());
+            Logger.d("MapViewModelonCreate3" + getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR).getMleftscreenoffer() + "--" + getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR).getMtopscreenoffer());
+            MapVisibleAreaInfo mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
+            mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
             naviPackage.registerObserver(mViewModel.mScreenId, this);
             // 注册监听
             cruisePackage.registerObserver(mViewModel.mScreenId, this);
@@ -467,9 +447,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
 
         //多指左滑打开仪表地图   多指右滑关闭仪表地图
-        if (touchEvent != null && aiwaysGestureManager != null ){
-            aiwaysGestureManager.onTouchEvent(touchEvent);
-        }
+//        if (touchEvent != null && aiwaysGestureManager != null) {
+//            aiwaysGestureManager.onTouchEvent(touchEvent);
+//        }
     }
 
     @Override
@@ -514,10 +494,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 mViewModel.showOrHideSelfParkingView(false);
                 goToCarPosition();
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
-                Logger.i(TAG, "---"+"goToCarPosition");            }
+                Logger.i(TAG, "---" + "goToCarPosition");
+            }
         }
 
-        if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && settingPackage.getAutoScale()) {
+        if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && mSettingPackage.getAutoScale()) {
             Logger.i(TAG, "锁定比例尺，触摸态关闭动态比例尺，沉浸态开启比例尺！");
             boolean isOpen = !naviPackage.getFixedOverViewStatus() && currentImersiveStatus == ImersiveStatus.IMERSIVE && !naviPackage.getPreviewStatus();
             layerPackage.openDynamicLevel(mapTypeId, isOpen);
@@ -582,7 +563,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {
         // TODO 现在是跟随系统主题变化，只有黑夜和白天
         mapPackage.updateUiStyle(mapTypeId, type);
-        mSettingPackage.setConfigKeyDayNightMode(type);
     }
 
     public void saveLastLocationInfo() {
@@ -857,11 +837,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
         final boolean isSuccess = cruisePackage.startCruise();
         if (isSuccess) {
-            String isOpen = settingPackage.getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
+            String isOpen = mSettingPackage.getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
             if (isOpen != null && isOpen.equals("true")) {
                 Logger.i(TAG, "开始打点");
                 @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
-                        AppContext.getInstance().getMContext().getContentResolver(),
+                        AppCache.getInstance().getMContext().getContentResolver(),
                         Settings.Secure.ANDROID_ID
                 );
                 final long curTime = System.currentTimeMillis();
@@ -869,11 +849,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 UserTrackPackage.getInstance().startGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename, 2000);
             }
             final SoundInfoEntity soundInfo = new SoundInfoEntity();
-            soundInfo.setText(AppContext.getInstance().getMApplication().getString(R.string.step_into_cruise));
+            soundInfo.setText(AppCache.getInstance().getMApplication().getString(R.string.step_into_cruise));
             naviPackage.onPlayTTS(soundInfo);
             mViewModel.showToast(R.string.step_into_cruise);
             mViewModel.setCruiseMuteOrUnMute(
-                    Boolean.parseBoolean(settingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
+                    Boolean.parseBoolean(mSettingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
             );
             mapModelHelp.setCruiseScale();
         }
@@ -894,7 +874,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (isSuccess) {
             UserTrackPackage.getInstance().closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
             final SoundInfoEntity soundInfo = new SoundInfoEntity();
-            soundInfo.setText(AppContext.getInstance().getMApplication().getString(R.string.step_exit_cruise));
+            soundInfo.setText(AppCache.getInstance().getMApplication().getString(R.string.step_exit_cruise));
             naviPackage.onPlayTTS(soundInfo);
             mViewModel.showToast(R.string.step_exit_cruise);
             mViewModel.showOrHiddenCruise(false);
@@ -935,7 +915,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      * @param isOpen
      */
     public void setCruiseVoice(boolean isOpen) {
-        settingPackage.setCruiseBroadcastOpen(isOpen);
+        mSettingPackage.setCruiseBroadcastOpen(isOpen);
     }
 
     @Override
@@ -1156,7 +1136,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         return mapPackage.switchMapMode(mapModelHelp.getMapTypeId());
     }
 
-    public String getCurrentMapModelText(){
+    public String getCurrentMapModelText() {
         MapMode mode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
         String carModel = "";
         switch (mode) {
@@ -1194,11 +1174,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         return false;
     }
 
-    public boolean showNdGoHomeView(){
+    public boolean showNdGoHomeView() {
         return mViewModel.showNdGoHomeView();
     }
 
-    public void sendReqHolidayList(){
+    public void sendReqHolidayList() {
         restrictedPackage.sendReqHolidayList();
     }
 
@@ -1206,38 +1186,38 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void isHoliday(boolean holiday) {
         //不是节假日 才弹出view
         Logger.i("isHoliday", "----");
-        if(!holiday){
+        if (!holiday) {
             loadNdGoHomeView();
         }
     }
 
     private void loadNdGoHomeView() {
-        if(mViewModel.showNdGoHomeView()){
+        if (mViewModel.showNdGoHomeView()) {
             String key = commonManager.getValueByKey(UserDataCode.MAP_ND_GO_HOME_KEY);
-            String currentTime = TimeUtils.getInstance().getCurrentDate().replace("-","");
-            if(ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key,currentTime)){
-                commonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY,currentTime);
+            String currentTime = TimeUtils.getInstance().getCurrentDate().replace("-", "");
+            if (ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key, currentTime)) {
+                commonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY, currentTime);
 
                 //是否在上班时间段内  在家附近
                 LocInfoBean locInfoBean = positionPackage.getLastCarLocation();
                 boolean workHours = TimeUtils.isCurrentTimeInSpecialRange(true);
                 GeoPoint nearByHome = mViewModel.nearByHome(true);
                 GeoPoint nearByCompany = mViewModel.nearByHome(false);
-                if(workHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)){
-                   //判断距离是否大于等于1km 小于等于50km 去公司
-                   boolean distanceCompany = calcStraightDistance(nearByHome,locInfoBean);
-                   if(distanceCompany){
-                       mViewModel.loadNdOfficeTmc(false);
-                   }
-                   return;
+                if (workHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
+                    //判断距离是否大于等于1km 小于等于50km 去公司
+                    boolean distanceCompany = calcStraightDistance(nearByHome, locInfoBean);
+                    if (distanceCompany) {
+                        mViewModel.loadNdOfficeTmc(false);
+                    }
+                    return;
                 }
 
                 //是否在下班时间段内  在公司附近
                 boolean endofWorkHours = TimeUtils.isCurrentTimeInSpecialRange(false);
-                if(endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)){
+                if (endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
                     //判断距离是否大于等于1km 小于等于50km 回家
-                    boolean distanceHome = calcStraightDistance(nearByCompany,locInfoBean);
-                    if(distanceHome){
+                    boolean distanceHome = calcStraightDistance(nearByCompany, locInfoBean);
+                    if (distanceHome) {
                         mViewModel.loadNdOfficeTmc(true);
                     }
                 }
@@ -1245,9 +1225,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
     }
 
-    private boolean calcStraightDistance(GeoPoint nearByHome,LocInfoBean locInfoBean){
-        GeoPoint locGeoPoint = new GeoPoint(locInfoBean.getLongitude(),locInfoBean.getLatitude());
-        double distance = layerPackage.calcStraightDistance(nearByHome,locGeoPoint);
+    private boolean calcStraightDistance(GeoPoint nearByHome, LocInfoBean locInfoBean) {
+        GeoPoint locGeoPoint = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude());
+        double distance = layerPackage.calcStraightDistance(nearByHome, locGeoPoint);
         return (distance >= 1000 && distance <= 50000);
     }
 
@@ -1383,7 +1363,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public boolean getHomeCompanyDisplay() {
         String value = settingManager.getValueByKey(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED);
-        if(TextUtils.isEmpty(value)){
+        if (TextUtils.isEmpty(value)) {
             value = "true";
         }
         return Boolean.parseBoolean(value);
@@ -1408,12 +1388,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onTipDialog(String status) {
-        Logger.d(MapDefaultFinalTag.DEFAULT_TAG,"status: "+status);
-        if(ConvertUtils.isNull(mViewModel)) return;
+        Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "status: " + status);
+        if (ConvertUtils.isNull(mViewModel)) return;
         mViewModel.chargePreTipDialog(status);
     }
 
-    public void cancelTimeTick(){
+    public void cancelTimeTick() {
         searchPackage.cancelTimeTick();
     }
 
@@ -1421,7 +1401,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      * 检查高德地图权限是否申请或过期
      */
     public void checkAuthorizationExpired() {
-        if(authorizationRequestDialog !=null && authorizationRequestDialog.isShowing()){
+        if (authorizationRequestDialog != null && authorizationRequestDialog.isShowing()) {
             return;
         }
         final String endDate = mSettingPackage.getEndDate();
@@ -1531,6 +1511,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         stopCruise();
         mapPackage.mfcMoveMap(MapType.MAIN_SCREEN_MAIN_MAP, mfcController, moveDis);
     }
+
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_WAKEUP)
     private void sendBuryPointForWakeup() {
         //Empty body
@@ -1544,12 +1525,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         BuryPointController.getInstance().setBuryProps(property);
     }
 
-    public void addSceneGoHomeCallBack(int type){
+    public void addSceneGoHomeCallBack(int type) {
         mViewModel.addSceneGoHomeCallBackVieModel(type);
     }
 
-    public void addGestureListening(){
-        aiwaysGestureManager = new AiWaysGestureManager(AppContext.getInstance().getMContext(), new AiwaysGestureListener() {
+    public void addGestureListening() {
+        aiwaysGestureManager = new AiWaysGestureManager(AppCache.getInstance().getMContext(), new AiwaysGestureListener() {
             @Override
             public boolean mutiFingerSlipAction(GestureEvent gestureEvent, float startX, float startY, float endX, float endY, float velocityX, float velocityY) {
                 if ((gestureEvent == GestureEvent.THREE_GINGER_LEFT_SLIP) || (gestureEvent == GestureEvent.DOUBLE_GINGER_LEFT_SLIP)) {

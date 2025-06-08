@@ -18,7 +18,7 @@ import com.autonavi.gbl.map.layer.model.LayerIconAnchor;
 import com.autonavi.gbl.map.layer.model.LayerIconType;
 import com.autonavi.gbl.map.layer.model.LayerTexture;
 import com.autonavi.gbl.util.model.BinaryStream;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.bls.bean.MarkerInfoBean;
@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
  */
 public final class TexturePoolManager {
 
-    private static final String mFileStringFromAssets = com.fy.navi.service.adapter.layer.bls.utils.FileUtils.getFileStringFromAssets(AppContext.getInstance().getMApplication(), GBLCacheFilePath.BLS_ASSETS_LAYER_CUSTOM_MARKER_INFO_PATH);
+    private static final String mFileStringFromAssets = com.fy.navi.service.adapter.layer.bls.utils.FileUtils.getFileStringFromAssets(AppCache.getInstance().getMApplication(), GBLCacheFilePath.BLS_ASSETS_LAYER_CUSTOM_MARKER_INFO_PATH);
     public static final StyleJsonAnalysisUtil sUtil = new StyleJsonAnalysisUtil(mFileStringFromAssets);
 
     private TexturePoolManager() {

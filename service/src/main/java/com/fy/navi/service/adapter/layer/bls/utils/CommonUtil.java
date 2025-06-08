@@ -1,7 +1,5 @@
 package com.fy.navi.service.adapter.layer.bls.utils;
 
-import static android.os.Build.VERSION_CODES.R;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
@@ -9,8 +7,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.autonavi.gbl.pos.model.GPSDatetime;
-import com.fy.navi.service.AppContext;
-import com.fy.navi.service.R;
+import com.fy.navi.service.AppCache;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -112,7 +109,7 @@ public class CommonUtil {
     }
 
     public static Resources getResources() {
-        return AppContext.getInstance().getMContext().getApplicationContext().getResources();
+        return AppCache.getInstance().getMContext().getApplicationContext().getResources();
     }
 
     public static String formatTimeBySecond(int second) {

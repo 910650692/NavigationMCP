@@ -10,7 +10,7 @@ import androidx.databinding.library.baseAdapters.BR;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
@@ -20,13 +20,9 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentLimitDetailBinding;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.aos.RestrictedArea;
-import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
-import com.fy.navi.service.logicpaket.map.MapPackage;
-import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.base.BaseFragment;
 
@@ -43,6 +39,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
     private LimitDriverCitiesAdapter mCitiesAdapter;
     private LinearLayoutManager mLayoutManager;
     private ValueAnimator mAnimator;
+    private RouteRestrictionParam mCurrentRouteRestrictionParam;
     private float mAngelTemp = 0;
     private static final String TAG = "LimitProvincesAdapter";
 
@@ -109,6 +106,15 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
             routeRestrictionParam.setMRestrictedArea(restrictedAreaDetail);
             AosRestrictedPackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP, routeRestrictionParam, 0);
             showPolicyUI(routeRestrictionParam);
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(final boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden && mCurrentRouteRestrictionParam != null) {
+            Logger.d(TAG, "onHiddenChanged");
+            mViewModel.drawRestrictionForLimit(mCurrentRouteRestrictionParam);
         }
     }
 
@@ -268,6 +274,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
      * @param routeRestrictionParam 政策信息
      */
     public void showPolicyUI(final RouteRestrictionParam routeRestrictionParam) {
+        mCurrentRouteRestrictionParam = routeRestrictionParam;
         final RestrictedArea restrictedArea = routeRestrictionParam.getMRestrictedArea();
         ThreadManager.getInstance().postUi(() -> {
             if (restrictedArea != null) {
@@ -291,9 +298,11 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                                 //绘制限行区域，地图中心跳转
                                 RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
                                         routeRestrictionParam.getMReStrictedAreaResponseParam(), restrictedArea.getMCityPosition().get(position));
+                                mCurrentRouteRestrictionParam = routeRestrictionParam;
                                 final RestrictedArea restrictedAreaDetail = routeRestrictionParam.getMRestrictedArea();
                                 routeRestrictionParam.setMRestrictedArea(restrictedAreaDetail);
-                                AosRestrictedPackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP, routeRestrictionParam, position);
+                                AosRestrictedPackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP,
+                                        routeRestrictionParam, position);
                             } else {
                                 mBinding.recyclerView.setVisibility(View.GONE);
                                 mBinding.tvNoContent.setVisibility(View.VISIBLE);

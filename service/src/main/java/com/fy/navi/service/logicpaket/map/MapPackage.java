@@ -43,17 +43,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @date 2024/11/24
  */
 public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILayerAdapterCallBack {
-
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
-
-    @Override
-    public void onNaviStatusChange(String naviStatus) {
-        MapType mapTypeId = MapType.MAIN_SCREEN_MAIN_MAP;
-        List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-        for (IMapPackageCallback iMapPackageCallback : callbacks) {
-            iMapPackageCallback.onNaviStatusChange(naviStatus);
-        }
-    }
+    private MapAdapter mMapAdapter;
+    private LayerAdapter layerAdapter;
+    private PositionAdapter mPositionAdapter;
+    private NavistatusAdapter mNavistatusAdapter;
+    private final Hashtable<MapType, List<IMapPackageCallback>> callbackTables = new Hashtable<>();
 
     private static final class Helper {
         private static final MapPackage ep = new MapPackage();
@@ -69,35 +64,33 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         mNavistatusAdapter.registerCallback(this);
     }
 
-    private MapAdapter mMapAdapter;
-    private LayerAdapter layerAdapter;
-    private PositionAdapter mPositionAdapter;
-    private NavistatusAdapter mNavistatusAdapter;
-    private final Hashtable<MapType, List<IMapPackageCallback>> callbackTables = new Hashtable<>();
-    private final CopyOnWriteArrayList<IEglScreenshotCallBack> onEGLScreenshotCallBacks = new CopyOnWriteArrayList<>();
-
-    public boolean init(MapType mapTypeId) {
+    public void initMapService() {
         mPositionAdapter = PositionAdapter.getInstance();
         layerAdapter = LayerAdapter.getInstance();
-        return mMapAdapter.init(mapTypeId);
+        mMapAdapter.initMapService();
     }
 
-
-    public void initMapView(IBaseScreenMapView mapSurfaceView) {
-        mMapAdapter.initMapView(mapSurfaceView);
-        mMapAdapter.registerCallback(mapSurfaceView.provideMapTypeId(), this);
+    public boolean createMapView(MapType mapTypeId) {
+        boolean createMapViewResult = mMapAdapter.createMapView(mapTypeId);
+        mMapAdapter.registerCallback(mapTypeId, this);
+        return createMapViewResult;
     }
 
-    /**
-     * 绑定HudMapView  并注册IMapAdapterCallback接口回调
-     */
-    public void initCallback(MapType mapType) {
-        mMapAdapter.initHudMapView();
-        mMapAdapter.registerCallback(mapType, this);
+    public void changeMapView(IBaseScreenMapView mapSurfaceView) {
+        mMapAdapter.changeMapView(mapSurfaceView);
+    }
+
+    public void loadMapView(IBaseScreenMapView mapSurfaceView) {
+        mMapAdapter.bindMapView(mapSurfaceView);
     }
 
     public void unBindMapView(IBaseScreenMapView mapSurfaceView) {
         mMapAdapter.unBindMapView(mapSurfaceView);
+        mMapAdapter.unregisterCallback(mapSurfaceView.provideMapTypeId(), this);
+    }
+
+    public void destroyMapView(MapType mapType) {
+        mMapAdapter.destroyMapView(mapType);
     }
 
     public void registerCallback(MapType mapTypeId, IMapPackageCallback callback) {
@@ -115,20 +108,8 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         }
     }
 
-    public void registerEGLScreenshotCallBack(String tag, IEglScreenshotCallBack callback) {
-        if (!ConvertUtils.isNull(callback) && !onEGLScreenshotCallBacks.contains(callback)) {
-            onEGLScreenshotCallBacks.add(callback);
-            Logger.i(TAG, "registerEGLScreenshotCallBack-success:" + tag);
-        }
-    }
-
-    public void unregisterEGLScreenshotCallBack(String tag , IEglScreenshotCallBack callback) {
-        onEGLScreenshotCallBacks.remove(callback);
-        Logger.i(TAG, "unregisterEGLScreenshotCallBack-success:" + tag);
-    }
-
     public void unInitMapService() {
-        mMapAdapter.unInitMapService(MapType.MAIN_SCREEN_MAIN_MAP);
+        mMapAdapter.unInitMapService();
     }
 
     public void reduceLevel(MapType mapTypeId) {
@@ -201,8 +182,8 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         return mMapAdapter.getCurrentMapMode(mapTypeId);
     }
 
-    public boolean switchMapMode(MapType mapTypeId, MapMode mapMode) {
-        return mMapAdapter.switchMapMode(mapTypeId, mapMode);
+    public boolean switchMapMode(MapType mapTypeId, MapMode mapMode, boolean isSave) {
+        return mMapAdapter.setMapMode(mapTypeId, mapMode, isSave);
     }
 
     public void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle) {
@@ -328,18 +309,6 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     }
 
     @Override
-    public void onMapInitSuccess(MapType mapTypeId, boolean success) {
-        Logger.d(TAG, "onMapInitSuccess");
-        if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-            List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-            if (ConvertUtils.isEmpty(callbacks)) return;
-            for (IMapPackageCallback callback : callbacks) {
-                callback.onMapInitSuccess(mapTypeId, success);
-            }
-        }
-    }
-
-    @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
         Logger.i(TAG, "lvww", "底图渲染成功", "mapTypeId:" + mapTypeId.name());
         if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
@@ -418,19 +387,15 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     @Override
     public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
-        onEGLScreenshotCallBacks.forEach(iEglScreenshotCallBack -> {
-            Logger.i(TAG, "----onEGLScreenshot--------");
+        List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
+        if (ConvertUtils.isEmpty(callbacks)) return;
+        callbacks.forEach(iEglScreenshotCallBack -> {
             iEglScreenshotCallBack.onEGLScreenshot(mapTypeId, bytes);
         });
     }
 
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {
         mMapAdapter.updateUiStyle(mapTypeId, type);
-        // 通知其它地方UI发生了变化
-        Logger.d(TAG, "onUiModeChanged!", "ThemeType:" + type.name());
-        callbackTables.forEach((key, values) -> values.forEach(callBack -> {
-            callBack.onUiModeChanged(type);
-        }));
     }
 
     public void saveLastLocationInfo() {
@@ -496,5 +461,14 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
                 }
             }
         });
+    }
+
+    @Override
+    public void onNaviStatusChange(String naviStatus) {
+        MapType mapTypeId = MapType.MAIN_SCREEN_MAIN_MAP;
+        List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
+        for (IMapPackageCallback iMapPackageCallback : callbacks) {
+            iMapPackageCallback.onNaviStatusChange(naviStatus);
+        }
     }
 }

@@ -216,11 +216,13 @@ public class SwipeMenuLayout extends ViewGroup {
 
     @Override
     protected void onDetachedFromWindow() {
-        if (this == mViewCache) {
-            mViewCache.quickClose();
-            mViewCache = null;
-        } else {
-            quickClose();
+        if (mViewCache != null) {
+            if (this == mViewCache) {
+                quickClose();
+            } else {
+                mViewCache.quickClose();
+                mViewCache = null;
+            }
         }
         super.onDetachedFromWindow();
     }
@@ -237,9 +239,11 @@ public class SwipeMenuLayout extends ViewGroup {
      * 在RecyclerView里，视情况而定，如果是mAdapter.notifyItemRemoved(pos)方法不用调用。
      */
     public void quickClose() {
-        if (this == mViewCache) {
-            mViewCache.scrollTo(0, 0);
-            mViewCache = null;
+        if (mViewCache != null) {
+            if (this == mViewCache) {
+                mViewCache.scrollTo(0, 0);
+                mViewCache = null;
+            }
         }
     }
 

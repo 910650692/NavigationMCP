@@ -31,7 +31,6 @@ import com.fy.navi.ui.dialog.IBaseDialogClickListener;
  * @date 2024/11/24
  */
 public class StartupActivity extends BaseActivity<ActivityStartupBinding, StartupViewModel> {
-
     private Animation mRotateAnim;
     private ActivateFailedDialog mFailedDialog;
 
@@ -78,19 +77,6 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
     }
 
     @Override
-    protected void onDestroy() {
-        if (mRotateAnim != null) {
-            Logger.i("startup onDestroy");
-            mRotateAnim.cancel();
-            mRotateAnim = null;
-        }
-        if (mFailedDialog.isShowing()) {
-            mFailedDialog.cancel();
-        }
-        super.onDestroy();
-    }
-
-    @Override
     public void onInitData() {
         Intent intent = getIntent();
         //外部应用打开地图时指定的响应界面
@@ -115,6 +101,19 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
             }
             intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mRotateAnim != null) {
+            Logger.i("startup onDestroy");
+            mRotateAnim.cancel();
+            mRotateAnim = null;
+        }
+        if (mFailedDialog.isShowing()) {
+            mFailedDialog.cancel();
+        }
+        super.onDestroy();
     }
 
     @Override

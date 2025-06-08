@@ -13,7 +13,7 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
@@ -51,11 +51,6 @@ import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +69,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import lombok.Getter;
 
@@ -1263,6 +1257,16 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * 清除高亮
+     */
+    public void clearFocus(){
+        mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_POINT);
+        mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE);
+        mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_PARK);
+        mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_CHARGE_STATION);
+    }
+
+    /**
      * 设置子节点高亮下标
      * @param index 高亮下标
      */
@@ -1651,7 +1655,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @return 解析后的距离文本
      */
     private String formatDistanceArrayInternal(final int distance) {
-        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.getInstance().getMContext(), distance);
+        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppCache.getInstance().getMContext(), distance);
         return distanceArray[0] + distanceArray[1];
     }
 

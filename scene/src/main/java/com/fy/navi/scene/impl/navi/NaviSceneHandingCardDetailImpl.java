@@ -11,14 +11,12 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHandingCardDetail;
 import com.fy.navi.scene.ui.navi.hangingcard.OnHandingCardItemClickListener;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.scene.util.HandCardType;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
@@ -103,7 +101,11 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
     public void showPreview(final int select) {
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.TOUCH);
         Logger.i(TAG, "showPreview:" + select);
-        ThreadManager.getInstance().execute(() -> mSearchPackage.createPoiMarker(mList, select));
+        try {
+            ThreadManager.getInstance().execute(() -> mSearchPackage.createPoiMarker(mList, select));
+        } catch (Exception e) {
+            Logger.e(TAG, "showPreview e:" + e.getMessage());
+        }
         mLayerPackage.setFollowMode(mMapTypeId, false);
         mLayerPackage.setDynamicLevelLock(mMapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
         final PreviewParams previewParams = new PreviewParams();

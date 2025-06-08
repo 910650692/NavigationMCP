@@ -108,6 +108,7 @@ public abstract class BaseDialogFragment<V extends ViewDataBinding, VM extends B
     public void onDestroy() {
         super.onDestroy();
         Logger.i(TAG, "onDestroy");
+        mActivity = null;
     }
 
     @Override

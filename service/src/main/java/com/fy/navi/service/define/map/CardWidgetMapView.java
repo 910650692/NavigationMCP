@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 // 主要是给Launcher 桌面上的Widget使用
-public class CardWidgetMapView extends FullScreenMapView implements IBaseScreenMapView {
+public class CardWidgetMapView extends FullScreenMapView {
 
     public CardWidgetMapView(@NonNull Context context) {
         super(context);

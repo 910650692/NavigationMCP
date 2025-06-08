@@ -1,6 +1,5 @@
 package com.fy.navi.service.logicpaket.navi;
 
-
 import android.graphics.Rect;
 
 import com.android.utils.ConvertUtils;
@@ -14,7 +13,7 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
@@ -67,8 +66,6 @@ import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.fy.navi.service.tts.NaviAudioPlayer;
 import com.fy.navi.service.tts.TTSPlayHelper;
-import com.fy.navi.ui.BaseApplication;
-import com.fy.navi.ui.IsAppInForegroundCallback;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,6 +83,10 @@ import lombok.Getter;
  */
 public final class NaviPackage implements GuidanceObserver, SignalAdapterCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
+    @Getter
+    private CrossImageEntity lastCrossEntity;
+    @Getter
+    private boolean mCrossImgIsOnShowing = false;
     private NaviAdapter mNaviAdapter;
     private LayerAdapter mLayerAdapter;
     private MapPackage mapPackage;
@@ -111,8 +112,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * 当前导航类型 -1:未知 0:GPS导航 1:模拟导航
      */
     private int mCurrentNaviType = NumberUtils.NUM_ERROR;
-    private List<IsInForegroundCallback> mIsAppInForegroundCallbacks =
-            new CopyOnWriteArrayList<>();
     private List<OnPreViewStatusChangeListener> mOnPreViewStatusChangeListeners =
             new CopyOnWriteArrayList<>();
 
@@ -120,7 +119,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         mGuidanceObservers = new Hashtable<>();
         mManager = HistoryManager.getInstance();
         mManager.init();
-        addIsInForegroundCallback();
     }
 
     /**
@@ -151,21 +149,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     /**
-     * 仪表地图触发全览
-     */
-    public void onMeterAction() {
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
-                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
-                    if (guidanceObserver != null) {
-                        guidanceObserver.onMeterAction();
-                    }
-                }
-            }
-        });
-    }
-
-    /**
      * 开始导航
      *
      * @param isSimulate 是否是模拟导航
@@ -187,41 +170,14 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 mCurrentNaviType = NumberUtils.NUM_0;
             }
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
-            mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, true);
-            mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, true);
-            mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, true);
-            mLayerAdapter.setFollowMode(MapType.HUD_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, true);
-            mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_WIDGET_MAP, true);
-            mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_DESK_MAP, true);
-            mLayerAdapter.setVisibleGuideSignalLight(MapType.CLUSTER_MAP, true);
-            mLayerAdapter.setVisibleGuideSignalLight(MapType.HUD_MAP, true);
             mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
-            PathInfo pathInfo = mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP) ==
-                    null ? null :
-                    (PathInfo) Objects.requireNonNull(mRouteAdapter.
-                            getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP)).getMPathInfo();
-            OpenApiHelper.setCurrentPathInfo(pathInfo);
-            ArrayList<PathInfo> list = new ArrayList<>();
-            list.add(pathInfo);
-            if (!ConvertUtils.isEmpty(list) && null != pathInfo) {
-                //1046394 导航启动慢优化
-                ThreadManager.getInstance().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, list, 0);
-                        updatePathInfo(MapType.LAUNCHER_WIDGET_MAP, list, 0);
-                        updatePathInfo(MapType.LAUNCHER_DESK_MAP, list, 0);
-                        updatePathInfo(MapType.CLUSTER_MAP, list, 0);
-                        updatePathInfo(MapType.HUD_MAP, list, 0);
-                    }
-                });
-            }
+            //清除终点停车场扎标
+            mLayerAdapter.clearLabelItem(MapType.MAIN_SCREEN_MAIN_MAP);
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
-        mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
         return result;
     }
 
@@ -237,10 +193,10 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         final boolean result = mNaviAdapter.stopNavigation();
         if (result) {
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
-            mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, false);
-            mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
-            mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, false);
-            mLayerAdapter.setFollowMode(MapType.HUD_MAP, false);
+//            mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, false);
+//            mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
+//            mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, false);
+//            mLayerAdapter.setFollowMode(MapType.HUD_MAP, false);
             mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
             sendBuryPointForCloseNavi();
@@ -258,8 +214,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             return;
         }
         BuryProperty buryProperty = new BuryProperty.Builder()
-                .setParams(BuryConstant.ProperType.BURY_KEY_REMAINING_TIME, TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), mNaviEtaInfo.getAllTime()))
-                .setParams(BuryConstant.ProperType.BURY_KEY_TRIP_DISTANCE, TimeUtils.getRemainInfo(AppContext.getInstance().getMContext(), mNaviEtaInfo.getAllDist(), mNaviEtaInfo.getAllTime()))
+                .setParams(BuryConstant.ProperType.BURY_KEY_REMAINING_TIME, TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), mNaviEtaInfo.getAllTime()))
+                .setParams(BuryConstant.ProperType.BURY_KEY_TRIP_DISTANCE, TimeUtils.getRemainInfo(AppCache.getInstance().getMContext(), mNaviEtaInfo.getAllDist(), mNaviEtaInfo.getAllTime()))
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }
@@ -294,6 +250,21 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public void unregisterObserver(final String key) {
         mGuidanceObservers.remove(key);
+    }
+
+    /**
+     * 仪表地图触发全览
+     */
+    public void onMeterAction() {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onMeterAction();
+                    }
+                }
+            }
+        });
     }
 
     /***
@@ -448,6 +419,18 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
+    public void onNaviStart() {
+        Logger.i(TAG, "onNaviStar 导航开启 ");
+        ThreadManager.getInstance().postUi(() -> {
+            if (ConvertUtils.isEmpty(mGuidanceObservers)) return;
+            for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver == null) return;
+                guidanceObserver.onNaviStart();
+            }
+        });
+    }
+
+    @Override
     public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
         Logger.i(TAG, "onNaviInfo: ");
         mCurrentNaviEtaInfo = naviETAInfo;
@@ -477,8 +460,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
-    public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
+    public void onCrossImageInfo(final boolean isShowImage,
+                                 final CrossImageEntity naviImageInfo) {
         Logger.i(TAG, "onCrossImageInfo isShowImage:" + isShowImage + " naviImageInfo:" + naviImageInfo);
+        lastCrossEntity = naviImageInfo;
+        mCrossImgIsOnShowing = isShowImage;
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
@@ -775,7 +761,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
-    public void onUpdateTrafficLightCountdown(final ArrayList<TrafficLightCountdownEntity> list) {
+    public void onUpdateTrafficLightCountdown(
+            final ArrayList<TrafficLightCountdownEntity> list) {
         Logger.i(TAG, "onUpdateTrafficLightCountdown: size = " + list.size());
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
@@ -830,7 +817,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
-    public void onSuggestChangePath(long newPathID, long oldPathID, SuggestChangePathReasonEntity reason) {
+    public void onSuggestChangePath(long newPathID,
+                                    long oldPathID, SuggestChangePathReasonEntity reason) {
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
@@ -933,61 +921,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         });
     }
 
-    /**
-     * 添加应用前后台状态监听回调.
-     */
-    private void addIsInForegroundCallback() {
-        Logger.i(TAG, "addIsInForegroundCallback");
-        BaseApplication.addIsAppInForegroundCallback(new IsAppInForegroundCallback() {
-            @Override
-            public void isAppInForeground(final int isInForeground) {
-                Logger.i(TAG, "isAppInForeground: " + isInForeground);
-                if (!ConvertUtils.isEmpty(mIsAppInForegroundCallbacks)) {
-                    for (IsInForegroundCallback isInForegroundCallback :
-                            mIsAppInForegroundCallbacks) {
-                        isInForegroundCallback.onAppInForeground(isInForeground);
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * 添加是否在前台的回调
-     *
-     * @param callback callback
-     */
-    public void addIsAppInForegroundCallback(final IsInForegroundCallback callback) {
-        Logger.i(TAG, "addIsAppInForegroundCallback callback = " + callback);
-        if (callback != null) {
-            if (!mIsAppInForegroundCallbacks.contains(callback)) {
-                mIsAppInForegroundCallbacks.add(callback);
-            }
-        }
-    }
-
-    /**
-     * @param callback callback
-     */
-    public void removeIsAppInForegroundCallback(final IsInForegroundCallback callback) {
-        Logger.i(TAG, "removeIsAppInForegroundCallback callback = " + callback);
-        if (callback != null) {
-            mIsAppInForegroundCallbacks.remove(callback);
-        }
-    }
-
     public interface IsInForegroundCallback {
         /**
          * @param isInForeground 参考AutoMapConstant.AppRunStatus
          */
         void onAppInForeground(int isInForeground);
-    }
-
-    /**
-     * @return 参考AutoMapConstant.AppRunStatus.
-     */
-    public int getIsAppInForeground() {
-        return BaseApplication.isAppInForeground();
     }
 
     public void setCurrentImmersiveStatus(final int status) {
@@ -1060,7 +998,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     /**
      * @param listener OnPreViewStatusChangeListener
      */
-    public void removeOnPreviewStatusChangeListener(final OnPreViewStatusChangeListener listener) {
+    public void removeOnPreviewStatusChangeListener(
+            final OnPreViewStatusChangeListener listener) {
         mOnPreViewStatusChangeListeners.remove(listener);
     }
 
@@ -1213,23 +1152,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     /**
-     * 更新引导路线数据
-     *
-     * @param pathInfoList 路线数据
-     * @param selectIndex  选中下标
-     */
-    public boolean updatePathInfo(final MapType mapTypeId, final ArrayList<?> pathInfoList,
-                                  final int selectIndex) {
-        Logger.i(TAG, "updatePathInfo pathInfoList.size = " +
-                (!ConvertUtils.isEmpty(pathInfoList) ? pathInfoList.size() : 0) +
-                " selectIndex = " + selectIndex + " mapTypeId = " + mapTypeId);
-        if (null != mLayerAdapter) {
-            mLayerAdapter.updatePathInfo(mapTypeId, pathInfoList, selectIndex);
-        }
-        return false;
-    }
-
-    /**
      * 显示当前主路线的路径
      */
     public void onlyShowCurrentPath() {
@@ -1241,7 +1163,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         }
         ArrayList<PathInfo> pathInfoList = new ArrayList<>();
         pathInfoList.add(pathInfo);
-        updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, 0);
+        mNaviAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, 0);
     }
 
     public void showSelectPatch(final long newPathId) {
@@ -1251,7 +1173,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         ArrayList<PathInfo> pathInfos = new ArrayList<>();
         pathInfos.add(selectPathInfo);
         if (!ConvertUtils.isEmpty(pathInfos) && null != selectPathInfo) {
-            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos,
+            mNaviAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos,
                     0);
         }
     }
@@ -1271,7 +1193,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         pathInfos.add(currentPathInfo);
         pathInfos.add(suggestPathInfo);
         if (!ConvertUtils.isEmpty(pathInfos) && null != suggestPathInfo) {
-            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, 0);
+            mNaviAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, 0);
         }
     }
 

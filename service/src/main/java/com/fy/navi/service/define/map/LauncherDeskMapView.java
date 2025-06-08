@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class LauncherDeskMapView extends  FullScreenMapView implements IBaseScreenMapView {
+public class LauncherDeskMapView extends  FullScreenMapView {
 
     public LauncherDeskMapView(@NonNull Context context) {
         super(context);

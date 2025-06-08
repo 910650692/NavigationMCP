@@ -14,6 +14,8 @@ public class RouteViewModel extends BaseRouteViewModel {
 
     public RouteViewModel(final Application application) {
         super(application);
+        setMsgDialogTop(145);
+        setMsgDialogLeft(1150);
     }
 
     @Override

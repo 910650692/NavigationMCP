@@ -68,6 +68,13 @@ public class ParkCardView extends CardView<NaviSceneNearProvideStationParkBindin
             mBinding.tvFreeSize.setText(String.valueOf(parkingInfo.getSpaceFree()));
             mBinding.tvTotalSize.setText("/" + parkingInfo.getSpaceTotal());
         }
+        if(CardManager.getInstance().endIsService(poiInfo)){
+            mBinding.tvSubTitle.setVisibility(VISIBLE);
+            mBinding.tvSubTitleUnexpand.setVisibility(VISIBLE);
+        } else {
+            mBinding.tvSubTitle.setVisibility(GONE);
+            mBinding.tvSubTitleUnexpand.setVisibility(GONE);
+        }
     }
 
     @Override

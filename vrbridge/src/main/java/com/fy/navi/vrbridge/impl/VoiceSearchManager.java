@@ -777,10 +777,17 @@ public final class VoiceSearchManager {
             mProcessDestIndex = mNormalDestList.keyAt(0);
             Logger.d(IVrBridgeConstant.TAG, "normalDestIndex: " + mProcessDestIndex);
             final SingleDestInfo normalDest = mNormalDestList.get(mProcessDestIndex);
-            mKeyword = normalDest.getDestName();
-            Logger.d(IVrBridgeConstant.TAG, "normalDestName: " + mKeyword);
+            Logger.d(IVrBridgeConstant.TAG, "normalDestTYPE: " + normalDest.getDestType());
             mNormalDestList.remove(mProcessDestIndex);
-            mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, mKeyword);
+            if (IVrBridgeConstant.DestType.HOME.equals(normalDest.getDestType())) {
+                dealNextMultipleDest(getHomeCompanyPoiInfo(1));
+            } else if (IVrBridgeConstant.DestType.COMPANY.equals(normalDest.getDestType())) {
+                dealNextMultipleDest(getHomeCompanyPoiInfo(2));
+            } else {
+                mKeyword = normalDest.getDestName();
+                Logger.d(IVrBridgeConstant.TAG, "normalDestName: " + mKeyword);
+                mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, mKeyword);
+            }
         } else if (null != mMultiplePoiArray && mMultiplePoiArray.size() > 0) {
             //全部获取完毕，开始路线规划
             int size = mMultiplePoiArray.size();

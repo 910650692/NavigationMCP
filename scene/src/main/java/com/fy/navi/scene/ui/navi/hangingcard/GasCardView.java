@@ -66,6 +66,13 @@ public class GasCardView extends CardView<NaviSceneNearProvideStationGasBinding>
         if (!ConvertUtils.isEmpty(gasInfos)) {
             setGasTypeAndPrice(poiInfo.getStationList());
         }
+        if(CardManager.getInstance().endIsService(poiInfo)){
+            mBinding.tvSubTitle.setVisibility(VISIBLE);
+            mBinding.tvSubTitleUnexpand.setVisibility(VISIBLE);
+        } else {
+            mBinding.tvSubTitle.setVisibility(GONE);
+            mBinding.tvSubTitleUnexpand.setVisibility(GONE);
+        }
     }
 
     private void setGasTypeAndPrice(final List<GasStationInfo> infos) {

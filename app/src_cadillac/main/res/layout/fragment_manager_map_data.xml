@@ -286,8 +286,8 @@
                         android:textSize="@dimen/sp_46"
                         android:focusable="false"
                         android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.VISIBLE : View.GONE}"
-                        android:layout_marginBottom="@dimen/dp_412"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginTop="@dimen/dp_306"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -335,8 +335,8 @@
                         android:textColor="@color/setting_bg_tab_text_select"
                         android:textSize="@dimen/sp_46"
                         android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.VISIBLE : View.GONE}"
-                        android:layout_marginBottom="@dimen/dp_412"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginTop="@dimen/dp_306"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"/>
 

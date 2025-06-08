@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="black_always">#FF000000</color>
+    <color name="white_always">#FFFFFF</color>
 
     <!-- 搜索相关 -->
     <color name="search_tab_bg">#F8F8FA</color>

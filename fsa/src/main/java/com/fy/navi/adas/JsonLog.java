@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -98,7 +97,7 @@ public final class JsonLog {
             } else {
                 message = LINE_SEPARATOR + currentTime + " " + TAG + LINE_SEPARATOR + message;
             }
-            final File cacheDir = AppContext.getInstance().getMContext().getCacheDir();
+            final File cacheDir = AppCache.getInstance().getMContext().getCacheDir();
             final File file = new File(cacheDir, fileName);
             try (FileWriter fileWriter = new FileWriter(file, true)) {
                 fileWriter.write(message);

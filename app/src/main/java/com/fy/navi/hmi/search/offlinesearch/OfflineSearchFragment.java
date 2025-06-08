@@ -59,9 +59,9 @@ public class OfflineSearchFragment extends BaseFragment<OfflineSearchFragmentLay
      * 搜索结果回调
      * @param searchResultEntity 搜索结果实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final int taskId,final SearchResultEntity searchResultEntity) {
 //        if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
-            mBinding.offlineCityList.notifySearchResult(searchResultEntity);
+            mBinding.offlineCityList.notifySearchResult(taskId,searchResultEntity);
 //        }
     }
 

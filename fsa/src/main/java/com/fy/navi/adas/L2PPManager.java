@@ -4,17 +4,14 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.adas.bean.OddBean;
 import com.fy.navi.fsa.R;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.L2NaviBean;
-import com.fy.navi.service.define.navi.PlayModule;
-import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.l2.L2InfoCallback;
 import com.fy.navi.service.logicpaket.l2.L2Package;
-import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.signal.SignalCallback;
@@ -182,82 +179,82 @@ public final class L2PPManager {
 //        final ADUProto.aDAS_ServiceUnavailableWarnings adasServiceUnavailableWarnings = status.getADASServiceUnavailableWarnings();
 //        switch (adasServiceUnavailableWarnings) {
 //            case ADAS_PILOT_SERVICE_LOCKOUT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_pilot_service_lockout));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_pilot_service_lockout));
 //                break;
 //            case ADAS_AEB_OFF:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_aeb_off));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_aeb_off));
 //                break;
 //            case ADAS_RESERVE_SERVICE_UNAVAILABLE_5:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_service_unavailable_5));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_service_unavailable_5));
 //                break;
 //            case ADAS_ACC_OFF:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_acc_off));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_acc_off));
 //                break;
 //            case ADAS_LOWSPEED:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_lowspeed));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_lowspeed));
 //                break;
 //            case ADAS_OVERSPEED:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_overspeed));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_overspeed));
 //                break;
 //            case ADAS_RESERVE_SERVICE_UNAVAILABLE_6:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_service_unavailable_6));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_service_unavailable_6));
 //                break;
 //            case ADAS_ARS_TURNING_OFF_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_ars_turning_off_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_ars_turning_off_alert));
 //                break;
 //            case ADAS_ARS_TURNNED_OFF_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_ars_turnned_off_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_ars_turnned_off_alert));
 //                break;
 //            case ADAS_CHECK_CAMERA_AND_LRR:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_check_camera_and_lrr));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_check_camera_and_lrr));
 //                break;
 //            case ADAS_GENERAL_SERVICE_UNAVAILABLE_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_general_service_unavailable_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_general_service_unavailable_alert));
 //                break;
 //            case ADAS_RESERVE_SERVICE_UNAVAILABLE_4:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_service_unavailable_4));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_service_unavailable_4));
 //                break;
 //            default:
 //        }
 //        final ADUProto.aDAS_FeatureStateWarnings adasFeatureStateWarnings = status.getADASFeatureStateWarnings();
 //        switch (adasFeatureStateWarnings) {
 //            case ADAS_PILOT_SERVICE_FAIL_ACTIVED_ALERT_AND_CHANGE_SETTINGS_PROMPT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_pilot_service_fail_actived_alert_and_change_settings_prompt));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_pilot_service_fail_actived_alert_and_change_settings_prompt));
 //                break;
 //            case ADAS_FEATURE_STATE_WARNINGS_RESERVE_2:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_feature_state_warnings_reserve_2));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_feature_state_warnings_reserve_2));
 //                break;
 //            case ADAS_NP_SERVICE_ACTIVE_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_np_service_active_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_np_service_active_alert));
 //                break;
 //            case ADAS_CP_SERVICE_ACTIVE_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_cp_service_active_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_cp_service_active_alert));
 //                break;
 //            case ADAS_UPGRADE_TO_NP_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_upgrade_to_np_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_upgrade_to_np_alert));
 //                break;
 //            case ADAS_DOWNGRADE_TO_CP_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_downgrade_to_cp_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_downgrade_to_cp_alert));
 //                break;
 //            case ADAS_APPROACHING_PILOT_ODD:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_approaching_pilot_odd));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_approaching_pilot_odd));
 //                break;
 //            default:
 //        }
         final ADUProto.aDAS_ServiceEndWarnings adasServiceEndWarnings = status.getADASServiceEndWarnings();
         switch (adasServiceEndWarnings) {
             case ADAS_OVERTIME_STOP_ALERT:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_overtime_stop_alert));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_overtime_stop_alert));
                 break;
 //            case ADAS_RESERVE_SERVICE_END_1:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_service_end_1));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_service_end_1));
 //                break;
             default:
         }
 //        final ADUProto.aDAS_SensorCleanWarnings adasSensorCleanWarnings = status.getADASSensorCleanWarnings();
 //        switch (adasSensorCleanWarnings) {
 //            case ADAS_CAMERA_CLEAN_SYSTEM_FAULT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_camera_clean_system_fault));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_camera_clean_system_fault));
 //                break;
 //            default:
 //        }
@@ -272,84 +269,84 @@ public final class L2PPManager {
         final ADUProto.aDAS_GeneralSafetyWarnings adasGeneralSafetyWarnings = status.getADASGeneralSafetyWarnings();
         switch (adasGeneralSafetyWarnings) {
 //            case ADAS_RESERVE_GENERAL_SAFETY_5:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_5));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_5));
 //                break;
 //            case ADAS_RESERVE_GENERAL_SAFETY_6:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_6));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_6));
 //                break;
 //            case ADAS_RESERVE_GENERAL_SAFETY_7:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_7));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_7));
 //                break;
 //            case ADAS_RESERVE_GENERAL_SAFETY_13:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_13));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_13));
 //                break;
             case ADAS_RESERVE_GENERAL_SAFETY_14:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_14));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_14));
                 break;
             case ADAS_RESERVE_GENERAL_SAFETY_15:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_15));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_15));
                 break;
             case ADAS_RESERVE_GENERAL_SAFETY_10:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_10));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_10));
                 break;
             case ADAS_RESERVE_GENERAL_SAFETY_11:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_11));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_11));
                 break;
 //            case ADAS_ALERT_OF_PASSING_CROSS:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_alert_of_passing_cross));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_alert_of_passing_cross));
 //                break;
             case ADAS_DODGE_TRUCK:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_dodge_truck));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_dodge_truck));
                 break;
 //            case ADAS_COLLISION_RISK_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_collision_risk_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_collision_risk_alert));
 //                break;
 //            case ADAS_PREALERT_OF_PASSING_CROSS:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_prealert_of_passing_cross));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_prealert_of_passing_cross));
 //                break;
 //            case ADAS_ATTENTION_TO_PEDESTRIAN:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_attention_to_pedestrian));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_attention_to_pedestrian));
 //                break;
 //            case ADAS_RESERVE_GENERAL_SAFETY_12:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_12));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_12));
 //                break;
             default:
         }
         final ADUProto.aDAS_LaneCancelWarnings adasLaneCancelWarnings = status.getADASLaneCancelWarnings();
         switch (adasLaneCancelWarnings) {
             case ADAS_LANE_CHANGE_TO_LEFT_RIGHTNOW:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_lane_change_to_left_rightnow));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_lane_change_to_left_rightnow));
                 break;
             case ADAS_LANE_CHANGE_TO_RIGHT_RIGHTNOW:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_lane_change_to_right_rightnow));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_lane_change_to_right_rightnow));
                 break;
             case ADAS_RESERVE_LANE_CHANGE_4:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_lane_change_4));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_lane_change_4));
                 break;
             case ADAS_RESERVE_LANE_CHANGE_5:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_lane_change_5));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_lane_change_5));
                 break;
             case ADAS_RESERVE_LANE_CHANGE_6:
-                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_lane_change_6));
+                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_lane_change_6));
                 break;
 //            case ADAS_LANE_CHANGE_CONDITION_NOT_MEET:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_lane_change_condition_not_meet));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_lane_change_condition_not_meet));
 //                break;
 //            case ADAS_LEFT_TURNING:
 //            case ADAS_RIGHT_TURNING:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_turning));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_turning));
 //                break;
 //            case ADAS_LANE_CHANGE_ABORTED:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_lane_change_aborted));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_lane_change_aborted));
 //                break;
 //            case ADAS_RESERVE_LANE_CHANGE_3:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_reserve_lane_change_3));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_lane_change_3));
 //                break;
 //            case ADAS_LANE_MERGING_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_lane_merging_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_lane_merging_alert));
 //                break;
 //            case ADAS_LANE_DIVERSION_ALERT:
-//                L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_adas_lane_diversion_alert));
+//                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_lane_diversion_alert));
 //                break;
             default:
         }
@@ -365,31 +362,31 @@ public final class L2PPManager {
             switch (state) {
                 case 0xD:
                 case 0xB:
-                    L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_signal_changed_db), true);
+                    L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_db), true);
                     break;
                 case 0x8:
-                    L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_signal_changed_8), true);
+                    L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_8), true);
                     break;
 //                case 0x32:
-//                    L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_signal_changed_32));
+//                    L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_32));
 //                    break;
 //                case 0xA:
-//                    L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_signal_changed_a));
+//                    L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_a));
 //                    break;
 //                case 0x15:
-//                    L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_signal_changed_15));
+//                    L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_15));
 //                    break;
                 case 0x17:
-                    L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_signal_changed_17), true);
+                    L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_17), true);
                     break;
                 case 0x13:
-                    L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_signal_changed_13), true);
+                    L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_13), true);
                     break;
                 case 0x35:
-                    L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_signal_changed_35), true);
+                    L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_35), true);
                     break;
                 case 0x7:
-                    L2NopTts.sendTTS(AppContext.getInstance().getMContext().getString(R.string.str_signal_changed_7), true);
+                    L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_7), true);
                     break;
                 default:
             }
@@ -426,7 +423,7 @@ public final class L2PPManager {
             Logger.i(TAG, "initialized");
             return;
         }
-        mAdasManager = AdasManager.getInstance(AppContext.getInstance().getMContext());
+        mAdasManager = AdasManager.getInstance(AppCache.getInstance().getMContext());
         RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
         L2Package.getInstance().registerCallback(TAG, mL2InfoCallback);
         SignalPackage.getInstance().registerObserver(TAG, mSignalCallback);

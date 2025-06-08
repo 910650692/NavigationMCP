@@ -45,20 +45,11 @@ public interface INaviApi {
     boolean stopNavigation();
 
     /**
-     * 设置导航路线
-     *
-     * @param routeIndex          routeIndex
-     * @param routeLineLayerParam routeLineLayerParam
-     */
-    void setNaviPath(int routeIndex, RouteLineLayerParam routeLineLayerParam);
-
-    /**
      * 更新导航路线
      *
-     * @param routeIndex          routeIndex
      * @param routeLineLayerParam routeLineLayerParam
      */
-    void updateNaviPath(int routeIndex, RouteLineLayerParam routeLineLayerParam);
+    void updateNaviPath(RouteLineLayerParam routeLineLayerParam);
 
     /**
      * 注销观察者

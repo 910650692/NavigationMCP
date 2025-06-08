@@ -22,7 +22,6 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
-import com.fy.navi.hmi.hud.HudMapManager;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.dialog.MsgTopDialog;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
@@ -77,15 +76,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WindowCompat.setDecorFitsSystemWindows(getWindow(),false);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED){
-            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,"没有账号权限");
+                != PackageManager.PERMISSION_GRANTED) {
+            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG, "没有账号权限");
         } else {
-            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,"有账号权限 ");
+            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG, "有账号权限 ");
         }
         ThreadManager.getInstance().runAsync(() -> {
             Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,
@@ -117,26 +116,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        reBindSurfaceMap();
-    }
-
-    private void reBindSurfaceMap() {
-        // 判断是否SurfaceView已被解绑
-        if (!ConvertUtils.isNull(mBinding) && mBinding.mainMapview.getChildCount() == 0) {
-            Logger.w(TAG, "reBindSurfaceMap-主图地图已被解绑，需要重新绑定！");
-            mViewModel.loadMapView(mBinding.mainMapview);
-        } else {
-            Logger.d(TAG, "reBindSurfaceMap-childCount:" + (mBinding == null ? 0 : mBinding.mainMapview.getChildCount()));
-        }
-    }
-
-    @Override
     public void onInitView() {
         mViewModel.loadMapView(mBinding.mainMapview);
-        //初始化HudMapManager
-        HudMapManager.getInstance().init();
         // 给限行设置点击事件
         mBinding.includeLimit.setViewModel(mViewModel);
         mBinding.cruiseLayout.setViewModel(mViewModel);
@@ -148,17 +129,73 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mBinding.skIvBasicRouting.setImageResource(R.drawable.img_basic_ic_gas_charging);
         }
         mBinding.includeMessageCenter.setViewModel(mViewModel);
-        mViewModel.startListenMsg();
-        mViewModel.offlineMap15Day();
-        mViewModel.offlineMap45Day();
-        mViewModel.checkPopGuideLogin();
+    }
+
+    @Override
+    public void onInitObserver() {
         addSceneGoHomeCallBack();
     }
 
     @Override
     public void onInitData() {
+        mViewModel.startListenMsg();
+        mViewModel.offlineMap15Day();
+        mViewModel.offlineMap45Day();
+        mViewModel.checkPopGuideLogin();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         Intent intent = getIntent();
         getIntentExtra(intent);
+    }
+
+    @Override
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
+        //监听分屏模式
+        Logger.i(TAG, isInMultiWindowMode, GsonUtils.toJson(newConfig));
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (!ConvertUtils.isEmpty(outState)) {
+            outState.putBoolean(KEY_CHANGE_SAVE_INSTANCE, true);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (!ConvertUtils.isEmpty(savedInstanceState)) {
+            boolean isNeedToUpdateData = savedInstanceState.getBoolean(KEY_CHANGE_SAVE_INSTANCE);
+            //todo 页面恢复，请恢复数据
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mViewModel.getCurrentCityLimit();
+    }
+
+    @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_HIDE)
+    protected void onStop() {
+        Logger.i(TAG, "onStop");
+        super.onStop();
+    }
+
+    @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_CLOSE)
+    protected void onDestroy() {
+        // 退出的时候主动保存一下最后的定位信息
+        mViewModel.saveLastLocationInfo();
+        Logger.i(TAG, "onDestroy");
+        super.onDestroy();
     }
 
     @Override
@@ -190,116 +227,62 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.showParkingView();
     }
 
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Logger.i(TAG, GsonUtils.toJson(newConfig));
+        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+                ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
+        recreate();
+    }
+
     // 更新当前的比例尺数值
     public void updateOnMapScaleChanged(String scale) {
         mBinding.sceneScaleView.updateOnMapLevelChanged(scale);
     }
 
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Logger.i(TAG, GsonUtils.toJson(newConfig));
-        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
-        recreate();
-        mViewModel.setScreenType(newConfig.screenWidthDp);
-    }
-
-    @Override
-    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
-        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
-        //监听分屏模式
-        Logger.i(TAG, isInMultiWindowMode, GsonUtils.toJson(newConfig));
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (!ConvertUtils.isEmpty(outState)) {
-            outState.putBoolean(KEY_CHANGE_SAVE_INSTANCE, true);
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (!ConvertUtils.isEmpty(savedInstanceState)) {
-            boolean isNeedToUpdateData = savedInstanceState.getBoolean(KEY_CHANGE_SAVE_INSTANCE);
-            //todo 页面恢复，请恢复数据
-        }
-    }
-
-    @Override
-    protected void onNewIntent(@NonNull Intent intent) {
-        super.onNewIntent(intent);
-        getIntentExtra(intent);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mViewModel.getCurrentCityLimit();
-    }
-
-    @Override
-    @HookMethod(eventName = BuryConstant.EventName.AMAP_HIDE)
-    protected void onStop() {
-        Logger.i(TAG, "onStop");
-        super.onStop();
-    }
-
-    @Override
-    @HookMethod(eventName = BuryConstant.EventName.AMAP_CLOSE)
-    protected void onDestroy() {
-        // 退出的时候主动保存一下最后的定位信息
-        mViewModel.saveLastLocationInfo();
-        Logger.i(TAG, "onDestroy");
-        HudMapManager.getInstance().destroyMap();
-        super.onDestroy();
-    }
-
     private void getIntentExtra(Intent intent) {
-        if (null != intent) {
-            //外部应用打开地图时指定的响应界面
-            int intentPage = intent.getIntExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
-            Logger.i(TAG, "intentPage:" + intentPage);
-            intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
-            mViewModel.stopCruise();
-            switch (intentPage) {
-                case INaviConstant.OpenIntentPage.SEARCH_PAGE:
-                    String keyword = intent.getStringExtra(INaviConstant.SEARCH_KEYWORD_EXTRA);
-                    if (!ConvertUtils.isEmpty(keyword)) {
-                        mViewModel.setExtraKeyword(keyword);
-                    } else {
-                        mBinding.skIvBasicSearch.callOnClick();
-                    }
-                    break;
-                case INaviConstant.OpenIntentPage.GO_HOME:
-                    mBinding.skIvBasicHome.callOnClick();
-                    break;
-                case INaviConstant.OpenIntentPage.GO_COMPANY:
-                    mBinding.skIvBasicBus.callOnClick();
-                    break;
-                case INaviConstant.OpenIntentPage.POI_DETAIL_PAGE:
-                    PoiInfoEntity poiInfo = intent.getParcelableExtra(INaviConstant.POI_INFO_EXTRA);
-                    if (null != poiInfo) {
-                        mViewModel.toPoiDetailFragment(poiInfo);
-                    }
-                    break;
-                case INaviConstant.OpenIntentPage.ROUTE_PAGE:
-                    PoiInfoEntity endPoint = intent.getParcelableExtra(INaviConstant.ROUTE_END_POI);
-                    mViewModel.openRoute(endPoint);
-                    break;
-                case INaviConstant.OpenIntentPage.START_NAVIGATION:
-                    mViewModel.startNaviForRouteOver();
-                    break;
-                default:
-                    break;
-            }
-            intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
+        if (null == intent) return;
+        //外部应用打开地图时指定的响应界面
+        int intentPage = intent.getIntExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
+        Logger.i(TAG, "intentPage:" + intentPage);
+        intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
+        mViewModel.stopCruise();
+        switch (intentPage) {
+            case INaviConstant.OpenIntentPage.SEARCH_PAGE:
+                String keyword = intent.getStringExtra(INaviConstant.SEARCH_KEYWORD_EXTRA);
+                if (!ConvertUtils.isEmpty(keyword)) {
+                    mViewModel.setExtraKeyword(keyword);
+                } else {
+                    mBinding.skIvBasicSearch.callOnClick();
+                }
+                break;
+            case INaviConstant.OpenIntentPage.GO_HOME:
+                mBinding.skIvBasicHome.callOnClick();
+                break;
+            case INaviConstant.OpenIntentPage.GO_COMPANY:
+                mBinding.skIvBasicBus.callOnClick();
+                break;
+            case INaviConstant.OpenIntentPage.POI_DETAIL_PAGE:
+                PoiInfoEntity poiInfo = intent.getParcelableExtra(INaviConstant.POI_INFO_EXTRA);
+                if (null != poiInfo) {
+                    mViewModel.toPoiDetailFragment(poiInfo);
+                }
+                break;
+            case INaviConstant.OpenIntentPage.ROUTE_PAGE:
+                PoiInfoEntity endPoint = intent.getParcelableExtra(INaviConstant.ROUTE_END_POI);
+                mViewModel.openRoute(endPoint);
+                break;
+            case INaviConstant.OpenIntentPage.START_NAVIGATION:
+                mViewModel.startNaviForRouteOver();
+                break;
+            default:
+                break;
         }
+        intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
     }
 
-    public void setMessageImg(int res){
+    public void setMessageImg(int res) {
         mBinding.includeMessageCenter.baseMapMessageCenterImg.setImageResource(res);
     }
 
@@ -353,9 +336,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         );
     }
 
-
-
-    public void setNdGoHomeView(RouteTMCParam routeTMCParam){
+    public void setNdGoHomeView(RouteTMCParam routeTMCParam) {
         mBinding.sceneGoHome.setNdGoHomeView(routeTMCParam);
     }
 
@@ -368,8 +349,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         });
     }
 
-    public void showTripDialog(String title,String content){
-        if(!ConvertUtils.isEmpty(mMsgTopDialog) && mMsgTopDialog.isShowing()){
+    public void showTripDialog(String title, String content) {
+        if (!ConvertUtils.isEmpty(mMsgTopDialog) && mMsgTopDialog.isShowing()) {
             return;
         }
         mMsgTopDialog = new MsgTopDialog(
@@ -384,4 +365,5 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
         });
         mMsgTopDialog.showDialog();
-    }}
+    }
+}

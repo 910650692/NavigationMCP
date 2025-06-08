@@ -5,7 +5,7 @@ import android.os.CountDownTimer;
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.adapter.position.VehicleSpeedController;
 import com.fy.navi.service.define.position.ISpeedCallback;
 
@@ -45,8 +45,8 @@ public class SpeedMonitor implements ISpeedCallback {
     }
 
     public void registerSpeedCallBack() {
-        if (DeviceUtils.isCar(AppContext.getInstance().getMContext())) {
-            mSpeedController = new VehicleSpeedController(AppContext.getInstance().getMContext(), this);
+        if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
+            mSpeedController = new VehicleSpeedController(AppCache.getInstance().getMContext(), this);
             mSpeedController.registerCallback();
         } else {
             Logger.e(TAG, "PAD无法使用此功能！");

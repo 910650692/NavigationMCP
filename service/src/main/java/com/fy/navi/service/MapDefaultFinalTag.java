@@ -52,6 +52,8 @@ public interface MapDefaultFinalTag {
      String SIGNAL_SERVICE_TAG = DEFAULT_TAG + "_Signal" + SERVICE_TAG;
     /*** NaviApp_Signal_ForCast **/
      String FOR_CAST_SERVICE_TAG = DEFAULT_TAG + "ForCast" + SERVICE_TAG;
+    /*** NaviApp_Hud_Service **/
+    String HUD_SERVICE_TAG = DEFAULT_TAG + "_Hud" + SERVICE_TAG;
     /*** HMI Tag **/
      String HMI_TAG = "_HMI";
     /*** NaviApp_Engine_HMI **/
@@ -76,6 +78,8 @@ public interface MapDefaultFinalTag {
      String WECHAT_HMI_TAG = DEFAULT_TAG + "_WeChat" + HMI_TAG;
     /*** NaviApp_Offline_HMI **/
      String OFFLINE_HMI_TAG = DEFAULT_TAG + "_Offline" + HMI_TAG;
+    /*** NaviApp_Hud_HMI **/
+    String HUD_HMI_TAG = DEFAULT_TAG + "Hud" + HMI_TAG;
      /*** Scene_Tag **/
      String SCENE_TAG = "_Scene";
     /*** NaviApp_Navi_Scene **/
@@ -86,7 +90,6 @@ public interface MapDefaultFinalTag {
     String NAVI_SCENE_SAP = DEFAULT_TAG + "_Navi" + SCENE_TAG + "_Sap";
     /*** NaviApp_Navi_Scene_Cross **/
     String NAVI_SCENE_CROSS = DEFAULT_TAG + "_Navi" + SCENE_TAG + "_Cross";
-
     /*** NaviApp_Navi_Bury_Point **/
     String NAVI_BURY_POINT = DEFAULT_TAG + "_Navi" + "Bury_Point";
 }

@@ -4,11 +4,11 @@ package com.fy.navi.service.adapter.position;
 import androidx.annotation.IntDef;
 
 import com.android.utils.DeviceUtils;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 
 public interface PositionConstant {
     /*** 是否为后端融合 **/
-    boolean isDrBack = DeviceUtils.isCar(AppContext.getInstance().getMApplication());
+    boolean isDrBack = DeviceUtils.isCar(AppCache.getInstance().getMApplication());
 
     interface GearType {
         int GEAR_NEUTRAL = 1;//空挡

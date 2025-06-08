@@ -91,7 +91,7 @@
             android:id="@+id/poi_scenic_spot_child_list"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_40"
             app:layout_constraintEnd_toStartOf="@+id/poi_scenic_spot_child_expand_collapse"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_scenic_spot_price" />
@@ -100,7 +100,7 @@
             android:id="@+id/poi_scenic_spot_child_expand_collapse"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
-            android:layout_marginTop="@dimen/dp_83"
+            android:layout_marginTop="@dimen/dp_23"
             android:src="@drawable/img_under_the_48"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/poi_scenic_spot_child_list" />

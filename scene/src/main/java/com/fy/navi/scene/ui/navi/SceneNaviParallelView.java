@@ -16,7 +16,7 @@ import com.fy.navi.scene.databinding.SceneNaviParallelViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviParallelImpl;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 
 /**
@@ -105,23 +105,23 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
     /***Toast：已为您切换至辅路***/
     public void showToastRoadMainToSide() {
         ToastUtils.Companion.getInstance().showCustomToastView(
-                AppContext.getInstance().getMContext().
+                AppCache.getInstance().getMContext().
                         getText(R.string.navi_switch_to_road_auxiliary));
     }
 
     /***Toast：已为您切换至主路***/
     public void showToastRoadSideToMain() {
-        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_switch_to_road_main));
+        ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(R.string.navi_switch_to_road_main));
     }
 
     /***Toast：已为您切换至主高架下***/
     public void showToastBridgeUpToDown() {
-        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_switch_to_bridge_down));
+        ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(R.string.navi_switch_to_bridge_down));
     }
 
     /***Toast：已为您切换至主高架上***/
     public void showToastBridgeDownToUp() {
-        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_switch_to_bridge_up));
+        ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(R.string.navi_switch_to_bridge_up));
     }
 
     /**

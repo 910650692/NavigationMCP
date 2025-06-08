@@ -15,7 +15,7 @@ import com.fy.navi.scene.api.route.ISceneRouteDetailsSelectCallBack;
 import com.fy.navi.scene.databinding.SceneRouteDetailsResultListViewBinding;
 import com.fy.navi.scene.impl.route.SceneRouteDetailsResultListImpl;
 import com.fy.navi.scene.ui.adapter.RouteDetailsResultsAdapter;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteLineSegmentInfo;
 
@@ -139,7 +139,7 @@ public class SceneRouteDetailsResultListView extends BaseSceneView<SceneRouteDet
      * @param name 终点名称
      * */
     public void setEndPoint(final String name) {
-        mViewBinding.routeDetailsListTvFooter.setText(AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_list_footer) + name);
+        mViewBinding.routeDetailsListTvFooter.setText(AppCache.getInstance().getMContext().getResources().getString(R.string.route_details_list_footer) + name);
     }
     /**
      * 避开道路

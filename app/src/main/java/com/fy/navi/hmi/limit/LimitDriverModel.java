@@ -4,19 +4,15 @@ package com.fy.navi.hmi.limit;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedParam;
-import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
 import com.fy.navi.service.logicpaket.aos.IAosRestrictedObserver;
-import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.base.BaseModel;
@@ -84,6 +80,18 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
     }
 
     /**
+     * 绘制限行区域
+     *
+     * @param routeRestrictionParam 限行政策
+     */
+    public void drawRestrictionForLimit(final RouteRestrictionParam routeRestrictionParam) {
+        RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
+                routeRestrictionParam.getMReStrictedAreaResponseParam(), 0);
+        AosRestrictedPackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP,
+                routeRestrictionParam, 0);
+    }
+
+    /**
      * 请求限行信息重试
      */
     public void queryRetry() {
@@ -115,7 +123,9 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
                     param.getMReStrictedAreaResponseParam(),0);
             param.setMRestrictedArea(restrictedAreaDetail);
             AosRestrictedPackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP, param, 0);
-            mViewModel.showPolicyUI(param);
+            if (mViewModel != null) {
+                mViewModel.showPolicyUI(param);
+            }
         }
     }
 }

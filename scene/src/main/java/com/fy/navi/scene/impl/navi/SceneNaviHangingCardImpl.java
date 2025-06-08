@@ -11,7 +11,7 @@ import com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHangingCard;
 import com.fy.navi.scene.ui.navi.hangingcard.OnCardChangeListener;
 import com.fy.navi.scene.util.HandCardType;
 import com.fy.navi.scene.util.PowerMonitorService;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -198,7 +198,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
         }
         if (ConvertUtils.isEmpty(mParkList)) {
             isGetParkListRequesting = true;
-            mParkSearchId = mSearchPackage.aroundSearch(DEFAULT_PAGE, AppContext.getInstance().getMContext().getString(R.string.st_quick_search_parking), mEndPoiInfoEntity.getPoint(), "2000", true);
+            mParkSearchId = mSearchPackage.aroundSearch(DEFAULT_PAGE, AppCache.getInstance().getMContext().getString(R.string.st_quick_search_parking), mEndPoiInfoEntity.getPoint(), "2000", true);
         }
     }
 

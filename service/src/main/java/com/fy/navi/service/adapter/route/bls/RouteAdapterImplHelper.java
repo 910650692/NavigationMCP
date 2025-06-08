@@ -4,7 +4,6 @@ package com.fy.navi.service.adapter.route.bls;
 import android.util.Log;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.TimeUtils;
 import com.autonavi.gbl.common.model.Coord2DDouble;
@@ -17,9 +16,6 @@ import com.autonavi.gbl.common.path.model.TrafficIncident;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.route.model.BLRerouteRequestInfo;
 import com.autonavi.gbl.route.observer.INaviRerouteObserver;
-import com.fy.navi.burypoint.anno.HookMethod;
-import com.fy.navi.burypoint.constant.BuryConstant;
-import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.define.route.Coord3DDouble;
 import com.fy.navi.service.define.route.RouteAlterChargePriceInfo;
 import com.fy.navi.service.define.route.RouteAlternativeChargeDetourInfo;
@@ -38,9 +34,6 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.aosclient.BLAosService;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaResponseParam;
-import com.autonavi.gbl.common.model.TbtCommonControl;
-import com.autonavi.gbl.common.model.UserConfig;
-import com.autonavi.gbl.common.model.WorkPath;
 import com.autonavi.gbl.common.path.model.ChargeStationInfo;
 import com.autonavi.gbl.common.path.model.EndPointEnergyInfo;
 import com.autonavi.gbl.common.path.model.MainAction;
@@ -69,7 +62,6 @@ import com.autonavi.gbl.route.observer.IRouteAlternativeChargeStationObserver;
 import com.autonavi.gbl.route.observer.IRouteResultObserver;
 import com.autonavi.gbl.route.observer.IRouteWeatherObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
-import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.route.RouteResultObserver;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -107,7 +99,7 @@ import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.define.route.RouteWeatherParam;
 import com.fy.navi.service.define.utils.NumberUtils;
-import com.fy.navi.service.logicpaket.calibration.PowerType;
+import com.fy.navi.service.define.calibration.PowerType;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
@@ -808,10 +800,12 @@ public class RouteAdapterImplHelper {
      */
     private void handlerDrawLine(final RouteLineLayerParam routeLineLayerParam, final ArrayList<PathInfo> pathInfoList,
                                  final long requestId, final MapType mapTypeId, final boolean onlineRoute) {
+        if(ConvertUtils.isEmpty(routeLineLayerParam)) return;
         routeLineLayerParam.setMRequestId(requestId);
         routeLineLayerParam.setMMapTypeId(mapTypeId);
         routeLineLayerParam.setMIsOnlineRoute(onlineRoute);
         routeLineLayerParam.setMPathInfoList(pathInfoList);
+        routeLineLayerParam.setMSelectIndex(NumberUtils.NUM_0);
 //        Logger.i(TAG, "获取路线绘制的参数 " + GsonUtils.toJson(routeLineLayerParam));
         for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
             if (resultObserver == null) {

@@ -433,4 +433,12 @@ public final class SignalPackage implements SignalAdapterCallback {
         mSignalAdapter.setRemainTimeToChargingStationy(value);
     }
 
+    public void setVcuSpeedLimitArbitrationResults(int value) {
+        mSignalAdapter.setVcuSpeedLimitArbitrationResults(value);
+    }
+
+    public void setVcuSpeedLimitArbitrationResultsAssured(int value) {
+        mSignalAdapter.setVcuSpeedLimitArbitrationResultsAssured(value);
+    }
+
 }

@@ -22,7 +22,6 @@ import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
-import com.fy.navi.ui.base.StackManager;
 
 import java.util.Hashtable;
 

@@ -11,13 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
-import com.fy.navi.scene.api.route.ISceneRouteDetailsSelectCallBack;
 import com.fy.navi.scene.databinding.RouteDetailsInfoResultParentItemBinding;
 import com.fy.navi.scene.impl.route.common.SceneRouteCommonStruct;
 import com.fy.navi.scene.impl.route.common.SceneRouteDetailEnumRes;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteLineSegmentInfo;
 
@@ -80,14 +78,14 @@ public class RouteDetailsResultsAdapter extends RecyclerView.Adapter<RouteDetail
         setFrontIcon(holder, position);
         holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemRoadName.setText(mRouteLineSegmentInfos.get(position).getMLoadName());
         holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemDescription.setText(mRouteLineSegmentInfos.get(position).getMDistance() + " "
-                + AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_light_count)
+                + AppCache.getInstance().getMContext().getResources().getString(R.string.route_details_light_count)
                 + mRouteLineSegmentInfos.get(position).getMLightCount()
-                + AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_light_count_unit));
+                + AppCache.getInstance().getMContext().getResources().getString(R.string.route_details_light_count_unit));
         Boolean isShowChild = mHashtableChild.get(position);
         holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemImgUpdown.setImageResource(Boolean.TRUE.equals(isShowChild) ? R.drawable.img_route_up : R.drawable.img_route_down);
         holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemRecyclerView.setVisibility(Boolean.TRUE.equals(isShowChild) ? View.VISIBLE : View.GONE);
         if (Boolean.TRUE.equals(isShowChild)) {
-            final LinearLayoutManager layoutManager = new LinearLayoutManager(AppContext.getInstance().getMApplication());
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(AppCache.getInstance().getMApplication());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemRecyclerView.setLayoutManager(layoutManager);
             RouteDetailsResultsChildAdapter adapter = new RouteDetailsResultsChildAdapter();

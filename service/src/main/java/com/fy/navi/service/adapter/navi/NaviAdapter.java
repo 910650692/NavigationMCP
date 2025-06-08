@@ -134,42 +134,11 @@ public final class NaviAdapter {
     }
 
     /**
-     * @param routeIndex          routeIndex
      * @param routeLineLayerParam routeLineLayerParam
      */
-    public void setNaviPath(final int routeIndex, final RouteLineLayerParam routeLineLayerParam) {
-        if (!ConvertUtils.isEmpty(routeLineLayerParam)) {
-            OpenApiHelper.setCurrentPathInfos((ArrayList<PathInfo>)
-                    routeLineLayerParam.getMPathInfoList());
-        }
-        mNaviApi.setNaviPath(routeIndex, routeLineLayerParam);
-    }
-
-    /**
-     * @param routeIndex          routeIndex
-     * @param routeLineLayerParam routeLineLayerParam
-     */
-    public void updateNaviPath(final int routeIndex,
-                               final RouteLineLayerParam routeLineLayerParam) {
-        if (!ConvertUtils.isEmpty(routeLineLayerParam)
-                && !ConvertUtils.isEmpty(routeLineLayerParam.getMPathInfoList())
-                && routeIndex != -1
-                && routeIndex < routeLineLayerParam.getMPathInfoList().size()) {
-            ArrayList<Object> pathInfos = new ArrayList<>();
-            pathInfos.add(routeLineLayerParam.getMPathInfoList().get(routeIndex));
-            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, 0);
-        }
-
-        mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
-        mNaviApi.updateNaviPath(routeIndex, routeLineLayerParam);
-        if (!ConvertUtils.isEmpty(routeLineLayerParam)) {
-            OpenApiHelper.setCurrentPathInfos((ArrayList<PathInfo>)
-                    routeLineLayerParam.getMPathInfoList());
-        }
+    public void updateNaviPath(final RouteLineLayerParam routeLineLayerParam) {
         mLayerAdapter.updateGuideCarStyle(MapType.MAIN_SCREEN_MAIN_MAP);
-        mLayerAdapter.updateGuideCarStyle(MapType.LAUNCHER_WIDGET_MAP);
-        mLayerAdapter.updateGuideCarStyle(MapType.LAUNCHER_DESK_MAP);
-        mLayerAdapter.updateGuideCarStyle(MapType.CLUSTER_MAP);
+        mNaviApi.updateNaviPath(routeLineLayerParam);
         mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 

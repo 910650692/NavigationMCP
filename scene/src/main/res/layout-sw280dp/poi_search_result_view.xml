@@ -116,7 +116,7 @@
             android:padding="@dimen/dp_51"
             android:clickable="true"
             android:focusable="false"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/root_view"
             app:layout_constraintStart_toStartOf="parent" />
     </com.fy.navi.ui.view.SkinConstraintLayout>

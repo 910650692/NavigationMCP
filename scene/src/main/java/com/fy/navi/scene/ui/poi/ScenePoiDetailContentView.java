@@ -20,7 +20,6 @@ import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -49,7 +48,7 @@ import com.fy.navi.scene.ui.adapter.PoiDetailsScenicChildAdapter;
 import com.fy.navi.scene.ui.adapter.RoutePOIGasStationAdapter;
 import com.fy.navi.scene.ui.route.SceneRouteDescendantsView;
 import com.fy.navi.scene.ui.search.SearchConfirmDialog;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -1920,7 +1919,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * @return 格式化后的数据
      */
     private String formatDistanceArrayInternal(final int distance) {
-        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.getInstance().getMContext(), distance);
+        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppCache.getInstance().getMContext(), distance);
         return distanceArray[0] + distanceArray[1];
     }
 

@@ -84,6 +84,15 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
         }
     }
 
+    public void onClickCollectSearch(){
+        final Fragment fragment = (Fragment) ARouter.getInstance()
+                .build(RoutePath.Search.COLLECT_FRAGMENT)
+                .navigation();
+        addFragment((BaseFragment) fragment, SearchFragmentFactory.createCollectFragment(
+                AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
+                AutoMapConstant.CollectionType.COLLECTION, AutoMapConstant.HomeCompanyType.COLLECTION));
+    }
+
     /**
      * 点击更多
      */

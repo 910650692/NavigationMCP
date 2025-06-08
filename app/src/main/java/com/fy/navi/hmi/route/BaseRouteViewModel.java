@@ -36,7 +36,7 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.ui.search.RouteRequestLoadingDialog;
 import com.fy.navi.scene.ui.search.SearchConfirmDialog;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -59,6 +59,7 @@ import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.search.ServiceAreaInfo;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.fy.navi.service.define.utils.NumberUtils;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -441,6 +442,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private ScheduledFuture mScheduledFuture;
     private int mTimes = NumberUtils.NUM_9;
 
+    private boolean mViewSurvival = true;
     private int mRestrictionStatus = 0;
     private String mCurrentPlateNumber;
     private String mCurrentavoidLimit;
@@ -496,7 +498,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mSecondaryPoiVisibility = new ObservableField<>(0);
         mTabVisibility = new ObservableField<>(0);
         mBatterCheckBoxVisibility = new ObservableField<>(false);
-        mAlongTabSearchVisibility = new ObservableField<>(true);
+        mAlongTabSearchVisibility = new ObservableField<>(false);
         mSearchNoDataVisibility = new ObservableField<>(false);
         mRoutePreferenceVisibility = new ObservableField<>(false);
         mSearchNoDataText =  new ObservableField<>("");
@@ -544,6 +546,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRouteProgressChargeExhaust = new ObservableField<>(0);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mViewSurvival = false;
+    }
 
     public int getMsgDialogTop() {
         return MsgDialogTop;
@@ -965,13 +972,14 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             Logger.d(TAG, "Already in navigation");
             return;
         }
+        //清除终点停车场扎标
+        LayerPackage.getInstance().clearLabelItem(MapType.MAIN_SCREEN_MAIN_MAP);
         mStartNavi = false;
         ThreadManager.getInstance().postDelay(mStartNaviTimer, START_NAVI_TIME);
         final Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, isSimNavi
                 ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
         Logger.i(TAG, "mStartNaviClick addNaviFragment");
-        mModel.clearEndParkPoint();
         addFragment(new NaviGuidanceFragment(), bundle);
         mModel.setPoint();
     }
@@ -1064,6 +1072,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param success 算路成功
      */
     public void hideProgressUI(final boolean success) {
+        if (!mViewSurvival) {
+            Logger.d(TAG, "VIEW IS CLOSE");
+            return;
+        }
         if (success) {
             mRefreshable = false;
             ThreadManager.getInstance().postDelay(mRefreshTimer, REFRESH_TIME);
@@ -1119,7 +1131,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mViaPoiListAllVisibility.set(false);
             mTitle.set(mEndName.get());
         } else {
-            mTitle.set(AppContext.getInstance().getMContext().getString(R.string.route_my_location));
+            mTitle.set(AppCache.getInstance().getMContext().getString(R.string.route_my_location));
             mViaPoiListVisibility.set(true);
             String stringParam = ResourceUtils.Companion.getInstance().getString(R.string.route_via_head)
                     + routeParams.size() + ResourceUtils.Companion.getInstance().getString(R.string.route_via_palce);
@@ -1334,7 +1346,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mAlongTabSearchVisibility.set(false);
         } else {
             mSearchNoDataVisibility.set(false);
-            mAlongTabSearchVisibility.set(listSearchType == 0);
+            mAlongTabSearchVisibility.set(false);
         }
         mView.showRouteSearchChargeListUI(poiInfoEntities, gasChargeAlongList, listSearchType, type);
         if (type == 1) {
@@ -1507,7 +1519,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRestrictionRightBackVisibility.set(false);
         mRestrictionStatus = routeRestrictionType;
         mRestrictionBackground.set(ResourceUtils.Companion.getInstance().getDrawable(R.color.text_route_restriction_error));
-        mRestrictionTextColor = new ObservableField<>(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_restriction_text_error));
+        mRestrictionTextColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_restriction_text_error));
         switch (routeRestrictionType) {
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPENOPLATE:
                 mRestriction.set(ResourceUtils.Companion.getInstance().getString(R.string.route_reatirction_limittipstypenoplate));
@@ -1520,7 +1532,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEAVOIDSUCCESS:
                 mRestriction.set(ResourceUtils.Companion.getInstance().getString(R.string.route_reatirction_limittipstypeavoidsuccess));
                 mRestrictionBackground.set(ResourceUtils.Companion.getInstance().getDrawable(R.color.text_route_restriction_success));
-                mRestrictionTextColor = new ObservableField<>(ResourceUtils.Companion.getInstance()
+                mRestrictionTextColor.set(ResourceUtils.Companion.getInstance()
                         .getColor(R.color.text_route_restriction_text_success));
                 break;
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEREGIONSTART:
@@ -1596,9 +1608,23 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 更新充电列表
      * @param gasChargeAlongList 列表数据
      * @param listSearchType 搜索方式
+     * @param same 是否和当前列表一致
      */
-    public void updateChareList(final List<RouteParam> gasChargeAlongList, final int listSearchType) {
+    public void updateChareList(final List<RouteParam> gasChargeAlongList, final int listSearchType, final boolean same) {
         mView.updateChareList(gasChargeAlongList, listSearchType);
+        if (same) {
+            mAlongTabSearchVisibility.set(false);
+        } else {
+            mAlongTabSearchVisibility.set(listSearchType == 0);
+        }
+    }
+
+    /***
+     * 设置确定取消按钮
+     * @param isShow 是否显示
+     */
+    public void setTabSearchVisibility(final boolean isShow) {
+        mAlongTabSearchVisibility.set(isShow);
     }
 
     /***

@@ -119,14 +119,13 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         Logger.i(TAG, "moreSetup");
         initTimer();
         setImmersiveStatus(ImersiveStatus.TOUCH);
-        if (mCallBack != null) {
+        if(mCallBack != null){
             mCallBack.skipNaviControlMoreScene();
         }
     }
 
     @Override
-    public void backControl() {
-    }
+    public void backControl(){}
 
     /**
      * @param type 0:退出全览 1:切换全览
@@ -233,12 +232,10 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     }
 
     @Override
-    public void refreshRoute() {
-    }
+    public void refreshRoute() {}
 
     @Override
-    public void naviBroadcast() {
-    }
+    public void naviBroadcast() {}
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_VOICE_SELECT)
     private void sendBroadcastModeTts(int broadcastMode) {
@@ -255,20 +252,16 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     }
 
     @Override
-    public void routePreference() {
-    }
+    public void routePreference() {}
 
     @Override
-    public void carHead() {
-    }
+    public void carHead() {}
 
     @Override
-    public void naviSetting() {
-    }
+    public void naviSetting() {}
 
     @Override
-    public void alongSearch(final int index) {
-    }
+    public void alongSearch(final int index) {}
 
     @Override
     public ObservableField<Boolean> getGroupMoreSetupField() {

@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RouteDetailsInfoResultChildItemBinding;
-import com.fy.navi.scene.databinding.RoutePoiGasStationItemBinding;
 import com.fy.navi.scene.impl.route.common.SceneRouteCommonStruct;
 import com.fy.navi.scene.impl.route.common.SceneRouteDetailEnumRes;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.route.RouteLineSegmentInfo;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class RouteDetailsResultsChildAdapter extends RecyclerView.Adapter<RouteD
         holder.mRouteDetailsInfoResultChildItemBinding.routeDetailInfoItemChildImg.setImageResource(SceneRouteDetailEnumRes.getDrawableEnumName(
                 SceneRouteCommonStruct.RouteDetailsMainAction.get(mRouteLineSegmentInfos.get(position).getMIconType())).getDayDrawableId());
         holder.mRouteDetailsInfoResultChildItemBinding.routeDetailInfoItemChildDescription.setText(mRouteLineSegmentInfos.get(position).getMDistance() + " "
-                + AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_after_to_arrive)
+                + AppCache.getInstance().getMContext().getResources().getString(R.string.route_details_after_to_arrive)
                 + mRouteLineSegmentInfos.get(position).getMLoadName());
     }
 

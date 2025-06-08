@@ -16,7 +16,7 @@ import com.fy.navi.scene.api.navi.ISceneNaviLastMile;
 import com.fy.navi.scene.ui.navi.SceneNaviLastMileView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.route.RouteParam;
@@ -54,13 +54,13 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
         // 账号未登录不发送
         if (!AccountPackage.getInstance().isLogin()) {
             Logger.i(TAG, "SceneNaviSendPhoneImpl account is not login");
-            ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_no_login));
+            ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(R.string.navi_no_login));
             return;
         }
         // 网络未连接不发送
         if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
             Logger.i(TAG, "SceneNaviSendPhoneImpl network is not connected");
-            ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_no_net));
+            ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(R.string.navi_no_net));
             return;
         }
         final String value = SettingManager.getInstance().getValueByKey(
@@ -80,7 +80,7 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
             msgPushRequestInfo.setLon(routeParam.getRealPos().getLon());
             final long resultCode = mMsgPushPackage.sendReqSendToPhone(msgPushRequestInfo);
             if (resultCode == 1) {
-                ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_send_to_phone));
+                ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(R.string.navi_send_to_phone));
             }
             Logger.d(TAG, "SceneNaviSendPhoneImpl send result：" + resultCode + ",address：" + routeParam.getAddress());
         } else {

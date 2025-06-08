@@ -10,4 +10,7 @@ public interface ILocationListener {
     void onLocationChanged(LocGnss locGnss);
 
     void onSatelliteNum(int num);
+
+    /*GPS 超时*/
+    void onGpsCheckTimeOut();
 }

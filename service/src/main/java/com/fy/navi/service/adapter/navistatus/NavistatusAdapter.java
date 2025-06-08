@@ -6,13 +6,14 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class NavistatusAdapter {
     private static final String TAG = "NavistatusAdapter";
     private boolean mIsGuidanceActive = false;
     private String mNaviStatus = NaviStatus.NaviStatusType.NO_STATUS;
     private String mLastNaviStatus = NaviStatus.NaviStatusType.NO_STATUS;
-    private ArrayList<INaviStatusCallback> mNaviStatusCallbacks = new ArrayList<>();
+    private final CopyOnWriteArrayList<INaviStatusCallback> mNaviStatusCallbacks = new CopyOnWriteArrayList<>();
 
     private NavistatusAdapter() {
     }

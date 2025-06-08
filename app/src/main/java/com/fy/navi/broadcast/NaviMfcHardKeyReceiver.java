@@ -4,18 +4,16 @@ import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BuildConfig;
-import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.hmi.startup.StartupActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.ui.base.StackManager;
 
@@ -56,11 +54,11 @@ public class NaviMfcHardKeyReceiver extends BroadcastReceiver {
             startCls = MapActivity.class;
         }
         Logger.i(TAG, "isActivityExist:" + isActivityExist);
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), startCls);
+        Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
         final ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
         intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
 }

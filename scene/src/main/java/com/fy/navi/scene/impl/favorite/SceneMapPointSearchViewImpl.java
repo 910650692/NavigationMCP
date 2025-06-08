@@ -45,10 +45,6 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
         StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
         mSearchPackage.clearLabelMark();
         flyLineVisible(false);
-        //如果处于添加途径点流程，只需要关闭当前界面即可
-        if (mCommonName == AutoMapConstant.HomeCompanyType.ALONG_WAY) {
-            return;
-        }
         if (null != mScreenView) {
             mScreenView.closeMapPointView();
         }

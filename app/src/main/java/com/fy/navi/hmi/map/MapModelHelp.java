@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.map.MapMode;
@@ -13,7 +13,7 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
-import com.fy.navi.service.logicpaket.calibration.PowerType;
+import com.fy.navi.service.define.calibration.PowerType;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
@@ -91,13 +91,13 @@ public class MapModelHelp {
         Logger.i(TAG, "resetMapAngel", "carMode:" + carMode);
         switch (carMode) {
             case 0 -> {
-                mMapPackage.switchMapMode(mMapTypeId, MapMode.UP_2D);
+                mMapPackage.switchMapMode(mMapTypeId, MapMode.UP_2D, true);
             }
             case 1 -> {
-                mMapPackage.switchMapMode(mMapTypeId, MapMode.NORTH_2D);
+                mMapPackage.switchMapMode(mMapTypeId, MapMode.NORTH_2D, true);
             }
             case 2 -> {
-                mMapPackage.switchMapMode(mMapTypeId, MapMode.UP_3D);
+                mMapPackage.switchMapMode(mMapTypeId, MapMode.UP_3D, true);
             }
             default -> {
                 Logger.e(TAG, "resetMapAngel failed!");
@@ -185,7 +185,7 @@ public class MapModelHelp {
      * 更新电量
      */
     public void uploadBattery() {
-        if (!DeviceUtils.isCar(AppContext.getInstance().getMContext())) {
+        if (!DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
             Logger.i(TAG, "uploadBattery", "不是汽车，无需上传！");
             return;
         }

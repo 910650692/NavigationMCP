@@ -78,12 +78,41 @@
             android:layout_marginStart="@dimen/dp_42"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/scl_collect"
+                clickCommand="@{() -> MainSearchView.onClickCollectSearch()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="90dp">
 
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_collect"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:src="@drawable/img_star58"
+                    app:layout_constraintEnd_toEndOf="@+id/scl_collect"
+                    app:layout_constraintStart_toStartOf="@id/scl_collect"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_collect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/search_quick_tab_view_color"
+                    android:textSize="@dimen/sp_30"
+                    app:layout_constraintEnd_toEndOf="@+id/scl_collect"
+                    app:layout_constraintStart_toStartOf="@id/scl_collect"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_collect"
+                    android:text="@string/shc_favorite" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_gas_station"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(0)}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@+id/scl_collect"
+                app:layout_constraintTop_toBottomOf="@+id/sub_line_view"
                 android:minWidth="90dp">
 
                 <com.fy.navi.ui.view.SkinImageView

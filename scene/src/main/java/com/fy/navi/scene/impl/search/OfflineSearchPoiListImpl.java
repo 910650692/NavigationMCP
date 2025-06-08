@@ -20,7 +20,10 @@ import com.fy.navi.ui.base.StackManager;
 public class OfflineSearchPoiListImpl extends BaseSceneModel<OfflineSearchPoiList> implements ISceneSearchPoiList {
     private final SearchPackage mSearchPackage;
     private UserTrackPackage mUserTrackPackage;
-
+    private int mTaskId;
+    public int getMTaskId() {
+        return mTaskId;
+    }
     public OfflineSearchPoiListImpl(final OfflineSearchPoiList scrollView) {
         super(scrollView);
         mSearchPackage = SearchPackage.getInstance();
@@ -42,7 +45,7 @@ public class OfflineSearchPoiListImpl extends BaseSceneModel<OfflineSearchPoiLis
      */
     public void keywordSearch(final int pageNum, final String keyword, final int adCode, final boolean isSilent) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "keywordSearch", keyword);
-        mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent);
+        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent);
         SearchHistoryItemBean item = new SearchHistoryItemBean();
         item.setName(keyword);
         item.setUpdateTime(System.currentTimeMillis());
@@ -55,7 +58,7 @@ public class OfflineSearchPoiListImpl extends BaseSceneModel<OfflineSearchPoiLis
      */
     public void suggestionSearch(final String key) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "suggestionSearch  key:" + key);
-        mSearchPackage.suggestionSearch(key);
+        mTaskId = mSearchPackage.suggestionSearch(key);
     }
 
     /**

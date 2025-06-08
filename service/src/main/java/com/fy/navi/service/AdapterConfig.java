@@ -55,15 +55,8 @@ public class AdapterConfig {
         Logger.i("AdapterConfig", objName);
         try {
             Constructor<?> constructor = tClass.getConstructor(Context.class);
-            T myInstance = (T) constructor.newInstance(context);
-            return myInstance;
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
+            return (T) constructor.newInstance(context);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -75,7 +68,7 @@ public class AdapterConfig {
     public static void methodCall(String pacakgeName, String getinstance, String initFunction,
                                   Object... args) {
         try {
-            Class class1 = Class.forName(pacakgeName);
+            Class<?> class1 = Class.forName(pacakgeName);
             Method method = class1.getMethod(getinstance);
             Object instance = method.invoke(new Object());
             Method method1 = class1.getMethod(initFunction);
@@ -92,7 +85,7 @@ public class AdapterConfig {
                                           Object... args) {
         Object value = null;
         try {
-            Class class1 = Class.forName(pacakgeName);
+            Class<?> class1 = Class.forName(pacakgeName);
             Method method = class1.getMethod(getinstance);
             Object instance = method.invoke(new Object());
             Method method1 = class1.getMethod(initFunction);
@@ -109,7 +102,7 @@ public class AdapterConfig {
     public static void callMapMethod(String pacakgeName, String getInstance, String function,
                                      Object... args) {
         try {
-            Class class1 = Class.forName(pacakgeName);
+            Class<?> class1 = Class.forName(pacakgeName);
             Object object = class1.getMethod(getInstance).invoke(new Object());
             class1.getMethod(function, new Class[]{int.class}).invoke(object, args);
         } catch (Exception error) {
@@ -125,11 +118,7 @@ public class AdapterConfig {
         Logger.i("AdapterConfig", objName);
         try {
             return Class.forName(objName).newInstance();
-        } catch (IllegalAccessException error) {
-            Logger.i("AdapterConfig", "error:" + error.toString());
-        } catch (InstantiationException error) {
-            Logger.i("AdapterConfig", "error:" + error.toString());
-        } catch (ClassNotFoundException error) {
+        } catch (IllegalAccessException | InstantiationException | ClassNotFoundException error) {
             Logger.i("AdapterConfig", "error:" + error.toString());
         }
         return null;

@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.search.bls;
 
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
@@ -39,7 +40,7 @@ import com.autonavi.gbl.search.model.SearchSuggestionPoiChildTip;
 import com.autonavi.gbl.search.model.SearchSuggestionPoiTip;
 import com.autonavi.gbl.search.model.SearchTipsCityInfo;
 import com.autonavi.gbl.search.model.SuggestionSearchResult;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -257,7 +258,6 @@ public final class SearchResultMapper {
                                 .map(this::mapSearchChildCategoryInfo)
 //                                .filter(this::shouldIncludeInResult)//过滤value或者name值不存在的item
                                 .collect(Collectors.toList());
-                        categoryLocalInfoList.get(i).setCategoryLocalInfos(level1Infos);
                         if (!level1Infos.isEmpty()) {
                             for (int j = 0; j < level1Infos.size(); j++) {
                                 final List<SearchChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
@@ -271,7 +271,10 @@ public final class SearchResultMapper {
                                         .collect(Collectors.toList());
                                 level1Infos.get(j).setCategoryLocalInfos(level1ChildInfos);
                             }
+                            // 过滤掉没有子节点且自身没有value的数据
+                            level1Infos.removeIf(info -> !ConvertUtils.isEmpty(info.getCategoryLocalInfos()) && info.getCategoryLocalInfos().isEmpty() && ConvertUtils.isEmpty(info.getValue()));
                         }
+                        categoryLocalInfoList.get(i).setCategoryLocalInfos(level1Infos);
                     }
                 }
                 //测试log，测试时放开
@@ -393,6 +396,7 @@ public final class SearchResultMapper {
                 .setRatio(searchPoiChildInfo.ratio)
                 .setLabel(searchPoiChildInfo.label)
                 .setPoiId(searchPoiChildInfo.poiId)
+                .setMChildType(searchPoiChildInfo.childType)
                 .setLocation(new GeoPoint(searchPoiChildInfo.location.lon, searchPoiChildInfo.location.lat))
                 .setAddress(searchPoiChildInfo.address);
     }
@@ -1264,7 +1268,7 @@ public final class SearchResultMapper {
      * @return String
      */
     private String formatDistanceArrayInternal(final int distance) {
-        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.getInstance().getMContext(), distance);
+        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppCache.getInstance().getMContext(), distance);
         return distanceArray[0] + distanceArray[1];
     }
 

@@ -18,7 +18,7 @@ import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.aos.FyCriticism;
 import com.fy.navi.service.define.aos.FyGSubTraEventDetail;
 import com.fy.navi.service.define.aos.FyGTraEventDetail;
@@ -67,7 +67,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
         currentIndex = 0;
         if (fyGTraEventDetail.get() == null || !fyGTraEventDetail.get().isRequestSuccess || poiInfo != entity) {
             uiState.set(TrafficEventUiState.LOADING);
-            mLoadingDesc.set(AppContext.getInstance().getMContext().getString(R.string.limit_loading));
+            mLoadingDesc.set(AppCache.getInstance().getMContext().getString(R.string.limit_loading));
             mModel.queryTrafficEventInfo(entity);
             this.poiInfo = entity;
         } else {
@@ -170,8 +170,8 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
 
     public void updateUi(final FyGTraEventDetail gTraEventDetail, boolean isFromChild) {
         Logger.i(TAG, "updateUi:" + (gTraEventDetail != null), "isSuccess:" + gTraEventDetail.isRequestSuccess);
-        mLoadingDesc.set(gTraEventDetail.isRequestSuccess ? AppContext.getInstance().getMContext().getString(R.string.limit_loading)
-                : AppContext.getInstance().getMContext().getString(R.string.limit_load_fail));
+        mLoadingDesc.set(gTraEventDetail.isRequestSuccess ? AppCache.getInstance().getMContext().getString(R.string.limit_loading)
+                : AppCache.getInstance().getMContext().getString(R.string.limit_load_fail));
         if (!isFromChild) {
             uiState.set(gTraEventDetail.isRequestSuccess ? TrafficEventUiState.SUCCESS : TrafficEventUiState.ERROR);
             if (!gTraEventDetail.isRequestSuccess) {
@@ -202,7 +202,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
         mModel.queryDynamicPraise(subTraEventDetail.id);
         // 计算直线距离
         double distance = mModel.calcStraightDistance(new GeoPoint(poiInfo.getPoint().getLon(), poiInfo.getPoint().getLat())) / 1000f;
-        straightDis.set(String.format(AppContext.getInstance().getMContext().getString(R.string.traffic_distance_format), distance));
+        straightDis.set(String.format(AppCache.getInstance().getMContext().getString(R.string.traffic_distance_format), distance));
 
         ThreadManager.getInstance().postUi(() -> {
             mView.updateUi(subTraEventDetail);
@@ -211,8 +211,8 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
 
 
     private String getFormatThumb(@StringRes int formatStr, int number) {
-        if (number > 99) return String.format(AppContext.getInstance().getMContext().getString(formatStr), "99+");
-        else return String.format(AppContext.getInstance().getMContext().getString(formatStr), number);
+        if (number > 99) return String.format(AppCache.getInstance().getMContext().getString(formatStr), "99+");
+        else return String.format(AppCache.getInstance().getMContext().getString(formatStr), number);
     }
 
     /***

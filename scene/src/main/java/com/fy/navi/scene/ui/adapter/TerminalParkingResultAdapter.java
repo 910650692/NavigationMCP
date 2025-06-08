@@ -18,7 +18,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.TerminalParkingItemBinding;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -118,11 +118,11 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
         } else if (ConvertUtils.equals(totalSpace, DEFAULT_NUM)) {
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setText(freeSpace);
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setTextColor(
-                    AppContext.getInstance().getMContext().getColor(R.color.poi_details_bottom_ff_00));
+                    AppCache.getInstance().getMContext().getColor(R.color.poi_details_bottom_ff_00));
         } else if (ConvertUtils.equals(freeSpace, DEFAULT_NUM)) {
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setText(totalSpace);
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setTextColor(
-                    AppContext.getInstance().getMContext().getColor(R.color.search_quick_tab_view_color));
+                    AppCache.getInstance().getMContext().getColor(R.color.search_quick_tab_view_color));
         } else {
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setText(getColoredParkingInfo(totalSpace, freeSpace));
         }
@@ -132,7 +132,7 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
 
         // 当前位置显示
         holder.mTerminalParkingItemBinding.sktvParkingItemDistance.setText(
-                AppContext.getInstance().getMContext().getString(R.string.st_distance_to_finish, poiEntity.getDistance()));
+                AppCache.getInstance().getMContext().getString(R.string.st_distance_to_finish, poiEntity.getDistance()));
 
         // 处理 item 点击事件（选中状态更新）
         holder.itemView.setOnClickListener(v -> {
@@ -161,8 +161,8 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
     private SpannableString getColoredParkingInfo(final String totalSpace, final String freeSpace) {
         final String text = totalSpace + " / " + freeSpace;
         final SpannableString spannableString = new SpannableString(text);
-        final int colorDark = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.poi_details_bottom_ff_00);
-        final int colorLight = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.search_quick_tab_view_color);
+        final int colorDark = ContextCompat.getColor(AppCache.getInstance().getMContext(), R.color.poi_details_bottom_ff_00);
+        final int colorLight = ContextCompat.getColor(AppCache.getInstance().getMContext(), R.color.search_quick_tab_view_color);
         spannableString.setSpan(new ForegroundColorSpan(colorDark), 0, totalSpace.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new ForegroundColorSpan(colorLight), text.length() - freeSpace.length(),
                 text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

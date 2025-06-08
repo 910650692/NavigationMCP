@@ -53,11 +53,31 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         super(bizService, mapView, context, mapType);
         getLayerSearchControl().setStyle(this);
         getLayerSearchControl().addClickObserver(this);
+        Logger.d(TAG, "LayerSearchImpl init");
     }
 
     @Override
     protected LayerSearchStyleAdapter createStyleAdapter() {
         return new LayerSearchStyleAdapter(getEngineId(), getLayerSearchControl());
+    }
+
+    /**
+     * 清除搜索图层选中状态
+     * @param type
+     */
+    public void clearFocus(LayerPointItemType type){
+        Logger.d(TAG, "clearFocus type " + type);
+        if(getLayerSearchControl() != null){
+            long bizType = switch (type) {
+                case SEARCH_PARENT_POINT -> BizSearchType.BizSearchTypePoiParentPoint;
+                case SEARCH_CHILD_POINT -> BizSearchType.BizSearchTypePoiChildPoint;
+                case SEARCH_PARENT_PARK -> BizSearchType.BizSearchTypePoiParkRoute;
+                case SEARCH_PARENT_CHARGE_STATION -> BizSearchType.BizSearchTypeChargeStation;
+                case SEARCH_POI_ALONG_ROUTE -> BizSearchType.BizSearchTypePoiAlongRoute;
+                default -> BizSearchType.AUTO_UNKNOWN_ERROR;
+            };
+            getLayerSearchControl().clearFocus(bizType);
+        }
     }
 
     public void setSelect(LayerPointItemType type, int index) {

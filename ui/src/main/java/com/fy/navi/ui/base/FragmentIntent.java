@@ -163,6 +163,11 @@ public class FragmentIntent {
             final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
             Logger.i(TAG, "移除上一个。显示下一个" + toFragment);
             if (!ConvertUtils.isEmpty(toFragment)) {
+                if (toFragment.getClass().getName().contains("NaviGuidanceFragment")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("NAVI_CONTROL", 1);
+                    toFragment.onNewIntent(bundle);
+                }
                 currentFragment = toFragment;
                 transaction.show(toFragment);
             }
@@ -308,6 +313,7 @@ public class FragmentIntent {
     public static void closeAllFragmentsUntilTargetFragment(final String screenId,
                                                             final FragmentManager fragmentManager,
                                                             final String className) {
+        Logger.i(TAG, "closeAllFragmentsUntilTargetFragment className: " + className);
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         final List<Fragment> fragments = fragmentManager.getFragments();
         int index = -1;

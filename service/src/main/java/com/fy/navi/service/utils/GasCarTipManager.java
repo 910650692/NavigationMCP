@@ -1,12 +1,10 @@
-package com.fy.navi.hmi.map;
-
-import android.os.CountDownTimer;
+package com.fy.navi.service.utils;
 
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
+import com.fy.navi.service.define.calibration.PowerType;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
-import com.fy.navi.service.logicpaket.calibration.PowerType;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 /**
@@ -22,40 +20,30 @@ public class GasCarTipManager {
     private boolean mMonitorOnGoing = false;
     private final CalibrationPackage mCalibrationPackage;
     private final SignalPackage mSignalPackage;
-    public GasCarTipManager() {
+    private GasCarTipManager() {
         mCalibrationPackage = CalibrationPackage.getInstance();
         mSignalPackage = SignalPackage.getInstance();
     }
 
-    // 导航过程中每分钟检查一下剩余油量
-    private final CountDownTimer mCountDownTimer = new CountDownTimer(Long.MAX_VALUE, INTERVAL) {
-        @Override
-        public void onTick(final long millisUntilFinished) {
-            Logger.i(TAG, "onTick set battery!");
-        }
-
-        @Override
-        public void onFinish() {
-            mMonitorOnGoing = false;
-            Logger.i(TAG, "CountDownTimer --- onFinish !");
-        }
-    };
+    public static GasCarTipManager getInstance(){
+        return Helper.gct;
+    }
 
     /***
      * 获取到达目的地后剩余燃油量百分比，可以为负值
      * @param distance 距离目的地的距离,单位：km
      * @return 剩余燃油量百分比, 例如：0.55
      */
-    public float getRemainGasPercent(final float distance) {
+    public int getRemainGasPercent(final float distance) {
         if (isNeedTip(distance)) {
             final float remainDis = getRemainDistance();
             Logger.i(TAG, "getRemainGasPercent", "distance:" + distance, "remainDis:" + remainDis);
             if (remainDis <= 0) {
-                return 0f;
+                return 0;
             }
-            return (remainDis - distance) / remainDis;
+            return (int) ((remainDis - distance) / remainDis);
         } else {
-            return 0f;
+            return 0;
         }
     }
 
@@ -66,7 +54,6 @@ public class GasCarTipManager {
         final boolean isNeedGas = isGasCar();
         Logger.i(TAG, "startMonitor", "mMonitorOnGoing:" + mMonitorOnGoing, "isNeedGas:" + isNeedGas);
         if (isNeedGas && !mMonitorOnGoing) {
-            mCountDownTimer.start();
             mMonitorOnGoing = true;
         }
     }
@@ -77,7 +64,6 @@ public class GasCarTipManager {
     public void closeMonitor() {
         Logger.i(TAG, "closeMonitor", "mMonitorOnGoing:" + mMonitorOnGoing);
         if (mMonitorOnGoing) {
-            mCountDownTimer.cancel();
             mMonitorOnGoing = false;
         }
     }
@@ -87,7 +73,7 @@ public class GasCarTipManager {
      * @return true是否需要汽油
      */
     private boolean isGasCar() {
-        if (!DeviceUtils.isCar(AppContext.getInstance().getMContext())) {
+        if (!DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
             Logger.w(TAG, "请在实车上测试！");
             return false;
         }
@@ -109,7 +95,7 @@ public class GasCarTipManager {
      * @return 是否提示油量不足
      */
     public boolean isNeedTip(final float distance) {
-        if (!DeviceUtils.isCar(AppContext.getInstance().getMContext())) {
+        if (!DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
             Logger.w(TAG, "请在实车上测试！");
             return false;
         }
@@ -119,8 +105,10 @@ public class GasCarTipManager {
     }
 
     public void unInit() {
-        if (mMonitorOnGoing) {
-            mCountDownTimer.cancel();
-        }
+
+    }
+
+    private static final class Helper{
+        private static final GasCarTipManager gct = new GasCarTipManager();
     }
 }

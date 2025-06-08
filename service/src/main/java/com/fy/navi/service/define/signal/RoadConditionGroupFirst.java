@@ -4,7 +4,7 @@ public class RoadConditionGroupFirst {
     private Integer indxOfDynmInftAryNavRut; // 导航路段信息索引号
     private Integer estimDistnCorpToIndxRut; // 对应索引号的预估路段长度
     private Integer estimTimCorpToIndxRut; // 通过路段的预估时长
-    private Integer estimRodCndtnCorpToIndxRut; // 对应索引号的道路状况
+    private Integer estimRodCndtnCorpToIndxRut = 15; // 对应索引号的道路状况
 
     public Integer getIndxOfDynmInftAryNavRut() {
         return indxOfDynmInftAryNavRut;

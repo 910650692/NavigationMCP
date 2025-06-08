@@ -10,15 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.ObservableField;
 
-import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.burypoint.anno.HookMethod;
-import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
-import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -135,7 +132,7 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
     public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
+        Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(INaviConstant.PAGE_EXTRA, pageCode);
         if (poiInfo != null) {
@@ -145,7 +142,7 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
         intent.putExtras(bundle);
         ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
-        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
 
     /***
@@ -154,11 +151,11 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
     public void startMapActivity(int pageCode) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
+        Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
         intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
-        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
 }

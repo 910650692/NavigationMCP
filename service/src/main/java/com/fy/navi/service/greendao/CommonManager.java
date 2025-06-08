@@ -4,7 +4,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -46,7 +46,7 @@ public final class CommonManager {
             return;
         }
         // 数据库对象
-        final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
+        final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppCache.getInstance().getMContext(), DB_NAME);
         final Database db = helper.getWritableDb();
         final DaoMaster daoMaster = new DaoMaster(db);
         mCommonSettingDao = daoMaster.newSession().getCommonSettingDao();

@@ -1,6 +1,7 @@
 package com.fy.navi.flavor;
 
 import com.android.utils.log.Logger;
+import com.fy.navi.service.MapDefaultFinalTag;
 
 /**
  * @Description TODO
@@ -10,5 +11,6 @@ import com.android.utils.log.Logger;
 public class TestCarType extends BaseTestCarType {
     public TestCarType() {
         Logger.i("lvww", "我是src_clea_87755型设备");
+        Logger.i(MapDefaultFinalTag.DEFAULT_TAG, "Flavor type", "我是clea_87755车型设备");
     }
 }

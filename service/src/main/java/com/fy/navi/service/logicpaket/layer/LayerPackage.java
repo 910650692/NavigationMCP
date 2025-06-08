@@ -58,6 +58,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
         return mLayerAdapter.initLayerService(mapTypeId);
     }
 
+    public void removeLayerService(MapType mapType) {
+        mLayerAdapter.removeLayerService(mapType);
+    }
+
     public void registerCallBack(MapType mapTypeId, ILayerPackageCallBack callback) {
         if (!callbacks.containsKey(mapTypeId)) {
             callbacks.put(mapTypeId, new CopyOnWriteArrayList<>());
@@ -105,15 +109,6 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.unInitLayerService();
     }
 
-
-    public void updatePathArrow(MapType mapTypeId) {
-        mLayerAdapter.updatePathArrow(mapTypeId);
-    }
-
-    public void setPathArrowSegment(MapType mapTypeId, ArrayList<Long> segmentsIndexs) {
-        mLayerAdapter.setPathArrowSegment(mapTypeId, segmentsIndexs);
-    }
-
     public void setVisibleGuideSignalLight(MapType mapTypeId, boolean isVisible) {
         mLayerAdapter.setVisibleGuideSignalLight(mapTypeId, isVisible);
     }
@@ -126,6 +121,11 @@ public class LayerPackage implements ILayerAdapterCallBack {
     /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
     public void openDynamicLevel(MapType mapTypeId, DynamicLevelMode dynamicLevelMode) {
         mLayerAdapter.openDynamicLevel(mapTypeId, dynamicLevelMode);
+    }
+
+    /*清除扎标*/
+    public void clearLabelItem(MapType mapTypeId) {
+        mLayerAdapter.clearLabelItem(mapTypeId);
     }
 
     /* 设置起点扎标是否显示 */
@@ -254,9 +254,5 @@ public class LayerPackage implements ILayerAdapterCallBack {
     /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
     public void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock) {
         mLayerAdapter.setDynamicLevelLock(mapTypeId, dynamicLevelMode, isLock);
-    }
-
-    public void setPassGray(MapType mapTypeId, boolean isGray) {
-        mLayerAdapter.setPassGray(mapTypeId, isGray);
     }
 }

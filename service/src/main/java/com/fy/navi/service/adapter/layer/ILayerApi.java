@@ -33,6 +33,8 @@ public interface ILayerApi {
     /* 初始化业务图层优先级配置及内聚功能配置 */
     boolean initLayerService(MapType mapTypeId);
 
+    void removeLayerService(MapType mapType);
+
     void unInitLayerService();
 
 
@@ -159,6 +161,9 @@ public interface ILayerApi {
     /*搜索结果POI获取焦点*/
     void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index);
 
+    /*清除搜索结果POI获取焦点*/
+    void clearFocus(MapType mapTypeId, LayerPointItemType type);
+
     /* 搜索图层扎标接口 */
     boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
 
@@ -180,6 +185,9 @@ public interface ILayerApi {
 
     /* 设置车标模式 */
     void setCarMode(MapType mapTypeId, CarModeType carMode);
+
+    /* 设置凯迪车型骨骼车标 */
+    void setCadiSkeletonCarModel(MapType mapTypeId);
 
     /***
      * 获取当前屏幕的车标模式
@@ -272,10 +280,5 @@ public interface ILayerApi {
     /*清除扎标*/
     void clearLabelItem(MapType mapTypeId);
 
-    /***
-     * 设置走过的路线是否置灰
-     * @param isSetGray
-     */
-    void setPassGray(MapType mapTypeId, boolean isSetGray);
     /*=========================================↑ 扎标图层 ↑=========================================*/
 }

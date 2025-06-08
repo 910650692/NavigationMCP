@@ -32,6 +32,7 @@
             android:id="@+id/stv_via_detail_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{viaDetail.mContentShow == 1 ? View.VISIBLE : View.GONE}"
             android:maxLines="1"
             android:ellipsize="end"
             android:maxWidth="@dimen/dp_500"
@@ -44,11 +45,29 @@
             android:textColor="@color/navi_color_000000_70"
             tools:text="大雨加油站" />
 
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_via_detail_title_only"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{viaDetail.mContentShow == 0 ? View.VISIBLE : View.GONE}"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:maxWidth="@dimen/dp_500"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="@dimen/dp_63"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@{viaDetail.mViaTitle}"
+            android:textSize="@dimen/sp_26"
+            android:textColor="@color/navi_color_000000_70"
+            tools:text="大雨加油站" />
+
         <!--途经点详情卡的内容-->
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/sc_via_detail_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{viaDetail.mContentShow == 1 ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="@dimen/dp_63"
@@ -62,110 +81,111 @@
                 android:visibility="@{viaDetail.mViaContent == 0 ? View.VISIBLE : View.GONE}"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/quick_charge"
-                    android:textSize="@dimen/sp_22"
-                    android:textColor="@color/navi_color_4ABA59_100" />
+                    android:visibility="@{viaDetail.mFastChargeShow == 1 ? View.VISIBLE : View.GONE}"
+                    android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinTextView
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/quick_charge"
+                        android:textSize="@dimen/sp_22"
+                        android:textColor="@color/navi_color_4ABA59_100" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:textSize="@dimen/sp_22"
+                        android:visibility="@{viaDetail.mFastChargeShowFreeSpace == 1 ? View.VISIBLE : View.GONE}"
+                        android:text="@{viaDetail.mFastChargeFree}"
+                        tools:text="66"
+                        android:textColor="@color/navi_color_000000_100"/>
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/slash"
+                        android:visibility="@{viaDetail.mFastChargeShowFreeSpace == 1 ? View.VISIBLE : View.GONE}"
+                        android:textSize="@dimen/sp_22"
+                        android:textColor="@color/navi_color_000000_50"/>
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_22"
+                        android:visibility="@{viaDetail.mFastChargeShowFreeSpace == 1 ? View.VISIBLE : View.GONE}"
+                        android:text="@{viaDetail.mFastChargeTotal}"
+                        tools:text="88"
+                        android:textColor="@color/navi_color_000000_50"/>
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:textSize="@dimen/sp_22"
+                        android:visibility="@{viaDetail.mFastChargeShowFreeSpace == 0 ? View.VISIBLE : View.GONE}"
+                        android:text="@{viaDetail.mFastChargeTotal}"
+                        tools:text="66"
+                        android:textColor="@color/navi_color_000000_100"/>
+
+                </com.fy.navi.ui.view.SkinLinearLayout>
+
+                <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:textSize="@dimen/sp_22"
-                    android:text="@{viaDetail.mFastChargeFree}"
-                    tools:text="66"
-                    android:textColor="@color/navi_color_000000_100"/>
+                    android:visibility="@{viaDetail.mSlowChargeShow == 1 ? View.VISIBLE : View.GONE}"
+                    android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/slash"
-                    android:textSize="@dimen/sp_22"
-                    android:textColor="@color/navi_color_000000_50"/>
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/slow_charge"
+                        android:textSize="@dimen/sp_22"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:textColor="@color/navi_color_FF8500_100" />
 
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_22"
-                    android:text="@{viaDetail.mFastChargeTotal}"
-                    tools:text="88"
-                    android:textColor="@color/navi_color_000000_50"/>
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:textSize="@dimen/sp_22"
+                        android:visibility="@{viaDetail.mSlowChargeShowFreeSpace == 1 ? View.VISIBLE : View.GONE}"
+                        android:text="@{viaDetail.mSlowChargeFree}"
+                        tools:text="66"
+                        android:textColor="@color/navi_color_000000_100"/>
 
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/slow_charge"
-                    android:textSize="@dimen/sp_22"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:textColor="@color/navi_color_FF8500_100" />
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/slash"
+                        android:visibility="@{viaDetail.mSlowChargeShowFreeSpace == 1 ? View.VISIBLE : View.GONE}"
+                        android:textSize="@dimen/sp_22"
+                        android:textColor="@color/navi_color_000000_50"/>
 
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:textSize="@dimen/sp_22"
-                    android:text="@{viaDetail.mSlowChargeFree}"
-                    tools:text="66"
-                    android:textColor="@color/navi_color_000000_100"/>
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_22"
+                        android:visibility="@{viaDetail.mSlowChargeShowFreeSpace == 1 ? View.VISIBLE : View.GONE}"
+                        android:text="@{viaDetail.mSlowChargeTotal}"
+                        tools:text="88"
+                        android:textColor="@color/navi_color_000000_50"/>
 
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/slash"
-                    android:textSize="@dimen/sp_22"
-                    android:textColor="@color/navi_color_000000_50"/>
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:textSize="@dimen/sp_22"
+                        android:visibility="@{viaDetail.mSlowChargeShowFreeSpace == 0 ? View.VISIBLE : View.GONE}"
+                        android:text="@{viaDetail.mSlowChargeTotal}"
+                        tools:text="66"
+                        android:textColor="@color/navi_color_000000_100"/>
 
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_22"
-                    android:text="@{viaDetail.mSlowChargeTotal}"
-                    tools:text="88"
-                    android:textColor="@color/navi_color_000000_50"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.fy.navi.ui.view.SkinLinearLayout>
 
-            <!--不可获取到空闲充电站的内容（只显示总数）-->
-            <com.fy.navi.ui.view.SkinLinearLayout
-                android:id="@+id/sl_via_detail_charge_without_free_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="@{viaDetail.mViaContent == 1 ? View.VISIBLE : View.GONE}"
-                android:orientation="horizontal">
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/quick_charge"
-                    android:textSize="@dimen/sp_22"
-                    android:textColor="@color/navi_color_4ABA59_100" />
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:textSize="@dimen/sp_22"
-                    android:text="@{viaDetail.mFastChargeTotal}"
-                    tools:text="66"
-                    android:textColor="@color/navi_color_000000_100"/>
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/slow_charge"
-                    android:textSize="@dimen/sp_22"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:textColor="@color/navi_color_FF8500_100" />
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:textSize="@dimen/sp_22"
-                    android:text="@{viaDetail.mSlowChargeTotal}"
-                    tools:text="66"
-                    android:textColor="@color/navi_color_000000_100"/>
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <!--可获取到空闲停车场的内容（显示空闲/总数）-->

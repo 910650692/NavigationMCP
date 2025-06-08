@@ -3,7 +3,7 @@ package com.fy.navi.vrbridge;
 import android.text.TextUtils;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AutoMapConstant;
+import com.android.utils.process.ProcessManager;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -72,7 +72,7 @@ public final class MapStateManager {
      * 初始化.
      */
     public void init() {
-        final int foregroundStatus = NaviPackage.getInstance().getIsAppInForeground();
+        final boolean foregroundStatus = ProcessManager.isAppInForeground();
         Logger.d(IVrBridgeConstant.TAG, "MapStateInit, foreground: " + foregroundStatus);
         updateForegroundStatus(foregroundStatus);
         mBuilder.setHasPrivacyPermission(true);
@@ -340,11 +340,11 @@ public final class MapStateManager {
         }
     };
 
-    private final NaviPackage.IsInForegroundCallback mForeGroundCallback = new NaviPackage.IsInForegroundCallback() {
+    private final ProcessManager.ProcessForegroundStatus mForeGroundCallback = new ProcessManager.ProcessForegroundStatus() {
         @Override
-        public void onAppInForeground(final int foregroundStatus) {
-            Logger.w(IVrBridgeConstant.TAG, "appInForeground:" + foregroundStatus);
-            updateForegroundStatus(foregroundStatus);
+        public void isAppInForeground(boolean appInForegroundStatus) {
+            Logger.i(IVrBridgeConstant.TAG, "appInForeground:" + appInForegroundStatus);
+            updateForegroundStatus(appInForegroundStatus);
             AMapStateUtils.saveMapState(mBuilder.build());
         }
     };
@@ -354,19 +354,13 @@ public final class MapStateManager {
      *
      * @param foregroundStatus activity运行状态.
      */
-    private void updateForegroundStatus(final int foregroundStatus) {
-        switch (foregroundStatus) {
-            case AutoMapConstant.AppRunStatus.RESUMED:
-                mBuilder.setOpenStatus(true);
-                mBuilder.setFront(true);
-                break;
-            case AutoMapConstant.AppRunStatus.STOPPED:
-            case AutoMapConstant.AppRunStatus.DESTROYED:
-                mBuilder.setOpenStatus(false);
-                mBuilder.setFront(false);
-                break;
-            default:
-                Logger.w(IVrBridgeConstant.TAG, "unHandle appRunStatus: " + foregroundStatus);
+    private void updateForegroundStatus(final boolean foregroundStatus) {
+        if(foregroundStatus){
+            mBuilder.setOpenStatus(true);
+            mBuilder.setFront(true);
+        }else {
+            mBuilder.setOpenStatus(false);
+            mBuilder.setFront(false);
         }
     }
 
@@ -395,7 +389,7 @@ public final class MapStateManager {
         AccountPackage.getInstance().registerCallBack(TAG, mAccountCallBack);
         PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
         NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);
-        NaviPackage.getInstance().addIsAppInForegroundCallback(mForeGroundCallback);
+        ProcessManager.addIsAppInForegroundCallback(mForeGroundCallback);
         NaviPackage.getInstance().addOnPreviewStatusChangeListener(mPreViewStatusChangeListener);
         NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
         BehaviorPackage.getInstance().registerFavoriteStatusCallback(mFavoriteStatusCallback);

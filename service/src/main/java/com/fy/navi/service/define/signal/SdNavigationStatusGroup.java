@@ -4,8 +4,8 @@ public class SdNavigationStatusGroup {
     private Integer naviStat; // 导航状态
     private Integer naviStatCrntRdLvl; // 道路等级
     private Integer naviStatCrntRdLvl_Inv; // 道路等级是否有效
-    private Integer naviStatCrntRdMpConf; // 道路匹配置信度
-    private Integer naviStatDistToHDStrt; // HD起点距离
+    private Integer naviStatCrntRdMpConf; // 绑路状态
+    private Integer naviStatDistToHDStrt; // 到可开启辅助驾驶起点的距离
     private Integer naviStatDistToHDStrt_Inv; // HD起点距离是否有效
     private Integer naviStatDistToViaPoint; // 途径点距离
     private Integer naviStatDistToViaPoint_Inv; // 途径点距离是否有效

@@ -8,7 +8,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.fy.navi.NaviService;
 import com.fy.navi.mapservice.util.Logger;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 
 /**
  * 开机广播
@@ -21,8 +21,8 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             // 执行开机后的逻辑
             Logger.i(TAG, "Device booted! 启动NaviService");
-            Intent naviServiceIntent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
-            ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), naviServiceIntent);
+            Intent naviServiceIntent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
+            ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), naviServiceIntent);
         }
     }
 

@@ -27,7 +27,7 @@ public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> impl
     private boolean mapLoadStatus = false;
 
     public LauncherDeskModel() {
-        StartService.getInstance().registerSdkCallback(this);
+        StartService.getInstance().registerSdkCallback(TAG, this);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> impl
     @Override
     public void onSdkInitSuccess() {
         if(mapLoadStatus) return;
-        mapPackage.initMapView(mViewModel.getMapView());
+        mapPackage.loadMapView(mViewModel.getMapView());
     }
 
     @Override
@@ -78,23 +78,9 @@ public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> impl
     }
 
     @Override
-    public void onMapScaleChanged(MapType mapTypeId, int currentScale) {
-    }
-
-    @Override
-    public void onMapInitSuccess(MapType mapTypeId, boolean success) {
-
-    }
-
-    @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
         Logger.i(TAG, "onMapLoadSuccess", "mapTypeId:" + mapTypeId.name());
         mapLoadStatus = true;
-    }
-
-    @Override
-    public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
-
     }
 
     @Override
@@ -129,7 +115,7 @@ public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> impl
             mapPackage = MapPackage.getInstance();
             mapPackage.registerCallback(getMapId(), this);
         }
-        mapPackage.initMapView(mViewModel.getMapView());
+        mapPackage.loadMapView(mViewModel.getMapView());
     }
 
     private MapType getMapId() {

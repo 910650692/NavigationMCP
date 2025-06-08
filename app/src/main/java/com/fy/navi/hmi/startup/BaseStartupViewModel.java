@@ -13,7 +13,7 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.hmi.permission.ReminderDialog;
 import com.fy.navi.mapservice.bean.INaviConstant;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.base.StackManager;
@@ -114,7 +114,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     }
 
     public void startMapActivity() {
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
+        Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (mIntentPage != INaviConstant.OpenIntentPage.NONE) {
             intent.putExtra(INaviConstant.PAGE_EXTRA, mIntentPage);
@@ -128,7 +128,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         }
         ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
-        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
         mView.finish();
     }
 
@@ -148,21 +148,5 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
      */
     public void showActivatingView(final boolean show) {
         mView.showActivatingView(show);
-    }
-
-    public int getIntentPage() {
-        return mIntentPage;
-    }
-
-    public void setIntentPage(int intentPage) {
-        mIntentPage = intentPage;
-    }
-
-    public String getKeyword() {
-        return mKeyword;
-    }
-
-    public PoiInfoEntity getEndPoint() {
-        return mEndPoint;
     }
 }

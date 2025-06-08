@@ -125,6 +125,8 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
             final String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "" + chargeInfo.getFast_total();
             holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumOne.setText(fastFree);
             holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumTwo.setText(fastTotal);
+            holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastRoot.setVisibility(View.VISIBLE);
+            holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumOne.setVisibility(View.VISIBLE);
             if (ConvertUtils.isEmpty(fastFree) && ConvertUtils.isEmpty(fastTotal)) {
                 holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastRoot.setVisibility(View.GONE);
             } else if (ConvertUtils.isEmpty(fastFree)) {
@@ -135,6 +137,8 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
             final String slowTotal = chargeInfo.getSlow_total() == 0 ? "" : "" + chargeInfo.getSlow_total();
             holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumOne.setText(slowFree);
             holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumTwo.setText(slowTotal);
+            holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowRoot.setVisibility(View.VISIBLE);
+            holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumOne.setVisibility(View.VISIBLE);
             if (ConvertUtils.isEmpty(slowFree) && ConvertUtils.isEmpty(slowTotal)) {
                 holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowRoot.setVisibility(View.GONE);
             } else if (ConvertUtils.isEmpty(slowFree)) {

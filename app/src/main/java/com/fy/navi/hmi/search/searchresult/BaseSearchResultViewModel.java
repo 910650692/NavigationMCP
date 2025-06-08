@@ -71,9 +71,10 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     /**
      * 静默搜索回调
      * @param searchResultEntity 搜索结果实体类
+     * @param taskId 任务id
      */
-    public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
-        mView.notifySilentSearchResult(searchResultEntity);
+    public void notifySilentSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        mView.notifySilentSearchResult(taskId, searchResultEntity);
     }
 
     /**

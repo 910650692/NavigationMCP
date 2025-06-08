@@ -8,6 +8,7 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
+import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.adapter.setting.SettingAdapterCallback;
 import com.fy.navi.service.define.layer.refix.CarModeType;
@@ -774,7 +775,7 @@ public final class SettingPackage implements SettingAdapterCallback {
                     break;
             }
         } else {
-            MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D);
+            MapAdapter.getInstance().setMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D, true);
             setConfigKeyMapviewMode(mapViewMode);
         }
         return mapViewMode;

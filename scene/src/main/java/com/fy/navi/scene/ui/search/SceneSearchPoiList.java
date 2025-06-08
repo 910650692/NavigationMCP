@@ -358,25 +358,26 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
         });
         mViewBinding.chargeFilter.setOnClickListener(view -> {
-            mIsChargeSelf = !mIsChargeSelf;
-            mViewBinding.chargeFilter.setSelected(mIsChargeSelf);
-            if(mIsChargeSelf){
-                mAdapter.clearList();
-                if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
-                    Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
-                } else {
-                    mSearchLoadingDialog = new SearchLoadingDialog(getContext());
-                    mSearchLoadingDialog.show();
-                }
-                // 请求SGM自营站数据
-                mScreenViewModel.queryStationNewResult(mResultEntity);
-            }else{
-                mScreenViewModel.clearLabelMarker();
-                mScreenViewModel.addPoiMarker(mSearchResultEntity.getPoiList(),0);
-                mAdapter.notifyList(mSearchResultEntity);
-                updatePoiMarkerVisibleState();
-                mViewBinding.recyclerSearchResult.scrollToPosition(0);
-            }
+//            mIsChargeSelf = !mIsChargeSelf;
+//            mViewBinding.chargeFilter.setSelected(mIsChargeSelf);
+//            if (mIsChargeSelf) {
+//                mAdapter.clearList();
+//                if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
+//                    Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+//                } else {
+//                    mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+//                    mSearchLoadingDialog.show();
+//                }
+//                // 请求SGM自营站数据
+//                mScreenViewModel.queryStationNewResult(mResultEntity);
+//            } else {
+//                mScreenViewModel.clearLabelMarker();
+//                mScreenViewModel.addPoiMarker(mSearchResultEntity.getPoiList(), 0);
+//                mAdapter.notifyList(mSearchResultEntity);
+//                updatePoiMarkerVisibleState();
+//                mViewBinding.recyclerSearchResult.scrollToPosition(0);
+//            }
+            ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter_hint));
         });
     }
 
@@ -701,7 +702,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
             boolean isOffline = searchResultEntity.getPoiType() == 0;
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isChargeQuery: "+isChargeQuery+" isPowerType: "+isPowerType+" isOffline: "+isOffline);
-            // 意图为充电站且是电车且非离线才显示自营标签
+            // 意图为充电站且是电车且非离线才显示自营标签,测试生产环境未解决，解决后释放
             mViewBinding.chargeFilter.setVisibility(isChargeQuery && isPowerType && !isOffline ? VISIBLE : GONE);
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
@@ -800,21 +801,31 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      * 静默搜索,仅用于显示泛搜结果数量,不进行页面更新
      *
      * @param searchResultEntity 数据实体类
+     * @param taskId 任务id
      */
-    public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySilentSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
             mSearchLoadingDialog.dismiss();
         }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
+                + " currentId: " + mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            return;
+        }
         if (searchResultEntity == null || searchResultEntity.getPoiList() == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
-            mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(R.string.filter_result, mSearchText, 0));
+            if (mViewBinding != null) {
+                mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(R.string.filter_result, mSearchText, 0));
+            }
             mSearchLoadingDialog.dismiss();
             return;
         }
         if (mIsFilterViewShow) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySilentSearchResult total: " + searchResultEntity.getTotal());
-            mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(
-                    R.string.filter_result, mSearchText, searchResultEntity.getTotal()));
+            if (mViewBinding != null) {
+                mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(
+                        R.string.filter_result, mSearchText, searchResultEntity.getTotal()));
+            }
         }
     }
 

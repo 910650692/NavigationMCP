@@ -1,17 +1,23 @@
 package com.fy.navi.hmi.splitscreen;
 
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.TypedValue;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.library.baseAdapters.BR;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
+import com.android.utils.ScreenUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityOneThirdScreenMapBinding;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
@@ -27,7 +33,8 @@ import com.fy.navi.ui.base.BaseActivity;
  */
 public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScreenMapBinding, OneThirdScreenViewModel> {
     private static final String TAG = "NDOneThirdScreenMapActivity";
-
+    private int currentUiMode;
+    private Rect mPreviewRect = new Rect(0, 0, 0, 0);
     @Override
     public void onCreateBefore() {
         super.onCreateBefore();
@@ -48,6 +55,8 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
     public void onInitView() {
         mViewModel.loadMapView();
         mBinding.sceneNaviTbt.showOrHideGpsSign(false);
+        currentUiMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        mViewModel.onConfigurationChanged(ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
     }
 
     @Override
@@ -68,9 +77,11 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
      * @return
      */
     public int[] getCarSelfPosition() {
+        final int screenHeight = ScreenUtils.Companion.getInstance().getRealScreenHeight(this);
+        final int bottom = (int) getResources().getDimension(com.fy.navi.ui.R.dimen.one_third_screen_car_logo_bottom);
         int[] pos = new int[2];
         pos[0] = mBinding.getRoot().getWidth() / 2;
-        pos[1] = mViewModel.isOnNaviGating() ? mBinding.getRoot().getHeight() * 2 / 3 : mBinding.getRoot().getHeight()/2;
+        pos[1] = mViewModel.isOnNaviGating() ? bottom : screenHeight / 2;
         Logger.d(TAG, "pos[0]:" + pos[0], "pos[1]:" + pos[1]);
         return pos;
     }
@@ -79,6 +90,7 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
         mBinding.sceneNaviEta.onNaviInfo(naviETAInfo);
         mBinding.sceneNaviTbt.onNaviInfo(naviETAInfo);
         mBinding.sceneNaviTmc.onNaviInfo(naviETAInfo);
+        calculatePreviewRect();
     }
 
     public void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
@@ -90,9 +102,13 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
         mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
     }
 
-    public Rect getPreviewRect() {
-        Rect rect = new Rect(mBinding.mapView.getLeft(), mBinding.llGuidanceBoard.getBottom(), mBinding.mapView.getRight(), mBinding.slZhiJia.getTop());
-        return rect;
+    public void calculatePreviewRect() {
+        if (mPreviewRect.right == 0) {
+            mBinding.sceneNaviTbt.post(() -> {
+                mPreviewRect = new Rect(mBinding.mapView.getLeft(), mBinding.llGuidanceBoard.getBottom(), mBinding.mapView.getRight(), mBinding.slZhiJia.getTop());
+                Logger.i(TAG, "calculatePreviewRect-Success!", "mPreviewRect:" + mPreviewRect);
+            });
+        }
     }
 
     /***
@@ -105,8 +121,10 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
             // 这个高度和xml里面保持一致
             float dpHeight = getResources().getDimension(com.fy.navi.ui.R.dimen.one_third_screen_cross_pic_height);
             int crossHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpHeight, getResources().getDisplayMetrics());
-            Rect rectCross = new Rect(rectTbt.left, rectTbt.bottom, rectTbt.right, rectTbt.bottom + crossHeight);
-            Logger.i(TAG, "CrossRect:" + rectCross.toShortString());
+            final int tbtHeight = DeviceUtils.isCar(this) ? mBinding.sceneNaviTbt.getHeight() : 0;
+            Logger.d(TAG, "rectTbt:" + rectTbt.toShortString(), "height:" + mBinding.sceneNaviTbt.getHeight());
+            Rect rectCross = new Rect(rectTbt.left, rectTbt.bottom + tbtHeight, rectTbt.right, rectTbt.bottom + crossHeight + tbtHeight);
+            Logger.d(TAG, "CrossRect:" + rectCross.toShortString());
             mViewModel.setCrossRect(rectCross);
         });
     }
@@ -131,5 +149,21 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        final int tmpUiMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (currentUiMode != tmpUiMode) {
+            mViewModel.onConfigurationChanged(ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
+            recreate();
+            Logger.i(TAG, "主题发生变化，重置UI！");
+        }
+        currentUiMode = tmpUiMode;
+    }
+
+    public Rect getPreviewRect() {
+        return mPreviewRect;
     }
 }

@@ -24,7 +24,7 @@ public class ComponentTMCRes extends SkinConstraintLayout {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private Context mContext;
 
-    public ComponentTMCRes(@NonNull final  Context context) {
+    public ComponentTMCRes(@NonNull final Context context) {
         super(context);
     }
 
@@ -32,7 +32,7 @@ public class ComponentTMCRes extends SkinConstraintLayout {
         super(context, attrs);
     }
 
-    public ComponentTMCRes(@NonNull final Context context, @Nullable final  AttributeSet attrs,
+    public ComponentTMCRes(@NonNull final Context context, @Nullable final AttributeSet attrs,
                            final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
@@ -63,6 +63,7 @@ public class ComponentTMCRes extends SkinConstraintLayout {
 
     /**
      * 初始化
+     *
      * @param offline        是否离线
      * @param naviTmcBinding naviTmcBinding
      */
@@ -70,26 +71,26 @@ public class ComponentTMCRes extends SkinConstraintLayout {
                                  final SceneNaviTmcViewBinding naviTmcBinding) {
         mNaviTmcBinding = naviTmcBinding;
         setOffline(offline);
-        invalidate();
     }
 
     /**
      * 更新光柱图数据view
-     * @param tbitem  tbitem
+     *
+     * @param tbitem            tbitem
      * @param distanceHasPassed distanceHasPassed
-     * @param totalDistance totalDistance
+     * @param totalDistance     totalDistance
      */
     public void updateTmcAreaNew(final List<NaviTmcInfo.NaviTmcInfoData> tbitem,
                                  final long distanceHasPassed,
                                  final long totalDistance) {
         setTmcAreaDataNew(tbitem, distanceHasPassed, totalDistance);
-        invalidate();
+        refresh();
     }
 
     /**
-     * @param items items
+     * @param items             items
      * @param distanceHasPassed distanceHasPassed
-     * @param totalDistance totalDistance
+     * @param totalDistance     totalDistance
      */
     public void setTmcAreaDataNew(final List<NaviTmcInfo.NaviTmcInfoData> items,
                                   final long distanceHasPassed, final long totalDistance) {
@@ -319,6 +320,5 @@ public class ComponentTMCRes extends SkinConstraintLayout {
      */
     public void setOffline(final boolean offline) {
         mOffline = offline;
-        refresh();
     }
 }

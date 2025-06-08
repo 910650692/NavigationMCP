@@ -7,7 +7,7 @@ import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.SingleServiceID;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.map.bls.MapViewPoolManager;
@@ -72,9 +72,15 @@ public class LayersPoolManager {
 
     public boolean initLayerService(MapType mapTypeId) {
         if (!layersPools.containsKey(mapTypeId)) {
+            Logger.d(TAG, "lvv", "333");
             createLayerPool(mapTypeId);
         }
         return true;
+    }
+
+    public void removeLayerService(MapType mapTypeId) {
+        if (ConvertUtils.isEmpty(layersPools)) return;
+        ConvertUtils.remove(layersPools, mapTypeId);
     }
 
     public void unInitLayerService() {
@@ -84,14 +90,16 @@ public class LayersPoolManager {
 
     public LayersPool get(MapType mapTypeId) {
         if (!layersPools.containsKey(mapTypeId)) {
+            Logger.d(TAG, "lvv", "222");
             createLayerPool(mapTypeId);
         }
         return layersPools.get(mapTypeId);
     }
 
     private void createLayerPool(MapType mapTypeId) {
+        Logger.d(TAG, "lvv", "111111");
         MapView mapView = MapViewPoolManager.getInstance().get(mapTypeId).getMapview();
-        LayersPool layersPool = new LayersPool(getBizControlService(), mapView, AppContext.getInstance().getMContext(), mapTypeId);
+        LayersPool layersPool = new LayersPool(getBizControlService(), mapView, AppCache.getInstance().getMContext(), mapTypeId);
         layersPools.put(mapTypeId, layersPool);
     }
 }

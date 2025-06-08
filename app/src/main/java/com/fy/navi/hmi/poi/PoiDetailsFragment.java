@@ -10,7 +10,6 @@ import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentPoiDetailsBinding;
 import com.fy.navi.scene.RoutePath;
-import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;

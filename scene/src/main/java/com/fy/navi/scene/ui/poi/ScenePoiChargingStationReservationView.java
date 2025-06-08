@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
@@ -26,7 +25,7 @@ import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.databinding.SceneReservationDetailViewBinding;
 import com.fy.navi.scene.impl.poi.ScenePoiChargingStationReservationViewImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.route.RoutePoiType;
@@ -193,7 +192,7 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
     }
 
     private String formatDistanceArrayInternal(final int distance) {
-        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.getInstance().getMContext(), distance);
+        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppCache.getInstance().getMContext(), distance);
         return distanceArray[0] + distanceArray[1];
     }
 

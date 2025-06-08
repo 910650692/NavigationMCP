@@ -5,7 +5,7 @@ import android.widget.Toast;
 import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 
@@ -42,20 +42,20 @@ public final class SdkSoLoadUtils {
             System.load(debugSoPath);
         } catch (UnsatisfiedLinkError | SecurityException | NullPointerException e) {
             ThreadManager.getInstance().postUi(() ->
-                    Toast.makeText(AppContext.getInstance().getMContext(), "libs加载外部so库崩溃", Toast.LENGTH_LONG));
+                    Toast.makeText(AppCache.getInstance().getMContext(), "libs加载外部so库崩溃", Toast.LENGTH_LONG));
             isException = true;
         } finally {
             if (!isException) {
                 final String message = "加载外部so库-" + libName;
                 ThreadManager.getInstance().postUi(() ->
-                        Toast.makeText(AppContext.getInstance().getMContext(), message, Toast.LENGTH_LONG));
+                        Toast.makeText(AppCache.getInstance().getMContext(), message, Toast.LENGTH_LONG));
             }
         }
         return isException;
     }
 
     private static String getLibsCopyPath() {
-        return "/data/data/" + AppContext.getInstance().getMApplication().getPackageName() + "/sdkLibs";
+        return "/data/data/" + AppCache.getInstance().getMApplication().getPackageName() + "/sdkLibs";
     }
 
     /**

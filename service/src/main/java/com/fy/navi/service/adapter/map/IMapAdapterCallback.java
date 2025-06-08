@@ -15,36 +15,34 @@ import java.util.ArrayList;
  * @date 2024/11/26
  */
 public interface IMapAdapterCallback {
-    void onMapInitSuccess(MapType mapTypeId, boolean success);
+    default void onMapLoadSuccess(MapType mapTypeId){}
 
-    void onMapLoadSuccess(MapType mapTypeId);
+    default void onMapCenterChanged(MapType mapTypeId, double lon, double lat){}
 
-    void onMapCenterChanged(MapType mapTypeId, double lon, double lat);
+    default void onMapLevelChanged(MapType mapTypeId, float mapLevel){}
 
-    void onMapLevelChanged(MapType mapTypeId, float mapLevel);
+    default void onMapClickBlank(MapType mapTypeId, float px, float py){}
 
-    void onMapClickBlank(MapType mapTypeId, float px, float py);
+    default void onMapClickLabel(MapType mapTypeId, ArrayList<MapLabelItemBean> pLabels){}
 
-    void onMapClickLabel(MapType mapTypeId, ArrayList<MapLabelItemBean> pLabels);
+    default void onMapMove(MapType mapTypeId, long px, long py, boolean moveEnd){}
 
-    void onMapMove(MapType mapTypeId, long px, long py, boolean moveEnd);
+    default void onMapScaleChanged(MapType mapTypeId, int currentScale){}
 
-    void onMapScaleChanged(MapType mapTypeId, int currentScale);
+    default void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent){}
 
-    void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent);
+    default void onMapClickPoi(MapType mapTypeId, PoiInfoEntity poiInfo){}
 
-    void onMapClickPoi(MapType mapTypeId, PoiInfoEntity poiInfo);
+    default void onOpenLayer(MapType mapTypeId, PoiInfoEntity poiInfo){}
 
-    void onOpenLayer(MapType mapTypeId, PoiInfoEntity poiInfo);
+    default void onReversePoiClick(MapType mapTypeId, PoiInfoEntity poiInfo){}
 
-    void onReversePoiClick(MapType mapTypeId, PoiInfoEntity poiInfo);
-
-    void onMapModeChange(MapType mapTypeId, MapMode mapMode);
+    default void onMapModeChange(MapType mapTypeId, MapMode mapMode){}
 
     /**
      * @param isEnterPreview true:进入预览模式，false:退出预览模式
      */
-    void isEnterPreview(boolean isEnterPreview);
+    default void isEnterPreview(boolean isEnterPreview){}
 
-    void onEGLScreenshot(MapType mapTypeId, byte[] bytes);
+    default void onEGLScreenshot(MapType mapTypeId, byte[] bytes){}
 }

@@ -17,4 +17,9 @@ public interface ISceneMainSearchView {
      * @param position 点击下标
      */
     void onClickQuickSearch(int position);
+
+    /**
+     * 进入收藏夹
+     */
+    void onClickCollectSearch();
 }

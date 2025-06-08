@@ -82,6 +82,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+        mSearchPackage.clearFocus();
 
     }
 

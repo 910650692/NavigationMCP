@@ -30,7 +30,7 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
      * @param screenId 页面标识
      */
     public void attachView(final V baseView, final String screenId) {
-        Logger.i(getClass().getSimpleName(), "attachView");
+        Logger.i(getClass().getSimpleName(), "attachView", "screenId: " + screenId);
         mView = baseView;
         mModel.onAttachViewModel(this);
         mScreenId = screenId;

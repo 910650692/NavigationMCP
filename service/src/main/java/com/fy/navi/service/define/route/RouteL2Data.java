@@ -152,7 +152,7 @@ public class RouteL2Data {
             @SerializedName("isArriveWayPoint")
             private Boolean mIsArriveWayPoint;
             @SerializedName("linkBegIdx")
-            private Integer mLinkBegIdx;
+            private Integer mLinkBegIdx = -1;
             @SerializedName("navigationAssistAction")
             private Integer mNavigationAssistAction;
             @SerializedName("navigationLen")
@@ -180,13 +180,13 @@ public class RouteL2Data {
         @SerializedName("linkID")
         private Integer mLinkID;
         @SerializedName("linktype")
-        private Integer mLinktype;
+        private Integer mLinktype = -1;
         @SerializedName("pntBegIdx")
-        private Integer mPntBegIdx;
+        private Integer mPntBegIdx = -1;
         @SerializedName("pntCnt")
         private Integer mPntCnt;
         @SerializedName("roadclass")
-        private Integer mRoadclass;
+        private Integer mRoadclass = -1;
         @SerializedName("roadname")
         private String mRoadname;
         @SerializedName("urid")
@@ -271,7 +271,7 @@ public class RouteL2Data {
         @SerializedName("length")
         private Integer mLength;
         @SerializedName("roadClass")
-        private Integer mRoadClass;
+        private Integer mRoadClass = -1;
         @SerializedName("coordinate")
         private CoordinateDTO mCoordinate;
 

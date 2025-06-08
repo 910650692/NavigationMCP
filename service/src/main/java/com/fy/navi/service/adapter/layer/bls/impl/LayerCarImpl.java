@@ -25,6 +25,8 @@ import java.util.function.Consumer;
 
 public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
 
+    private static final String FLAVOR_CAR_SKELETON_BUICK = "/carSkeletonBuick/carLogo.dat";
+    private static final String FLAVOR_CAR_SKELETON_CADI = "/carSkeletonCadi/carLogo.dat";
     private static final float[] CAR_SCALE = {1.0f, 1.0f, 1.0f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 1.0f};
 
     public LayerCarImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
@@ -33,8 +35,9 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
         getLayerCarControl().setVisible(true);
         getLayerCarControl().setClickable(true);
         getLayerCarControl().addCarObserver(this);
-        initSkeletonCarModel();
+        initBuickSkeletonCarModel();
         initCarScaleByMapLevel();
+        Logger.d(TAG, "LayerCarImpl init");
     }
 
     @Override
@@ -71,22 +74,44 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
         });
     }
 
-    /* 设置骨骼车标 暂不支持骨骼车标设置*/ //TODO
-    private void initSkeletonCarModel() {
+    /* 设置别克车型骨骼车标 默认品牌车标 */
+    private void initBuickSkeletonCarModel() {
         SkeletonDataInfoBase dataInfo = new SkeletonDataInfoBase();
         dataInfo.type = SkeletonDataType.FBX;//格式由UE提供的资源模型决定
         dataInfo.skeletonDataPath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_PATH)
                 .append(getEngineId())
-                .append("/carSkeleton/carLogo.dat").toString();
+                .append(FLAVOR_CAR_SKELETON_BUICK).toString();
         int result = getLayerCarControl().setSkeletonDataInfo(dataInfo);
         if (result != Service.ErrorCodeOK) {
             dataInfo.skeletonDataPath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_PATH)
                     .append(MapType.MAIN_SCREEN_MAIN_MAP.getMapType())
-                    .append("/carSkeleton/carLogo.dat").toString();
+                    .append(FLAVOR_CAR_SKELETON_BUICK).toString();
             result = getLayerCarControl().setSkeletonDataInfo(dataInfo);
             Logger.d(TAG, "使用主图资源" );
         }
-        Logger.d(TAG, "初始化骨骼车标 ：" + result);
+        Logger.d(TAG, "初始化别克骨骼车标 ：" + result);
+        //默认不播动画，需要动画，要再调用动画接口
+        SkeletonAnimationInfo animationInfo = new SkeletonAnimationInfo();
+        animationInfo.animationName = "StatusMove"; // StatusStatic、StatusMove、StatusSpeed
+        getLayerCarControl().setSkeletonAnimation(animationInfo);
+    }
+
+    /* 设置凯迪车型骨骼车标 */ //Todo 后续多车型增加入参
+    public void initCadiSkeletonCarModel() {
+        SkeletonDataInfoBase dataInfo = new SkeletonDataInfoBase();
+        dataInfo.type = SkeletonDataType.FBX;//格式由UE提供的资源模型决定
+        dataInfo.skeletonDataPath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_PATH)
+                .append(getEngineId())
+                .append(FLAVOR_CAR_SKELETON_CADI).toString();
+        int result = getLayerCarControl().setSkeletonDataInfo(dataInfo);
+        if (result != Service.ErrorCodeOK) {
+            dataInfo.skeletonDataPath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_PATH)
+                    .append(MapType.MAIN_SCREEN_MAIN_MAP.getMapType())
+                    .append(FLAVOR_CAR_SKELETON_CADI).toString();
+            result = getLayerCarControl().setSkeletonDataInfo(dataInfo);
+            Logger.d(TAG, "使用主图资源" );
+        }
+        Logger.d(TAG, "初始化凯迪骨骼车标 ：" + result);
         //默认不播动画，需要动画，要再调用动画接口
         SkeletonAnimationInfo animationInfo = new SkeletonAnimationInfo();
         animationInfo.animationName = "StatusMove"; // StatusStatic、StatusMove、StatusSpeed

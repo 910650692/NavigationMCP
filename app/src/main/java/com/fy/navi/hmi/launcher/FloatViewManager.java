@@ -9,7 +9,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.patac.launcher.ILauncherCallback;
 import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
@@ -84,7 +84,7 @@ public class FloatViewManager {
         }
         Intent intent = new Intent(PatacLauncherModeConfig.ACTION);
         intent.setPackage("com.patac.launcher");
-        isServiceConnect = AppContext.getInstance().getMContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        isServiceConnect = AppCache.getInstance().getMContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         Logger.i(TAG, "bindLauncherService", "bindResult:" + isServiceConnect);
     }
 
@@ -92,7 +92,7 @@ public class FloatViewManager {
         if (isServiceConnect) {
             Intent intent = new Intent(PatacLauncherModeConfig.ACTION);
             intent.setPackage("com.patac.launcher");
-            AppContext.getInstance().getMContext().unbindService(mConnection);
+            AppCache.getInstance().getMContext().unbindService(mConnection);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.fy.navi.service.logicpaket.calibration;
+package com.fy.navi.service.define.calibration;
 
 public @interface PowerType {
     /**

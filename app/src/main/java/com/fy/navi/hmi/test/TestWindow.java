@@ -26,7 +26,7 @@ import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.LayoutTestBinding;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
@@ -34,6 +34,8 @@ import com.fy.navi.service.define.setting.SettingConstant;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
+import com.fy.navi.service.logicpaket.hud.HudPackage;
+import com.fy.navi.service.logicpaket.hud.IHudCallback;
 import com.fy.navi.service.logicpaket.map.IEglScreenshotCallBack;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
@@ -97,8 +99,8 @@ public class TestWindow {
 
     private void initData() {
         try {
-            PackageManager packageManager = AppContext.getInstance().getMApplication().getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(AppContext.getInstance().getMApplication().getPackageName(), 0);
+            PackageManager packageManager = AppCache.getInstance().getMApplication().getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(AppCache.getInstance().getMApplication().getPackageName(), 0);
             mBinding.testVersion.setText("versionName: " + packageInfo.versionName + "\n" +
                     "versionCode: " + packageInfo.getLongVersionCode() + "\n" +
                     "flavor: " + BuildConfig.FLAVOR + "\n" +
@@ -108,25 +110,21 @@ public class TestWindow {
         }
         mBinding.testNaiLogLevel.setAdapter(createNaiAdapter());
         mBinding.testGaodeLogLevel.setAdapter(createNaiAdapter());
-
-        MapPackage.getInstance().initCallback(MapType.HUD_MAP);
-        MapPackage.getInstance().registerEGLScreenshotCallBack(TAG, mIEglScreenshotCallBack);
     }
 
-    private final IEglScreenshotCallBack mIEglScreenshotCallBack = new IEglScreenshotCallBack() {
+    private final IHudCallback mIEglScreenshotCallBack = new IHudCallback() {
         @Override
         public void onEGLScreenshot(MapType mapType, byte[] bytes) {
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    if (mapType != MapType.HUD_MAP) {
-                        return;
-                    }
-                    byte[] bytearry = processPicture(bytes);
-                    Bitmap bitmap = Bitmap.createBitmap(328, 172, Bitmap.Config.ARGB_8888);
-                    bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytearry));
-                    mBinding.testHud.setImageBitmap(bitmap);
+            Logger.d(TAG, "onEGLScreenshot-->");
+            ThreadManager.getInstance().postUi(() -> {
+                if (mapType != MapType.HUD_MAP) {
+                    return;
                 }
+                Logger.d(TAG, "onEGLScreenshot--> bytes: " + bytes.length);
+                byte[] bytearry = processPicture(bytes, (int) mBinding.hudMapview.getMapViewWidth(), (int) mBinding.hudMapview.getMapViewHeight());
+                Bitmap bitmap = Bitmap.createBitmap((int) mBinding.hudMapview.getMapViewWidth(), (int) mBinding.hudMapview.getMapViewHeight(), Bitmap.Config.ARGB_8888);
+                bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytearry));
+                mBinding.testHud.setImageBitmap(bitmap);
             });
         }
     };
@@ -163,17 +161,15 @@ public class TestWindow {
     private void removeViewFromWindow() {
         mWindowManager.removeView(mBinding.getRoot());
         isShowing = false;
+        HudPackage.getInstance().unInitHudService();
     }
 
     private void initAction() {
         mBinding.close.setOnClickListener(v -> removeViewFromWindow());
-
         mBinding.testStartNavi.setOnClickListener(v -> NaviPackage.getInstance().startNavigation(SettingConstant.ISSIMULATEMODE));
         mBinding.testStopNavi.setOnClickListener(v -> NaviPackage.getInstance().stopNavigation());
-
         mBinding.testCurrentCityData.setOnClickListener(v -> MapDataPackage.getInstance().getCityInfo(310000));
         mBinding.testKeyCityData.setOnClickListener(v -> MapDataPackage.getInstance().searchAdCode("海"));
-
         mBinding.testCalibration.setOnClickListener(v -> {
             CalibrationPackage calibration = CalibrationPackage.getInstance();
             calibration.powerType();
@@ -355,6 +351,14 @@ public class TestWindow {
                 }
             }
         });
+
+        mBinding.openHudMapview.setOnClickListener(view -> {
+            mBinding.hudMapview.setIsBindView(true);
+            HudPackage.getInstance().initHudService(mBinding.hudMapview);
+            HudPackage.getInstance().registerHudCallback(TAG, mIEglScreenshotCallBack);
+        });
+
+        mBinding.closeHudMapview.setOnClickListener(view -> HudPackage.getInstance().unInitHudService());
     }
 
     private void initLogLevel() {
@@ -379,14 +383,7 @@ public class TestWindow {
                 android.R.layout.simple_spinner_item, options);
     }
 
-    private byte[] processPicture(byte[] bytes) {
-        if (!NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
-            return new byte[225664];
-        }
-        int width = 328;
-        int height = 172;
-        int pixelSize = 4;
-
+    private byte[] processPicture(byte[] bytes, int width, int height) {
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));
         // 翻转图像
@@ -401,9 +398,9 @@ public class TestWindow {
         byte[] flippedBytes = flippedBuffer.array();
 
         // 提取有效数据
-        int rowStride = ((width * pixelSize + 3) / 4) * 4;
-        int validRowBytes = width * pixelSize;
-        byte[] croppedData = new byte[width * height * pixelSize];
+        int rowStride = ((width * 4 + 3) / 4) * 4;
+        int validRowBytes = width * 4;
+        byte[] croppedData = new byte[width * height * 4];
         ByteBuffer buffer = ByteBuffer.wrap(flippedBytes);
         for (int i = 0; i < height; i++) {
             int bufferPosition = i * rowStride;

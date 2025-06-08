@@ -3,6 +3,7 @@ package com.fy.navi.service.logicpaket.position;
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.l2.L2Adapter;
 import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
@@ -17,6 +18,7 @@ import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocMMInfo;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
 import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
+import com.fy.navi.service.greendao.CommonManager;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -214,6 +216,7 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     public void onSystemStateChanged(int state) {
         if(state == 4){
             mPositionAdapter.saveLocStorage();
+            saveLastLatLng();
             Logger.d("onSystemStateChanged1",state);
         }
     }
@@ -240,5 +243,14 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
 
     private static final class Helper {
         private static final PositionPackage POSITIONING_PACKAGE = new PositionPackage();
+    }
+
+    private void saveLastLatLng(){
+        LocInfoBean locInfoBean = getLastCarLocation();
+        if(locInfoBean!=null){
+            Logger.d("saveLastLatLng1",locInfoBean.getLatitude()+"--"+locInfoBean.getLongitude());
+            CommonManager.getInstance().insertOrReplace(AutoMapConstant.PosLastLocation.LAST_LAT,String.valueOf(locInfoBean.getLatitude()));
+            CommonManager.getInstance().insertOrReplace(AutoMapConstant.PosLastLocation.LAST_LNG,String.valueOf(locInfoBean.getLongitude()));
+        }
     }
 }

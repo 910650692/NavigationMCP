@@ -26,12 +26,19 @@ import java.util.List;
 
 /**
  * 导航相关监听
+ *
  * @author fy
  * @version $Revision.*$
  */
 public interface GuidanceObserver extends BaseNaviObserver {
+
+    default void onNaviStart() {
+
+    }
+
     /**
      * 传出当前导航信息
+     *
      * @param naviETAInfo naviETAInfo
      */
     default void onNaviInfo(NaviEtaInfo naviETAInfo) {
@@ -40,7 +47,8 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 车道线信息
-     * @param isShowLane isShowLane
+     *
+     * @param isShowLane     isShowLane
      * @param laneInfoEntity laneInfoEntity
      */
     default void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
@@ -49,7 +57,8 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 路口大图信息
-     * @param isShowImage isShowImage
+     *
+     * @param isShowImage   isShowImage
      * @param naviImageInfo naviImageInfo
      */
     default void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
@@ -58,7 +67,8 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 导航到达目的地
-     * @param traceId traceId
+     *
+     * @param traceId  traceId
      * @param naviType naviType
      */
     default void onNaviArrive(long traceId, int naviType) {
@@ -66,6 +76,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 转向图标信息、以及传出出入口信息
+     *
      * @param respData respData
      */
     default void onManeuverInfo(NaviManeuverInfo respData) {
@@ -73,6 +84,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 路况条信息
+     *
      * @param naviTmcInfo naviTmcInfo
      */
     default void onUpdateTMCLightBar(NaviTmcInfo naviTmcInfo) {
@@ -80,6 +92,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 区间车速、绿波车速
+     *
      * @param speedEntity speedEntity
      */
     default void onNaviSpeedOverallInfo(SpeedOverallEntity speedEntity) {
@@ -87,6 +100,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 电子眼信息
+     *
      * @param cameraInfo cameraInfo
      */
     default void onNaviCameraInfo(CameraInfoEntity cameraInfo) {
@@ -94,6 +108,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 服务区、收费站信息、收费口车道类型信息
+     *
      * @param sapaInfoEntity sapaInfoEntity
      */
     default void onNaviSAPAInfo(SapaInfoEntity sapaInfoEntity) {
@@ -101,6 +116,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 经过途径点
+     *
      * @param viaIndex 途经点索引
      */
     default void onUpdateViaPass(long viaIndex) {
@@ -108,6 +124,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 电池预加热
+     *
      * @param isPass 是否是通过的点
      */
     default void onBatterHotCallBack(boolean isPass) {
@@ -115,6 +132,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 通知用户切换主导航路线状态，客户端主动SelectMainPathID切换的回调状态
+     *
      * @param pathID pathID
      * @param result result
      */
@@ -123,14 +141,16 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 更新播报模式
+     *
      * @param broadcastType broadcastType
-     * @param isDay isDay
+     * @param isDay         isDay
      */
     default void updateBroadcastParam(int broadcastType, boolean isDay) {
     }
 
     /**
      * 当前道路限速设施的限速 0: 隐藏/不显示限速  !=0: 显示当前道路限速设施的限速
+     *
      * @param speed 车速
      */
     default void onCurrentRoadSpeed(int speed) {
@@ -172,14 +192,14 @@ public interface GuidanceObserver extends BaseNaviObserver {
     /**
      * @param report 驾驶信息
      */
-    default void onDriveReport(NaviDriveReportEntity report){
+    default void onDriveReport(NaviDriveReportEntity report) {
 
     }
 
     /**
      * @param pathIDList 路线ID
      */
-    default void onDeletePath(ArrayList<Long> pathIDList){
+    default void onDeletePath(ArrayList<Long> pathIDList) {
 
     }
 
@@ -192,9 +212,10 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 经过充电站
+     *
      * @param viaIndex
      */
-    default void onUpdateChargeStationPass(final long viaIndex){
+    default void onUpdateChargeStationPass(final long viaIndex) {
     }
 
     /***
@@ -206,8 +227,9 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 路线改变的回调
+     *
      * @param oldPathId 老得路线ID
-     * @param pathID 新的路线ID
+     * @param pathID    新的路线ID
      */
     default void onChangeNaviPath(final long oldPathId, final long pathID) {
 
@@ -215,9 +237,10 @@ public interface GuidanceObserver extends BaseNaviObserver {
 
     /**
      * 引导切换到备选路线的回调
+     *
      * @param newPathID 新路线id
      * @param oldPathID 旧路线id
-     * @param reason 原因
+     * @param reason    原因
      */
     default void onSuggestChangePath(long newPathID, long oldPathID,
                                      SuggestChangePathReasonEntity reason) {

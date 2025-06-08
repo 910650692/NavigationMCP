@@ -48,6 +48,14 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
     public ObservableField<String> mSlowChargeTotal;
     public ObservableField<String> mFastChargeFree;
     public ObservableField<String> mFastChargeTotal;
+    // 1:显示 0:不显示 是否显示慢充
+    public ObservableField<Integer> mSlowChargeShow;
+    public ObservableField<Integer> mFastChargeShow;
+    // 1:显示 0:不显示 是否显示慢充空闲车位
+    public ObservableField<Integer> mSlowChargeShowFreeSpace;
+    public ObservableField<Integer> mFastChargeShowFreeSpace;
+    // 1:显示内容和名称 0:只显示名称
+    public ObservableField<Integer> mContentShow;
     private int mCurrentPoiType = NumberUtils.NUM_ERROR;
     private boolean mIsNeedShow;
     public SceneNaviViaDetailImpl(SceneNaviViaDetailView mScreenView) {
@@ -65,6 +73,11 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         mSlowChargeTotal = new ObservableField<>("");
         mFastChargeFree = new ObservableField<>("");
         mFastChargeTotal = new ObservableField<>("");
+        mSlowChargeShow = new ObservableField<>(0);
+        mFastChargeShow = new ObservableField<>(0);
+        mContentShow = new ObservableField<>(0);
+        mSlowChargeShowFreeSpace = new ObservableField<>(0);
+        mFastChargeShowFreeSpace = new ObservableField<>(0);
     }
 
     @Override
@@ -208,6 +221,12 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         mGas92Num.set(isGas92 ? 1 : 0);
         mGas95Num.set(isGas95 ? 1 : 0);
         mGas98Num.set(isGas98 ? 1 : 0);
+        boolean showGasContent = isGas92 || isGas95 || isGas98;
+        if (showGasContent) {
+            mContentShow.set(NumberUtils.NUM_1);
+        } else {
+            mContentShow.set(NumberUtils.NUM_0);
+        }
         Logger.i(TAG, "showGasStationDetail = " + mViaContent.get());
     }
 
@@ -224,8 +243,15 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
             mViaContent.set(NumberUtils.NUM_2);
             mParkingFree.set(parkingInfo.getMSpaceFree() + "");
         }
-        Logger.i(TAG, "showParkingDetail = " + mViaContent.get());
-        mParkingTotal.set((Math.max(parkingInfo.getSpaceTotal(), 0)) + "");
+        int spaceTotal = Math.max(parkingInfo.getSpaceTotal(), 0);
+        mParkingTotal.set(spaceTotal + "");
+        if (spaceTotal == 0) {
+            mContentShow.set(NumberUtils.NUM_0);
+        } else {
+            mContentShow.set(NumberUtils.NUM_1);
+        }
+        Logger.i(TAG, "showParkingDetail = " + mViaContent.get() +
+                " spaceFree = " + spaceFree + " spaceTotal = " + spaceTotal);
     }
 
     private void showChargeStationDetail(ChargeInfo chargeInfo) {
@@ -233,18 +259,47 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
             mViaIcon.set(ResourceUtils.Companion.getInstance().
                     getDrawable(R.drawable.img_lightning_58));
         }
-        int spaceFree = chargeInfo.getSlow_free();
-        // 视为未获取到有效数据
-        if (spaceFree <= 0) {
-            mViaContent.set(NumberUtils.NUM_1);
+        int slowSpaceFree = chargeInfo.getSlow_free();
+        int fastSpaceFree = chargeInfo.getFast_free();
+        int slowSpaceTotal = chargeInfo.getSlow_total();
+        int fastSpaceTotal = chargeInfo.getFast_total();
+        mViaContent.set(NumberUtils.NUM_0);
+        boolean isShowSlowCharge = slowSpaceTotal > 0;
+        boolean isShowSLowChargeFree = slowSpaceFree > 0;
+        boolean isShowFastCharge = fastSpaceTotal > 0;
+        boolean isShowFastChargeFree = fastSpaceFree > 0;
+        if (!isShowSlowCharge && !isShowSLowChargeFree && !isShowFastCharge &&
+                !isShowFastChargeFree) {
+            mContentShow.set(NumberUtils.NUM_0);
+            return;
         } else {
-            mViaContent.set(NumberUtils.NUM_0);
-            mSlowChargeFree.set(chargeInfo.getSlow_free() + "");
-            mFastChargeFree.set(chargeInfo.getFast_free() + "");
+            mContentShow.set(NumberUtils.NUM_1);
         }
-        Logger.i(TAG, "showChargeStationDetail = " + mViaContent.get());
-        mSlowChargeTotal.set((Math.max(chargeInfo.getSlow_total(), 0)) + "");
-        mFastChargeTotal.set((Math.max(chargeInfo.getFast_total(), 0)) + "");
+        if (isShowSlowCharge && isShowSLowChargeFree) {
+            mSlowChargeShow.set(NumberUtils.NUM_1);
+            mSlowChargeShowFreeSpace.set(NumberUtils.NUM_1);
+        } else if (isShowSlowCharge) {
+            mSlowChargeShow.set(NumberUtils.NUM_1);
+            mSlowChargeShowFreeSpace.set(NumberUtils.NUM_0);
+        } else {
+            mSlowChargeShow.set(NumberUtils.NUM_0);
+        }
+        if (isShowFastCharge && isShowFastChargeFree) {
+            mFastChargeShow.set(NumberUtils.NUM_1);
+            mFastChargeShowFreeSpace.set(NumberUtils.NUM_1);
+        } else if (isShowFastCharge) {
+            mFastChargeShow.set(NumberUtils.NUM_1);
+            mFastChargeShowFreeSpace.set(NumberUtils.NUM_0);
+        } else {
+            mFastChargeShow.set(NumberUtils.NUM_0);
+        }
+        Logger.i(TAG, "showChargeStationDetail = " + mViaContent.get() +
+                " slowSpaceFree = " + slowSpaceFree + " slowSpaceTotal = " + slowSpaceTotal +
+                " fastSpaceFree = " + fastSpaceFree + " fastSpaceTotal = " + fastSpaceTotal);
+        mSlowChargeTotal.set(slowSpaceTotal + "");
+        mFastChargeTotal.set(fastSpaceTotal + "");
+        mSlowChargeFree.set(slowSpaceFree + "");
+        mFastChargeFree.set(fastSpaceFree + "");
     }
 
 }

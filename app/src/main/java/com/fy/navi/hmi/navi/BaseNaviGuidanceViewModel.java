@@ -607,6 +607,14 @@ public class BaseNaviGuidanceViewModel extends
             Logger.i(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange 没有改变");
             return;
         }
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                if (mView != null) {
+                    mView.updatePreference();
+                }
+            }
+        });
         setDefultPlateNumberAndAvoidLimitSave();
         final RouteRequestParam param = new RouteRequestParam();
         param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -718,7 +726,6 @@ public class BaseNaviGuidanceViewModel extends
             mView.updateNewestViaPoint(naviViaEntity);
         }
     }
-
     public void onMeterAction() {
         if (null != mView) {
             mView.onMeterAction();

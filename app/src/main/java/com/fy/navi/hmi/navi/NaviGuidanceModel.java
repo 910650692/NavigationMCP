@@ -2,7 +2,6 @@ package com.fy.navi.hmi.navi;
 
 
 import android.annotation.SuppressLint;
-import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +18,6 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.R;
-import com.fy.navi.hmi.launcher.FloatViewManager;
 import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.search.alongway.MainAlongWaySearchFragment;
 import com.fy.navi.hmi.search.searchresult.SearchResultFragment;
@@ -30,7 +28,7 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -53,7 +51,6 @@ import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.NextManeuverEntity;
-import com.fy.navi.service.define.navi.PathsTrafficEventInfoEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
@@ -154,9 +151,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * 终点搜，为了引导的终点扎标，显示营业时间/充电站信息
      */
     private void endPoiSearch() {
+        Logger.i(TAG, "endPoiSearch");
         RouteParam endRouteParam = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-        mEndSearchId = mSearchPackage.poiIdSearch(endRouteParam.getPoiID(), true);
-        Logger.i(TAG, "mEndSearchId = " + mEndSearchId);
+        if (endRouteParam == null) {
+            Logger.i(TAG, "endRouteParam is null");
+            return;
+        }
+        String poiId = endRouteParam.getPoiID();
+        mEndSearchId = mSearchPackage.poiIdSearch(poiId, true);
+        Logger.i(TAG, "mEndSearchId = " + mEndSearchId + " poiId = " + poiId);
     }
 
     public boolean getIsShowAutoAdd() {
@@ -234,7 +237,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             if (isOpen != null && isOpen.equals("true")) {
                 Logger.i(TAG, "开始打点");
                 @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
-                        AppContext.getInstance().getMContext().getContentResolver(),
+                        AppCache.getInstance().getMContext().getContentResolver(),
                         Settings.Secure.ANDROID_ID
                 );
                 final long curTime = System.currentTimeMillis();
@@ -466,20 +469,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mHandler.removeCallbacks(mRunnable);
         mHandler = null;
         mRunnable = null;
-    }
-
-    /**
-     * 显示路段转向箭头
-     *
-     * @param segmentsId 路段ID
-     */
-    public void showRouteSegmentArrow(final long segmentsId) {
-        final ArrayList<Long> data = new ArrayList<>();
-        data.add(segmentsId);
-        mLayerPackage.setPathArrowSegment(MapTypeManager.getInstance().
-                getMapTypeIdByName(mViewModel.mScreenId), data);
-        mLayerPackage.updatePathArrow(MapTypeManager.getInstance().
-                getMapTypeIdByName(mViewModel.mScreenId));
     }
 
     @Override

@@ -152,31 +152,35 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
         });
 
         mViewBinding.sclDeleteRecord.setOnClickListener(view -> {
-            new SearchConfirmDialog.Build(getContext())
-                    .setDialogObserver(new IBaseDialogClickListener() {
-                        @Override
-                        public void onCommitClick() {
-                            //清空历史记录
-                            UserTrackPackage.getInstance().clearSearchHistory();
-                            UserTrackPackage.getInstance().clearHistoryRoute();
-                            mSearchHistoryAdapter.notifyList(new ArrayList<>());
-                            mViewBinding.rcyRecord.setVisibility(GONE);
-                            mViewBinding.tvRecordNull.setVisibility(VISIBLE);
-                            showDeleteRecord();
-                            ToastUtils.Companion.getInstance().showCustomToastView(
-                                    ResourceUtils.Companion.getInstance().getString(R.string.ssh_cleared_history_record));
-                        }
-
-                        @Override
-                        public void onCancelClick() {
-
-                        }
-                    })
-                    .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.dialog_title_tip))
-                    .setContent(ResourceUtils.Companion.getInstance().getString(R.string.dialog_content_clear_record))
-                    .setConfirmTitle(ResourceUtils.Companion.getInstance().getString(R.string.dsc_confirm))
-                    .build().show();
+            onClickDeleteLayout();
         });
+    }
+
+    private void onClickDeleteLayout() {
+        new SearchConfirmDialog.Build(getContext())
+                .setDialogObserver(new IBaseDialogClickListener() {
+                    @Override
+                    public void onCommitClick() {
+                        //清空历史记录
+                        UserTrackPackage.getInstance().clearSearchHistory();
+                        UserTrackPackage.getInstance().clearHistoryRoute();
+                        mSearchHistoryAdapter.notifyList(new ArrayList<>());
+                        mViewBinding.rcyRecord.setVisibility(GONE);
+                        mViewBinding.tvRecordNull.setVisibility(VISIBLE);
+                        showDeleteRecord();
+                        ToastUtils.Companion.getInstance().showCustomToastView(
+                                ResourceUtils.Companion.getInstance().getString(R.string.ssh_cleared_history_record));
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+
+                    }
+                })
+                .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.dialog_title_tip))
+                .setContent(ResourceUtils.Companion.getInstance().getString(R.string.dialog_content_clear_record))
+                .setConfirmTitle(ResourceUtils.Companion.getInstance().getString(R.string.dsc_confirm))
+                .build().show();
     }
 
     /**
@@ -248,6 +252,11 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                     });
                 }
             }
+
+            @Override
+            public void onDeleteAllClick() {
+                onClickDeleteLayout();
+            }
         });
     }
 
@@ -282,7 +291,8 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
      * 显示删除记录按钮
      */
     private void showDeleteRecord() {
-        mViewBinding.sclDeleteRecord.setVisibility(mSearchHistoryAdapter.getPoiEntities().isEmpty() ? GONE : VISIBLE);
+//        mViewBinding.sclDeleteRecord.setVisibility(mSearchHistoryAdapter.getPoiEntities().isEmpty() ? GONE : VISIBLE);
+        mSearchHistoryAdapter.setMIsHasFooter(!mSearchHistoryAdapter.getPoiEntities().isEmpty());
     }
 
     /**

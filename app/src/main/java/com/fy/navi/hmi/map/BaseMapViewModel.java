@@ -77,7 +77,6 @@ import com.fy.navi.vrbridge.IVrBridgeConstant;
 
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Description TODO
@@ -402,7 +401,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             }).show();
         });
     }
-
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
         mModel.loadMapView(mapSurfaceView);
@@ -767,6 +765,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         Logger.d(TAG, "statusVis:" + statusVis, "restrictedArea:" + (restrictedArea != null));
 
         boolean flag = false;
+        if (this.restrictedArea == null
+                || this.restrictedArea.getMRestrictedAreaDetails() == null
+                || this.restrictedArea.getMRestrictedAreaDetails().isEmpty()
+                || this.restrictedArea.getMRestrictedAreaDetails().get(0) == null
+                || this.restrictedArea.getMRestrictedAreaDetails().get(0).isEmpty()) {
+            Logger.d(TAG, "limit info is null");
+            limitDriverVisibility.set(false);
+            return;
+        }
         for (RestrictedAreaDetail restrictedAreaDetail : this.restrictedArea.getMRestrictedAreaDetails().get(0)) {
             if (restrictedAreaDetail.getMEffect() == 1) {
                 flag = true;
@@ -1131,8 +1138,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             mView.moveTaskToBack(false);
         }
     }
-
-    void setScreenType(int right){}
 
     public void chargePreTipDialog(String status){
         if(ConvertUtils.isNull(mModel) || ConvertUtils.isNull(mView)) return;

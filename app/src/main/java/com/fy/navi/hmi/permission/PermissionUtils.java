@@ -3,7 +3,6 @@ package com.fy.navi.hmi.permission;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
@@ -17,11 +16,9 @@ import androidx.core.app.ActivityCompat;
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
-import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
-import com.iauto.vtserver.VTServerBQJni;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +59,7 @@ public class PermissionUtils {
         for (String permission : permissionArray) {
             if (!checkoutPermission(permission)) permissionList.add(permission);
         }
-        if(DeviceUtils.isCar(AppContext.getInstance().getMApplication())){
+        if(DeviceUtils.isCar(AppCache.getInstance().getMApplication())){
             Logger.i(TAG, "current device type is car");
             if (!checkoutPermission(SPEED_PERMISSION)) permissionList.add(SPEED_PERMISSION);
         }else {
@@ -81,10 +78,10 @@ public class PermissionUtils {
             return isExternalStorageManager;
         }
         if (ConvertUtils.equals(permission, Settings.ACTION_MANAGE_OVERLAY_PERMISSION)) {
-            return Settings.canDrawOverlays(AppContext.getInstance().getMContext());
+            return Settings.canDrawOverlays(AppCache.getInstance().getMContext());
         }
-        return !ConvertUtils.isEmpty(AppContext.getInstance().getMApplication())
-                && AppContext.getInstance().getMApplication().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+        return !ConvertUtils.isEmpty(AppCache.getInstance().getMApplication())
+                && AppCache.getInstance().getMApplication().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void requestPermission() {
@@ -163,7 +160,7 @@ public class PermissionUtils {
                     @Override
                     public void onCommitClick() {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                Uri.parse("package:" + AppContext.getInstance().getMContext().getPackageName()));
+                                Uri.parse("package:" + AppCache.getInstance().getMContext().getPackageName()));
                         ActivityCompat.startActivityForResult(context, intent, REQUEST_PERMISSION_OVERLAY_CODE, null);
                     }
                 })

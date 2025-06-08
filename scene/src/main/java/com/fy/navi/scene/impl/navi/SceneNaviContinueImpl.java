@@ -134,6 +134,9 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         if (TimerHelper.isCanDo()) {
             if (!mNaviPackage.getFixedOverViewStatus() && mNaviPackage.getPreviewStatus()) {
                 OpenApiHelper.exitPreview(mMapTypeId);
+                // 这边逻辑不能随便改，八秒后需要回到自车位置
+            } else if (!mNaviPackage.getFixedOverViewStatus()) {
+                goToCarPositionAndFollow();
             }
             mSearchPackage.clearLabelMark();
             ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId,
@@ -152,10 +155,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         naviContinue();
         //固定全览状态下，移图后显示继续导航，点击回到自车位置
         if (mNaviPackage.getFixedOverViewStatus()) {
-            mMapPackage.goToCarPosition(mMapTypeId, false, false);
-            mLayerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
-            // bugID：1023666 导航中缩放地图然后点击继续导航，恢复到导航跟随态的过程时间太长
-            OpenApiHelper.setCurrentZoomLevel(mMapTypeId);
+            goToCarPositionAndFollow();
         }
         if (null != mScreenView) {
             mScreenView.backToNaviFragment();
@@ -164,6 +164,14 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         NaviSceneManager.getInstance().notifySceneStateChange(
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState,
                 NaviSceneId.NAVI_SCENE_VIA_POINT_LIST);
+    }
+
+    private void goToCarPositionAndFollow() {
+        Logger.i(TAG, "goToCarPositionAndFollow");
+        mMapPackage.goToCarPosition(mMapTypeId, false, false);
+        mLayerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
+        // bugID：1023666 导航中缩放地图然后点击继续导航，恢复到导航跟随态的过程时间太长
+        OpenApiHelper.setCurrentZoomLevel(mMapTypeId);
     }
 
     @Override

@@ -73,6 +73,7 @@
                         android:textColor="@color/traffic_title_color"
                         android:textSize="@dimen/sp_32"
                         android:visibility="gone"
+                        android:text="@string/navi_along_service"
                         app:layout_constraintBottom_toBottomOf="@id/view_bg"
                         app:layout_constraintStart_toEndOf="@id/iv_icon"
                         tools:text="服务区" />
@@ -176,7 +177,7 @@
                         android:layout_marginBottom="@dimen/dp_20"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="服务区"
+                        android:text="@string/navi_along_service"
                         android:textColor="@color/traffic_title_color"
                         android:textSize="@dimen/sp_22"
                         android:visibility="visible"

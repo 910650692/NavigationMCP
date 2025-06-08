@@ -2,21 +2,39 @@ package com.fy.navi.hmi.cluster.cluster_map;
 
 import android.app.Application;
 import android.text.TextUtils;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableField;
+import androidx.databinding.ObservableInt;
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.define.map.IBaseScreenMapView;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.ui.base.BaseViewModel;
+import com.fy.navi.utils.ActivityCloseManager;
 
 public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, ClusterModel> {
-
     private static final String TAG = "BaseClusterViewModel";
+    public ObservableInt routeNameVisibleStatus;
+    public ObservableField<String> arriveTimeField; // 到达时间
+    public ObservableField<String> arrivalDayField; // 到达天数
+    public ObservableField<String> remainingMileageField; // 剩余距离
+    public ObservableField<String> stvNaviRouteNameField; // 当前路名
 
     public BaseClusterViewModel(@NonNull Application application) {
         super(application);
         Logger.d(TAG, "BaseClusterViewModel initialized");
+        ActivityCloseManager.getInstance().setOnCloseListener(() -> mView.finish());
+        routeNameVisibleStatus = new ObservableInt(View.GONE);
+        arriveTimeField = new ObservableField<>();
+        arrivalDayField = new ObservableField<>();
+        remainingMileageField = new ObservableField<>();
+        stvNaviRouteNameField = new ObservableField<>();
     }
 
     @Override
@@ -26,39 +44,21 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        Logger.d(TAG, "onCreate called");
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy called");
+        ActivityCloseManager.getInstance().removeListener();
+        LayerPackage.getInstance().removeLayerService(mView.getMapView().provideMapTypeId());
+        MapPackage.getInstance().unBindMapView(mView.getMapView());
+        MapPackage.getInstance().destroyMapView(mView.getMapView().provideMapTypeId());
     }
 
-    // ========= 生命周期相关 =========
-
-    public void loadMapView() {
-        Logger.d(TAG, "Loading map view");
-        mModel.loadMapView();
+    public void loadMapView(){
+        MapPackage.getInstance().loadMapView(mView.getMapView());
     }
-
-    public IBaseScreenMapView getMapView() {
-        Logger.d(TAG, "Getting map view");
-        return mView.getMapView();
-    }
-
-    // ========= Navi ETA 更新 =========
 
     public void updateEta(NaviEtaInfo naviEtaInfo) {
         Logger.d(TAG, "Updating ETA info");
-
-        if (naviEtaInfo == null || !checkNaviInfoPanelLegal(naviEtaInfo)) {
-            Logger.d(TAG, "ETA info invalid or illegal");
-            return;
-        }
-
         int distance = naviEtaInfo.getAllDist();
         int time = naviEtaInfo.getAllTime();
 
@@ -66,53 +66,23 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
             Logger.d(TAG, "Distance and time are both zero, skipping update");
             return;
         }
-
-        mView.updateEta(distance, time);
+        String mArriveDay = TimeUtils.getArriveDay(time);
+        String mArriveTime = TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), time);
+        String mRemainInfo = TimeUtils.getRemainingMileage(AppCache.getInstance().getMContext(), distance);
+            Logger.i(TAG, "showArriveInfo");
+            if (!TextUtils.isEmpty(mArriveTime)) {
+                arriveTimeField.set(ConvertUtils.digitToBold(mArriveTime).toString());
+            }
+            arrivalDayField.set(mArriveDay);
+            remainingMileageField.set(ConvertUtils.digitToBold(mRemainInfo).toString());
     }
-
-    // ========= Route Name 更新 =========
 
     public void updateRouteName(String curRouteName) {
         Logger.d(TAG, "Updating route name");
-
-        if (TextUtils.isEmpty(curRouteName)) {
-            Logger.d(TAG, "Route name is empty, skipping update");
-            return;
-        }
-
-        mView.updateRouteName(curRouteName);
+        stvNaviRouteNameField.set(curRouteName);
     }
 
-    // ========= 导航状态同步 =========
-
-    public void updateNaviStatus(String naviStatus) {
-        Logger.d(TAG, "Updating navigation status: " + naviStatus);
-        mView.setVS(naviStatus);
-    }
-
-    /**
-     * 检查导航信息是否合法
-     *
-     * @param naviinfo 导航信息对象
-     * @return boolean 是否合法
-     */
-    public static boolean checkNaviInfoPanelLegal(final NaviEtaInfo naviinfo) {
-        if (naviinfo == null) {
-            Logger.d(TAG, "Navi info is null");
-            return false;
-        }
-        if (naviinfo.NaviInfoData == null || naviinfo.NaviInfoData.isEmpty()) {
-            Logger.d(TAG, "Navi info data is null or empty");
-            return false;
-        }
-        if (naviinfo.NaviInfoFlag >= naviinfo.NaviInfoData.size()) {
-            Logger.d(TAG, "Navi info flag out of bounds");
-            return false;
-        }
-        if (naviinfo.NaviInfoData.get(naviinfo.NaviInfoFlag) == null) {
-            Logger.d(TAG, "Navi info data at flag index is null");
-            return false;
-        }
-        return true;
+    public void updateNaviStatus(boolean isVisible) {
+        routeNameVisibleStatus.set(isVisible ? View.VISIBLE : View.GONE);
     }
 }

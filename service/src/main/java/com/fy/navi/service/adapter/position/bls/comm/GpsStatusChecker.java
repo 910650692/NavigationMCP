@@ -2,22 +2,24 @@ package com.fy.navi.service.adapter.position.bls.comm;
 
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * GPS定位计时器，默认2s未收到定位信息，则判断为未定位
  */
-public class GpsStatusChecker extends Thread {
+public class GpsStatusChecker {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
-    private static final int TIME_OUT = 10;
-    private volatile int mTickCount = 0;
-
-    private volatile boolean mRun = false;
-    private AtomicInteger mState = new AtomicInteger(0);
+    private static final int TIME_OUT = 2;
+    private volatile boolean mRun = true;
     private OnTimeOutCallback callback;
+    private ScheduledFuture mScheduledFuture;
+    private Runnable mCustomTimer;
+    private final AtomicInteger mTickCount = new AtomicInteger(0);
 
     public GpsStatusChecker() {
     }
@@ -26,77 +28,51 @@ public class GpsStatusChecker extends Thread {
         callback = c;
     }
 
-    @Override
-    public void run() {
-        super.run();
-        mRun = true;
-        while (mRun) {
-            switch (mState.get()) {
-                case 0:
-                    synchronized (this) {
-                        try {
-                            wait();
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
-                    }
-                    break;
-                case 1:
-                    try {
+    public synchronized void startGpsStatusChecker() {
+        Logger.i(TAG, "startGpsStatusChecker");
+        mTickCount.set(0);
+        mCustomTimer = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Logger.i(TAG, "mRun " + mRun + ",mTickCount:" + mTickCount.get());
+                    if (mRun) {
                         boolean isTimeout = false;
-                        synchronized (this) {
-                            mTickCount++;
-                            if (mTickCount > TIME_OUT) {
-                                mTickCount = 0;
-                                isTimeout = true;
-                            }
+                        if (mTickCount.get() < TIME_OUT) {
+                            mTickCount.incrementAndGet();
+                        } else {
+                            mTickCount.set(0);
+                            isTimeout = true;
                         }
                         if (callback != null && isTimeout) {
                             Logger.i(TAG, "GpsStatusChecker onTimeOut not receive gps more than " + TIME_OUT + " s");
-                            callback.onTimeOut();
+                            callback.onGpsCheckTimeOut();
                         }
-                        synchronized (this) {
-                            wait(1000);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        Thread.currentThread().interrupt();
                     }
-                    break;
-                default:
-                    break;
+                } catch (Exception e) {
+                    Logger.i(TAG, "GpsStatusChecker interrupt e：" + e.toString());
+                }
             }
+        };
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(mCustomTimer, 0, 1000, TimeUnit.MILLISECONDS);
+    }
+
+    public synchronized void stopGpsStatusChecker() {
+        Logger.i(TAG, "stopGpsStatusChecker");
+        mRun = false;
+        mTickCount.set(0);
+        if (mScheduledFuture != null) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mCustomTimer = null;
         }
     }
 
     public synchronized void clearCount() {
-        mTickCount = 0;
-    }
-
-    public synchronized void cancel() {
-        mRun = false;
-        notifyAll();
-    }
-
-    public synchronized void doWait() {
-        if (mState.get() == 0) {
-            return;
-        }
-        mState.set(0);
-        mTickCount = 0;
-        notifyAll();
-    }
-
-    public synchronized void doCount() {
-        if (mState.get() == 1) {
-            return;
-        }
-        mState.set(1);
-        mTickCount = 0;
-        notifyAll();
+        Logger.i(TAG, "clearCount");
+        mTickCount.set(0);
     }
 
     public interface OnTimeOutCallback {
-        void onTimeOut();
+        void onGpsCheckTimeOut();
     }
 }

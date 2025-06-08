@@ -19,7 +19,7 @@ import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.limit.LimitCitySelectionFragment;
 import com.fy.navi.hmi.limit.LimitDriveFragment;
-import com.fy.navi.hmi.map.GasCarTipManager;
+import com.fy.navi.service.utils.GasCarTipManager;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
 import com.fy.navi.hmi.search.parking.TerminalParkingFragment;
 import com.fy.navi.scene.RoutePath;
@@ -100,12 +100,12 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private long mRestirctionTaskId;
     private RouteRestrictionParam mRouteRestrictionParams;
     private RequestRouteResult mRequestRouteResults;
-    private GasCarTipManager mGasCarTipManager = new GasCarTipManager();
     private boolean mIsFirstRequest = true;
     private String mSuccessMsg = "";
     private int mCarType = -1;
 
     private List<RouteParam> mGasChargeAlongList = new ArrayList<>();
+    private List<RouteParam> mRouteGasChargeAlongList = new ArrayList<>();
 
     private int mLocalTaskId = -1;
     //0:充电沿途 1：充电终点 2：充电周边 3：服务区
@@ -353,11 +353,47 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             }
             mGasChargeAlongList.remove(routeParams);
             if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.updateChareList(mGasChargeAlongList, mListSearchType);
+                boolean isSame = true;
+
+                if (mGasChargeAlongList.size() != mRouteGasChargeAlongList.size()) {
+                    isSame = false;
+                } else {
+                    for (RouteParam fristRouteParam : mGasChargeAlongList) {
+                        boolean hasSame = false;
+                        for (RouteParam secondRouteParam : mRouteGasChargeAlongList) {
+                            if (isTheSamePoi(fristRouteParam, secondRouteParam)) {
+                                hasSame = true;
+                                break;
+                            }
+                        }
+                        if (!hasSame) {
+                            isSame = false;
+                            break;
+                        }
+                    }
+                }
+
+                mViewModel.updateChareList(mGasChargeAlongList, mListSearchType, isSame);
             }
         } else {
             mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
         }
+    }
+
+    /**
+     * 判断两个点是否一样
+     * @param firstRouteParam  第一参数
+     * @param secondRouteParam 第二个参数
+     * */
+    public boolean isTheSamePoi(final RouteParam firstRouteParam, final RouteParam secondRouteParam) {
+        if (ConvertUtils.isEmpty(firstRouteParam) || ConvertUtils.isEmpty(secondRouteParam)
+                || ConvertUtils.isEmpty(firstRouteParam.getRealPos())
+                || ConvertUtils.isEmpty(secondRouteParam.getRealPos())) {
+            return false;
+        }
+        return (!ConvertUtils.isEmpty(firstRouteParam.getPoiID()) && Objects.equals(firstRouteParam.getPoiID(), secondRouteParam.getPoiID()))
+                || (firstRouteParam.getRealPos().getLat() == secondRouteParam.getRealPos().getLat()
+                && firstRouteParam.getRealPos().getLon() == secondRouteParam.getRealPos().getLon());
     }
 
     /**
@@ -376,7 +412,27 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             }
             mGasChargeAlongList.add(mRoutePackage.getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY));
             if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.updateChareList(mGasChargeAlongList, mListSearchType);
+                boolean isSame = true;
+
+                if (mGasChargeAlongList.size() != mRouteGasChargeAlongList.size()) {
+                    isSame = false;
+                } else {
+                    for (RouteParam fristRouteParam : mGasChargeAlongList) {
+                        boolean hasSame = false;
+                        for (RouteParam secondRouteParam : mRouteGasChargeAlongList) {
+                            if (isTheSamePoi(fristRouteParam, secondRouteParam)) {
+                                hasSame = true;
+                                break;
+                            }
+                        }
+                        if (!hasSame) {
+                            isSame = false;
+                            break;
+                        }
+                    }
+                }
+
+                mViewModel.updateChareList(mGasChargeAlongList, mListSearchType, isSame);
             }
         } else {
             mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
@@ -392,6 +448,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             return;
         }
         mRoutePackage.requestManyVia(MapType.MAIN_SCREEN_MAIN_MAP, mGasChargeAlongList);
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.setTabSearchVisibility(false);
+        }
     }
 
     /**
@@ -629,6 +688,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.hideProgressUI(true);
+        }
         if (ConvertUtils.isEmpty(requestRouteResult)) {
             return;
         }
@@ -689,46 +751,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
         mParkSearchId = mSearchPackage.aroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
-        mRoutePackage.selectRoute(routeLineLayerParam.getMMapTypeId(), NumberUtils.NUM_0);
+//        mRoutePackage.selectRoute(routeLineLayerParam.getMMapTypeId(), NumberUtils.NUM_0);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
-        if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.hideProgressUI(true);
-        }
     }
 
     /**
-     * 配置图层所需相关数据
+     * 配置补能点数据
      */
     public void routeDrawLine() {
-        //绘制终点扎标
-        final List<LayerItemRouteEndPoint> layerItemRouteEndPoints = new ArrayList<>();
-        for (int i =0 ;i < mRouteLineInfos.size(); i++) {
-            final LayerItemRouteEndPoint layerItemRouteEndPoint = new LayerItemRouteEndPoint();
-            if (powerType() == 0 || powerType() == 2) {
-                final float num = mGasCarTipManager.getRemainGasPercent(ConvertUtils
-                        .convertMetersToKilometers(mRouteLineInfos.get(i).getMDistance()));
-                Logger.d(TAG, "getRemainGasPercent: " + num);
-                if (num != 0) {
-                    layerItemRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
-                    layerItemRouteEndPoint.setRestNum((int) num);
-                } else {
-                    layerItemRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
-                    layerItemRouteEndPoint.setRestNum(-1);
-                }
-            }  else {
-                if (mRouteLineInfos.get(i).isMCanBeArrive()) {
-                    layerItemRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
-                    layerItemRouteEndPoint.setRestNum(mRouteLineInfos.get(i).getMRemainPercent());
-                } else {
-                    layerItemRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
-                    layerItemRouteEndPoint.setRestNum(-1);
-                }
-            }
-            layerItemRouteEndPoints.add(layerItemRouteEndPoint);
-        }
-        mRequestRouteResults.setMLayerItemRouteEndPoint(layerItemRouteEndPoints);
-
-        //配置补能点数据
         final RouteChargeStationParam routeChargeStationParam = mRequestRouteResults.getMRouteChargeStationParam();
         if (routeChargeStationParam == null) {
             return;
@@ -946,9 +976,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 mViewModel.showNomalRouteUI(true);
             }
             mSearchPackage.clearLabelMark();
+            mViewModel.cancelTimer();
             clearWeatherView();
             clearRestArea();
-            if (!ConvertUtils.isEmpty(mViewModel)) {
+            if (!ConvertUtils.isEmpty(mViewModel) && mRouteLineInfos != null) {
                 if (routeIndex >= 0 && routeIndex < mRouteLineInfos.size()
                         && NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
                     if (!mRouteLineInfos.get(routeIndex).isMCanBeArrive() && !mRouteLineInfos.get(routeIndex).isMRestoration()) {
@@ -1142,24 +1173,28 @@ public void onSearchResult(final int taskId, final int errorCode, final String m
             || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
         if (searchResultEntity.getKeyword().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge))) {
             mGasChargeAlongList.clear();
+            mRouteGasChargeAlongList.clear();
             final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
             if (allPoiParamList.size() >= 2) {
                 allPoiParamList.remove(0);
                 allPoiParamList.remove(allPoiParamList.size() - 1);
             }
             mGasChargeAlongList.addAll(allPoiParamList);
+            mRouteGasChargeAlongList.addAll(allPoiParamList);
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.showRouteSearchChargeListUI(searchResultEntity, mGasChargeAlongList, mListSearchType, 0);
             }
         }
         if (searchResultEntity.getKeyword().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_gas))) {
             mGasChargeAlongList.clear();
+            mRouteGasChargeAlongList.clear();
             final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
             if (allPoiParamList.size() >= 2) {
                 allPoiParamList.remove(0);
                 allPoiParamList.remove(allPoiParamList.size() - 1);
             }
             mGasChargeAlongList.addAll(allPoiParamList);
+            mRouteGasChargeAlongList.addAll(allPoiParamList);
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.showRouteSearchChargeListUI(searchResultEntity, mGasChargeAlongList, mListSearchType, 1);
             }
@@ -1201,7 +1236,7 @@ public void setPoint() {
     public void onReStoreFragment() {
         if (!ConvertUtils.isEmpty(mRequestRouteResults)) {
             onRouteResult(mRequestRouteResults);
-            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex());
+//            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex());
             if (!ConvertUtils.isEmpty(mRequestRouteResults.getMRouteRestAreaParam())) {
                 onRouteRestAreaInfo(mRequestRouteResults.getMRouteRestAreaParam());
             }

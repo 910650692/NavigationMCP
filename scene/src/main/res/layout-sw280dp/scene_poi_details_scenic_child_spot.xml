@@ -27,7 +27,7 @@
             android:lines="1"
             android:ellipsize="end"
             android:textColor="@drawable/custom_filter_item_text_bg_selector_day"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +39,7 @@
             tools:text="40%选择"
             android:focusable="false"
             android:textColor="@drawable/custom_filter_sub_item_text_bg_selector_day"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_32"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/child_title" />

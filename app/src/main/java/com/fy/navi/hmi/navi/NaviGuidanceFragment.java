@@ -40,6 +40,7 @@ import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
+import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.StackManager;
 
@@ -549,7 +550,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         final int isNaviControl = bundle.getInt(NaviConstant.NAVI_CONTROL, 0);
         Logger.i(TAG, "onNewIntent isNaviControl:" + isNaviControl);
         if (isNaviControl == 1) {
-            showNaviContent();
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    showNaviContent();
+                }
+            });
         }
     }
 
@@ -564,6 +570,17 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             } else {
                 Logger.i(TAG, "onHiddenChanged mViewModel is null");
             }
+        }
+    }
+
+    /**
+     * 更新偏好设置
+     */
+    public void updatePreference() {
+        Logger.i(TAG, "updatePreference");
+        if (mBinding != null && mBinding.sceneNaviPreference != null) {
+            mBinding.sceneNaviPreference.updateRoutePreference(SettingPackage.getInstance().
+                    getRoutePreference());
         }
     }
 

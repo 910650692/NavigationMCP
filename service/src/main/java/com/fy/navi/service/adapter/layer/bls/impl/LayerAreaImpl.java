@@ -3,6 +3,7 @@ package com.fy.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.aosclient.model.GCoord3DDouble;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaDataCityAllRuleRes;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaDataRuleRes;
@@ -26,6 +27,7 @@ public class LayerAreaImpl extends BaseLayerImpl<LayerAreaStyleAdapter> {
         super(bizService, mapView, context,mapType);
         getLayerAreaControl().setStyle(this);
         getLayerAreaControl().addClickObserver(this);
+        Logger.d(TAG, "LayerAreaImpl init");
     }
 
 

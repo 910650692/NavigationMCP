@@ -14,7 +14,7 @@ import com.fy.navi.exportservice.binderimpl.NaviAutoApiBinder;
 import com.fy.navi.mapservice.IBinderPool;
 import com.fy.navi.mapservice.IBinderPoolCallback;
 import com.fy.navi.mapservice.base.BinderType;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
 
@@ -33,7 +33,7 @@ public final class BinderPool extends IBinderPool.Stub {
     }
 
     private BinderPool() {
-        StartService.getInstance().registerSdkCallback(sdkCallback);
+        StartService.getInstance().registerSdkCallback(TAG, sdkCallback);
     }
 
     @Override
@@ -51,10 +51,10 @@ public final class BinderPool extends IBinderPool.Stub {
     @Override
     public void startInitEngine(final String pkgName) {
         Logger.d(TAG, pkgName + "startInitEngine");
-        if (null != AppContext.getInstance().getMContext()) {
+        if (null != AppCache.getInstance().getMContext()) {
             Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
-            final Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
-            ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
+            final Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
+            ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
         } else {
             Logger.e(TAG, "application not created");
         }

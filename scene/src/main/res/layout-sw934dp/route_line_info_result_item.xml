@@ -6,9 +6,6 @@
     <data>
 
         <import type="android.view.View" />
-        <variable
-            name="model"
-            type="com.fy.navi.service.define.route.RouteLineInfo" />
 
         <variable
             name="holder"
@@ -45,7 +42,6 @@
             android:layout_height="@dimen/dp_45"
             android:layout_marginStart="@dimen/dp_30"
             android:layout_marginTop="@dimen/dp_24"
-            android:text="@{model.MTravelTime}"
             android:textColor="@color/text_color_route_item_select"
             android:textSize="@dimen/sp_34"
             app:layout_constraintStart_toEndOf="@+id/route_item_num"
@@ -60,7 +56,6 @@
             android:background="@drawable/bg_route_details_defult_label"
             android:paddingHorizontal="@dimen/dp_12"
             android:paddingVertical="@dimen/dp_6"
-            android:text="@{model.MLabel}"
             android:textColor="@color/route_charge_param_total_color"
             android:textSize="@dimen/sp_26"
             app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +67,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24"
-            android:text="@{model.MLength}"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_30"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -103,7 +97,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_3"
-                android:text="@{model.MTollCost}"
                 android:textColor="@color/text_color_route_item_no_select"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintBottom_toBottomOf="@+id/route_item_traffic_light"
@@ -139,7 +132,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_3"
-                android:text="@{model.MTrafficLightCount}"
                 android:textColor="@color/text_color_route_item_no_select"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintBottom_toBottomOf="@+id/route_item_traffic_price"
@@ -165,7 +157,6 @@
                 android:layout_height="@dimen/dp_36"
                 android:layout_gravity="center"
                 android:src="@drawable/img_route_electricity"
-                android:visibility="@{model.MElecRouteBool ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/route_item_price" />
 
@@ -175,10 +166,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_3"
-                android:text="@{model.MElecRouteLabel}"
                 android:textColor="@color/text_color_route_item_no_select"
                 android:textSize="@dimen/sp_30"
-                android:visibility="@{model.MElecRouteBool ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/route_item_electricity_img"
                 app:layout_constraintStart_toEndOf="@+id/route_item_electricity_img"
                 app:layout_constraintTop_toTopOf="@+id/route_item_electricity_img"

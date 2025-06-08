@@ -6,9 +6,9 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.callback.OnPowerChangeListener;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
-import com.fy.navi.service.logicpaket.calibration.PowerType;
+import com.fy.navi.service.define.calibration.PowerType;
 import com.fy.navi.service.logicpaket.signal.SignalCallback;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
@@ -44,7 +44,7 @@ public class PowerMonitorService implements SignalCallback {
 
     public PowerMonitorService() {
         mSignalPackage = SignalPackage.getInstance();
-        mDeviceIsCar = DeviceUtils.isCar(AppContext.getInstance().getMContext());
+        mDeviceIsCar = DeviceUtils.isCar(AppCache.getInstance().getMContext());
         mPowerChangeListener = new CopyOnWriteArrayList<>();
         mCalibrationPackage = CalibrationPackage.getInstance();
         mIsPureGasCar = mCalibrationPackage.powerType() == PowerType.E_VEHICLE_ENERGY_FUEL;

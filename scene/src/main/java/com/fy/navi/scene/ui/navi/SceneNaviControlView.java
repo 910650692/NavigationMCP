@@ -19,7 +19,7 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.SceneNaviControlImpl;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 
@@ -81,6 +81,22 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
         super.show();
         if (!ConvertUtils.isNull(mScreenViewModel)) {
             mScreenViewModel.initTimer();
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        if (!ConvertUtils.isNull(mScreenViewModel)) {
+            mScreenViewModel.cancelTimer();
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (!ConvertUtils.isNull(mScreenViewModel)) {
+            mScreenViewModel.cancelTimer();
         }
     }
 
@@ -192,7 +208,7 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     }
 
     public void onMeterAction() {
-        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getString(R.string.navi_meter_start), 3000);
+        ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getString(R.string.navi_meter_start), 3000);
         mScreenViewModel.clickToShowOverview();
         mScreenViewModel.onFixedOverView();
     }

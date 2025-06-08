@@ -37,7 +37,7 @@ import com.fy.navi.fsa.bean.SpeedLimitCruiseInfo;
 import com.fy.navi.fsa.bean.SpeedLimitSignData;
 import com.fy.navi.fsa.bean.TollStation;
 import com.fy.navi.fsa.bean.TurnInfo;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
@@ -160,7 +160,7 @@ public final class FsaNaviScene {
     public String getArrivalTime(final int time) {
         if (time <= 0) {return "";}
         //时间
-        String arriveTime = TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), time);
+        String arriveTime = TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), time);
         Logger.d(FsaConstant.FSA_TAG,arriveTime+"新增时间");
         return arriveTime;
     }

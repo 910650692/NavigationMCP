@@ -2,7 +2,7 @@ package com.fy.navi.service.adapter.map.bls;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.map.IMapAdapterCallback;
 import com.fy.navi.service.define.map.MapViewParams;
@@ -31,7 +31,7 @@ public class MapViewPoolManager {
 
     }
 
-    public boolean init(MapType mapTypeId) {
+    public boolean createMapView(MapType mapTypeId) {
         Logger.d(TAG, "MapSurfaceViewManager init :" + mapTypeId.toString());
         if (!mapViewPools.containsKey(mapTypeId)) {
             createMapViewImpl(mapTypeId, new MapViewParams());
@@ -40,12 +40,14 @@ public class MapViewPoolManager {
     }
 
     private void createMapViewImpl(MapType mapTypeId, MapViewParams mapViewParams) {
-        MapViewImpl mapViewImpl = new MapViewImpl(AppContext.getInstance().getMContext());
+        Logger.d(TAG, "MapSurfaceViewManager create :" + mapTypeId.toString());
+        MapViewImpl mapViewImpl = new MapViewImpl(AppCache.getInstance().getMContext());
         mapViewImpl.initMapView(mapTypeId, mapViewParams);
         mapViewPools.put(mapTypeId, mapViewImpl);
     }
 
     public MapViewImpl get(MapType mapTypeId, MapViewParams mapViewParams) {
+        Logger.d(TAG, "MapSurfaceViewManager get :" + mapTypeId.toString());
         if (!mapViewPools.containsKey(mapTypeId)) {
             createMapViewImpl(mapTypeId, mapViewParams);
         }
@@ -64,5 +66,20 @@ public class MapViewPoolManager {
     public void unRegisterCallback(MapType mapTypeId, IMapAdapterCallback callback) {
         Logger.d(TAG, "unRegisterCallback");
         get(mapTypeId).unRegisterCallback(callback);
+    }
+
+    public void destroyMapView(MapType mapTypeId) {
+        if (ConvertUtils.isEmpty(mapViewPools)) return;
+        MapViewImpl mapView = ConvertUtils.pop(mapViewPools, mapTypeId);
+        if (null != mapView) mapView.destroyMapView();
+    }
+
+    public void removeAllCallback() {
+        if (ConvertUtils.isEmpty(mapViewPools)) return;
+        for (MapViewImpl mapView : mapViewPools.values()) {
+            mapView.destroyMapView();
+        }
+        ConvertUtils.clear(mapViewPools);
+        mapViewPools = null;
     }
 }

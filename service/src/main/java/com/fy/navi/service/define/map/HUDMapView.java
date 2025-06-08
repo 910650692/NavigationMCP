@@ -6,27 +6,27 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class HUDMapView extends FullScreenMapView implements IBaseScreenMapView {
-
-//    // 单例实例
-//    private static final HUDMapView INSTANCE = new HUDMapView(AppContext.getInstance().getMContext());
+public class HUDMapView extends FullScreenMapView {
+    private boolean mOpenScreenStatus = true;
+    private boolean mIsBindView = false;
 
     public HUDMapView(@NonNull Context context) {
         super(context);
     }
-//    /**
-//     * 获取单例实例
-//     *
-//     * @return HUDMapView的单例对象
-//     */
-//    public static HUDMapView getInstance() {
-//        return INSTANCE;
-//    }
+
+    public void setOpenScreen(boolean openScreenStatus){
+        this.mOpenScreenStatus = openScreenStatus;
+    }
+
+    public void setIsBindView(boolean mBindView) {
+        this.mIsBindView = mBindView;
+    }
 
     @Override
     public MapType provideMapTypeId() {
         return MapType.HUD_MAP;
     }
+
     public HUDMapView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
@@ -35,14 +35,33 @@ public class HUDMapView extends FullScreenMapView implements IBaseScreenMapView 
         super(context, attrs, defStyleAttr);
     }
 
-//    @Override
-//    public long getMapViewWidth() {
-//        Logger.i("getMapViewWidth"+ScreenUtils.Companion.getInstance().getScreenWidth());
-//        return ScreenUtils.Companion.getInstance().getScreenWidth();
-//    }
-//    @Override
-//    public long getMapViewHeight() {
-//        Logger.i("getMapViewHeight"+ScreenUtils.Companion.getInstance().getScreenHeight());
-//        return ScreenUtils.Companion.getInstance().getScreenHeight();
-//    }
+    @Override
+    public long getMapViewWidth() {
+        return 328;
+    }
+
+    @Override
+    public long getMapViewHeight() {
+        return 172;
+    }
+
+    @Override
+    public long getScreenWidth() {
+        return 328;
+    }
+
+    @Override
+    public long getScreenHeight() {
+        return 172;
+    }
+
+    @Override
+    public boolean isOpenScreen() {
+        return mOpenScreenStatus;
+    }
+
+    @Override
+    public boolean isBindMapView() {
+        return mIsBindView;
+    }
 }

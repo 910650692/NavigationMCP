@@ -37,7 +37,7 @@ import com.autonavi.gbl.search.model.SuggestionSearchResult;
 import com.autonavi.gbl.search.observer.IKeyWordSearchObserverV2;
 import com.autonavi.gbl.util.errorcode.common.Service;
 import com.autonavi.gbl.util.model.TaskResult;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.ISearchApi;
@@ -212,17 +212,17 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     @Override
     public int enRouteKeywordSearch(final SearchRequestParameter searchRequestParameter) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "enRouteKeywordSearch");
-        final SearchCallbackWrapper<SearchEnrouteResult> callbackWrapper = createCallbackWrapper(
-                SearchEnrouteResult.class,
-                (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameter, result),
-                (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result)
-        );
-        mSearchObserversHelper.registerCallback(SearchEnrouteResult.class, callbackWrapper);
         final PathInfo pathInfo = (PathInfo) searchRequestParameter.getPathInfo();
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "enRouteKeywordSearch pathInfo: " + pathInfo);
         final SearchEnrouteKeywordParam param = SearchRequestParamV2.getInstance().convertToSearchEnRouteKeywordParamV2(searchRequestParameter);
         final TaskResult searchResult = getSearchServiceV2().search(pathInfo, param, mSearchObserversHelper);
         mTaskId.set((int) searchResult.taskId);
+        final SearchCallbackWrapper<SearchEnrouteResult> callbackWrapper = createCallbackWrapper(
+                SearchEnrouteResult.class,
+                (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameter, result),
+                (errCode, result) -> notifySearchSuccess((int) searchResult.taskId, searchRequestParameter, result)
+        );
+        mSearchObserversHelper.registerCallback(SearchEnrouteResult.class, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -423,7 +423,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
             if (response.route_list != null && !response.route_list.isEmpty()
                     && response.route_list.get(0).path != null && !response.route_list.get(0).path.isEmpty()) {
                 final String distance = formatDistanceArrayInternal(response.route_list.get(0).path.get(0).distance);
-                final String travelTime = TimeUtils.switchHourAndMimuteFromSecond(AppContext.getInstance().getMContext(),
+                final String travelTime = TimeUtils.switchHourAndMimuteFromSecond(AppCache.getInstance().getMContext(),
                         (int) response.route_list.get(0).path.get(0).travel_time);
                 final int chargeLeft = response.route_list.get(0).path.get(0).charge_left;
                 future.complete(new Pair<>(distance, travelTime));
@@ -476,10 +476,11 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                                         * batteryDistance)
                                         - response.route_list.get(0).path.get(0).distance)
                                         / (maxBattery * BevPowerCarUtils.getInstance().batterToDistance));
-                final int chargeLeftPercent = (int) (chargeLeft * 100);
+                int chargeLeftPercent = (int) (chargeLeft * 100);
+                chargeLeftPercent = Math.max(0, chargeLeftPercent);
                 final ETAInfo etaInfo = new ETAInfo()
                         .setDistance(response.route_list.get(0).path.get(0).distance)
-                        .setTravelTime(TimeUtils.switchHourAndMimuteFromSecond(AppContext.getInstance().getMContext(),
+                        .setTravelTime(TimeUtils.switchHourAndMimuteFromSecond(AppCache.getInstance().getMContext(),
                                 (int) response.route_list.get(0).path.get(0).travel_time))
                         .setTime((int) response.route_list.get(0).path.get(0).travel_time)
                         .setLeftCharge(chargeLeftPercent);
@@ -501,7 +502,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return 格式化后的距离文本
      */
     private String formatDistanceArrayInternal(final int distance) {
-        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.getInstance().getMContext(), distance);
+        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppCache.getInstance().getMContext(), distance);
         return distanceArray[0] + distanceArray[1];
     }
 

@@ -3,6 +3,7 @@ package com.fy.navi.scene.impl.search;
 import android.os.Bundle;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneQuickSearchView;
 import com.fy.navi.scene.ui.search.SceneQuickSearchView;
@@ -40,9 +41,14 @@ public class SceneQuickSearchViewImpl extends BaseSceneModel<SceneQuickSearchVie
 
     @Override
     public void closeSearchOpenFromNavi() {
-        Bundle bundle = new Bundle();
-        bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
-        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                Bundle bundle = new Bundle();
+                bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+                StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
+            }
+        });
         mSearchPackage.clearLabelMark();
     }
 

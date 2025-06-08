@@ -292,8 +292,8 @@ public class L2Adapter {
             vehiclePosition.setLocationLinkOffset(Math.max(locationLinkOffset, 0));
 
             int curRoadClass = naviEtaInfo.curRoadClass;
-            if (curRoadClass == -1) {
-                vehiclePosition.setRoadClass(0xFF); // 当前自车所在道路等级
+            if (curRoadClass == 0xFF) {
+                vehiclePosition.setRoadClass(-1); // 当前自车所在道路等级
             } else {
                 vehiclePosition.setRoadClass(curRoadClass); // 当前自车所在道路等级
             }
@@ -498,19 +498,19 @@ public class L2Adapter {
             L2NaviBean.LimitCameraDataBean limitCameraData = l2NaviBean.getLimitCameraData();
             if (ConvertUtils.isEmpty(cameraInfo)) {
                 Logger.i(TAG, "cameraInfo null");
-                limitCameraData.setSpdLmtEleEyeDist(0);
+                limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
                 return;
             }
             if (cameraInfo.getDistance() > 2000) { // 超过2km无需返回
                 Logger.i(TAG, "over 2km");
-                limitCameraData.setSpdLmtEleEyeDist(0);
+                limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
                 return;
             }
             if (cameraInfo.getSpeed() == 0) {
                 Logger.i(TAG, "speed 0");
-                limitCameraData.setSpdLmtEleEyeDist(0);
+                limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
                 return;
             }
@@ -717,13 +717,13 @@ public class L2Adapter {
             if (cruiseInfoEntity == null) {
                 Logger.i(TAG, "cruiseInfoEntity null");
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
-                limitCameraData.setSpdLmtEleEyeDist(-1);
+                limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 return;
             }
             if (cruiseInfoEntity.getSpeed() == null) {
                 Logger.i(TAG, "speed null");
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
-                limitCameraData.setSpdLmtEleEyeDist(-1);
+                limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 return;
             }
             short speed = 0;
@@ -737,13 +737,13 @@ public class L2Adapter {
             if (speed == 0) {
                 Logger.i(TAG, "speed == 0");
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
-                limitCameraData.setSpdLmtEleEyeDist(-1);
+                limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 return;
             }
             if (cruiseInfoEntity.distance > 2000) { // 超过2km无需返回
                 Logger.i(TAG, "over 2km");
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
-                limitCameraData.setSpdLmtEleEyeDist(-1);
+                limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 return;
             }
             limitCameraData.setSpdLmtEleEyeSpeedValue(speed);
@@ -756,7 +756,7 @@ public class L2Adapter {
             L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
             if (cruiseInfoEntity == null) {
                 Logger.i(TAG, "cruiseInfoEntity null");
-                vehiclePosition.setRoadClass(0xFF);
+                vehiclePosition.setRoadClass(-1);
                 return;
             }
             vehiclePosition.setRoadClass(cruiseInfoEntity.roadClass);
@@ -902,8 +902,10 @@ public class L2Adapter {
             if (pathInfo != null) {
                 for (int i = 0; i < curSegIdx; i++) {
                     SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
-                    long linkCount = segmentInfo.getLinkCount();
-                    locationLinkIndex += linkCount;
+                    if (segmentInfo != null) {
+                        long linkCount = segmentInfo.getLinkCount();
+                        locationLinkIndex += linkCount;
+                    }
                 }
             }
         }

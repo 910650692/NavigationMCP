@@ -80,4 +80,9 @@ public class NaviCommandImpl implements NaviCommandListener {
         return CallResponse.createSuccessResponse();
     }
 
+    @Override
+    public CallResponse onPassbyAdd(final String s, final String s1, final String s2, final PoiCallback poiCallback) {
+        return CallResponse.createNotSupportResponse("暂不支持该功能");
+    }
+
 }

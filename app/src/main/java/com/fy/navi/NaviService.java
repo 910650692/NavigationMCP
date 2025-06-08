@@ -25,7 +25,8 @@ import com.fy.navi.adas.AdasClient;
 import com.fy.navi.broadcast.SteeringWheelButtonReceiver;
 import com.fy.navi.clslink.ClsLinkManager;
 import com.fy.navi.fsa.MyFsaService;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
+import com.fy.navi.navisender.NaviSender;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
 import com.fy.navi.vrbridge.VrBridgeManager;
@@ -49,7 +50,7 @@ public class NaviService extends Service {
 
     public NaviService() {
         initBroadcast();
-        StartService.getInstance().registerSdkCallback(sdkInitCallback);
+        StartService.getInstance().registerSdkCallback(TAG, sdkInitCallback);
         fsaInitWorkRequest = new OneTimeWorkRequest.Builder(FsaInitWorker.class)
                 .addTag("Fsa Init")
                 .build();
@@ -62,7 +63,7 @@ public class NaviService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.i(TAG, "onStartCommand");
+        Logger.i(TAG, "onCreate");
         NotificationChannel channel = new NotificationChannel(NOTIFICATION_ID, NOTIFICATION_NAME,
                 NotificationManager.IMPORTANCE_LOW);
         NotificationManager manager = (NotificationManager) this
@@ -101,7 +102,7 @@ public class NaviService extends Service {
     private void initBroadcast() {
         SteeringWheelButtonReceiver steeringWheelButtonReceiver = new SteeringWheelButtonReceiver();
         IntentFilter intentFilter = new IntentFilter(SteeringWheelButtonReceiver.ACTION);
-        AppContext.getInstance().getMContext().registerReceiver(steeringWheelButtonReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+        AppCache.getInstance().getMContext().registerReceiver(steeringWheelButtonReceiver, intentFilter, Context.RECEIVER_EXPORTED);
     }
 
     /**
@@ -119,8 +120,9 @@ public class NaviService extends Service {
         public Result doWork() {
             Logger.d(TAG, "FsaInitWorker doWork");
             MyFsaService.getInstance().init();
-            AdasClient.getInstance().start(AppContext.getInstance().getMContext());
+            AdasClient.getInstance().start(AppCache.getInstance().getMContext());
             ClsLinkManager.getInstance().init();
+//            NaviSender.getInstance().init();
             return Result.success();
         }
     }
@@ -146,7 +148,7 @@ public class NaviService extends Service {
     private static final StartService.ISdkInitCallback sdkInitCallback = new StartService.ISdkInitCallback() {
         @Override
         public void onSdkInitSuccess() {
-            WorkManager.getInstance(AppContext.getInstance().getMContext())
+            WorkManager.getInstance(AppCache.getInstance().getMContext())
                     .beginWith(fsaInitWorkRequest)
                     .then(vrBridgeWorkRequest)
                     .enqueue();

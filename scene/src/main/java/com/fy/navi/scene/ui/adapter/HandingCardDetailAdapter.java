@@ -87,10 +87,10 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
         binding.clCharge.itemRoot.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
         binding.clCharge.stvNum.setText(String.valueOf(position + 1));
         binding.clCharge.tvTitle.setText(poiInfo.getName());
-        binding.clCharge.llQuick.setVisibility(chargeInfo.getFast_total() > 0 ? View.VISIBLE : View.GONE);
-        binding.clCharge.llSlow.setVisibility(chargeInfo.getSlow_total() > 0 ? View.VISIBLE : View.GONE);
-        binding.clCharge.tvSum.setVisibility(chargeInfo.getFast_total() + chargeInfo.getSlow_total() > 0 ? View.VISIBLE : View.GONE);
         if (!ConvertUtils.isNull(chargeInfo)) {
+            binding.clCharge.llQuick.setVisibility(chargeInfo.getFast_total() > 0 ? View.VISIBLE : View.GONE);
+            binding.clCharge.llSlow.setVisibility(chargeInfo.getSlow_total() > 0 ? View.VISIBLE : View.GONE);
+            binding.clCharge.tvSum.setVisibility(chargeInfo.getFast_total() + chargeInfo.getSlow_total() > 0 ? View.VISIBLE : View.GONE);
             binding.clCharge.tvQuickFree.setText(String.valueOf(chargeInfo.getFast_free()));
             binding.clCharge.tvQuickTotal.setText("/" + chargeInfo.getFast_total());
             binding.clCharge.tvSlowFree.setText(String.valueOf(chargeInfo.getSlow_free()));
@@ -98,6 +98,10 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
             binding.clCharge.tvDistance.setText(poiInfo.getDistance());
             final int desc = CardManager.getInstance().isPlentiful(chargeInfo) ? R.string.yong_ji : R.string.chong_zu;
             binding.clCharge.tvSum.setText(desc);
+        } else {
+            binding.clCharge.llQuick.setVisibility(View.GONE);
+            binding.clCharge.llSlow.setVisibility(View.GONE);
+            binding.clCharge.tvSum.setVisibility(View.GONE);
         }
         binding.getRoot().setOnClickListener(v -> {
             if (!ConvertUtils.isNull(mItemClickListener)) {

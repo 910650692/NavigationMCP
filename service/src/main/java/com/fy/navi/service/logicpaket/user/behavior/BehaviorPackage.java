@@ -11,7 +11,7 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.map.MapAdapter;
@@ -161,7 +161,9 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
     public PoiInfoEntity getHomeFavoriteInfo() {
         PoiInfoEntity poiInfoEntity = null;
         if (isLogin()) { // 用户已登录，从云端获取数据
-            poiInfoEntity = mBehaviorAdapter.getHomeFavoriteInfo();
+            if (mBehaviorAdapter != null) {
+                poiInfoEntity = mBehaviorAdapter.getHomeFavoriteInfo();
+            }
         } else { // 用户未登录，从本地获取数据
             final List<Favorite> favoriteList = mManager.getValueByCommonName(UserDataCode.FAVORITE_TYPE_HOME);
             if (!ConvertUtils.isEmpty(favoriteList)) {
@@ -179,7 +181,9 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
     public PoiInfoEntity getCompanyFavoriteInfo() {
         PoiInfoEntity poiInfoEntity = null;
         if (isLogin()) { // 用户已登录，从云端获取数据
-            poiInfoEntity = mBehaviorAdapter.getCompanyFavoriteInfo();
+            if (mBehaviorAdapter != null) {
+                poiInfoEntity = mBehaviorAdapter.getCompanyFavoriteInfo();
+            }
         } else { // 用户未登录，从本地获取数据
             final List<Favorite> favoriteList = mManager.getValueByCommonName(UserDataCode.FAVORITE_TYPE_COMPANY);
             if (!ConvertUtils.isEmpty(favoriteList)) {
@@ -439,7 +443,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
             final ArrayList<PoiInfoEntity> commonList = getFavoriteAddressInfo();
             if (commonList.size() >= 3) {
                 ToastUtils.Companion.getInstance().showCustomToastView(
-                        AppContext.getInstance().getMContext().getString(R.string.st_maximum_added_common_address));
+                        AppCache.getInstance().getMContext().getString(R.string.st_maximum_added_common_address));
                 return;
             }
         }

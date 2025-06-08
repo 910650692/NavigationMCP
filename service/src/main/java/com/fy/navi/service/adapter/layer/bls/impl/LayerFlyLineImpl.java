@@ -24,6 +24,7 @@ public class LayerFlyLineImpl extends BaseLayerImpl<LayerFlyLineStyleAdapter> im
         getLayerFlyLineControl().updateDrawMode(FlylineDrawMode.FLYLINE_MOVE_END, true);
         getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypeLine, false);
         getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypePoint, false);
+        Logger.d(TAG, "LayerFlyLineImpl init");
     }
 
     @Override

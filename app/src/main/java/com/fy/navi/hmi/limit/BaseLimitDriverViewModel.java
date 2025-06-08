@@ -53,6 +53,15 @@ public class BaseLimitDriverViewModel extends BaseViewModel<LimitDriveFragment, 
     }
 
     /**
+     * 绘制限行区域
+     *
+     * @param routeRestrictionParam 城市id
+     */
+    public void drawRestrictionForLimit(final RouteRestrictionParam routeRestrictionParam) {
+        mModel.drawRestrictionForLimit(routeRestrictionParam);
+    }
+
+    /**
      * 显示加载失败
      *
      */

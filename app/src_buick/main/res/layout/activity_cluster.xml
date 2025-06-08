@@ -4,93 +4,106 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
             name="ViewModel"
             type="com.fy.navi.hmi.cluster.ClusterViewModel" />
     </data>
+
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/cluster"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".cluster.cluster_map.ClusterActivity">
+
         <com.fy.navi.service.define.map.ClusterMapView
             android:id="@+id/cluster_mapview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible" />
+
         <!--当前路名-->
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:visibility="gone"
             android:id="@+id/routeNameConstraintLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="@dimen/dp_100"
-            android:background="@drawable/bg_navi_control">
+            android:background="@drawable/bg_navi_control"
+            android:visibility="@{ViewModel.routeNameVisibleStatus}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
             <com.fy.navi.scene.ui.navi.view.ButtonText
                 android:id="@+id/stv_navi_route_name"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_92"
-
                 android:clickable="false"
                 android:gravity="center"
+                android:text="@{ViewModel.stvNaviRouteNameField}"
                 android:paddingHorizontal="@dimen/dp_26"
                 android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_34"
                 tools:text="申港大道" />
         </com.fy.navi.ui.view.SkinConstraintLayout>
+
         <!--到达时间    剩余里程-->
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:visibility="gone"
             android:id="@+id/remainingMileageConstraintLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
             android:layout_marginStart="@dimen/dp_600"
-            android:paddingRight="@dimen/dp_26"
+            android:layout_marginBottom="100dp"
             android:background="@drawable/bg_navi_control"
+            android:paddingEnd="@dimen/dp_26"
+            android:visibility="@{ViewModel.routeNameVisibleStatus}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-            <!--            剩余里程-->
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="RtlSymmetry">
+
+            <!-- 剩余里程-->
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/remaining_mileage"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_92"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 android:clickable="false"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_26"
+                android:text="@{ViewModel.remainingMileageField}"
                 android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_34"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="22699公里" />
+
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stvArriveTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="12:36"
+                android:text="@{ViewModel.arriveTimeField}"
                 android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/remaining_mileage"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_arrival_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
+                android:text="@{ViewModel.arrivalDayField}"
                 android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_24"
                 android:translationY="@dimen/dp_26"
                 app:layout_constraintBottom_toTopOf="@id/stvArriveTime"
                 app:layout_constraintStart_toEndOf="@id/stvArriveTime"
                 tools:text="+2" />
+
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_arrive_default"
                 android:layout_width="wrap_content"

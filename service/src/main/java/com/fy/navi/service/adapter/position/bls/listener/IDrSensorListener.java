@@ -13,5 +13,4 @@ public interface IDrSensorListener {
     /*车速脉冲*/
     void onLocPulseInfo(LocSignData locPulse, boolean isRaw);
 
-    void onSensorError(String error);
 }

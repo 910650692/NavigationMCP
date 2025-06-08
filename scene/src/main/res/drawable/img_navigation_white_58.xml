@@ -7,7 +7,7 @@
       android:pathData="M26.192,31.05L10.949,27.398L45.327,13.526L31.455,47.904L27.802,32.661C27.605,31.838 27.015,31.248 26.192,31.05Z"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
-      android:fillColor="@color/navi_one_third_screen_icon_color"
-      android:strokeColor="@color/navi_color_FFFFFF_100"
+      android:fillColor="@color/transparent"
+      android:strokeColor="@color/white_always"
       android:fillType="evenOdd"/>
 </vector>

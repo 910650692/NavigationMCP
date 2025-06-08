@@ -17,7 +17,7 @@
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1856"
+            android:layout_width="@dimen/dp_2062"
             android:layout_height="@dimen/dp_1102"
             android:focusable="false">
             <!--tab list-->
@@ -916,7 +916,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:visibility="@{ViewModel.getIncludePageVisibility() == 3 ? View.VISIBLE : View.GONE}"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <TextView
                     android:id="@+id/textView"
@@ -950,8 +950,8 @@
 
                 <com.fy.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/layout_route_charge_progress"
-                    android:layout_width="@dimen/dp_990"
-                    android:layout_height="@dimen/dp_241"
+                    android:layout_width="@dimen/dp_1222"
+                    android:layout_height="@dimen/dp_254"
                     android:layout_marginStart="@dimen/dp_840"
                     android:background="@drawable/bg_shadow_navi_cadillac"
                     android:clickable="true"
@@ -965,8 +965,8 @@
                     <ProgressBar
                         android:id="@+id/route_charge_progress"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="@dimen/dp_772"
-                        android:layout_height="@dimen/dp_6"
+                        android:layout_width="@dimen/dp_1016"
+                        android:layout_height="@dimen/dp_8"
                         android:clickable="false"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
@@ -975,27 +975,27 @@
                         android:progressDrawable="@drawable/img_route_charge_progress_bar"
                         android:soundEffectsEnabled="false"
                         android:splitTrack="false"
+                        android:layout_marginTop="@dimen/dp_46"
                         android:thumb="@android:color/transparent"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.fy.navi.ui.view.SkinImageView
                         android:id="@+id/route_charge_start"
-                        android:layout_width="@dimen/dp_40"
-                        android:layout_height="@dimen/dp_40"
-                        android:layout_marginStart="@dimen/dp_40"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_52"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:layout_marginTop="@dimen/dp_24"
                         android:focusable="false"
                         android:scaleType="centerCrop"
                         android:src="@drawable/img_route_logo_2d"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.fy.navi.ui.view.SkinConstraintLayout
                         android:id="@+id/route_charge_progress_icons"
-                        android:layout_width="@dimen/dp_772"
+                        android:layout_width="@dimen/dp_1016"
                         android:layout_height="match_parent"
                         android:focusable="false"
                         app:layout_constraintEnd_toEndOf="@+id/route_charge_progress"
@@ -1004,14 +1004,14 @@
 
                     <com.fy.navi.ui.view.SkinImageView
                         android:id="@+id/route_charge_exhaustion_point"
-                        android:layout_width="@dimen/dp_40"
-                        android:layout_height="@dimen/dp_40"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_52"
                         android:layout_marginStart="@dimen/dp_60"
                         android:layout_marginEnd="@dimen/dp_56"
+                        android:layout_marginTop="@dimen/dp_24"
                         android:focusable="false"
                         android:src="@drawable/img_route_charge_exhaustion_point"
                         android:visibility="@{ViewModel.getRouteProgressChargeExhaustVisibility() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -1024,20 +1024,20 @@
                         android:focusable="false"
                         android:text="@string/route_expected_battery_depletion"
                         android:textColor="@color/text_route_defult"
-                        android:textSize="@dimen/sp_26"
+                        android:textSize="@dimen/sp_32"
                         android:visibility="@{ViewModel.getRouteProgressChargeExhaustVisibility() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toTopOf="@+id/route_charge_exhaustion_point"
+                        app:layout_constraintTop_toBottomOf="@+id/route_charge_exhaustion_point"
                         app:layout_constraintEnd_toEndOf="@+id/route_charge_exhaustion_point"
                         app:layout_constraintStart_toStartOf="@+id/route_charge_exhaustion_point" />
 
                     <com.fy.navi.ui.view.SkinImageView
                         android:id="@+id/route_charge_end"
-                        android:layout_width="@dimen/dp_32"
-                        android:layout_height="@dimen/dp_32"
-                        android:layout_marginEnd="@dimen/dp_40"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_52"
+                        android:layout_marginEnd="@dimen/dp_32"
+                        android:layout_marginTop="@dimen/dp_24"
                         android:focusable="false"
                         android:src="@drawable/img_route_charge_end_point"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -1050,7 +1050,7 @@
                         android:focusable="false"
                         android:text="@{ViewModel.getRouteChargeTotalMileage()}"
                         android:textColor="@color/text_route_defult"
-                        android:textSize="@dimen/sp_26"
+                        android:textSize="@dimen/sp_32"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/route_charge_end" />
@@ -1198,19 +1198,20 @@
                 android:layout_width="@dimen/dp_922"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_shadow_navi_cadillac"
-                android:paddingHorizontal="@dimen/dp_81"
-                android:paddingVertical="@dimen/dp_81"
                 android:clickable="true"
                 android:focusable="false"
+                android:paddingHorizontal="@dimen/dp_51"
+                android:paddingVertical="@dimen/dp_51"
                 android:visibility="@{ViewModel.getIncludePageVisibility() == 4 ? View.VISIBLE : View.GONE}"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/route_weather_details_iv"
-                    android:layout_width="@dimen/dp_220"
-                    android:layout_height="@dimen/dp_220"
+                    android:layout_width="@dimen/dp_82"
+                    android:layout_height="@dimen/dp_82"
+                    android:layout_marginStart="@dimen/dp_52"
+                    android:layout_marginTop="@dimen/dp_76"
                     android:focusable="false"
-                    android:padding="@dimen/dp_28"
                     android:src="@{ViewModel.getWeatherDrawable()}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -1221,13 +1222,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_52"
                     android:focusable="false"
                     android:text="@{ViewModel.getWeatherName()}"
                     android:textColor="@color/text_route_detail_title"
-                    android:textSize="@dimen/sp_64"
+                    android:textSize="@dimen/sp_52"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/route_weather_details_iv"
-                    app:layout_constraintTop_toTopOf="@+id/route_weather_details_iv"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="阴转晴" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -1235,18 +1237,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:focusable="false"
                     android:text="@{ViewModel.getWeatherCityName()}"
                     android:textColor="@color/text_route_defult"
-                    android:textSize="@dimen/sp_46"
-                    app:layout_constraintBottom_toBottomOf="@+id/route_weather_details_iv"
+                    android:textSize="@dimen/sp_38"
                     app:layout_constraintStart_toEndOf="@+id/route_weather_details_iv"
+                    app:layout_constraintTop_toBottomOf="@+id/route_weather_details_title"
                     tools:text="孝感市" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     clickCommand="@{ViewModel.getCloseWeatherDetailsClick()}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
+                    android:layout_marginTop="@dimen/dp_48"
+                    android:layout_marginEnd="@dimen/dp_36"
                     android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                     android:focusable="true"
                     android:src="@drawable/icon_poi_close"
@@ -1263,18 +1268,20 @@
                     android:textColor="@color/text_route_detail_title"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintStart_toStartOf="@+id/route_weather_details_iv"
-                    app:layout_constraintTop_toBottomOf="@+id/route_weather_details_iv"
+                    app:layout_constraintTop_toBottomOf="@+id/route_weather_details_city"
                     tools:text="54.2公里 40分钟" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/route_weather_details_description"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginEnd="@dimen/dp_36"
                     android:focusable="false"
                     android:text="@{ViewModel.getWeatherDiscription()}"
                     android:textColor="@color/text_route_defult"
-                    android:textSize="@dimen/sp_46"
+                    android:textSize="@dimen/sp_38"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/route_weather_details_distance_time"
                     app:layout_constraintTop_toBottomOf="@+id/route_weather_details_distance_time"
                     tools:text="途径延安时段时晴，预计将持续至明天以后，影响路段共303公里，温度5℃~15℃。" />
@@ -1287,7 +1294,7 @@
                     android:focusable="false"
                     android:text="@{ViewModel.getWeatherUpdateTime()}"
                     android:textColor="@color/text_route_defult"
-                    android:textSize="@dimen/sp_46"
+                    android:textSize="@dimen/sp_38"
                     app:layout_constraintStart_toStartOf="@+id/route_weather_details_description"
                     app:layout_constraintTop_toBottomOf="@+id/route_weather_details_description"
                     tools:text="高德交通：更新于13分钟前" />
@@ -1297,7 +1304,6 @@
                     clickCommand="@{ViewModel.getWeatherAviodClick()}"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_100"
-                    android:layout_marginTop="@dimen/dp_30"
                     android:background="@drawable/selector_route_preference_sel"
                     android:focusable="false"
                     android:gravity="center"
@@ -1307,7 +1313,8 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:visibility="visible" />
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
             <!--POI details-->

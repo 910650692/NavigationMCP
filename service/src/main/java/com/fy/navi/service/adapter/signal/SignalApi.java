@@ -169,4 +169,8 @@ public interface SignalApi {
     void setRemainDistanceToChargingStation(int value);
 
     void setRemainTimeToChargingStationy(int value);
+
+    void setVcuSpeedLimitArbitrationResults(int value);
+
+    void setVcuSpeedLimitArbitrationResultsAssured(int value);
 }

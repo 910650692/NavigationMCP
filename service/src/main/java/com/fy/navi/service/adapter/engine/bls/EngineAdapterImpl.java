@@ -21,7 +21,7 @@ import com.autonavi.gbl.servicemanager.model.BaseInitParam;
 import com.autonavi.gbl.servicemanager.model.ServiceManagerEnum;
 import com.autonavi.gbl.util.model.KeyValue;
 import com.autonavi.gbl.util.observer.IPlatformInterface;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -33,9 +33,7 @@ import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.greendao.CommonManager;
-import com.fy.navi.ui.BaseApplication;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +48,7 @@ import java.util.Locale;
  */
 public class EngineAdapterImpl implements IEngineApi {
     private static final String TAG = MapDefaultFinalTag.ENGINE_SERVICE_TAG;
-    private final List<EngineObserver> mEngineObserverList;
+    private List<EngineObserver> mEngineObserverList;
     private static final String ERR_MSG = "Error Massage : ";
     // TODO: 配置父子渠道包，每次更新aar包时都要核实一下
     private final String mChanelName = "C13953968867";
@@ -79,7 +77,6 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public void initBaseLibs() {
-
         final int initBaseLibsResult = initEngineParam();
         if (!ConvertUtils.equals(0, initBaseLibsResult)) {
             onEngineObserver(10004);
@@ -102,10 +99,6 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public void switchLog(final GaodeLogLevel logLevel) {
-        /* 场景一：关闭日志 */
-//        ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelNone);
-//        ServiceMgr.getServiceMgrInstance().setGroupMask(ALCGroup.GROUP_MASK_NULL);
-        /* 场景二：低频Log */
         if (logLevel.getCode() == GaodeLogLevel.LOG_NONE.getCode()) {
             ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelNone);
         } else if (logLevel.getCode() == GaodeLogLevel.LOG_DEBUG.getCode()) {
@@ -118,57 +111,36 @@ public class EngineAdapterImpl implements IEngineApi {
             ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelError);
         }
         ServiceMgr.getServiceMgrInstance().setGroupMask(ALCGroup.GROUP_MASK_BL_AE);
-
-        /* 场景三：高频Log */
-//        ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelDebug);
-//        ServiceMgr.getServiceMgrInstance().setGroupMask(ALCGroup.GROUP_MASK_ALL);
-        /* 场景四：超高频Log */
-//        ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelVerbose);
-//        ServiceMgr.getServiceMgrInstance().setGroupMask(ALCGroup.GROUP_MASK_ALL);
     }
 
     @Override
     public void unInit() {
         ServiceMgr.getServiceMgrInstance().unInitBL();
         ServiceMgr.getServiceMgrInstance().unInitBaseLibs();
+        mEngineObserverList.clear();
+        mEngineObserverList = null;
     }
 
     @Override
     public int engineID(final MapType mapId) {
-        switch (mapId) {
-            case MAIN_SCREEN_MAIN_MAP:
-                return MapEngineID.MapEngineIdMain;
-            case LAUNCHER_DESK_MAP:
-                return MapEngineID.MapEngineIdEx1;
-            case LAUNCHER_WIDGET_MAP:
-                return MapEngineID.MapEngineIdEx2;
-            case HUD_MAP:
-                return MapEngineID.MapEngineIdEx3;
-            case CLUSTER_MAP:
-                return MapEngineID.MapEngineIdEx4;
-            default:
-                break;
-        }
-        return MapEngineID.MapEngineIdInvalid;
+        return switch (mapId) {
+            case MAIN_SCREEN_MAIN_MAP -> MapEngineID.MapEngineIdMain;
+            case LAUNCHER_DESK_MAP -> MapEngineID.MapEngineIdEx1;
+            case LAUNCHER_WIDGET_MAP -> MapEngineID.MapEngineIdEx2;
+            case HUD_MAP -> MapEngineID.MapEngineIdEx3;
+            case CLUSTER_MAP -> MapEngineID.MapEngineIdEx4;
+        };
     }
 
     @Override
     public int eagleEyeEngineID(final MapType mapId) {
-        switch (mapId) {
-            case MAIN_SCREEN_MAIN_MAP:
-                return MapEngineID.MapEngineIdMainEagleEye;
-            case LAUNCHER_DESK_MAP:
-                return MapEngineID.MapEngineIdEx1EagleEye;
-            case LAUNCHER_WIDGET_MAP:
-                return MapEngineID.MapEngineIdEx2EagleEye;
-            case HUD_MAP:
-                return MapEngineID.MapEngineIdEx3EagleEye;
-            case CLUSTER_MAP:
-                return MapEngineID.MapEngineIdEx4EagleEye;
-            default:
-                break;
-        }
-        return MapEngineID.MapEngineIdInvalid;
+        return switch (mapId) {
+            case MAIN_SCREEN_MAIN_MAP -> MapEngineID.MapEngineIdMainEagleEye;
+            case LAUNCHER_DESK_MAP -> MapEngineID.MapEngineIdEx1EagleEye;
+            case LAUNCHER_WIDGET_MAP -> MapEngineID.MapEngineIdEx2EagleEye;
+            case HUD_MAP -> MapEngineID.MapEngineIdEx3EagleEye;
+            case CLUSTER_MAP -> MapEngineID.MapEngineIdEx4EagleEye;
+        };
     }
 
     @Override
@@ -229,13 +201,6 @@ public class EngineAdapterImpl implements IEngineApi {
     private int initEngineParam() {
         final BaseInitParam baseInitParam = new BaseInitParam();
         baseInitParam.logFileName = "amap.android.";
-        if (null == FileUtils.SD_APP_PATH) {
-            Logger.i(TAG, "SD_APP_PATH is null");
-            FileUtils.SD_PATH = AppContext.getInstance().getMContext().
-                    getExternalFilesDir(null) + File.separator;
-            Logger.i(TAG, "FileUtils.SD_PATH = " + FileUtils.SD_PATH + " myPid = " +
-                    BaseApplication.getMyPid());
-        }
         baseInitParam.logPath = GBLCacheFilePath.BLS_LOG;
         baseInitParam.logLevel = ALCLogLevel.LogLevelDebug;
         /* 日志掩码 */
@@ -265,7 +230,7 @@ public class EngineAdapterImpl implements IEngineApi {
         }
         boolean dir = FileUtils.getInstance().createDir(baseInitParam.logPath);
         Logger.i(TAG, "create log file path", baseInitParam.logPath + ",dir：" + dir);
-        final int result = ServiceMgr.getServiceMgrInstance().initBaseLibs(baseInitParam, AppContext.getInstance().getMApplication());
+        final int result = ServiceMgr.getServiceMgrInstance().initBaseLibs(baseInitParam, AppCache.getInstance().getMApplication());
         Logger.i(TAG, "initEngineParam result", result);
         return result;
     }
@@ -296,7 +261,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
         FileUtils.getInstance().createDir(blInitParam.dataPath.onlinePath);
         Logger.i(TAG, "create online file path", blInitParam.dataPath.onlinePath);
-        final int result = ServiceMgr.getServiceMgrInstance().initBL(blInitParam, AppContext.getInstance().getMApplication());
+        final int result = ServiceMgr.getServiceMgrInstance().initBL(blInitParam, AppCache.getInstance().getMApplication());
         Logger.i(TAG, "initSDKParam", result);
         return result;
     }
@@ -396,7 +361,7 @@ public class EngineAdapterImpl implements IEngineApi {
         public boolean getAosNetworkParam(final ArrayList<KeyValue> arrayList) {
 
             @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
-                    AppContext.getInstance().getMContext().getContentResolver(),
+                    AppCache.getInstance().getMContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID
             );
             /**< diu 设备唯一号,android--imei, ios--IDFV必须设置,从系统获取，若不足32位用零补齐 */

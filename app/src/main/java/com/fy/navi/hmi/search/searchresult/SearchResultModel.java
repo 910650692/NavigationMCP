@@ -132,7 +132,7 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.AROUND_SEARCH
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
-                mViewModel.notifySilentSearchResult(searchResultEntity);
+                mViewModel.notifySilentSearchResult(taskId, searchResultEntity);
             }
         }
     }

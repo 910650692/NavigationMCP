@@ -115,6 +115,7 @@
         <activity android:name=".splitscreen.OneThirdScreenMapActivity"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
+            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection"
             tools:ignore="DiscouragedApi" />
 
         <service

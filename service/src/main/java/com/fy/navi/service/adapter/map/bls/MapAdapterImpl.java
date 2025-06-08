@@ -1,7 +1,6 @@
 package com.fy.navi.service.adapter.map.bls;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.map.IMapAdapterCallback;
@@ -26,7 +25,6 @@ import java.util.ArrayList;
  */
 public class MapAdapterImpl implements IMapApi {
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
-
     private MapViewPoolManager mapViewPoolManager;
 
     public MapAdapterImpl() {
@@ -34,63 +32,68 @@ public class MapAdapterImpl implements IMapApi {
     }
 
     @Override
-    public boolean initMapService(MapType mapTypeId) {
-        return mapViewPoolManager.init(mapTypeId);
+    public void initMapService() {
+
     }
 
     @Override
-    public void unBindMapView(IBaseScreenMapView mapView) {
+    public void unInitMapService() {
+        mapViewPoolManager.removeAllCallback();
+    }
 
+    @Override
+    public boolean createMapView(MapType mapTypeId) {
+        return mapViewPoolManager.createMapView(mapTypeId);
     }
 
     @Override
     public void bindMapView(IBaseScreenMapView mapView) {
-        bindMapViewInternal(
-                mapView.provideMapTypeId(),
-                mapView.getMapViewX(), mapView.getMapViewY(),
+        Logger.d(TAG, "MapAdapterImpl bindMapView :" + mapView.provideMapTypeId().toString());
+        MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),
                 mapView.getMapViewWidth(), mapView.getMapViewHeight(),
                 mapView.getScreenWidth(), mapView.getScreenHeight(),
-                mapView.getScreenDensityDpi(),mapView
-        );
-    }
-    @Override
-    public void bindHudMapView() {
-        long width = 328;
-        long height = 172;
-        long screenWidth = 328;
-        long screenHeight = 172;
-        int densityDpi = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().densityDpi;
-        bindMapViewInternal(MapType.HUD_MAP, 0, 0, width, height, screenWidth, screenHeight, densityDpi,null);
-    }
-
-    private void bindMapViewInternal(MapType mapType, long x, long y, long width, long height, long screenWidth, long screenHeight, int densityDpi,IBaseScreenMapView mapView) {
-        MapViewParams mapViewParams = new MapViewParams(x, y, width, height, screenWidth, screenHeight, densityDpi);
-        MapViewImpl mapSurfaceViewImp = mapViewPoolManager.get(mapType, mapViewParams);
-        if (mapType == MapType.HUD_MAP) {
-            mapSurfaceViewImp.changeHudMapViewParams(mapViewParams);
-        } else {
-            mapSurfaceViewImp.changeMapViewParams(mapViewParams);
-        }
-        if (mapType != MapType.HUD_MAP && mapView != null) {
-            mapView.bindMapView(mapSurfaceViewImp);
-        }
+                mapView.getScreenDensityDpi(), mapView.isOpenScreen());
+        MapViewImpl mapSurfaceViewImp = mapViewPoolManager.get(mapView.provideMapTypeId(), mapViewParams);
+       boolean isBindView = mapView.isBindMapView();
+        Logger.d(TAG, "MapAdapterImpl 是否依赖可见视图" + isBindView);
+        if(!isBindView) return;
+        mapSurfaceViewImp.changeMapViewParams(mapViewParams);
+        mapView.bindMapView(mapSurfaceViewImp);
     }
 
     @Override
-    public void unitMapService(MapType mapTypeId) {
+    public void changeMapView(IBaseScreenMapView mapView) {
+        Logger.d(TAG, "MapAdapterImpl bindMapView :" + mapView.provideMapTypeId().toString());
+        MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),
+                mapView.getMapViewWidth(), mapView.getMapViewHeight(),
+                mapView.getScreenWidth(), mapView.getScreenHeight(),
+                mapView.getScreenDensityDpi(), mapView.isOpenScreen());
+        MapViewImpl mapSurfaceViewImp = mapViewPoolManager.get(mapView.provideMapTypeId(), mapViewParams);
+        mapSurfaceViewImp.changeMapViewParams(mapViewParams);
+    }
 
+    @Override
+    public void unBindMapView(IBaseScreenMapView mapView) {
+        if(null == mapView) return;
+        Logger.d(TAG, "MapAdapterImpl unBindMapView :" + mapView.provideMapTypeId().toString());
+        MapViewImpl mapSurfaceViewImp = mapViewPoolManager.get(mapView.provideMapTypeId());
+        mapView.unBindMapView(mapSurfaceViewImp);
+    }
+
+    @Override
+    public void destroyMapView(MapType mapTypeId) {
+        mapViewPoolManager.destroyMapView(mapTypeId);
     }
 
     @Override
     public void registerCallback(MapType mapTypeId, IMapAdapterCallback callback) {
-        mapViewPoolManager.get(mapTypeId).registerCallback(callback);
+        mapViewPoolManager.registerCallback(mapTypeId, callback);
     }
 
     @Override
     public void unRegisterCallback(MapType mapTypeId, IMapAdapterCallback callback) {
-        mapViewPoolManager.get(mapTypeId).unRegisterCallback(callback);
+        mapViewPoolManager.unRegisterCallback(mapTypeId, callback);
     }
-
 
     @Override
     public float getCurrentZoomLevel(MapType mapTypeId) {

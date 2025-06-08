@@ -2,14 +2,11 @@ package com.fy.navi.scene.ui.favorite;
 
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,20 +29,18 @@ import com.fy.navi.scene.impl.search.FavoriteManager;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.CollectResultAdapter;
 import com.fy.navi.scene.ui.search.SearchConfirmDialog;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
-import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author baipeng0904
@@ -168,9 +163,9 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             public void onListCleared() {
                 mViewBinding.sllNoFavorite.setVisibility(View.VISIBLE);
                 if (mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
-                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_receive));
+                    mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_receive));
                 } else {
-                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
+                    mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
                 }
             }
 
@@ -205,9 +200,9 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             if (ConvertUtils.isEmpty(list)) {
                 mViewBinding.sllNoFavorite.setVisibility(VISIBLE);
                 if (mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
-                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_receive));
+                    mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_receive));
                 } else {
-                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
+                    mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
                 }
             } else {
                 mAdapter.notifyList(list);
@@ -254,9 +249,9 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             if (ConvertUtils.isEmpty(data)) {
                 mViewBinding.sllNoFavorite.setVisibility(View.VISIBLE);
                 if (mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
-                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_receive));
+                    mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_receive));
                 } else {
-                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
+                    mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
                 }
             }
         }

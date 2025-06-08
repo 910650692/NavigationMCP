@@ -155,6 +155,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase
     @Override
     public void onPreferenceChange(final RoutePreferenceID routePreference,
                                    final boolean isFirstChange) {
+        Logger.i(TAG, "onPreferenceChange = " + routePreference);
         // 第一个选择的路线偏好
         String firstCommendText = "";
         // 第二个选择的路线偏好
@@ -241,8 +242,17 @@ public class SceneNaviPreferenceView extends NaviSceneBase
         }
     }
 
+    public void updateRoutePreference(final RoutePreferenceID routePreference) {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.clearPreference();
+            mScreenViewModel.setDefaultPreference();
+            onPreferenceChange(routePreference, true);
+        }
+    }
+
     @Override
     public void onDestroy() {
+        Logger.i(TAG, "onDestroy");
         mScreenViewModel.unSettingChangeCallback(TAG);
     }
 

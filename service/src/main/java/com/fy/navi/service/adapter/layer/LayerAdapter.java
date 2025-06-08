@@ -50,6 +50,10 @@ public class LayerAdapter {
         return mLayerApi.initLayerService(mapTypeId);
     }
 
+    public void removeLayerService(MapType mapType) {
+        mLayerApi.removeLayerService(mapType);
+    }
+
     public void setDefaultCarMode(MapType mapTypeId) {
         mLayerApi.setDefaultCarMode(mapTypeId);
     }
@@ -63,6 +67,11 @@ public class LayerAdapter {
 
     public CarModeType getCarModeType(MapType mapTypeId) {
         return mLayerApi.getCarModeType(mapTypeId);
+    }
+
+    /* 设置凯迪车型骨骼车标 */
+    public void setCadiSkeletonCarModel(MapType mapTypeId) {
+        mLayerApi.setCadiSkeletonCarModel(mapTypeId);
     }
 
     /* 设置骨骼车标的基础缩放值 */
@@ -89,10 +98,6 @@ public class LayerAdapter {
 
     public void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
         mLayerApi.drawRouteLine(mapTypeId, routeResult);
-    }
-
-    public void setPassGray(final MapType mapTypeId, final boolean isSetGray) {
-        mLayerApi.setPassGray(mapTypeId, isSetGray);
     }
 
     /* 路线替换补能扎标 */
@@ -257,6 +262,11 @@ public class LayerAdapter {
 
     public void setSearchSelect(MapType mapTypeId, LayerPointItemType type, int index) {
         mLayerApi.selectSearchPoi(mapTypeId, type, index);
+    }
+
+    /* 清除选中的扎标焦点 */
+    public void clearFocus(MapType mapTypeId, LayerPointItemType type) {
+        mLayerApi.clearFocus(mapTypeId, type);
     }
 
     /* 搜索图层扎标接口 */

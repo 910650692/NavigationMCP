@@ -17,10 +17,11 @@ public interface AutoMapConstant {
     String GM_LOG_ROOT_PATH = "/data/gmlogger/proclog/";
     float MAP_ZOOM_LEVEL_MAX = 20F;
     float MAP_ZOOM_LEVEL_MIN = 3F;
-    float MAP_ZOOM_LEVEL_CHANGE_FLAG = 1F;
     float MAP_ZOOM_LEVEL_DEFAULT = 15F;
-
+    float MAP_ZOOM_LEVEL_DEFAULT_3D = 17F;
+    float MAP_ZOOM_LEVEL_CHANGE_FLAG = 1F;
     float MAP_DEFAULT_TEXT_SIZE = 1.3F;
+    float MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE = 40F;
 
     int PLUG_TYPE_SLOW = 7;
     int PLUG_TYPE_FAST = 9;
@@ -370,21 +371,17 @@ public interface AutoMapConstant {
         String UUID_KEY = "uuid";
     }
 
-    @interface AppRunStatus {
-        int DESTROYED = 0;
-        int CREATED = 1;
-        int STARTED = 2;
-        int RESUMED = 3;
-        int PAUSED = 4;
-        int STOPPED = 5;
-    }
-
     @interface ChildType {
         int DEFAULT = 0;
         int HAS_CHILD_NO_GRAND = 1;
         int HAS_CHILD_HAS_GRAND = 2;
         int CHILD_NO_GRAND = 3;
         int CHILD_HAS_GRAND = 4;
+    }
+
+    @interface PosLastLocation {
+        String LAST_LAT = "last_lat";
+        String LAST_LNG = "last_lng";
     }
 
 }

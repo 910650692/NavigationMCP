@@ -85,8 +85,9 @@ public class ConvertUtils {
     public static Integer double2int(Double args) {
         return double2int(args, 0);
     }
-    public static String stringFormatTwo(String args){
-        return stringFormatTwo(args,"0.00");
+
+    public static String stringFormatTwo(String args) {
+        return stringFormatTwo(args, "0.00");
     }
 
     /**
@@ -809,6 +810,20 @@ public class ConvertUtils {
     }
 
     /**
+     * 弹出集合的最后一个元素
+     *
+     * @param hashtable this list
+     * @param k         被移除元素的Key
+     * @param <K>       元素Key类型
+     * @param <V>       元素类型
+     * @return 被移除的元素实体
+     */
+    public static <K, V> V pop(Hashtable<K, V> hashtable, K k) {
+        if (!isEmpty(hashtable)) return hashtable.remove(k);
+        return null;
+    }
+
+    /**
      * 获取元素在List集合最后出现的位置
      *
      * @param list 指定list集合
@@ -1213,6 +1228,7 @@ public class ConvertUtils {
 
     /**
      * 城市信息经纬度转换
+     *
      * @param input 城市信息输入
      * @return 返回转换后信息
      */
@@ -1223,6 +1239,7 @@ public class ConvertUtils {
 
     /**
      * 坐标转换
+     *
      * @param input 信息输入
      * @return 返回转换后信息
      */
@@ -1242,7 +1259,7 @@ public class ConvertUtils {
     }
 
     // 将字符串数字保留2位小数输出
-    public static String stringFormatTwo(String value,String defaultValue){
+    public static String stringFormatTwo(String value, String defaultValue) {
         String numberStr = value;
         try {
             DecimalFormat df = new DecimalFormat("0.00"); // 保留2位小数
@@ -1254,4 +1271,5 @@ public class ConvertUtils {
             return defaultValue;
         }
 
-    }}
+    }
+}

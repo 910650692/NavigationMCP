@@ -35,6 +35,7 @@
     <string name="search_async">同步</string>
     <string name="search_charge_self">自营</string>
     <string name="search_charge_self_filter">自营站数据不支持筛选</string>
+    <string name="search_charge_self_filter_hint">功能环境不具备</string>
     <string name="search_charge_current_time">当前</string>
     <string name="reservation_max_time">当日取消次数已达3次，无法继续预约</string>
     <!--引导-->
@@ -241,10 +242,11 @@
     <string name="shv_common_address">常去地址</string>
     <string name="charge_price_simple">%s元/度</string>
     <string name="charge_price">充电费用: %s元/度</string>
-    <string name="charge_park_price">停车费   : %s</string>
+    <string name="charge_park_price">停车费: %s</string>
+    <string name="list_scenic_ratio">%d%%</string>
     <string name="scenic_ratio">%d%%选择</string>
-    <string name="business_hour">营业时间：%s</string>
-    <string name="business_hour_title">营业时间：</string>
+    <string name="business_hour">营业时间: %s</string>
+    <string name="business_hour_title">营业时间: </string>
     <string name="poi_phone">电\u3000\u3000话: %s</string>
     <string name="sha_no_data">暂无数据</string>
     <string name="sha_cancel">取消</string>
@@ -304,7 +306,7 @@
     <string name="cancel_num_tip">您已取消%s次，超过3次不可预约</string>
     <string name="travel_max_time">预计到达时间大于30分钟不支持预约</string>
     <string name="address_loading">地址获取中</string>
-
+    <string name="filter_select_more">(可多选)</string>
     <!--搜索主页快捷搜-->
     <string-array name="main_search_categories_name">
         <item>加油站</item>

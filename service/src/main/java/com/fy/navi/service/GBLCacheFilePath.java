@@ -9,7 +9,7 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     /*** 车道级回放文件所在目录 sdcard/Android/data/your_package/files/AutoMap/Gbl/loc_replay/ **/
     public static final String GPS_LANELOC_FOLDER = GBL_MAP + "loc_replay/";
     /*** 仿真回放路径 **/
-    public static final String RECORDER_DATA_DIR = GBL_MAP + "recorder/";
+    public static final String MAP_RECORD_PATH = GBL_MAP + "record";
     /*** 车道级导航 自车SR信息测试 **/
     public static final String OFFLINE_LANERESOURCE_DIR = GBL_MAP + "LaneCarSRResource/";
 
@@ -86,7 +86,4 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     String ACTIVATE_USER_DATA = GBL_MAP + "activate/";
 
     String CMB_FILE_NAME = "libcmb_LayerImages.so";
-
-    /*** Auto Map record path **/
-    public static final String MAP_RECORD_PATH = GBL_MAP + "record";
 }

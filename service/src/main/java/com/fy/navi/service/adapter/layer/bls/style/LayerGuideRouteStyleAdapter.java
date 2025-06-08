@@ -30,7 +30,7 @@ import com.autonavi.gbl.layer.model.BizRoadCrossType;
 import com.autonavi.gbl.layer.model.BizRouteType;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.layer.bls.bean.MarkerInfoBean;
@@ -44,11 +44,15 @@ import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteReplaceChargePoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteViaChargeInfo;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
 import com.fy.navi.service.define.route.RouteChargeStationInfo;
+import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.utils.NumberUtils;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.fy.navi.service.utils.GasCarTipManager;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -88,12 +92,15 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     private int mViaCount = 0;
     //路线图层总数据
     private static RequestRouteResult mRouteResult = new RequestRouteResult();
+    private final String mFileStringFromAssets = FileUtils.getFileStringFromAssets(AppCache.getInstance().getMApplication(), GBLCacheFilePath.BLS_ASSETS_LAYER_CARD_MARKER_INFO_PATH);
+    private StyleJsonAnalysisUtil mStyleJsonUtil;
 
     public LayerGuideRouteStyleAdapter(int engineID, BizRoadCrossControl bizRoadCrossControl, BizGuideRouteControl bizGuideRouteControl, BizRoadFacilityControl roadFacilityControl, BizLabelControl bizLabelControl) {
         super(engineID);
         this.mRouteControl = bizGuideRouteControl;
         mGson = new Gson();
         mRect = new AtomicReference<>();
+        mStyleJsonUtil = new StyleJsonAnalysisUtil(mFileStringFromAssets);
     }
 
     @Override
@@ -428,7 +435,29 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
 
     //转换终点扎标数据
     private void getRouteEndPoint() {
-        mRouteEndPoint = mRouteResult.getMLayerItemRouteEndPoint().get(mRouteControl.getSelectedPathIndex());
+        int selectPathIndex = mRouteControl.getSelectedPathIndex();
+        if(ConvertUtils.isNull(mRouteResult)) return;
+        List<RouteLineInfo> mRouteLineInfos = mRouteResult.getMRouteLineInfos();
+        int mCarType = CalibrationPackage.getInstance().powerType();
+        if (mCarType == 0 || mCarType == 2) {
+            final int num = GasCarTipManager.getInstance().getRemainGasPercent(ConvertUtils
+                    .convertMetersToKilometers(mRouteLineInfos.get(selectPathIndex).getMDistance()));
+            Logger.d(TAG, "getRemainGasPercent: " + num);
+            mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
+            if (num != 0) {
+                mRouteEndPoint.setRestNum(num);
+            } else {
+                mRouteEndPoint.setRestNum(-1);
+            }
+        }  else {
+            if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
+                mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
+            } else {
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
+                mRouteEndPoint.setRestNum(-1);
+            }
+        }
         Logger.d(TAG, "getRouteEndPoint type " + mRouteEndPoint.getEndPointType() + " num " +
                 mRouteEndPoint.getRestNum() + " string " + mRouteEndPoint.getBusinessHours());
     }
@@ -595,16 +624,17 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
 
     @Override
     public MarkerInfoBean createMarkerInfoBean(LayerItem item, String markerInfo) {
-        Logger.d(TAG, "createMarkerInfoBean markerInfo " + markerInfo);
-        String fileStringFromAssets = FileUtils.getFileStringFromAssets(AppContext.getInstance().getMApplication(), GBLCacheFilePath.BLS_ASSETS_LAYER_CARD_MARKER_INFO_PATH);
-        Logger.d(TAG, "createMarkerInfoBean fileStringFromAssets " + fileStringFromAssets);
-        StyleJsonAnalysisUtil util = new StyleJsonAnalysisUtil(fileStringFromAssets);
-        Logger.d(TAG, "createMarkerInfoBean util " + ConvertUtils.isEmpty(util));
-        if (!ConvertUtils.isEmpty(util)) {
-            MarkerInfoBean markerInfoBean = util.getMarkerInfoFromJson(markerInfo);
+        Logger.d(TAG, "createMarkerInfoBean markerInfo " + markerInfo + " mStyleJsonUtil == null " + ConvertUtils.isEmpty(mStyleJsonUtil));
+        if (!ConvertUtils.isEmpty(mStyleJsonUtil)) {
+            MarkerInfoBean markerInfoBean = mStyleJsonUtil.getMarkerInfoFromJson(markerInfo);
             Logger.d(TAG, "createMarkerInfoBean markerInfoBean " + ConvertUtils.isEmpty(markerInfoBean));
             if (!ConvertUtils.isEmpty(markerInfoBean)) {
                 return markerInfoBean;
+            }
+        } else {
+            if (!ConvertUtils.isEmpty(mFileStringFromAssets)) {
+                mStyleJsonUtil = new StyleJsonAnalysisUtil(mFileStringFromAssets);
+                Logger.d(TAG, "createMarkerInfoBean mStyleJsonUtil reInit " + ConvertUtils.isEmpty(mStyleJsonUtil));
             }
         }
         return super.createMarkerInfoBean(item, markerInfo);

@@ -12,13 +12,14 @@ import androidx.annotation.Nullable;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.baidu.oneos.protocol.bean.CallResponse;
 import com.baidu.oneos.protocol.bean.TrafficAskBean;
 import com.baidu.oneos.protocol.bean.param.NaviControlParam;
 import com.baidu.oneos.protocol.callback.PoiCallback;
 import com.baidu.oneos.protocol.callback.RespCallback;
 import com.baidu.oneos.protocol.listener.NaviControlCommandListener;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -1673,7 +1674,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 mCommandParamList.add(singleCommandInfo);
             } else {
                 Logger.d(IVrBridgeConstant.TAG, "Map view switch successfully !!! ");
-                MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode);
+                MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode, true);
             }
             final CallResponse callResponse = CallResponse.createSuccessResponse("已切换为" + respTts);
             callResponse.setNeedPlayMessage(true);
@@ -1934,6 +1935,11 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         return CallResponse.createSuccessResponse();
     }
 
+    @Override
+    public CallResponse onPoiSort(final String s, final String s1, final String s2, final PoiCallback poiCallback) {
+        return CallResponse.createNotSupportResponse("暂不支持该功能");
+    }
+
     /**
      * POI页面选择
      *
@@ -1999,33 +2005,26 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      * false:不保存，只执行打开应用操作
      */
     private boolean openMapWhenBackground() {
-        final int foregroundStatus = NaviPackage.getInstance().getIsAppInForeground();
-        boolean saveCommand = false;
+        final boolean foregroundStatus = ProcessManager.isAppInForeground();
         Logger.w(IVrBridgeConstant.TAG, "currentAppRunStatus: " + foregroundStatus);
-        if (AutoMapConstant.AppRunStatus.DESTROYED == foregroundStatus
-                || AutoMapConstant.AppRunStatus.PAUSED == foregroundStatus
-                || AutoMapConstant.AppRunStatus.STOPPED == foregroundStatus) {
+        if (!foregroundStatus) {
             openMap();
-            if (AutoMapConstant.AppRunStatus.DESTROYED == foregroundStatus) {
-                saveCommand = true;
-            }
         }
-
-        return saveCommand;
+        return !foregroundStatus;
     }
 
     /**
      * 切换到前台
      */
     private void openMap() {
-        if (null != AppContext.getInstance().getMContext()) {
+        if (null != AppCache.getInstance().getMContext()) {
             try {
-                final String appPkgName = AppContext.getInstance().getMContext().getPackageName();
-                final PackageManager packageManager = AppContext.getInstance().getMContext().getPackageManager();
+                final String appPkgName = AppCache.getInstance().getMContext().getPackageName();
+                final PackageManager packageManager = AppCache.getInstance().getMContext().getPackageManager();
                 final Intent launcherIntent = packageManager.getLaunchIntentForPackage(appPkgName);
                 if (null != launcherIntent) {
                     launcherIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    AppContext.getInstance().getMContext().startActivity(launcherIntent);
+                    AppCache.getInstance().getMContext().startActivity(launcherIntent);
                 } else {
                     Logger.e(IVrBridgeConstant.TAG, "can't find map hmi");
                 }
@@ -2141,6 +2140,11 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         return CallResponse.createFailResponse("不支持组队相关功能");
     }
 
+    @Override
+    public CallResponse onRouteSelectInMapView(final int index, final boolean isAutoNavi) {
+        return NaviControlCommandListener.super.onRouteSelectInMapView(index, isAutoNavi);
+    }
+
     /**
      * 静音开关
      *
@@ -2247,7 +2251,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                         break;
                 }
                 if (null != targetMode) {
-                    MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode);
+                    MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode, true);
                 }
                 break;
             case IVrBridgeConstant.VoiceCommandAction.ZOOM_LEVEL:
@@ -2526,6 +2530,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             }
             final HashMap<String, Integer> roadMap = roadInfo.getRoadNameMap();
             Logger.d(IVrBridgeConstant.TAG, "PathId = " + roadInfo.getPathId());
+//            for (Map.Entry<String, Integer> entry : roadMap.entrySet()) {
+//                Logger.d(IVrBridgeConstant.TAG, "roadName = " + entry.getKey() + " roadID = " + entry.getValue());
+//            }
             for (Map.Entry<String, Integer> entry : roadMap.entrySet()) {
                 if (!ConvertUtils.isEmpty(entry.getKey()) && entry.getKey().contains(strPoi)) {
                     Logger.d(IVrBridgeConstant.TAG, "某道路的路况");

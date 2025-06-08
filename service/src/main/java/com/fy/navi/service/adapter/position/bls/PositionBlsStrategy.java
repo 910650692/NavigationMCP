@@ -36,15 +36,14 @@ import com.autonavi.gbl.pos.observer.IPosGraspRoadResultObserver;
 import com.autonavi.gbl.pos.observer.IPosLocInfoObserver;
 import com.autonavi.gbl.pos.observer.IPosMapMatchFeedbackObserver;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
-import com.autonavi.gbl.user.usertrack.model.GpsTrackPoint;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.autonavi.gbl.util.model.SingleServiceID;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
 import com.fy.navi.service.adapter.position.PositionConstant;
-import com.fy.navi.service.adapter.position.bls.comm.GpsStatusChecker;
 import com.fy.navi.service.adapter.position.bls.comm.LocationFuncSwitch;
 import com.fy.navi.service.adapter.position.bls.sensor.MountAngleManager;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -57,6 +56,7 @@ import com.fy.navi.service.define.position.LocStatus;
 import com.fy.navi.service.define.position.PositionConfig;
 import com.fy.navi.service.define.setting.SettingConstant;
 import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
+import com.fy.navi.service.greendao.CommonManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,7 +74,7 @@ import java.util.concurrent.TimeUnit;
 
 /***定位模块细分管理***/
 public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFeedbackObserver, IPosDrInfoObserver,
-        GpsStatusChecker.OnTimeOutCallback, Handler.Callback, IPosGraspRoadResultObserver {
+        Handler.Callback, IPosGraspRoadResultObserver {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private static final long SAVE_LOC_INTERVAL = 300 * 1000;// 五分钟存一次
     public static final int GPS_PROVIDER_SOURCE_TYPE = 0;
@@ -82,12 +82,10 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
     private static final String MMF_KEY = "AmapAutoMMF";
     private static final List<IPositionAdapterCallback> callbacks = new CopyOnWriteArrayList<>();
     private static final DrBean drInfo = new DrBean();
-    private GpsStatusChecker mGpsStatusChecker;
     /* 定位状态*/
     protected LocStatus mSdkLocStatus = LocStatus.ON_LOCATION_GPS_FAIl;
     //位置信息
     private LocInfoBean locInfoBean;
-    private LocInfoBean mCurDrLocation;
     private PosService mPosService;
     private LocMode mLocMode;
     private LocationManager mLocationManager;
@@ -149,7 +147,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         Logger.d(TAG, "initLocEngine :" + resultCode + "\n" +
                 "contextDir：" + contextDir);
         if (resultCode == 0) {
-            initGpsStatusChecker();
             startLocStorageTimerTask();
             // 信号记录功能开关
             mPosService.signalRecordSwitch(mAutoNaviPosLogEnable, LocationFuncSwitch.getLocLogConf());
@@ -165,7 +162,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
      */
     public void uninitLocEngine() {
         saveLocStorage();
-        uninitGpsStatusChecker();
         stopLocStorageTimerTask();
         mH.removeCallbacksAndMessages(null);
         mPosParallelRoadController.removeObserver();
@@ -179,7 +175,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         return mPosService;
     }
 
-
     public void registerCallback(IPositionAdapterCallback callback) {
         if (!callbacks.contains(callback)) {
             callbacks.add(callback);
@@ -191,8 +186,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
             callbacks.remove(callback);
         }
     }
-
-    // PosService.setSignInfo() 会触发此回调
 
     /**
      * 引擎对外通知位置更新，输出频率10HZ
@@ -423,10 +416,9 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
      * @param gnssInfo LocDataType.LocDataGnss
      */
     public void setGnssInfo(LocGnss gnssInfo) {
-        if (!checkValid() || mGpsStatusChecker == null) {
+        if (!checkValid()) {
             return;
         }
-        mGpsStatusChecker.clearCount();
         mSdkLocStatus = LocStatus.ON_LOCATION_GPS_OK;
         updateSdkLocStatus(true);
         LocSignData data = new LocSignData();
@@ -450,8 +442,7 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         return mPosService != null && mPosService.isInit() == ServiceInitStatus.ServiceInitDone;
     }
 
-    @Override
-    public void onTimeOut() {
+    public void onGpsCheckTimeOut() {
         mSdkLocStatus = LocStatus.ON_LOCATION_FAIL;
         updateSdkLocStatus(false);
     }
@@ -488,15 +479,13 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
                 for (IPositionAdapterCallback callback : callbacks) {
                     callback.onGpsSatellitesChanged(mIsLocSuccess);
                 }
-                if (!mIsLocSuccess) {
-                    ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_loc_filed));
-                }
+//                if (!mIsLocSuccess) {
+//                    ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_loc_filed));
+//                }
             }
             break;
             case MSG_LOC_GNSS_INFO_UPDATE: {
-//                for (OnLocGnssInfoUpdateListener listener : mGnssInfoUpdateListeners) {
-//                    listener.onLocGnssInfo((LocGnss) msg.obj);
-//                }
+
             }
             break;
             case MSG_SEND_DR:
@@ -546,9 +535,17 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
      */
     private void initLocation() {
         locInfoBean = new LocInfoBean();
-        locInfoBean.setLongitude(SettingConstant.DEFAULT_LON_SH);
-        locInfoBean.setLatitude(SettingConstant.DEFAULT_LAT_SH);
-        locInfoBean.setAltitude(SettingConstant.DEFAULT_ALT_SH);
+        String keyLng = CommonManager.getInstance().getValueByKey(AutoMapConstant.PosLastLocation.LAST_LNG);
+        String keyLat = CommonManager.getInstance().getValueByKey(AutoMapConstant.PosLastLocation.LAST_LAT);
+        Logger.d("saveLastLatLng2", keyLng + "--" + keyLat);
+        if (!ConvertUtils.isEmpty(keyLng) && !ConvertUtils.isEmpty(keyLat)) {
+            locInfoBean.setLongitude(Double.parseDouble(keyLng));
+            locInfoBean.setLatitude(Double.parseDouble(keyLat));
+        } else {
+            locInfoBean.setLongitude(SettingConstant.DEFAULT_LON_SH);
+            locInfoBean.setLatitude(SettingConstant.DEFAULT_LAT_SH);
+            locInfoBean.setAltitude(SettingConstant.DEFAULT_ALT_SH);
+        }
     }
 
     //更新位置信息
@@ -580,6 +577,7 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
                     location.setSegmCur(locInfo.matchInfo.get(0).segmCur);
                     location.setLinkCur(locInfo.matchInfo.get(0).linkCur);
                     location.setPostCur(locInfo.matchInfo.get(0).postCur);
+                    location.setOnGuideRoad(locInfo.matchInfo.get(0).isOnGuideRoad);
                     location.setMatchRoadCourse(locInfo.matchRoadCourse);
                     location.setCourseAcc(locInfo.courseAcc);
                     location.setStartDirType(locInfo.startDirType);
@@ -596,22 +594,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         }
     }
 
-    private void initGpsStatusChecker() {
-        mGpsStatusChecker = new GpsStatusChecker();
-        mGpsStatusChecker.setTimeOutListener(this);
-        mGpsStatusChecker.doCount();
-        mGpsStatusChecker.start();
-    }
-
-    private void uninitGpsStatusChecker() {
-        if (mGpsStatusChecker != null) {
-            mGpsStatusChecker.clearCount();
-            mGpsStatusChecker.cancel();
-            mGpsStatusChecker.setTimeOutListener(null);
-            mGpsStatusChecker = null;
-        }
-    }
-
     public void onLocAnalysisResult(@PositionConstant.DRDebugEvent int infoType, String s) {
         for (IPositionAdapterCallback callback : callbacks) {
             callback.onLocAnalysisResult(infoType, s);
@@ -623,8 +605,8 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
             if (mPosService != null) {
                 Logger.d(TAG, "locationLogSwitch：" + isOpen);
                 ToastUtils.Companion.getInstance().showCustomToastView(isOpen ?
-                        AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_open_loc_log) :
-                        AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_close_loc_log));
+                        AppCache.getInstance().getMContext().getString(com.android.utils.R.string.navi_open_loc_log) :
+                        AppCache.getInstance().getMContext().getString(com.android.utils.R.string.navi_close_loc_log));
                 mPosService.signalRecordSwitch(isOpen, LocationFuncSwitch.getLocLogConf());
             }
         }
@@ -633,7 +615,7 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
 
     @Override
     public void onGraspRoadResult(GraspRoadResult graspRoadResult) {
-        if(ConvertUtils.isEmpty(callbacks)) return;
+        if (ConvertUtils.isEmpty(callbacks)) return;
         L2NaviBean.VehiclePositionBean vehiclePosition = new L2NaviBean.VehiclePositionBean();
         vehiclePosition.setLocationLinkOffset(ConvertUtils.double2int(graspRoadResult.offset, 0));
         vehiclePosition.setRoadClass(graspRoadResult.roadClass); // 当前自车所在道路等级
@@ -645,7 +627,7 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         }
     }
 
-    public List<IPositionAdapterCallback> getCallBack(){
+    public List<IPositionAdapterCallback> getCallBack() {
         return callbacks;
     }
 }

@@ -161,4 +161,12 @@ public final class SignalAdapter {
     public void setRemainTimeToChargingStationy(int value) {
         mSignalApi.setRemainTimeToChargingStationy(value);
     }
+
+    public void setVcuSpeedLimitArbitrationResults(int value) {
+        mSignalApi.setVcuSpeedLimitArbitrationResults(value);
+    }
+
+    public void setVcuSpeedLimitArbitrationResultsAssured(int value) {
+        mSignalApi.setVcuSpeedLimitArbitrationResultsAssured(value);
+    }
 }

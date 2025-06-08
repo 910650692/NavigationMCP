@@ -83,32 +83,44 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
 
     protected void addFragment(BaseFragment fragment, Bundle bundle) {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
-        activity.addFragment(fragment, bundle);
+        if (activity != null) {
+            activity.addFragment(fragment, bundle);
+        }
     }
 
     protected void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment) {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
-        activity.addFragment(fragment, bundle, isHideCurFragment);
+        if (activity != null) {
+            activity.addFragment(fragment, bundle, isHideCurFragment);
+        }
     }
 
     protected void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
-        activity.addPoiDetailsFragment(fragment, bundle);
+        if (activity != null) {
+            activity.addPoiDetailsFragment(fragment, bundle);
+        }
     }
 
     protected void closeAllFragmentsUntilTargetFragment(String className) {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
-        activity.closeAllFragmentsUntilTargetFragment(className);
+        if (activity != null) {
+            activity.closeAllFragmentsUntilTargetFragment(className);
+        }
     }
 
     protected void closeAllFragment() {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
-        activity.closeAllFragment();
+        if (activity != null) {
+            activity.closeAllFragment();
+        }
     }
 
     protected void closeCurrentFragment() {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
-        activity.closeFragment(true);
+        if (activity != null) {
+            activity.closeFragment(true);
+        }
     }
 
     protected void closeAllFragmentAndSearchView() {
@@ -118,12 +130,16 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
 
     protected void showCurrentFragment() {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
-        activity.showCurrentFragment();
+        if (activity != null) {
+            activity.showCurrentFragment();
+        }
     }
 
     public void showSelfParkingView(){
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
-        activity.showParkingView();
+        if (activity != null) {
+            activity.showParkingView();
+        }
     }
 
     public void onCreate() {

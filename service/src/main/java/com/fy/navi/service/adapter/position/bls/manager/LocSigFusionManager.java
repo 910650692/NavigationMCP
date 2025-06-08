@@ -22,23 +22,18 @@ import com.fy.navi.service.adapter.position.bls.source.CarLocBackFusionDataSourc
 import com.fy.navi.service.define.position.LocGpgsvWrapper;
 import com.fy.navi.service.define.position.LocMode;
 
-public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFusionDataObserver, ILossRateAnalysisListener, IPosSensorParaObserver {
+public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFusionDataObserver, IPosSensorParaObserver {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private final PositionBlsStrategy mPositionBlsStrategy;
     protected boolean mIsEnable = true;
     private final ILocBackFusionDataSource mDataSource;
-    private LossRateAnalysisManager mLossRateAnalysis;
     private PosService mPosService;
     private boolean mIsDrMode;// 是否开启DR模式
-    private LocMode mLocMode;
 
     public LocSigFusionManager(Context context, LocMode locMode, PositionBlsStrategy positionBlsStrategy) {
         Logger.i(TAG, "locMode：" + locMode);
         this.mPositionBlsStrategy = positionBlsStrategy;
-        mLocMode = locMode;
-        DRLogService drLogService = new DRLogService();
-        mLossRateAnalysis = new LossRateAnalysisManager(this, drLogService);
-        mDataSource = new CarLocBackFusionDataSource(context, locMode, this, mLossRateAnalysis,mPositionBlsStrategy);
+        mDataSource = new CarLocBackFusionDataSource(context, locMode, this, mPositionBlsStrategy);
         mPosService = mPositionBlsStrategy.getPosService();
         addObserver();
     }
@@ -88,7 +83,6 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
             return;
         }
         mPositionBlsStrategy.setGnssInfo(locGnss);
-        mLossRateAnalysis.analysis(AnalysisType.GNSS);
     }
 
     @Override
@@ -100,8 +94,6 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
         locSignData.dataType = LocDataType.LocDataGpgsv;
         locSignData.gpgsv = wrapper.locGpgsv;
         mPositionBlsStrategy.setSignInfo(locSignData);
-
-        mLossRateAnalysis.analysisGSV(wrapper.attributes);
     }
 
     public void init() {
@@ -145,15 +137,6 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
 
     public void setDrEnable(boolean enable) {
         mIsDrMode = enable;
-        mLossRateAnalysis.setDrMode(mIsDrMode);
-    }
-
-    @Override
-    public void onLossRateAnalysisResult(AnalysisType type, String allResult) {
-        Logger.d(TAG, "onLossRateAnalysisResult AnalysisType：" + type + ",info：" + allResult + ",mIsDrMode：" + mIsDrMode);
-        if (mIsDrMode) {
-            mPositionBlsStrategy.onLocAnalysisResult(PositionConstant.DRDebugEvent.DR_LOSS_RATE, allResult);
-        }
     }
 
     @Override

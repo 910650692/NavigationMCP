@@ -20,7 +20,6 @@ import com.autonavi.gbl.common.model.WorkPath;
 import com.autonavi.gbl.common.path.model.ChargeStationInfo;
 import com.autonavi.gbl.common.path.option.POIForRequest;
 import com.autonavi.gbl.common.path.option.PathInfo;
-import com.autonavi.gbl.common.path.option.RouteType;
 import com.autonavi.gbl.guide.GuideService;
 import com.autonavi.gbl.guide.model.NaviInfo;
 import com.autonavi.gbl.guide.model.NaviPath;
@@ -31,10 +30,8 @@ import com.autonavi.gbl.guide.model.guidecontrol.EmulatorParam;
 import com.autonavi.gbl.guide.model.guidecontrol.NaviParam;
 import com.autonavi.gbl.guide.model.guidecontrol.Param;
 import com.autonavi.gbl.guide.model.guidecontrol.Type;
-import com.autonavi.gbl.guide.observer.INaviObserver;
-import com.autonavi.gbl.guide.observer.ISoundPlayObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
@@ -61,10 +58,7 @@ import java.util.List;
 public class NaviApiImplHelper {
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
     private final GuideService mGuideService;
-    private RouteLineLayerParam mRouteLineLayerParam = new RouteLineLayerParam();
-    private int mainIndex;
-    private final INaviObserver mNaviObserver;
-    private final ISoundPlayObserver mSoundPlayObserver;
+    private final GuidanceCallback mNaviObserver;
     private final Hashtable<String, GuidanceObserver> mGuidanceObservers;
     private boolean mIsSimpleNavigation = false;
     // 当前导航信息
@@ -74,14 +68,13 @@ public class NaviApiImplHelper {
         this.mGuideService = guideService;
         mGuidanceObservers = new Hashtable<>();
         mNaviObserver = new GuidanceCallback(mGuidanceObservers, this);
-        mSoundPlayObserver = new GuidanceCallback(mGuidanceObservers, this);
     }
 
     protected void initNaviService() {
         initTbtComm();
         mGuideService.init();
         mGuideService.addNaviObserver(mNaviObserver);
-        mGuideService.addSoundPlayObserver(mSoundPlayObserver);
+        mGuideService.addSoundPlayObserver(mNaviObserver);
     }
 
     /**
@@ -116,7 +109,7 @@ public class NaviApiImplHelper {
     }
 
     protected void unit() {
-        mGuideService.removeSoundPlayObserver(mSoundPlayObserver);
+        mGuideService.removeSoundPlayObserver(mNaviObserver);
         mGuideService.removeNaviObserver(mNaviObserver);
         mGuidanceObservers.clear();
     }
@@ -142,24 +135,17 @@ public class NaviApiImplHelper {
     }
 
     //设置开启导航路线
-    protected void setNaviPathParam(final int routeIndex,
-                                    final RouteLineLayerParam routeLineLayerParam) {
-        mRouteLineLayerParam = routeLineLayerParam;
-        mainIndex = routeIndex;
-        GuidanceCallback callback = (GuidanceCallback) mNaviObserver;
-        callback.onBatterHotTime();
-    }
-
-    //获取开启导航关键参数
-    protected NaviPath getNaviPathParam() {
+    protected void setNaviPathParam(final RouteLineLayerParam routeLineLayerParam) {
+        checkNaviService();
+        mNaviObserver.onBatterHotTime();
         final NaviPath naviPath = new NaviPath();
         // 设置完整路线信息 算路时会返回
-        naviPath.vecPaths = (ArrayList<PathInfo>) mRouteLineLayerParam.getMPathInfoList();
-        naviPath.mainIdx = mainIndex; // 设置主路线索引
-        naviPath.type = mRouteLineLayerParam.getMRouteType(); // 设置算路类型
-        naviPath.point = (POIForRequest) mRouteLineLayerParam.getMPoiForRequest(); // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
-        naviPath.strategy = mRouteLineLayerParam.getMStrategy(); // 设置算路策略
-        return naviPath;
+        naviPath.vecPaths = (ArrayList<PathInfo>) routeLineLayerParam.getMPathInfoList();
+        naviPath.mainIdx = routeLineLayerParam.getMSelectIndex(); // 设置主路线索引
+        naviPath.type = routeLineLayerParam.getMRouteType(); // 设置算路类型
+        naviPath.point = (POIForRequest) routeLineLayerParam.getMPoiForRequest(); // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
+        naviPath.strategy = routeLineLayerParam.getMStrategy(); // 设置算路策略
+        mGuideService.setNaviPath(naviPath);
     }
 
     /**
@@ -229,6 +215,11 @@ public class NaviApiImplHelper {
         } else {
             Logger.i(TAG, "不是纯电动汽车，无需设置能耗模型！");
         }
+    }
+
+    public void startNavi(boolean startNaviStatus) {
+        Logger.i(TAG, "onNaviStar 导航开启 : " + startNaviStatus);
+        if (startNaviStatus) mNaviObserver.startNavi();
     }
 
 
@@ -349,8 +340,8 @@ public class NaviApiImplHelper {
             final NaviViaEntity naviViaEntity = new NaviViaEntity();
             naviViaEntity.setName(stationInfo.name);
             naviViaEntity.setArriveDay(TimeUtils.getArriveDay(timeAndDist.time));
-            naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppContext.getInstance().getMContext(), timeAndDist.dist, timeAndDist.time));
-            naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), timeAndDist.time));
+            naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppCache.getInstance().getMContext(), timeAndDist.dist, timeAndDist.time));
+            naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), timeAndDist.time));
             naviViaEntity.setmArriveTimeStamp(timeAndDist.time);
             naviViaEntities.add(naviViaEntity);
 

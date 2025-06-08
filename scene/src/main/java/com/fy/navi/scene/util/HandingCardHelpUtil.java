@@ -4,7 +4,7 @@ import android.os.CountDownTimer;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -333,7 +333,7 @@ public class HandingCardHelpUtil {
     public boolean endIsParking(final PoiInfoEntity poiInfo) {
         final boolean result = !ConvertUtils.isNull(poiInfo)
                 && !ConvertUtils.isEmpty(poiInfo.getPoiTag())
-                && poiInfo.getPoiTag().contains(AppContext.getInstance().getMApplication().getString(com.fy.navi.scene.R.string.st_quick_search_parking));
+                && poiInfo.getPoiTag().contains(AppCache.getInstance().getMApplication().getString(com.fy.navi.scene.R.string.st_quick_search_parking));
         Logger.i(TAG, "endIsParking:" + result);
         return result;
     }

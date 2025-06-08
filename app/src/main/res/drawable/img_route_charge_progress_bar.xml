@@ -2,7 +2,7 @@
     <item android:id="@android:id/background">
         <shape>
             <solid android:color="@color/route_line_color"
-                android:height="@dimen/dp_6"/>
+                android:height="@dimen/dp_8"/>
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -10,7 +10,7 @@
 
             <shape >
                 <gradient  android:angle="45" android:startColor="@color/route_progressBar_color"
-                    android:endColor="@color/route_progressBar_color" android:height="@dimen/dp_6"/>
+                    android:endColor="@color/route_progressBar_color" android:height="@dimen/dp_8"/>
             </shape>
         </clip>
     </item>

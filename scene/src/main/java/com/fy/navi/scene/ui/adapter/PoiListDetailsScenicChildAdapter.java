@@ -81,7 +81,7 @@ public class PoiListDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiLi
         final ChildInfo childInfo = mChildList.get(position);
         final int ratio = (int) Math.round(childInfo.getRatio());
         final String subTitle = holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.getContext().
-                getString(R.string.scenic_ratio, ratio);
+                getString(R.string.list_scenic_ratio, ratio);
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "check = " + childInfo.getChecked() + " name: " + childInfo.getShortName());
         holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.setText(childInfo.getShortName());
         final ColorStateList titleList = ContextCompat.getColorStateList(holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.getContext(),

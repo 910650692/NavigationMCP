@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class MainScreenMapView extends FullScreenMapView implements IBaseScreenMapView {
+public class MainScreenMapView extends FullScreenMapView {
     public MainScreenMapView(@NonNull Context context) {
         super(context);
     }

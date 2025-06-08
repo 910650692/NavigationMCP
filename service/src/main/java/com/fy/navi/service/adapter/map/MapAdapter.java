@@ -40,33 +40,40 @@ public class MapAdapter {
         mIMapApi = (IMapApi) AdapterConfig.getObject(GAODE_API_PKG, GAODE_API_CLS);
     }
 
-
-    public boolean init(MapType mapTypeId) {
+    public void initMapService() {
         mSettingAdapter = SettingAdapter.getInstance();
-        return mIMapApi.initMapService(mapTypeId);
+    }
+
+    public void unInitMapService() {
+        mSettingAdapter = null;
+    }
+
+    public boolean createMapView(MapType mapTypeId) {
+       return mIMapApi.createMapView(mapTypeId);
+    }
+
+    public void changeMapView(IBaseScreenMapView mapSurfaceView) {
+        mIMapApi.changeMapView(mapSurfaceView);
+    }
+
+    public void bindMapView(IBaseScreenMapView mapSurfaceView) {
+        mIMapApi.bindMapView(mapSurfaceView);
     }
 
     public void unBindMapView(IBaseScreenMapView mapView) {
         mIMapApi.unBindMapView(mapView);
     }
 
+    public void destroyMapView(MapType mapTypeId) {
+        mIMapApi.destroyMapView(mapTypeId);
+    }
+
     public void registerCallback(MapType mapTypeId, IMapAdapterCallback callback) {
         mIMapApi.registerCallback(mapTypeId, callback);
     }
 
-    public void initMapView(IBaseScreenMapView mapSurfaceView) {
-        mIMapApi.bindMapView(mapSurfaceView);
-    }
-
-    /**
-     * 绑定HudMapView
-     */
-    public void initHudMapView() {
-        mIMapApi.bindHudMapView();
-    }
-
-    public void unInitMapService(MapType mapTypeId) {
-        mIMapApi.unitMapService(mapTypeId);
+    public void unregisterCallback(MapType mapTypeId, IMapAdapterCallback callback) {
+        mIMapApi.unRegisterCallback(mapTypeId, callback);
     }
 
     public void reduceLevel(MapType mapTypeId) {
@@ -119,38 +126,47 @@ public class MapAdapter {
         mIMapApi.setMapViewTextSize(mapTypeId, f);
     }
 
+    /**
+     * 用于循环切换底图视角
+     * @param mapTypeId current MapType
+     * @return true: success/false: fail
+     */
     public boolean switchMapMode(MapType mapTypeId) {
         MapMode mapMode = mIMapApi.getCurrentMapMode(mapTypeId);
         mapMode = switch (mapMode) {
-            case UP_2D -> MapMode.UP_3D;
-            case UP_3D -> MapMode.NORTH_2D;
-            case NORTH_2D -> MapMode.UP_2D;
-        };
-        switchMapMode(mapMode);
-        return mIMapApi.setMapMode(mapTypeId, mapMode);
-    }
-
-    private void switchMapMode(MapMode mapMode) {
-        switch (mapMode) {
-            case UP_2D:
-                mSettingAdapter.setConfigKeyMapviewMode(0);
-                break;
-            case UP_3D:
+            case UP_2D -> {
                 mSettingAdapter.setConfigKeyMapviewMode(2);
-                break;
-            case NORTH_2D:
+                yield MapMode.UP_3D;
+            }
+            case UP_3D -> {
                 mSettingAdapter.setConfigKeyMapviewMode(1);
-                break;
-        }
+                yield MapMode.NORTH_2D;
+            }
+            case NORTH_2D -> {
+                mSettingAdapter.setConfigKeyMapviewMode(0);
+                yield MapMode.UP_2D;
+            }
+        };
+        return mIMapApi.setMapMode(mapTypeId, mapMode);
     }
 
     public MapMode getCurrentMapMode(MapType mapTypeId) {
         return mIMapApi.getCurrentMapMode(mapTypeId);
     }
 
-    public boolean switchMapMode(MapType mapTypeId, MapMode mapMode) {
-        if(mapTypeId != MapType.CLUSTER_MAP){
-            switchMapMode(mapMode);
+    public boolean setMapMode(MapType mapTypeId, MapMode mapMode, boolean isSave) {
+        if(isSave){
+            switch (mapMode) {
+                case UP_2D:
+                    mSettingAdapter.setConfigKeyMapviewMode(0);
+                    break;
+                case UP_3D:
+                    mSettingAdapter.setConfigKeyMapviewMode(2);
+                    break;
+                case NORTH_2D:
+                    mSettingAdapter.setConfigKeyMapviewMode(1);
+                    break;
+            }
         }
         return mIMapApi.setMapMode(mapTypeId, mapMode);
     }
@@ -189,6 +205,7 @@ public class MapAdapter {
 
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {
         mIMapApi.updateUiStyle(mapTypeId, type);
+        mSettingAdapter.setConfigKeyDayNightMode(type);
     }
 
     // 搜索需要的对角线参数

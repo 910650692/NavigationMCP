@@ -54,7 +54,7 @@ public class LimitDriverAdapter extends RecyclerView.Adapter<LimitDriverAdapter.
         holder.mTvState.setVisibility(bean.getMEffect() == 1 ? View.VISIBLE : View.INVISIBLE);
         holder.mTvTime.setText(bean.getMTime());
         final String descText = bean.getMSummary() + "\n" + bean.getMDesc();
-        holder.mTvDesc.setText(descText);
+        holder.mTvDesc.setText(descText.replace("<br/>", "\n"));
 
     }
 

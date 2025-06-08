@@ -3,6 +3,7 @@ package com.fy.navi.clslink;
 import android.content.Context;
 import android.content.Intent;
 
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.cls.core.ClsLink;
 import com.cls.core.Topic;
@@ -27,9 +28,10 @@ import com.cls.vehicle.adas.map.v1.MpilotSDRouteRestTollGateInfos;
 import com.cls.vehicle.adas.map.v1.MpilotSDRouteSegments;
 import com.cls.vehicle.adas.map.v1.MpilotSDRouteViaRoad;
 import com.cls.vehicle.adas.map.v1.ParkingLotInfoList;
+import com.fy.navi.adas.JsonLog;
 import com.fy.navi.adas.L2NopTts;
 import com.fy.navi.fsa.R;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.navi.L2NaviBean;
 import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -83,6 +85,8 @@ public class ClsLinkManager {
                 return;
             }
             Logger.d(TAG, "send tbt data: " + l2NaviBean);
+            String json = GsonUtils.toJson(l2NaviBean);
+            JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
             MpilotNavigationInformation.Builder mpilotNavigationInformation = MpilotNavigationInformation.newBuilder();
 
             MpilotNavigationBoardSign.Builder mpilotNavigationBoardSign = MpilotNavigationBoardSign.newBuilder();
@@ -199,8 +203,10 @@ public class ClsLinkManager {
                 Logger.w(TAG, "onL2DataCallBack: routeL2Data null");
                 return;
             }
-            Logger.d(TAG, "send route data: " + routeL2Data);
+            Logger.d(TAG, "send route data: ");
 //            JsonLogger.print("send route data", json);
+            String json = GsonUtils.toJson(routeL2Data);
+            JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
             MpilotSDRouteList.Builder mpilotSDRouteList = MpilotSDRouteList.newBuilder();
             MpilotSDRoute.Builder mpilotSdRoute = MpilotSDRoute.newBuilder();
             mpilotSdRoute.setSdkVersion(routeL2Data.getMSdkVersion());
@@ -402,7 +408,7 @@ public class ClsLinkManager {
                     }
                 }
             };
-            mClsLink = ClsLink.create(AppContext.getInstance().getMContext(), executor, listener);
+            mClsLink = ClsLink.create(AppCache.getInstance().getMContext(), executor, listener);
             mClsLink.connect();
         } else {
             Logger.i(TAG, "not CLEA Arch ADM configuration");
@@ -418,7 +424,7 @@ public class ClsLinkManager {
         SignalPackage.getInstance().registerObserver(TAG, new SignalCallback() {
             @Override
             public void onNaviOnADASStateChanged(int state) {
-                Context context = AppContext.getInstance().getMContext();
+                Context context = AppCache.getInstance().getMContext();
                 switch (state) {
                     case SignalConst.L2_NOP.CLOSE_TO_NOA_AREA_TRUE:
                         L2NopTts.sendTTS(context.getString(R.string.close_to_noa_area_true));
@@ -553,7 +559,7 @@ public class ClsLinkManager {
                 if (tbtTopic && routeTopic) {
                     Logger.d(TAG, "sendBroadcast");
                     Intent intent = new Intent("com.fy.navi.hmi.topic.release");
-                    AppContext.getInstance().getMContext().sendBroadcast(intent);
+                    AppCache.getInstance().getMContext().sendBroadcast(intent);
                 }
             }
         });

@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 /**
  * 仪表MapView
  */
-public class ClusterMapView extends  FullScreenMapView implements IBaseScreenMapView {
+public class ClusterMapView extends  FullScreenMapView {
 
     public ClusterMapView(@NonNull Context context) {
         super(context);

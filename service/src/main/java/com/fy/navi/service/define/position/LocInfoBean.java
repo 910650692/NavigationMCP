@@ -59,6 +59,15 @@ public class LocInfoBean {
     private int mRoadDir;
     private float mFittingCourseAcc;
     private String mRequestRouteInfo;
+    private int onGuideRoad;
+
+    public int getOnGuideRoad() {
+        return onGuideRoad;
+    }
+
+    public void setOnGuideRoad(int onGuideRoad) {
+        this.onGuideRoad = onGuideRoad;
+    }
 
     public long getTimeStamp() {
         return mTimeStamp;
@@ -339,6 +348,7 @@ public class LocInfoBean {
                 ", mRoadDir='" + mRoadDir + '\'' +
                 ", mFittingCourseAcc='" + mFittingCourseAcc + '\'' +
                 ", mRequestRouteInfo='" + mRequestRouteInfo + '\'' +
+                ", onGuideRoad='" + onGuideRoad + '\'' +
                 '}';
     }
 

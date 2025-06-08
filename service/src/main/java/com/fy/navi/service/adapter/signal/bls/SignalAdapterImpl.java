@@ -467,7 +467,7 @@ public class SignalAdapterImpl implements SignalApi {
         final VehicleController.Result<Float> result;
         try {
             result = PowertainController.getInstance().getInfoEvBatteryCapacity();
-        } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
+        } catch (Exception e) {
             Logger.w(TAG, "getMaxBatteryEnergy: " + Log.getStackTraceString(e));
             return -1;
         }
@@ -580,9 +580,9 @@ public class SignalAdapterImpl implements SignalApi {
             return;
         }
         Logger.d(TAG, "setNextChargingDestination: " + powerLevel + ", " + status + ", " + timeToArrival + ", " + distToArrival);
-        final int[] nextChargingDestination = new int[]{distToArrival, status, timeToArrival, powerLevel};
+        final Integer[] nextChargingDestination = new Integer[]{distToArrival, status, timeToArrival, powerLevel};
         try {
-            mPropertyManager.setProperty(int[].class, VendorProperty.NEXT_CHARGING_DESTINATION_INFORMATION_1, 0, nextChargingDestination);
+            mPropertyManager.setProperty(Integer[].class, VendorProperty.NEXT_CHARGING_DESTINATION_INFORMATION_1, 0, nextChargingDestination);
         } catch (IllegalArgumentException e) {
             Logger.e(TAG, "setNextChargingDestination: " + Log.getStackTraceString(e));
         }
@@ -594,7 +594,7 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = DriveAssistController.getInstance().getNavigationOnAdasTextToSpeachStatus();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Logger.e(TAG, "getNavigationOnAdasTextToSpeachStatus: " + Log.getStackTraceString(e));
+            Logger.i(TAG, "getNavigationOnAdasTextToSpeachStatus: " + Log.getStackTraceString(e));
             return -1;
         }
         final Integer value = result.getValue(-1);
@@ -634,7 +634,6 @@ public class SignalAdapterImpl implements SignalApi {
         mCarAudioManager.setGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1, volume, 0);
     }
 
-    @Override
     public int getNaviVolume() {
         if (mCarAudioManager == null) {
             return -1;
@@ -646,6 +645,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup) {
+        Logger.d(TAG, sdNavigationStatusGroup);
         try {
             Integer[] integers = new Integer[]{sdNavigationStatusGroup.getNaviStat()};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.SD_NAVIGATION_STATUS_GROUP,
@@ -657,6 +657,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setNavigationOnAdasButtonSettingRequest(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.NAVIGATION_ON_ADAS_BUTTON_SETTING_REQUEST,
@@ -668,6 +669,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setNavigationOnAdasInfoNavigationStatus(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.NAVIGATION_ON_ADAS_INFO_NAVIGATION_STATUS,
@@ -679,6 +681,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setDistanceToTrafficJamRoad(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_TO_TRAFFIC_JAM_ROAD
@@ -690,6 +693,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setDistanceToTrafficJamRoadAvailability(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_TO_TRAFFIC_JAM_ROAD_AVAILABILITY
@@ -701,6 +705,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setDistanceOnTrafficJamRoad(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD
@@ -712,6 +717,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setDistanceOnTrafficJamRoadAvailability(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD_AVAILABILITY
@@ -723,6 +729,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setTrafficJamRoadAverageSpeed(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.TRAFFIC_JAM_ROAD_AVERAGE_SPEED
@@ -734,6 +741,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setTrafficJamRoadAverageSpeedAvailability(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.TRAFFIC_JAM_ROAD_AVERAGE_SPEED_AVAILABILITY
@@ -745,6 +753,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setRoadConditionGroupFirst(RoadConditionGroupFirst roadConditionGroupFirst) {
+        Logger.d(TAG, roadConditionGroupFirst);
         try {
             Integer[] integers = new Integer[]{roadConditionGroupFirst.getIndxOfDynmInftAryNavRut(),
                     roadConditionGroupFirst.getEstimDistnCorpToIndxRut(),
@@ -759,6 +768,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond) {
+        Logger.d(TAG, roadConditionGroupSecond);
         try {
             Integer[] integers = new Integer[]{roadConditionGroupSecond.getLngthDynInfmAryOfNavRut(),
                     roadConditionGroupSecond.getEstimRemnDistn(),
@@ -773,6 +783,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setTotalDistanceFromStartToDestinationOnNavigation(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.TOTAL_DISTANCE_FROM_START_TO_DESTINATION_ON_NAVIGATION
@@ -784,6 +795,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setTotalPredictedTimeFromStartToDestinationOnNavigation(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.TOTAL_PREDICTED_TIME_FROM_START_TO_DESTINATION_ON_NAVIGATION
@@ -795,6 +807,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setRemainDistanceToChargingStation(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.REMAIN_DISTANCE_TO_CHARGING_STATION
@@ -806,9 +819,34 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setRemainTimeToChargingStationy(int value) {
+        Logger.d(TAG, value);
         try {
             Integer[] integers = new Integer[]{value};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.REMAIN_TIME_TO_CHARGING_STATION
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setVcuSpeedLimitArbitrationResults(int value) {
+        Logger.d(TAG, value);
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.VCU_SPEED_LIMIT_ARBITRATION_RESULTS
+                    , VehicleArea.GLOBAL, integers);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+        }
+    }
+
+    @Override
+    public void setVcuSpeedLimitArbitrationResultsAssured(int value) {
+        Logger.d(TAG, value);
+        try {
+            Integer[] integers = new Integer[]{value};
+            mPropertyManager.setProperty(Integer[].class, PatacProperty.VCU_SPEED_LIMIT_ARBITRATION_RESULTS_ASSURED
                     , VehicleArea.GLOBAL, integers);
         } catch (Exception e) {
             Logger.e(TAG, e);

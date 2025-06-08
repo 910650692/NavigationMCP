@@ -1,8 +1,10 @@
 package com.fy.navi.scene.impl.search;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneMainSearchView;
 import com.fy.navi.scene.ui.search.SceneMainAlongWaySearchView;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.ui.base.StackManager;
@@ -37,6 +39,11 @@ public class SceneMainAlongWaySearchViewImpl extends BaseSceneModel<SceneMainAlo
     @Override
     public void onClickQuickSearch(final int position) {
         mScreenView.onClickQuickSearch(position);
+    }
+
+    @Override
+    public void onClickCollectSearch() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"ClickCollectSearch in SceneMainAlongWaySearchViewImpl");
     }
 
     public void flyLineVisible(MapType mapTypeId, boolean visible){

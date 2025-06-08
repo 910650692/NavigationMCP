@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 
 import com.android.utils.file.FileUtils;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.R;
 
 import java.math.BigInteger;
@@ -254,18 +254,18 @@ public class VoiceInfo {
         switch (taskState) {
             case OperationStatus.TASK_STATUS_CODE_READY:
                 if (isDataExist){
-                    drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.ic_update);
+                    drawable = AppCache.getInstance().getMApplication().getDrawable(R.drawable.ic_update);
                 }else{
-                    drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.ic_down);
+                    drawable = AppCache.getInstance().getMApplication().getDrawable(R.drawable.ic_down);
                 }
                 break;
             case OperationStatus.TASK_STATUS_CODE_PAUSE:
             case OperationStatus.TASK_STATUS_CODE_SUCCESS:
-                drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.ic_continue);
+                drawable = AppCache.getInstance().getMApplication().getDrawable(R.drawable.ic_continue);
                 break;
             case OperationStatus.TASK_STATUS_CODE_DOING:
             case OperationStatus.TASK_STATUS_CODE_DONE:
-                drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.img_pause);
+                drawable = AppCache.getInstance().getMApplication().getDrawable(R.drawable.img_pause);
                 break;
             default:
                 break;

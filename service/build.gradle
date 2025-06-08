@@ -63,7 +63,7 @@ dependencies {
     implementation project(":engine:bls")
     implementation project(":utils")
     implementation project(":patacnetlib")
-    implementation project(":ui")
+//    implementation project(":ui")
     implementation project(":burypoint")
 
     implementation libs.androidcar

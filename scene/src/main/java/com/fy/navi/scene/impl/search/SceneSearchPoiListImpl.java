@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneSearchPoiList;
 import com.fy.navi.scene.ui.search.SceneSearchPoiList;
@@ -62,9 +63,14 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     @Override
     public void closeSearchOpenFromNavi() {
         if (!ConvertUtils.isEmpty(StackManager.getInstance().getCurrentFragment(mMapTypeId.name()))) {
-            final Bundle bundle = new Bundle();
-            bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
-            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    final Bundle bundle = new Bundle();
+                    bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+                    StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
+                }
+            });
         }
         mScreenView.clearEditText();
         mSearchPackage.clearLabelMark();

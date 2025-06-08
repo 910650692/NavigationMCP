@@ -11,7 +11,7 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.scene.util.HandCardType;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ParkingInfo;
@@ -93,11 +93,11 @@ public class CardManager {
     public boolean judgeDestinationIsChargeStation(final PoiInfoEntity poiInfo) {
         if (!ConvertUtils.isNull(poiInfo)) {
             if(!ConvertUtils.isEmpty(poiInfo.getPoiTag()) &&
-                    poiInfo.getPoiTag().contains(AppContext.getInstance().getMContext().getString(R.string.st_quick_search_charge))){
+                    poiInfo.getPoiTag().contains(AppCache.getInstance().getMContext().getString(R.string.st_quick_search_charge))){
                 return true;
             }
             return !ConvertUtils.isEmpty(poiInfo.getName()) &&
-                    poiInfo.getName().contains(AppContext.getInstance().getMContext().getString(R.string.st_quick_search_charge));
+                    poiInfo.getName().contains(AppCache.getInstance().getMContext().getString(R.string.st_quick_search_charge));
         }
         return false;
     }
@@ -199,8 +199,24 @@ public class CardManager {
     public boolean endIsParking(final PoiInfoEntity poiInfo) {
         final boolean result = !ConvertUtils.isNull(poiInfo)
                 && !ConvertUtils.isEmpty(poiInfo.getPoiTag())
-                && poiInfo.getPoiTag().contains(AppContext.getInstance().getMApplication().getString(com.fy.navi.scene.R.string.st_quick_search_parking));
+                && poiInfo.getPoiTag().contains(AppCache.getInstance().getMApplication().getString(com.fy.navi.scene.R.string.st_quick_search_parking));
         return result;
+    }
+
+    /***
+     * 判断终点是否是服务区
+     * @return
+     */
+    public boolean endIsService(final PoiInfoEntity poiInfo) {
+        if (!ConvertUtils.isNull(poiInfo)) {
+            if(!ConvertUtils.isEmpty(poiInfo.getPoiTag()) &&
+                    poiInfo.getPoiTag().contains(AppCache.getInstance().getMContext().getString(R.string.navi_along_service))){
+                return true;
+            }
+            return !ConvertUtils.isEmpty(poiInfo.getName()) &&
+                    poiInfo.getName().contains(AppCache.getInstance().getMContext().getString(R.string.navi_along_service));
+        }
+        return false;
     }
 
     /***

@@ -37,7 +37,6 @@ import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.service.logicpaket.voice.VoicePackage;
 import com.fy.navi.service.tts.NaviAudioPlayer;
-import com.fy.navi.ui.BaseApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +65,8 @@ public class StartService {
         CommonManager.getInstance().init();
     }
 
-    public void registerSdkCallback(ISdkInitCallback callback) {
+    public void registerSdkCallback(String key, ISdkInitCallback callback) {
+        Logger.d(TAG, "call path name : " + key);
         ConvertUtils.push(sdkInitCallbacks, callback);
     }
 
@@ -93,8 +93,7 @@ public class StartService {
      * @return -1：引擎没有初始化、0：引擎初始化成功、1、引擎初始化中
      */
     public int getSdkActivation() {
-        Logger.i(TAG, "getSdkActivation engineActive " + engineActive + " myPid = " +
-                BaseApplication.getMyPid());
+        Logger.i(TAG, "startEngine engineActive " + engineActive);
         return engineActive;
     }
 
@@ -120,15 +119,15 @@ public class StartService {
     }
 
     private void startEngine() {
-        Logger.i(TAG, "startEngine engineActive " + getSdkActivation());
+        Logger.i(TAG, "startEngine engineActive " + engineActive);
         if (1 == engineActive || 0 == engineActive) return;
         ThreadManager.getInstance().execute(() -> {
             conformInitializingCallback();
-            if (!parseErrorCode()) {
-                engineActive = -1;
-                Logger.e(TAG, "startEngine parseErrorCode failed engineActive = -1");
-                return;
-            }
+//            if (!parseErrorCode()) {
+//                engineActive = -1;
+//                Logger.e(TAG, "startEngine parseErrorCode failed engineActive = -1");
+//                return;
+//            }
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_CHANNEL_ID, EnginePackage.getInstance().getChanelName());
             EnginePackage.getInstance().initBaseLibs();
         });
@@ -175,7 +174,7 @@ public class StartService {
         Logger.i(TAG, "initSdkService");
         initPositionService();
         initMapView();
-        if (!initLayerService() || !initClusterLayerService()) {
+        if (!initLayerService()) {
             conformFailCallback(40001, "图层服务初始化失败");
             return;
         }
@@ -196,14 +195,11 @@ public class StartService {
     }
 
     private void initMapView() {
-        MapPackage.getInstance().init(MapType.MAIN_SCREEN_MAIN_MAP);
-        MapPackage.getInstance().init(MapType.LAUNCHER_DESK_MAP);
-        MapPackage.getInstance().init(MapType.LAUNCHER_WIDGET_MAP);
-        MapPackage.getInstance().init(MapType.CLUSTER_MAP);
-        MapPackage.getInstance().init(MapType.HUD_MAP);
+        MapPackage.getInstance().initMapService();
     }
 
     private boolean initLayerService() {
+        Logger.d(TAG,"lvv", "5555");
         boolean initLayerResult = LayerPackage.getInstance().initLayerService();
         if (initLayerResult) {
             Logger.i(TAG, "Layer service init success");
@@ -211,17 +207,6 @@ public class StartService {
             Logger.i(TAG, "Layer service init fail");
         }
         return initLayerResult;
-    }
-
-    /* 初始化仪表屏 */
-    private boolean initClusterLayerService() {
-        boolean initLayerService = LayerPackage.getInstance().initLayerService(MapType.CLUSTER_MAP);
-        if (initLayerService) {
-            Logger.i(TAG, "Cluster layer service init success");
-        } else {
-            Logger.i(TAG, "Cluster layer service init fail");
-        }
-        return initLayerService;
     }
 
     private void initOtherService() {
@@ -242,7 +227,7 @@ public class StartService {
         MsgPushPackage.getInstance().initService();
         AosRestrictedPackage.getInstance().initAosService();
         VoicePackage.getInstance().init();
-        SignalPackage.getInstance().init(AppContext.getInstance().getMContext());
+        SignalPackage.getInstance().init(AppCache.getInstance().getMContext());
         SpeechPackage.getInstance().init();
         NaviAudioPlayer.getInstance().init();
         HotUpdatePackage.getInstance().initService();
@@ -261,7 +246,7 @@ public class StartService {
      * 整合引擎初始化中的回调
      */
     private void conformInitializingCallback() {
-        Logger.i(TAG, "Sdk init progress......");
+        Logger.i(TAG, "Sdk init progress......", "sdkInitCallbacks : " + sdkInitCallbacks.size());
         engineActive = 1;
         for (ISdkInitCallback callback : sdkInitCallbacks) {
             callback.onSdkInitializing();
@@ -288,7 +273,7 @@ public class StartService {
      * @param msg           Error msg
      */
     private void conformFailCallback(int initSdkResult, String msg) {
-        Logger.i(TAG, "Sdk init fail");
+        Logger.i(TAG, "Sdk init fail", "sdkInitCallbacks : " + sdkInitCallbacks.size());
         engineActive = -1;
         for (ISdkInitCallback callback : sdkInitCallbacks) {
             callback.onSdkInitFail(initSdkResult, msg);
@@ -390,8 +375,6 @@ public class StartService {
     }
 
     public static StartService getInstance() {
-        Logger.i(TAG, "StartService getInstance... intance = " + Helper.sts + " myPid = " +
-                BaseApplication.getMyPid());
         return Helper.sts;
     }
 

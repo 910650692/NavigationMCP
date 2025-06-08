@@ -243,7 +243,7 @@ public class L2NaviBean {
          * nextGuideType : 2
          */
         @SerializedName("nextGuideDist")
-        private int mNextGuideDist;
+        private int mNextGuideDist = 0xFFFF;
 
         @SerializedName("nextGuideType")
         private int mNextGuideType;
@@ -334,7 +334,7 @@ public class L2NaviBean {
 
 
         @SerializedName("spdLmtEleEyeDist")
-        private int mSpdLmtEleEyeDist;
+        private int mSpdLmtEleEyeDist = 0xFFFF;
         @SerializedName("spdLmtEleEyeSpeedValue")
         private int mSpdLmtEleEyeSpeedValue = 0xFF;
 
@@ -448,7 +448,7 @@ public class L2NaviBean {
         @SerializedName("naviStatus")
         private int mNaviStatus;
         @SerializedName("roadClass")
-        private int mRoadClass = 0xFF;
+        private int mRoadClass = -1;
         @SerializedName("roadOwnership")
         private int mRoadOwnership = 0;
         @SerializedName("ttsText")

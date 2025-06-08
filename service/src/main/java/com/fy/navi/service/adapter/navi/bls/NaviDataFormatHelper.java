@@ -42,7 +42,7 @@ import com.autonavi.gbl.guide.model.TimeAndDist;
 import com.autonavi.gbl.guide.model.TmcInfoData;
 import com.autonavi.gbl.guide.model.TrafficLightCountdown;
 import com.autonavi.gbl.guide.model.VectorCrossImageType;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.cruise.CruiseFacilityEntity;
@@ -743,14 +743,14 @@ public final class NaviDataFormatHelper {
             if (obj instanceof NaviEtaInfo) {
                 final NaviEtaInfo naviEtaInfo = (NaviEtaInfo) obj;
                 naviViaEntity.setArriveDay(TimeUtils.getArriveDay(naviEtaInfo.getAllTime()));
-                naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppContext.getInstance().getMContext(), naviEtaInfo.getAllDist(), naviEtaInfo.getAllTime()));
-                naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), naviEtaInfo.getAllTime()));
+                naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppCache.getInstance().getMContext(), naviEtaInfo.getAllDist(), naviEtaInfo.getAllTime()));
+                naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), naviEtaInfo.getAllTime()));
                 naviViaEntity.setmArriveTimeStamp(naviEtaInfo.getAllTime());
             } else if (obj instanceof NaviEtaInfo.NaviTimeAndDist) {
                 final NaviEtaInfo.NaviTimeAndDist timeAndDist = (NaviEtaInfo.NaviTimeAndDist) obj;
                 naviViaEntity.setArriveDay(TimeUtils.getArriveDay(timeAndDist.time));
-                naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppContext.getInstance().getMContext(), timeAndDist.dist, timeAndDist.time));
-                naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), timeAndDist.time));
+                naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppCache.getInstance().getMContext(), timeAndDist.dist, timeAndDist.time));
+                naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), timeAndDist.time));
                 naviViaEntity.setmArriveTimeStamp(timeAndDist.time);
             }
         }
@@ -790,8 +790,8 @@ public final class NaviDataFormatHelper {
             return new NaviParkingEntity();
         }
         final String distance = poiInfoEntity.getDistance();
-        final String meter = AppContext.getInstance().getMContext().getString(com.android.utils.R.string.meter);
-        final String km = AppContext.getInstance().getMContext().getString(com.android.utils.R.string.km);
+        final String meter = AppCache.getInstance().getMContext().getString(com.android.utils.R.string.meter);
+        final String km = AppCache.getInstance().getMContext().getString(com.android.utils.R.string.km);
         final NaviParkingEntity naviParkingEntity = new NaviParkingEntity()
                 .setEndPoi(isEndPoi)
                 .setName(poiInfoEntity.getName())
@@ -819,9 +819,9 @@ public final class NaviDataFormatHelper {
                 //-停车位紧张：总车位数<=30个，剩余车位<30% ；总车位数>30个，剩余车位<10% 或 剩余车位少于10个。
                 if ((spaceTotal <= 30 && ((double) (spaceFree / spaceTotal) < 0.3)) ||
                         (spaceTotal > 30 && (spaceFree < 10 || ((double) (spaceFree / spaceTotal) < 0.1)))) {
-                    naviParkingEntity.setTag(AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_parking_tight));
+                    naviParkingEntity.setTag(AppCache.getInstance().getMContext().getString(com.android.utils.R.string.navi_parking_tight));
                 } else {
-                    naviParkingEntity.setTag(AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_parking_adequate));
+                    naviParkingEntity.setTag(AppCache.getInstance().getMContext().getString(com.android.utils.R.string.navi_parking_adequate));
                 }
                 naviParkingEntity.setNum(String.valueOf(spaceFree / spaceTotal));
             } else {
@@ -1038,7 +1038,7 @@ public final class NaviDataFormatHelper {
     }
 
     public static NaviCongestionInfoEntity formatNaviCongestionInfo(NaviCongestionInfo info) {
-        if (info == null || info.congestionInfos == null) {
+        if (info == null) {
             return null;
         }
         NaviCongestionInfoEntity naviCongestionInfoEntity = new NaviCongestionInfoEntity();
@@ -1046,17 +1046,24 @@ public final class NaviDataFormatHelper {
         naviCongestionInfoEntity.setTotalTimeOfSeconds(info.totalTimeOfSeconds);
         naviCongestionInfoEntity.setUnobstructed(info.unobstructed);
         ArrayList<NaviCongestionDetailInfoEntity> list = new ArrayList<>();
+        naviCongestionInfoEntity.setCongestionInfos(list);
         ArrayList<NaviCongestionDetailInfo> congestionInfos = info.congestionInfos;
+        if (congestionInfos == null) {
+            return naviCongestionInfoEntity;
+        }
         for (int i = 0; i < congestionInfos.size(); i++) {
             NaviCongestionDetailInfo naviCongestionDetailInfo = congestionInfos.get(i);
+            if (naviCongestionDetailInfo == null) {
+                continue;
+            }
             NaviCongestionDetailInfoEntity entity = new NaviCongestionDetailInfoEntity();
             entity.setBeginSegmentIndex( naviCongestionDetailInfo.beginSegmentIndex);
             entity.setBeginLinkIndex( naviCongestionDetailInfo.beginLinkIndex);
             entity.setRemainDist( naviCongestionDetailInfo.remainDist);
             entity.setStatus( naviCongestionDetailInfo.status);
             entity.setTimeOfSeconds( naviCongestionDetailInfo.timeOfSeconds);
+            list.add(entity);
         }
-        naviCongestionInfoEntity.setCongestionInfos(list);
         return naviCongestionInfoEntity;
     }
 }

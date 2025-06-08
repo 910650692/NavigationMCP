@@ -9,7 +9,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.NaviService;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.StartService;
 import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
@@ -49,15 +49,15 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
     private boolean mMapIsAttachedWindow = false;
 
     public LauncherSmallCardModel() {
-        StartService.getInstance().registerSdkCallback(this);
+        StartService.getInstance().registerSdkCallback(TAG, this);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.d(TAG, "start navi Service");
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
-        ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
+        Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
+        ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
         Logger.i(TAG, "onRouteDrawLine:" + routeLineLayerParam.getMMapTypeId());
-        mRoutePackage.showRouteLine(getMapId());
+//        mRoutePackage.showRouteLine(getMapId());
     }
 
     public String getCurrentNaviStatus() {
@@ -218,9 +218,8 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
             mPositionPackage = PositionPackage.getInstance();
             mCruisePackage = CruisePackage.getInstance();
             mCruisePackage.registerObserver(getMapId().name(), this);
-            mLayerPackage.setPassGray(getMapId(), true);
         }
-        mapPackage.initMapView(mViewModel.getMapView());
+        mapPackage.loadMapView(mViewModel.getMapView());
     }
 
     private MapType getMapId() {

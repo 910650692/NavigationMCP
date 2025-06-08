@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.greendao.DaoMaster;
 
 import org.greenrobot.greendao.database.Database;
@@ -45,7 +45,7 @@ public class FavoriteManager {
             return;
         }
         // 数据库对象
-        final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
+        final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppCache.getInstance().getMContext(), DB_NAME);
         final Database db = helper.getWritableDb();
         final DaoMaster daoMaster = new DaoMaster(db);
         mFavoriteDao = daoMaster.newSession().getFavoriteDao();

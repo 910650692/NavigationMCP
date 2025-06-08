@@ -27,4 +27,12 @@ public interface IBaseScreenMapView {
     long getScreenHeight();
 
     int getScreenDensityDpi();
+
+    default boolean isOpenScreen() {
+        return false;
+    }
+
+    default boolean isBindMapView() {
+        return true;
+    }
 }

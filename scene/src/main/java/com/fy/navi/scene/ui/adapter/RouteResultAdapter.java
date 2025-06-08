@@ -1,13 +1,15 @@
 package com.fy.navi.scene.ui.adapter;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RouteLineInfoResultItemBinding;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.utils.NumberUtils;
 
@@ -67,7 +69,6 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
 
     @Override
     public void onBindViewHolder(final Holder holder, final int position) {
-        holder.mRouteLineInfoResultItemBinding.setModel(mRouteBeanList.get(position));
         final int index = position;
         setSelectStatus(holder, mCurrentIndex == position);
         holder.mRouteLineInfoResultItemBinding.routeItemNum.setText("" + (position + NumberUtils.NUM_1));
@@ -77,6 +78,23 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
                 mItemClickListener.onItemClick(position, isSelectIndex);
             }
         });
+        if (mRouteBeanList.get(position) != null) {
+            holder.mRouteLineInfoResultItemBinding.routeItemTime.setText(mRouteBeanList.get(position).getMTravelTime());
+            holder.mRouteLineInfoResultItemBinding.routeItemTag.setText(mRouteBeanList.get(position).getMLabel());
+            holder.mRouteLineInfoResultItemBinding.routeItemDistance.setText(mRouteBeanList.get(position).getMLength());
+            holder.mRouteLineInfoResultItemBinding.routeItemTrafficLightValue.setText(mRouteBeanList.get(position).getMTollCost());
+            holder.mRouteLineInfoResultItemBinding.routeItemPrice.setText(mRouteBeanList.get(position).getMTrafficLightCount());
+            if (mRouteBeanList.get(position).isMElecRouteBool()) {
+                holder.mRouteLineInfoResultItemBinding.routeItemElectricityImg.setVisibility(View.VISIBLE);
+                holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setVisibility(View.VISIBLE);
+                holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setText(mRouteBeanList.get(position).getMElecRouteLabel());
+            } else {
+                holder.mRouteLineInfoResultItemBinding.routeItemElectricityImg.setVisibility(View.GONE);
+                holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setVisibility(View.GONE);
+            }
+        } else {
+            Logger.d("mRouteBeanList is null");
+        }
     }
     /**
      * 设置选中道路
@@ -94,34 +112,34 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
     private void setSelectStatus(final Holder holder, final boolean select) {
         if (select) {
             holder.mRouteLineInfoResultItemBinding.itemRootView.setBackgroundColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.bg_route_item_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.bg_route_item_select));
             holder.mRouteLineInfoResultItemBinding.routeItemTag.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.bg_route_big_window_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.bg_route_big_window_select));
             holder.mRouteLineInfoResultItemBinding.routeItemDistance.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_select));
             holder.mRouteLineInfoResultItemBinding.routeItemPrice.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_select));
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficLightValue.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_select));
             holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_select));
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficLight.setImageResource(R.drawable.img_route_money);
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficPrice.setImageResource(R.drawable.img_route_lingt);
             holder.mRouteLineInfoResultItemBinding.routeItemElectricityImg.setImageResource(R.drawable.img_route_electricity);
 
         } else {
             holder.mRouteLineInfoResultItemBinding.itemRootView.setBackgroundColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.bg_route_item_unselect));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.bg_route_item_unselect));
             holder.mRouteLineInfoResultItemBinding.routeItemTag.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.text_route_defult));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_route_defult));
             holder.mRouteLineInfoResultItemBinding.routeItemDistance.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_no_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_no_select));
             holder.mRouteLineInfoResultItemBinding.routeItemPrice.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_no_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_no_select));
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficLightValue.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_no_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_no_select));
             holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setTextColor(
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_no_select));
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_color_route_item_no_select));
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficLight.setImageResource(R.drawable.img_route_money_unselect);
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficPrice.setImageResource(R.drawable.img_route_lingt_unselect);
             holder.mRouteLineInfoResultItemBinding.routeItemElectricityImg.setImageResource(R.drawable.img_route_electricity_unselect);

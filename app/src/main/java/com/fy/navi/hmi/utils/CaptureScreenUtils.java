@@ -12,7 +12,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -78,8 +78,8 @@ public class CaptureScreenUtils {
             Bitmap cropBitmap = null;
             try {
                 // 注意：这个宽高要和API里面设置的裁剪区域大小一致
-                int width = ScreenUtils.Companion.getInstance().getRealScreenWidth(AppContext.getInstance().getMContext());
-                int height = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppContext.getInstance().getMContext());
+                int width = ScreenUtils.Companion.getInstance().getRealScreenWidth(AppCache.getInstance().getMContext());
+                int height = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppCache.getInstance().getMContext());
                 orginBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 orginBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));
                 // 翻转图像

@@ -1,20 +1,13 @@
 package com.fy.navi.service.adapter.position.bls;
 
-import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
-import com.autonavi.gbl.common.model.TbtCommonControl;
-import com.autonavi.gbl.common.model.UserConfig;
-import com.autonavi.gbl.common.model.WorkPath;
-import com.fy.navi.service.AppContext;
-import com.fy.navi.service.GBLCacheFilePath;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
 import com.fy.navi.service.adapter.position.IPositionApi;
 import com.fy.navi.service.adapter.position.PositionConstant;
-import com.fy.navi.service.adapter.position.VehicleSpeedController;
 import com.fy.navi.service.adapter.position.bls.manager.LocSigFusionManager;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.position.ISpeedCallback;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocMode;
 import com.fy.navi.service.define.position.PositionConfig;
@@ -35,7 +28,7 @@ public class PositionAdapterImpl implements IPositionApi {
     private boolean mDrRecordEnable;
 
     public PositionAdapterImpl() {
-        positionStrategy = new PositionBlsStrategy(AppContext.getInstance().getMContext());
+        positionStrategy = new PositionBlsStrategy(AppCache.getInstance().getMContext());
     }
 
     @Override
@@ -116,7 +109,7 @@ public class PositionAdapterImpl implements IPositionApi {
 
     /***初始化定位模块***/
     public void init(LocMode locMode) {
-        mLocSigFusionManager = new LocSigFusionManager(AppContext.getInstance().getMApplication().getApplicationContext(),
+        mLocSigFusionManager = new LocSigFusionManager(AppCache.getInstance().getMApplication().getApplicationContext(),
                 locMode, positionStrategy);
         mLocSigFusionManager.setDrBackFusionEnable(mDrBackFusionEnable);
         mLocSigFusionManager.init();

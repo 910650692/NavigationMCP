@@ -83,12 +83,14 @@
             app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
         <androidx.core.widget.NestedScrollView
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_372"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_60"
+            android:layout_marginBottom="@dimen/dp_80"
             android:focusable="false"
-            app:layout_constraintStart_toStartOf="@id/reminder_title"
+            app:layout_constraintBottom_toTopOf="@+id/dialog_commit"
             app:layout_constraintEnd_toEndOf="@id/reminder_title"
+            app:layout_constraintStart_toStartOf="@id/reminder_title"
             app:layout_constraintTop_toBottomOf="@+id/reminder_click_view">
 
             <com.fy.navi.ui.view.SkinTextView

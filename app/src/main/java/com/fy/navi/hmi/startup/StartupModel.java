@@ -14,7 +14,7 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.NaviService;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.permission.PermissionUtils;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
@@ -34,18 +34,13 @@ import java.io.File;
 public class StartupModel extends BaseModel<BaseStartupViewModel>
         implements PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback {
 
-    private static final String TAG = "StartupModel";
+    private static final String TAG = MapDefaultFinalTag.ENGINE_HMI_TAG;
     private final CommonManager commonManager;
-    private IActivateObserver mActObserver = new IActivateObserver() {
+    private final IActivateObserver mActObserver = new IActivateObserver() {
         @Override
         public void onActivating() {
             Logger.d(TAG, "onActivating...");
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    mViewModel.showActivatingView(true);
-                }
-            });
+            ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(true));
         }
 
         @Override
@@ -54,12 +49,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
         @Override
         public void onActivated() {
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    mViewModel.showActivatingView(false);
-                }
-            });
+            ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(false));
         }
 
         @Override
@@ -84,9 +74,8 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.d(TAG, "绑定监听");
         PermissionUtils.getInstance().setPermissionsObserver(this);
-        StartService.getInstance().registerSdkCallback(this);
+        StartService.getInstance().registerSdkCallback(TAG, this);
         ActivatePackage.getInstance().addActObserver(mActObserver);
     }
 
@@ -144,8 +133,8 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
     public void startInitEngine() {
         Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
-        ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
+        Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
+        ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
     }
 
     /***
@@ -158,6 +147,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     @Override
     public void onSdkInitSuccess() {
         Logger.i(TAG, "onSdkInitSuccess");
+        StartService.getInstance().unregisterSdkCallback(this);
         mViewModel.startMapActivity();
     }
 

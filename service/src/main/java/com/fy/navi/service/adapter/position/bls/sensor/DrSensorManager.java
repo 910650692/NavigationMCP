@@ -46,7 +46,6 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
     private static final double ACC_UNIT = 9.81;
     // 陀螺仪单位（系统给的是red/s，需要转成度/s)
     private static final double GYR_UNIT = 180 / 3.1415926;
-    private static final long MAX_TIME_MILLS = 20 * 1000;
     private boolean mIsSupported;
     private float mTemperature = 0;
     private float mAccXValue;
@@ -75,23 +74,18 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
 
     private boolean mIsEnable = true;
     private final AtomicBoolean mIsStarted;
-    private long mLastGyrTimeMills;
-    private long mLastAccTimeMills;
-    private long mLastPluseTimeMills;
     private Handler mHandler;
     private Handler mTemperatureHandler;
     private final LocSignData mLocSignData;
     private ScheduledFuture mScheduledFuture;
-    private final ILossRateAnalysisInterface mLossRateAnalysisInterface;
     private Sensor mAccelerometer;
     private static final int MSG_SEND_TEMPERATURE = 1;
     private SensorDirectChannel mDirectChannel;
     private MemoryFile mMemoryFile;
 
-    public DrSensorManager(Context context, IDrSensorListener listener, ILossRateAnalysisInterface lossRateAnalysisInterface) {
+    public DrSensorManager(Context context, IDrSensorListener listener) {
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(SENSOR_SERVICE);
         mListener = listener;
-        mLossRateAnalysisInterface = lossRateAnalysisInterface;
         mIsGyroReady = new AtomicInteger(0);
         mIsAccReady = new AtomicInteger(0);
         mAngleInfo = MountAngleManager.getInstance().getMountAngleInfo();
@@ -147,9 +141,6 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
             mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 1000 * 100, mHandler);//陀螺仪传感器
             mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 1000 * 100, mHandler);//加速度传感器
             mTemperatureHandler.sendEmptyMessage(MSG_SEND_TEMPERATURE);
-            mLastAccTimeMills = SystemClock.elapsedRealtime();
-            mLastGyrTimeMills = SystemClock.elapsedRealtime();
-            mLastPluseTimeMills = SystemClock.elapsedRealtime();
             startTimerTask();
         }
     }
@@ -187,7 +178,6 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
                     setLocAcce3DInfo(false);
                 }
                 setLocPulseInfo(false);
-//                checkValid();
             }
         };
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(mCustomTimer, 0, 100, TimeUnit.MILLISECONDS);
@@ -198,38 +188,6 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
         if (mScheduledFuture != null) {
             ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
             mCustomTimer = null;
-        }
-    }
-
-    private void checkValid() {
-        if (SystemClock.elapsedRealtime() - mLastAccTimeMills > MAX_TIME_MILLS) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(System.currentTimeMillis());
-            builder.append(";onSensorError no acc data more than mills=");
-            builder.append(SystemClock.elapsedRealtime() - mLastAccTimeMills);
-            Logger.e(TAG, builder.toString());
-            mListener.onSensorError(builder.toString());
-            mLastAccTimeMills = SystemClock.elapsedRealtime();
-        }
-        if (SystemClock.elapsedRealtime() - mLastGyrTimeMills > MAX_TIME_MILLS) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(System.currentTimeMillis());
-            builder.append(";onSensorError no gyr data more than mills=");
-            builder.append(SystemClock.elapsedRealtime() - mLastGyrTimeMills);
-            Logger.e(TAG, builder.toString());
-            mListener.onSensorError(builder.toString());
-            mLastGyrTimeMills = SystemClock.elapsedRealtime();
-        }
-        if (SystemClock.elapsedRealtime() - mLastPluseTimeMills > MAX_TIME_MILLS) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(System.currentTimeMillis());
-            builder.append(";onSensorError no pluse data more than mills=");
-            builder.append(SystemClock.elapsedRealtime() - mLastPluseTimeMills);
-            builder.append("  speed=");
-            builder.append(mCarSpeed);
-            Logger.e(TAG, builder.toString());
-            mListener.onSensorError(builder.toString());
-            mLastPluseTimeMills = SystemClock.elapsedRealtime();
         }
     }
 
@@ -384,8 +342,6 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
 
                     if (sensorType == Sensor.TYPE_ACCELEROMETER) {
                         //加速度
-                        mLossRateAnalysisInterface.analysis(AnalysisType.ACC);
-                        mLastAccTimeMills = SystemClock.elapsedRealtime();
                         mAccXValue = (float) (x / ACC_UNIT);
                         mAccYValue = (float) (y / ACC_UNIT);
                         mAccZValue = (float) (z / ACC_UNIT);
@@ -397,8 +353,6 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
                         }
                     } else {
                         //陀螺仪
-                        mLossRateAnalysisInterface.analysis(AnalysisType.GYR);
-                        mLastGyrTimeMills = SystemClock.elapsedRealtime();
                         mGyroXValue = (float) (x * GYR_UNIT);
                         mGyroYValue = (float) (y * GYR_UNIT);
                         mGyroZValue = (float) (z * GYR_UNIT);
@@ -421,13 +375,11 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
      */
     public void onSpeedChanged(float speed) {
         //        Logger.d(TAG, "  onVelocityPulseChanged=" + speed);
-        mLastPluseTimeMills = SystemClock.elapsedRealtime();
         int ratio = 1;
         if (mGear == PositionConstant.GearType.GEAR_REVERSE) {
             ratio = -1;
         }
         mCarSpeed = ratio * speed;
-        mLossRateAnalysisInterface.analysis(AnalysisType.PLUSE);
         if (mIsRecordRaw) {
             setLocPulseInfo(true);
         }

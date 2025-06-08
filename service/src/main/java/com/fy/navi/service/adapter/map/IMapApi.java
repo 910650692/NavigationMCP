@@ -20,13 +20,17 @@ import java.util.ArrayList;
  */
 public interface IMapApi {
 
+    void initMapService();
+
+    void unInitMapService();
+
     /**
-     * 初始化 MapService
+     * 初始化 MapView
      *
      * @param mapTypeId
      * @return
      */
-    boolean initMapService(MapType mapTypeId);
+    boolean createMapView(MapType mapTypeId);
 
     /**
      * 绑定一个map
@@ -35,10 +39,7 @@ public interface IMapApi {
      */
     void bindMapView(IBaseScreenMapView mapView);
 
-    /**
-     * 绑定HudMapView
-     */
-    void bindHudMapView();
+    void changeMapView(IBaseScreenMapView mapView);
 
     /**
      * 解绑一个map
@@ -50,7 +51,7 @@ public interface IMapApi {
     /**
      * 销毁MapService 应用退出时执行
      */
-    void unitMapService(MapType mapTypeId);
+    void destroyMapView(MapType mapTypeId);
 
     /**
      * 注册回调

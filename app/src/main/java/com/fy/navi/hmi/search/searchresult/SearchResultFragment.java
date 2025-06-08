@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentSearchResultBinding;
@@ -136,16 +137,22 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
     /**
      * 静默搜索回调
      * @param searchResultEntity 搜索回调实体类
+     * @param taskId 任务id
      */
-    public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
-        mBinding.scenePoiList.notifySilentSearchResult(searchResultEntity);
+    public void notifySilentSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        mBinding.scenePoiList.notifySilentSearchResult(taskId, searchResultEntity);
     }
 
     /**
      * 路线变化回调
      */
     public void onRouteSelected() {
-        closeAllFragmentUpRoute();
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                closeAllFragmentUpRoute();
+            }
+        });
     }
 
     /**

@@ -12,6 +12,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.hmi.splitscreen.SRFloatWindowService;
 import com.fy.navi.mapservice.bean.INaviConstant;
@@ -31,8 +32,7 @@ import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
 import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
 import com.fy.navi.mapservice.common.INaviAutoStatusCallback;
 import com.fy.navi.mapservice.util.ExportConvertUtil;
-import com.fy.navi.service.AppContext;
-import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -730,7 +730,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     private void formatEtaInfo() {
         //传入格式化之后的剩余时间、剩余距离、预计到达
         final String[] etaDistance = ConvertUtils.formatDistanceArray(
-                AppContext.getInstance().getMContext(), mBaseTurnInfo.getAllDist());
+                AppCache.getInstance().getMContext(), mBaseTurnInfo.getAllDist());
         final StringBuilder builder = new StringBuilder();
         if (etaDistance.length > 0) {
             builder.append(etaDistance[0]);
@@ -744,11 +744,11 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
         final int remainTime = mBaseTurnInfo.getAllTime();
         final String formatTime = TimeUtils.switchHourAndMimuteFromSecond(
-                AppContext.getInstance().getMContext(), remainTime);
+                AppCache.getInstance().getMContext(), remainTime);
         mBaseTurnInfo.setFormatTime(formatTime);
 
         final String arrivalTime = TimeUtils.getArriveTime(
-                AppContext.getInstance().getMContext(), remainTime);
+                AppCache.getInstance().getMContext(), remainTime);
         mBaseTurnInfo.setFormatArrive(arrivalTime);
         final String arrivalDay = TimeUtils.getArriveDay(remainTime);
         mBaseTurnInfo.setFormatDay(arrivalDay);
@@ -949,16 +949,16 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     @Override
     public void openMap(final String clientPkg) {
         Logger.i(TAG, clientPkg + " openMap");
-        if (null != AppContext.getInstance().getMContext()) {
+        if (null != AppCache.getInstance().getMContext()) {
             try {
-                final String appPkgName = AppContext.getInstance().getMContext().getPackageName();
-                final PackageManager packageManager = AppContext.getInstance().getMContext().getPackageManager();
+                final String appPkgName = AppCache.getInstance().getMContext().getPackageName();
+                final PackageManager packageManager = AppCache.getInstance().getMContext().getPackageManager();
                 final Intent launcherIntent = packageManager.getLaunchIntentForPackage(appPkgName);
                 if (null != launcherIntent) {
                     launcherIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     final ActivityOptions options = ActivityOptions.makeBasic();
                     options.setLaunchDisplayId(0);
-                    AppContext.getInstance().getMContext().startActivity(launcherIntent, options.toBundle());
+                    AppCache.getInstance().getMContext().startActivity(launcherIntent, options.toBundle());
                 } else {
                     Logger.e(TAG, "can't find map hmi");
                 }
@@ -1012,8 +1012,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             return;
         }
 
-        final int appForeGroundStatus = NaviPackage.getInstance().getIsAppInForeground();
-        if (AutoMapConstant.AppRunStatus.DESTROYED == appForeGroundStatus) {
+        final boolean appForeGroundStatus = ProcessManager.isAppInForeground();
+        if (appForeGroundStatus) {
             //App未打开状态，启动应用并通过intent传递搜索关键字
             processJumpPage(INaviConstant.OpenIntentPage.SEARCH_PAGE, keyword, null);
         } else {
@@ -1115,18 +1115,18 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
      */
     private void processJumpPage(final int pageIntent, final String keyword,
                                  final PoiInfoEntity poiInfo) {
-        if (null != AppContext.getInstance().getMContext()) {
+        if (null != AppCache.getInstance().getMContext()) {
             try {
                 Logger.d(TAG, "processJumpPage");
                 final BaseActivity baseActivity = StackManager.getInstance()
                         .getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
                 Intent targetIntent;
                 if (null == baseActivity) {
-                    final String appPkgName = AppContext.getInstance().getMContext().getPackageName();
-                    final PackageManager packageManager = AppContext.getInstance().getMContext().getPackageManager();
+                    final String appPkgName = AppCache.getInstance().getMContext().getPackageName();
+                    final PackageManager packageManager = AppCache.getInstance().getMContext().getPackageManager();
                     targetIntent = packageManager.getLaunchIntentForPackage(appPkgName);
                 } else {
-                    targetIntent= new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
+                    targetIntent= new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
                 }
                 if (null != targetIntent) {
                     Logger.d(TAG, "processJumpPage: null != targetIntent");
@@ -1152,7 +1152,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     if (null != targetIntent) {
                         final ActivityOptions options = ActivityOptions.makeBasic();
                         options.setLaunchDisplayId(0);
-                        AppContext.getInstance().getMContext().startActivity(targetIntent, options.toBundle());
+                        AppCache.getInstance().getMContext().startActivity(targetIntent, options.toBundle());
                     }
                 }
             } catch (NullPointerException exception) {

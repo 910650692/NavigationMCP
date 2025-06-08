@@ -49,7 +49,7 @@ public class OfflineSearchResultModel extends BaseModel<OfflineSearchViewModel> 
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
             final ThreadManager threadManager = ThreadManager.getInstance();
             threadManager.postUi(() -> {
-                mViewModel.notifySearchResult(searchResultEntity);
+                mViewModel.notifySearchResult(taskId,searchResultEntity);
             });
         } else {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId + " ,111: " + mSearchPackage.getCurrentCallbackId());

@@ -29,8 +29,6 @@ public interface IMapPackageCallback {
 
     default void onMapScaleChanged(MapType mapTypeId, int currentScale) {}
 
-    default void onMapInitSuccess(MapType mapTypeId, boolean success) {}
-
     default void onMapLoadSuccess(MapType mapTypeId) {}
 
     default void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {}

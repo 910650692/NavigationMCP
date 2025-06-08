@@ -7,14 +7,15 @@
         android:id="@+id/search_filter_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:visibility="visible"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <com.fy.navi.ui.view.SkinScrollView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_412"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:scrollbars="none"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
@@ -119,28 +120,28 @@
             android:id="@+id/search_filter_confirm"
             android:layout_width="@dimen/dp_268"
             android:layout_height="@dimen/dp_90"
-            android:gravity="center"
-            android:background="@drawable/bg_confirm"
-            android:text="@string/dsc_confirm"
             android:layout_marginStart="@dimen/dp_40"
             android:layout_marginBottom="@dimen/dp_40"
+            android:background="@drawable/bg_confirm"
+            android:gravity="center"
+            android:text="@string/dsc_confirm"
             android:textColor="@color/search_main_tab_bg_fff"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="@dimen/sp_34"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:textSize="@dimen/sp_34"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/search_filter_cancel"
             android:layout_width="@dimen/dp_268"
             android:layout_height="@dimen/dp_90"
-            android:gravity="center"
-            android:background="@drawable/bg_cancel"
-            android:text="@string/dsc_reset"
-            android:layout_marginBottom="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_40"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="@dimen/dp_40"
+            android:background="@drawable/bg_cancel"
+            android:gravity="center"
+            android:text="@string/dsc_reset"
+            android:textSize="@dimen/sp_34"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:textSize="@dimen/sp_34"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

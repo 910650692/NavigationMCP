@@ -2,7 +2,6 @@ package com.fy.navi.service.adapter.user.account.bls;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
@@ -27,7 +26,7 @@ import com.autonavi.gbl.user.account.model.QRCodeLoginResult;
 import com.autonavi.gbl.user.account.model.VerificationCodeResult;
 import com.autonavi.gbl.user.account.observer.IAccountServiceObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -50,7 +49,7 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     protected AccountAdapterImplHelper(final AccountService accountService) {
         mAccountResultHashtable = new Hashtable<>();
         mAccountService = accountService;
-        mAccountManager = AccountManager.get(AppContext.getInstance().getMContext());
+        mAccountManager = AccountManager.get(AppCache.getInstance().getMContext());
     }
 
     protected void initAccountService() {

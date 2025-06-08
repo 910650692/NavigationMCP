@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.search.IOnFilterItemClickListener;
@@ -80,7 +81,12 @@ public class FilterListAdapter extends RecyclerView.Adapter<FilterListAdapter.Ho
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder localInfo is null");
             return;
         }
-        holder.mFilterItemBinding.filterText.setText(localInfo.getName());
+        String filterTitle = "";
+        String filterTitleMore = ResourceUtils.Companion.getInstance().getString(R.string.filter_select_more);
+        if(!ConvertUtils.isEmpty(localInfo.getName())){
+            filterTitle = localInfo.getName().endsWith(filterTitleMore) ? localInfo.getName().replace(filterTitleMore,"") : localInfo.getName();
+        }
+        holder.mFilterItemBinding.filterText.setText(filterTitle);
         holder.mFilterItemBinding.filterImg.setImageResource(ConvertUtils.equals(mCurrentExpandName,
                 localInfo.getName()) ? R.drawable.img_up_48 : R.drawable.img_under_the_48);
         if (localInfo.getCategoryLocalInfos() != null && !localInfo.getCategoryLocalInfos().isEmpty()) {
