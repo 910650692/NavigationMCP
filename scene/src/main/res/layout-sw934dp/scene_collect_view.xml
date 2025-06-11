@@ -37,7 +37,7 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
                 android:background="@drawable/bg_setting_checkbox"
-                android:visibility="@{(SceneCollectViewImpl.mPowerType == 1 || SceneCollectViewImpl.mPowerType == 2) ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 android:layout_marginTop="24dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

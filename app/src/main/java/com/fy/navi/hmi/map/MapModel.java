@@ -24,13 +24,15 @@ import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
-import com.fy.navi.fsa.FsaConstant;
-import com.fy.navi.fsa.MyFsaService;
+import com.fy.navi.hmi.setting.SettingFragment;
+import com.fy.navi.hmi.splitscreen.SplitScreenManager;
+import com.fy.navi.utils.ThreeFingerFlyingScreenManager;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.account.AccountQRCodeLoginFragment;
 import com.fy.navi.hmi.message.MessageCenterHelper;
@@ -74,6 +76,7 @@ import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
 import com.fy.navi.service.define.route.RouteTMCParam;
+import com.fy.navi.service.define.screen.ScreenType;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -144,7 +147,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ImmersiveStatusScene.IImmersiveStatusCallBack, IAosRestrictedObserver, IPositionPackageCallback,
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack
-        , ForecastCallBack, SearchResultCallback {
+        , ForecastCallBack, SearchResultCallback, SplitScreenManager.OnScreenModeChangedListener {
     private final MapPackage mapPackage;
     private final LayerPackage layerPackage;
     private final PositionPackage positionPackage;
@@ -182,7 +185,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private final AccountPackage mAccountPackage;
     private NaviStatusPackage mNaviStatusPackage;
     private boolean mLoadMapSuccess = true;  //只加载一次
-    private boolean ndScreen = false; //是否进入了ND分屏
     // 24小时对应的毫秒数：24 * 60 * 60 * 1000 = 86,400,000
     private final long MILLIS_IN_24_HOURS = 86400000;
     private History mUncompletedNavi;
@@ -233,6 +235,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onCreate() {
         super.onCreate();
+        SplitScreenManager.getInstance().registerListener(this, TAG);
         mViewModel.initVisibleAreaPoint();
         Logger.d("MapViewModelonCreate1");
     }
@@ -255,6 +258,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         speedMonitor.unInit();
         mapModelHelp.unInit();
         cruisePackage.unregisterObserver(mViewModel.mScreenId);
+        SplitScreenManager.getInstance().unRegisterListener(this, TAG);
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
@@ -278,14 +282,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
     }
 
-    public void ndChangeScreen(String path,boolean isScreen) {
-        mapVisibleAreaDataManager.loadData(path);
-        ndScreen = isScreen;
-    }
-
     public void loadVisibleAreaJson(String jsonPath) {
-        Logger.d("loadVisibleAreaJson", "loadVisibleAreaJson:" + ndScreen);
-        if (ndScreen) {
+        Logger.d("loadVisibleAreaJson", "loadVisibleAreaJson:" + SplitScreenManager.getInstance().isInMultiWindow());
+        if (SplitScreenManager.getInstance().isInMultiWindow()) {
             return;
         }
         mapVisibleAreaDataManager.loadData(jsonPath);
@@ -375,24 +374,42 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     /**
      * 设置底图中心点相对于屏幕偏移量.
      *
-     * @param frameLayoutWidth fragment的宽度
      */
-    public void setMapCenterInScreen(int frameLayoutWidth) {
-        Logger.i(TAG, "setMapCenterInScreen: " + frameLayoutWidth);
-        MapVisibleAreaInfo mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+    public void setMapCenterInScreen() {
+        Logger.i(TAG, "setMapCenterInScreen");
+        MapVisibleAreaInfo mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
+        if(!mViewModel.isFragmentStackNull()){
+            if (mViewModel.getTopFragment(SettingFragment.class)){
+                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+            } else {
+                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
+            }
+        }
+        MapMode mapModel = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
+        Logger.i(TAG, "setMapCenterInScreen (" + mapVisibleAreaInfo.getMleftscreenoffer() + "," + mapVisibleAreaInfo.getMtopscreenoffer() + ")" + ", mapMode: " + mapModel.ordinal());
+        if(mapModel == MapMode.NORTH_2D){
+            Logger.i(TAG, "setMapCenterInScreen NORTH_2D");
+            mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), (mapVisibleAreaInfo.getMtopscreenoffer() * 3) / 4);
+            return;
+        }
         mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
     }
+
 
     /**
      * 恢复底图中心点在屏幕上的位置.
      */
     public void resetMapCenterInScreen() {
         Logger.i(TAG, "resetMapCenterInScreen");
-//        goToCarPosition();
-//        MapVisibleAreaInfo mapVisibleAreaInfo= getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
-//        mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP,mapVisibleAreaInfo.getMleftscreenoffer(),mapVisibleAreaInfo.getMtopscreenoffer());
+        setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
+        goToCarPosition();
+        setMapCenterInScreen();
         mViewModel.showOrHideSelfParkingView(false);
         stopCruise();
+    }
+
+    public void setFollowMode(MapType mapType, boolean bFollow){
+        layerPackage.setFollowMode(mapType, bFollow);
     }
 
     @Override
@@ -446,10 +463,20 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             sendBuryPointForWakeup();
         }
 
+        //三指飞屏 并将MapActivity推至后台
+        openThreeFingerFlyingScreen(touchEvent);
+    }
+
+    private void openThreeFingerFlyingScreen(MotionEvent touchEvent) {
         //多指左滑打开仪表地图   多指右滑关闭仪表地图
-//        if (touchEvent != null && aiwaysGestureManager != null) {
-//            aiwaysGestureManager.onTouchEvent(touchEvent);
-//        }
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                if (touchEvent != null && aiwaysGestureManager != null) {
+                    aiwaysGestureManager.onTouchEvent(touchEvent);
+                }
+            }
+        });
     }
 
     @Override
@@ -484,6 +511,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus currentImersiveStatus) {
+        Logger.d(TAG, "onImmersiveStatusChange: " + parkingViewExist() + ", currentImersiveStatus: " + currentImersiveStatus);
         //是触控态的时候显示回车位   否则隐藏
 //        if (Boolean.FALSE.equals(mViewModel.bottomNaviVisibility.get())) return;
         if (parkingViewExist()) {
@@ -500,7 +528,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
         if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && mSettingPackage.getAutoScale()) {
             Logger.i(TAG, "锁定比例尺，触摸态关闭动态比例尺，沉浸态开启比例尺！");
-            boolean isOpen = !naviPackage.getFixedOverViewStatus() && currentImersiveStatus == ImersiveStatus.IMERSIVE && !naviPackage.getPreviewStatus();
+            boolean isOpen = !naviPackage.getFixedOverViewStatus() &&
+                    !naviPackage.getClusterFixOverViewStatus() && currentImersiveStatus ==
+                    ImersiveStatus.IMERSIVE && !naviPackage.getPreviewStatus();
             layerPackage.openDynamicLevel(mapTypeId, isOpen);
         }
 
@@ -670,11 +700,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.SELECT_ROUTE:
                     //选择路线
-                    if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)
-                            || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
-                        final int routeIndex = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.ROUTE_INDEX, 0);
-                        mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, routeIndex);
-                    }
+                    ThreadManager.getInstance().execute(() -> {
+                        if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)
+                                || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
+                            final int routeIndex = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.ROUTE_INDEX, 0);
+                            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, routeIndex);
+                        }
+                    });
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.ALONG_SEARCH:
                     final String passBy = bundle.getString(IVrBridgeConstant.VoiceIntentParams.KEYWORD);
@@ -1533,17 +1565,25 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         aiwaysGestureManager = new AiWaysGestureManager(AppCache.getInstance().getMContext(), new AiwaysGestureListener() {
             @Override
             public boolean mutiFingerSlipAction(GestureEvent gestureEvent, float startX, float startY, float endX, float endY, float velocityX, float velocityY) {
-                if ((gestureEvent == GestureEvent.THREE_GINGER_LEFT_SLIP) || (gestureEvent == GestureEvent.DOUBLE_GINGER_LEFT_SLIP)) {
-                    Logger.d(TAG, "三指左滑或者双指左滑=====||||");
-                    MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "2");
+                if ((gestureEvent == GestureEvent.THREE_GINGER_LEFT_SLIP)) {
+                    Logger.d(TAG, "三指左滑=====||||");
+                    ThreeFingerFlyingScreenManager.getInstance().triggerFlyingScreen(true);
+                    if (StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).isTaskRoot() && ProcessManager.isAppInForeground()){
+                        StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).moveTaskToBack(true);
+                    }
                     return true;
-                } else if ((gestureEvent == GestureEvent.THREE_GINGER_RIGHT_SLIP) || (gestureEvent == GestureEvent.DOUBLE_GINGER_RIGHT_SLIP)) {
-                    Logger.d(TAG, "三指右滑或者双指右滑=====||||");
-                    MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "3");
+                } else if ((gestureEvent == GestureEvent.THREE_GINGER_RIGHT_SLIP)) {
+                    Logger.d(TAG, "三指右滑=====||||");
+                    ThreeFingerFlyingScreenManager.getInstance().triggerFlyingScreen(false);
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onScreenModeChanged(ScreenType screenType, String jsonPath) {
+        mapVisibleAreaDataManager.loadData(jsonPath);
     }
 }

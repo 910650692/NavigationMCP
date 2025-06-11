@@ -143,13 +143,22 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
 
     /**
      * 搜索结果回调
+     * @param taskId 任务id
      * @param searchResultEntity searchResultEntity
      */
-    public void onSearchResult(final SearchResultEntity searchResultEntity) {
+    public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             ThreadManager.getInstance().postUi(mTimeoutTask);
+            return;
+        }
+        if (ConvertUtils.isEmpty(mScreenViewModel)) {
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
+                + " currentId: " + mScreenViewModel.getMTaskId());
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
         showLoading(false);

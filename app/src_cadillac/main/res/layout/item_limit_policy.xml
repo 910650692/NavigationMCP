@@ -22,7 +22,7 @@
             android:layout_marginStart="@dimen/dp_40"
             android:text="政策1"
             android:textColor="@color/main_map_limit_title_color"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,7 +34,7 @@
             android:text="限行中"
             android:background="@color/main_map_limit_restricted_background"
             android:textColor="@color/main_map_limit_restricted"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_32"
             android:gravity="center"
             android:layout_marginEnd="@dimen/dp_40"
             android:focusable="false"
@@ -50,7 +50,7 @@
             android:layout_marginStart="@dimen/dp_40"
             android:text="@string/limit_driver_time_desc"
             android:textColor="@color/main_map_limit_title_color"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
@@ -65,7 +65,7 @@
             tools:text="024年11月2日起，工作日7:00-20:00限
 行(节假日不限)。"
             android:textColor="@color/main_map_limit_loading"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_time_title" />
 
@@ -77,7 +77,7 @@
             android:layout_marginStart="@dimen/dp_40"
             android:text="@string/limit_driver_ruler_desc"
             android:textColor="@color/main_map_limit_title_color"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_time" />
@@ -92,7 +92,7 @@
             tools:text="024年11月2日起，工作日7:00-20:00限
 行(节假日不限)。"
             android:textColor="@color/main_map_limit_loading"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_desc_title" />
     </com.fy.navi.ui.view.SkinConstraintLayout>

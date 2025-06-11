@@ -100,13 +100,16 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onPause() {
         super.onPause();
-        Logger.i(getClass().getSimpleName(), "onPause");
+        Logger.i("NaviApp_Search", "onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Logger.i(getClass().getSimpleName(), "onStop");
+        if (mActivity != null) {
+            mActivity.setMLastClosedFragmentName(getClass().getSimpleName());
+        }
+        Logger.i("NaviApp_Search", "onStop" + getClass().getSimpleName());
     }
 
     @Override
@@ -259,5 +262,13 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         getLifecycle().addObserver(mViewModel);
         mBinding.setLifecycleOwner(this);
         mViewModel.attachView(this, mScreenId);
+    }
+
+    public String getLastClosedFragmentName() {
+        if (mActivity != null) {
+            return mActivity.getLastClosedFragmentName();
+        } else {
+            return "";
+        }
     }
 }

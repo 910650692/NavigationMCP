@@ -12,6 +12,8 @@ import com.fy.navi.service.define.route.RouteCurrentPathParam;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.vrbridge.IVrBridgeConstant;
 import com.fy.navi.vrbridge.MapStateManager;
+import com.fy.navi.vrbridge.VrBridgeManager;
+import com.fy.navi.vrbridge.bean.SingleCommandInfo;
 
 public class NaviCommandImpl implements NaviCommandListener {
 
@@ -44,7 +46,13 @@ public class NaviCommandImpl implements NaviCommandListener {
     @Override
     public CallResponse onRouteNavi(final String sessionId, final ArrivalBean dest, final PoiCallback poiCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onRouteNavi: sessionId = " + sessionId + ", dest = " + dest);
-        return VoiceSearchManager.getInstance().handleCommonSearch(sessionId, dest, poiCallback);
+        final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
+        if (saveCommand) {
+            VrBridgeManager.getInstance().saveNaviCommand(sessionId, dest, poiCallback);
+            return CallResponse.createSuccessResponse();
+        } else {
+            return VoiceSearchManager.getInstance().handleCommonSearch(sessionId, dest, poiCallback);
+        }
     }
 
     /**
@@ -59,11 +67,12 @@ public class NaviCommandImpl implements NaviCommandListener {
     @Override
     public CallResponse onPassbySearch(final String sessionId, final String passBy, final String poiType, final PoiCallback poiCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onPassBySearch: sessionId = " + sessionId + ", passBy = " + passBy + ", poiType = " + poiType);
+        MapStateManager.getInstance().openMapWhenBackground();
+
         if (TextUtils.isEmpty(sessionId) || TextUtils.isEmpty(passBy)) {
             Logger.e(IVrBridgeConstant.TAG, "session or passBy is empty");
             return CallResponse.createFailResponse("沿途搜参数为空");
         }
-
         if (!MapStateManager.getInstance().isNaviStatus()) {
             //非导航态不支持沿途搜
             Logger.w(IVrBridgeConstant.TAG, "alongSearch in no navigation");

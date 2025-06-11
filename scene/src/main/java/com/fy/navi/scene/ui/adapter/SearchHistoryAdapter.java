@@ -52,6 +52,14 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private boolean mIsShowIndex = false;//显示icon还是序号,默认显示icon
     private History mHistory;
     private boolean mIsHasFooter = false;
+    //历史记录列表界面是否仅显示历史导航记录。目前沿途搜界面仅需要展示历史导航记录
+    private boolean mIsOnlyShowNaviRecord = false;
+
+    public void setMIsOnlyShowNaviRecord(final boolean isOnlyShowNaviRecord) {
+        this.mIsOnlyShowNaviRecord = isOnlyShowNaviRecord;
+    }
+
+
 
     public int getHomeCompanyType() {
         return mHomeCompanyType;
@@ -129,8 +137,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
-        if (holder instanceof ResultHolder) {
-            ResultHolder resultHolder = (ResultHolder) holder;
+        if (holder instanceof ResultHolder resultHolder) {
             resultHolder.resultItemBinding.setPoiBean(mPoiEntities.get(position));
             mHistory = mPoiEntities.get(position);
             resultHolder.resultItemBinding.setLayoutPosition(String.valueOf(position + 1));
@@ -253,13 +260,16 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         //取消收藏： 仅当点击时，再从高德云端获取收藏数据，减少主线程刷新压力
                         final PoiInfoEntity favInfo = getFavoriteInfo(mPoiEntities.get(position));
                         mBehaviorPackage.removeFavorite(favInfo);
-                        ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_cancel_favorite));
+                        ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.
+                                Companion.getInstance().getString(R.string.sha_cancel_favorite));
                     } else {
                         addFavoriteInfo(mPoiEntities.get(position));
-                        ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_has_favorite));
+                        ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.
+                                Companion.getInstance().getString(R.string.sha_has_favorite));
                     }
-                    notifyDataSetChanged();
-                    resultHolder.resultItemBinding.swipeMenuLayout.smoothClose();
+                    notifyItemChanged(position);
+//                    notifyDataSetChanged();
+                    resultHolder.resultItemBinding.swipeMenuLayout.quickClose();
                 });
             }
             resultHolder.resultItemBinding.sllDelete.setOnClickListener(v -> {
@@ -288,7 +298,13 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         mItemClickListener.onDeleteClick(mPoiEntities);
                     }
                 }
-                final List<History> historyList = mSearchPackage.getSearchKeywordRecord();
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mIsOnlyShowNaviRecord: " + mIsOnlyShowNaviRecord);
+                final List<History> historyList;
+                if (mIsOnlyShowNaviRecord) {
+                    historyList = mSearchPackage.getNaviRecord();
+                } else {
+                    historyList = mSearchPackage.getSearchKeywordRecord();
+                }
                 ThreadManager.getInstance().postUi(() -> {
                     notifyList(historyList);
                 });
@@ -297,7 +313,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         } else if (holder instanceof FooterViewHolder){
             ((FooterViewHolder) holder).historyFooterBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(final View view) {
                     if (mItemClickListener!= null) {
                         mItemClickListener.onDeleteAllClick();
                     }
@@ -322,16 +338,16 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     /**
      * 添加收藏
      *
-     * @param history
+     * @param history 历史记录
      */
-    private void addFavoriteInfo(History history) {
-        GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
-        PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+    private void addFavoriteInfo(final History history) {
+        final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
+        final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                 .setName(history.getMEndPoiName())
                 .setAddress(history.getMEndPoiName())
                 .setPid(history.getMPoiId())
                 .setPoint(historyPoint);
-        FavoriteInfo info = new FavoriteInfo().setCommonName(0);
+        final FavoriteInfo info = new FavoriteInfo().setCommonName(0);
         poiInfoEntity.setFavoriteInfo(info);
         mBehaviorPackage.addFavorite(poiInfoEntity, 0);
 //        behaviorPackage.addFavoriteData(poiInfoEntity, 0);

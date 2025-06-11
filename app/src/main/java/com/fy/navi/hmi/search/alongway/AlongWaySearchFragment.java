@@ -73,9 +73,15 @@ public class AlongWaySearchFragment extends BaseFragment<FragmentAlongWayBinding
         if (powerType == 0) {
             categories = getResources().getStringArray(R.array.along_way_categories_gas_name);
             iconArray = getResources().obtainTypedArray(R.array.along_way_category_gas_icons);
-        }else {
+        } else if (powerType == 1) {
             categories = getResources().getStringArray(R.array.along_way_categories_charging_name);
             iconArray = getResources().obtainTypedArray(R.array.along_way_category_charging_icons);
+        } else if (powerType == 2) {
+            categories = getResources().getStringArray(R.array.along_way_categories_phev_name);
+            iconArray = getResources().obtainTypedArray(R.array.along_way_category_phev_icons);
+        } else {
+            categories = getResources().getStringArray(R.array.along_way_categories_gas_name);
+            iconArray = getResources().obtainTypedArray(R.array.along_way_category_gas_icons);
         }
         mBinding.sceneQuickSearchView.setQuickSearchListAdapterData(iconArray, categories);
         mBinding.sceneQuickSearchView.setSearchType(AutoMapConstant.SearchType.ALONG_WAY_SEARCH);
@@ -85,11 +91,12 @@ public class AlongWaySearchFragment extends BaseFragment<FragmentAlongWayBinding
 
     /**
      * 搜索结果回调
+     * @param taskId 任务id
      * @param searchResultEntity 搜索结果实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
-            mBinding.sceneQuickSearchView.notifySearchResult(searchResultEntity);
+            mBinding.sceneQuickSearchView.notifySearchResult(taskId, searchResultEntity);
         }
     }
 

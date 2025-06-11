@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.navi.bls;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -37,6 +38,7 @@ import com.autonavi.gbl.util.model.BinaryStream;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
 import com.fy.navi.service.adapter.navi.NaviAdapter;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -400,7 +402,6 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onUpdateTrafficLightCountdown(final ArrayList<TrafficLightCountdown> list) {
-        Logger.e(MapDefaultFinalTag.LAYER_SERVICE_TAG, "红绿灯倒计时回调接口信息 = " + GsonUtils.toJson(list));
         if (ConvertUtils.isEmpty(mGuidanceObservers)) {
             return;
         }
@@ -462,11 +463,26 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
      */
     @Override
     public void onReroute(final RouteOption rerouteOption) {
-        Logger.i(TAG, "onReroute: " + rerouteOption.getRouteReqId());
-        if (rerouteOption.getRouteType() == RouteType.RouteTypeYaw
-                || rerouteOption.getRouteType() == RouteType.RouteTypeTMC) {
+        if (rerouteOption == null) {
+            return;
+        }
+        Logger.i(TAG, "onReroute: ", "RouteReqId: ", rerouteOption.getRouteReqId(),
+                " RouteType: ", rerouteOption.getRouteType());
+        if (rerouteOption.getRouteType() == RouteType.RouteTypeYaw) {
             final SoundInfoEntity soundInfo = new SoundInfoEntity();
-            soundInfo.setText("您已偏航，已为您重新规划路线");
+            String info = ResourceUtils.Companion.getInstance().getString(R.string.route_type_yaw);
+            soundInfo.setText(info);
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onPlayTTS(soundInfo);
+                    }
+                }
+            }
+        } else if (rerouteOption.getRouteType() == RouteType.RouteTypeTMC) {
+            final SoundInfoEntity soundInfo = new SoundInfoEntity();
+            String info = ResourceUtils.Companion.getInstance().getString(R.string.route_type_tmc);
+            soundInfo.setText(info);
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {

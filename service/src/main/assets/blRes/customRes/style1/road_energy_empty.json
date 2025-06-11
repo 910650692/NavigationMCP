@@ -1,8 +1,8 @@
 {
   "point_layer_item_style": {
     "normal_style": {
-      "poi_marker_id": "layer_layout_route_energy_empty",
-      "poi_marker_info": "marker_info_point_energy_empty"
+      "poi_marker_id": "layer_image_road_energy_empty",
+      "poi_marker_info": "{\"anchor\":5,\"x_ratio\":0.0,\"y_ratio\":1}"
     }
   }
 }

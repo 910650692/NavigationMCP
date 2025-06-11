@@ -51,7 +51,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_PREFERENCE;
     }
 

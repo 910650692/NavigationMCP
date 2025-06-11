@@ -107,10 +107,6 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
         return mCalibrationPackage.powerType();
     }
 
-    @Override
-    public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-
-    }
 
     @Override
     public void onNetSearchResult(int taskId,String searchKey,BaseRep result) {

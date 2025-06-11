@@ -8,6 +8,8 @@ import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TBT;
 import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TMC;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,6 +27,8 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.adapter.navi.NaviConstant;
@@ -39,12 +43,13 @@ import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.StackManager;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,48 +76,50 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * 保存场景状态
      */
     private void saveSceneStatus() {
-        ArrayList<Integer> list = mViewModel.getSceneStatus();
-        list.clear();
-        list.add(mBinding.sceneNaviViaInfo.getSceneState());
-        list.add(mBinding.sceneNaviLastMile.getSceneState());
-        list.add(mBinding.sceneNaviParallel.getSceneState());
-        list.add(mBinding.sceneNaviLanes.getSceneState());
-        list.add(mBinding.sceneNaviViaList.getSceneState());
-        list.add(mBinding.sceneNaviControlMore.getSceneState());
-        list.add(mBinding.sceneNaviPreference.getSceneState());
-        list.add(mBinding.sceneNaviTmc.getSceneState());
-        list.add(mBinding.sceneNaviEta.getSceneState());
-        list.add(mBinding.sceneNaviSpeed.getSceneState());
-        list.add(mBinding.sceneNaviSapa.getSceneState());
-        list.add(mBinding.sceneNaviCrossImage.getSceneState());
-        list.add(mBinding.sceneNaviControl.getSceneState());
-        list.add(mBinding.sceneNaviViaArrive.getSceneState());
-        list.add(mBinding.sceneNaviSapaDetail.getSceneState());
-        list.add(mBinding.sceneNaviChargeTip.getSceneState());
-        list.add(mBinding.sceneNaviContinue.getSceneState());
-        list.add(mBinding.sceneNaviCardDetail.getSceneState());
-        list.add(mBinding.sceneNaviViaDetail.getSceneState());
-        list.add(mBinding.sceneHandingCard.getSceneState());
+        Logger.i(TAG, "mViewModel = " + mViewModel);
+        if (mViewModel == null) {
+            return;
+        }
+        HashMap<NaviSceneId, Integer> map = mViewModel.getSceneStatus();
+        map.clear();
+        saveNaviSceneStatus(mBinding.sklRoot, map);
+        saveNaviSceneStatus(mBinding.naviSceneContainer, map);
+        saveNaviSceneStatus(mBinding.sclTopContainer, map);
+        mViewModel.saveOverViewStatus();
+    }
+
+    private void saveNaviSceneStatus(ViewGroup root, HashMap<NaviSceneId, Integer> map) {
+        for (int i = 0; i < root.getChildCount(); i ++ ) {
+            View childView = root.getChildAt(i);
+            if (childView == null) {
+                continue;
+            }
+            if (childView instanceof NaviSceneBase) {
+                map.put(((NaviSceneBase<?, ?>) childView).mSceneId,
+                        ((NaviSceneBase<?, ?>) childView).getSceneState());
+            }
+        }
     }
 
     @Override
     public void onInitView() {
-        mBinding.sceneNaviControl.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviControlMore.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviPreference.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviTbt.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviCrossImage.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviSpeed.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviSapa.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviLanes.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviViaList.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviLastMile.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviViaInfo.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviViaArrive.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviSapaDetail.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneHandingCard.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviViaDetail.setScreenId(MapType.valueOf(mScreenId));
+        setScreenIdAndCategory(mBinding.sklRoot);
+        setScreenIdAndCategory(mBinding.naviSceneContainer);
+        setScreenIdAndCategory(mBinding.sclTopContainer);
         mBinding.sceneNaviPreference.registerRoutePreferenceObserver("navi fragment", mViewModel);
+    }
+
+    private void setScreenIdAndCategory(ViewGroup root) {
+        for (int i = 0; i < root.getChildCount(); i ++ ) {
+            View childView = root.getChildAt(i);
+            if (childView == null) {
+                continue;
+            }
+            if (childView instanceof NaviSceneBase) {
+                ((NaviSceneBase<?, ?>) childView).setCategory(NumberUtils.NUM_1);
+                ((NaviSceneBase<?, ?>) childView).setScreenId(MapType.valueOf(mScreenId));
+            }
+        }
     }
 
     @Override
@@ -143,32 +150,44 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * 不手动恢复，黑白模式切换后页面碰撞会有问题
      */
     private void restoreSceneStatus() {
-        ArrayList<Integer> list = mViewModel.getSceneStatus();
-        if (ConvertUtils.isEmpty(list)) {
+        Logger.i(TAG, "mViewModel = " + mViewModel);
+        if (null == mViewModel) {
+            return;
+        }
+        HashMap<NaviSceneId, Integer> map = mViewModel.getSceneStatus();
+        if (ConvertUtils.isEmpty(map)) {
             Logger.i(TAG, "restoreSceneStatus list is null");
             return;
         }
-        mBinding.sceneNaviViaInfo.setSceneState(list.get(0));
-        mBinding.sceneNaviLastMile.setSceneState(list.get(1));
-        mBinding.sceneNaviParallel.setSceneState(list.get(2));
-        mBinding.sceneNaviLanes.setSceneState(list.get(3));
-        mBinding.sceneNaviViaList.setSceneState(list.get(4));
-        mBinding.sceneNaviControlMore.setSceneState(list.get(5));
-        mBinding.sceneNaviPreference.setSceneState(list.get(6));
-        mBinding.sceneNaviTmc.setSceneState(list.get(7));
-        mBinding.sceneNaviEta.setSceneState(list.get(8));
-        mBinding.sceneNaviSpeed.setSceneState(list.get(9));
-        mBinding.sceneNaviSapa.setSceneState(list.get(10));
-        mBinding.sceneNaviCrossImage.setSceneState(list.get(11));
-        mBinding.sceneNaviControl.setSceneState(list.get(12));
-        mBinding.sceneNaviViaArrive.setSceneState(list.get(13));
-        mBinding.sceneNaviSapaDetail.setSceneState(list.get(14));
-        mBinding.sceneNaviChargeTip.setSceneState(list.get(15));
-        mBinding.sceneNaviContinue.setSceneState(list.get(16));
-        mBinding.sceneNaviCardDetail.setSceneState(list.get(17));
-        mBinding.sceneNaviViaDetail.setSceneState(list.get(18));
-        mBinding.sceneHandingCard.setSceneState(list.get(19));
+        restoreNaviSceneStatus(mBinding.sklRoot, map);
+        restoreNaviSceneStatus(mBinding.naviSceneContainer, map);
+        restoreNaviSceneStatus(mBinding.sclTopContainer, map);
+        mViewModel.restoreOverViewStatus();
+        refreshView();
         NaviSceneManager.getInstance().restoreList();
+    }
+
+    private void restoreNaviSceneStatus(ViewGroup root, HashMap<NaviSceneId, Integer> map) {
+        for (int i = 0; i < root.getChildCount(); i ++ ) {
+            View childView = root.getChildAt(i);
+            if (childView == null) {
+                continue;
+            }
+            if (childView instanceof NaviSceneBase) {
+                if (map.containsKey(((NaviSceneBase<?, ?>) childView).getMSceneId())) {
+                    Integer sceneState = map.get(((NaviSceneBase<?, ?>) childView).getMSceneId());
+                    if (sceneState != null) {
+                        ((NaviSceneBase<?, ?>) childView).setSceneState(sceneState);
+                    }
+                }
+            }
+        }
+    }
+
+    private void refreshView() {
+        Logger.i(TAG, "refreshView");
+        mBinding.sceneNaviControlMore.refreshView();
+        mBinding.sceneNaviControl.refreshView();
     }
 
     /**

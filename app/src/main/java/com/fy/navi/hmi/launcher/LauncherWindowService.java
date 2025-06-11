@@ -263,9 +263,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     }
 
     public static void startService() {
-        if (!TextUtils.equals("cadi", BuildConfig.FLAVOR)) return;
+        if (TextUtils.equals("buick", BuildConfig.FLAVOR)) return;
         Logger.i(TAG, "凯迪车型显示悬浮窗口！");
-        InstanceHolder.instance.init();
+        ThreadManager.getInstance().postUi(() -> {
+            InstanceHolder.instance.init();
+        });
     }
 
     public static void stopService() {

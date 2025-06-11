@@ -4,8 +4,6 @@ package com.fy.navi.hmi.navi;
 import android.annotation.SuppressLint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 
 import androidx.fragment.app.Fragment;
@@ -83,27 +81,31 @@ import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.ui.base.BaseModel;
 import com.fy.navi.ui.base.StackManager;
+import com.fy.navi.utils.ClusterMapOpenCloseListener;
+import com.fy.navi.utils.ClusterMapOpenCloseManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledFuture;
 
 public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implements
         IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
         IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack,
-        SearchResultCallback {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+        SearchResultCallback, ClusterMapOpenCloseListener {
+    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_MODEL;
     private final NaviPackage mNaviPackage;
     private final RoutePackage mRoutePackage;
     private final LayerPackage mLayerPackage;
     private final MapPackage mMapPackage;
     private final MessageCenterManager messageCenterManager;
+    private final ClusterMapOpenCloseManager mClusterMapOpenCloseManager;
+    private final NaviStatusPackage mNaviSatusPackage;
     private ImersiveStatus mCurrentStatus = ImersiveStatus.IMERSIVE;
     private List<NaviViaEntity> mViaList = new ArrayList<>();
     private NaviEtaInfo mNaviEtaInfo;
-
-    private Handler mHandler;
     private Runnable mRunnable;
     private int mEndSearchId;
 
@@ -135,6 +137,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private int mMoveStartDistance;
     private NextManeuverEntity mNextManeuverEntity;
     private boolean mIsNeedUpdateViaList;
+    private boolean mIsNaviClosed = true;
+    private ScheduledFuture mScheduledFuture;
+    private int mTimes = NumberUtils.NUM_8;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -142,6 +147,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mLayerPackage = LayerPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
         mSearchPackage = SearchPackage.getInstance();
+        mClusterMapOpenCloseManager = ClusterMapOpenCloseManager.getInstance();
+        mNaviSatusPackage = NaviStatusPackage.getInstance();
         mNetWorkUtils = NetWorkUtils.Companion.getInstance();
         messageCenterManager = MessageCenterManager.getInstance();
         mModelHelp = new NaviGuidanceHelp();
@@ -177,21 +184,26 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mCurrentNetStatus = mNetWorkUtils.checkNetwork();
         mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.registerCallBack(NaviConstant.KEY_NAVI_MODEL, this);
-        mHandler = new Handler(Looper.getMainLooper());
+        mClusterMapOpenCloseManager.addClusterMapOpenCloseListener(this);
         mRunnable = new Runnable() {
             @Override
             public void run() {
-                endPoiSearch();
-                mHandler.removeCallbacks(mRunnable);
-                mHandler.postDelayed(this,
-                        NumberUtils.NUM_3 * NumberUtils.NUM_60 * NumberUtils.NUM_1000);
+                try {
+                    endPoiSearch();
+                    ThreadManager.getInstance().removeHandleTask(mRunnable);
+                    ThreadManager.getInstance().
+                            postDelay(this,
+                                    NumberUtils.NUM_3 * NumberUtils.NUM_60 * NumberUtils.NUM_1000);
+                } catch (Exception e) {
+                    Logger.e(TAG, e.getMessage());
+                }
             }
         };
         // 因为生命周期是和HMI绑定的，如果页面重启并且是在导航台进入三分钟一次的终点POI查询
         if (NaviStatus.NaviStatusType.NAVING.equals(
-                NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
-            mHandler.removeCallbacks(mRunnable);
-            mHandler.post(mRunnable);
+                mNaviSatusPackage.getCurrentNaviStatus())) {
+            ThreadManager.getInstance().removeHandleTask(mRunnable);
+            ThreadManager.getInstance().postUi(mRunnable);
         }
         mNextManeuverEntity = new NextManeuverEntity();
     }
@@ -220,6 +232,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
         Logger.i(TAG, "startNavigation isNaviSuccess = " + isNaviSuccess);
         if (isNaviSuccess) {
+            mIsNaviClosed = false;
             final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
             if (isAutoScale) {
                 mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -227,10 +240,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             }
             drawEndPoint(mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP));
             // 开始三分钟查询一次终点POI信息
-            if (null != mHandler) {
-                mHandler.removeCallbacks(mRunnable);
-                mHandler.post(mRunnable);
-            }
+            ThreadManager.getInstance().removeHandleTask(mRunnable);
+            ThreadManager.getInstance().postUi(mRunnable);
             Logger.i(TAG, "startNaviSuccess");
             String isOpen = SettingPackage.getInstance().getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
             Logger.i(TAG, "isOpen:" + isOpen);
@@ -248,9 +259,74 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             final MapType mapTypeId = MapTypeManager.getInstance().
                     getMapTypeIdByName(mViewModel.mScreenId);
             mNaviPackage.addNaviRecord(true);
-            mMapPackage.goToCarPosition(mapTypeId);
-            mLayerPackage.setFollowMode(mapTypeId, true);
             mLayerPackage.setStartPointVisible(mapTypeId, false);
+            if (!openClusterOverView()) {
+                mMapPackage.goToCarPosition(mapTypeId);
+                mLayerPackage.setFollowMode(mapTypeId, true);
+            }
+        }
+    }
+
+    /**
+     * 开启由于仪表打开地图视图的全览
+     */
+    private boolean openClusterOverView() {
+        boolean isClusterMapOpen = mClusterMapOpenCloseManager.isClusterOpen();
+        Logger.i(TAG, "openClusterOverView isClusterMapOpen = " + isClusterMapOpen);
+        if (isClusterMapOpen) {
+            cancelClusterOverViewTimer();
+            if (mViewModel != null) {
+                mViewModel.naviPreviewSwitch(NumberUtils.NUM_1);
+            }
+            mNaviPackage.setClusterFixOverViewStatus(true);
+        }
+        return isClusterMapOpen;
+    }
+
+    /**
+     * 延时八秒关闭仪表地图触发的全览
+     */
+    private void closeClusterOverViewInEightSec() {
+        mNaviPackage.setClusterFixOverViewStatus(false);
+        initTimer();
+    }
+
+    /**
+     * 开始倒计时
+     */
+    public void initTimer() {
+        Logger.i(TAG, "initTimer");
+        cancelClusterOverViewTimer();
+        mTimes = NumberUtils.NUM_8;
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            if (mTimes == NumberUtils.NUM_0) {
+                ThreadManager.getInstance().postUi(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean overViewFix = mNaviPackage.getFixedOverViewStatus();
+                        Logger.i(TAG, " overViewFix = " +
+                                overViewFix);
+                        if (!overViewFix) {
+                            if (mViewModel != null) {
+                                mViewModel.naviPreviewSwitch(NumberUtils.NUM_0);
+                            }
+                        }
+                    }
+                });
+            }
+            mTimes--;
+        }, NumberUtils.NUM_0, NumberUtils.NUM_1);
+    }
+
+    /**
+     * 取消仪表退出八秒退出全览的倒计时
+     */
+    @Override
+    public void cancelClusterOverViewTimer() {
+        Logger.i(TAG, "cancelClusterOverViewTimer");
+        if (!ConvertUtils.isEmpty(mScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
         }
     }
 
@@ -264,12 +340,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
             ChargeInfo chargeInfo = chargeInfoList == null ? null : chargeInfoList.get(0);
             String businessTime = poiInfoEntity.getBusinessTime();
+            Logger.i(TAG, "businessTime = ", businessTime);
             int carType = OpenApiHelper.powerType();
             if (!ConvertUtils.isEmpty(chargeInfo) && carType == 1) {
                 int slowTotal = chargeInfo.getMSlowTotal();
                 int slowFree = chargeInfo.getMSlowFree();
                 int fastTotal = chargeInfo.getMFastTotal();
                 int fastFree = chargeInfo.getMFastFree();
+                Logger.i(TAG, "slowTotal = ", slowTotal, " slowFree = ",
+                        slowFree, " fastTotal = ", fastTotal, " fastFree = ", fastFree);
                 String chargeInfoStr = String.format(
                         ResourceUtils.Companion.getInstance().
                                 getString(R.string.navi_end_charge_info),
@@ -304,10 +383,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
         if (mIsShowCrossImage) {
             // 获得行驶过的距离
-            int moveDistance = mMoveStartDistance - naviInfoBean.getAllDist();
+            int moveDistance = mMoveStartDistance - naviInfoBean.getRemainDist();
             mViewModel.onCrossProgress(moveDistance);
         } else {
-            mMoveStartDistance = naviInfoBean.getAllDist();
+            mMoveStartDistance = naviInfoBean.getRemainDist();
         }
     }
 
@@ -339,13 +418,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onNaviStop() {
-        UserTrackPackage.getInstance().closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
-        mFilename = "";
-        mViewModel.onNaviStop();
-        mRoutePackage.removeAllRouteInfo(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
-        mLayerPackage.setVisibleGuideSignalLight(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), false);
-        mRoutePackage.clearRouteLine(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
-        mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
+        closeNavi();
     }
 
     @Override
@@ -460,14 +533,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mSearchPackage.unRegisterCallBack(NaviConstant.KEY_NAVI_MODEL);
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
+        mRoutePackage.unRegisterRouteObserver(NaviConstant.KEY_NAVI_MODEL);
+        mClusterMapOpenCloseManager.removeListener(this);
         if (mNaviPackage != null) {
             mNaviPackage.unregisterObserver(NaviConstant.KEY_NAVI_MODEL);
         }
         if (mTipManager != null) {
             mTipManager.unInit();
         }
-        mHandler.removeCallbacks(mRunnable);
-        mHandler = null;
+        ThreadManager.getInstance().postUi(mRunnable);
         mRunnable = null;
     }
 
@@ -476,7 +550,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                                         final ImersiveStatus currentImersiveStatus) {
         Logger.i(TAG, "NaviGuidanceModel currentImersiveStatus：" + currentImersiveStatus +
                 "，mCurrentStatus：" + mCurrentStatus);
-        if (!NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().
+        if (!NaviStatus.NaviStatusType.NAVING.equals(mNaviSatusPackage.
                 getCurrentNaviStatus())) {
             Logger.i(TAG, "Not in navigation, return");
             return;
@@ -550,7 +624,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void updateSceneVisible(final NaviSceneId sceneType, final boolean isVisible) {
-        mViewModel.updateSceneVisible(sceneType, isVisible);
+        if (mViewModel != null) {
+            mViewModel.updateSceneVisible(sceneType, isVisible);
+        }
         if (sceneType == NaviSceneId.NAVI_SCENE_2D_CROSS || sceneType == NaviSceneId.NAVI_SCENE_3D_CROSS) {
             LauncherWindowService.getInstance().changeCrossVisible(isVisible);
             SRFloatWindowService.getInstance().changeCrossVisible(isVisible);
@@ -748,6 +824,21 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             if (null != searchResultEntity &&
                     !ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
                 drawEndPoint(searchResultEntity.getPoiList().get(0));
+            }
+        }
+    }
+
+    @Override
+    public void onClusterMapOpenOrClose(boolean isOpen) {
+        Logger.i(TAG, "onClusterMapOpenOrClose isOpen:" + isOpen);
+        if (isOpen) {
+            if (NaviStatus.NaviStatusType.NAVING.equals(mNaviSatusPackage.getCurrentNaviStatus())) {
+                openClusterOverView();
+            }
+        } else {
+            if (NaviStatus.NaviStatusType.NAVING.equals(mNaviSatusPackage.getCurrentNaviStatus()) &&
+                    mNaviPackage.getClusterFixOverViewStatus()) {
+                closeClusterOverViewInEightSec();
             }
         }
     }
@@ -1033,5 +1124,33 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (null != mNextManeuverEntity) {
             mNextManeuverEntity.setNextText(text);
         }
+    }
+
+    @Override
+    public HashMap<NaviSceneId, Integer> getSceneStatus() {
+        if (mViewModel != null) {
+            return mViewModel.getSceneStatus();
+        }
+        return null;
+    }
+
+    @Override
+    public void closeNavi() {
+        Logger.i(TAG, "closeNavi mIsNaviClosed = " + mIsNaviClosed);
+        if (mIsNaviClosed) {
+            return;
+        }
+        mViewModel.onNaviStop();
+        mIsNaviClosed = true;
+        UserTrackPackage.getInstance().
+                closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
+        mFilename = "";
+        mRoutePackage.removeAllRouteInfo(MapTypeManager.getInstance().
+                getMapTypeIdByName(mViewModel.mScreenId));
+        mLayerPackage.setVisibleGuideSignalLight(MapTypeManager.getInstance().
+                getMapTypeIdByName(mViewModel.mScreenId), false);
+        mRoutePackage.clearRouteLine(MapTypeManager.getInstance().
+                getMapTypeIdByName(mViewModel.mScreenId));
+        mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
     }
 }

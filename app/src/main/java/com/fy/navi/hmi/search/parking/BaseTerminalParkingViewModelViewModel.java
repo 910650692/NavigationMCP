@@ -32,10 +32,11 @@ public class BaseTerminalParkingViewModelViewModel extends BaseViewModel<Termina
 
     /**
      * 搜索结果回调
+     * @param taskId 任务id
      * @param searchResultEntity 搜索结果实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
-        mView.notifySearchResult(searchResultEntity);
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        mView.notifySearchResult(taskId, searchResultEntity);
     }
 
     /**

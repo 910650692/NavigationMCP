@@ -108,6 +108,7 @@ public class BuryConstant {
         public static final String AMAP_SETTING_FAVORITE_ADD = "AMAP_Setting_Favorite_Add";
         public static final String AMAP_SETTING_CHARGINGSTATION_ADD = "AMAP_Setting_ChargingStation_Add";
         public static final String AMAP_POPUP = "AMAP_Popup";
+        public static final int AMAP_RETURN_DEFAULT_CODE = 88;
     }
 
     public static class ProperType{

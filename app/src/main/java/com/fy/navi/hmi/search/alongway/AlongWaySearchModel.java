@@ -54,7 +54,7 @@ public class AlongWaySearchModel extends BaseModel<AlongWaySearchViewModel> impl
                 final ThreadManager threadManager = ThreadManager.getInstance();
                 threadManager.postUi(() -> {
                     if (mViewModel instanceof AlongWaySearchViewModel) {
-                        mViewModel.notifySearchResult(searchResultEntity);
+                        mViewModel.notifySearchResult(taskId, searchResultEntity);
                     }
                 });
             }

@@ -34,11 +34,12 @@ public class BaseSuggestionResultVm extends BaseViewModel<SuggestionFragment, Su
 
     /**
      * 搜索结果回调
+     * @param taskId  任务id
      * @param searchResultEntity 搜索结果实体类
      * @param isRestore 是否是切换日夜模式导致的更新回调
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity, final boolean isRestore) {
-        mView.notifySearchResult(searchResultEntity, isRestore);
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity, final boolean isRestore) {
+        mView.notifySearchResult(taskId, searchResultEntity, isRestore);
     }
 
     /**

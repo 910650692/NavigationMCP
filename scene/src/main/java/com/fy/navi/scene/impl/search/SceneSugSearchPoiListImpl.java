@@ -20,6 +20,11 @@ import java.util.List;
  */
 public class SceneSugSearchPoiListImpl extends BaseSceneModel<SceneSugSearchPoiList> implements ISceneSearchPoiList {
     private final SearchPackage mSearchPackage;
+    private int mTaskId;
+
+    public int getMTaskId() {
+        return mTaskId;
+    }
 
     public SceneSugSearchPoiListImpl(final SceneSugSearchPoiList scrollView) {
         super(scrollView);
@@ -38,7 +43,7 @@ public class SceneSugSearchPoiListImpl extends BaseSceneModel<SceneSugSearchPoiL
      */
     public void suggestionSearch(final String key) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "suggestionSearch  key:" + key);
-        mSearchPackage.suggestionSearch(key);
+        mTaskId = mSearchPackage.suggestionSearch(key);
     }
 
     /**
@@ -59,5 +64,11 @@ public class SceneSugSearchPoiListImpl extends BaseSceneModel<SceneSugSearchPoiL
     public List<History> getSearchKeywordRecord(){
         List<History> historyList = mSearchPackage.getSearchKeywordRecord();
         return historyList;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTaskId = 0;
     }
 }

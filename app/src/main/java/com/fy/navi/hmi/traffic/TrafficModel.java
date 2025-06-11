@@ -37,6 +37,12 @@ public class TrafficModel extends BaseModel<BaseTrafficViewModel> implements IAo
         aosRestrictedPackage.addRestrictedObserver(TAG, this);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        aosRestrictedPackage.removeRestrictedObserver(TAG);
+    }
+
     public double calcStraightDistance(GeoPoint endPoint) {
         return layerPackage.calcStraightDistance(positionPackage.currentGeo, endPoint);
     }

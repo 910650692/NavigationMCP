@@ -24,16 +24,15 @@ import java.util.ArrayList;
 public class LayerAreaImpl extends BaseLayerImpl<LayerAreaStyleAdapter> {
 
     public LayerAreaImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
-        super(bizService, mapView, context,mapType);
+        super(bizService, mapView, context, mapType);
         getLayerAreaControl().setStyle(this);
         getLayerAreaControl().addClickObserver(this);
-        Logger.d(TAG, "LayerAreaImpl init");
     }
 
 
     @Override
     protected LayerAreaStyleAdapter createStyleAdapter() {
-        return new LayerAreaStyleAdapter(getEngineId(),getLayerAreaControl());
+        return new LayerAreaStyleAdapter(getEngineId(), getLayerAreaControl());
     }
 
     /**

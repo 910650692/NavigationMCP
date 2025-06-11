@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.hud.HudViewModel" />
+    </data>
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/hud"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:context=".hud.HudActivity">
+        <com.fy.navi.service.define.map.HUDMapView
+            android:id="@+id/hud_mapview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

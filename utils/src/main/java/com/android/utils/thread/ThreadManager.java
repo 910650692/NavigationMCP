@@ -147,6 +147,10 @@ public class ThreadManager {
         return mThreadPool.thenApplyAsyncCall(future, uRunTask);
     }
 
+    public ScheduledFuture asyncDelayWithResult(Runnable run, long start) {
+        return mThreadScheduled.schedule(run, start);
+    }
+
     public void asyncDelay(Runnable run, long start) {
         mThreadScheduled.schedule(run, start);
     }

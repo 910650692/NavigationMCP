@@ -45,7 +45,7 @@ public class OfflineSearchPoiListImpl extends BaseSceneModel<OfflineSearchPoiLis
      */
     public void keywordSearch(final int pageNum, final String keyword, final int adCode, final boolean isSilent) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "keywordSearch", keyword);
-        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent);
+        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent, false);
         SearchHistoryItemBean item = new SearchHistoryItemBean();
         item.setName(keyword);
         item.setUpdateTime(System.currentTimeMillis());

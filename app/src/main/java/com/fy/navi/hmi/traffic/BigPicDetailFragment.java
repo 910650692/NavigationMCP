@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -59,6 +60,8 @@ public class BigPicDetailFragment extends BaseFragment<FragmentPicDetailBinding,
     @Override
     public void onInitView() {
         Logger.i(TAG, "onLoadStart");
+        // 修改依据：[https://peedp.saic-gm.com/ccm/web/projects/VCS_Info4.0_High_Platform_PATAC_RTC#action=com.ibm.team.workitem.viewWorkItem&id=1055757]
+        mBinding.ivPic.setScaleType(ImageView.ScaleType.FIT_XY);
         mBinding.tvRetry.setOnClickListener(v -> {
             onInitData();
         });

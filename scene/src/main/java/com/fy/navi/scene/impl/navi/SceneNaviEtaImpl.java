@@ -245,7 +245,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
             return;
         }
         //更新ETA信息
-        updateEta(mCurNaviInfo.getAllDist(), mCurNaviInfo.getAllTime());
+        updateEta(mCurNaviInfo.getRemainDist(), mCurNaviInfo.getRemainTime());
         updataNextThumInfo(mCurNaviInfo);
     }
 

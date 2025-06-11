@@ -88,6 +88,11 @@ public class MapAdapter {
         return mIMapApi.getCurrentZoomLevel(mapTypeId);
     }
 
+    /* 判断当前mapview是否存在 */
+    public boolean isMapViewExist(MapType mapTypeId) {
+        return mIMapApi.isMapViewExist(mapTypeId);
+    }
+
     public void amplifyLevel(MapType mapTypeId) {
         mIMapApi.setZoomLevel(mapTypeId, mIMapApi.getCurrentZoomLevel(mapTypeId) + AutoMapConstant.MAP_ZOOM_LEVEL_CHANGE_FLAG);
     }

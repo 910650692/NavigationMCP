@@ -37,8 +37,9 @@ import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPackageCallback,
-        IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback {
+        IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback ,SettingPackage.SettingChangeCallback{
     private static final String TAG = "ClusterModel";
+    private static float MAP_ZOOM_LEVEL_DEFAULT = 17F;
 
     public ClusterModel() {
         StartService.getInstance().registerSdkCallback(TAG, this);
@@ -78,6 +79,8 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         NaviPackage.getInstance().registerObserver(mViewModel.mScreenId, this);
         CruisePackage.getInstance().registerObserver(mViewModel.mScreenId, this);
         NavistatusAdapter.getInstance().registerCallback(this);
+        //监听设置包变化
+        SettingPackage.getInstance().setSettingChangeCallback(getMapId().name(), this);
         mViewModel.loadMapView();
     }
 
@@ -90,16 +93,22 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     public void onMapLoadSuccess(final MapType mMapTypeId) {
         if (mMapTypeId == MapType.CLUSTER_MAP) {
             Logger.d(TAG, "仪表底图加载完成", mMapTypeId.name());
-            MapPackage.getInstance().goToCarPosition(mMapTypeId);
-            MapPackage.getInstance().switchMapMode(MapType.CLUSTER_MAP, MapMode.UP_3D, false);
-            MapPackage.getInstance().setZoomLevel(mMapTypeId, 17);
+            //设置地图中心点
+            MapPackage.getInstance().setMapCenter(mMapTypeId, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
+                    PositionPackage.getInstance().getLastCarLocation().getLatitude()));
+            //回车位保存中心
             LayerPackage.getInstance().setCarPosition(mMapTypeId, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
                     PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
                     PositionPackage.getInstance().getLastCarLocation().getCourse()));
-            LayerPackage.getInstance().setCarMode(mMapTypeId, CarModeType.CAR_MODE_DEFAULT);
+            MapPackage.getInstance().goToCarPosition(mMapTypeId);
+            // 根据主屏的车标模式设置车标模式     mLayerPackage.getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP)获取主图的车标样式
+            LayerPackage.getInstance().setCarMode(mMapTypeId, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
             LayerPackage.getInstance().setFollowMode(mMapTypeId, true);
-            boolean nightModeEnabled = ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext());
+            MapPackage.getInstance().switchMapMode(MapType.CLUSTER_MAP, MapMode.UP_3D,false);
+            MapPackage.getInstance().setZoomLevel(mMapTypeId, MAP_ZOOM_LEVEL_DEFAULT);
             MapAdapter.getInstance().updateUiStyle(MapType.CLUSTER_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
+            //设置走过的路线是否为灰色
+            //LayerPackage.getInstance().setPassGray(getMapId(), true);
             //设置地图文字大小
             boolean mapViewTextSize = SettingPackage.getInstance().getMapViewTextSize();
             if (mapViewTextSize) {
@@ -113,13 +122,13 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
         Logger.i(TAG, "onRouteDrawLine:" + routeLineLayerParam.getMMapTypeId());
-        RoutePackage.getInstance().showRouteLine(getMapId());
     }
 
     @Override
     public void onNaviStart() {
         Logger.d(TAG, "onNaviStart");
         mViewModel.updateNaviStatus(true);
+        RoutePackage.getInstance().showRouteLine(getMapId());
     }
 
     @Override
@@ -139,9 +148,9 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
             case NaviStatus.NaviStatusType.CRUISE -> //巡航状态
                 //主图模式与巡航模式下，默认⽐例尺为50ｍ（TBD根据实车联调）；
                     MapPackage.getInstance().setZoomLevel(MapType.CLUSTER_MAP, 50);
-            case NaviStatus.NaviStatusType.NAVING -> //导航状态
+            //case NaviStatus.NaviStatusType.NAVING -> //导航状态
                 //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
-                    NaviPackage.getInstance().onMeterAction();
+                //NaviPackage.getInstance().onMeterAction();
             default -> {
 //                LayerPackage.getInstance().openDynamicLevel(MapType.CLUSTER_MAP, false);
                 //主图模式与巡航模式下，默认⽐例尺为50ｍ（TBD根据实车联调）；
@@ -155,12 +164,6 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         Logger.d(TAG, "onNaviStop");
         RoutePackage.getInstance().clearRouteLine(getMapId());
         mViewModel.updateNaviStatus(false);
-    }
-
-    @Override
-    public void onUiModeChanged(ThemeType uiMode) {
-        Logger.d(TAG, "onMapLoadSuccess:nightModeEnabled: onUiModeChanged:" + uiMode);
-        MapPackage.getInstance().updateUiStyle(MapType.CLUSTER_MAP, uiMode);
     }
 
     /**
@@ -187,5 +190,24 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
             return false;
         }
         return true;
+    }
+
+    /**
+     * 设置监听回调
+     * @param key   设置项的key值
+     * @param value 设置项对应的value值
+     */
+    @Override
+    public void onSettingChanged(String key, String value) {
+        Logger.d(TAG, "onSettingChanged:" + key + "-:-" + value);
+        //设置地图大小
+        boolean mapViewTextSize = SettingPackage.getInstance().getMapViewTextSize();
+        if (mapViewTextSize){
+            MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1f);
+        }else {
+            MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.8f);
+        }
+        //设置车标模式
+        LayerPackage.getInstance().setCarMode(MapType.CLUSTER_MAP, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
     }
 }

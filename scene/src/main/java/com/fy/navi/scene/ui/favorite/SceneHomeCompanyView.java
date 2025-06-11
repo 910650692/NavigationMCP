@@ -381,10 +381,19 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
 
     /**
      * 搜索结果回调 添加收藏点时，点击我的位置直接进行收藏操作
+     * @param taskId 任务id
      * @param searchResultEntity 搜索结果实体
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if (!mIsClickMyPos) {
+            return;
+        }
+        if (ConvertUtils.isEmpty(mScreenViewModel)) {
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
+                + " currentId: " + mScreenViewModel.getMTaskId());
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
         if (searchResultEntity != null

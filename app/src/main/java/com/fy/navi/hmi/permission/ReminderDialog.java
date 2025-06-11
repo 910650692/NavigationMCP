@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.core.widget.NestedScrollView;
+
+import com.android.utils.ConvertUtils;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.R;
@@ -70,6 +73,14 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
         } else {
             mViewBinding.reminderIndex.reminderRootIndex.setVisibility(View.VISIBLE);
             mViewBinding.reminderDetail.reminderRootDetail.setVisibility(View.INVISIBLE);
+            resetScrollPosition();
+        }
+    }
+
+    private void resetScrollPosition() {
+        NestedScrollView scrollView = (NestedScrollView) mViewBinding.reminderDetail.reminderContent.getParent();
+        if (!ConvertUtils.isNull(scrollView)) {
+            scrollView.scrollTo(0, 0);
         }
     }
 

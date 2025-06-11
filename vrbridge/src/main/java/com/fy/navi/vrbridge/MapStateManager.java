@@ -1,9 +1,14 @@
 package com.fy.navi.vrbridge;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
+import com.android.utils.process.ProcessStatus;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -81,12 +86,16 @@ public final class MapStateManager {
         mBuilder.setViaPointsMaxCount(5);
         mBuilder.setListPage(false);
 
-        mBuilder.setCurrZoomLevel((int) MapPackage.getInstance().getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP));
+        if (MapPackage.getInstance().isMapViewExist(MapType.MAIN_SCREEN_MAIN_MAP)) {
+            mBuilder.setCurrZoomLevel((int) MapPackage.getInstance().getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP));
+            updateMapMode(MapPackage.getInstance().getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP));
+        } else {
+            mBuilder.setCurrZoomLevel(15);
+            mBuilder.setCurrMapMode(1);
+        }
 
         mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         updateNaviStatus(mCurNaviStatus);
-
-        updateMapMode(MapPackage.getInstance().getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP));
 
         final int muteMode = SettingPackage.getInstance().getConfigKeyMute();
         Logger.d(IVrBridgeConstant.TAG, "init muteMode: " + muteMode);
@@ -122,6 +131,7 @@ public final class MapStateManager {
             updateNaviStatus(naviStatus);
             if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(naviStatus)) {
                 final int size = mRouteList.size();
+                Logger.w(IVrBridgeConstant.TAG, "路线size = " + size);
                 mBuilder.setPathCount(size);
                 AMapStateUtils.saveMapState(mBuilder.build());
                 VoiceSearchManager.getInstance().playRouteResult();
@@ -167,6 +177,7 @@ public final class MapStateManager {
             if (null != requestRouteResult && null != requestRouteResult.getMRouteLineInfos()
                     && !requestRouteResult.getMRouteLineInfos().isEmpty()) {
                 final List<RouteLineInfo> routeLineInfos = requestRouteResult.getMRouteLineInfos();
+                mRouteList.clear();
                 mRouteList.addAll(routeLineInfos);
                 Logger.e(IVrBridgeConstant.TAG, "----------RouteResult 多结果更新-----------");
             } else {
@@ -342,7 +353,7 @@ public final class MapStateManager {
 
     private final ProcessManager.ProcessForegroundStatus mForeGroundCallback = new ProcessManager.ProcessForegroundStatus() {
         @Override
-        public void isAppInForeground(boolean appInForegroundStatus) {
+        public void isAppInForeground(final boolean appInForegroundStatus) {
             Logger.i(IVrBridgeConstant.TAG, "appInForeground:" + appInForegroundStatus);
             updateForegroundStatus(appInForegroundStatus);
             AMapStateUtils.saveMapState(mBuilder.build());
@@ -680,6 +691,49 @@ public final class MapStateManager {
     public boolean inCruiseStatus() {
         mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         return NaviStatus.NaviStatusType.CRUISE.equals(mCurNaviStatus);
+    }
+
+    /**
+     * 当HMI处于后台，切换到前台
+     *
+     * @return 是否需要保存当前指令， true:保存，当底图加载完成再继续执行指令
+     * false:不保存，只执行打开应用操作
+     */
+     public boolean openMapWhenBackground() {
+        final int appRunStatus = ProcessManager.getAppRunStatus();
+        boolean saveCommand = false;
+        Logger.w(IVrBridgeConstant.TAG, "currentAppRunStatus: " + appRunStatus);
+        if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus
+                || ProcessStatus.AppRunStatus.PAUSED == appRunStatus
+                || ProcessStatus.AppRunStatus.STOPPED == appRunStatus) {
+            openMap();
+            if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus) {
+                saveCommand = true;
+            }
+        }
+
+        return saveCommand;
+    }
+
+    /**
+     * 切换到前台.
+     */
+    public void openMap() {
+        if (null != AppCache.getInstance().getMContext()) {
+            try {
+                final String appPkgName = AppCache.getInstance().getMContext().getPackageName();
+                final PackageManager packageManager = AppCache.getInstance().getMContext().getPackageManager();
+                final Intent launcherIntent = packageManager.getLaunchIntentForPackage(appPkgName);
+                if (null != launcherIntent) {
+                    launcherIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    AppCache.getInstance().getMContext().startActivity(launcherIntent);
+                } else {
+                    Logger.e(IVrBridgeConstant.TAG, "can't find map hmi");
+                }
+            } catch (ActivityNotFoundException exception) {
+                Logger.e(IVrBridgeConstant.TAG, "open map error: " + exception.getMessage());
+            }
+        }
     }
 
 }

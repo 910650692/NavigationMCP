@@ -21,7 +21,17 @@
         <item>@drawable/img_basic_ic_car_washing</item>
         <item>@drawable/img_basic_ic_maintenance_black</item>
         <item>@drawable/img_basic_ic_shop</item>
-        <item>@drawable/img_basic_ic_groggery</item>
+    </array>
+
+    <array name="main_search_more_category_phev_icons">
+        <item>@drawable/img_basic_ic_gas_station</item>
+        <item>@drawable/img_basic_ic_gas_charging</item>
+        <item>@drawable/img_basic_ic_lavatory</item>
+        <item>@drawable/img_basic_ic_pull_up</item>
+        <item>@drawable/img_service_area_rim_58</item>
+        <item>@drawable/img_basic_ic_gourmet</item>
+        <item>@drawable/img_basic_ic_car_washing</item>
+        <item>@drawable/img_basic_ic_maintenance_black</item>
     </array>
 
     <array name="main_search_more_category_charging_icons">
@@ -33,7 +43,6 @@
         <item>@drawable/img_basic_ic_car_washing</item>
         <item>@drawable/img_basic_ic_maintenance_black</item>
         <item>@drawable/img_basic_ic_shop</item>
-        <item>@drawable/img_basic_ic_groggery</item>
     </array>
 
     <array name="along_way_category_gas_icons">
@@ -45,8 +54,18 @@
         <item>@drawable/img_basic_ic_car_washing</item>
         <item>@drawable/img_basic_ic_maintenance_black</item>
         <item>@drawable/img_basic_ic_shop</item>
-        <item>@drawable/img_basic_ic_groggery</item>
     </array>
+    <array name="along_way_category_phev_icons">
+        <item>@drawable/img_basic_ic_gas_station</item>
+        <item>@drawable/img_basic_ic_gas_charging</item>
+        <item>@drawable/img_basic_ic_lavatory</item>
+        <item>@drawable/img_basic_ic_pull_up</item>
+        <item>@drawable/img_service_area_rim_58</item>
+        <item>@drawable/img_basic_ic_gourmet</item>
+        <item>@drawable/img_basic_ic_car_washing</item>
+        <item>@drawable/img_basic_ic_maintenance_black</item>
+    </array>
+
     <array name="along_way_category_charging_icons">
         <item>@drawable/img_basic_ic_gas_charging</item>
         <item>@drawable/img_basic_ic_lavatory</item>
@@ -56,7 +75,6 @@
         <item>@drawable/img_basic_ic_car_washing</item>
         <item>@drawable/img_basic_ic_maintenance_black</item>
         <item>@drawable/img_basic_ic_shop</item>
-        <item>@drawable/img_basic_ic_groggery</item>
     </array>
 
     <array name="main_search_categories_gas_icons">

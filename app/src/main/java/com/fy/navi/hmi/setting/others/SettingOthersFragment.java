@@ -255,6 +255,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
         if (i != null) {
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra(BuryConstant.EventName.AMAP_RETURN_DEFAULT, BuryConstant.EventName.AMAP_RETURN_DEFAULT_CODE);
             startActivity(i);
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(0);

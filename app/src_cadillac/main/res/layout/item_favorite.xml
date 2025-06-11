@@ -49,51 +49,52 @@
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/item_favorite_name"
-                android:layout_width="@dimen/dp_850"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dp_36"
                 android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_36"
                 android:focusable="false"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/item_favorite_img">
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@+id/content_layout"
+                app:layout_constraintStart_toEndOf="@+id/item_favorite_img"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.name}"
-                    android:textSize="@dimen/sp_46"
                     android:ellipsize="end"
                     android:focusable="false"
                     android:maxLines="1"
+                    android:text="@{model.name}"
                     android:textColor="@color/black"
-                    tools:text="@string/favorite_item_name"/>
+                    android:textSize="@dimen/sp_46"
+                    tools:text="@string/favorite_item_name" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/item_favorite_top_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:focusable="false"
-                    android:text="@string/favorite_item_top"
                     android:background="@drawable/bg_favorite_top"
-                    android:textSize="@dimen/sp_30"
+                    android:focusable="false"
                     android:paddingLeft="@dimen/dp_12"
-                    android:paddingRight="@dimen/dp_12"
                     android:paddingTop="@dimen/dp_6"
+                    android:paddingRight="@dimen/dp_12"
                     android:paddingBottom="@dimen/dp_6"
+                    android:text="@string/favorite_item_top"
                     android:textColor="@color/setting_switch_selected"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/item_favorite_name" />
+                    android:textSize="@dimen/sp_30"
+                    app:layout_constraintStart_toEndOf="@+id/item_favorite_name"
+                    app:layout_constraintTop_toTopOf="parent" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
-                android:layout_width="@dimen/dp_850"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:focusable="false"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_22"
-                android:layout_marginEnd="@dimen/dp_29"
+                android:focusable="false"
+                app:layout_constraintEnd_toEndOf="@+id/content_layout"
                 app:layout_constraintStart_toEndOf="@+id/item_favorite_img"
                 app:layout_constraintTop_toBottomOf="@+id/item_favorite_name">
 
@@ -102,33 +103,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:textSize="@dimen/sp_38"
                     android:textColor="@color/setting_text_preference"
-                    tools:text="198km"/>
+                    android:textSize="@dimen/sp_38"
+                    tools:text="198km" />
 
                 <com.fy.navi.ui.view.SkinView
                     android:id="@+id/item_favorite_line"
                     android:layout_width="@dimen/dp_1"
                     android:layout_height="@dimen/dp_22"
+                    android:layout_gravity="center"
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_gravity="center"
-                    android:focusable="false"
-                    android:background="@color/color_black_70" />
+                    android:background="@color/color_black_70"
+                    android:focusable="false" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/item_favorite_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{model.address}"
-                    android:textSize="@dimen/sp_38"
                     android:ellipsize="end"
-                    android:maxLines="1"
                     android:focusable="false"
+                    android:maxLines="1"
+                    android:text="@{model.address}"
                     android:textColor="@color/color_black_70"
+                    android:textSize="@dimen/sp_38"
                     app:layout_constraintStart_toEndOf="@+id/item_favorite_line"
                     app:layout_constraintTop_toBottomOf="@+id/item_favorite_name"
-                    tools:text="@string/favorite_item_address"/>
+                    tools:text="@string/favorite_item_address" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout

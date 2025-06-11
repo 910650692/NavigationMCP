@@ -30,7 +30,7 @@ dependencies {
     implementation libs.bundles.module.library
     implementation libs.gson
     implementation libs.okhttp
-    debugImplementation libs.signal
-    releaseCompileOnly libs.signal
+    debugImplementation libs.gmframework
+    releaseCompileOnly libs.gmframework
     implementation project(":burypoint")
 }

@@ -86,17 +86,15 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
 
     /**
      * 高德SDK数据回调
+     * @param taskId 任务id
      * @param searchResultEntity 封装的数据实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if (searchResultEntity != null) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "searchType:" + searchResultEntity.getSearchType());
-//            if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
-            mBinding.homeCompanyView.notifySearchResult(searchResultEntity);
-//            } else {
+            mBinding.homeCompanyView.notifySearchResult(taskId, searchResultEntity);
             mBinding.sceneNestedScrollView.setHomeCompanyState(mHomeCompany);
             mBinding.sceneNestedScrollView.notifySearchResult(searchResultEntity);
-//            }
         }
 
     }

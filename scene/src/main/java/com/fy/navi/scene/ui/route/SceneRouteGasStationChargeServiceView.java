@@ -1,6 +1,8 @@
 package com.fy.navi.scene.ui.route;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -8,9 +10,11 @@ import android.view.ViewGroup;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
+import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.route.ISceneRouteGasStationChargeSelectCallBack;
 import com.fy.navi.scene.databinding.SceneRouteStationChargeServiceBinding;
 import com.fy.navi.scene.impl.route.SceneRouteGasStationChargeServiceImpl;
+import com.fy.navi.service.MapDefaultFinalTag;
 
 import java.util.Hashtable;
 
@@ -96,5 +100,17 @@ public class SceneRouteGasStationChargeServiceView
         mScreenViewModel.setWeatherSelect(false);
         mScreenViewModel.setServiceSelect(false);
         updateUi();
+    }
+
+    /**
+     * 设置沿途搜是否为充电站
+     * @param isCharge 是否是充电站
+     * */
+    @SuppressLint("UseCompatLoadingForDrawables")
+    public void setSearchCharge(boolean isCharge) {
+        Logger.d(MapDefaultFinalTag.ROUTE_HMI_TAG,"isCharge: "+isCharge);
+        final Drawable chargeDrawable = getContext().getDrawable(R.drawable.selector_route_tab_list_charge_gas_end);
+        final Drawable pointDrawable = getContext().getDrawable(R.drawable.selector_route_tab_list_point_end);
+        mViewBinding.routeRightTabListIvWeather.setImageDrawable(isCharge ?  chargeDrawable : pointDrawable);
     }
 }

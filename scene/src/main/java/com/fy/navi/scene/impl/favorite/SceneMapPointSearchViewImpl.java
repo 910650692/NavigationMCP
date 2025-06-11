@@ -30,8 +30,16 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
     private final MapPackage mMapPackage;
 
     private final LayerPackage mLayerPackage;
-
     private int mCommonName;
+    private int mTaskId;
+
+    /**
+     * 获取高德SDK请求任务Id
+     * @return 请求任务Id
+     */
+    public int getMTaskId() {
+        return mTaskId;
+    }
 
     public SceneMapPointSearchViewImpl(final SceneMapPointSearchView scrollView) {
         super(scrollView);
@@ -83,15 +91,15 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
     public void doSearch(final PoiInfoEntity poiInfoEntity) {
         if (null == poiInfoEntity) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch: currentLocationSearch");
-            mSearchPackage.currentLocationSearch();
+            mTaskId = mSearchPackage.currentLocationSearch();
             mMapPackage.goToCarPosition(MapType.MAIN_SCREEN_MAIN_MAP, true, true);
             return;
         }
         // 这里只有两种搜索类型：POI搜索和Geo搜索
         if (!TextUtils.isEmpty(poiInfoEntity.getPid())) {
-            mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
+            mTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
         } else {
-            mSearchPackage.geoSearch(poiInfoEntity.getPoint());
+            mTaskId = mSearchPackage.geoSearch(poiInfoEntity.getPoint());
         }
     }
 

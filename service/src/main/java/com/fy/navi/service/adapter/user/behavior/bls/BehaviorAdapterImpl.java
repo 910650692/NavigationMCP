@@ -91,6 +91,21 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         }
         final ArrayList<SimpleFavoriteItem> simpleFavoriteList =
                 mBehaviorService.getSimpleFavoriteList(FavoriteType.FavoriteTypeHome, true);
+        if (simpleFavoriteList != null) {
+            Logger.i(TAG, "getHomeFavoriteInfo: " + simpleFavoriteList.size());
+            for (int i = 0; i < simpleFavoriteList.size(); i++) {
+                Logger.i(TAG, "getHomeFavoriteInfo: " + i + "="
+                        + simpleFavoriteList.get(i).address + "; "
+                        + simpleFavoriteList.get(i).city_name + "; "
+                        + simpleFavoriteList.get(i).type + "; "
+                        + simpleFavoriteList.get(i).point_x + "; "
+                        + simpleFavoriteList.get(i).point_y + "; "
+                        + simpleFavoriteList.get(i).name
+                );
+            }
+        } else {
+            Logger.i(TAG, "getHomeFavoriteInfo: simpleFavoriteList == null");
+        }
         return getPoiInfoEntity(simpleFavoriteList);
     }
 
@@ -105,6 +120,21 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         }
         final ArrayList<SimpleFavoriteItem> simpleFavoriteList =
                 mBehaviorService.getSimpleFavoriteList(FavoriteType.FavoriteTypeCompany, true);
+        if (simpleFavoriteList != null) {
+            Logger.i(TAG, "getCompanyFavoriteInfo: " + simpleFavoriteList.size());
+            for (int i = 0; i < simpleFavoriteList.size(); i++) {
+                Logger.i(TAG, "getCompanyFavoriteInfo: " + i + "="
+                        + simpleFavoriteList.get(i).address + "; "
+                        + simpleFavoriteList.get(i).city_name + "; "
+                        + simpleFavoriteList.get(i).type + "; "
+                        + simpleFavoriteList.get(i).point_x + "; "
+                        + simpleFavoriteList.get(i).point_y + "; "
+                        + simpleFavoriteList.get(i).name
+                );
+            }
+        } else {
+            Logger.i(TAG, "getCompanyFavoriteInfo: simpleFavoriteList == null");
+        }
         return getPoiInfoEntity(simpleFavoriteList);
     }
 

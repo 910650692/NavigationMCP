@@ -195,7 +195,8 @@ public interface IVrBridgeConstant {
         String OPEN_HISTORY = "open_history"; //打开历史记录
         String COLLECT_COMMON = "collect_poi"; //收藏指定poi
         String CHANGE_VIEW = "map_view"; //切换地图视角
-        String ZOOM_LEVEL = "zoom_level";
+        String ZOOM_LEVEL = "zoom_level"; //缩放底图
+        String ROUTE_NAVIGATION = "route_navi";
     }
 
 }

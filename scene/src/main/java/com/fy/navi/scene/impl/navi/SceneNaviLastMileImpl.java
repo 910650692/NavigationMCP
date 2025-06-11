@@ -104,7 +104,7 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
         if (mIsDisplayedLastMile) {
             return;
         }
-        if (naviEtaInfo.getAllDist() <= 1000) {
+        if (naviEtaInfo.getRemainDist() <= 1000) {
             // 账号未登录不显示
             if (!AccountPackage.getInstance().isLogin()) {
                 Logger.d(TAG, "SceneNaviSendPhoneImpl account is not login");

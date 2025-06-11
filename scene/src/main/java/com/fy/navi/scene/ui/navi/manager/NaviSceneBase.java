@@ -47,11 +47,28 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
     private int mCountdown = 0;
     private ScheduledFuture mScheduledFuture;
     protected ISceneCallback mISceneCallback;
-    protected NaviSceneId mSceneId;
+    public NaviSceneId mSceneId;
+    // 添加一个标签，scene会被服用，用来判断是哪个模块服用的此view
+    private int mViewCategory;
 
     private INaviSceneEvent mEvent = getNaviSceneEvent();
 
     protected abstract NaviSceneId getSceneId();
+
+    public NaviSceneId getMSceneId() {
+        if (mSceneId == null) {
+            return getSceneId();
+        }
+        return mSceneId;
+    }
+
+    public void setCategory(int tag) {
+        mViewCategory = tag;
+    }
+
+    public int getCategory() {
+        return mViewCategory;
+    }
 
     public NaviSceneBase(@NonNull final Context context) {
         super(context);

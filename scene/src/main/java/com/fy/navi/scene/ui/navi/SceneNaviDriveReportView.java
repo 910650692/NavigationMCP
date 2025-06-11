@@ -39,7 +39,7 @@ public class SceneNaviDriveReportView extends NaviSceneBase<SceneNaviDriveReport
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_DRIVE_REPORT;
     }
 

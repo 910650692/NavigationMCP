@@ -2,6 +2,7 @@ package com.fy.navi.scene.ui.navi;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -77,9 +78,41 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
     @Override
     public void show() {
         super.show();
+        refreshView();
+        if (mScreenViewModel != null) {
+            mScreenViewModel.initTimer();
+        }
+    }
+
+    /**
+     * 刷新页面
+     */
+    public void refreshView() {
         final boolean isFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
+        Logger.i(TAG, "isFixedOverView:" + isFixedOverView);
         mViewBinding.svCarHead.setAlpha(isFixedOverView ? 0.5f : 1.0f);
         mViewBinding.svCarHead.setIsClickChangeColor(!isFixedOverView);
+        if (mScreenViewModel != null) {
+            updateCarModel();
+            updateBroadcast();
+            initVehicleType();
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        if (mScreenViewModel != null) {
+            mScreenViewModel.cancelTimer();
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (mScreenViewModel != null) {
+            mScreenViewModel.cancelTimer();
+        }
     }
 
     /**
@@ -101,6 +134,10 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
      */
     public void updateBroadcast() {
         updateBroadcast(mScreenViewModel.getBroadcastMode());
+    }
+
+    public void updateCarModel() {
+        updateCarModel(mScreenViewModel.getCarModel());
     }
 
     /**

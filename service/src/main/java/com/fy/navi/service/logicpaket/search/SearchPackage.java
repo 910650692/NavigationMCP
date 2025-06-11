@@ -106,7 +106,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         mUserTrackAdapter = UserTrackAdapter.getInstance();
         mCommonManager = CommonManager.getInstance();
         mCommonManager.init();
-        mLayerAdapter.registerLayerClickObserver(MapType.MAIN_SCREEN_MAIN_MAP,  this);
+        if (mLayerAdapter != null) mLayerAdapter.registerLayerClickObserver(MapType.MAIN_SCREEN_MAIN_MAP,  this);
     }
 
     private static final class SearchPackageHolder {
@@ -238,6 +238,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      *
      * @param keyword 关键字
      * @param page    搜索页数
+     * @param isSilent 是否静默搜
      * @return taskId
      */
     public int keywordSearch(final int page, final String keyword, final boolean isSilent) {
@@ -266,15 +267,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
-     * 关键字离线搜索
+     * 关键字搜索
      *
      * @param keyword 关键字
      * @param page    搜索页数
-     * @param adCode 地理编码
      * @param isSilent 是否静默搜
+     * @param isReSearch 是否触发重搜
      * @return taskId
      */
-    public int keywordSearch(final int page, final String keyword, final int adCode, final boolean isSilent) {
+    public int keywordSearch(final int page, final String keyword, final boolean isSilent, final boolean isReSearch) {
         if (keyword == null) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "keyword is null");
             return -1;
@@ -286,6 +287,43 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .isSilentSearch(isSilent)
                 .keyword(keyword)
                 .page(page)
+                .queryType(AutoMapConstant.SearchQueryType.NORMAL)
+                .searchType(AutoMapConstant.SearchType.SEARCH_KEYWORD)
+                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
+                .userLoc(userLoc)
+                .isReSearch(isReSearch)
+                .checkedLevel("")
+                .classifyV2Data("")
+                .build();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, KEY_SEARCH_EXECUTING);
+        addSearchKeywordRecord(keyword);
+        return mSearchAdapter.keywordSearch(requestParameterBuilder);
+    }
+
+    /**
+     * 关键字离线搜索
+     *
+     * @param keyword 关键字
+     * @param page    搜索页数
+     * @param adCode 地理编码
+     * @param isSilent 是否静默搜
+     * @param isReSearch 是否重搜
+     * @return taskId
+     */
+    public int keywordSearch(final int page, final String keyword, final int adCode, final boolean isSilent, final boolean isReSearch) {
+        if (keyword == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "keyword is null");
+            return -1;
+        }
+        final GeoPoint userLoc = new GeoPoint();
+        userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .isSilentSearch(isSilent)
+                .keyword(keyword)
+                .page(page)
+                .isReSearch(isReSearch)
                 .queryType(AutoMapConstant.SearchQueryType.NORMAL)
                 .searchType(AutoMapConstant.SearchType.SEARCH_KEYWORD)
                 .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
@@ -611,7 +649,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param  range 搜索半径
      * @return taskId
      */
-    public int aroundSearch(final int page, final String keyword, final GeoPoint geoPoint, final String range) {
+    public int reAroundSearch(final int page, final String keyword, final GeoPoint geoPoint, final String range) {
         if (keyword == null) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute nearby search: keyword is null.");
             return -1;
@@ -624,6 +662,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .isSilentSearch(false)
                 .keyword(keyword)
                 .page(page)
+                .isReSearch(true)
                 .queryType(AutoMapConstant.SearchQueryType.AROUND)
                 .searchType(AutoMapConstant.SearchType.AROUND_SEARCH)
                 .userLoc(userLoc)
@@ -867,13 +906,16 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             combinedList.addAll(historyList);
             if (!ConvertUtils.isEmpty(combinedList)) {
                 combinedList.sort(Comparator.comparing(History::getMUpdateTime).reversed());
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "size :" + combinedList.size());
             }
-            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(combinedList));
             return combinedList;
 
         } else {
+            //离线时数据直接从数据库获取
             final List<History> historyList = mManager.loadHistoryByPage(1, 100);
-            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(historyList));
+            if (!ConvertUtils.isEmpty(historyList)) {
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "size :" + historyList.size());
+            }
             return historyList;
         }
     }
@@ -889,10 +931,19 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                     .stream()
                     .map(this::convertHistoryRouteItemBeanToHistory)
                     .collect(Collectors.toList());
+            if (!ConvertUtils.isEmpty(historyList)) {
+                historyList.sort(Comparator.comparing(History::getMUpdateTime).reversed());
+                historyList.stream().filter(history -> !ConvertUtils.isEmpty(history.getMKeyWord()));
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "size :" + historyList.size());
+            }
             return historyList;
         } else {
             final List<History> historyList = mManager.getValueByType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
-            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(historyList));
+            if (!ConvertUtils.isEmpty(historyList)) {
+                historyList.sort(Comparator.comparing(History::getMUpdateTime).reversed());
+                historyList.stream().filter(history -> !ConvertUtils.isEmpty(history.getMKeyWord()));
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "size :" + historyList.size());
+            }
             return historyList;
         }
     }

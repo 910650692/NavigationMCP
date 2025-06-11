@@ -2,12 +2,15 @@ package com.fy.navi.service.adapter.position.bls.manager;
 
 import android.content.Context;
 import android.location.Location;
+import android.os.SystemClock;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.pos.PosService;
 import com.autonavi.gbl.pos.model.LocDataType;
 import com.autonavi.gbl.pos.model.LocGnss;
 import com.autonavi.gbl.pos.model.LocSignData;
+import com.autonavi.gbl.pos.model.LocSpeedometer;
 import com.autonavi.gbl.pos.observer.IPosSensorParaObserver;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.position.PositionConstant;
@@ -22,13 +25,20 @@ import com.fy.navi.service.adapter.position.bls.source.CarLocBackFusionDataSourc
 import com.fy.navi.service.define.position.LocGpgsvWrapper;
 import com.fy.navi.service.define.position.LocMode;
 
-public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFusionDataObserver, IPosSensorParaObserver {
+import java.math.BigInteger;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFusionDataObserver , IPosSensorParaObserver {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private final PositionBlsStrategy mPositionBlsStrategy;
     protected boolean mIsEnable = true;
     private final ILocBackFusionDataSource mDataSource;
     private PosService mPosService;
     private boolean mIsDrMode;// 是否开启DR模式
+    private Runnable mCustomTimer;
+    private ScheduledFuture mScheduledFuture;
+    private float mCarMeterSpeed = 0f;  //仪表车速 1hz 一秒一次
 
     public LocSigFusionManager(Context context, LocMode locMode, PositionBlsStrategy positionBlsStrategy) {
         Logger.i(TAG, "locMode：" + locMode);
@@ -36,6 +46,7 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
         mDataSource = new CarLocBackFusionDataSource(context, locMode, this, mPositionBlsStrategy);
         mPosService = mPositionBlsStrategy.getPosService();
         addObserver();
+        startTimerTask();
     }
 
     public void addObserver() {
@@ -124,8 +135,12 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
     }
 
     public void onSpeedChanged(float speed) {
+        mCarMeterSpeed = speed;
+    }
+
+    public void onPulseSpeedChanged(float speed) {
         if (mDataSource != null) {
-            mDataSource.onSpeedChanged(speed);
+            mDataSource.onPulseSpeedChanged(speed);
         }
     }
 
@@ -146,5 +161,33 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
             mPositionBlsStrategy.onLocAnalysisResult(PositionConstant.DRDebugEvent.DR_TYPE_SENSOR, s);
         }
         mDataSource.updateSensorPara(s);
+    }
+
+
+    private void startTimerTask() {
+        Logger.i(TAG, "LocSpeedometer");
+        stopTimerTask();
+        mCustomTimer = new Runnable() {
+            @Override
+            public void run() {
+                // 创建LocSpeedometer对象
+                LocSpeedometer locSpeedometer = new LocSpeedometer();
+                locSpeedometer.value = mCarMeterSpeed;
+                locSpeedometer.tickTime = new BigInteger(String.valueOf(SystemClock.elapsedRealtime()));
+                LocSignData locSignData = new LocSignData();
+                locSignData.speedometer = locSpeedometer;
+                mPositionBlsStrategy.setSignInfo(locSignData);
+                Logger.d("LocSpeedometer",mCarMeterSpeed);
+            }
+        };
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(mCustomTimer, 0, 1000, TimeUnit.MILLISECONDS);
+    }
+
+    private void stopTimerTask() {
+        Logger.i(TAG, "stopTimerTask");
+        if (mScheduledFuture != null) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mCustomTimer = null;
+        }
     }
 }

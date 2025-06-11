@@ -12,7 +12,10 @@ import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface ISceneCallback {
 
@@ -229,6 +232,14 @@ public interface ISceneCallback {
     }
 
 
-    default void clickGoHomeBtn(int type){};
+    default void clickGoHomeBtn(int type){}
+
+    default HashMap<NaviSceneId, Integer> getSceneStatus() {
+        return null;
+    }
+
+    default void closeNavi() {}
+
+    default void cancelClusterOverViewTimer() {}
 
 }

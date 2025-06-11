@@ -128,7 +128,7 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         super.onHiddenChanged(hidden);
         if (!hidden) {
             updateShowState(true);
-            mBinding.scenePoiList.reloadPoiMarker();
+            mBinding.scenePoiList.reloadPoiMarker(getLastClosedFragmentName());
         } else {
             updateShowState(false);
         }

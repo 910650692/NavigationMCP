@@ -1,15 +1,12 @@
 package com.fy.navi.hmi.map;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
@@ -22,11 +19,10 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
+import com.fy.navi.hmi.splitscreen.SplitScreenManager;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.dialog.MsgTopDialog;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MainScreenMapView;
@@ -36,8 +32,6 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.route.RouteTMCParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.define.user.account.AccessTokenParam;
-import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.FragmentIntent;
 import com.fy.navi.ui.base.StackManager;
@@ -57,16 +51,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private MainScreenMapView mapView;
     private MsgTopDialog mMsgTopDialog;
 
-    AccessTokenParam param = new AccessTokenParam(
-            AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
-            AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
-            null,
-            this,
-            null,
-            null,
-            null,
-            null);
-
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     public void onCreateBefore() {
@@ -79,25 +63,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+        mBinding.cruiseLayout.tvCurrentRoadName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG, "没有账号权限");
-        } else {
-            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG, "有账号权限 ");
-        }
-        ThreadManager.getInstance().runAsync(() -> {
-            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,
-                    "                 AccessToken = " + AccountPackage.getInstance().getAccessToken(param));
+            }
         });
-
-        Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,
-                "                 useridp = " +
-                        AccountPackage.getInstance().getUserId());
-
-        Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,
-                "                 userPhone = " +
-                        AccountPackage.getInstance().getPhone());
     }
 
     @Override
@@ -156,7 +127,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
         super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
         //监听分屏模式
-        Logger.i(TAG, isInMultiWindowMode, GsonUtils.toJson(newConfig));
+        SplitScreenManager.getInstance().onMultiWindowModeChanged(isInMultiWindowMode, newConfig.screenWidthDp);
     }
 
     @Override
@@ -180,6 +151,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onResume() {
         super.onResume();
         mViewModel.getCurrentCityLimit();
+        SplitScreenManager.getInstance().setIsInMultiWindowMode(isInMultiWindowMode(), getResources().getConfiguration().screenWidthDp);
     }
 
     @Override
@@ -202,7 +174,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onMoveMapCenter() {
         Logger.i(TAG, "onMoveMapCenter");
         mBinding.searchMainTab.setVisibility(View.GONE);
-        mViewModel.setMapCenterInScreen(mBinding.layoutFragment.getLeft());
+        mViewModel.setMapCenterInScreen();
     }
 
     @Override
@@ -210,16 +182,21 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.i(TAG, "onMoveMapCenter with bundle");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.GONE);
-            mViewModel.setMapCenterInScreen(mBinding.layoutFragment.getLeft(), bundle);
+            mViewModel.setMapCenterInScreen(bundle);
         });
     }
 
     @Override
     protected void onResetMapCenter() {
+        Logger.i(TAG, "onResetMapCenter");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.VISIBLE);
             mViewModel.resetMapCenterInScreen();
         });
+    }
+
+    public boolean isFragmentStackNull(){
+        return mStackManager.isFragmentStackNull(mScreenId);
     }
 
     @Override
@@ -234,6 +211,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
         recreate();
+        SplitScreenManager.getInstance().onConfigurationChanged(newConfig);
     }
 
     // 更新当前的比例尺数值

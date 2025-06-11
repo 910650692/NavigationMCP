@@ -249,8 +249,8 @@ public final class NaviDataFormatHelper {
             //取第一个路段的信息
             final NaviInfo naviInfo = naviInfoList.get(NumberUtils.NUM_0);
             naviEtaInfo.pathID = naviInfo.pathID;
-            naviEtaInfo.setAllTime(naviInfo.routeRemain.time);
-            naviEtaInfo.setAllDist(naviInfo.routeRemain.dist);
+            naviEtaInfo.setRemainTime(naviInfo.routeRemain.time);
+            naviEtaInfo.setRemainDist(naviInfo.routeRemain.dist);
             naviEtaInfo.type = naviInfo.type;
             naviEtaInfo.setCurRouteName(naviInfo.curRouteName);
             naviEtaInfo.setRingOutCnt(naviInfo.ringOutCnt);
@@ -262,7 +262,7 @@ public final class NaviDataFormatHelper {
             naviEtaInfo.curRoadClass = naviInfo.curRoadClass;
             naviEtaInfo.roundaboutOutAngle = naviInfo.roundaboutOutAngle;
             naviEtaInfo.driveTime = naviInfo.driveTime;
-            naviEtaInfo.driveDist = naviInfo.driveDist;
+            naviEtaInfo.mDriveDist = naviInfo.driveDist;
             naviEtaInfo.cityCode = naviInfo.cityCode;
             naviEtaInfo.curLinkSpeed = naviInfo.curLinkSpeed;
             naviEtaInfo.segTipsDis = naviInfo.segTipsDis;
@@ -742,10 +742,10 @@ public final class NaviDataFormatHelper {
         if (obj != null) {
             if (obj instanceof NaviEtaInfo) {
                 final NaviEtaInfo naviEtaInfo = (NaviEtaInfo) obj;
-                naviViaEntity.setArriveDay(TimeUtils.getArriveDay(naviEtaInfo.getAllTime()));
-                naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppCache.getInstance().getMContext(), naviEtaInfo.getAllDist(), naviEtaInfo.getAllTime()));
-                naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), naviEtaInfo.getAllTime()));
-                naviViaEntity.setmArriveTimeStamp(naviEtaInfo.getAllTime());
+                naviViaEntity.setArriveDay(TimeUtils.getArriveDay(naviEtaInfo.getRemainTime()));
+                naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppCache.getInstance().getMContext(), naviEtaInfo.getRemainDist(), naviEtaInfo.getRemainTime()));
+                naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), naviEtaInfo.getRemainTime()));
+                naviViaEntity.setmArriveTimeStamp(naviEtaInfo.getRemainTime());
             } else if (obj instanceof NaviEtaInfo.NaviTimeAndDist) {
                 final NaviEtaInfo.NaviTimeAndDist timeAndDist = (NaviEtaInfo.NaviTimeAndDist) obj;
                 naviViaEntity.setArriveDay(TimeUtils.getArriveDay(timeAndDist.time));

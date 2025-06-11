@@ -18,48 +18,45 @@
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_third"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_210"
-            android:focusable="false"
+            android:layout_height="@dimen/dp_254"
             android:layout_marginTop="@dimen/dp_196"
             android:background="@drawable/bg_shadow_navi_cadillac_transparent"
+            android:focusable="false"
+            android:orientation="vertical"
             android:paddingHorizontal="@dimen/dp_51"
             android:paddingVertical="@dimen/dp_51"
-            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@android:color/holo_blue_dark"
-            tools:layout_height="@dimen/dp_210" />
+            tools:background="@android:color/holo_blue_dark" />
 
         <!--第二位的布局-->
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_second"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_210"
-            android:focusable="false"
+            android:layout_height="@dimen/dp_254"
             android:layout_marginTop="@dimen/dp_98"
             android:background="@drawable/bg_shadow_navi_cadillac_transparent"
+            android:focusable="false"
+            android:orientation="vertical"
             android:paddingHorizontal="@dimen/dp_51"
             android:paddingVertical="@dimen/dp_51"
-            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@android:color/darker_gray"
-            tools:layout_height="@dimen/dp_210" />
+            tools:background="@android:color/darker_gray" />
 
         <!--第一位的布局-->
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_first"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_210"
+            android:layout_height="@dimen/dp_254"
+            android:background="@drawable/bg_shadow_navi_cadillac_transparent"
             android:focusable="false"
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/dp_51"
             android:paddingVertical="@dimen/dp_51"
-            android:background="@drawable/bg_shadow_navi_cadillac_transparent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@android:color/darker_gray"
-            tools:layout_height="@dimen/dp_210" />
+            tools:background="@android:color/darker_gray" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_toggle"

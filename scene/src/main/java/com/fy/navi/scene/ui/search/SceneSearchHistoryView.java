@@ -122,6 +122,7 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
         mSearchResultAdapter = new SearchResultAdapter();
         mViewBinding.suggestResultListAlong.setAdapter(mSearchResultAdapter);
         mSearchHistoryAdapter = new SearchHistoryAdapter();
+        mSearchHistoryAdapter.setMIsOnlyShowNaviRecord(true);
         mViewBinding.rcyRecordAlong.setAdapter(mSearchHistoryAdapter);
 
         getSearchKeywordRecord();

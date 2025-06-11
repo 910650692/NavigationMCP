@@ -17,8 +17,8 @@ public interface ILocBackFusionDataSource {
     /*高德标定结果信息*/
     void updateSensorPara(String s);
 
-    /*速度脉冲*/
-    void onSpeedChanged(float speed);
+    /*脉冲车速*/
+    void onPulseSpeedChanged(float speed);
 
     /*挡位变化*/
     void onGearChanged(int gear);

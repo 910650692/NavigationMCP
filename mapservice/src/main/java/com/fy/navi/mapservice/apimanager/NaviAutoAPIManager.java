@@ -22,9 +22,11 @@ import com.fy.navi.mapservice.callback.OnSrNaviInfoChangeListener;
 import com.fy.navi.mapservice.callback.OnTurnInfoChangeListener;
 import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
+import com.fy.navi.mapservice.common.INaviAutoGuideStatusCallBack;
 import com.fy.navi.mapservice.common.INaviAutoLocationCallback;
 import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
 import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
+import com.fy.navi.mapservice.common.INaviAutoSpeedCallBack;
 import com.fy.navi.mapservice.common.INaviAutoStatusCallback;
 import com.fy.navi.mapservice.util.Logger;
 
@@ -108,7 +110,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
     @Override
     protected void onEngineInit(final boolean success) {
-        Logger.d(TAG, mPkgName + " : onEngineInit: " + success);
+        Logger.d(TAG, mPkgName + "-->  onEngineInit: " + success);
         for (OnInitStateChangeListener initStateChangeListener : mInitStateListenerList) {
             if (null != initStateChangeListener) {
                 try {
@@ -136,6 +138,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 mBinder.addNaviAutoRouteCallback(mPkgName, mNaviAutoRouteCallback);
                 mBinder.addNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
                 mBinder.addNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
+                mBinder.addNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
+                mBinder.addNaviAutoGuideStatusCallBack(mPkgName, mNaviAutoGuideCallBack);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "registerNaviAutoApiCallback error: " + exception.getMessage());
             }
@@ -151,6 +155,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 mBinder.removeNaviAutoRouteCallback(mPkgName, mNaviAutoRouteCallback);
                 mBinder.removeNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
                 mBinder.removeNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
+                mBinder.removeNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
+                mBinder.removeNaviAutoGuideStatusCallBack(mPkgName, mNaviAutoGuideCallBack);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "unRegisterNaviAutoApiCallback error: " + exception.getMessage());
             }
@@ -158,10 +164,10 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     }
 
     //Map状态
-    private final INaviAutoStatusCallback.Stub mNaviApiStatusCallback = new INaviAutoStatusCallback.Stub() {
+    private final INaviAutoStatusCallback mNaviApiStatusCallback = new INaviAutoStatusCallback.Stub() {
         @Override
         public void onNaviStatusChange(final String status) {
-            Logger.d(TAG, mPkgName + " : onNaviStatusChange: " + status);
+            Logger.d(TAG, mPkgName + "-->  onNaviStatusChange: " + status);
             for (OnNaviStatusChangeListener listener : mNaviStatusListenerList) {
                 if (null != listener) {
                     try {
@@ -176,7 +182,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         @Override
         public void onPanelData(final int panelDataStatus) {
-            Logger.d(TAG, mPkgName + " : onPanelData: " + panelDataStatus);
+            Logger.d(TAG, mPkgName + "-->  onPanelData: " + panelDataStatus);
             for (OnGuidePanelDataListener listener : mGuidePanelDataListenerList) {
                 if (null != listener) {
                     try {
@@ -191,13 +197,13 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         @Override
         public void onCountDownLightInfo(final String lightInfo) {
-            Logger.d(TAG, mPkgName + " :onCountDownLightInfo");
+            Logger.d(TAG, mPkgName + "--> onCountDownLightInfo");
             for (OnSrNaviInfoChangeListener srNaviInfoChangeListener : mSrNaviInfoListenerList) {
                 if (null != srNaviInfoChangeListener) {
                     try {
                         srNaviInfoChangeListener.onCountDownLightInfo(lightInfo);
                     } catch (NullPointerException | IllegalStateException | IllegalArgumentException
-                            | ClassCastException exception) {
+                             | ClassCastException exception) {
                         Logger.e(TAG, "dispatch onCountDownLightInfo error: " + exception.getMessage());
                     }
                 }
@@ -209,7 +215,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     private final INaviAutoLocationCallback mNaviAutoLocationCallback = new INaviAutoLocationCallback.Stub() {
         @Override
         public void onLocationInfoChange(final String locationInfo) {
-            Logger.d(TAG, mPkgName + " : onLocationInfoChange: " + locationInfo);
+            Logger.d(TAG, mPkgName + "-->  onLocationInfoChange: " + locationInfo);
             for (OnLocationChangeListener listener : mLocationListenerList) {
                 if (null != listener) {
                     try {
@@ -224,7 +230,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         @Override
         public void onDistrictInfoChange(final String districtInfo) {
-            Logger.d(TAG, mPkgName + " : onDistrictInfoChange: " + districtInfo);
+            Logger.d(TAG, mPkgName + "-->  onDistrictInfoChange: " + districtInfo);
             for (OnDistrictInfoChangeListener listener : mDistrictInfoList) {
                 if (null != listener) {
                     try {
@@ -242,7 +248,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     private final INaviAutoSearchCallback mNaviAutoSearchCallback = new INaviAutoSearchCallback.Stub() {
         @Override
         public void onSearchFailed(final boolean silent, final int errorCode) {
-            Logger.d(TAG, mPkgName + " : onSearchFailed: silent = " + silent + "; errorCode = " + errorCode);
+            Logger.d(TAG, mPkgName + "-->  onSearchFailed: silent = " + silent + "; errorCode = " + errorCode);
             for (OnSearchResultListener listener : mSearchResultListenerList) {
                 if (null != listener) {
                     try {
@@ -257,7 +263,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         @Override
         public void onSearchResult(final boolean silent, final String searchResult) {
-            Logger.d(TAG, mPkgName + " : onSearchResult: silent = " + silent);
+            Logger.d(TAG, mPkgName + "-->  onSearchResult: silent = " + silent);
             for (OnSearchResultListener listener : mSearchResultListenerList) {
                 if (null != listener) {
                     try {
@@ -272,7 +278,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         @Override
         public void onReverseGeoSearchResult(final int taskId, final String reverseResult) {
-            Logger.d(TAG, mPkgName + " : onReverseGeoSearchResult: taskId = " + taskId + "; reverseResult = " + reverseResult);
+            Logger.d(TAG, mPkgName + "-->  onReverseGeoSearchResult: taskId = " + taskId + "; reverseResult = " + reverseResult);
             for (OnSearchResultListener listener : mSearchResultListenerList) {
                 if (null != listener) {
                     try {
@@ -290,7 +296,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     private final INaviAutoRouteCallback mNaviAutoRouteCallback = new INaviAutoRouteCallback.Stub() {
         @Override
         public void onRoutePlanFailed(final int code, final String errorMsg) {
-            Logger.d(TAG, mPkgName + " : onRoutePlanFailed: code = " + code);
+            Logger.d(TAG, mPkgName + "-->  onRoutePlanFailed: code = " + code);
             for (OnRoutePlanResultListener listener : mRoutePlanListenerList) {
                 if (null != listener) {
                     try {
@@ -304,8 +310,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onRoutePlanResult(final String routeResult) throws RemoteException {
-            Logger.d(TAG, mPkgName + " : onRoutePlanResult: " + routeResult);
+        public void onRoutePlanResult(final String routeResult) {
+            Logger.d(TAG, mPkgName + "-->  onRoutePlanResult: " + routeResult);
             for (OnRoutePlanResultListener listener : mRoutePlanListenerList) {
                 if (null != listener) {
                     try {
@@ -319,12 +325,10 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
     };
 
-    //引导信息
-    private final INaviAutoApiCallback.Stub mNaviAutoCallback = new INaviAutoApiCallback.Stub() {
-
+    private final INaviAutoSpeedCallBack mNaviAutoSpeedCallBack = new INaviAutoSpeedCallBack.Stub() {
         @Override
         public void onSpeedLimitChange(final int curSpeed, final int limitSpeed) {
-            Logger.d(TAG, mPkgName + " : onSpeedLimitChange");
+            Logger.d(TAG, mPkgName + "-->  onSpeedLimitChange");
             for (OnSpeedLimitChangeListener listener : mSpeedLimitListenerList) {
                 if (null != listener) {
                     try {
@@ -336,10 +340,46 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 }
             }
         }
+    };
+
+    private final INaviAutoGuideStatusCallBack mNaviAutoGuideCallBack = new INaviAutoGuideStatusCallBack.Stub() {
+        @Override
+        public void onNaviStartAfterFiveMinutes() {
+            Logger.d(TAG, mPkgName + "--> onNaviStartAfterFiveMinutes");
+            for (OnNaviStatusChangeListener listener : mNaviStatusListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onNaviStartAfterFiveMinutes();
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch naviStartDelay error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onNaviManualStop() {
+            Logger.d(TAG, mPkgName + "--> onNaviManualStop");
+            for (OnNaviStatusChangeListener listener : mNaviStatusListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onNaviManualStop();
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch naviStop error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+    };
+
+    //引导信息
+    private final INaviAutoApiCallback mNaviAutoCallback = new INaviAutoApiCallback.Stub() {
 
         @Override
         public void onTurnInfoChange(final String turnInfo) {
-            Logger.d(TAG, mPkgName + " : onTurnInfoChange: ");
+            Logger.d(TAG, mPkgName + "-->  onTurnInfoChange: ");
             for (OnTurnInfoChangeListener listener : mTurnInfoListenerList) {
                 if (null != listener) {
                     try {
@@ -354,7 +394,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         @Override
         public void onNaviArrival() {
-            Logger.d(TAG, mPkgName + " :onNaviArrival");
+            Logger.d(TAG, mPkgName + "--> onNaviArrival");
             for (OnSrNaviInfoChangeListener srNaviInfoChangeListener : mSrNaviInfoListenerList) {
                 if (null != srNaviInfoChangeListener) {
                     try {
@@ -368,7 +408,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         @Override
         public void onNaviStop() {
-            Logger.d(TAG, mPkgName + " :onNaviStop");
+            Logger.d(TAG, mPkgName + "--> onNaviStop");
             for (OnSrNaviInfoChangeListener srNaviInfoChangeListener : mSrNaviInfoListenerList) {
                 if (null != srNaviInfoChangeListener) {
                     try {
@@ -405,7 +445,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param context Context.
      * @param pkgName String，客户端包名.
-     * @param params String，参考高德地图SDK开发应用接口依赖中Onstar调用示例添加,具体作用未知.
+     * @param params  String，参考高德地图SDK开发应用接口依赖中Onstar调用示例添加,具体作用未知.
      */
     public void init(final Context context, final String pkgName, final String params) {
         synchronized (NaviAutoAPIManager.class) {
@@ -648,7 +688,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void openMap() {
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : openMap: ");
+                Logger.d(TAG, mPkgName + "-->  openMap: ");
                 mBinder.openMap(mPkgName);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "openMap error: " + exception.getMessage());
@@ -665,7 +705,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         String locationInfo = "";
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : getCurrentLocation: ");
+                Logger.d(TAG, mPkgName + "-->  getCurrentLocation: ");
                 locationInfo = mBinder.getCurrentLocation(mPkgName);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "getCurrentLocation error: " + exception.getMessage());
@@ -684,7 +724,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         String districtInfo = "";
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : getDistrictDetailInfo: ");
+                Logger.d(TAG, mPkgName + "-->  getDistrictDetailInfo: ");
                 districtInfo = mBinder.getDistrictDetailInfo(mPkgName);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "getDistrictDetailInfo error: " + exception.getMessage());
@@ -707,7 +747,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : jumpToSearchPage: " + keyword);
+                Logger.d(TAG, mPkgName + "-->  jumpToSearchPage: " + keyword);
                 mBinder.jumpToSearchPage(mPkgName, keyword);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "jumpToSearchPage error: " + exception.getMessage());
@@ -729,7 +769,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : requestReverseGeoSearch: " + geoPoint);
+                Logger.d(TAG, mPkgName + "-->  requestReverseGeoSearch: " + geoPoint);
                 return mBinder.requestReverseGeoSearch(mPkgName, geoPoint);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "requestReverseGeoSearch error: " + exception.getMessage());
@@ -742,7 +782,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     /**
      * 自车位置周边搜索.
      *
-     * @param keyword String，搜索关键字.
+     * @param keyword   String，搜索关键字.
      * @param pageIndex int,搜索页面下标，从1开始，最大值见上一轮搜索结果BaseSearchResult里的maxPage.
      */
     public void nearbySearch(final String keyword, final int pageIndex) {
@@ -753,7 +793,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : nearbySearch keyword: " + keyword + ", pageIndex: " + pageIndex);
+                Logger.d(TAG, mPkgName + "-->  nearbySearch keyword: " + keyword + ", pageIndex: " + pageIndex);
                 mBinder.nearbySearch(mPkgName, keyword, pageIndex);
             } catch (RemoteException exception) {
                 Logger.w(TAG, "nearbySearch error: " + exception.getMessage());
@@ -774,7 +814,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : searchAndNavi: " + address);
+                Logger.d(TAG, mPkgName + "-->  searchAndNavi: " + address);
                 mBinder.searchAndNavi(mPkgName, address);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "searchAndNavi error: " + exception.getMessage());
@@ -788,7 +828,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void cancelAllSearchRequest() {
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : cancelAllSearchRequest: ");
+                Logger.d(TAG, mPkgName + "-->  cancelAllSearchRequest: ");
                 mBinder.cancelAllSearchRequest(mPkgName);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "cancelAllSearchRequest error: " + exception.getMessage());
@@ -804,7 +844,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void routePlan(final BaseSearchPoi destination) {
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : routePlan: " + destination);
+                Logger.d(TAG, mPkgName + "-->  routePlan: " + destination);
                 mBinder.routePlan(mPkgName, destination);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "routePlan error: " + exception.getMessage());
@@ -818,7 +858,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void startNavi() {
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : startNavi: ");
+                Logger.d(TAG, mPkgName + "-->  startNavi: ");
                 mBinder.startNavi(mPkgName);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "routePlan error: " + exception.getMessage());
@@ -828,13 +868,14 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
     /**
      * 当前是否处于引导态.
+     *
      * @return boolean  true-处于引导态  false-相反.
      */
     public boolean isNaviStatus() {
         boolean result = false;
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : isNaviStatus: ");
+                Logger.d(TAG, mPkgName + "-->  isNaviStatus: ");
                 result = mBinder.isNaviStatus(mPkgName);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "startNavi error: " + exception.getMessage());
@@ -854,7 +895,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : getGuidePanelStatus: ");
+                Logger.d(TAG, mPkgName + "-->  getGuidePanelStatus: ");
                 result = mBinder.getGuidePanelStatus(mPkgName);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "startNavi error: " + exception.getMessage());
@@ -873,7 +914,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         String type = INaviConstant.NaviStatusType.NO_STATUS;
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : getNaviType: ");
+                Logger.d(TAG, mPkgName + "-->  getNaviType: ");
                 type = mBinder.getNaviType(mPkgName);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "getNaviType error: " + exception.getMessage());
@@ -885,13 +926,14 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
     /**
      * 获取诱导信息.
+     *
      * @return String，BaseTbtInfo对应的json字符串.
      */
     public String getTBTInfo() {
         String tbtInfo = "";
         if (mInitStatus && checkBinder()) {
             try {
-                Logger.d(TAG, mPkgName + " : getTBTInfo: ");
+                Logger.d(TAG, mPkgName + "-->  getTBTInfo: ");
                 tbtInfo = mBinder.getTBTInfo(mPkgName);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "getTBTInfo error: " + exception.getMessage());

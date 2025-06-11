@@ -1,14 +1,9 @@
 package com.fy.navi.service.adapter.layer.bls.style;
 
-import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.observer.PrepareLayerParamInner;
-import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
-import com.autonavi.gbl.map.layer.model.CustomTextureParam;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
-import com.autonavi.gbl.map.layer.model.ItemStyleInfo;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.layer.bls.bean.MarkerInfoBean;
 import com.fy.navi.service.define.layer.refix.LayerItemData;
 
 import java.util.ArrayList;
@@ -32,17 +27,13 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         return null;
     }
 
-    public String provideLayerItemStyleHtml(LayerItem item) {
-        return null;
-    }
-
     /**
      * 是否需要重新组织json字符串
      *
      * @param item
      * @return
      */
-    public boolean isNeedRefreshJsonValue(LayerItem item) {
+    public boolean isNeedRefreshStyleJson(LayerItem item) {
         return false;
     }
 
@@ -52,7 +43,7 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
      * @param oldJson
      * @return
      */
-    public String refreshOldJsonValue(LayerItem item, String oldJson) {
+    public String refreshStyleJson(LayerItem item, String oldJson) {
         return oldJson;
     }
 
@@ -76,14 +67,7 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         return null;
     }
 
-    @Override
-    public boolean updateCardContent(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, CustomTextureParam customTextureParam) {
-        boolean result = super.updateCardContent(layer, item, styleInfo, customTextureParam);
-        Logger.e(TAG, getClass().getSimpleName() + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible() + ";result =" + result);
-        return result;
-    }
-
-    public List<CustomUpdatePair> createUpdatePair(LayerItem item,String markerInfo) {
+    public List<CustomUpdatePair> updateTextureUpdatePair(LayerItem item) {
         return new ArrayList<>();
     }
 
@@ -94,22 +78,18 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         return updatePair;
     }
 
-    protected CustomUpdatePair createUpdatePair(String id, String value) {
+    protected CustomUpdatePair createUpdateValuePair(String id, String value) {
         CustomUpdatePair updatePair = new CustomUpdatePair();
         updatePair.idStr = id;
         updatePair.newValue = value;
         return updatePair;
     }
 
-    protected CustomUpdatePair createUpdatePair(String id, String value, String style) {
+    protected CustomUpdatePair createUpdateValueStylePair(String id, String value, String style) {
         CustomUpdatePair updatePair = new CustomUpdatePair();
         updatePair.idStr = id;
         updatePair.newValue = value;
         updatePair.newStyle = style;
         return updatePair;
-    }
-
-    public MarkerInfoBean createMarkerInfoBean(LayerItem item, String markerInfo) {
-        return new MarkerInfoBean();
     }
 }

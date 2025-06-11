@@ -7,40 +7,36 @@
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1100"
-            android:layout_height="@dimen/dp_324"
+            android:layout_width="@dimen/dp_1452"
+            android:layout_height="@dimen/dp_413"
+            android:paddingHorizontal="@dimen/dp_21"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_39"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/bg_setting_dialog">
+            android:background="@drawable/bg_shadow_system_ndlc_8155">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/dialog_message"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_196"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_94"
                 android:text="@string/offline_item_delete_message"
-                android:textColor="@color/offline_black"
-                android:textSize="@dimen/sp_36"
+                android:textColor="@color/color_black_70"
+                android:textSize="@dimen/sp_34"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:background="@color/setting_line"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginEnd="@dimen/dp_40"
-                app:layout_constraintTop_toBottomOf="@+id/dialog_message" />
-
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/dialog_button_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_128"
+                android:layout_height="@dimen/dp_94"
+                android:layout_marginStart="@dimen/dp_128"
+                android:layout_marginEnd="@dimen/dp_128"
+                android:layout_marginBottom="@dimen/dp_56"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent">
 
@@ -49,26 +45,21 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@null"
+                    android:background="@drawable/setting_check_dialog_confirm_bg"
                     android:text="@string/offline_item_city_status"
-                    android:textColor="@color/setting_dialog_confirm"
-                    android:textSize="@dimen/sp_36" />
-
-                <com.fy.navi.ui.view.SkinView
-                    android:id="@+id/dialog_line"
-                    android:layout_width="@dimen/dp_2"
-                    android:layout_height="match_parent"
-                    android:background="@color/setting_line"/>
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_34" />
 
                 <com.fy.navi.ui.view.SkinButton
                     android:id="@+id/dialog_cancel"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@null"
+                    android:layout_marginStart="@dimen/dp_38"
+                    android:background="@drawable/setting_check_dialog_cancel_bg"
                     android:text="@string/offline_item_cancel_delete"
-                    android:textColor="@color/color_60_000000"
-                    android:textSize="@dimen/sp_36" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_34" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>
         </com.fy.navi.ui.view.SkinConstraintLayout>

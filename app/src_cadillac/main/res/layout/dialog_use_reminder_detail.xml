@@ -39,6 +39,9 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_742"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbarThumbVertical="@drawable/custom_scrollbar_thumb"
             android:layout_marginTop="@dimen/dp_30"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reminder_title">

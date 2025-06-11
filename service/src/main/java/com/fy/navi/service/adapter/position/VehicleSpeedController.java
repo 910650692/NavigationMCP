@@ -5,7 +5,6 @@ import android.car.VehiclePropertyIds;
 import android.car.hardware.CarPropertyConfig;
 import android.car.hardware.CarPropertyValue;
 import android.car.hardware.property.CarPropertyManager;
-import android.car.hardware.property.CarPropertyEvent;
 import android.car.hardware.property.CarPropertyManager.CarPropertyEventCallback;
 import android.content.Context;
 
@@ -77,7 +76,7 @@ public class VehicleSpeedController {
         // 更新 UI 或处理车速数据
         Logger.i(TAG, "Current speed: " + speed + " m/s");
         if (mISpeedCallback != null) {
-            mISpeedCallback.onSpeedChanged((float) (speed * MPS_TO_KPH_FACTOR));
+            mISpeedCallback.onPulseSpeedChanged((float) (speed * MPS_TO_KPH_FACTOR));
         }
     }
 

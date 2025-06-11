@@ -77,6 +77,9 @@ public interface IMapApi {
      */
     float getCurrentZoomLevel(MapType mapTypeId);
 
+    /* 判断当前mapview是否存在 */
+    boolean isMapViewExist(MapType mapTypeId);
+
     /*获取缩放等级*/
     int getCurrentScale(MapType mapTypeId);
 

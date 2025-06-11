@@ -66,7 +66,7 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_2D_CROSS;
     }
 

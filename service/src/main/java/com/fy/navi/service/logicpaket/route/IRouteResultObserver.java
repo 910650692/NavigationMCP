@@ -150,7 +150,7 @@ public interface IRouteResultObserver {
      * @param mapTypeId 屏幕id
      * @param routeIndex 路线id
      */
-    default void onRouteSlected(MapType mapTypeId, int routeIndex) {
+    default void onRouteSlected(MapType mapTypeId, int routeIndex, boolean isFirst) {
     }
 
     /**

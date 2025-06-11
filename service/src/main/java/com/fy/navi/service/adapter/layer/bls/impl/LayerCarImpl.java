@@ -21,12 +21,13 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.map.MapType;
 
+import java.io.File;
 import java.util.function.Consumer;
 
 public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
 
-    private static final String FLAVOR_CAR_SKELETON_BUICK = "/carSkeletonBuick/carLogo.dat";
-    private static final String FLAVOR_CAR_SKELETON_CADI = "/carSkeletonCadi/carLogo.dat";
+    private static final String CAR_SKELETON_ROOT = "/carSkeleton/";
+
     private static final float[] CAR_SCALE = {1.0f, 1.0f, 1.0f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 1.0f};
 
     public LayerCarImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
@@ -37,7 +38,6 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
         getLayerCarControl().addCarObserver(this);
         initBuickSkeletonCarModel();
         initCarScaleByMapLevel();
-        Logger.d(TAG, "LayerCarImpl init");
     }
 
     @Override
@@ -76,42 +76,34 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
 
     /* 设置别克车型骨骼车标 默认品牌车标 */
     private void initBuickSkeletonCarModel() {
-        SkeletonDataInfoBase dataInfo = new SkeletonDataInfoBase();
-        dataInfo.type = SkeletonDataType.FBX;//格式由UE提供的资源模型决定
-        dataInfo.skeletonDataPath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_PATH)
-                .append(getEngineId())
-                .append(FLAVOR_CAR_SKELETON_BUICK).toString();
-        int result = getLayerCarControl().setSkeletonDataInfo(dataInfo);
-        if (result != Service.ErrorCodeOK) {
-            dataInfo.skeletonDataPath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_PATH)
-                    .append(MapType.MAIN_SCREEN_MAIN_MAP.getMapType())
-                    .append(FLAVOR_CAR_SKELETON_BUICK).toString();
-            result = getLayerCarControl().setSkeletonDataInfo(dataInfo);
-            Logger.d(TAG, "使用主图资源" );
-        }
-        Logger.d(TAG, "初始化别克骨骼车标 ：" + result);
-        //默认不播动画，需要动画，要再调用动画接口
-        SkeletonAnimationInfo animationInfo = new SkeletonAnimationInfo();
-        animationInfo.animationName = "StatusMove"; // StatusStatic、StatusMove、StatusSpeed
-        getLayerCarControl().setSkeletonAnimation(animationInfo);
+        initSkeletonCarModel("Buick");
     }
 
     /* 设置凯迪车型骨骼车标 */ //Todo 后续多车型增加入参
     public void initCadiSkeletonCarModel() {
+        initSkeletonCarModel("Cadi");
+    }
+
+
+    private void initSkeletonCarModel(String carModel) {
         SkeletonDataInfoBase dataInfo = new SkeletonDataInfoBase();
         dataInfo.type = SkeletonDataType.FBX;//格式由UE提供的资源模型决定
         dataInfo.skeletonDataPath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_PATH)
                 .append(getEngineId())
-                .append(FLAVOR_CAR_SKELETON_CADI).toString();
+                .append(CAR_SKELETON_ROOT)
+                .append(carModel).append(File.separator)
+                .append("carLogo.dat").toString();
         int result = getLayerCarControl().setSkeletonDataInfo(dataInfo);
         if (result != Service.ErrorCodeOK) {
             dataInfo.skeletonDataPath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_PATH)
                     .append(MapType.MAIN_SCREEN_MAIN_MAP.getMapType())
-                    .append(FLAVOR_CAR_SKELETON_CADI).toString();
+                    .append(CAR_SKELETON_ROOT)
+                    .append(carModel).append(File.separator)
+                    .append("carLogo.dat").toString();
             result = getLayerCarControl().setSkeletonDataInfo(dataInfo);
-            Logger.d(TAG, "使用主图资源" );
+            Logger.d(TAG, "使用主图资源");
         }
-        Logger.d(TAG, "初始化凯迪骨骼车标 ：" + result);
+        Logger.d(TAG, "初始化骨骼车标 ：" + result);
         //默认不播动画，需要动画，要再调用动画接口
         SkeletonAnimationInfo animationInfo = new SkeletonAnimationInfo();
         animationInfo.animationName = "StatusMove"; // StatusStatic、StatusMove、StatusSpeed
@@ -139,6 +131,7 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
         info.latitude = geoPoint.getLat();
         info.carDir = geoPoint.getCourse();
         carLocation.vecPathMatchInfo.add(info);
+        Logger.d(TAG, "setCarPosition:");
         getLayerCarControl().setCarPosition(carLocation);
     }
 
@@ -149,6 +142,12 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
 
     public void updateGuideCarStyle() {
         getLayerCarControl().updateStyle(BizCarType.BizCarTypeGuide);
+    }
+
+    /* 设置车标是否显示 */
+    public void setCarLogoVisible(boolean visible) {
+        Logger.d(TAG, "setCarLogoVisible visible " + visible);
+        getLayerCarControl().setVisible(visible);
     }
 
     /**

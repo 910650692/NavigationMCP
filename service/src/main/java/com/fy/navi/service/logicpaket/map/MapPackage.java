@@ -124,6 +124,11 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         return mMapAdapter.getZoomLevel(mapTypeId);
     }
 
+    /* 判断当前mapview是否存在 */
+    public boolean isMapViewExist(MapType mapTypeId) {
+        return mMapAdapter.isMapViewExist(mapTypeId);
+    }
+
     public void amplifyLevel(MapType mapTypeId) {
         mMapAdapter.amplifyLevel(mapTypeId);
     }

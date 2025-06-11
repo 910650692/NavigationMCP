@@ -9,6 +9,7 @@ import androidx.databinding.ObservableField;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.ui.navi.SceneNaviViaDetailView;
@@ -32,7 +33,6 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
 
     public static final String TAG = "SceneNaviViaDetailImpl";
     private String mCurrentPoiId = null;
-    private Handler mHandler;
     private int mSearchId;
 
     public ObservableField<Drawable> mViaIcon;
@@ -83,7 +83,6 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
     @Override
     protected void onCreate() {
         super.onCreate();
-        mHandler = new Handler(Looper.getMainLooper());
         SearchPackage.getInstance().registerCallBack(TAG, this);
     }
 
@@ -91,18 +90,21 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
     protected void onDestroy() {
         super.onDestroy();
         SearchPackage.getInstance().unRegisterCallBack(TAG);
+        ThreadManager.getInstance().removeHandleTask(mSearchPoi);
     }
 
     private Runnable mSearchPoi = new Runnable() {
         @Override
         public void run() {
-            if (null != mCurrentPoiId) {
-                mSearchId = SearchPackage.getInstance().poiIdSearch(mCurrentPoiId, true);
-                Logger.i(TAG, "run", "mSearchId:" + mSearchId);
-            }
-            if (null != mHandler) {
-                mHandler.postDelayed(mSearchPoi,
+            try {
+                if (null != mCurrentPoiId) {
+                    mSearchId = SearchPackage.getInstance().poiIdSearch(mCurrentPoiId, true);
+                    Logger.i(TAG, "run", "mSearchId:", mSearchId);
+                }
+                ThreadManager.getInstance().postDelay(mSearchPoi,
                         NumberUtils.NUM_3 * NumberUtils.NUM_1000 * NumberUtils.NUM_60);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
             }
         }
     };
@@ -121,10 +123,8 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         if (null != naviViaEntity) {
             mCurrentPoiId = naviViaEntity.getPid();
             if (null != mCurrentPoiId) {
-                if (null != mHandler) {
-                    mHandler.removeCallbacks(mSearchPoi);
-                    mHandler.post(mSearchPoi);
-                }
+                ThreadManager.getInstance().removeHandleTask(mSearchPoi);
+                ThreadManager.getInstance().postUi(mSearchPoi);
             }
         }
     }
@@ -165,6 +165,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
     }
 
     private void updateUi(PoiInfoEntity poiInfo) {
+        Logger.i(TAG, "poiInfo:" + poiInfo);
         if (poiInfo == null) {
             return;
         }

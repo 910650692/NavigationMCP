@@ -88,6 +88,8 @@ public final class SearchRequestParameter {
     private List<String> mPoiIdList;
     //POI详情搜索回传参数
     private SearchRetainParamInfo mRetainParam;
+    //是否由重算触发
+    private boolean mIsReSearch = false;
     //搜索半径
     private String mRange;
     private String mIdpUserId;
@@ -264,6 +266,7 @@ public final class SearchRequestParameter {
         this.mClassifyV2Level3Data = builder.mClassifyV2Level3Data;
         this.mGeoobj = builder.mGeoobj;
         this.mType = builder.mType;
+        this.mIsReSearch = builder.mIsReSearch;
         this.mPathInfo = builder.mPathInfo;
         this.mPoiIdList = builder.mPoiIdList;
         this.mRetainParam = builder.mRetainParam;
@@ -410,6 +413,7 @@ public final class SearchRequestParameter {
         private String mClassifyV2Level3Data;
         private String mGeoobj;
         private int mType;
+        private boolean mIsReSearch;
         private Object mPathInfo;
         private List<String> mPoiIdList;
         private SearchRetainParamInfo mRetainParam;
@@ -713,6 +717,16 @@ public final class SearchRequestParameter {
          */
         public Builder type(final int type) {
             this.mType = type;
+            return this;
+        }
+
+        /**
+         * 是否重搜
+         * @param isReSearch 是否重搜
+         * @return Builder
+         */
+        public Builder isReSearch(final boolean isReSearch) {
+            this.mIsReSearch = isReSearch;
             return this;
         }
 

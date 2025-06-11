@@ -1,11 +1,12 @@
 package com.fy.navi.hmi.map;
 
-import android.os.CountDownTimer;
 import android.text.TextUtils;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AppCache;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.map.MapMode;
@@ -20,6 +21,8 @@ import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,22 +41,9 @@ public class MapModelHelp {
     private final SignalPackage mSignalPackage;
     private final NaviPackage mNaviPackage;
     private final CalibrationPackage mCalibrationPackage;
-    private boolean mIsScheduling = false;
+    private final long INTERVAL_TIME = 60;// 单位：秒
     // 导航过程中每分钟上传一次电量给API
-    private final CountDownTimer mCountDownTimer = new CountDownTimer(Long.MAX_VALUE, 60 * 1000) {
-        @Override
-        public void onTick(final long millisUntilFinished) {
-            mIsScheduling = true;
-            Logger.i(TAG, "onTick set battery!");
-            uploadBattery();
-        }
-
-        @Override
-        public void onFinish() {
-            mIsScheduling = false;
-            Logger.i(TAG, "CountDownTimer --- onFinish !");
-        }
-    };
+    private ScheduledFuture scheduledFuture;
 
     public MapModelHelp(final MapType mapTypeId) {
         this.mMapTypeId = mapTypeId;
@@ -210,9 +200,8 @@ public class MapModelHelp {
             Logger.w(TAG, "startScheduleUploadBattery", "不是纯电动汽车，无需上传电量！");
             return;
         }
-        if (!mIsScheduling) {
-            mIsScheduling = true;
-            mCountDownTimer.start();
+        if (!isOnSchedule()) {
+            startSchedule();
             Logger.w(TAG, "schedule upload battery start success!");
         } else {
             Logger.w(TAG, "schedule already start not restart again!");
@@ -223,9 +212,8 @@ public class MapModelHelp {
      * 如果导航结束，停止循环上传电量
      */
     public void stopScheduleUploadBattery() {
-        if (mIsScheduling) {
-            mIsScheduling = false;
-            mCountDownTimer.cancel();
+        if (isOnSchedule()) {
+
             Logger.w(TAG, "stop schedule uploadBattery success!");
         } else {
             Logger.w(TAG, "schedule not ongoing, not need cancel!");
@@ -249,8 +237,41 @@ public class MapModelHelp {
      */
     public void unInit() {
         Logger.i(TAG, "unInit start!");
-        if (mIsScheduling) {
-            mCountDownTimer.cancel();
+        stopSchedule();
+    }
+
+    private void startSchedule() {
+        try {
+            scheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+                uploadBattery();
+            }, 0, INTERVAL_TIME, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            Logger.e(TAG, "startSchedule failed:" + e.getMessage());
+        }
+    }
+
+    private void stopSchedule() {
+        try {
+            if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
+                boolean stopResult = scheduledFuture.cancel(true);
+                Logger.i(TAG, "stopSchedule:" + stopResult);
+            } else {
+                Logger.w(TAG, "stopSchedule failed, scheduledFuture is null or has completed!");
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "startSchedule failed:" + e.getMessage());
+        }
+    }
+
+    private boolean isOnSchedule() {
+        try {
+            if (!ConvertUtils.isNull(scheduledFuture)) {
+                return !scheduledFuture.isDone();
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
         }
     }
 }

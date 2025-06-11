@@ -32,6 +32,7 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.BuildConfig;
 import com.fy.navi.ui.action.Action;
@@ -39,8 +40,10 @@ import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -90,8 +93,9 @@ public class BaseNaviGuidanceViewModel extends
     //补能规划
     private String mCurrentEnergy;
     private final NaviModelSaveEntity mModelSaveEntity;
-
-    private final ArrayList<Integer> mSceneStatus;
+    private HashMap<NaviSceneId, Integer> mSceneStatus;
+    private boolean mIsOverView;
+    private boolean mIsFixedOverView;
 
     public BaseNaviGuidanceViewModel(@NonNull final Application application) {
         super(application);
@@ -124,7 +128,7 @@ public class BaseNaviGuidanceViewModel extends
         mHandingCardDetailVisibility = new ObservableField<>(false);
         mNaviViaDetailVisibility = new ObservableField<>(false);
         mModelSaveEntity = new NaviModelSaveEntity();
-        mSceneStatus = new ArrayList<>();
+        mSceneStatus = new HashMap<>();
     }
 
     @Override
@@ -646,8 +650,29 @@ public class BaseNaviGuidanceViewModel extends
         return mHandingCardDetailVisibility.get() || mNaviViaListVisibility.get();
     }
 
-    public ArrayList<Integer> getSceneStatus() {
+    public HashMap<NaviSceneId, Integer> getSceneStatus() {
         return mSceneStatus;
+    }
+
+    public void setSceneStatus(HashMap<NaviSceneId, Integer> map) {
+        mSceneStatus = map;
+    }
+
+    /**
+     * 保存全览模式状态
+     */
+    public void saveOverViewStatus() {
+        mIsFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
+        mIsOverView = NaviPackage.getInstance().getPreviewStatus();
+        Logger.i(TAG, "saveOverViewStatus mIsFixedOverView:" + mIsFixedOverView +
+                " mIsOverView:" + mIsOverView);
+    }
+
+    public void restoreOverViewStatus() {
+        NaviPackage.getInstance().setFixedOverViewStatus(mIsFixedOverView);
+        NaviPackage.getInstance().setPreviewStatus(mIsOverView);
+        Logger.i(TAG, "restoreOverViewStatus mIsFixedOverView:" + mIsFixedOverView +
+                " mIsOverView:" + mIsOverView);
     }
 
     /**

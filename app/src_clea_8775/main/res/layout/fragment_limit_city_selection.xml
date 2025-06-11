@@ -15,37 +15,38 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
-        android:layout_width="@dimen/dp_698"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/dp_121"
+        android:layout_width="@dimen/dp_613"
+        android:layout_height="@dimen/dp_676"
         android:clickable="true">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_input"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_170"
-            android:paddingVertical="@dimen/dp_29"
-            android:paddingHorizontal="@dimen/dp_29"
-            android:background="@drawable/bg_shadow_navi_buick">
+            android:layout_height="@dimen/dp_163"
+            android:paddingVertical="@dimen/dp_34"
+            android:paddingHorizontal="@dimen/dp_34"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_back"
                 clickCommand="@{ViewModel.closeCitySelectionPage}"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:src="@drawable/img_limit_back"
-                android:layout_marginTop="@dimen/dp_27"
+                android:layout_marginTop="@dimen/dp_23"
+                android:layout_marginStart="@dimen/dp_12"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.ui.view.SkinEditText
                 android:id="@+id/edit_text_id"
                 android:hint="@string/limit_city_selection"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_420"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_29"
                 android:textColor="@color/black"
                 android:textColorHint="@color/main_map_limit_hint_color"
+                android:ellipsize="end"
                 android:layout_marginStart="@dimen/dp_4"
                 android:background="@null"
                 android:imeOptions="actionSearch"
@@ -60,22 +61,21 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_640"
-            android:background="@drawable/bg_shadow_navi_buick"
-            android:layout_marginTop="@dimen/dp_161"
-            android:paddingVertical="@dimen/dp_29"
-            android:paddingHorizontal="@dimen/dp_29"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:layout_height="@dimen/dp_554"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:paddingVertical="@dimen/dp_34"
+            android:paddingHorizontal="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_120"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/tv_current_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_44"
+                android:layout_marginStart="@dimen/dp_34"
+                android:layout_marginTop="@dimen/dp_37"
                 android:textColor="@color/main_map_limit_current_city"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:text="@string/limit_selected_city" />
@@ -84,10 +84,10 @@
                 android:id="@+id/select_city_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_14"
+                android:layout_marginTop="@dimen/dp_34"
                 android:textColor="@color/main_map_limit_current"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintStart_toEndOf="@+id/tv_current_city"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="上海市" />
@@ -96,9 +96,8 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:paddingHorizontal="@dimen/dp_40"
-                android:paddingBottom="@dimen/dp_24"
-                android:paddingTop="@dimen/dp_30"
+                android:paddingBottom="@dimen/dp_21"
+                android:paddingTop="@dimen/dp_27"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_current_city" />
 

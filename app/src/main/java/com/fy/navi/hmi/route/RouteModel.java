@@ -236,6 +236,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (ConvertUtils.isEmpty(mRouteRestAreaInfos)) {
             return;
         }
+        if (getCurrentIndex() == -1 || getCurrentIndex() >= mRouteRestAreaInfos.size()) {
+            Logger.d(TAG, "Index out of bounds ");
+            return;
+        }
         final RouteRestAreaInfo routeRestAreaInfo = mRouteRestAreaInfos.get(getCurrentIndex());
         if (ConvertUtils.isEmpty(routeRestAreaInfo)) {
             return;
@@ -510,6 +514,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * 展示服务区扎点
      * */
     public void showRestArea() {
+        if (getCurrentIndex() == -1) {
+            Logger.d(TAG, "Index out of bounds ");
+            return;
+        }
         mRoutePackage.showRestArea(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex());
     }
 
@@ -638,6 +646,12 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * @return 能量耗尽点信息
      */
     public EvRangeOnRouteInfo getRangeOnRouteInfo(final int index) {
+        if (index == -1 || mRoutePackage.getEvRangeOnRouteInfos() == null
+                || mRoutePackage.getEvRangeOnRouteInfos().isEmpty() || index >= mRoutePackage.getEvRangeOnRouteInfos().size()) {
+            Logger.d(TAG, "Index out of bounds ");
+            return null;
+        }
+
         return mRoutePackage.getEvRangeOnRouteInfos().get(index);
     }
 
@@ -747,11 +761,12 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
+        //todo 后续不跟路线一起绘制
         routeDrawLine();
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
         mParkSearchId = mSearchPackage.aroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
-//        mRoutePackage.selectRoute(routeLineLayerParam.getMMapTypeId(), NumberUtils.NUM_0);
+        //todo 图层去设置全览
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
     }
 
@@ -969,16 +984,18 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     @Override
-    public void onRouteSlected(final MapType mapTypeId, final int routeIndex) {
+    public void onRouteSlected(final MapType mapTypeId, final int routeIndex, boolean isFirst) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
-            if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.updateSelectRouteUI(routeIndex);
-                mViewModel.showNomalRouteUI(true);
+            if (!isFirst) {
+                if (!ConvertUtils.isEmpty(mViewModel)) {
+                    mViewModel.updateSelectRouteUI(routeIndex);
+                    mViewModel.showNomalRouteUI(true);
+                }
+                mSearchPackage.clearLabelMark();
+                mViewModel.cancelTimer();
+                clearWeatherView();
+                clearRestArea();
             }
-            mSearchPackage.clearLabelMark();
-            mViewModel.cancelTimer();
-            clearWeatherView();
-            clearRestArea();
             if (!ConvertUtils.isEmpty(mViewModel) && mRouteLineInfos != null) {
                 if (routeIndex >= 0 && routeIndex < mRouteLineInfos.size()
                         && NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
@@ -1019,17 +1036,20 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
         switch (type) {
             case ROUTE_PATH:
-                if (!ConvertUtils.isEmpty(mRouteLineInfos)) {
-                    int index = -1;
-                    for (int t = 0; t < mRouteLineInfos.size(); t++) {
-                        if (item.getIndex() == mRouteLineInfos.get(t).getMPathID()) {
-                            index = t;
+                ThreadManager.getInstance().execute(() -> {
+                    if (!ConvertUtils.isEmpty(mRouteLineInfos)) {
+                        int index = -1;
+                        for (int t = 0; t < mRouteLineInfos.size(); t++) {
+                            if (item.getIndex() == mRouteLineInfos.get(t).getMPathID()) {
+                                index = t;
+                            }
+                        }
+
+                        if (index != -1 && index != getCurrentIndex()) {
+                            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, index);
                         }
                     }
-                    if (index != -1 && index != getCurrentIndex()) {
-                        mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, index);
-                    }
-                }
+                });
                 break;
             case ROUTE_POINT_START:
             case ROUTE_POINT_END:

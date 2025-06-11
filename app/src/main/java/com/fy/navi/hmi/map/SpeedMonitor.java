@@ -1,13 +1,15 @@
 package com.fy.navi.hmi.map;
 
-import android.os.CountDownTimer;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AppCache;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.adapter.position.VehicleSpeedController;
 import com.fy.navi.service.define.position.ISpeedCallback;
+
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Author: QiuYaWei
@@ -20,25 +22,12 @@ public class SpeedMonitor implements ISpeedCallback {
     // 标记是否正在计时
     private boolean isTiming = false;
     private static final float SPEED_THRESHOLD = 15;
-    private static final long INTERVAL_TIME = 1000L;
-    private static final long TOTAL_TIME = 15*1000L;
+    private static final long INTERVAL_TIME = 1;//单位：秒
+    private static final long TIME_THRESHOLD = 10;//单位：秒
+    private long passedTime;
     private CallBack callBack;
     private VehicleSpeedController mSpeedController;
-    private CountDownTimer countDownTimer = new CountDownTimer(TOTAL_TIME, INTERVAL_TIME) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-
-        }
-
-        @Override
-        public void onFinish() {
-            Logger.i(TAG, "CountDownTimer --- onFinish !");
-            isTiming = false;
-            if (callBack != null) {
-                callBack.startCruise();
-            }
-        }
-    };
+    private ScheduledFuture scheduledFuture;
 
     public SpeedMonitor() {
 
@@ -63,22 +52,19 @@ public class SpeedMonitor implements ISpeedCallback {
 
     // 处理车速更新的方法 speed单位 km/h
     private void updateSpeed(float speed) {
-        Logger.i(TAG, "updateSpeed:" + speed);
         if (speed >= SPEED_THRESHOLD) {
             if (!isTiming) {
-                isTiming = true;
-                countDownTimer.start();
+                startSchedule();
             } else {
-                Logger.i(TAG, "正在计时当中...");
+                Logger.d(TAG, "正在计时当中...");
             }
         } else {
-            isTiming = false;
-            countDownTimer.cancel();
+            cancelTicket();
         }
     }
 
     @Override
-    public void onSpeedChanged(float speed) {
+    public void onPulseSpeedChanged(float speed) {
         updateSpeed(speed);
     }
 
@@ -87,13 +73,49 @@ public class SpeedMonitor implements ISpeedCallback {
     }
 
     public void unInit() {
-        if (countDownTimer != null) {
-            isTiming = false;
-            countDownTimer.cancel();
-            removeCallBack();
-        }
+        cancelTicket();
+        removeCallBack();
         if (!ConvertUtils.isNull(mSpeedController)) {
             mSpeedController.unregisterCallback();
+        }
+    }
+
+    private void onTicketEnd() {
+        if (passedTime >= TIME_THRESHOLD) {
+            Logger.i(TAG, "onTicketEnd");
+            cancelTicket();
+            if (callBack != null) {
+                callBack.startCruise();
+            }
+        }
+    }
+
+    private void startSchedule() {
+        Logger.i(TAG, "startSchedule:" + isTiming);
+        try {
+            isTiming = true;
+            scheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(() -> {
+                passedTime ++;
+                onTicketEnd();
+            }, 0, INTERVAL_TIME, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            isTiming = false;
+            Logger.e(TAG, "startSchedule failed:" + e.getMessage());
+        }
+    }
+
+    private void cancelTicket() {
+        isTiming = false;
+        passedTime = 0;
+        try {
+            if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
+                boolean cancelResult = scheduledFuture.cancel(true);
+                Logger.i(TAG, "cancelTicket:" + cancelResult);
+            } else {
+                Logger.d(TAG, "cancelTicket failed: scheduledFuture is null or has completed!");
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "cancelTicket error:" + e.getMessage());
         }
     }
 }

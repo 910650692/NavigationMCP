@@ -23,7 +23,6 @@ import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -88,6 +87,11 @@ public class LayerAdapterImpl implements ILayerApi {
         return layersPoolManager.get(mapTypeId).getLayerCar().getCarModeType();
     }
 
+    /* 设置车标是否显示 */
+    public void setCarLogoVisible(MapType mapTypeId, boolean visible) {
+        layersPoolManager.get(mapTypeId).getLayerCar().setCarLogoVisible(visible);
+    }
+
     /* 设置凯迪车型骨骼车标 */
     public void setCadiSkeletonCarModel(MapType mapTypeId) {
         layersPoolManager.get(mapTypeId).getLayerCar().initCadiSkeletonCarModel();
@@ -115,7 +119,7 @@ public class LayerAdapterImpl implements ILayerApi {
 
     @Override
     public int setFollowMode(MapType mapTypeId, boolean bFollow) {
-        Logger.e(TAG,"setFollowMode ");
+        Logger.d(TAG,"setFollowMode: " + bFollow);
         layersPoolManager.get(mapTypeId).getLayerCar().setFollowMode(bFollow);
         return 1;
     }
@@ -412,7 +416,6 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public boolean showCross(MapType mapTypeId, LayerItemCrossEntity crossEntity) {
         boolean b = layersPoolManager.get(mapTypeId).getLayerGuideRoute().showCross(crossEntity.getCrossImageEntity());
-        Logger.d(TAG, "hideCross " + b);
         Logger.i("crossImageDebug", "showCross " + b);
         return b;
     }
@@ -420,7 +423,6 @@ public class LayerAdapterImpl implements ILayerApi {
     /* 根据放大路口类型隐藏对应的路口大图 */
     public boolean hideCross(MapType mapTypeId, @CrossType.CrossType1 int type) {
         boolean b = layersPoolManager.get(mapTypeId).getLayerGuideRoute().hideCross(type);
-        Logger.d(TAG, "hideCross " + b);
         Logger.i("crossImageDebug", "hideCross " + b);
         return b;
     }

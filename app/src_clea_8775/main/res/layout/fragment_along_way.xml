@@ -13,14 +13,16 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.rootClick}"
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_545"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_34"
+        android:layout_marginTop="@dimen/dp_34"
         android:clickable="true"
         android:orientation="vertical">
 
         <com.fy.navi.scene.ui.search.SceneQuickSearchView
             android:id="@+id/scene_quick_search_view"
-            android:layout_width="@dimen/dp_640"
+            android:layout_width="@dimen/dp_545"
             android:layout_height="match_parent" />
     </com.fy.navi.ui.view.SkinLinearLayout>
 </layout>

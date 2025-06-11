@@ -32,7 +32,9 @@
                     android:id="@+id/cl_charge_expand"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible">
+                    android:visibility="visible"
+                    tools:visibility="visible">
+
                     <View
                         android:id="@+id/view_bg"
                         android:layout_width="match_parent"
@@ -54,15 +56,16 @@
                         android:id="@+id/tv_title"
                         android:layout_width="@dimen/dp_560"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_8"
-                        android:layout_marginBottom="@dimen/dp_7"
+                        android:layout_marginStart="@dimen/dp_12"
+                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_marginBottom="@dimen/dp_12"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/traffic_title_color"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_38"
+                        app:layout_constraintBottom_toTopOf="@id/layout_charge_desc"
                         app:layout_constraintStart_toEndOf="@id/iv_icon"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toTopOf="@id/layout_charge_desc"
                         app:layout_constraintVertical_chainStyle="packed"
                         tools:text="国家电网务区充电站充电充电…" />
 
@@ -70,16 +73,15 @@
                         android:id="@+id/tv_sub_title"
                         android:layout_width="@dimen/dp_96"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
                         android:layout_marginStart="@dimen/dp_12"
-                        android:layout_marginTop="@dimen/dp_12"
                         android:layout_marginBottom="@dimen/dp_24"
                         android:ellipsize="end"
+                        android:focusable="false"
                         android:maxLines="1"
+                        android:text="@string/navi_along_service"
                         android:textColor="@color/traffic_title_color"
                         android:textSize="@dimen/sp_32"
                         android:visibility="gone"
-                        android:text="@string/navi_along_service"
                         app:layout_constraintBottom_toBottomOf="@id/view_bg"
                         app:layout_constraintStart_toEndOf="@id/iv_icon"
                         tools:text="服务区" />
@@ -90,7 +92,7 @@
                         android:layout_width="@dimen/dp_560"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_8"
-                        android:layout_marginBottom="@dimen/dp_12"
+                        android:layout_marginBottom="@dimen/dp_24"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/iv_icon" />
 
@@ -112,11 +114,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
                         android:layout_marginEnd="@dimen/dp_32"
+                        android:focusable="false"
                         android:gravity="center"
                         android:minWidth="@dimen/dp_110"
-                        android:focusable="false"
                         android:textColor="@color/traffic_sub_title_color"
-                        android:textSize="@dimen/sp_26"
+                        android:textSize="@dimen/sp_32"
                         app:layout_constraintBottom_toBottomOf="@id/view_bg"
                         app:layout_constraintEnd_toEndOf="@id/view_bg"
                         app:layout_constraintTop_toBottomOf="@id/iv_navi_icon"
@@ -137,29 +139,32 @@
                     android:id="@+id/cl_charge_unexpand"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="gone">
 
                     <com.fy.navi.ui.view.SkinImageView
                         android:id="@+id/iv_icon_unexpand"
-                        android:layout_width="@dimen/dp_49"
-                        android:layout_height="@dimen/dp_49"
-                        android:layout_marginStart="@dimen/dp_7"
-                        android:layout_marginBottom="@dimen/dp_10"
+                        android:layout_width="@dimen/dp_74"
+                        android:layout_height="@dimen/dp_74"
+                        android:layout_marginStart="@dimen/dp_12"
+                        android:layout_marginBottom="@dimen/dp_12"
                         android:src="@drawable/img_electricity_low_42"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/tv_title_unexpand"
-                        android:layout_width="@dimen/dp_350"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_7"
-                        android:layout_marginBottom="@dimen/dp_18"
+                        android:layout_marginEnd="@dimen/dp_156"
+                        android:layout_marginBottom="@dimen/dp_24"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/traffic_title_color"
-                        android:textSize="@dimen/sp_26"
+                        android:textSize="@dimen/sp_38"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/iv_icon_unexpand"
                         tools:text="国家电网务区充电站充电充电…" />
 
@@ -168,16 +173,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_14"
-                        android:layout_marginBottom="@dimen/dp_20"
+                        android:layout_marginBottom="@dimen/dp_28"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="@string/navi_along_service"
                         android:textColor="@color/traffic_title_color"
-                        android:textSize="@dimen/sp_22"
+                        android:textSize="@dimen/sp_32"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/tv_title_unexpand"
-                        tools:text="服务区" />
+                        tools:text="服务区"
+                        tools:visibility="visible" />
 
                 </com.fy.navi.ui.view.SkinConstraintLayout>
             </com.fy.navi.ui.view.SkinConstraintLayout>

@@ -11,15 +11,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @date 2025/5/30
  */
 public class ProcessManager {
+
     private static List<ProcessForegroundStatus> processStatusList = new CopyOnWriteArrayList<>();
-    private static boolean mIsAppInForeground;
+    private static boolean mIsAppInForeground = false;
+    private static int mAppRunStatus = 0;
 
     /**
-     * 添加应用前后台状态监听
+     * 添加应用前后台状态监听.
      *
      * @param callback IsAppInForegroundCallback
      */
-    public static void addIsAppInForegroundCallback(ProcessForegroundStatus callback) {
+    public static void addIsAppInForegroundCallback(final ProcessForegroundStatus callback) {
         processStatusList = ConvertUtils.push(processStatusList, callback);
     }
 
@@ -28,26 +30,23 @@ public class ProcessManager {
      *
      * @param callback IsAppInForegroundCallback
      */
-    public static void removeIsAppInForegroundCallback(ProcessForegroundStatus callback) {
+    public static void removeIsAppInForegroundCallback(final ProcessForegroundStatus callback) {
         ConvertUtils.remove(processStatusList, callback);
     }
 
+    /**
+     * 清空回调接口.
+     */
     public static void removeAllCallback() {
         ConvertUtils.clear(processStatusList);
         processStatusList = null;
     }
 
     /**
-     * 判断应用运行状态.
-     * 用户操作预期结果
-     * 打开应用isForeground = true
-     * 从最近任务切换回应用isForeground = true
-     * 弹出 Dialog 或悬浮窗isForeground = true
-     * 按 Home 键返回桌面isForeground = false
-     * 启动另一个应用isForeground = false
-     * 锁屏isForeground = false
+     * 当前应用是否处于前台.
      *
-     * @return 见AutoMapConstant.AppRunStatus.
+     * @return 前后台状态，true-前台  false-后台.
+     *
      */
     public static boolean isAppInForeground() {
         return mIsAppInForeground;
@@ -56,10 +55,10 @@ public class ProcessManager {
     /**
      * 更新应用前后台状态
      *
-     * @param appInForegroundStatus 见AutoMapConstant.AppRunStatus
+     * @param appInForeground 见AutoMapConstant.AppRunStatus
      */
-    public static void updateIsAppInForeground(boolean appInForegroundStatus) {
-        mIsAppInForeground = appInForegroundStatus;
+    public static void updateIsAppInForeground(final boolean appInForeground) {
+        mIsAppInForeground = appInForeground;
         if (ConvertUtils.isEmpty(processStatusList)) {
             return;
         }
@@ -71,15 +70,27 @@ public class ProcessManager {
     }
 
     /**
+     * 获取当前进程运行状态值.
+     *
+     * @return int,具体值见ProcessStatus.AppRunStatus.
+     */
+    public static int getAppRunStatus() {
+        return mAppRunStatus;
+    }
+
+    /**
      * 更新当前进程状态
      *
-     * @param isAppInForeground 见AutoMapConstant.AppRunStatus
+     * @param appRunStatus 见AutoMapConstant.AppRunStatus
      */
-    public static void updateProcessStatus(@ProcessStatus.AppRunStatus int isAppInForeground) {
-        if (ConvertUtils.isEmpty(processStatusList)) return;
+    public static void updateProcessStatus(@ProcessStatus.AppRunStatus int appRunStatus) {
+        mAppRunStatus = appRunStatus;
+        if (ConvertUtils.isEmpty(processStatusList)) {
+            return;
+        }
         for (ProcessForegroundStatus callback : processStatusList) {
             if (callback != null) {
-                callback.isAppInForeground(isAppInForeground);
+                callback.isAppInForeground(appRunStatus);
             }
         }
     }
@@ -89,7 +100,7 @@ public class ProcessManager {
 
         }
 
-        default void isAppInForeground(int isInForeground) {
+        default void isAppInForeground(int appRunStatus) {
 
         }
     }

@@ -297,6 +297,7 @@ public final class SearchRequestParamV2 {
         paramV2.poiLoc.lat = searchRequestInfo.getPoiLoc().getLat();
         paramV2.geoObj = searchRequestInfo.getGeoobj();
         paramV2.city = String.valueOf(searchRequestInfo.getAdCode());
+        paramV2.offlineParam.resultMaxCount = 10;
         paramV2.range = ConvertUtils.isEmpty(searchRequestInfo.getRange()) ?
                 "5000" : searchRequestInfo.getRange();
         return paramV2;

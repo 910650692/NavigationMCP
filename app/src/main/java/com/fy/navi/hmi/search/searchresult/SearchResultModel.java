@@ -63,7 +63,7 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
         mRouteResultObserver = new IRouteResultObserver() {
 
             @Override
-            public void onRouteSlected(MapType mapTypeId, int routeIndex) {
+            public void onRouteSlected(MapType mapTypeId, int routeIndex, boolean isFirst) {
                 mViewModel.onRouteSelected();
             }
         };

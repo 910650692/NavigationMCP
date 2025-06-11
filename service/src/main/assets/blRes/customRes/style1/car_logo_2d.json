@@ -1,10 +1,10 @@
 {
   "car_layer_style": {
     "car_marker": {
+      "track_marker_id": "global_image_car_mini_day_night",
+      "track_arc_marker_id": "car_mini_direction",
       "compass_marker_id": "global_image_navi_direction_day_night",
       "compass_indicator_marker_id": "global_image_navi_direction_day_night",
-      "track_marker_id": "layer_image_car_default",
-      "track_arc_marker_id": "id_static",
       "shine_marker_id": "navi_day_light"
     },
     "compass_marker_info": {

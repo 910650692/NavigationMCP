@@ -240,9 +240,13 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
 
     /**
      * 更新搜索结果
+     * @param taskId 任务id
      * @param searchResultEntity 搜索结果实体
      */
     public void notifySearchResult(final int taskId,final SearchResultEntity searchResultEntity) {
+        if (ConvertUtils.isEmpty(mScreenViewModel)) {
+            return;
+        }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
                 + " currentId: " + mScreenViewModel.getMTaskId());
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {

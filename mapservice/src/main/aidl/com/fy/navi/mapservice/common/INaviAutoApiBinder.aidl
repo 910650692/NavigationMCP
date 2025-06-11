@@ -5,6 +5,8 @@ import com.fy.navi.mapservice.common.INaviAutoLocationCallback;
 import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
 import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
 import com.fy.navi.mapservice.common.INaviAutoStatusCallback;
+import com.fy.navi.mapservice.common.INaviAutoGuideStatusCallBack;
+import com.fy.navi.mapservice.common.INaviAutoSpeedCallBack;
 import com.fy.navi.mapservice.bean.common.BaseGeoPoint;
 import com.fy.navi.mapservice.bean.common.BaseSearchPoi;
 import com.fy.navi.mapservice.bean.common.BaseTurnInfo;
@@ -63,9 +65,12 @@ interface INaviAutoApiBinder {
 
     void removeNaviAutoStatusCallback(String pkgName, INaviAutoStatusCallback naviAutoStatusCallback);
 
+    void addNaviAutoSpeedCallBack(String pkgName, INaviAutoSpeedCallBack naviAutoSpeedCallBack);
 
+    void removeNaviAutoSpeedCallBack(String pkgName, INaviAutoSpeedCallBack naviAutoSpeedCallBack);
 
+    void addNaviAutoGuideStatusCallBack(String pkgName, INaviAutoGuideStatusCallBack naviAutoGuideStatusCallBack);
 
-
+    void removeNaviAutoGuideStatusCallBack(String pkgName, INaviAutoGuideStatusCallBack naviAutoGuideStatusCallBack);
 
 }

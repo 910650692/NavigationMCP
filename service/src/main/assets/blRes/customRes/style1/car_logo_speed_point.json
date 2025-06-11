@@ -1,0 +1,8 @@
+{
+  "point_layer_item_style": {
+    "normal_style": {
+      "poi_marker_id": "speed_car.xml",
+      "poi_marker_info": "marker_info_speed_car"
+    }
+  }
+}

@@ -100,6 +100,12 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
         }
     }
 
+    public void refreshView() {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.refreshView();
+        }
+    }
+
     /**
      * @param currentImersiveStatus status
      */
@@ -142,7 +148,7 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
                 Boolean.TRUE.equals(mScreenViewModel.getGroupMoreSetupField().get())));
         final Context context = getContext();
         final int dpPixels;
-        if (mViewBinding.sclSettings == null) {
+        if (mViewBinding != null && mViewBinding.sclSettings == null) {
             Logger.e(TAG, "changeOverViewControlLength: mViewBinding.sclSettings is null");
             return;
         }

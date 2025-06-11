@@ -33,7 +33,6 @@ import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
-import com.fy.navi.service.define.navi.NaviCongestionDetailInfoEntity;
 import com.fy.navi.service.define.navi.NaviCongestionInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -105,6 +104,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Getter
     private NaviEtaInfo mCurrentNaviEtaInfo;
     private boolean mIsFixedOverView;
+    private boolean mIsClusterFixOverView;
     private boolean mCruiseVoiceIsOpen = true; // 巡航播报是否开启
     // 线路上所有道路的名称
     private RoadName mRoadName;
@@ -112,6 +112,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * 当前导航类型 -1:未知 0:GPS导航 1:模拟导航
      */
     private int mCurrentNaviType = NumberUtils.NUM_ERROR;
+    // 缓存初次进入导航的系统导航音量值，用来做恢复操作
+    private int mLastSystemNaviVolume = NumberUtils.NUM_ERROR;
     private List<OnPreViewStatusChangeListener> mOnPreViewStatusChangeListeners =
             new CopyOnWriteArrayList<>();
 
@@ -159,9 +161,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             Logger.e(TAG, "startNavigation", "mNaviAdapter == null");
             return false;
         }
-        final boolean result = mNaviAdapter.startNavigation(isSimulate ? NaviStartType.NAVI_TYPE_SIMULATION : NaviStartType.NAVI_TYPE_GPS);
+        final boolean result = mNaviAdapter.startNavigation(isSimulate ?
+                NaviStartType.NAVI_TYPE_SIMULATION : NaviStartType.NAVI_TYPE_GPS);
         final String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();
-        Logger.i(TAG, "startNavigation", "result:" + result, "isSimulate:" + isSimulate, "currentNaviStatus:" + currentNaviStatus);
+        Logger.i(TAG, "startNavigation", "result:" + result, "isSimulate:" +
+                isSimulate, "currentNaviStatus:" + currentNaviStatus);
         if (result) {
             if (isSimulate) {
                 mCurrentNaviType = NumberUtils.NUM_1;
@@ -169,12 +173,12 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             } else {
                 mCurrentNaviType = NumberUtils.NUM_0;
             }
-            mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
             //清除终点停车场扎标
             mLayerAdapter.clearLabelItem(MapType.MAIN_SCREEN_MAIN_MAP);
+            mLayerAdapter.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
@@ -193,10 +197,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         final boolean result = mNaviAdapter.stopNavigation();
         if (result) {
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
-//            mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, false);
-//            mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
-//            mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, false);
-//            mLayerAdapter.setFollowMode(MapType.HUD_MAP, false);
             mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
             sendBuryPointForCloseNavi();
@@ -214,8 +214,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             return;
         }
         BuryProperty buryProperty = new BuryProperty.Builder()
-                .setParams(BuryConstant.ProperType.BURY_KEY_REMAINING_TIME, TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), mNaviEtaInfo.getAllTime()))
-                .setParams(BuryConstant.ProperType.BURY_KEY_TRIP_DISTANCE, TimeUtils.getRemainInfo(AppCache.getInstance().getMContext(), mNaviEtaInfo.getAllDist(), mNaviEtaInfo.getAllTime()))
+                .setParams(BuryConstant.ProperType.BURY_KEY_REMAINING_TIME, TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), mNaviEtaInfo.getRemainTime()))
+                .setParams(BuryConstant.ProperType.BURY_KEY_TRIP_DISTANCE, TimeUtils.getRemainInfo(AppCache.getInstance().getMContext(), mNaviEtaInfo.getRemainDist(), mNaviEtaInfo.getRemainTime()))
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }
@@ -235,7 +235,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         Logger.i(TAG, "state：" + state);
         if (state == 4) {//4是熄火状态
             if (null != mCurrentNaviEtaInfo &&
-                    mCurrentNaviEtaInfo.getAllDist() < 1000) {//添加未完成导航(车辆熄火前的CVP距离目的地的距离 ≥ 1 km)
+                    mCurrentNaviEtaInfo.getRemainDist() < 1000) {//添加未完成导航(车辆熄火前的CVP距离目的地的距离 ≥ 1 km)
                 Logger.i(TAG, "isCompleted= ");
                 return;
             }
@@ -363,6 +363,18 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         return mIsFixedOverView;
     }
 
+    /**
+     * 由于cluster导航视图打开后，需要固定视图状态，所以需要单独设置
+     * @param b 是否固定视图状态 @thread main
+     */
+    public void setClusterFixOverViewStatus(final boolean b) {
+        mIsClusterFixOverView = b;
+    }
+
+    public boolean getClusterFixOverViewStatus() {
+        return mIsClusterFixOverView;
+    }
+
     private static final class Helper {
         private static final NaviPackage NAVI_PACKAGE = new NaviPackage();
     }
@@ -396,6 +408,28 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void setMute(final boolean isMute) {
         mSettingAdapter.setConfigKeyMute(isMute ? 1 : 0);
         mIsMute = isMute;
+        if (isMute) {
+            mSignalAdapter.setNaviVolume(NumberUtils.NUM_0);
+        } else {
+            if (mLastSystemNaviVolume > NumberUtils.NUM_0) {
+                mSignalAdapter.setNaviVolume(mLastSystemNaviVolume);
+            } else {
+                mSignalAdapter.setNaviVolume(NumberUtils.NUM_31);
+            }
+        }
+    }
+
+    public void setMuteByHmi(final boolean isMute) {
+        mSettingAdapter.setConfigKeyMute(isMute ? 1 : 0);
+        mIsMute = isMute;
+    }
+
+    public void setCurrentNaviVolume(int volume) {
+        mLastSystemNaviVolume = volume;
+    }
+
+    public int getCurrentNaviVolume() {
+        return mLastSystemNaviVolume;
     }
 
     /*是否静音*/
@@ -1245,5 +1279,18 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (null != mSpeechAdapter) {
             mSpeechAdapter.stop();
         }
+    }
+
+    public void onNaviClose(boolean isNaviClose) {
+        Logger.i(TAG, "onNaviClose isNaviClose = " + isNaviClose);
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onCloseNavi(isNaviClose);
+                    }
+                }
+            }
+        });
     }
 }

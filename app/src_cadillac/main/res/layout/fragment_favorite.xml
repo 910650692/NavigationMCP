@@ -127,12 +127,13 @@
 
                         <com.fy.navi.ui.view.SkinTextView
                             android:id="@+id/favorite_home_name"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/dp_294"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/favorite_home"
-                            android:focusable="false"
                             android:layout_marginStart="@dimen/dp_120"
                             android:layout_marginTop="@dimen/dp_4"
+                            android:focusable="false"
+                            android:maxLines="1"
                             android:text="@string/favorite_setting"
                             android:textColor="@color/color_black_70"
                             android:textSize="@dimen/sp_32" />
@@ -188,8 +189,11 @@
 
                         <com.fy.navi.ui.view.SkinTextView
                             android:id="@+id/favorite_company_name"
-                            android:layout_width="wrap_content"
+
+                            android:layout_width="@dimen/dp_294"
                             android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:paddingEnd="@dimen/dp_5"
                             android:focusable="false"
                             android:layout_below="@+id/favorite_company"
                             android:layout_marginStart="@dimen/dp_120"

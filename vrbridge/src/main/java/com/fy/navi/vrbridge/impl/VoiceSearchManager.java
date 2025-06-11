@@ -521,9 +521,10 @@ public final class VoiceSearchManager {
         if (mShouldPlayRouteMsg) {
             mShouldPlayRouteMsg = false;
             if (null != mPoiCallback) {
+                Logger.w(IVrBridgeConstant.TAG, "begin tts poiCallBack");
                 final CallResponse routeResponse = CallResponse.createSuccessResponse();
                 routeResponse.setSubCallResult(NaviSubCallResult.RESP_MULTI_POI_SEARCH_SUCCESS);
-                mPoiCallback.onResponse(CallResponse.createSuccessResponse());
+                mPoiCallback.onResponse(routeResponse);
             }
         }
     }
@@ -609,7 +610,7 @@ public final class VoiceSearchManager {
             mRouteType = null;
         }
 
-        if (inNaviStatus()) {
+        if (judgeNaviStatusForRouting()) {
             //当前为导航态，更换目的地直接发起快速导航
             RoutePackage.getInstance().requestRouteFromSpeech(requestParam);
         } else {
@@ -631,6 +632,20 @@ public final class VoiceSearchManager {
         return NaviStatus.NaviStatusType.NAVING.equals(curStatus)
                 || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus);
     }
+
+    /**
+     * 判断当前是否处理引导态.
+     *
+     * @return true:引导态   false:非引导态.
+     */
+    private boolean judgeNaviStatusForRouting() {
+        final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        return NaviStatus.NaviStatusType.NAVING.equals(curStatus)
+                || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus)
+                || NaviStatus.NaviStatusType.ROUTING.equals(curStatus)
+                || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus);
+    }
+
 
     /**
      * 处理多目的地导航.
@@ -695,16 +710,14 @@ public final class VoiceSearchManager {
         } else {
             mNormalDestList.put(size, singleDestInfo);
         }
-
+        //多目的地默认播报规划结果，等处理有泛型POI时再改成不播报
+        mShouldPlayRouteMsg = true;
         //家和公司需要先判断是否已经设置，泛型POI需要依次展示搜索结果
         if (containHome) {
             final PoiInfoEntity homeInfo = getHomeCompanyPoiInfo(1);
             if (null == homeInfo) {
                 Logger.w(IVrBridgeConstant.TAG, "MultipleDest contain home but info is empty");
                 return havaNoHomeAddress();
-            } else if (!inNaviStatus()) {
-                //多目的地涉及家和公司，需要播报路线规划结果
-                mShouldPlayRouteMsg = true;
             }
         }
         if (containCompany) {
@@ -712,9 +725,6 @@ public final class VoiceSearchManager {
             if (null == companyInfo) {
                 Logger.w(IVrBridgeConstant.TAG, "MultipleDest contain company but info is empty");
                 return havaNoCompanyAddress();
-            } else if (!inNaviStatus()) {
-                //多目的地涉及家和公司，需要播报路线规划结果
-                mShouldPlayRouteMsg = true;
             }
         }
 
@@ -761,6 +771,7 @@ public final class VoiceSearchManager {
 
         //继续先澄清泛型再搜索普通poi
         if (null != mGenericsDestList && mGenericsDestList.size() > 0) {
+            mShouldPlayRouteMsg = false;
             //继续澄清下一个泛型
             mProcessDestIndex = mGenericsDestList.keyAt(0);
             Logger.d(IVrBridgeConstant.TAG, "genericsDestIndex: " + mProcessDestIndex);

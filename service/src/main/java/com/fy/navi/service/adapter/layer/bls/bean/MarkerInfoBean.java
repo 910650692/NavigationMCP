@@ -1,6 +1,8 @@
 package com.fy.navi.service.adapter.layer.bls.bean;
 
 
+import com.autonavi.gbl.map.layer.model.LayerIconAnchor;
+
 /**
  * 图层设置锚点json配置实体类
  * Created by AutoSdk
@@ -25,6 +27,7 @@ public class MarkerInfoBean {
         this.repeat = repeat;
     }
 
+    @LayerIconAnchor.LayerIconAnchor1
     public int getAnchor() {
         return anchor;
     }

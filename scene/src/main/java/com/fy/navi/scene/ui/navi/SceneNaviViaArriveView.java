@@ -61,7 +61,7 @@ public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveView
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_VIA_ARRIVED_POP;
     }
 

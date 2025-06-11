@@ -133,9 +133,9 @@ public class CarLocBackFusionDataSource extends BaseLocBackFusionDataSource impl
     public void updateSensorPara(String s) {
     }
 
-    public void onSpeedChanged(float speed) {
+    public void onPulseSpeedChanged(float speed) {
         if (mSensorManager != null) {
-            mSensorManager.onSpeedChanged(speed);
+            mSensorManager.onPulseSpeedChanged(speed);
         }
     }
 

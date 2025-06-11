@@ -54,7 +54,7 @@ public class MapPointSearchModel extends BaseModel<MapPointSearchViewModel> impl
         if(getCallbackId().equals(mSearchPackage.getCurrentCallbackId())){
             final ThreadManager threadManager = ThreadManager.getInstance();
             threadManager.postUi(() -> {
-                mViewModel.notifySearchResult(searchResultEntity);
+                mViewModel.notifySearchResult(taskId, searchResultEntity);
             });
         }else{
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "MapPointSearch Ignoring callback for ID: " + taskId);

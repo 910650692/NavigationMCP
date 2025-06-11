@@ -152,4 +152,5 @@
     <color name="toast_text">#FFFFFFFF</color>
     <color name="setting_offline_no_search_hint">#FFFFFFFF</color>
     <color name="setting_other_about_bg_btn">#26B2AFC2</color>
+    <color name="scroller_bar_color">#99ffffff</color>
 </resources>

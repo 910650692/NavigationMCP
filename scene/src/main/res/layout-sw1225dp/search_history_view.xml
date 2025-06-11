@@ -12,7 +12,7 @@
 
     <com.fy.navi.ui.view.SkinFrameLayout
         android:layout_width="@dimen/dp_545"
-        android:layout_height="@dimen/dp_499"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_search_main_tab"
         android:clipToOutline="true"
         android:layerType="hardware"
@@ -49,12 +49,11 @@
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/tv_record_null"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_283"
+                android:layout_height="@dimen/dp_412"
                 android:gravity="center"
                 android:text="@string/shv_record_null"
                 android:textColor="@color/search_color_ffffff_70"
                 android:textSize="@dimen/sp_26"
-                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view" />
 
             <com.fy.navi.ui.view.SkinConstraintLayout

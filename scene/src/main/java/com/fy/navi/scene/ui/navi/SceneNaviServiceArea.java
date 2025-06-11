@@ -40,7 +40,7 @@ public class SceneNaviServiceArea extends NaviSceneBase<NaviSceneServiceAreaBind
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_SERVICE_AREA;
     }
 

@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityStartupBinding;
@@ -79,6 +81,10 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
     @Override
     public void onInitData() {
         Intent intent = getIntent();
+        if (intent != null && intent.getIntExtra(BuryConstant.EventName.AMAP_RETURN_DEFAULT, 0)
+                == BuryConstant.EventName.AMAP_RETURN_DEFAULT_CODE) {
+            sendBuryPointForReset();
+        }
         //外部应用打开地图时指定的响应界面
         if (null != intent) {
             int intentPage = intent.getIntExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
@@ -101,6 +107,10 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
             }
             intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
         }
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
+    private void sendBuryPointForReset() {
     }
 
     @Override

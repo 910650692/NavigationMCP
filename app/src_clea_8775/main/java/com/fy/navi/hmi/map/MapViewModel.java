@@ -3,7 +3,10 @@ package com.fy.navi.hmi.map;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+
+import com.fy.navi.hmi.splitscreen.SplitScreenManager;
 import com.fy.navi.service.BuildConfig;
+import com.fy.navi.ui.action.Action;
 
 /**
  * @Description TODO
@@ -11,22 +14,24 @@ import com.fy.navi.service.BuildConfig;
  * @date 2024/11/26
  */
 public class MapViewModel extends BaseMapViewModel {
-
-    private String jsonPath = BuildConfig.MAP_SDK + "/buick_maparea.json";
-
+    private static final String TAG = "NDLB---MapViewModel";
     public MapViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public void initVisibleAreaPoint(){
-        mModel.loadVisibleAreaJson(jsonPath);
+    public void initVisibleAreaPoint() {
+        mModel.loadVisibleAreaJson(SplitScreenManager.getInstance().getScreenJsonPath());
     }
 
-    public boolean showNdGoHomeView(){
-        return false;
+    public boolean showNdGoHomeView() {
+        return true;
     }
-    public void addSceneGoHomeCallBack(int type){
+
+    public void addSceneGoHomeCallBack(int type) {
         mModel.addSceneGoHomeCallBack(type);
     }
 
+    public Action switchSr = () -> {
+        SplitScreenManager.getInstance().switchSR();
+    };
 }

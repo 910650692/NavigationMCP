@@ -216,9 +216,12 @@ public class ClsLinkManager {
             mpilotSdRoute.setPointCount(routeL2Data.getMPntCnt());
 
             MpilotSDRouteEndPoi.Builder mpilotSdRouteEndPoi = MpilotSDRouteEndPoi.newBuilder();
-            mpilotSdRouteEndPoi.setEndPoiId(routeL2Data.getMEndPoi().getMId());
+            String endpoiid = routeL2Data.getMEndPoi().getMId();
+            if (endpoiid != null) {
+                mpilotSdRouteEndPoi.setEndPoiId(endpoiid);
+            }
             String mName = routeL2Data.getMEndPoi().getMName();
-            if (mName == null) {
+            if (mName != null) {
                 mpilotSdRouteEndPoi.setEndPoiName(mName);
             }
             mpilotSdRouteEndPoi.setEndPoiType(routeL2Data.getMEndPoi().getMType());

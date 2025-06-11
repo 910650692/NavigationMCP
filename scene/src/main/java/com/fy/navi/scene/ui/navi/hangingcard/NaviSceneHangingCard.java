@@ -1,6 +1,7 @@
 package com.fy.navi.scene.ui.navi.hangingcard;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,8 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
     //折叠时是否只展示一条
     private boolean mIsOnlyOne = false;
 
+    //是否存在途径点
+
     public NaviSceneHangingCard(@NonNull Context context) {
         super(context);
     }
@@ -51,7 +54,7 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SUSPEND_CARD;
     }
 
@@ -106,19 +109,19 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
     }
 
     private void pauseTimer() {
-        if (mViewBinding.llFirst.getChildCount()>0) {
-           CardView cardView = (CardView) mViewBinding.llFirst.getChildAt(0);
-           if (!ConvertUtils.isNull(cardView)) {
-               cardView.pauseTimer();
-           }
+        if (mViewBinding.llFirst.getChildCount() > 0) {
+            CardView cardView = (CardView) mViewBinding.llFirst.getChildAt(0);
+            if (!ConvertUtils.isNull(cardView)) {
+                cardView.pauseTimer();
+            }
         }
-        if (mViewBinding.llSecond.getChildCount()>0) {
+        if (mViewBinding.llSecond.getChildCount() > 0) {
             CardView cardView = (CardView) mViewBinding.llSecond.getChildAt(0);
             if (!ConvertUtils.isNull(cardView)) {
                 cardView.pauseTimer();
             }
         }
-        if (mViewBinding.llThird.getChildCount()>0) {
+        if (mViewBinding.llThird.getChildCount() > 0) {
             CardView cardView = (CardView) mViewBinding.llThird.getChildAt(0);
             if (!ConvertUtils.isNull(cardView)) {
                 cardView.pauseTimer();
@@ -127,19 +130,19 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
     }
 
     private void resumeTimer() {
-        if (mViewBinding.llFirst.getChildCount()>0) {
+        if (mViewBinding.llFirst.getChildCount() > 0) {
             CardView cardView = (CardView) mViewBinding.llFirst.getChildAt(0);
             if (!ConvertUtils.isNull(cardView)) {
                 cardView.resumeTimer();
             }
         }
-        if (mViewBinding.llSecond.getChildCount()>0) {
+        if (mViewBinding.llSecond.getChildCount() > 0) {
             CardView cardView = (CardView) mViewBinding.llSecond.getChildAt(0);
             if (!ConvertUtils.isNull(cardView)) {
                 cardView.resumeTimer();
             }
         }
-        if (mViewBinding.llThird.getChildCount()>0) {
+        if (mViewBinding.llThird.getChildCount() > 0) {
             CardView cardView = (CardView) mViewBinding.llThird.getChildAt(0);
             if (!ConvertUtils.isNull(cardView)) {
                 cardView.resumeTimer();
@@ -196,7 +199,7 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
             mViewBinding.llSecond.setVisibility(GONE);
             mViewBinding.llThird.setVisibility(GONE);
             mViewBinding.ivToggle.setVisibility(GONE);
-        } else if (uiList.size() == 2) {
+        } else if (uiList.size() == 2 || mIsHideThird) {
             addChild(uiList.get(0), mViewBinding.llFirst, true);
             addChild(uiList.get(1), mViewBinding.llSecond, isExpand);
             mViewBinding.llFirst.setVisibility(VISIBLE);

@@ -15,6 +15,7 @@ import android.view.View;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.map.layer.LayerItem;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.bls.style.IUpdateBitmapViewProcessor;
 import com.fy.navi.service.define.layer.refix.LayerItemData;
@@ -47,7 +48,7 @@ public final class BitmapFactoryManager {
     /**
      * 默认错误的资源id
      */
-    private static int DEF_ERROR_ID = 0;
+    private static final int DEF_ERROR_ID = 0;
 
     private static final AtomicReference<Canvas> DEF_CANVAS = new AtomicReference<>(new Canvas());
 
@@ -61,10 +62,10 @@ public final class BitmapFactoryManager {
         return markerId > DEF_ERROR_ID;
     }
 
-    public synchronized <D extends LayerItemData> TextureInfo createBitmap(Context context, String markerRes, boolean isFocus, IUpdateBitmapViewProcessor<D> processor, D data) {
+    public synchronized <D extends LayerItemData> TextureInfo createBitmap(Context context, String markerRes, boolean isFocus, LayerItem item, IUpdateBitmapViewProcessor<D> processor, D data) {
         TextureInfo textureInfo = new TextureInfo(null, DEF_ERROR_ID);
-        if (TextUtils.isEmpty(markerRes)) {
-            Logger.d(TAG, "markerRes 资源不存在，为 NULL: ");
+        if (TextUtils.isEmpty(markerRes) || "-1".equals(markerRes) || markerRes.endsWith(".xml")) {
+            Logger.v(TAG, "markerRes 资源 无效 : " + markerRes);
             return textureInfo;
         }
         String[] tag = markerRes.split(MARK_FROM_RES_TAG);
@@ -81,7 +82,7 @@ public final class BitmapFactoryManager {
             }
         }
         if (!isValid(resID)) {
-            Logger.d(TAG, "markerRes 资源无效，请检查是否存在: " + markerRes);
+            Logger.v(TAG, "markerRes 资源无效，请检查是否存在: " + markerRes);
             return textureInfo;
         }
         Drawable drawable = null;
@@ -89,22 +90,20 @@ public final class BitmapFactoryManager {
         try {
             drawable = context.getResources().getDrawable(resID, null);
         } catch (Exception exception) {
-            Logger.d(TAG, markerRes + " 不存在 Drawable / mipmap 文件夹中");
+            Logger.v(TAG, markerRes + " 不存在 Drawable / mipmap 文件夹中");
         } finally {
             try {
                 rootView = LayoutInflater.from(context).inflate(resID, null, false);
             } catch (Exception exception) {
-                Logger.d(TAG, markerRes + " 不存在 Layout 文件夹中");
+                Logger.v(TAG, markerRes + " 不存在 Layout 文件夹中");
             } finally {
                 Bitmap bitmap = null;
                 if (null != drawable) {
-                    Logger.d(TAG, "优先 使用 图片 创建纹理 ：" + markerRes);
                     if (drawable instanceof BitmapDrawable) {
                         bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
                     } else if (drawable instanceof VectorDrawable || drawable instanceof VectorDrawableCompat) {
                         int requireWidth = drawable.getIntrinsicWidth() <= 0 ? 1 : drawable.getIntrinsicWidth();
                         int requireHeight = drawable.getIntrinsicHeight() <= 0 ? 1 : drawable.getIntrinsicHeight();
-                        Logger.d(TAG, "图片大小 requireWidth ：" + requireWidth + " ;requireHeight :" + requireHeight);
                         bitmap = createBitmapSafely(requireWidth, requireHeight, Bitmap.Config.ARGB_8888, CREATE_BITMAP_RETRY_COUNT);
                         DEF_CANVAS.get().setBitmap(bitmap);
                         DEF_CANVAS.get().save();
@@ -116,12 +115,12 @@ public final class BitmapFactoryManager {
                     }
                 }
                 if (null != rootView) {
-                    Logger.d(TAG, "通过 布局 创建纹理； 如果存在同名布局和图片 会采用布局 ：" + markerRes);
                     if (processor != null) {
-                        Logger.d(TAG, "获取布局处理工具自定义布局样式 ：" + markerRes + " isFocus " + isFocus);
                         if (isFocus) {
+                            processor.onFocusProcess(item, rootView, data);
                             processor.onFocusProcess(rootView, data);
                         } else {
+                            processor.onNormalProcess(item, rootView, data);
                             processor.onNormalProcess(rootView, data);
                         }
                     }

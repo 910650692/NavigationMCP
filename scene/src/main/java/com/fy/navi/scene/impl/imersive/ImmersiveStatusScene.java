@@ -2,6 +2,7 @@ package com.fy.navi.scene.impl.imersive;
 
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.map.MapType;
 

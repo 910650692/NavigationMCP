@@ -18,6 +18,7 @@ import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 
 import java.util.concurrent.ScheduledFuture;
@@ -26,7 +27,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
 
     public static final String TAG = "SceneNaviContinueImpl";
 
-    private ImersiveStatus mImersiveStatus;
+    private ImersiveStatus mImersiveStatus = ImersiveStatus.IMERSIVE;
     private LayerPackage mLayerPackage;
     private NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
@@ -132,11 +133,20 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         Logger.i(TAG, "naviContinue");
         // 加入防抖
         if (TimerHelper.isCanDo()) {
-            if (!mNaviPackage.getFixedOverViewStatus() && mNaviPackage.getPreviewStatus()) {
+            if (mCallBack != null) {
+                mCallBack.cancelClusterOverViewTimer();
+            }
+            if (!mNaviPackage.getFixedOverViewStatus() &&
+                    !mNaviPackage.getClusterFixOverViewStatus() &&
+                    mNaviPackage.getPreviewStatus()) {
                 OpenApiHelper.exitPreview(mMapTypeId);
                 // 这边逻辑不能随便改，八秒后需要回到自车位置
-            } else if (!mNaviPackage.getFixedOverViewStatus()) {
+            } else if (!mNaviPackage.getFixedOverViewStatus() &&
+                    !mNaviPackage.getClusterFixOverViewStatus()) {
                 goToCarPositionAndFollow();
+            } else {
+                //固定全览状态下，移图后显示继续导航，点击回到全览视图
+                RoutePackage.getInstance().naviShowPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             }
             mSearchPackage.clearLabelMark();
             ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId,
@@ -153,10 +163,6 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
     public void naviContinueClick() {
         Logger.i(TAG, "naviContinueClick");
         naviContinue();
-        //固定全览状态下，移图后显示继续导航，点击回到自车位置
-        if (mNaviPackage.getFixedOverViewStatus()) {
-            goToCarPositionAndFollow();
-        }
         if (null != mScreenView) {
             mScreenView.backToNaviFragment();
         }

@@ -23,6 +23,7 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
     private final SearchPackage mSearchPackage;
     private final String mCallbackId;
     private SearchResultEntity mSearchResultEntity;
+    private int mTaskId;
 
     public TerminalParkingModel() {
         mCallbackId = UUID.randomUUID().toString();
@@ -44,8 +45,9 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
             }
             final ThreadManager threadManager = ThreadManager.getInstance();
             threadManager.postUi(() -> {
+                mTaskId = taskId;
                 mSearchResultEntity = searchResultEntity;
-                mViewModel.notifySearchResult(searchResultEntity);
+                mViewModel.notifySearchResult(taskId, searchResultEntity);
 
             });
         } else {
@@ -61,7 +63,7 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment: " + mSearchResultEntity);
         if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
             final ThreadManager threadManager = ThreadManager.getInstance();
-            threadManager.postUi(() -> mViewModel.notifySearchResult(mSearchResultEntity));
+            threadManager.postUi(() -> mViewModel.notifySearchResult(mTaskId, mSearchResultEntity));
         }
     }
 

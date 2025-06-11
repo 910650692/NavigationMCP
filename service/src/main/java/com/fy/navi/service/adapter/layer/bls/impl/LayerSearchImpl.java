@@ -2,16 +2,13 @@ package com.fy.navi.service.adapter.layer.bls.impl;
 
 
 import android.content.Context;
+import android.os.Looper;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.layer.BizControlService;
-import com.autonavi.gbl.layer.SearchAlongWayLayerItem;
-import com.autonavi.gbl.layer.SearchChargeStationLayerItem;
-import com.autonavi.gbl.layer.SearchChildLayerItem;
-import com.autonavi.gbl.layer.SearchParentLayerItem;
 import com.autonavi.gbl.layer.model.AlongWayLabelType;
 import com.autonavi.gbl.layer.model.BizLineBusinessInfo;
 import com.autonavi.gbl.layer.model.BizPointBusinessInfo;
@@ -24,12 +21,12 @@ import com.autonavi.gbl.layer.model.BizSearchExitEntrancePoint;
 import com.autonavi.gbl.layer.model.BizSearchParentPoint;
 import com.autonavi.gbl.layer.model.BizSearchType;
 import com.autonavi.gbl.map.MapView;
-import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
-import com.autonavi.gbl.map.layer.PointLayerItem;
-import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
+import com.autonavi.gbl.map.observer.IMapviewObserver;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.bls.style.LayerSearchStyleAdapter;
+import com.fy.navi.service.adapter.layer.bls.utils.DebounceHandler;
+import com.fy.navi.service.adapter.layer.bls.utils.MapDataSampler;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerSearchAlongRouteType;
@@ -44,16 +41,59 @@ import com.fy.navi.service.define.utils.NumberUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
+public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> implements IMapviewObserver {
 
     private static final String LINE_TYPE_ROAD = "Road";
     private static final String LINE_TYPE_PARK = "Park";
+    private final MapView mMapView;
+    private final MapDataSampler mMapDataSampler;
+    private final DebounceHandler mHandler;
+    private static final int DELAY_MILLIS = 500;
 
     public LayerSearchImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
         getLayerSearchControl().setStyle(this);
         getLayerSearchControl().addClickObserver(this);
         Logger.d(TAG, "LayerSearchImpl init");
+        mMapView = mapView;
+        mMapView.addMapviewObserver(this);
+        mMapDataSampler = new MapDataSampler();
+        mMapDataSampler.setSamplingStrategy(new MapDataSampler.UniformSamplingStrategy());
+        mHandler = new DebounceHandler(DELAY_MILLIS);
+    }
+
+    @Override
+    public void removeClickCallback(ILayerAdapterCallBack callBack) {
+        super.removeClickCallback(callBack);
+        if (mMapView != null) {
+            mMapView.removeMapviewObserver(this);
+        }
+        if (mHandler != null) {
+            mHandler.cancel();
+        }
+    }
+
+    @Override
+    public void onMapLevelChanged(long engineId, boolean bZoomIn) {
+        Logger.d(TAG, "onMapLevelChanged engineId " + engineId + " bZoomIn " + bZoomIn);
+        if (mMapDataSampler != null) {
+            // 更新沿途搜扎标
+            float zoomLevel = mMapView.getOperatorPosture().getZoomLevel();
+            mMapDataSampler.updateScale(zoomLevel);
+            ArrayList<BizSearchAlongWayPoint> displayData = (ArrayList<BizSearchAlongWayPoint>) mMapDataSampler.getDisplayData();
+            if (ConvertUtils.isEmpty(displayData)) {
+                return;
+            }
+            mHandler.handle(new Runnable() {
+                @Override
+                public void run() {
+                    getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypePoiAlongRoute);
+                    boolean result = getLayerSearchControl().updateSearchAlongRoutePoi(displayData);
+                    Logger.d(TAG, "onMapLevelChanged updateSearchAlongRoutePoi result " + result +
+                            " displayData " + displayData.size());
+                }
+            });
+        }
     }
 
     @Override
@@ -417,6 +457,8 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "updateSearchAlongRoutePoi parentPoints == null");
             return false;
         }
+        float zoomLevel = mMapView.getOperatorPosture().getZoomLevel();
+        Logger.d(TAG, "updateSearchAlongRoutePoi zoomLevel " + zoomLevel + " parentPoints.size " + parentPoints.size());
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoute, true);
         //开启碰撞
         getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiAlongRoute).enableCollision(true);
@@ -429,6 +471,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 continue;
             }
             BizSearchAlongWayPoint viaPoint = new BizSearchAlongWayPoint();
+            viaPoint.id = String.valueOf(i);
             viaPoint.mPos3D.lat = poi.getPoint().getLat();
             viaPoint.mPos3D.lon = poi.getPoint().getLon();
             //viaPoint.travelTime = poi.eta_to_via;
@@ -438,7 +481,6 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             //自定义标签名
             viaPoint.labelName = "";
             int pointTypeCode = getAlongRouteTypeCode(poi.getPointTypeCode());
-            Logger.d(TAG, "updateSearchAlongRoutePoi pointTypeCode " + pointTypeCode);
             switch (pointTypeCode) {
                 //填充沿途搜充电站数据
                 case LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE -> {
@@ -463,7 +505,11 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             viaPoint.typeCode = pointTypeCode;
             alongWayPoints.add(viaPoint);
         }
-        boolean result = getLayerSearchControl().updateSearchAlongRoutePoi(alongWayPoints);
+        mMapDataSampler.updateScale(zoomLevel);
+        mMapDataSampler.setOriginalData(alongWayPoints);
+        ArrayList<BizSearchAlongWayPoint> displayData = (ArrayList<BizSearchAlongWayPoint>) mMapDataSampler.getDisplayData();
+        Logger.d(TAG, "updateSearchAlongRoutePoi getDisplayData " + displayData.size());
+        boolean result = getLayerSearchControl().updateSearchAlongRoutePoi(displayData);
         Logger.d(TAG, "updateSearchAlongRoutePoi result " + result +
                 " alongWayPoints " + alongWayPoints.size());
         return result;
@@ -720,6 +766,9 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypePoiAlongRoutePop);
                 getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoute, false);
                 getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoutePop, false);
+                if (mMapDataSampler != null) {
+                    mMapDataSampler.clearOriginalData();
+                }
             }
             case SEARCH_POI_LABEL -> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypePoiLabel);

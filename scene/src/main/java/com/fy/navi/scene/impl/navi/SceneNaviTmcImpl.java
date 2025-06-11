@@ -161,8 +161,8 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
      * 更新离线数据
      */
     private void updateTmcOffline() {
-        if (mCurNaviInfo.getAllDist() < mTotalDistance) {
-            final long currentHasPassed = mTotalDistance - mCurNaviInfo.getAllDist();
+        if (mCurNaviInfo.getRemainDist() < mTotalDistance) {
+            final long currentHasPassed = mTotalDistance - mCurNaviInfo.getRemainDist();
             if (currentHasPassed > mDistanceHasPassed) {
                 mLastDistanceHasPassed = currentHasPassed - mDistanceHasPassed;
                 mDistanceHasPassed += mLastDistanceHasPassed;

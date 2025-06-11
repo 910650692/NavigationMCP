@@ -21,6 +21,7 @@ import com.autonavi.gbl.map.MapDevice;
 import com.autonavi.gbl.map.MapService;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.OperatorPosture;
+import com.autonavi.gbl.map.OperatorStyle;
 import com.autonavi.gbl.map.adapter.MapHelper;
 import com.autonavi.gbl.map.adapter.MapSurfaceView;
 import com.autonavi.gbl.map.layer.model.OpenLayerID;
@@ -306,10 +307,18 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
      * 初始化默认主题
      */
     public void initTheme() {
-        final MapStyleParam styleParam = getMapview().getOperatorStyle()
-                .getMapStyle();
-        styleParam.time = ThemeUtils.INSTANCE.isNightModeEnabled(getContext()) ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
-        getMapview().getOperatorStyle().setMapStyle(styleParam, false);
+        if(getMapview() != null){
+            OperatorStyle operatorStyle = getMapview().getOperatorStyle();
+            if (operatorStyle != null){
+                final MapStyleParam styleParam = operatorStyle.getMapStyle();
+                styleParam.time = ThemeUtils.INSTANCE.isNightModeEnabled(getContext()) ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
+                operatorStyle.setMapStyle(styleParam, false);
+            } else {
+                Logger.e(TAG, "operatorStyle is null");
+            }
+        } else {
+            Logger.e(TAG, "getMapView() is null");
+        }
     }
 
     private void initRouterDrawLabel() {

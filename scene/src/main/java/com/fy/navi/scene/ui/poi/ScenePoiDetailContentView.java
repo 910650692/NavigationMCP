@@ -1608,7 +1608,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch ");
         showLoading(true);
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
-        ThreadManager.getInstance().postDelay(mTimeoutTask, 6000);
+        ThreadManager.getInstance().postDelay(mTimeoutTask, 8000);
         mPoiInfoEntity = poiInfo;
         if(ConvertUtils.isEmpty(poiInfo.getOperatorId())){
             if(poiInfo.isIsLocres()){

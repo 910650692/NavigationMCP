@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.layer.bls.style;
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
@@ -16,35 +17,23 @@ import android.widget.TextView;
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.autonavi.gbl.common.path.model.JamBubblesSegmentDeepInfo;
 import com.autonavi.gbl.layer.BizGuideRouteControl;
 import com.autonavi.gbl.layer.BizLabelControl;
 import com.autonavi.gbl.layer.BizRoadCrossControl;
 import com.autonavi.gbl.layer.BizRoadFacilityControl;
-import com.autonavi.gbl.layer.GuideLabelLayerItem;
-import com.autonavi.gbl.layer.RouteJamBubblesLayerItem;
 import com.autonavi.gbl.layer.RoutePathPointItem;
 import com.autonavi.gbl.layer.ViaChargeStationLayerItem;
-import com.autonavi.gbl.layer.ViaETALayerItem;
 import com.autonavi.gbl.layer.model.BizRoadCrossType;
 import com.autonavi.gbl.layer.model.BizRouteType;
 import com.autonavi.gbl.map.layer.LayerItem;
-import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
-import com.fy.navi.service.AppCache;
-import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.R;
-import com.fy.navi.service.adapter.layer.bls.bean.MarkerInfoBean;
 import com.fy.navi.service.adapter.layer.bls.bean.RasterImageBean;
 import com.fy.navi.service.adapter.layer.bls.bean.VectorCrossBean;
-import com.fy.navi.service.adapter.layer.bls.utils.CommonUtil;
-import com.fy.navi.service.adapter.layer.bls.utils.FileUtils;
-import com.fy.navi.service.adapter.layer.bls.utils.StyleJsonAnalysisUtil;
 import com.fy.navi.service.define.layer.refix.LayerItemData;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteReplaceChargePoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteViaChargeInfo;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
-import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
@@ -80,27 +69,21 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     //路线替换补能点扎标
     private static final String KEY_SEARCH_REPLACE_CHARGE = "road_via_replace_charge";
 
-    private final AtomicReference<Rect> mRect;
-    private final Gson mGson;
+    private final AtomicReference<Rect> mRect = new AtomicReference<>();;
     private VectorCrossBean mVectorCrossBean;
     private RasterImageBean mRasterImageBean;
-    private BizGuideRouteControl mRouteControl;
+    private final BizGuideRouteControl mRouteControl;
     //终点扎标数据
-    private LayerItemRouteEndPoint mRouteEndPoint = new LayerItemRouteEndPoint();
+    private final LayerItemRouteEndPoint mRouteEndPoint = new LayerItemRouteEndPoint();
     //替换补能点数据
     private ArrayList<RouteAlterChargeStationInfo> mReplaceChargeInfos = new ArrayList<>();
     private int mViaCount = 0;
     //路线图层总数据
-    private static RequestRouteResult mRouteResult = new RequestRouteResult();
-    private final String mFileStringFromAssets = FileUtils.getFileStringFromAssets(AppCache.getInstance().getMApplication(), GBLCacheFilePath.BLS_ASSETS_LAYER_CARD_MARKER_INFO_PATH);
-    private StyleJsonAnalysisUtil mStyleJsonUtil;
+    private RequestRouteResult mRouteResult = new RequestRouteResult();
 
     public LayerGuideRouteStyleAdapter(int engineID, BizRoadCrossControl bizRoadCrossControl, BizGuideRouteControl bizGuideRouteControl, BizRoadFacilityControl roadFacilityControl, BizLabelControl bizLabelControl) {
         super(engineID);
         this.mRouteControl = bizGuideRouteControl;
-        mGson = new Gson();
-        mRect = new AtomicReference<>();
-        mStyleJsonUtil = new StyleJsonAnalysisUtil(mFileStringFromAssets);
     }
 
     @Override
@@ -187,14 +170,10 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public boolean isNeedRefreshJsonValue(LayerItem item) {
+    public boolean isNeedRefreshStyleJson(LayerItem item) {
         Logger.d(TAG, "isNeedRefreshJsonValue");
-        boolean needRefresh = false;
-        if (item.getBusinessType() == BizRoadCrossType.BizRoadCrossTypeVector ||
-                item.getBusinessType() == BizRoadCrossType.BizRoadCrossTypeRasterImage) {
-            needRefresh = true;
-        }
-        return needRefresh;
+        return item.getBusinessType() == BizRoadCrossType.BizRoadCrossTypeVector ||
+            item.getBusinessType() == BizRoadCrossType.BizRoadCrossTypeRasterImage;
     }
 
     @Override
@@ -226,144 +205,157 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
 
     @Override
     public IUpdateBitmapViewProcessor provideUpdateBitmapViewProcessor(LayerItem item) {
-        if (item.getBusinessType() == BizRouteType.BizRouteTypeEndPoint) {
-            return new IUpdateBitmapViewProcessor<LayerItemRouteEndPoint>() {
-                @SuppressLint("StringFormatInvalid")
-                @Override
-                public void onNormalProcess(View rootView, LayerItemRouteEndPoint data) {
-                    if (ConvertUtils.isEmpty(rootView) || ConvertUtils.isEmpty(data)) {
-                        Logger.e(TAG, "更新终点扎标样式 data == null");
-                        return;
-                    }
-                    LayerPointItemType endPointType = data.getEndPointType();
-                    Logger.d(TAG, "更新终点扎标样式 endPointType " + endPointType);
-                    if (endPointType == LayerPointItemType.ROUTE_POINT_END_OIL ||
-                            endPointType == LayerPointItemType.ROUTE_POINT_END_BATTERY) {
-                        TextView text = rootView.findViewById(R.id.route_end_detail);
-                        if (ConvertUtils.isEmpty(data)) {
-                            Logger.e(TAG, "更新终点扎标信息 getEndPointInfo is null");
+        return switch (item.getBusinessType()) {
+            case BizRouteType.BizRouteTypeEndPoint ->
+                new IUpdateBitmapViewProcessor<LayerItemRouteEndPoint>() {
+                    @SuppressLint("StringFormatInvalid")
+                    @Override
+                    public void onNormalProcess(LayerItem layerItem, View rootView, LayerItemRouteEndPoint data) {
+                        if (ConvertUtils.isEmpty(rootView) || ConvertUtils.isEmpty(data)) {
+                            Logger.e(TAG, "更新终点扎标样式 data == null");
                             return;
                         }
-                        Logger.d(TAG, "更新终点扎标信息 data " + data.toString());
-                        LayerPointItemType pointType = data.getEndPointType();
-                        int restNum = data.getRestNum();
-                        String string = "";
-                        switch (pointType) {
-                            case ROUTE_POINT_END_BATTERY -> {
-                                string = rootView.getContext().getString(R.string.layer_route_end_pop_detail, rootView.getContext().getString(R.string.layer_route_end_pop_type_battery), restNum);
+                        LayerPointItemType endPointType = data.getEndPointType();
+                        Logger.d(TAG, "更新终点扎标样式 endPointType " + endPointType);
+                        if (endPointType == LayerPointItemType.ROUTE_POINT_END_OIL ||
+                            endPointType == LayerPointItemType.ROUTE_POINT_END_BATTERY) {
+                            TextView text = rootView.findViewById(R.id.route_end_detail);
+                            if (ConvertUtils.isEmpty(data)) {
+                                Logger.e(TAG, "更新终点扎标信息 getEndPointInfo is null");
+                                return;
                             }
-                            case ROUTE_POINT_END_OIL -> {
-                                string = rootView.getContext().getString(R.string.layer_route_end_pop_detail, rootView.getContext().getString(R.string.layer_route_end_pop_type_oil), restNum);
+                            Logger.d(TAG, "更新终点扎标信息 data " + data.toString());
+                            LayerPointItemType pointType = data.getEndPointType();
+                            int restNum = data.getRestNum();
+                            String string = "";
+                            switch (pointType) {
+                                case ROUTE_POINT_END_BATTERY -> {
+                                    string = rootView.getContext().getString(R.string.layer_route_end_pop_detail, rootView.getContext().getString(R.string.layer_route_end_pop_type_battery), restNum);
+                                }
+                                case ROUTE_POINT_END_OIL -> {
+                                    string = rootView.getContext().getString(R.string.layer_route_end_pop_detail, rootView.getContext().getString(R.string.layer_route_end_pop_type_oil), restNum);
+                                }
                             }
+                            SpannableString spannableString = new SpannableString(string);
+                            // 找到需要加粗的部分的起始和结束位置
+                            int startIndex = string.indexOf(rootView.getContext().getString(R.string.layer_route_end_pop_default)) + 2;
+                            int endIndex = string.length() - 1;
+                            // 设置加粗样式
+                            spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            safetySetText(text, spannableString.toString());
+                        } else if (endPointType == LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS) {
+                            Logger.d(TAG, "终点扎标-营业时间 data " + data.toString());
+                            TextView textView = rootView.findViewById(R.id.route_end_business_hours_text);
+                            safetySetText(textView, data.getBusinessHours());
                         }
-                        SpannableString spannableString = new SpannableString(string);
-                        // 找到需要加粗的部分的起始和结束位置
-                        int startIndex = string.indexOf(rootView.getContext().getString(R.string.layer_route_end_pop_default)) + 2;
-                        int endIndex = string.length() - 1;
-                        // 设置加粗样式
-                        spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        text.setText(spannableString);
-                    } else if (endPointType == LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS) {
-                        Logger.d(TAG, "终点扎标-营业时间 data " + data.toString());
-                        TextView textView = rootView.findViewById(R.id.route_end_business_hours_text);
-                        textView.setText(data.getBusinessHours());
                     }
-                }
-            };
+                };
             // 补能规划扎标
-        } else if (item.getBusinessType() == BizRouteType.BizRouteTypeViaChargeStationPoint) {
-            return new IUpdateBitmapViewProcessor<LayerItemRouteViaChargeInfo>() {
-                @Override
-                public void onNormalProcess(View rootView, LayerItemRouteViaChargeInfo data) {
-                    Logger.d(TAG, "更新补能规划扎标信息");
-                    TextView position = rootView.findViewById(R.id.route_via_charge_position);
-                    TextView time = rootView.findViewById(R.id.route_via_charge_time);
-                    TextView distance = rootView.findViewById(R.id.route_via_charge_distance);
-                    if (ConvertUtils.isEmpty(data) || ConvertUtils.isEmpty(data.getMRouteChargeStationInfo())) {
-                        Logger.e(TAG, "更新补能规划扎标信息 getMRouteChargeStationInfos is null");
-                        return;
-                    }
-                    Logger.d(TAG, "更新补能规划扎标信息 " + data.getMRouteChargeStationInfo().toString());
-                    position.setText(String.valueOf(data.getIndex() + 1));
-                    RouteChargeStationDetailInfo chargeStationInfo = data.getMRouteChargeStationInfo();
+            case BizRouteType.BizRouteTypeViaChargeStationPoint ->
+                new IUpdateBitmapViewProcessor<LayerItemRouteViaChargeInfo>() {
+                    @Override
+                    public void onNormalProcess(LayerItem layerItem, View rootView, LayerItemRouteViaChargeInfo data) {
+                        Logger.d(TAG, "更新补能规划扎标信息");
+                        TextView position = rootView.findViewById(R.id.route_via_charge_position);
+                        TextView time = rootView.findViewById(R.id.route_via_charge_time);
+                        TextView distance = rootView.findViewById(R.id.route_via_charge_distance);
+                        if (ConvertUtils.isEmpty(data) || ConvertUtils.isEmpty(data.getMRouteChargeStationInfo())) {
+                            Logger.e(TAG, "更新补能规划扎标信息 getMRouteChargeStationInfos is null");
+                            return;
+                        }
+                        Logger.d(TAG, "更新补能规划扎标信息 " + data.getMRouteChargeStationInfo().toString());
+                        safetySetText(position, String.valueOf(data.getIndex() + 1));
+                        RouteChargeStationDetailInfo chargeStationInfo = data.getMRouteChargeStationInfo();
 
-                    if (!ConvertUtils.isEmpty(chargeStationInfo)) {
-                        int chargeTime = chargeStationInfo.getMChargeTime() / 60;
-                        int intervalDistance = chargeStationInfo.getMInterval() / 1000;
-                        Context rootViewContext = rootView.getContext();
-                        String timeStr = rootViewContext.getString(R.string.layer_route_via_charge_time, chargeTime);
-                        time.setText(timeStr);
+                        if (!ConvertUtils.isEmpty(chargeStationInfo)) {
+                            int chargeTime = chargeStationInfo.getMChargeTime() / 60;
+                            int intervalDistance = chargeStationInfo.getMInterval() / 1000;
+                            Context rootViewContext = rootView.getContext();
+                            String timeStr = rootViewContext.getString(R.string.layer_route_via_charge_time, chargeTime);
+                            safetySetText(time, timeStr);
 
-                        String firstString = rootViewContext.getString(R.string.layer_route_via_charge_distance_first);
-                        String behindString = rootViewContext.getString(R.string.layer_route_via_charge_distance_behind);
-                        String distanceStringTitle = data.getIndex() == 0 ? firstString : behindString;
-                        String distanceString = rootViewContext.getString(R.string.layer_route_via_charge_distance, distanceStringTitle, intervalDistance);
-                        distance.setText(distanceString);
+                            String firstString = rootViewContext.getString(R.string.layer_route_via_charge_distance_first);
+                            String behindString = rootViewContext.getString(R.string.layer_route_via_charge_distance_behind);
+                            String distanceStringTitle = data.getIndex() == 0 ? firstString : behindString;
+                            String distanceString = rootViewContext.getString(R.string.layer_route_via_charge_distance, distanceStringTitle, intervalDistance);
+                            safetySetText(distance, distanceString);
+                        }
                     }
-                }
-            };
+                };
             //替换补能点扎标
-        } else if (item.getBusinessType() == BizRouteType.BizRouteTypeViaPoint) {
-            return new IUpdateBitmapViewProcessor<LayerItemRouteReplaceChargePoint>() {
-                @Override
-                public void onNormalProcess(View rootView, LayerItemRouteReplaceChargePoint data) {
-                    Logger.d(TAG, "替换补能充电站扎标");
-                    if (ConvertUtils.isEmpty(rootView)) {
-                        Logger.e(TAG, "替换补能充电站扎标 rootView == null");
-                        return;
-                    }
-                    Context context = rootView.getContext();
-                    TextView positionView = rootView.findViewById(R.id.search_replace_charge_position);
-                    LinearLayout wholeLinearLayout = rootView.findViewById(R.id.search_replace_charge_whole_linear);
-                    LinearLayout countLinearLayout = rootView.findViewById(R.id.search_replace_charge_count_linear);
-                    boolean fastVisible = false;
-                    boolean slowVisible = false;
-                    boolean priceVisible = false;
-                    TextView fastTextView = rootView.findViewById(R.id.search_replace_charge_fast);
-                    TextView slowTextView = rootView.findViewById(R.id.search_replace_charge_slow);
-                    TextView priceTextView = rootView.findViewById(R.id.search_replace_charge_price);
-                    int index = data.getIndex();
-                    Logger.d(TAG, "替换补能充电站扎标 index " + index);
-                    positionView.setText(String.valueOf(index + 1));
-                    RouteAlterChargeStationInfo info = data.getInfo();
-                    if (ConvertUtils.isEmpty(info)) {
-                        Logger.e(TAG, "替换补能充电站扎标 info == null");
-                        return;
-                    }
-                    if (!ConvertUtils.isEmpty(info.getMFastPlugInfo())) {
-                        String fastNumber = info.getMFastPlugInfo().getMTotalNumber();
-                        if (!ConvertUtils.isEmpty(fastNumber)) {
-                            String fastString = context.getString(R.string.layer_route_replace_charge_fast, fastNumber);
-                            fastTextView.setText(fastString);
-                            fastVisible = true;
+            case BizRouteType.BizRouteTypeViaPoint ->
+                new IUpdateBitmapViewProcessor<LayerItemRouteReplaceChargePoint>() {
+                    @Override
+                    public void onNormalProcess(LayerItem layerItem, View rootView, LayerItemRouteReplaceChargePoint data) {
+                        Logger.d(TAG, "替换补能充电站扎标");
+                        if (ConvertUtils.isEmpty(rootView)) {
+                            Logger.e(TAG, "替换补能充电站扎标 rootView == null");
+                            return;
+                        }
+                        Context context = rootView.getContext();
+                        TextView positionView = rootView.findViewById(R.id.search_replace_charge_position);
+                        LinearLayout wholeLinearLayout = rootView.findViewById(R.id.search_replace_charge_whole_linear);
+                        LinearLayout countLinearLayout = rootView.findViewById(R.id.search_replace_charge_count_linear);
+                        boolean fastVisible = false;
+                        boolean slowVisible = false;
+                        boolean priceVisible = false;
+                        TextView fastTextView = rootView.findViewById(R.id.search_replace_charge_fast);
+                        TextView slowTextView = rootView.findViewById(R.id.search_replace_charge_slow);
+                        TextView priceTextView = rootView.findViewById(R.id.search_replace_charge_price);
+                        int index = data.getIndex();
+                        Logger.d(TAG, "替换补能充电站扎标 index " + index);
+                        safetySetText(positionView, String.valueOf(index + 1));
+                        RouteAlterChargeStationInfo info = data.getInfo();
+                        if (ConvertUtils.isEmpty(info)) {
+                            Logger.e(TAG, "替换补能充电站扎标 info == null");
+                            return;
+                        }
+                        if (!ConvertUtils.isEmpty(info.getMFastPlugInfo())) {
+                            String fastNumber = info.getMFastPlugInfo().getMTotalNumber();
+                            if (!ConvertUtils.isEmpty(fastNumber)) {
+                                String fastString = context.getString(R.string.layer_route_replace_charge_fast, fastNumber);
+                                safetySetText(fastTextView, fastString);
+                                fastVisible = true;
+                            }
+                        }
+                        if (!ConvertUtils.isEmpty(info.getMSlowPlugInfo())) {
+                            String slowNumber = info.getMSlowPlugInfo().getMTotalNumber();
+                            if (!ConvertUtils.isEmpty(slowNumber)) {
+                                String slowString = context.getString(R.string.layer_route_replace_charge_slow, slowNumber);
+                                safetySetText(slowTextView, slowString);
+                                slowVisible = true;
+                            }
+                        }
+                        if (!ConvertUtils.isEmpty(info.getMPriceInfo())) {
+                            String priceValue = info.getMPriceInfo().getMLowestPriceValue();
+                            String priceUnit = info.getMPriceInfo().getMLowestPriceUnit();
+                            if (!ConvertUtils.isEmpty(priceValue) && !ConvertUtils.isEmpty(priceUnit)) {
+                                safetySetText(priceTextView, context.getString(R.string.layer_route_replace_charge_price, priceValue, priceUnit));
+                                priceVisible = true;
+                            }
+                        }
+                        if (fastVisible || slowVisible || priceVisible) {
+                            wholeLinearLayout.setVisibility(VISIBLE);
+                        }
+                        if (fastVisible || slowVisible) {
+                            countLinearLayout.setVisibility(VISIBLE);
                         }
                     }
-                    if (!ConvertUtils.isEmpty(info.getMSlowPlugInfo())) {
-                        String slowNumber = info.getMSlowPlugInfo().getMTotalNumber();
-                        if (!ConvertUtils.isEmpty(slowNumber)) {
-                            String slowString = context.getString(R.string.layer_route_replace_charge_slow, slowNumber);
-                            slowTextView.setText(slowString);
-                            slowVisible = true;
-                        }
-                    }
-                    if (!ConvertUtils.isEmpty(info.getMPriceInfo())) {
-                        String priceValue = info.getMPriceInfo().getMLowestPriceValue();
-                        String priceUnit = info.getMPriceInfo().getMLowestPriceUnit();
-                        if (!ConvertUtils.isEmpty(priceValue) && !ConvertUtils.isEmpty(priceUnit)) {
-                            priceTextView.setText(context.getString(R.string.layer_route_replace_charge_price, priceValue, priceUnit));
-                            priceVisible = true;
-                        }
-                    }
-                    if (fastVisible || slowVisible || priceVisible) {
-                        wholeLinearLayout.setVisibility(VISIBLE);
-                    }
-                    if (fastVisible || slowVisible) {
-                        countLinearLayout.setVisibility(VISIBLE);
-                    }
-                }
-            };
+                };
+            default -> super.provideUpdateBitmapViewProcessor(item);
+        };
+    }
+
+    private void safetySetText(TextView textView, String string) {
+        if (ConvertUtils.isEmpty(textView)) {
+            Logger.e(TAG, "safetySetText textView == null");
+            return;
         }
-        return super.provideUpdateBitmapViewProcessor(item);
+        if (ConvertUtils.isEmpty(string)) {
+            Logger.e(TAG, "safetySetText string is Empty");
+            textView.setVisibility(GONE);
+        }
+        textView.setText(string);
     }
 
     // 更新路线补能替换点扎标数据
@@ -436,7 +428,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     //转换终点扎标数据
     private void getRouteEndPoint() {
         int selectPathIndex = mRouteControl.getSelectedPathIndex();
-        if(ConvertUtils.isNull(mRouteResult)) return;
+        if (ConvertUtils.isNull(mRouteResult)) return;
         List<RouteLineInfo> mRouteLineInfos = mRouteResult.getMRouteLineInfos();
         int mCarType = CalibrationPackage.getInstance().powerType();
         if (mCarType == 0 || mCarType == 2) {
@@ -449,7 +441,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             } else {
                 mRouteEndPoint.setRestNum(-1);
             }
-        }  else {
+        } else {
             if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
                 mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
                 mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
@@ -506,7 +498,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public String refreshOldJsonValue(LayerItem item, String oldJson) {
+    public String refreshStyleJson(LayerItem item, String oldJson) {
         switch (item.getBusinessType()) {
             case BizRoadCrossType.BizRoadCrossTypeVector -> {
                 Logger.d(TAG, "2D矢量路口大图图层");
@@ -517,7 +509,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 return updateRasterCross(oldJson);
             }
         }
-        return super.refreshOldJsonValue(item, oldJson);
+        return super.refreshStyleJson(item, oldJson);
     }
 
     // 更新矢量图
@@ -532,7 +524,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         String updateJson = "";
         //根据屏幕适配矢量路口大图宽高
         if (ConvertUtils.isEmpty(mVectorCrossBean)) {
-            mVectorCrossBean = mGson.fromJson(oldJson, VectorCrossBean.class);
+            mVectorCrossBean = GsonUtils.fromJson(oldJson, VectorCrossBean.class);
         }
         if (mVectorCrossBean != null) {
             VectorCrossBean.VectorCrossLayerStyleBean vectorCrossLayerStyle = mVectorCrossBean.getVector_cross_layer_style();
@@ -561,7 +553,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             Logger.e(TAG, "updateVectorCross VectorCrossBean 转换失败");
             updateJson = oldJson;
         }
-        updateJson = mGson.toJson(mVectorCrossBean);
+        updateJson = GsonUtils.toJson(mVectorCrossBean);
         Logger.d(TAG, "updateVectorCross rect: " + mRect);
         return updateJson;
     }
@@ -578,7 +570,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         String updateJson = "";
         //根据屏幕适配栅格大图宽高
         if (ConvertUtils.isEmpty(mRasterImageBean)) {
-            mRasterImageBean = mGson.fromJson(oldJson, RasterImageBean.class);
+            mRasterImageBean = GsonUtils.fromJson(oldJson, RasterImageBean.class);
         }
         if (mRasterImageBean != null) {
             RasterImageBean.RasterImageLayerItemStyleBean rasterImageLayerItemStyleBean =
@@ -599,320 +591,302 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             Logger.e(TAG, "updateRasterCross RasterImageBean 转换失败");
             updateJson = oldJson;
         }
-        updateJson = mGson.toJson(mRasterImageBean);
+        updateJson = GsonUtils.toJson(mRasterImageBean);
         Logger.d(TAG, "updateRasterCross rect: " + mRect);
         return updateJson;
     }
 
-    @Override
-    public List<CustomUpdatePair> createUpdatePair(LayerItem item, String markerInfo) {
-        switch (item.getBusinessType()) {
-            case BizRouteType.BizRouteTypeGuideLabel:
-                Logger.d(TAG, "多备选路线卡片内容填充");
-                GuideLabelLayerItem labelItem = (GuideLabelLayerItem) item;
-                return addCardGuideLabelMarker(labelItem, markerInfo);
-            case BizRouteType.BizRouteTypeRouteJamBubbles:
-                RouteJamBubblesLayerItem jamBubblesLayerItem = (RouteJamBubblesLayerItem) item;
-                return addCardGuideJamBubblesMarker(jamBubblesLayerItem, markerInfo);
-            case BizRouteType.BizRouteTypeViaETA:
-                ViaETALayerItem viaETALayerItem = (ViaETALayerItem) item;
-                return addCardGuideViaETAMarker(viaETALayerItem);
-
-        }
-        return super.createUpdatePair(item, markerInfo);
-    }
-
-    @Override
-    public MarkerInfoBean createMarkerInfoBean(LayerItem item, String markerInfo) {
-        Logger.d(TAG, "createMarkerInfoBean markerInfo " + markerInfo + " mStyleJsonUtil == null " + ConvertUtils.isEmpty(mStyleJsonUtil));
-        if (!ConvertUtils.isEmpty(mStyleJsonUtil)) {
-            MarkerInfoBean markerInfoBean = mStyleJsonUtil.getMarkerInfoFromJson(markerInfo);
-            Logger.d(TAG, "createMarkerInfoBean markerInfoBean " + ConvertUtils.isEmpty(markerInfoBean));
-            if (!ConvertUtils.isEmpty(markerInfoBean)) {
-                return markerInfoBean;
-            }
-        } else {
-            if (!ConvertUtils.isEmpty(mFileStringFromAssets)) {
-                mStyleJsonUtil = new StyleJsonAnalysisUtil(mFileStringFromAssets);
-                Logger.d(TAG, "createMarkerInfoBean mStyleJsonUtil reInit " + ConvertUtils.isEmpty(mStyleJsonUtil));
-            }
-        }
-        return super.createMarkerInfoBean(item, markerInfo);
-    }
-
-    private List<CustomUpdatePair> addCardGuideViaETAMarker(ViaETALayerItem viaETALayerItem) {
-        List<CustomUpdatePair> viaETAList = new ArrayList<>();
-        viaETAList.add(createUpdateStylePair("end_area_all", "display: none;"));
-        return viaETAList;
-    }
-
-    private List<CustomUpdatePair> addCardGuideJamBubblesMarker(RouteJamBubblesLayerItem jamBubblesLayerItem, String markerInfo) {
-        List<CustomUpdatePair> jamBubblesList = new ArrayList<>();
-        JamBubblesSegmentDeepInfo deepInfo = jamBubblesLayerItem.getDeepInfo();
-        JamBubblesSegmentDeepInfo cost = jamBubblesLayerItem.getCost();
-        JamBubblesSegmentDeepInfo degree = jamBubblesLayerItem.getDegree();
-        JamBubblesSegmentDeepInfo trend = jamBubblesLayerItem.getTrend();
-
-        Logger.d(TAG, "addCardGuideJamBubblesMarker" +
-                "\n deepInfo " + GsonUtils.toJson(deepInfo) +
-                "\n cost " + GsonUtils.toJson(cost) +
-                "\n degree " + GsonUtils.toJson(degree) +
-                "\n trend " + GsonUtils.toJson(trend) +
-                "\n markerInfo " + markerInfo);
-        int deepInfoSceneType = deepInfo.sceneType;
-        String deepInfoText = deepInfo.text;
-
-        String costText = cost.text;
-        int costSceneType = cost.sceneType;
-
-        int degreeSceneType = degree.sceneType;
-        String degreeText = degree.text;
-
-        String trendText = trend.text;
-        int trendSceneType = trend.sceneType;
-
-        if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText) &&
-                ConvertUtils.isEmpty(trendText) && ConvertUtils.isEmpty(degreeText)) {
-            jamBubblesList.add(createUpdateStylePair("jam_bubbles", "display: none;"));
-            Logger.e(TAG, "addCardGuideJamBubblesMarker no title");
-            return jamBubblesList;
-        }
-        List<Integer> validNumbers = new ArrayList<>();
-        if (!ConvertUtils.isEmpty(trendText)) validNumbers.add(trendSceneType);
-        if (!ConvertUtils.isEmpty(degreeText)) validNumbers.add(degreeSceneType);
-        if (!ConvertUtils.isEmpty(costText)) validNumbers.add(costSceneType);
-        if (!ConvertUtils.isEmpty(deepInfoText)) validNumbers.add(deepInfoSceneType);
-        int minScene = 1;
-        if (!ConvertUtils.isEmpty(validNumbers)) {
-            for (int num : validNumbers) {
-                if (num > minScene) {
-                    minScene = num;
-                }
-            }
-        }
-        Logger.d(TAG, "addCardGuideJamBubblesMarker minScene " + minScene);
-        if (!ConvertUtils.isEmpty(markerInfo)) {
-            if (markerInfo.contains("left_up")) {
-                jamBubblesList.add(createUpdateStylePair("jam_bubbles", "background-image:global_image_bubble_left_top_day_night;"));
-            } else if (markerInfo.contains("left_down")) {
-                jamBubblesList.add(createUpdateStylePair("jam_bubbles", "background-image:global_image_bubble_left_bottom_day_night;"));
-            } else if (markerInfo.contains("right_up")) {
-                jamBubblesList.add(createUpdateStylePair("jam_bubbles", "background-image:global_image_bubble_right_top_day_night;"));
-            } else if (markerInfo.contains("right_down")) {
-                jamBubblesList.add(createUpdateStylePair("jam_bubbles", "background-image:global_image_bubble_right_bottom_day_night;"));
-            }
-        }
-        jamBubblesList.add(createUpdateStylePair("jam_bubbles", "width:auto"));
-        jamBubblesList.add(createUpdateStylePair("jam_bubbles", "height:auto"));
-        /**
-         * sceneType
-         * 1 默认黑色
-         * 2 缓行绿色
-         * 3 缓慢橘色
-         * 4 严重褐色
-         */
-        switch (minScene) {
-            case 1 -> {
-                jamBubblesList.add(createUpdateStylePair("traffic_div_smooth", "display: none;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_slow", "display: none;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_congested", "display: none;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_default", "display: flex;"));
-                if (ConvertUtils.isEmpty(deepInfoText)) {
-                    jamBubblesList.add(createUpdateStylePair("main_title_default", "display: none;"));
-                    jamBubblesList.add(createUpdateStylePair("line_image_default", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("main_title_default", deepInfoText));
-                }
-                if (ConvertUtils.isEmpty(costText)) {
-                    jamBubblesList.add(createUpdateStylePair("time_col_default", "display: none;"));
-                    jamBubblesList.add(createUpdateStylePair("line_image_default", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("time_col_default", costText));
-                }
-                if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText)) {
-                    jamBubblesList.add(createUpdateStylePair("text_time_dist_default", "display: none;"));
-                }
-                if (ConvertUtils.isEmpty(degreeText)) {
-                    jamBubblesList.add(createUpdateStylePair("sub_title_default", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("sub_title_default", degreeText));
-                }
-                if (ConvertUtils.isEmpty(trendText)) {
-                    jamBubblesList.add(createUpdateStylePair("time_row_default", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("time_row_default", trendText));
-                }
-            }
-            case 2 -> {
-                jamBubblesList.add(createUpdateStylePair("traffic_div_smooth", "display: flex;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_slow", "display: none;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_congested", "display: none;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_default", "display: none;"));
-                if (ConvertUtils.isEmpty(deepInfoText)) {
-                    jamBubblesList.add(createUpdateStylePair("main_title_smooth", "display: none;"));
-                    jamBubblesList.add(createUpdateStylePair("line_image_smooth", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("main_title_smooth", deepInfoText));
-                }
-                if (ConvertUtils.isEmpty(costText)) {
-                    jamBubblesList.add(createUpdateStylePair("time_col_smooth", "display: none;"));
-                    jamBubblesList.add(createUpdateStylePair("line_image_smooth", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("time_col_smooth", costText));
-                }
-                if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText)) {
-                    jamBubblesList.add(createUpdateStylePair("text_time_dist_smooth", "display: none;"));
-                }
-                if (ConvertUtils.isEmpty(degreeText)) {
-                    jamBubblesList.add(createUpdateStylePair("sub_title_smooth", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("sub_title_smooth", degreeText));
-                }
-                if (ConvertUtils.isEmpty(trendText)) {
-                    jamBubblesList.add(createUpdateStylePair("time_row_smooth", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("time_row_smooth", trendText));
-                }
-            }
-            case 3 -> {
-                jamBubblesList.add(createUpdateStylePair("traffic_div_smooth", "display: none;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_slow", "display: flex;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_congested", "display: none;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_default", "display: none;"));
-                if (ConvertUtils.isEmpty(deepInfoText)) {
-                    jamBubblesList.add(createUpdateStylePair("main_title_slow", "display: none;"));
-                    jamBubblesList.add(createUpdateStylePair("line_image_slow", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("main_title_slow", deepInfoText));
-                }
-                if (ConvertUtils.isEmpty(costText)) {
-                    jamBubblesList.add(createUpdateStylePair("time_col_slow", "display: none;"));
-                    jamBubblesList.add(createUpdateStylePair("line_image_slow", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("time_col_slow", costText));
-                }
-                if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText)) {
-                    jamBubblesList.add(createUpdateStylePair("text_time_dist_slow", "display: none;"));
-                }
-                if (ConvertUtils.isEmpty(degreeText)) {
-                    jamBubblesList.add(createUpdateStylePair("sub_title_slow", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("sub_title_slow", degreeText));
-                }
-                if (ConvertUtils.isEmpty(trendText)) {
-                    jamBubblesList.add(createUpdateStylePair("time_row_slow", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("time_row_slow", trendText));
-                }
-            }
-            case 4 -> {
-                jamBubblesList.add(createUpdateStylePair("traffic_div_smooth", "display: none;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_slow", "display: none;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_congested", "display: flex;"));
-                jamBubblesList.add(createUpdateStylePair("traffic_div_default", "display: none;"));
-                if (ConvertUtils.isEmpty(deepInfoText)) {
-                    jamBubblesList.add(createUpdateStylePair("main_title_congested", "display: none;"));
-                    jamBubblesList.add(createUpdateStylePair("line_image_congested", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("main_title_congested", deepInfoText));
-                }
-                if (ConvertUtils.isEmpty(costText)) {
-                    jamBubblesList.add(createUpdateStylePair("time_col_congested", "display: none;"));
-                    jamBubblesList.add(createUpdateStylePair("line_image_congested", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("time_col_congested", costText));
-                }
-                if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText)) {
-                    jamBubblesList.add(createUpdateStylePair("text_time_dist_congested", "display: none;"));
-                }
-                if (ConvertUtils.isEmpty(degreeText)) {
-                    jamBubblesList.add(createUpdateStylePair("sub_title_congested", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("sub_title_congested", degreeText));
-                }
-                if (ConvertUtils.isEmpty(trendText)) {
-                    jamBubblesList.add(createUpdateStylePair("time_row_congested", "display: none;"));
-                } else {
-                    jamBubblesList.add(createUpdatePair("time_row_congested", trendText));
-                }
-            }
-        }
-
-        jamBubblesList.add(createUpdateStylePair("pic_image", "display: none;"));
-        return jamBubblesList;
-    }
-
-    private List<CustomUpdatePair> addCardGuideLabelMarker(GuideLabelLayerItem item, String markerInfo) {
-        List<CustomUpdatePair> guideLabelPairs = new ArrayList<>();
-        String time;
-        int travelTimeDiff = item.getMTravelTimeDiff();
-        if (travelTimeDiff > 0) {
-            time = "慢";
-        } else {
-            time = "快";
-        }
-        time += CommonUtil.formatTimeBySecond(Math.abs(travelTimeDiff));
-
-        String distance;
-        int distanceDiff = item.getMDistanceDiff();
-        if (distanceDiff > 0) {
-            distance = "多";
-        } else {
-            distance = "少";
-        }
-        distance += CommonUtil.distanceUnitTransform(Math.abs(distanceDiff));
-
-        String trafficLight;
-        int trafficLightDiff = item.getMTrafficLightDiff();
-        if (trafficLightDiff > 0) {
-            trafficLight = "多%d个";
-        } else {
-            trafficLight = "少%d个";
-        }
-        if (trafficLightDiff == 0) {
-            trafficLight = "一致";
-        } else {
-            trafficLight = String.format(trafficLight, Math.abs(trafficLightDiff));
-        }
-
-        String cost;
-        int costDiff = item.getMCostDiff();
-        if (costDiff > 0) {
-            cost = "多%d元";
-        } else {
-            cost = "少%d元";
-        }
-        cost = String.format(cost, Math.abs(costDiff));
-        if (!ConvertUtils.isEmpty(markerInfo)) {
-            if (markerInfo.contains("left_up")) {
-                guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "background-image:global_image_navi_bg_route_label_left_up_day_night;"));
-            } else if (markerInfo.contains("left_down")) {
-                guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "background-image:global_image_navi_bg_route_label_left_down_day_night;"));
-            } else if (markerInfo.contains("right_up")) {
-                guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "background-image:global_image_navi_bg_route_label_right_up_day_night;"));
-            } else if (markerInfo.contains("right_down")) {
-                guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "background-image:global_image_navi_bg_route_label_right_down_day_night;"));
-            }
-        }
-        guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "width:auto"));
-        guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "height:auto"));
-        if (costDiff == 0) {
-            guideLabelPairs.add(createUpdateStylePair("cost_text1", "display: none;"));
-            guideLabelPairs.add(createUpdateStylePair("cost_text2", "display: none;"));
-            guideLabelPairs.add(createUpdateStylePair("cost_image1", "display: none;"));
-            guideLabelPairs.add(createUpdateStylePair("cost_image2", "display: none;"));
-        }
-
-        Logger.d(TAG, "addCardGuideLabelMarker " +
-                "\n time " + time +
-                "\n distance " + distance +
-                "\n trafficLight " + trafficLight +
-                "\n cost " + cost +
-                "\n markerInfo " + markerInfo);
-        guideLabelPairs.add(createUpdatePair("time_diff_text", time));
-        guideLabelPairs.add(createUpdatePair("cost_text1", item.getMPathCost() + "元"));
-        guideLabelPairs.add(createUpdatePair("distance_diff_text", distance));
-        guideLabelPairs.add(createUpdatePair("traffic_light_text", trafficLight));
-        return guideLabelPairs;
-    }
+//    @Override
+//    public List<CustomUpdatePair> createUpdatePair(LayerItem item, String markerInfo) {
+//        switch (item.getBusinessType()) {
+//            case BizRouteType.BizRouteTypeGuideLabel:
+//                Logger.d(TAG, "多备选路线卡片内容填充");
+//                GuideLabelLayerItem labelItem = (GuideLabelLayerItem) item;
+//                return addCardGuideLabelMarker(labelItem, markerInfo);
+//            case BizRouteType.BizRouteTypeRouteJamBubbles:
+//                RouteJamBubblesLayerItem jamBubblesLayerItem = (RouteJamBubblesLayerItem) item;
+//                return addCardGuideJamBubblesMarker(jamBubblesLayerItem, markerInfo);
+//            case BizRouteType.BizRouteTypeViaETA:
+//                ViaETALayerItem viaETALayerItem = (ViaETALayerItem) item;
+//                return addCardGuideViaETAMarker(viaETALayerItem);
+//
+//        }
+//        return super.createUpdatePair(item, markerInfo);
+//    }
+//
+//    private List<CustomUpdatePair> addCardGuideViaETAMarker(ViaETALayerItem viaETALayerItem) {
+//        List<CustomUpdatePair> viaETAList = new ArrayList<>();
+//        viaETAList.add(createUpdateStylePair("end_area_all", "display: none;"));
+//        return viaETAList;
+//    }
+//
+//    private List<CustomUpdatePair> addCardGuideJamBubblesMarker(RouteJamBubblesLayerItem jamBubblesLayerItem, String markerInfo) {
+//        List<CustomUpdatePair> jamBubblesList = new ArrayList<>();
+//        JamBubblesSegmentDeepInfo deepInfo = jamBubblesLayerItem.getDeepInfo();
+//        JamBubblesSegmentDeepInfo cost = jamBubblesLayerItem.getCost();
+//        JamBubblesSegmentDeepInfo degree = jamBubblesLayerItem.getDegree();
+//        JamBubblesSegmentDeepInfo trend = jamBubblesLayerItem.getTrend();
+//
+//        Logger.d(TAG, "addCardGuideJamBubblesMarker" +
+//                "\n deepInfo " + GsonUtils.toJson(deepInfo) +
+//                "\n cost " + GsonUtils.toJson(cost) +
+//                "\n degree " + GsonUtils.toJson(degree) +
+//                "\n trend " + GsonUtils.toJson(trend) +
+//                "\n markerInfo " + markerInfo);
+//        int deepInfoSceneType = deepInfo.sceneType;
+//        String deepInfoText = deepInfo.text;
+//
+//        String costText = cost.text;
+//        int costSceneType = cost.sceneType;
+//
+//        int degreeSceneType = degree.sceneType;
+//        String degreeText = degree.text;
+//
+//        String trendText = trend.text;
+//        int trendSceneType = trend.sceneType;
+//
+//        if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText) &&
+//                ConvertUtils.isEmpty(trendText) && ConvertUtils.isEmpty(degreeText)) {
+//            jamBubblesList.add(createUpdateStylePair("jam_bubbles", "display: none;"));
+//            Logger.e(TAG, "addCardGuideJamBubblesMarker no title");
+//            return jamBubblesList;
+//        }
+//        List<Integer> validNumbers = new ArrayList<>();
+//        if (!ConvertUtils.isEmpty(trendText)) validNumbers.add(trendSceneType);
+//        if (!ConvertUtils.isEmpty(degreeText)) validNumbers.add(degreeSceneType);
+//        if (!ConvertUtils.isEmpty(costText)) validNumbers.add(costSceneType);
+//        if (!ConvertUtils.isEmpty(deepInfoText)) validNumbers.add(deepInfoSceneType);
+//        int minScene = 1;
+//        if (!ConvertUtils.isEmpty(validNumbers)) {
+//            for (int num : validNumbers) {
+//                if (num > minScene) {
+//                    minScene = num;
+//                }
+//            }
+//        }
+//        Logger.d(TAG, "addCardGuideJamBubblesMarker minScene " + minScene);
+//        if (!ConvertUtils.isEmpty(markerInfo)) {
+//            if (markerInfo.contains("left_up")) {
+//                jamBubblesList.add(createUpdateStylePair("jam_bubbles", "background-image:global_image_bubble_left_top_day_night;"));
+//            } else if (markerInfo.contains("left_down")) {
+//                jamBubblesList.add(createUpdateStylePair("jam_bubbles", "background-image:global_image_bubble_left_bottom_day_night;"));
+//            } else if (markerInfo.contains("right_up")) {
+//                jamBubblesList.add(createUpdateStylePair("jam_bubbles", "background-image:global_image_bubble_right_top_day_night;"));
+//            } else if (markerInfo.contains("right_down")) {
+//                jamBubblesList.add(createUpdateStylePair("jam_bubbles", "background-image:global_image_bubble_right_bottom_day_night;"));
+//            }
+//        }
+//        jamBubblesList.add(createUpdateStylePair("jam_bubbles", "width:auto"));
+//        jamBubblesList.add(createUpdateStylePair("jam_bubbles", "height:auto"));
+//        /**
+//         * sceneType
+//         * 1 默认黑色
+//         * 2 缓行绿色
+//         * 3 缓慢橘色
+//         * 4 严重褐色
+//         */
+//        switch (minScene) {
+//            case 1 -> {
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_smooth", "display: none;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_slow", "display: none;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_congested", "display: none;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_default", "display: flex;"));
+//                if (ConvertUtils.isEmpty(deepInfoText)) {
+//                    jamBubblesList.add(createUpdateStylePair("main_title_default", "display: none;"));
+//                    jamBubblesList.add(createUpdateStylePair("line_image_default", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("main_title_default", deepInfoText));
+//                }
+//                if (ConvertUtils.isEmpty(costText)) {
+//                    jamBubblesList.add(createUpdateStylePair("time_col_default", "display: none;"));
+//                    jamBubblesList.add(createUpdateStylePair("line_image_default", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("time_col_default", costText));
+//                }
+//                if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText)) {
+//                    jamBubblesList.add(createUpdateStylePair("text_time_dist_default", "display: none;"));
+//                }
+//                if (ConvertUtils.isEmpty(degreeText)) {
+//                    jamBubblesList.add(createUpdateStylePair("sub_title_default", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("sub_title_default", degreeText));
+//                }
+//                if (ConvertUtils.isEmpty(trendText)) {
+//                    jamBubblesList.add(createUpdateStylePair("time_row_default", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("time_row_default", trendText));
+//                }
+//            }
+//            case 2 -> {
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_smooth", "display: flex;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_slow", "display: none;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_congested", "display: none;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_default", "display: none;"));
+//                if (ConvertUtils.isEmpty(deepInfoText)) {
+//                    jamBubblesList.add(createUpdateStylePair("main_title_smooth", "display: none;"));
+//                    jamBubblesList.add(createUpdateStylePair("line_image_smooth", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("main_title_smooth", deepInfoText));
+//                }
+//                if (ConvertUtils.isEmpty(costText)) {
+//                    jamBubblesList.add(createUpdateStylePair("time_col_smooth", "display: none;"));
+//                    jamBubblesList.add(createUpdateStylePair("line_image_smooth", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("time_col_smooth", costText));
+//                }
+//                if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText)) {
+//                    jamBubblesList.add(createUpdateStylePair("text_time_dist_smooth", "display: none;"));
+//                }
+//                if (ConvertUtils.isEmpty(degreeText)) {
+//                    jamBubblesList.add(createUpdateStylePair("sub_title_smooth", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("sub_title_smooth", degreeText));
+//                }
+//                if (ConvertUtils.isEmpty(trendText)) {
+//                    jamBubblesList.add(createUpdateStylePair("time_row_smooth", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("time_row_smooth", trendText));
+//                }
+//            }
+//            case 3 -> {
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_smooth", "display: none;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_slow", "display: flex;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_congested", "display: none;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_default", "display: none;"));
+//                if (ConvertUtils.isEmpty(deepInfoText)) {
+//                    jamBubblesList.add(createUpdateStylePair("main_title_slow", "display: none;"));
+//                    jamBubblesList.add(createUpdateStylePair("line_image_slow", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("main_title_slow", deepInfoText));
+//                }
+//                if (ConvertUtils.isEmpty(costText)) {
+//                    jamBubblesList.add(createUpdateStylePair("time_col_slow", "display: none;"));
+//                    jamBubblesList.add(createUpdateStylePair("line_image_slow", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("time_col_slow", costText));
+//                }
+//                if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText)) {
+//                    jamBubblesList.add(createUpdateStylePair("text_time_dist_slow", "display: none;"));
+//                }
+//                if (ConvertUtils.isEmpty(degreeText)) {
+//                    jamBubblesList.add(createUpdateStylePair("sub_title_slow", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("sub_title_slow", degreeText));
+//                }
+//                if (ConvertUtils.isEmpty(trendText)) {
+//                    jamBubblesList.add(createUpdateStylePair("time_row_slow", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("time_row_slow", trendText));
+//                }
+//            }
+//            case 4 -> {
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_smooth", "display: none;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_slow", "display: none;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_congested", "display: flex;"));
+//                jamBubblesList.add(createUpdateStylePair("traffic_div_default", "display: none;"));
+//                if (ConvertUtils.isEmpty(deepInfoText)) {
+//                    jamBubblesList.add(createUpdateStylePair("main_title_congested", "display: none;"));
+//                    jamBubblesList.add(createUpdateStylePair("line_image_congested", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("main_title_congested", deepInfoText));
+//                }
+//                if (ConvertUtils.isEmpty(costText)) {
+//                    jamBubblesList.add(createUpdateStylePair("time_col_congested", "display: none;"));
+//                    jamBubblesList.add(createUpdateStylePair("line_image_congested", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("time_col_congested", costText));
+//                }
+//                if (ConvertUtils.isEmpty(deepInfoText) && ConvertUtils.isEmpty(costText)) {
+//                    jamBubblesList.add(createUpdateStylePair("text_time_dist_congested", "display: none;"));
+//                }
+//                if (ConvertUtils.isEmpty(degreeText)) {
+//                    jamBubblesList.add(createUpdateStylePair("sub_title_congested", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("sub_title_congested", degreeText));
+//                }
+//                if (ConvertUtils.isEmpty(trendText)) {
+//                    jamBubblesList.add(createUpdateStylePair("time_row_congested", "display: none;"));
+//                } else {
+//                    jamBubblesList.add(createUpdatePair("time_row_congested", trendText));
+//                }
+//            }
+//        }
+//
+//        jamBubblesList.add(createUpdateStylePair("pic_image", "display: none;"));
+//        return jamBubblesList;
+//    }
+//
+//    private List<CustomUpdatePair> addCardGuideLabelMarker(GuideLabelLayerItem item, String markerInfo) {
+//        List<CustomUpdatePair> guideLabelPairs = new ArrayList<>();
+//        String time;
+//        int travelTimeDiff = item.getMTravelTimeDiff();
+//        if (travelTimeDiff > 0) {
+//            time = "慢";
+//        } else {
+//            time = "快";
+//        }
+//        time += CommonUtil.formatTimeBySecond(Math.abs(travelTimeDiff));
+//
+//        String distance;
+//        int distanceDiff = item.getMDistanceDiff();
+//        if (distanceDiff > 0) {
+//            distance = "多";
+//        } else {
+//            distance = "少";
+//        }
+//        distance += CommonUtil.distanceUnitTransform(Math.abs(distanceDiff));
+//
+//        String trafficLight;
+//        int trafficLightDiff = item.getMTrafficLightDiff();
+//        if (trafficLightDiff > 0) {
+//            trafficLight = "多%d个";
+//        } else {
+//            trafficLight = "少%d个";
+//        }
+//        if (trafficLightDiff == 0) {
+//            trafficLight = "一致";
+//        } else {
+//            trafficLight = String.format(trafficLight, Math.abs(trafficLightDiff));
+//        }
+//
+//        String cost;
+//        int costDiff = item.getMCostDiff();
+//        if (costDiff > 0) {
+//            cost = "多%d元";
+//        } else {
+//            cost = "少%d元";
+//        }
+//        cost = String.format(cost, Math.abs(costDiff));
+//        if (!ConvertUtils.isEmpty(markerInfo)) {
+//            if (markerInfo.contains("left_up")) {
+//                guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "background-image:global_image_navi_bg_route_label_left_up_day_night;"));
+//            } else if (markerInfo.contains("left_down")) {
+//                guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "background-image:global_image_navi_bg_route_label_left_down_day_night;"));
+//            } else if (markerInfo.contains("right_up")) {
+//                guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "background-image:global_image_navi_bg_route_label_right_up_day_night;"));
+//            } else if (markerInfo.contains("right_down")) {
+//                guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "background-image:global_image_navi_bg_route_label_right_down_day_night;"));
+//            }
+//        }
+//        guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "width:auto"));
+//        guideLabelPairs.add(createUpdateStylePair("guide_label_background_image", "height:auto"));
+//        if (costDiff == 0) {
+//            guideLabelPairs.add(createUpdateStylePair("cost_text1", "display: none;"));
+//            guideLabelPairs.add(createUpdateStylePair("cost_text2", "display: none;"));
+//            guideLabelPairs.add(createUpdateStylePair("cost_image1", "display: none;"));
+//            guideLabelPairs.add(createUpdateStylePair("cost_image2", "display: none;"));
+//        }
+//
+//        Logger.d(TAG, "addCardGuideLabelMarker " +
+//                "\n time " + time +
+//                "\n distance " + distance +
+//                "\n trafficLight " + trafficLight +
+//                "\n cost " + cost +
+//                "\n markerInfo " + markerInfo);
+//        guideLabelPairs.add(createUpdatePair("time_diff_text", time));
+//        guideLabelPairs.add(createUpdatePair("cost_text1", item.getMPathCost() + "元"));
+//        guideLabelPairs.add(createUpdatePair("distance_diff_text", distance));
+//        guideLabelPairs.add(createUpdatePair("traffic_light_text", trafficLight));
+//        return guideLabelPairs;
+//    }
 }

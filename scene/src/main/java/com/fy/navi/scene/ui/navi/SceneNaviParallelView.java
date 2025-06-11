@@ -42,7 +42,7 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_PARALLEL;
     }
 

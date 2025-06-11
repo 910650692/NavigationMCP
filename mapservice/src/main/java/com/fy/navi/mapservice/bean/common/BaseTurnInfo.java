@@ -7,9 +7,9 @@ import android.os.Parcelable;
 public class BaseTurnInfo implements Parcelable {
 
     private int mType;
-    private int mAllTime; //剩余距离/m
+    private int mRemainTime; //剩余时间/s
     private String mFormatTime; //格式化后的剩余时间
-    private int mAllDist; //剩余时间/s
+    private int mRemainDist; //剩余距离/m
     private String mFormatDist; //格式化后的剩余距离
     private String mFormatArrive; //格式化后的到达时间
     private String mFormatDay; //到达天数，为空不显示 eg +1  +2
@@ -25,6 +25,7 @@ public class BaseTurnInfo implements Parcelable {
     private int mNextManeuverID = -1; //下个路口转向ID
     private int mNextDist; //下个路口距离/m
     private int mRingOutCnt; //剩余红绿灯数量
+    private int mDriveDist; //已经行驶的距离
 
     public BaseTurnInfo() {
 
@@ -44,9 +45,9 @@ public class BaseTurnInfo implements Parcelable {
 
     public BaseTurnInfo (final Parcel in) {
         mType = in.readInt();
-        mAllTime = in.readInt();
+        mRemainTime = in.readInt();
         mFormatTime = in.readString();
-        mAllDist = in.readInt();
+        mRemainDist = in.readInt();
         mFormatDist = in.readString();
         mFormatArrive = in.readString();
         mFormatDay = in.readString();
@@ -57,15 +58,16 @@ public class BaseTurnInfo implements Parcelable {
         mNextManeuverID = in.readInt();
         mNextDist = in.readInt();
         mRingOutCnt = in.readInt();
+        mDriveDist = in.readInt();
     }
 
 
     @Override
     public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeInt(mType);
-        dest.writeInt(mAllTime);
+        dest.writeInt(mRemainTime);
         dest.writeString(mFormatTime);
-        dest.writeInt(mAllDist);
+        dest.writeInt(mRemainDist);
         dest.writeString(mFormatDist);
         dest.writeString(mFormatArrive);
         dest.writeString(mFormatDay);
@@ -76,6 +78,7 @@ public class BaseTurnInfo implements Parcelable {
         dest.writeInt(mNextManeuverID);
         dest.writeInt(mNextDist);
         dest.writeInt(mRingOutCnt);
+        dest.writeInt(mDriveDist);
     }
 
 
@@ -87,20 +90,21 @@ public class BaseTurnInfo implements Parcelable {
     @Override
     public String toString() {
         return "BaseTurnInfo{" +
-                "mType=" + mType +
-                ", mAllTime=" + mAllTime +
-                ", mFormatTime='" + mFormatTime + '\'' +
-                ", mAllDist=" + mAllDist +
-                ", mFormatDist='" + mFormatDist + '\'' +
-                ", mFormatArrive='" + mFormatArrive + '\'' +
-                ", mFormatDay='" + mFormatDay + '\'' +
-                ", mCurRouteName='" + mCurRouteName + '\'' +
-                ", mCurRoadClass=" + mCurRoadClass +
-                ", mCurManeuverID=" + mCurManeuverID +
-                ", mNextRouteName='" + mNextRouteName + '\'' +
-                ", mNextManeuverID=" + mNextManeuverID +
-                ", mNextDist=" + mNextDist +
-                ", mRingOutCnt=" + mRingOutCnt +
+                "mType= " + mType +
+                ", \nmAllTime= " + mRemainTime +
+                ", \nmFormatTime= '" + mFormatTime + '\'' +
+                ", \nmAllDist= " + mRemainDist +
+                ", \nmFormatDist= '" + mFormatDist + '\'' +
+                ", \nmFormatArrive= '" + mFormatArrive + '\'' +
+                ", \nmFormatDay= '" + mFormatDay + '\'' +
+                ", \nmCurRouteName= '" + mCurRouteName + '\'' +
+                ", \nmCurRoadClass= " + mCurRoadClass +
+                ", \nmCurManeuverID= " + mCurManeuverID +
+                ", \nmNextRouteName= '" + mNextRouteName + '\'' +
+                ", \nmNextManeuverID= " + mNextManeuverID +
+                ", \nmNextDist= " + mNextDist +
+                ", \nmRingOutCnt= " + mRingOutCnt +
+                ", \nmDriveDist= " + mDriveDist+
                 '}';
     }
 
@@ -112,12 +116,12 @@ public class BaseTurnInfo implements Parcelable {
         mType = type;
     }
 
-    public int getAllTime() {
-        return mAllTime;
+    public int getRemainTime() {
+        return mRemainTime;
     }
 
-    public void setAllTime(final int allTime) {
-        mAllTime = allTime;
+    public void setRemainTime(final int allTime) {
+        mRemainTime = allTime;
     }
 
     public String getFormatTime() {
@@ -128,12 +132,12 @@ public class BaseTurnInfo implements Parcelable {
         mFormatTime = formatTime;
     }
 
-    public int getAllDist() {
-        return mAllDist;
+    public int getRemainDist() {
+        return mRemainDist;
     }
 
-    public void setAllDist(final int allDist) {
-        mAllDist = allDist;
+    public void setRemainDist(final int allDist) {
+        mRemainDist = allDist;
     }
 
     public String getFormatDist() {
@@ -214,6 +218,14 @@ public class BaseTurnInfo implements Parcelable {
 
     public void setRingOutCnt(final int ringOutCnt) {
         mRingOutCnt = ringOutCnt;
+    }
+
+    public int getDriveDist() {
+        return mDriveDist;
+    }
+
+    public void setDriveDist(final int driveDist) {
+        this.mDriveDist = driveDist;
     }
 
 }

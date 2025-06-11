@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.map.bls;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -98,6 +99,12 @@ public class MapAdapterImpl implements IMapApi {
     @Override
     public float getCurrentZoomLevel(MapType mapTypeId) {
         return mapViewPoolManager.get(mapTypeId).getCurrentZoomLevel();
+    }
+
+    /* 判断当前mapview是否存在 */
+    @Override
+    public boolean isMapViewExist(MapType mapTypeId) {
+        return mapViewPoolManager.isMapViewExist(mapTypeId);
     }
 
     @Override

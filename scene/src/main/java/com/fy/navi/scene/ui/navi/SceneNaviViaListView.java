@@ -70,7 +70,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_VIA_POINT_LIST;
     }
 
@@ -107,7 +107,9 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         ThreadManager.getInstance().postUi(() -> {
             super.close();
             OpenApiHelper.exitPreview(mMapTypeId);
-            mScreenViewModel.updateSceneVisible(false);
+            if (mScreenViewModel != null) {
+                mScreenViewModel.updateSceneVisible(false);
+            }
             // taskId：1015285 途经点收起后需要关闭继续导航按钮
             NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.
                     SceneCloseState, NaviSceneId.NAVI_CONTINUE);

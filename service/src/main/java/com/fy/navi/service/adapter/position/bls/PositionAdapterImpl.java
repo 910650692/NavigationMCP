@@ -6,8 +6,10 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
 import com.fy.navi.service.adapter.position.IPositionApi;
 import com.fy.navi.service.adapter.position.PositionConstant;
+import com.fy.navi.service.adapter.position.VehicleSpeedController;
 import com.fy.navi.service.adapter.position.bls.manager.LocSigFusionManager;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.position.ISpeedCallback;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocMode;
 import com.fy.navi.service.define.position.PositionConfig;
@@ -19,13 +21,14 @@ import java.math.BigInteger;
  * @Author lvww
  * @date 2024/11/24
  */
-public class PositionAdapterImpl implements IPositionApi {
+public class PositionAdapterImpl implements IPositionApi  , ISpeedCallback {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private PositionBlsStrategy positionStrategy;
     private LocSigFusionManager mLocSigFusionManager;
     private LocMode mLocMode = LocMode.DrBack;
     private boolean mDrBackFusionEnable = true;
     private boolean mDrRecordEnable;
+    private VehicleSpeedController mVehicleSpeedController;
 
     public PositionAdapterImpl() {
         positionStrategy = new PositionBlsStrategy(AppCache.getInstance().getMContext());
@@ -50,6 +53,10 @@ public class PositionAdapterImpl implements IPositionApi {
     public boolean init() {
         // TODO: 2025/2/25 此处定位模式需要在存储中配置,临时使用constant配置  GNSS/后端融合切换
         mLocMode = PositionConstant.isDrBack ? LocMode.DrBack : LocMode.GNSS;
+        if (mLocMode == LocMode.DrBack) {
+            mVehicleSpeedController = new VehicleSpeedController(AppCache.getInstance().getMContext(), this);
+            mVehicleSpeedController.registerCallback();
+        }
         boolean initResult = positionStrategy.initLocEngine(mLocMode, new PositionConfig());
         Logger.i(TAG, "initLocEngine: " + initResult + ",mLocMode：" + mLocMode);
         return initResult;
@@ -122,6 +129,9 @@ public class PositionAdapterImpl implements IPositionApi {
         if (positionStrategy != null) {
             positionStrategy.uninitLocEngine();
         }
+        if (mVehicleSpeedController != null) {
+            mVehicleSpeedController.unregisterCallback();
+        }
     }
 
     @Override
@@ -129,6 +139,13 @@ public class PositionAdapterImpl implements IPositionApi {
         Logger.i(TAG, "Current speed: " + speed);
         if (mLocSigFusionManager != null) {
             mLocSigFusionManager.onSpeedChanged(speed);
+        }
+    }
+
+    @Override
+    public void onPulseSpeedChanged(float speed) {
+        if (mLocSigFusionManager != null) {
+            mLocSigFusionManager.onPulseSpeedChanged(speed);
         }
     }
 
@@ -162,4 +179,5 @@ public class PositionAdapterImpl implements IPositionApi {
             positionStrategy.locationLogSwitch(isOpen);
         }
     }
+
 }

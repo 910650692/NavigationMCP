@@ -19,11 +19,20 @@ import com.fy.navi.ui.base.StackManager;
  */
 public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyView> implements ISceneHomeCompanyView {
     private final SearchPackage mSearchPackage;
-    private final LayerPackage layerPackage;
+    private final LayerPackage mLayerPackage;
+    private int mTaskId;
+
+    /**
+     * 获取高德SDK请求任务Id
+     * @return 请求任务Id
+     */
+    public int getMTaskId() {
+        return mTaskId;
+    }
     public SceneHomeCompanyViewImpl(final SceneHomeCompanyView scrollView) {
         super(scrollView);
         mSearchPackage = SearchPackage.getInstance();
-        layerPackage = LayerPackage.getInstance();
+        mLayerPackage = LayerPackage.getInstance();
     }
 
     @Override
@@ -47,11 +56,16 @@ public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyVie
      */
     public void suggestionSearch(final String key) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "suggestionSearch  key:" + key);
-        mSearchPackage.suggestionSearch(key);
+        mTaskId = mSearchPackage.suggestionSearch(key);
     }
 
-    public void flyLineVisible(MapType mapTypeId,boolean visible){
-        layerPackage.openFlyLine(mapTypeId, visible);
+    /**
+     * 设置移图选点可见性
+     * @param mapTypeId mapId
+     * @param visible 是否可见
+     */
+    public void flyLineVisible(final MapType mapTypeId,final boolean visible){
+        mLayerPackage.openFlyLine(mapTypeId, visible);
     }
 
 }

@@ -28,6 +28,12 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cancelTimer();
+    }
+
     /**
      * init timer
      */

@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
@@ -233,8 +234,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     @Override
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
         Logger.i(TAG, "onRouteResult");
-        MapType mapTypeId = requestRouteResult.getMMapTypeId();
-        mSelectRouteIndex.put(mapTypeId, NumberUtils.NUM_0);
         mRequestRouteResults.put(requestRouteResult.getMMapTypeId(), requestRouteResult);
         updateParamList(requestRouteResult.getMMapTypeId());
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
@@ -283,27 +282,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
         Logger.i(TAG, "onRouteDrawLine");
-        RequestRouteResult requestRouteResult = mRequestRouteResults.get(routeLineLayerParam.getMMapTypeId());
-        if (!ConvertUtils.isEmpty(requestRouteResult)) {
-            final RouteCurrentPathParam routeCurrentPathParam = requestRouteResult.getMRouteCurrentPathParam();
-            routeCurrentPathParam.setMMapTypeId(requestRouteResult.getMMapTypeId());
-            routeCurrentPathParam.setMRequestId(requestRouteResult.getMRequestId());
-            routeCurrentPathParam.setMPathInfo(routeLineLayerParam.getMPathInfoList().get(0));
-            routeCurrentPathParam.setMIsOnlineRoute(routeLineLayerParam.isMIsOnlineRoute());
-            mRouteAdapter.setCurrentPath(routeCurrentPathParam);
-        }
-        mNaviAdapter.updateNaviPath(routeLineLayerParam);
         for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
             if (ConvertUtils.isEmpty(routeResultObserver)) {
                 continue;
             }
             routeResultObserver.onRouteDrawLine(routeLineLayerParam);
         }
-        if (mNaviStatusAdapter.isGuidanceActive()) {
-            ArrayList<?> mPathInfoList = routeLineLayerParam.getMPathInfoList();
-            if (!ConvertUtils.isEmpty(mPathInfoList)) return;
-            OpenApiHelper.setCurrentPathInfo((PathInfo) mPathInfoList.get(0));
-        }
+        //默认选择第一条路线
+        selectDefaultRoute(routeLineLayerParam.getMMapTypeId());
     }
 
     @Override
@@ -1105,16 +1091,21 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void showRouteLine(final MapType mapTypeId) {
-        RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (ConvertUtils.isEmpty(requestRouteResult)) return;
-        final List<RouteLineInfo> routeLineInfos = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMRouteLineInfos();
-        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMLineLayerParam();
-        final ArrayList<String> arrivalTimes = new ArrayList<>();
-        for (RouteLineInfo routeLineInfo : routeLineInfos) {
-            arrivalTimes.add(routeLineInfo.getMTravelTime());
-        }
-        routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
-        mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
+        ThreadManager.getInstance().execute(() -> {
+            RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
+            if (ConvertUtils.isEmpty(requestRouteResult)) return;
+            final List<RouteLineInfo> routeLineInfos = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMRouteLineInfos();
+            final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMLineLayerParam();
+            final ArrayList<String> arrivalTimes = new ArrayList<>();
+            for (RouteLineInfo routeLineInfo : routeLineInfos) {
+                arrivalTimes.add(routeLineInfo.getMTravelTime());
+            }
+            routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
+            mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
+            if (!mNaviStatusAdapter.isGuidanceActive()) {
+                mLayerAdapter.setCarLogoVisible(mapTypeId, false);
+            }
+        });
     }
 
     /*更新终点扎标数据*/
@@ -1152,6 +1143,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
         mLayerAdapter.clearRouteLine(mapTypeId);
         mLayerAdapter.clearLabelItem(mapTypeId);
+        mLayerAdapter.setCarLogoVisible(mapTypeId, true);
         removeAllRouteInfo(mapTypeId);
     }
 
@@ -1191,21 +1183,23 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void showPreview(final MapType mapTypeId) {
-        mLayerAdapter.setFollowMode(mapTypeId, false);
-        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
-            return;
-        }
-        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
-        final PreviewParams previewParams = mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList());
-        if (ConvertUtils.isEmpty(previewParams)) {
-            Logger.e(TAG, "previewParams is null");
-            return;
-        }
-        previewParams.setScreenLeft(1350);
-        previewParams.setScreenRight(600);
-        previewParams.setScreenTop(210);
-        previewParams.setScreenBottom(140);
-        mMapAdapter.showPreview(mapTypeId, previewParams);
+        ThreadManager.getInstance().execute(() -> {
+            mLayerAdapter.setFollowMode(mapTypeId, false);
+            if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
+                return;
+            }
+            final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
+            final PreviewParams previewParams = mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList());
+            if (ConvertUtils.isEmpty(previewParams)) {
+                Logger.e(TAG, "previewParams is null");
+                return;
+            }
+            previewParams.setScreenLeft(1350);
+            previewParams.setScreenRight(600);
+            previewParams.setScreenTop(210);
+            previewParams.setScreenBottom(140);
+            mMapAdapter.showPreview(mapTypeId, previewParams);
+        });
     }
 
     /**
@@ -1256,6 +1250,50 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 切换路线
+     * @param mapTypeId  屏幕ID
+     */
+    public void selectDefaultRoute(final MapType mapTypeId) {
+        if (ConvertUtils.isEmpty(mRequestRouteResults)) {
+            return;
+        }
+        final RequestRouteResult requestRouteResult = mRequestRouteResults.get(mapTypeId);
+        if (ConvertUtils.isEmpty(requestRouteResult)) {
+            Logger.e(TAG, "no data");
+            return;
+        }
+        RouteLineLayerParam routeLineLayerParam = requestRouteResult.getMLineLayerParam();
+        if (routeLineLayerParam.getMPathInfoList().isEmpty()) {
+            Logger.e(TAG, "out of bounds");
+            return;
+        }
+        if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
+            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+                if (ConvertUtils.isEmpty(routeResultObserver)) {
+                    continue;
+                }
+                routeResultObserver.onRouteSlected(mapTypeId, 0, true);
+            }
+        }
+        routeLineLayerParam.setMSelectIndex(0);
+        mSelectRouteIndex.put(mapTypeId, 0);
+        if (!ConvertUtils.isEmpty(requestRouteResult)) {
+            final RouteCurrentPathParam routeCurrentPathParam = requestRouteResult.getMRouteCurrentPathParam();
+            routeCurrentPathParam.setMMapTypeId(mapTypeId);
+            routeCurrentPathParam.setMRequestId(requestRouteResult.getMRequestId());
+            routeCurrentPathParam.setMPathInfo(routeLineLayerParam.getMPathInfoList().get(0));
+            routeCurrentPathParam.setMIsOnlineRoute(routeLineLayerParam.isMIsOnlineRoute());
+            mRouteAdapter.setCurrentPath(routeCurrentPathParam);
+        }
+        if (!ConvertUtils.isEmpty(requestRouteResult)) {
+            mNaviAdapter.updateNaviPath(routeLineLayerParam);
+        }
+        // TODO: 2025/6/8 暂时先放在这里 后续OpenApiHelper需要删除
+        OpenApiHelper.setCurrentPathInfos((ArrayList<PathInfo>)
+                routeLineLayerParam.getMPathInfoList());
+    }
+
+    /**
+     * 切换路线
      *
      * @param mapTypeId  屏幕ID
      * @param routeIndex 路线id
@@ -1277,6 +1315,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             Logger.e(TAG, "out of bounds");
             return;
         }
+        if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
+            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+                if (ConvertUtils.isEmpty(routeResultObserver)) {
+                    continue;
+                }
+                routeResultObserver.onRouteSlected(mapTypeId, routeIndex, false);
+            }
+        }
         routeLineLayerParam.setMSelectIndex(routeIndex);
         mLayerAdapter.setSelectedPathIndex(mapTypeId, routeIndex);
         mSelectRouteIndex.put(mapTypeId, routeIndex);
@@ -1294,14 +1340,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         // TODO: 2025/6/8 暂时先放在这里 后续OpenApiHelper需要删除
         OpenApiHelper.setCurrentPathInfos((ArrayList<PathInfo>)
                 routeLineLayerParam.getMPathInfoList());
-        if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
-            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
-                if (ConvertUtils.isEmpty(routeResultObserver)) {
-                    continue;
-                }
-                routeResultObserver.onRouteSlected(mapTypeId, routeIndex);
-            }
-        }
     }
 
     /**

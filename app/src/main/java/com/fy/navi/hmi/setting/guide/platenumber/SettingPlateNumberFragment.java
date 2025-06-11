@@ -76,7 +76,7 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
                         ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
                 mBinding.settingPlateNumberFinish.setBackground(
                         ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
-
+                mIsClearPlateNumber = false;
                 // 第一位只能输入字母
                 if (text.isEmpty()) {
                     if (key.matches("[A-Z]")) {  // 只允许输入字母
@@ -288,7 +288,7 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
      */
     public void plateNumberInputFinish() {
 
-        Logger.d("plateNumberInputFinish");
+        Logger.d("plateNumberInputFinish: " + mIsClearPlateNumber);
 
         final String plateNumber = mBinding.settingPlateNumberProvince.getText().toString() + mBinding.settingPlateNumberNumber.getText().toString();
         if (isCar(plateNumber)) {

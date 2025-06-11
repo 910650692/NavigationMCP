@@ -551,6 +551,14 @@ public final class SearchResultMapper {
             }
             roadBounds.add(points);
         }
+        final List<LabelInfo> labelInfos = new ArrayList<>();
+        for (SearchLabelInfo searchLabelInfo : searchPoiInfo.labelInfos) {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, " label info type: " + searchLabelInfo.type + " ,content: " + searchLabelInfo.content);
+            final LabelInfo labelInfo = new LabelInfo()
+                    .setMContent(searchLabelInfo.content)
+                    .setMType(searchLabelInfo.type);
+            labelInfos.add(labelInfo);
+        }
         Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "typeCode is: " + searchPoiInfo.basicInfo.typeCode
                 + " ;name is: " + searchPoiInfo.basicInfo.name + " ;searchPoiInfo.basicInfo.pid:" + searchPoiInfo.basicInfo.poiId
                 + " :isFastest: " + searchPoiInfo.basicInfo.isFastest + " ;isClosest: " + searchPoiInfo.basicInfo.isClosest);

@@ -170,7 +170,7 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
         mCustomTimer = new Runnable() {
             @Override
             public void run() {
-//                Logger.i(TAG, "DrSensorManager startTimerTask :" + mIsGyroReady.get() + ",mIsAccReady.get()：" + mIsAccReady.get() + ",mCarSpeed " + mCarSpeed);
+                Logger.i(TAG, "DrSensorManager startTimerTask :" + mIsGyroReady.get() + ",mIsAccReady.get()：" + mIsAccReady.get() + ",mCarSpeed " + mCarSpeed);
                 if (mIsGyroReady.get() == 1) {
                     setLocGyroInfo(false);
                 }
@@ -373,7 +373,7 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
     /**
      * 车速变化
      */
-    public void onSpeedChanged(float speed) {
+    public void onPulseSpeedChanged(float speed) {
         //        Logger.d(TAG, "  onVelocityPulseChanged=" + speed);
         int ratio = 1;
         if (mGear == PositionConstant.GearType.GEAR_REVERSE) {
@@ -383,6 +383,7 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
         if (mIsRecordRaw) {
             setLocPulseInfo(true);
         }
+        Logger.d("LocPulsemeter",mCarSpeed);
     }
 
     /**
@@ -405,7 +406,7 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
         if (msg.what == MSG_SEND_TEMPERATURE) {
             parseTemperature();
             mTemperatureHandler.removeMessages(MSG_SEND_TEMPERATURE);
-            mTemperatureHandler.sendEmptyMessageDelayed(MSG_SEND_TEMPERATURE, 100);
+            mTemperatureHandler.sendEmptyMessageDelayed(MSG_SEND_TEMPERATURE, 10000);
         }
         return false;
     }

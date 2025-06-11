@@ -126,21 +126,29 @@ public class AiWaysGestureManager {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                 float velocityY) {
-            if (e1.getX() - e2.getX() > 0 && Math.abs((int)(e1.getX() - e2.getX())) > Math.abs((int)(e1.getY() - e2.getY()))
-                && Math.abs(velocityX) > minVelocity) {
-                return mListener.singleFingerSlipAction(GestureEvent.SINGLE_GINGER_LEFT_SLIP, e1, e2, Math.abs(velocityX));
+            if (e1 == null || e2 == null) {
+                return false;
             }
-            if (e1.getX() - e2.getX() < 0 && Math.abs((int)(e1.getX() - e2.getX())) > Math.abs((int)(e1.getY() - e2.getY()))
-                && Math.abs(velocityX) > minVelocity) {
-                return mListener.singleFingerSlipAction(GestureEvent.SINGLE_GINGER_RIGHT_SLIP, e1, e2, Math.abs(velocityX));
-            }
-            if (e1.getY() - e2.getY() > 0 && Math.abs((int)(e1.getY() - e2.getY())) > Math.abs((int)(e1.getX() - e2.getX()))
-                && Math.abs(velocityY) > minVelocity) {
-                return mListener.singleFingerSlipAction(GestureEvent.SINGLE_GINGER_UP_SLIP, e1, e2, Math.abs(velocityY));
-            }
-            if (e1.getY() - e2.getY() < 0 && Math.abs((int)(e1.getY() - e2.getY())) > Math.abs((int)(e1.getX() - e2.getX()))
-                && Math.abs(velocityY) > minVelocity) {
-                return mListener.singleFingerSlipAction(GestureEvent.SINGLE_GINGER_DOWN_SLIP, e1, e2, Math.abs(velocityY));
+            try {
+                if (e1.getX() - e2.getX() > 0 && Math.abs((int)(e1.getX() - e2.getX())) > Math.abs((int)(e1.getY() - e2.getY()))
+                    && Math.abs(velocityX) > minVelocity) {
+                    return mListener.singleFingerSlipAction(GestureEvent.SINGLE_GINGER_LEFT_SLIP, e1, e2, Math.abs(velocityX));
+                }
+                if (e1.getX() - e2.getX() < 0 && Math.abs((int)(e1.getX() - e2.getX())) > Math.abs((int)(e1.getY() - e2.getY()))
+                    && Math.abs(velocityX) > minVelocity) {
+                    return mListener.singleFingerSlipAction(GestureEvent.SINGLE_GINGER_RIGHT_SLIP, e1, e2, Math.abs(velocityX));
+                }
+                if (e1.getY() - e2.getY() > 0 && Math.abs((int)(e1.getY() - e2.getY())) > Math.abs((int)(e1.getX() - e2.getX()))
+                    && Math.abs(velocityY) > minVelocity) {
+                    return mListener.singleFingerSlipAction(GestureEvent.SINGLE_GINGER_UP_SLIP, e1, e2, Math.abs(velocityY));
+                }
+                if (e1.getY() - e2.getY() < 0 && Math.abs((int)(e1.getY() - e2.getY())) > Math.abs((int)(e1.getX() - e2.getX()))
+                    && Math.abs(velocityY) > minVelocity) {
+                    return mListener.singleFingerSlipAction(GestureEvent.SINGLE_GINGER_DOWN_SLIP, e1, e2, Math.abs(velocityY));
+                }
+            } catch (Exception ex) {
+                Logger.e(TAG, "onFling error", ex);
+                return false;
             }
             return false;
         }
@@ -166,6 +174,9 @@ public class AiWaysGestureManager {
     }
 
     boolean notifyMutiFingerSlipProcess(MotionEvent startEvent, MotionEvent endEvent, float dX, float dY) {
+        if (startEvent == null || endEvent == null){
+            return false;
+        }
         int pCount = startEvent.getPointerCount();
         int sumX = 0, sumY = 0;
         for (int i = 0; i < pCount; i++) {
@@ -196,6 +207,10 @@ public class AiWaysGestureManager {
     }
 
     boolean notifyMutiFingerSlipAction(MotionEvent startEvent, MotionEvent endEvent, float velocityX, float velocityY) {
+        if (startEvent == null || endEvent == null) {
+            Logger.e(TAG, "notifyMutiFingerSlipAction: event is null");
+            return false;
+        }
         int pCount = startEvent.getPointerCount();
         int sumX = 0, sumY = 0;
         for (int i = 0; i < pCount; i++) {
@@ -283,6 +298,9 @@ public class AiWaysGestureManager {
         private float mDownFocusY;
 
         public boolean onTouchEvent(MotionEvent ev) {
+            if (ev == null){
+                return false;
+            }
             if (mVelocityTracker == null) {
                 mVelocityTracker = VelocityTracker.obtain();
             }

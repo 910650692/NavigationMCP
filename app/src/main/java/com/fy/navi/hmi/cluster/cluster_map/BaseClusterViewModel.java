@@ -1,40 +1,52 @@
 package com.fy.navi.hmi.cluster.cluster_map;
 
+import static android.view.View.GONE;
+
 import android.app.Application;
 import android.text.TextUtils;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
-import androidx.databinding.ObservableInt;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AppCache;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.ui.base.BaseViewModel;
+import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.utils.ActivityCloseManager;
+import com.fy.navi.utils.OnCloseActivityListener;
 
-public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, ClusterModel> {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, ClusterModel> implements OnCloseActivityListener {
     private static final String TAG = "BaseClusterViewModel";
-    public ObservableInt routeNameVisibleStatus;
     public ObservableField<String> arriveTimeField; // 到达时间
     public ObservableField<String> arrivalDayField; // 到达天数
     public ObservableField<String> remainingMileageField; // 剩余距离
     public ObservableField<String> stvNaviRouteNameField; // 当前路名
+    public ObservableField<String> mRemainInfoNumber; // 公里数
+    public ObservableField<String> mRemainInfoUnit; // 单位
+    //道路名是否显示
+    public final ObservableField<Boolean> routeNameConstraintLayoutVisibility = new ObservableField<>(false);
+    //ETA是否显示
+    public final ObservableField<Boolean> remainingMileageConstraintLayoutVisibility = new ObservableField<>(false);
 
     public BaseClusterViewModel(@NonNull Application application) {
         super(application);
         Logger.d(TAG, "BaseClusterViewModel initialized");
-        ActivityCloseManager.getInstance().setOnCloseListener(() -> mView.finish());
-        routeNameVisibleStatus = new ObservableInt(View.GONE);
+        ActivityCloseManager.getInstance().addOnCloseListener(this);
         arriveTimeField = new ObservableField<>();
         arrivalDayField = new ObservableField<>();
         remainingMileageField = new ObservableField<>();
         stvNaviRouteNameField = new ObservableField<>();
+        mRemainInfoNumber = new ObservableField<>();
+        mRemainInfoUnit = new ObservableField<>();
     }
 
     @Override
@@ -47,7 +59,7 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
     public void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy called");
-        ActivityCloseManager.getInstance().removeListener();
+        ActivityCloseManager.getInstance().removeOnCloseListener(this);
         LayerPackage.getInstance().removeLayerService(mView.getMapView().provideMapTypeId());
         MapPackage.getInstance().unBindMapView(mView.getMapView());
         MapPackage.getInstance().destroyMapView(mView.getMapView().provideMapTypeId());
@@ -59,8 +71,8 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
 
     public void updateEta(NaviEtaInfo naviEtaInfo) {
         Logger.d(TAG, "Updating ETA info");
-        int distance = naviEtaInfo.getAllDist();
-        int time = naviEtaInfo.getAllTime();
+        int distance = naviEtaInfo.getRemainDist();
+        int time = naviEtaInfo.getRemainTime();
 
         if (distance <= 0 && time <= 0) {
             Logger.d(TAG, "Distance and time are both zero, skipping update");
@@ -74,7 +86,26 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
                 arriveTimeField.set(ConvertUtils.digitToBold(mArriveTime).toString());
             }
             arrivalDayField.set(mArriveDay);
-            remainingMileageField.set(ConvertUtils.digitToBold(mRemainInfo).toString());
+        String mRemainInfoString = ConvertUtils.digitToBold(mRemainInfo).toString();
+        if (!TextUtils.isEmpty(mRemainInfoString)) {
+            Pattern pattern = Pattern.compile("(\\d+(\\.\\d+)?)(公里|米)");
+            Matcher matcher = pattern.matcher(mRemainInfo);
+            if (matcher.matches()) {
+                try {
+                    String numberPart = matcher.group(1); // 匹配数字部分（整数或小数）
+                    String unitPart = matcher.group(3);   // 匹配单位“公里”或“米”
+                    mRemainInfoNumber.set(numberPart);
+                    mRemainInfoUnit.set(unitPart);
+                    Logger.d(TAG, "showArriveInfo:numberPart:" + numberPart + ", unitPart:" + unitPart);
+                } catch (Exception e) {
+                    Logger.e(TAG, "解析剩余里程时发生错误", e);
+                }
+            } else {
+                Logger.w(TAG, "未匹配到有效格式: " + mRemainInfo);
+            }
+        } else {
+            Logger.w(TAG, "mRemainInfo 为空或 null");
+        }
     }
 
     public void updateRouteName(String curRouteName) {
@@ -83,6 +114,18 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
     }
 
     public void updateNaviStatus(boolean isVisible) {
-        routeNameVisibleStatus.set(isVisible ? View.VISIBLE : View.GONE);
+        routeNameConstraintLayoutVisibility.set(false);
+        remainingMileageConstraintLayoutVisibility.set(isVisible);
+    }
+
+    @Override
+    public void onClose(boolean isCluster) {
+        if (isCluster){
+            //mView.finish();
+            if (StackManager.getInstance().getCurrentActivity(MapType.CLUSTER_MAP.name()).isTaskRoot()){
+                mView.getRootView().setVisibility(GONE);
+                mView.moveTaskToBack(true);
+            }
+        }
     }
 }

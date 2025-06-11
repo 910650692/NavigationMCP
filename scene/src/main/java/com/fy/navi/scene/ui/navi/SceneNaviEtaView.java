@@ -47,7 +47,7 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_ETA;
     }
 

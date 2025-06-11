@@ -546,6 +546,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
                                       final ObservableField<Boolean> chargeStation) {
         // 服务区详情
         final long sapaDetail = sapItem.getSapaDetail();
+        Logger.i(TAG, "updateServiceDetails: sapaDetail = " + sapaDetail);
         int totalDetails = 0;
         int powerType = OpenApiHelper.powerType();
         for (int i = 0; i <= 6; i++) {

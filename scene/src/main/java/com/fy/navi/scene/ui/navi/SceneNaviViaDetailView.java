@@ -29,7 +29,7 @@ public class SceneNaviViaDetailView extends NaviSceneBase<SceneNaviViaDetailView
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_VIA_DETAIL;
     }
 

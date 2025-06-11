@@ -10,8 +10,6 @@ import android.os.Build;
 import android.view.Display;
 
 import androidx.annotation.WorkerThread;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.ScreenUtils;
 import com.android.utils.gson.GsonUtils;
@@ -48,6 +46,7 @@ import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
 import com.fy.navi.service.logicpaket.hud.HudPackage;
@@ -70,6 +69,8 @@ import com.fy.navi.service.logicpaket.signal.SignalCallback;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.fy.navi.utils.ActivityCloseManager;
 import com.fy.navi.utils.ClusterMapOpenCloseManager;
+import com.fy.navi.utils.ThreeFingerFlyingScreenListener;
+import com.fy.navi.utils.ThreeFingerFlyingScreenManager;
 import com.gm.fsa.service.FSAService;
 import com.gm.fsa.service.catalog.FSACatalog;
 import com.iauto.vtserver.VTDescription;
@@ -90,7 +91,7 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListener {
+public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListener , ThreeFingerFlyingScreenListener {
     private static final String TAG = "MyFsaService";
 
     private FSAService mService;
@@ -112,11 +113,24 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private static final long MIN_INTERVAL = 600;
     private final Queue<Bitmap> mBitmapPool = new LinkedList<>();
     private final Object mLock = new Object();
+    private static final int IS_GB = 1;
+    private static final int IS_CLEA = 0;
 
     private final Map<Integer, Set<String>> mSubscriberMap = new HashMap<>();
 
     public static MyFsaService getInstance() {
         return MyFsaServiceHolder.INSTANCE;
+    }
+
+    @Override
+    public void onThreeFingerFlyingScreenCall(boolean isLeft) {
+        if (isLeft){
+            Logger.d(TAG, "triggerClose: 触发左飞屏");
+            MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "2");
+        }else {
+            Logger.d(TAG, "triggerClose: 触发右关屏");
+            MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "3");
+        }
     }
 
     private static final class MyFsaServiceHolder {
@@ -186,7 +200,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             StartService.getInstance().registerSdkCallback(TAG, mEngineObserver);
         }
 
-//        AppContext.getInstance().getMContext().registerReceiver(new BroadcastReceiver() {
+//        AppCache.getInstance().getMContext().registerReceiver(new BroadcastReceiver() {
 //            @Override
 //            public void onReceive(Context context, Intent intent) {
 //                Logger.d(FsaConstant.FSA_TAG, "onReceive: " + intent.getAction());
@@ -345,16 +359,47 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             case FsaConstant.FsaEventPayload.HUD_BOTTOM_RIGHT:
                 break;
             case FsaConstant.FsaEventPayload.HUD_HINT:
+                //属于CLEA平台 接收信号 去关闭HUD
+                if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//是CLEA 启动HUDActivity 有displayID = 4
+                    Logger.d(FsaConstant.FSA_TAG,"hud NO");
+                    switchHudActivity(false);
+                }
                 break;
             case FsaConstant.FsaEventPayload.HUD_FULL:
                 break;
             case FsaConstant.FsaEventPayload.HUD_LEFT_HALF:
+                //属于CLEA平台 接收信号 去开启HUD
+                if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//是CLEA 关闭HUDActivity 有displayID = 4
+                    Logger.d(FsaConstant.FSA_TAG,"hud OK");
+                    switchHudActivity(true);
+                }
                 break;
             case FsaConstant.FsaEventPayload.HUD_RIGHT_HALF:
                 break;
             default:
         }
     }
+
+    //开启HUDMapviewActivity方法
+    private void switchHudActivity(boolean isHud) {
+        int secondeDid = 4; // HUD的DisplayId为4
+        Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: "+isHud+secondeDid);
+        if (isHud) {
+            Logger.d(FsaConstant.FSA_TAG, "open HudActivity");
+            final ActivityOptions options = ActivityOptions.makeBasic();
+            options.setLaunchDisplayId(secondeDid);
+            final Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction("com.fy.navi.hmi.hud.HudActivity");
+            intent.putExtra("isHud", isHud);
+            AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+        } else {
+            //关闭HUD
+            ThreadManager.getInstance().postUi(() -> {
+                ActivityCloseManager.getInstance().triggerClose(false);});
+        }
+    }
+
 
     private static final String MAP_DISPLAYING_TRUE = "{\"isMapDisplaying\":true}";
     private static final String MAP_DISPLAYING_FALSE = "{\"isMapDisplaying\":false}";
@@ -372,6 +417,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         try {
             Logger.d(TAG, "switchClusterActivity(isOpen);");
             switchClusterActivity(isOpen);
+            //switchHudActivity(isOpen);
         } catch (Exception e) {
             Logger.e(TAG, "Failed to switch ClusterActivity state", e);
         }
@@ -493,6 +539,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         RoutePackage.getInstance().registerRouteObserver(FsaConstant.FSA_TAG, mRouteResultObserver);
         SearchPackage.getInstance().registerCallBack(FsaConstant.FSA_TAG, mSearchResultCallback);
         SignalPackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mSignalCallback);
+        ThreeFingerFlyingScreenManager.getInstance().addOnCloseListener(this);
     }
 
     /**
@@ -841,18 +888,22 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 }
             }
         }
+        if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//CLEA平台 仪表的DisplayId=3
+            secondeDid = 3;
+        }
         Logger.d(FsaConstant.FSA_TAG, "switchClusterActivity: " + isOpen + secondeDid);
         if (isOpen) {
             Logger.d(FsaConstant.FSA_TAG, "open ClusterActivity");
             final ActivityOptions options = ActivityOptions.makeBasic();
             options.setLaunchDisplayId(secondeDid);
             final Intent intent = new Intent();
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             intent.setAction("com.fy.navi.hmi.cluster_map.ClusterActivity");
             intent.putExtra("isOpen", isOpen);
             AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
         } else {
-            ActivityCloseManager.getInstance().triggerClose();
+            ThreadManager.getInstance().postUi(() -> {
+                ActivityCloseManager.getInstance().triggerClose(true);});
         }
     }
 
@@ -1040,7 +1091,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         @Override
         public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
             FsaNaviScene.getInstance().updateTbtInfo(MyFsaService.this, naviETAInfo);
-            if (naviETAInfo != null && naviETAInfo.getAllDist() <= 2000) {
+            if (naviETAInfo != null && naviETAInfo.getRemainDist() <= 2000) {
                 if (mParkingLotSF != null) {
                     return;
                 }
@@ -1131,7 +1182,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                     continue;
                 }
                 TrafficLightInfo trafficLightInfo = new TrafficLightInfo();
-                int trafficLightDis = L2Package.getInstance().getTrafficLightDis(trafficLightCountdownEntity.getMSegmentIndex(), trafficLightCountdownEntity.getMLinkIndex());
+                int trafficLightDis = L2Package.getInstance().getLinkDist(trafficLightCountdownEntity.getMSegmentIndex(), trafficLightCountdownEntity.getMLinkIndex());
                 trafficLightInfo.setDistanceTrafficLight(trafficLightDis);
                 LightInfoEntity lightInfoEntity = trafficLightCountdownEntity.getMLightInfo();
                 if (lightInfoEntity == null) {

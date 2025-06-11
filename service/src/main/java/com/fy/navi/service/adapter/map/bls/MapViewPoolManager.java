@@ -58,6 +58,10 @@ public class MapViewPoolManager {
         return get(mapTypeId, new MapViewParams());
     }
 
+    public boolean isMapViewExist(MapType mapTypeId) {
+        return mapViewPools.containsKey(mapTypeId);
+    }
+
     public void registerCallback(MapType mapTypeId, IMapAdapterCallback callback) {
         Logger.d(TAG, "registerCallback");
         get(mapTypeId).registerCallback(callback);

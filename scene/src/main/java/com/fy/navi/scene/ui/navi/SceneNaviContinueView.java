@@ -53,7 +53,7 @@ public class SceneNaviContinueView extends NaviSceneBase<SceneNaviContinueViewBi
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_CONTINUE;
     }
 

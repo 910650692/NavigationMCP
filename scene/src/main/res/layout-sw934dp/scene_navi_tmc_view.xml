@@ -16,7 +16,7 @@
         android:layout_height="@dimen/dp_56">
 
         <com.fy.navi.ui.view.SkinImageView
-            android:layout_width="@dimen/dp_22"
+            android:layout_width="@dimen/dp_34"
             android:layout_height="@dimen/dp_6"
             android:layout_marginStart="@dimen/dp_6"
             android:background="@color/navi_color_313336_94"
@@ -28,7 +28,7 @@
             android:id="@+id/tmrtr_resources"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_6"
-            android:layout_marginStart="@dimen/dp_28"
+            android:layout_marginStart="@dimen/dp_40"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

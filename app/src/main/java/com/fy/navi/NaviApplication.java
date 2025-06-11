@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.DeviceUtils;
@@ -16,7 +17,9 @@ import com.fy.navi.burypoint.BuryManager;
 import com.fy.navi.flavor.BaseTestCarType;
 import com.fy.navi.flavor.TestCarType;
 import com.fy.navi.hmi.BuildConfig;
+import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.map.MapActivity;
+import com.fy.navi.hmi.splitscreen.SplitScreenManager;
 import com.fy.navi.patacnetlib.PatacNetClient;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -73,6 +76,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
             if (!DeviceUtils.isCar(NaviApplication.this)) {
                 Thread.setDefaultUncaughtExceptionHandler(new AppCrashRecord(NaviApplication.this));
             }
+            initOtherService();
         });
     }
 
@@ -92,5 +96,14 @@ public class NaviApplication extends BaseApplication implements Application.Acti
      */
     private void initDataTrack() {
         BuryManager.getInstance().initPatacDataTrackManager(getApplicationContext(), DeviceUtils.isCar(getApplicationContext()));
+    }
+
+    /***
+     * 初始化其它服务,运行在子线程
+     */
+    @WorkerThread
+    private void initOtherService() {
+        SplitScreenManager.getInstance().init();
+        LauncherWindowService.startService();
     }
 }

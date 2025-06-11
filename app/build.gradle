@@ -233,6 +233,7 @@ dependencies {
     implementation libs.net.basic
     implementation libs.arouter.api
     annotationProcessor libs.arouter.compiler
+    implementation 'patac.sgmsystemextendservice.library:patac_sgmsystemextendservice-aidl-library:0.0.0.12'
 }
 
 static def getProductFlavorList(variant) {

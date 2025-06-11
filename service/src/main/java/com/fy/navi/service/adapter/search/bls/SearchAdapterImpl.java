@@ -169,7 +169,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     @Override
     public int keyWordSearch(final SearchRequestParameter requestParameterBuilder) {
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "keyWordSearch");
+        final boolean isReSearch = requestParameterBuilder.isMIsReSearch();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "keyWordSearch" + isReSearch);
         final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
                 KeywordSearchResultV2.class,
                 (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
@@ -177,8 +178,14 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         );
         mSearchObserversHelper.registerCallback(KeywordSearchResultV2.class, callbackWrapper);
         final KeywordSearchTQueryParam param = SearchRequestParamV2.getInstance().convertToSearchKeywordParamV2(requestParameterBuilder);
-        getSearchServiceV2().keyWordSearchTQuery(param, mSearchObserversHelper,
-                SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        if (isReSearch) {
+            getSearchServiceV2().keyWordSearchTQuery(param, mSearchObserversHelper,
+                    SearchMode.SEARCH_MODE_OFFLINE_ONLY, mTaskId.incrementAndGet());
+        } else {
+            getSearchServiceV2().keyWordSearchTQuery(param, mSearchObserversHelper,
+                    SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        }
+
         return mTaskId.get();
     }
 
@@ -234,7 +241,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     @Override
     public int aroundSearch(final SearchRequestParameter requestParameterBuilder) {
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "aroundSearch");
+        final boolean isReSearch = requestParameterBuilder.isMIsReSearch();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "aroundSearch: " + isReSearch);
         final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
                 KeywordSearchResultV2.class,
                 (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
@@ -242,7 +250,11 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         );
         mSearchObserversHelper.registerCallback(KeywordSearchResultV2.class, callbackWrapper);
         final KeywordSearchRqbxyParam param = SearchRequestParamV2.getInstance().convertToAroundSearchParam(requestParameterBuilder);
-        getSearchServiceV2().keyWordSearchRqbxy(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        if (isReSearch) {
+            getSearchServiceV2().keyWordSearchRqbxy(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_OFFLINE_ONLY, mTaskId.incrementAndGet());
+        } else {
+            getSearchServiceV2().keyWordSearchRqbxy(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        }
         return mTaskId.get();
     }
 

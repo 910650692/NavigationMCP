@@ -72,11 +72,11 @@ public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchB
 
     /**
      * notifySearchResult
-     * @param searchResultEntity
+     * @param taskId 任务id
+     * @param searchResultEntity 数据回调实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
-        mBinding.mapPointSearchView.onSearchResult(searchResultEntity);
-//        mViewModel.notifySearchResult(searchResultEntity);
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        mBinding.mapPointSearchView.onSearchResult(taskId, searchResultEntity);
     }
 
     /**

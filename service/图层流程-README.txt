@@ -12,11 +12,11 @@
       "point_layer_item_style": {
          "normal_style": {
          "poi_marker_id": "layer_layout_search_along_way_charge_normal",// 普通状态的图片资源名或者布局名
-         "poi_marker_info": "{\"anchor\": 9,\"y_ratio\": 1,\"x_ratio\": 1}"//纹理的锚点坐标配置
+         "poi_marker_info": "{\"anchor\":4,\"x_ratio\":0.0,\"y_ratio\":0.0}"//纹理的锚点坐标配置
         },
          "focus_style": {
          "poi_marker_id": "layer_layout_search_along_way_charge_focused",//点击状态的图片资源名或者不具名
-         "poi_marker_info": "{\"anchor\": 9,\"y_ratio\": 1,\"x_ratio\": 1}"//纹理的锚点坐标配置
+         "poi_marker_info": "{\"anchor\":4,\"x_ratio\":0.0,\"y_ratio\":0.0,\"x_offset\":0,\"y_offset\":0}"//纹理的锚点坐标配置
         }
       }
     }

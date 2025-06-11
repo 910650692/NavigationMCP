@@ -203,7 +203,7 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
     }
 
     @Override
-    public void onRouteSlected(final MapType mapTypeId, final int routeIndex) {
+    public void onRouteSlected(final MapType mapTypeId, final int routeIndex, boolean isFirst) {
         mViewModel.getClosePage().call();
     }
 }

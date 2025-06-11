@@ -1,14 +1,16 @@
 package com.fy.navi.hmi.cluster.cluster_map;
 
+
+import static android.view.View.VISIBLE;
+
 import android.content.res.Configuration;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.ThemeUtils;
-import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.fsa.FsaConstant;
+import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.cluster.ClusterViewModel;
@@ -17,10 +19,10 @@ import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.ThemeType;
+import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.base.BaseActivity;
-import com.fy.navi.utils.ActivityCloseManager;
-
-import java.util.Objects;
+import com.fy.navi.ui.view.SkinConstraintLayout;
 
 public class ClusterActivity extends BaseActivity<ActivityClusterBinding, ClusterViewModel> {
     private static final String TAG = "ClusterActivityTAG";
@@ -54,6 +56,9 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     protected void onResume() {
         super.onResume();
         Logger.d(TAG, "onResume");
+        getRootView().setVisibility(VISIBLE);
+        mViewModel.remainingMileageConstraintLayoutVisibility.set(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING));
+        mViewModel.routeNameConstraintLayoutVisibility.set(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING));
     }
 
     @Override
@@ -72,7 +77,6 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     protected void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy");
-        ActivityCloseManager.getInstance().removeListener();
     }
 
     @Override
@@ -90,7 +94,9 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     }
 
     public IBaseScreenMapView getMapView() {
-        Logger.d(TAG, "getMapView");
         return mBinding.clusterMapview;
+    }
+    public SkinConstraintLayout getRootView() {
+        return mBinding.cluster;
     }
 }

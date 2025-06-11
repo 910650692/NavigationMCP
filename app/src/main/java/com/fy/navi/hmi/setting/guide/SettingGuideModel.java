@@ -281,7 +281,9 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
      */
     private void getLaneLevelFuncEnable() {
         final boolean laneLevelFuncEnable = mCalibrationPackage.laneLevelNavigatioFuncEnable();
-        mViewModel.setLaneLevelVisibility(laneLevelFuncEnable);
+        // TODO: 2025/6/10 当前车型标定值不对，现在没有车型能支持车道级导航，临时改成flase
+        //mViewModel.setLaneLevelVisibility(laneLevelFuncEnable);
+        mViewModel.setLaneLevelVisibility(false);
     }
 
     @Override

@@ -32,4 +32,8 @@
 
     <color name="dialog_buick_bg_start">#FFF0F2F8</color>
     <color name="dialog_buick_bg_end">#FFE1E5EA</color>
+
+    <color name="cluster_title_transparent_ninety">#E6000000</color>
+    <color name="cluster_unit_transparent_sixty">#99000000</color>
+    <color name="cluster_custom_dark_gray">#E5FFFFFF</color>
 </resources>

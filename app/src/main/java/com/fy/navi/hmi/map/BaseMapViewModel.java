@@ -119,6 +119,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> muteVisibility;
     public ObservableField<Boolean> mPopGuideLoginShow;
     public ObservableField<Boolean> mGoHomeVisible;
+    public ObservableField<Boolean> sRVisible;
+
 
     private ScheduledFuture mScheduledFuture;
     private ScheduledFuture goHomeTimer;
@@ -157,6 +159,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mPopGuideLoginShow = new ObservableField<>(false);
         cruiseLanesVisibility = new ObservableField<>(false);
         mGoHomeVisible = new ObservableField<>(false);
+        sRVisible = new ObservableField<>(false);
     }
 
     @Override
@@ -206,6 +209,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON,
                     AutoMapConstant.SearchType.MAIN_SEARCH_ICON);
             addFragment(new MainSearchFragment(), bundle);
+            mModel.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mModel.stopCruise();
         }
     };
@@ -363,6 +367,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return false;
     }
 
+    public boolean isFragmentStackNull(){
+        return mView.isFragmentStackNull();
+    }
+
     public void toHomeFragment() {
         //判断是否存在预测数据
         Bundle bundle = new Bundle();
@@ -414,9 +422,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.getCurrentCityLimit();
     }
 
-    public void setMapCenterInScreen(int frameLayoutWidth) {
+    public void setMapCenterInScreen() {
         Logger.i(TAG, "setMapCenterInScreen");
-        mModel.setMapCenterInScreen(frameLayoutWidth);
+        mModel.goToCarPosition();
+        mModel.setMapCenterInScreen();
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         boolean exist = StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),MainSearchFragment.class.getSimpleName());
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
@@ -430,7 +439,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mGoHomeVisible.set(false);
     }
 
-    public void setMapCenterInScreen(final int frameLayoutWidth, final Bundle bundle) {
+    public void setMapCenterInScreen(final Bundle bundle) {
         int type = -1;
         int searchKey = 0;
         if (bundle != null) {
@@ -438,7 +447,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             searchKey = bundle.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON, -1);
         }
         Logger.i(TAG, "setMapCenterInScreen type:" + type);
-        mModel.setMapCenterInScreen(frameLayoutWidth);
+        mModel.goToCarPosition();
+        mModel.setMapCenterInScreen();
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set(type != -1 || searchKey == AutoMapConstant.SearchType.MAIN_SEARCH_ICON
@@ -479,7 +489,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         //Nd车型需要先判断是否是节假日
         if(mModel.showNdGoHomeView()){
             tmcModeVisibility.set(false);
-            mModel.sendReqHolidayList();
+            PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
+            PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
+            if (!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)) {
+                mModel.sendReqHolidayList();
+            }
         }else {
             PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
             PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);

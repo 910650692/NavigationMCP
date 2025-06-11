@@ -40,7 +40,7 @@ public class SceneNaviLastMileView extends NaviSceneBase<SceneNaviLastMileViewBi
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_LAST_MILE;
     }
 

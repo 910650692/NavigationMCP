@@ -36,7 +36,7 @@ dependencies {
     implementation libs.android.aop.core
     implementation libs.appcompat
     annotationProcessor libs.android.aop
-    debugImplementation libs.signal
-    releaseCompileOnly libs.signal
+    debugImplementation libs.gmframework
+    releaseCompileOnly libs.gmframework
 
 }

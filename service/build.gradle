@@ -67,10 +67,10 @@ dependencies {
     implementation project(":burypoint")
 
     implementation libs.androidcar
-    debugImplementation libs.signal
-    debugImplementation libs.calibration
-    releaseCompileOnly libs.signal
-    releaseCompileOnly libs.calibration
+    debugImplementation libs.gmframework
+    debugImplementation libs.gminfo3
+    releaseCompileOnly libs.gmframework
+    releaseCompileOnly libs.gminfo3
 
     implementation libs.adapter.rxjava
     implementation libs.converter.gson

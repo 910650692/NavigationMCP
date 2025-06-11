@@ -234,4 +234,6 @@ public interface IGuidanceObserver {
     default void onUpdateTMCCongestionInfo(NaviCongestionInfoEntity naviCongestionInfoEntity) {
 
     }
+
+    default void onCloseNavi(boolean isNaviClose) {}
 }

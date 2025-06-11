@@ -5,6 +5,8 @@ import android.content.Context;
 import com.android.utils.log.Logger;
 import com.baidu.bridge.BridgeSdk;
 import com.baidu.bridge.listener.OnConnectedListener;
+import com.baidu.oneos.protocol.bean.ArrivalBean;
+import com.baidu.oneos.protocol.callback.PoiCallback;
 import com.baidu.oneos.protocol.listener.NaviCommandListener;
 import com.baidu.oneos.protocol.listener.NaviControlCommandListener;
 import com.fy.navi.vrbridge.impl.NaviCommandImpl;
@@ -54,6 +56,19 @@ public class VrBridgeManager {
                 BridgeSdk.getInstance().removeCapability(NaviControlCommandListener.class);
             }
         });
+    }
+
+    /**
+     * 保存语音搜索/导航意图指令.
+     *
+     * @param sessionId String 语音多轮一致性.
+     * @param arrivalBean ArrivalBean，搜索参数.
+     * @param poiCallback PoiCallback,语音执行结果回调.
+     */
+    public void saveNaviCommand(final String sessionId, final ArrivalBean arrivalBean, final PoiCallback poiCallback) {
+        if (null != mControlCommandImpl) {
+            mControlCommandImpl.saveNaviCommand(sessionId, arrivalBean, poiCallback);
+        }
     }
 
     /**

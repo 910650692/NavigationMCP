@@ -519,7 +519,7 @@ public class RouteAdapterImplHelper {
                     label = info.getReverseLabelInfo((short) NumberUtils.NUM_0).content;
                 }
                 routeResult.setMLabel(label);
-                routeResult.setMRouteLineSegmentInfos(getRouteLineDetail(info));
+//                routeResult.setMRouteLineSegmentInfos(getRouteLineDetail(info));
                 routeResults.add(routeResult);
             }
         }
@@ -658,6 +658,7 @@ public class RouteAdapterImplHelper {
                     requestId, requestRouteResult.getMMapTypeId());
             handlerDrawLine(requestRouteResult.getMLineLayerParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
+            handlerRouteDetailsResult(requestRouteResult, pathInfoList);
             handlerRestArea(requestRouteResult.getMRouteRestAreaParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
             handlerRestriction(requestRouteResult.getMRouteRestrictionParam(), pathInfoList, requestId,
@@ -665,11 +666,6 @@ public class RouteAdapterImplHelper {
             handlerRange(pathInfoList, requestRouteResult.isMIsOnlineRoute());
             handlerCityAdCode(requestRouteResult.getMRouteAlongCityParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
-//            handlerTrafficIncident(requestRouteResult.getRouteTrafficIncidentParam(), pathInfoList, requestId,
-//            requestRouteResult.getMapTypeId(), requestRouteResult.isOnlineRoute());
-//            handlerRestTollGate(requestRouteResult.getRouteRestTollGateParam(), pathInfoList,
-//            requestId, requestRouteResult.getMapTypeId(), requestRouteResult.isOnlineRoute());
-
         }
 
         @Override
@@ -786,6 +782,21 @@ public class RouteAdapterImplHelper {
                 continue;
             }
             resultObserver.onRouteResult(requestRouteResult);
+        }
+    }
+
+    /**
+     * 封装给HMI的路段聚合信息及路线详情
+     *
+     * @param requestRouteResult 路线结果类
+     * @param pathInfoList       路线信息
+     */
+    private void handlerRouteDetailsResult(final RequestRouteResult requestRouteResult, final ArrayList<PathInfo> pathInfoList) {
+        List<RouteLineInfo> mRouteLineInfos = requestRouteResult.getMRouteLineInfos();
+        if (!ConvertUtils.isEmpty(mRouteLineInfos) && !ConvertUtils.isEmpty(mRouteLineInfos) && pathInfoList.size() == mRouteLineInfos.size()) {
+            for (int t = 0; t < pathInfoList.size(); t++) {
+                mRouteLineInfos.get(t).setMRouteLineSegmentInfos(getRouteLineDetail(pathInfoList.get(t)));
+            }
         }
     }
 

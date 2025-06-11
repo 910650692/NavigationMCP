@@ -128,7 +128,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/route_line_info_title"
@@ -377,7 +377,7 @@
                 android:paddingVertical="@dimen/dp_53"
                 android:visibility="@{ViewModel.getSecondaryPoiVisibility() == 0 ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/route_result_line"
@@ -522,12 +522,13 @@
                 <com.fy.navi.scene.ui.route.SceneRouteResultListView
                     android:id="@+id/route_line_info_scene_route_result"
                     android:layout_width="@dimen/dp_545"
-                    android:layout_height="@dimen/dp_373"
-                    android:maxHeight="@dimen/dp_373"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toTopOf="@+id/skinView3"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/route_line_info_scene_route_restriction" />
 
                 <com.fy.navi.ui.view.SkinView
+                    android:id="@+id/skinView3"
                     android:layout_width="@dimen/dp_545"
                     android:layout_height="@dimen/dp_128"
                     android:background="@drawable/bg_route_result_left_right"
@@ -699,7 +700,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/route_service_list_info_root"
             android:layout_width="@dimen/dp_613"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:clickable="true"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 2 ? View.VISIBLE : View.GONE}"
             tools:visibility="visible">
@@ -749,7 +750,8 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/route_service_list_info_tv_avoid_road"
@@ -761,7 +763,8 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/route_service_list_info_refresh"
                     app:layout_constraintEnd_toStartOf="@+id/route_service_list_info_refresh"
-                    app:layout_constraintTop_toTopOf="@id/route_service_list_info_refresh" />
+                    app:layout_constraintTop_toTopOf="@id/route_service_list_info_refresh"
+                    tools:visibility="visible" />
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 

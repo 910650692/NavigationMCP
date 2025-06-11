@@ -2,12 +2,15 @@ package com.fy.navi.utils;
 
 import com.android.utils.log.Logger;
 
-public class ActivityCloseManager {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ActivityCloseManager {//自己的activity关闭接口方法
 
     private static final String TAG = "ActivityCloseManager";
     private static ActivityCloseManager instance;
 
-    private OnCloseActivityListener listener;
+    private List<OnCloseActivityListener> listeners = new ArrayList<>();
 
     private ActivityCloseManager() {}
 
@@ -18,27 +21,25 @@ public class ActivityCloseManager {
         return instance;
     }
 
-    /**
-     * 设置关闭监听器
-     */
-    public void setOnCloseListener(OnCloseActivityListener listener) {
-        this.listener = listener;
+    public void addOnCloseListener(OnCloseActivityListener listener) {
+        if (listener != null && !listeners.contains(listener)) {
+            listeners.add(listener);
+        }
     }
 
-    /**
-     * 移除监听器
-     */
-    public void removeListener() {
-        this.listener = null;
+    public void removeOnCloseListener(OnCloseActivityListener listener) {
+        listeners.remove(listener);
     }
 
     /**
      * 触发关闭事件
      */
-    public void triggerClose() {
-        if (listener != null) {
+    public void triggerClose(boolean isCluster) {
+        if (!listeners.isEmpty()) {
             Logger.d(TAG, "triggerClose: 正在触发关闭");
-            listener.onClose();
+            for (OnCloseActivityListener listener : listeners) {
+                listener.onClose(isCluster);
+            }
         } else {
             Logger.w(TAG, "triggerClose: 未设置监听器");
         }

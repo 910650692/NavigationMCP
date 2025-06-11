@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RouteLineInfoResultItemBinding;
 import com.fy.navi.service.AppCache;
@@ -102,7 +103,7 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
      * */
     public void setSelectIndex(final int index) {
         mCurrentIndex = index;
-        notifyDataSetChanged();
+        ThreadManager.getInstance().postUi(() -> notifyDataSetChanged());
     }
     /**
      * 更新选中/非选中状态

@@ -1,0 +1,8 @@
+<resources>
+    <string name="setting_others_about_licenses_info_title">ICP备案号</string>
+    <string name="setting_others_about_licenses_qr">请使用手机扫码查询</string>
+    <string name="setting_others_about_licenses_safe">ICP备案号:%沪ICP备*号8S%\n上汽通用汽车有限公司</string>
+    <string name="setting_others_about_channel">渠道号</string>
+    <string name="setting_others_about_data_version">数据版本号</string>
+    <string name="setting_others_about_draw">互联网审图号:GS(2024)3947号|GS(2023)551号</string>
+</resources>

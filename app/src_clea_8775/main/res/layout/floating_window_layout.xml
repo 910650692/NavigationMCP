@@ -1,7 +1,8 @@
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -15,7 +16,8 @@
             app:cardCornerRadius="@dimen/dp_18"
             app:cardElevation="@dimen/dp_30"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
@@ -56,7 +58,7 @@
 
         <com.fy.navi.ui.view.SkinCardView
             android:id="@+id/card_tbt_view"
-            android:layout_width="@dimen/dp_820"
+            android:layout_width="@dimen/dp_545"
             android:layout_height="wrap_content"
             android:outlineSpotShadowColor="@color/common_bg_shadow_color"
             android:visibility="gone"
@@ -64,7 +66,8 @@
             app:cardCornerRadius="@dimen/dp_18"
             app:cardElevation="@dimen/dp_30"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_top_container"
@@ -84,12 +87,12 @@
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_cross"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_460"
-                    android:minHeight="@dimen/dp_460"
+                    android:layout_height="@dimen/dp_334"
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt"
+                    tools:visibility="visible" />
 
                 <com.fy.navi.scene.ui.navi.SceneNaviEtaView
                     android:id="@+id/scene_navi_eta"

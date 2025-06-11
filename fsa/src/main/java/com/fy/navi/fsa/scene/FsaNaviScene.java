@@ -98,8 +98,8 @@ public final class FsaNaviScene {
         }
         mNaviEtaInfo = naviETAInfo;
         //根据已行驶里程和剩余距离计算已行驶百分比
-        final int totalDistance = naviETAInfo.getAllDist() + naviETAInfo.driveDist;
-        final float drivePercent = (naviETAInfo.driveDist / (float) totalDistance) * 100;
+        final int totalDistance = naviETAInfo.getRemainDist() + naviETAInfo.mDriveDist;
+        final float drivePercent = (naviETAInfo.mDriveDist / (float) totalDistance) * 100;
         mDrivePercent = drivePercent;
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_PASSED_PERCENT, String.valueOf(drivePercent));
 
@@ -132,10 +132,10 @@ public final class FsaNaviScene {
 
         //剩余时间和距离  天数int   String
         final RemainInfo remainInfo = new RemainInfo();
-        remainInfo.setArrivalTime(getArrivalTime(naviETAInfo.getAllTime()));
-        remainInfo.setArrivalDay(getArrivalDay(naviETAInfo.getAllTime()));
-        remainInfo.setRemainTime(naviETAInfo.getAllTime());
-        remainInfo.setRemainDistance(naviETAInfo.getAllDist());
+        remainInfo.setArrivalTime(getArrivalTime(naviETAInfo.getRemainTime()));
+        remainInfo.setArrivalDay(getArrivalDay(naviETAInfo.getRemainTime()));
+        remainInfo.setRemainTime(naviETAInfo.getRemainTime());
+        remainInfo.setRemainDistance(naviETAInfo.getRemainDist());
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_REMAIN_TIME_DISTANCE, GsonUtils.toJson(remainInfo));
     }
 

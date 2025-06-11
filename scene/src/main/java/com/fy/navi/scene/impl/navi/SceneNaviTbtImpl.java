@@ -97,7 +97,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (mPositionPackage != null) {
             mPositionPackage.unregisterCallBack(this);

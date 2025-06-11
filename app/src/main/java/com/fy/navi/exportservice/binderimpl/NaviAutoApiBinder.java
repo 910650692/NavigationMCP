@@ -13,6 +13,7 @@ import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.hmi.splitscreen.SRFloatWindowService;
 import com.fy.navi.mapservice.bean.INaviConstant;
@@ -27,15 +28,18 @@ import com.fy.navi.mapservice.bean.common.BaseSearchResult;
 import com.fy.navi.mapservice.bean.common.BaseTurnInfo;
 import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
+import com.fy.navi.mapservice.common.INaviAutoGuideStatusCallBack;
 import com.fy.navi.mapservice.common.INaviAutoLocationCallback;
 import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
 import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
+import com.fy.navi.mapservice.common.INaviAutoSpeedCallBack;
 import com.fy.navi.mapservice.common.INaviAutoStatusCallback;
 import com.fy.navi.mapservice.util.ExportConvertUtil;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
+import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.DrBean;
@@ -67,6 +71,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
 
 
 public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
@@ -79,6 +84,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     private final RemoteCallbackList<INaviAutoRouteCallback> mRouteCallbackList = new RemoteCallbackList<>();
     private final RemoteCallbackList<INaviAutoSearchCallback> mSearchCallbackList = new RemoteCallbackList<>();
     private final RemoteCallbackList<INaviAutoStatusCallback> mStatusCallbackList = new RemoteCallbackList<>();
+    private final RemoteCallbackList<INaviAutoSpeedCallBack> mSpeedCallbackList = new RemoteCallbackList<>();
+    private final RemoteCallbackList<INaviAutoGuideStatusCallBack> mGuideStatusCallbackList = new RemoteCallbackList<>();
 
     /*--------------------------------各个Package对应的回调-----------------------------------------*/
     private IPositionPackageCallback mPositionCallback;
@@ -107,6 +114,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     //收到搜索结果后是否发起算路，对应searchAndNavi接口的需求，
     private boolean mRouteRequestAfterSearch = false;
 
+    private ScheduledFuture mGuideStatusHolder;
+    private int mTmcTotalDistance = 0;
 
     //当前引导面板状态
     private int mGuidePanelStatus;
@@ -119,7 +128,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         initNaviInfoCallback();
         PositionPackage.getInstance().registerCallBack(mPositionCallback);
         NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
-        SearchPackage.getInstance().registerCallBack("NaviAutoApiBinder",mSearchResultCallback);
+        SearchPackage.getInstance().registerCallBack("NaviAutoApiBinder", mSearchResultCallback);
         RoutePackage.getInstance().registerRouteObserver(TAG, mRouteResultObserver);
         NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);
         mGuidePanelStatus = getGuidePanelStatus(TAG);
@@ -338,7 +347,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             }
 
             @Override
-            public void onSilentSearchResult(final int  taskId, final int errorCode, final String message,
+            public void onSilentSearchResult(final int taskId, final int errorCode, final String message,
                                              final SearchResultEntity searchResultEntity) {
 
                 final boolean requestDistrict = mDistrictSearchId == taskId;
@@ -412,7 +421,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     /**
      * 分发搜索失败回调.
      *
-     * @param silent boolean，是否静默搜索.
+     * @param silent    boolean，是否静默搜索.
      * @param errorCode 错误码.
      */
     private void dispatchSearchFailed(final boolean silent, final int errorCode) {
@@ -450,7 +459,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     /**
      * 分发搜索成功回调.
      *
-     * @param silent true-静默搜索  false-非静默搜索
+     * @param silent             true-静默搜索  false-非静默搜索
      * @param searchResultEntity SearchResultEntity，搜索结果实体类.
      */
     private void dispatchSearchSuccess(final boolean silent, final SearchResultEntity searchResultEntity) {
@@ -480,7 +489,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     /**
      * 处理逆地址搜索回调结果.
      *
-     * @param taskId 搜索接口返回的唯一任务标识.
+     * @param taskId  搜索接口返回的唯一任务标识.
      * @param poiInfo 搜索结果.
      */
     private void dispatchReverseSearch(final int taskId, final PoiInfoEntity poiInfo) {
@@ -524,6 +533,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         mNaviStatusCallback = naviStatus -> {
             int guidePanelStatus = INaviConstant.GuidePanelStatus.NOT_IN_NAVIGATION;
             if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(naviStatus)) {
+                Logger.d(TAG, "获取到进入导航状态");
+                mGuideStatusHolder = ThreadManager.getInstance().asyncDelayWithResult(this::dispatchNaviStartDelay, 300);
                 guidePanelStatus = INaviConstant.GuidePanelStatus.COMMON_NAVIGATION;
             }
             boolean guidePanelChanged = false;
@@ -637,7 +648,6 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
      * 转换路线规划结果.
      *
      * @param routeResult RequestRouteResult Package返回的路线规划结果.
-     *
      * @return BaseRouteResult export对外传递的数据.
      */
     private BaseRouteResult convertToBaseResult(final RequestRouteResult routeResult) {
@@ -698,6 +708,17 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             }
 
             @Override
+            public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
+                if (!ConvertUtils.isEmpty(naviTmcInfo) && !ConvertUtils.isEmpty(naviTmcInfo.getLightBarDetail())) {
+                    Logger.e(TAG, "naviTmcInfo : 总距离 = " + naviTmcInfo.getLightBarDetail().getTotalDistance()
+                            , "  已经行驶距离 = " + naviTmcInfo.getLightBarDetail().getFinishDistance()
+                            , "  剩余距离 = " + naviTmcInfo.getLightBarDetail().getRestDistance());
+                    mTmcTotalDistance = naviTmcInfo.getLightBarDetail().getTotalDistance();
+                }
+
+            }
+
+            @Override
             public void onCurrentRoadSpeed(final int speed) {
                 Logger.d(TAG, "receiveSpeedLimit: " + speed);
                 dispatchRoadSpeed(speed);
@@ -713,15 +734,38 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             public void onNaviArrive(final long traceId, final int naviType) {
                 mBaseTurnInfo = null;
                 Logger.d(TAG, "onNaviArrival");
+                closeScheduleTask();
                 dispatchArrival();
             }
 
             @Override
             public void onNaviStop() {
                 mBaseTurnInfo = null;
+                closeScheduleTask();
                 dispatchNaviStop();
             }
+
+            @Override
+            public void onCloseNavi(final boolean isNaviClose) {
+                closeScheduleTask();
+                if (isNaviClose) {
+                    dispatchNaviManualStop();
+                } else {
+                    Logger.d(TAG, "非关闭导航信号，不对外发送");
+                }
+            }
         };
+    }
+
+    /**
+     * 打断开始导航五分钟后通知的任务
+     */
+    private void closeScheduleTask() {
+        if (!ConvertUtils.isEmpty(mGuideStatusHolder)) {
+            Logger.d(TAG, "closeScheduleTask");
+            mGuideStatusHolder.cancel(true);
+            mGuideStatusHolder = null;
+        }
     }
 
     /**
@@ -730,7 +774,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     private void formatEtaInfo() {
         //传入格式化之后的剩余时间、剩余距离、预计到达
         final String[] etaDistance = ConvertUtils.formatDistanceArray(
-                AppCache.getInstance().getMContext(), mBaseTurnInfo.getAllDist());
+                AppCache.getInstance().getMContext(), mBaseTurnInfo.getRemainDist());
         final StringBuilder builder = new StringBuilder();
         if (etaDistance.length > 0) {
             builder.append(etaDistance[0]);
@@ -742,7 +786,13 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         mBaseTurnInfo.setFormatDist(formatDist);
         builder.setLength(0);
 
-        final int remainTime = mBaseTurnInfo.getAllTime();
+        if (ConvertUtils.equals(mBaseTurnInfo.getDriveDist(), 0)) {
+            final int processDistance =  mTmcTotalDistance - mBaseTurnInfo.getRemainDist();
+            Logger.i(TAG, "诱导信息无已经行驶距离信息，改为从TMC bar获取 : ", processDistance);
+            mBaseTurnInfo.setDriveDist(processDistance);
+        }
+
+        final int remainTime = mBaseTurnInfo.getRemainTime();
         final String formatTime = TimeUtils.switchHourAndMimuteFromSecond(
                 AppCache.getInstance().getMContext(), remainTime);
         mBaseTurnInfo.setFormatTime(formatTime);
@@ -792,15 +842,9 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
      * @param speed 当前道路限速值，km/h.
      */
     private void dispatchRoadSpeed(final int speed) {
-        if (mInCallback) {
-            Logger.e(TAG, "already in broadcast, can't process roadSpeed");
-            return;
-        }
-
         try {
-            mInCallback = true;
             Logger.d(TAG, "onCurrentRoadSpeed inCallback");
-            final int count = mNaviAutoCallbackList.beginBroadcast();
+            final int count = mSpeedCallbackList.beginBroadcast();
             //当前定位车速
             int curSpeed = 0;
             if (null != mLocationInfo) {
@@ -813,10 +857,10 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             }
             Logger.d(TAG, "onCurrentRoadSpeed: curSpeed = " + curSpeed);
             for (int i = 0; i < count; i++) {
-                final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
-                if (null != naviAutoApiCallback) {
+                final INaviAutoSpeedCallBack naviAutoSpeedCallback = mSpeedCallbackList.getRegisteredCallbackItem(i);
+                if (null != naviAutoSpeedCallback) {
                     try {
-                        naviAutoApiCallback.onSpeedLimitChange(curSpeed, speed);
+                        naviAutoSpeedCallback.onSpeedLimitChange(curSpeed, speed);
                     } catch (RemoteException exception) {
                         Logger.e(TAG, "dispatch naviStatusChane error: " + exception.getMessage());
                     }
@@ -825,19 +869,91 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         } catch (IllegalStateException e) {
             Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
-            closeNavigationList();
+            closeSpeedStatusCallback();
+        }
+    }
+
+    /**
+     * 关闭mSpeedCallbackList.
+     */
+    private void closeSpeedStatusCallback() {
+        try {
+            mSpeedCallbackList.finishBroadcast();
+        } catch (IllegalStateException finishException) {
+            Logger.e(finishException.getMessage() + Arrays.toString(finishException.getStackTrace()));
+        }
+    }
+
+    /**
+     * 分发手动停止导航
+     */
+    private void dispatchNaviManualStop() {
+        try {
+            Logger.d(TAG, "dispatchNaviManualStop inCallback");
+            final int count = mGuideStatusCallbackList.beginBroadcast();
+            for (int i = 0; i < count; i++) {
+                final INaviAutoGuideStatusCallBack statusCallback = mGuideStatusCallbackList.getRegisteredCallbackItem(i);
+                if (null != statusCallback) {
+                    try {
+                        statusCallback.onNaviManualStop();
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch NaviManualStop error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException statusException) {
+            Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+        } finally {
+            closeGuideStatusCallback();
+        }
+    }
+
+    /**
+     * 导航开始五分钟后通知
+     */
+    private void dispatchNaviStartDelay() {
+        try {
+            Logger.d(TAG, "5min pasted dispatchNaviStartDelay inCallback");
+            final int count = mGuideStatusCallbackList.beginBroadcast();
+            for (int i = 0; i < count; i++) {
+                final INaviAutoGuideStatusCallBack statusCallback = mGuideStatusCallbackList.getRegisteredCallbackItem(i);
+                if (null != statusCallback) {
+                    try {
+                        statusCallback.onNaviStartAfterFiveMinutes();
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch NaviStartDelay error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException statusException) {
+            Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+        } finally {
+            mGuideStatusHolder = null;
+            closeGuideStatusCallback();
+        }
+    }
+
+    /**
+     * 关闭mGuideCallbackList.
+     */
+    private void closeGuideStatusCallback() {
+        try {
+            mGuideStatusCallbackList.finishBroadcast();
+        } catch (IllegalStateException finishException) {
+            Logger.e(finishException.getMessage() + Arrays.toString(finishException.getStackTrace()));
         }
     }
 
     /**
      * 分发红绿灯倒计时信息.
+     *
+     * @param lightInfoList TrafficLightCountdownEntity
      */
     private void dispatchCountdownLightInfo(final ArrayList<TrafficLightCountdownEntity> lightInfoList) {
         if (null == lightInfoList || lightInfoList.isEmpty()) {
             Logger.w(TAG, "countdown light is empty");
             return;
         }
-
 
         try {
             Logger.d(TAG, "countdownLightInfo inCallback");
@@ -1110,8 +1226,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
      * 跳转到对应界面.
      *
      * @param pageIntent int，区分目标页面，见INaviConstant.OpenIntentPage.
-     * @param keyword String，关键字搜索参数.
-     * @param poiInfo PoiInfoEntity，路线规划终点.
+     * @param keyword    String，关键字搜索参数.
+     * @param poiInfo    PoiInfoEntity，路线规划终点.
      */
     private void processJumpPage(final int pageIntent, final String keyword,
                                  final PoiInfoEntity poiInfo) {
@@ -1126,7 +1242,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     final PackageManager packageManager = AppCache.getInstance().getMContext().getPackageManager();
                     targetIntent = packageManager.getLaunchIntentForPackage(appPkgName);
                 } else {
-                    targetIntent= new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
+                    targetIntent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
                 }
                 if (null != targetIntent) {
                     Logger.d(TAG, "processJumpPage: null != targetIntent");
@@ -1229,8 +1345,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     /**
      * 打开/关闭SR TBT面板.
      *
-     * @param pkgName  client package name.
-     * @param open true:打开  false:关闭.
+     * @param pkgName client package name.
+     * @param open    true:打开  false:关闭.
      */
     @Override
     public void openSrTbt(final String pkgName, final boolean open) {
@@ -1242,16 +1358,17 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
         try {
             SRFloatWindowService.getInstance().showOrHideFloatView(open);
-        } catch (IllegalStateException | IllegalArgumentException | NullPointerException exception) {
+        } catch (IllegalStateException | IllegalArgumentException |
+                 NullPointerException exception) {
             Logger.w(TAG, "controlSrTbt error: " + exception.getMessage());
         }
     }
 
     /**
      * 停止导航.
-     * @param pkgName client package name.
      *
-     * @return  true:执行成功   false:执行失败.
+     * @param pkgName client package name.
+     * @return true:执行成功   false:执行失败.
      */
     @Override
     public boolean stopNavi(final String pkgName) {
@@ -1315,6 +1432,34 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     public void removeNaviAutoStatusCallback(final String pkgName, final INaviAutoStatusCallback naviAutoStatusCallback) {
         if (null != naviAutoStatusCallback) {
             mStatusCallbackList.unregister(naviAutoStatusCallback);
+        }
+    }
+
+    @Override
+    public void addNaviAutoSpeedCallBack(final String pkgName, final INaviAutoSpeedCallBack naviAutoSpeedCallBack) throws RemoteException {
+        if (null != naviAutoSpeedCallBack) {
+            mSpeedCallbackList.register(naviAutoSpeedCallBack, pkgName);
+        }
+    }
+
+    @Override
+    public void removeNaviAutoSpeedCallBack(final String pkgName, final INaviAutoSpeedCallBack naviAutoSpeedCallBack) throws RemoteException {
+        if (null != naviAutoSpeedCallBack) {
+            mSpeedCallbackList.unregister(naviAutoSpeedCallBack);
+        }
+    }
+
+    @Override
+    public void addNaviAutoGuideStatusCallBack(final String pkgName, final INaviAutoGuideStatusCallBack naviAutoGuideStatusCallBack) throws RemoteException {
+        if (null != naviAutoGuideStatusCallBack) {
+            mGuideStatusCallbackList.register(naviAutoGuideStatusCallBack, pkgName);
+        }
+    }
+
+    @Override
+    public void removeNaviAutoGuideStatusCallBack(final String pkgName, final INaviAutoGuideStatusCallBack naviAutoGuideStatusCallBack) throws RemoteException {
+        if (null != naviAutoGuideStatusCallBack) {
+            mGuideStatusCallbackList.unregister(naviAutoGuideStatusCallBack);
         }
     }
 }

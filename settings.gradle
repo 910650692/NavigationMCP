@@ -18,6 +18,10 @@ pluginManagement {
             url "https://info-maven.apps.saic-gm.com/repository/PATAC_info4_HMI/"
             allowInsecureProtocol = true
         }
+        maven {
+            url "https://info-maven.apps.saic-gm.com/repository/Bosch_8155_Framework/"
+            allowInsecureProtocol = true
+        }
         google()
         mavenCentral()
         gradlePluginPortal()
@@ -32,6 +36,10 @@ dependencyResolutionManagement {
         }
         maven {
             url "https://info-maven.apps.saic-gm.com/repository/PATAC_info4_HMI/"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "https://info-maven.apps.saic-gm.com/repository/Bosch_8155_Framework/"
             allowInsecureProtocol = true
         }
         google()

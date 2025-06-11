@@ -173,7 +173,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
      */
     private void getParkList() {
         // 是否小于3000m
-        if (!CardManager.getInstance().isEligible(mNaviEtaInfo.getAllDist(), 3000)) {
+        if (!CardManager.getInstance().isEligible(mNaviEtaInfo.getRemainDist(), 3000)) {
             Logger.d(TAG, "getParkList failed, 距离超过3000米！");
             return;
         }
@@ -204,7 +204,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
 
     private void showParkList() {
         Logger.d(TAG, "showParkList", "size:" + mParkList.size(), "parkTipFinished:" + parkTipFinished);
-        if (!CardManager.getInstance().isEligible(mNaviEtaInfo.getAllDist(), 2000)) {
+        if (!CardManager.getInstance().isEligible(mNaviEtaInfo.getRemainDist(), 2000)) {
             return;
         }
         updateUi(HandCardType.PARK, mParkList, mParkStatus);

@@ -43,7 +43,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_LANES;
     }
 

@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class NaviEtaInfo {
     //剩余时间/s
-    private int mAllTime;
+    private int mRemainTime;
     //剩余距离/m
-    private int mAllDist;
+    private int mRemainDist;
     //当前道路名
     private String mCurRouteName;
     /**
@@ -50,7 +50,7 @@ public class NaviEtaInfo {
     public int curRoadClass;
     public int roundaboutOutAngle;
     public int driveTime;
-    public int driveDist;
+    public int mDriveDist;
     public int cityCode;
     public int curLinkSpeed;
     public int segTipsDis;
@@ -78,7 +78,7 @@ public class NaviEtaInfo {
         this.mRingOutCnt = 0;
         this.roundaboutOutAngle = 0;
         this.driveTime = 0;
-        this.driveDist = 0;
+        this.mDriveDist = 0;
         this.cityCode = 0;
         this.curLinkSpeed = 0;
         this.segTipsDis = 0;
@@ -92,20 +92,20 @@ public class NaviEtaInfo {
         this.innerRoad = false;
     }
 
-    public int getAllTime() {
-        return mAllTime;
+    public int getRemainTime() {
+        return mRemainTime;
     }
 
-    public void setAllTime(int allTime) {
-        this.mAllTime = allTime;
+    public void setRemainTime(int allTime) {
+        this.mRemainTime = allTime;
     }
 
-    public int getAllDist() {
-        return mAllDist;
+    public int getRemainDist() {
+        return mRemainDist;
     }
 
-    public void setAllDist(int allDist) {
-        this.mAllDist = allDist;
+    public void setRemainDist(int allDist) {
+        this.mRemainDist = allDist;
     }
 
     public String getCurRouteName() {
@@ -253,11 +253,11 @@ public class NaviEtaInfo {
     }
 
     public int getDriveDist() {
-        return driveDist;
+        return mDriveDist;
     }
 
     public void setDriveDist(int driveDist) {
-        this.driveDist = driveDist;
+        this.mDriveDist = driveDist;
     }
 
     public int getCityCode() {
@@ -352,8 +352,8 @@ public class NaviEtaInfo {
     @Override
     public String toString() {
         return "NaviEtaInfo{" +
-                "allTime=" + mAllTime +
-                ", allDist=" + mAllDist +
+                "allTime=" + mRemainTime +
+                ", allDist=" + mRemainDist +
                 ", curRouteName='" + mCurRouteName + '\'' +
                 ", curManeuverID=" + mCurManeuverID +
                 ", nextRouteName='" + mNextRouteName + '\'' +
@@ -372,7 +372,7 @@ public class NaviEtaInfo {
                 ", curRoadClass=" + curRoadClass +
                 ", roundaboutOutAngle=" + roundaboutOutAngle +
                 ", driveTime=" + driveTime +
-                ", driveDist=" + driveDist +
+                ", driveDist=" + mDriveDist +
                 ", cityCode=" + cityCode +
                 ", curLinkSpeed=" + curLinkSpeed +
                 ", segTipsDis=" + segTipsDis +

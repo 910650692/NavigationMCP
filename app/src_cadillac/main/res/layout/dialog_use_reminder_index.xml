@@ -85,6 +85,9 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbarThumbVertical="@drawable/custom_scrollbar_thumb"
             android:layout_marginTop="@dimen/dp_60"
             android:layout_marginBottom="@dimen/dp_80"
             android:focusable="false"

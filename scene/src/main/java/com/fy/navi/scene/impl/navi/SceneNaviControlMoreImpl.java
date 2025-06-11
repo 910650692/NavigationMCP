@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.databinding.ObservableField;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
@@ -20,6 +21,7 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.ui.navi.SceneNaviControlMoreView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapMode;
@@ -35,6 +37,10 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.speech.SpeechPackage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.ScheduledFuture;
+
 public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMoreView> implements
         ISceneNaviControl {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
@@ -45,7 +51,8 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     private ImmersiveStatusScene mImmersiveStatusScene;
     private long mLastClickTime;
     private int mVehicleType;
-
+    private ScheduledFuture mScheduledFuture;
+    private int mTimes = NumberUtils.NUM_8;
     public SceneNaviControlMoreImpl(final SceneNaviControlMoreView screenView) {
         super(screenView);
         mNaviPackage = NaviPackage.getInstance();
@@ -61,6 +68,19 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     protected void onCreate() {
         super.onCreate();
         setScreenId(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (mCallBack != null) {
+            HashMap<NaviSceneId, Integer> map = mCallBack.getSceneStatus();
+            if (!ConvertUtils.isEmpty(map)) {
+                if (map.containsKey(NaviSceneId.NAVI_SCENE_CONTROL_MORE)) {
+                    Integer status = map.get(NaviSceneId.NAVI_SCENE_CONTROL_MORE);
+                    Logger.i(TAG, "SceneNaviControlMoreImpl onCreate" + " visible = " +
+                            status);
+                    if (status != null && status == NumberUtils.NUM_1) {
+                        initTimer();
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -203,7 +223,8 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     public void carHead() {
         Logger.i(TAG, "carHead");
         final boolean isFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
-        if (isFixedOverView) {
+        final boolean isClusterOverView = NaviPackage.getInstance().getClusterFixOverViewStatus();
+        if (isFixedOverView || isClusterOverView) {
             ToastUtils.Companion.getInstance().showCustomToastView(
                     ResourceUtils.Companion.getInstance().getString(
                             R.string.navi_car_head_switch_while_overview));
@@ -218,11 +239,7 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
         if (!result || currentMapMode == switchedMapMode) {
             ToastUtils.Companion.getInstance().showCustomToastView(String.
                     format(ResourceUtils.Companion.getInstance().getString(R.string.navi_map_mode_switch_fail), modeText));
-            return;
         }
-        ToastUtils.Companion.getInstance().showCustomToastView(String.
-                format(ResourceUtils.Companion.getInstance().getString(
-                        R.string.switch_car_angle), modeText));
     }
 
     @Override
@@ -292,6 +309,7 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     protected void onDestroy() {
         super.onDestroy();
         mImmersiveStatusScene = null;
+        cancelTimer();
     }
 
     /**
@@ -301,7 +319,42 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
         Logger.i(TAG, "onImmersiveStatusChange currentImersiveStatus：" + currentImersiveStatus);
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
         } else {
-            showMain();
+            notifySceneStateChange(false);
+        }
+    }
+
+    /**
+     * 开始倒计时
+     */
+    public void initTimer() {
+        Logger.i(TAG, "initTimer");
+        cancelTimer();
+        mTimes = NumberUtils.NUM_8;
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            if (mTimes == NumberUtils.NUM_0) {
+                ThreadManager.getInstance().postUi(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifySceneStateChange(false);
+                        setImmersiveStatus(ImersiveStatus.TOUCH);
+                        if(mCallBack != null){
+                            mCallBack.skipNaviControlScene();
+                        }
+                    }
+                });
+            }
+            mTimes--;
+        }, NumberUtils.NUM_0, NumberUtils.NUM_1);
+    }
+
+    /**
+     * 取消倒计时
+     */
+    public void cancelTimer() {
+        Logger.i(TAG, "cancelTimer");
+        if (!ConvertUtils.isEmpty(mScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
         }
     }
 
@@ -328,7 +381,7 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
 
     private void setImmersiveStatus(ImersiveStatus immersiveStatus) {
         // 固定全览状态下操作控制栏不会显示继续导航按钮,已和UE确认
-        if (mNaviPackage.getFixedOverViewStatus()) {
+        if (mNaviPackage.getFixedOverViewStatus() || mNaviPackage.getClusterFixOverViewStatus()) {
             return;
         }
         if (null != mImmersiveStatusScene) {
@@ -341,5 +394,15 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
      */
     public int getBroadcastMode(){
         return mSettingPackage.getConfigKeyBroadcastMode();
+    }
+
+    /**
+     * 获取车头朝向
+     */
+    public MapMode getCarModel() {
+        if (mMapPackage == null) {
+            mMapPackage = MapPackage.getInstance();
+        }
+        return mMapPackage.getCurrentMapMode(mMapTypeId);
     }
 }

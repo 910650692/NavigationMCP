@@ -67,7 +67,7 @@ import java.util.ArrayList;
 
 public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapter> {
 
-    private static ArrayList<PathInfo> mPathInfoList = new ArrayList<>();
+    private ArrayList<PathInfo> mPathInfoList = new ArrayList<>();
     private ArrayList<RoutePoint> mViaList = new ArrayList<>();
 
     public LayerGuideRouteImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
@@ -91,8 +91,12 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     @Override
     protected void dispatchItemClickEvent(LayerItem item) {
+        dispatchItemClick(item);
+    }
+
+    private void dispatchItemClick(LayerItem item) {
         LayerPointItemType type = LayerPointItemType.NULL;
-        LayerItemRoutePointClickResult result = new LayerItemRoutePointClickResult();
+        final LayerItemRoutePointClickResult result = new LayerItemRoutePointClickResult();
         switch (item.getBusinessType()) {
             case BizRouteType.BizRouteTypeStartPoint -> {
                 type = LayerPointItemType.ROUTE_POINT_START;
@@ -112,11 +116,11 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                     } else {
                         type = LayerPointItemType.ROUTE_POINT_END;
                     }
-                }
-                Coord3DDouble coord3DDouble = ((RoutePathPointItem) item).getPosition();
-                if (!ConvertUtils.isEmpty(coord3DDouble)) {
-                    result.setLat(coord3DDouble.lat);
-                    result.setLog(coord3DDouble.lon);
+                    Coord3DDouble coord3DDouble = endPoint.getPosition();
+                    if (!ConvertUtils.isEmpty(coord3DDouble)) {
+                        result.setLat(coord3DDouble.lat);
+                        result.setLog(coord3DDouble.lon);
+                    }
                 }
             }
             case BizRouteType.BizRouteTypeViaPoint -> {
@@ -163,7 +167,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 type = LayerPointItemType.ROUTE_POINT_TRAFFIC_EVENT;
             }
         }
-        Logger.d(TAG, "dispatchItemClickEvent type = " + type + " ; result = " + result.toString());
+        Logger.d(TAG, "dispatchItemClick type = " + type + " ; result = " + result);
         for (ILayerAdapterCallBack callback : getCallBacks()) {
             callback.onRouteItemClick(getMapType(), type, result);
         }
@@ -208,6 +212,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             return;
         }
         Logger.d(TAG, "drawRouteLine");
+        //更新路线图层数据
+        getStyleAdapter().updateRouteResult(routeResult);
         //设置路线信息
         setPathInfoByRouteResult(routeResult);
         //设置起点终点途经点
@@ -215,8 +221,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         //设置路线样式风格
         setMainMapPathDrawStyle(false, false, true);
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyRemainPoint, true);
-        //更新路线图层数据
-        getStyleAdapter().updateRouteResult(routeResult);
         updatePaths();
     }
 
@@ -858,6 +862,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             Logger.e(TAG, "showCross crossInfo == null");
             return false;
         }
+        Logger.d(TAG, "the type is  " + crossInfo.getType()
+            + ", DataBuf is empty : " + ConvertUtils.isEmpty(crossInfo.getDataBuf())
+            + ", ArrowDataBuf is empty: " + ConvertUtils.isEmpty(crossInfo.getArrowDataBuf()));
         boolean ret = false;
         if (crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_VECTOR || crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_3_D) {
             //矢量图或者三维图

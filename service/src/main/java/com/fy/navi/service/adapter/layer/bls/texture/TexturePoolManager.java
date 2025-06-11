@@ -4,13 +4,11 @@ import static com.autonavi.gbl.map.layer.model.LayerIconType.LayerIconTypeBMP;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.text.TextUtils;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.file.FileUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.SpeedCarLayerItem;
+import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.ItemStyleInfo;
 import com.autonavi.gbl.map.layer.model.Layer3DModel;
@@ -18,12 +16,9 @@ import com.autonavi.gbl.map.layer.model.LayerIconAnchor;
 import com.autonavi.gbl.map.layer.model.LayerIconType;
 import com.autonavi.gbl.map.layer.model.LayerTexture;
 import com.autonavi.gbl.util.model.BinaryStream;
-import com.fy.navi.service.AppCache;
-import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.layer.bls.bean.MarkerInfoBean;
 import com.fy.navi.service.adapter.layer.bls.style.BaseStyleAdapter;
-import com.fy.navi.service.adapter.layer.bls.utils.StyleJsonAnalysisUtil;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 
 import java.nio.ByteBuffer;
@@ -32,9 +27,6 @@ import java.nio.ByteBuffer;
  * 纹理管理类
  */
 public final class TexturePoolManager {
-
-    private static final String mFileStringFromAssets = com.fy.navi.service.adapter.layer.bls.utils.FileUtils.getFileStringFromAssets(AppCache.getInstance().getMApplication(), GBLCacheFilePath.BLS_ASSETS_LAYER_CUSTOM_MARKER_INFO_PATH);
-    public static final StyleJsonAnalysisUtil sUtil = new StyleJsonAnalysisUtil(mFileStringFromAssets);
 
     private TexturePoolManager() {
     }
@@ -86,13 +78,14 @@ public final class TexturePoolManager {
     }
 
 
-    public synchronized LayerTexture createLayerTexture(Context context, LayerItem item, ItemStyleInfo styleInfo, BaseStyleAdapter styleAdapter) {
+    public synchronized LayerTexture createLayerTexture(Context context, MapType mapType, BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, BaseStyleAdapter styleAdapter) {
         LayerTexture texture = new LayerTexture();
-        TextureInfo textureInfo = BitmapFactoryManager.get().createBitmap(context, styleInfo.markerId, (item.getFocus() || styleInfo.markerGroup.equals("focus_style")),
+        TextureInfo textureInfo = BitmapFactoryManager.get().createBitmap(context, styleInfo.markerId, (item.getFocus() || styleInfo.markerGroup.equals("focus_style")),item,
                 styleAdapter.provideUpdateBitmapViewProcessor(item), styleAdapter.provideLayerItemData(item));
         Bitmap bitmap = textureInfo.getBitmap();
         if (bitmap == null) {
-            Logger.d(TAG, "创建bitmap失败. markerRes: " + styleInfo.markerId);
+            Logger.e(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
+                    + " 创建bitmap失败. markerRes :" + styleInfo.markerId);
             texture.resID = -1;
             return texture;
         }
@@ -112,22 +105,10 @@ public final class TexturePoolManager {
         texture.xRatio = 0;
         texture.yRatio = 0;
         texture.isGenMipmaps = false;
-
-        Logger.d(TAG, "createLayerTexture markerInfo " + styleInfo.markerInfo);
-        if (!TextUtils.isEmpty(styleInfo.markerInfo)) {
-            try {
-                MarkerInfoBean markerInfoFromJson = sUtil.getMarkerInfoFromJson(styleInfo.markerInfo);
-                if (!ConvertUtils.isEmpty(markerInfoFromJson)) {
-                    TextureMarkerInfo markerInfoBean = GsonUtils.fromJsonV2(GsonUtils.toJson(markerInfoFromJson), TextureMarkerInfo.class);
-                    texture.anchorType = markerInfoBean.getAnchor();
-                    texture.xRatio = markerInfoBean.getX_ratio();
-                    texture.yRatio = markerInfoBean.getY_ratio();
-                    Logger.e(TAG, "采用自定义 markerInfo: " + markerInfoBean.toString() + GsonUtils.toJson(markerInfoBean));
-                }
-            } catch (Exception exception) {
-                Logger.e(TAG, "markerInfo 信息出错: " + exception.toString());
-            }
-        }
+        TextureMarkerInfo markerInfoBean = TextureStylePoolManager.get().getMarkerInfo(mapType, layer, item, styleInfo.markerInfo);
+        texture.anchorType = markerInfoBean.getAnchor();
+        texture.xRatio = markerInfoBean.getX_ratio();
+        texture.yRatio = markerInfoBean.getY_ratio();
         return texture;
     }
 

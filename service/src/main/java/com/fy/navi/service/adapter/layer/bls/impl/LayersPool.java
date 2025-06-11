@@ -37,15 +37,15 @@ public class LayersPool {
         String styleBlPath = EngineAdapter.getInstance().styleBlPath(mapTypeId);
         int engineId = EngineAdapter.getInstance().engineID(mapTypeId);
         int eagleEyeEngineId = EngineAdapter.getInstance().eagleEyeEngineID(mapTypeId);
-        Logger.d(TAG, "init styleBlPath :" + styleBlPath);
+        Logger.d(TAG, "初始化 styleBlPath :" + styleBlPath);
         boolean result = bizControlService.init(engineId, styleBlPath);
-        Logger.d(TAG, "init engineId :" + engineId + " ;result :" + result);
+        Logger.d(TAG, "初始化 engineId :" + engineId + " ;result :" + result);
         result = bizControlService.init(eagleEyeEngineId, styleBlPath);
-        Logger.d(TAG, "init eagleEyeEngineId :" + eagleEyeEngineId + " ;result :" + result);
+        Logger.d(TAG, "初始化 eagleEyeEngineId :" + eagleEyeEngineId + " ;result :" + result);
         result = bizControlService.initCollisionConfig(mapView, styleBlPath);
-        Logger.d(TAG, "initCollisionConfig result :" + result);
+        Logger.d(TAG, "初始化 initCollisionConfig result :" + result);
         result = bizControlService.isInit() == ServiceInitStatus.ServiceInitDone;
-        Logger.d(TAG, "initLayerServiceResult :" + result);
+        Logger.d(TAG, "初始化 initLayerServiceResult :" + result);
 
         allLayers.put(LayerType.LAYER_AREA, new LayerAreaImpl(bizControlService, mapView, context, mapTypeId));
         allLayers.put(LayerType.LAYER_CAR, new LayerCarImpl(bizControlService, mapView, context, mapTypeId));

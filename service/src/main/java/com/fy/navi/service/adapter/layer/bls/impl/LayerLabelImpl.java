@@ -20,6 +20,7 @@ import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class LayerLabelImpl extends BaseLayerImpl<LayerLabelStyleAdapter> {
 
@@ -27,7 +28,6 @@ public class LayerLabelImpl extends BaseLayerImpl<LayerLabelStyleAdapter> {
         super(bizService, mapView, context, mapType);
         getLayerLabelControl().setStyle(this);
         getLayerLabelControl().addClickObserver(this);
-        Logger.d(TAG, "LayerLabelImpl init");
     }
 
     @Override
@@ -36,24 +36,23 @@ public class LayerLabelImpl extends BaseLayerImpl<LayerLabelStyleAdapter> {
     }
 
     @Override
-    public void onNotifyClick(BaseLayer layer, LayerItem pItem, ClickViewIdInfo clickViewIds) {
-        super.onNotifyClick(layer, pItem, clickViewIds);
-        dispatchClick(pItem);
-    }
-
-    private void dispatchClick(LayerItem pItem) {
-        LayerPointItemType type = LayerPointItemType.NULL;
-        LayerItemRoutePointClickResult result = new LayerItemRoutePointClickResult();
-        switch (pItem.getBusinessType()) {
-            case BizLabelType.BizLabelTypeRoutePopSearchPoint -> {
-                type = LayerPointItemType.ROUTE_POINT_END_PARK;
+    protected void dispatchItemClickEvent(LayerItem item) {
+        switch (item.getBusinessType()) {
+            case BizLabelType.BizLabelTypeRoutePopSearchPoint: {
+                dispatchRoutePointEndPark();
             }
         }
-        Logger.d(TAG, "dispatchItemClickEvent type = " + type + " ; result = " + result.toString());
-        for (ILayerAdapterCallBack callback : getCallBacks()) {
-            callback.onRouteItemClick(getMapType(), type, result);
-        }
     }
+
+    private void dispatchRoutePointEndPark() {
+        getCallBacks().forEach(new Consumer<ILayerAdapterCallBack>() {
+            @Override
+            public void accept(ILayerAdapterCallBack callback) {
+                callback.onRouteItemClick(getMapType(), LayerPointItemType.ROUTE_POINT_END_PARK, new LayerItemRoutePointClickResult());
+            }
+        });
+    }
+
 
     /**
      * 显示终点区域弹出框图层

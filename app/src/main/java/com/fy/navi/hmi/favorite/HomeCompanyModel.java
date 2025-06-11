@@ -43,7 +43,7 @@ public class HomeCompanyModel extends BaseModel<HomeCompanyViewModel> implements
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
                 final ThreadManager threadManager = ThreadManager.getInstance();
                 threadManager.postUi(() -> {
-                    mViewModel.notifySearchResult(searchResultEntity);
+                    mViewModel.notifySearchResult(taskId, searchResultEntity);
                 });
             }
             //我的位置设置

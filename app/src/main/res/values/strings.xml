@@ -659,7 +659,18 @@
         <item>洗车</item>
         <item>维修</item>
         <item>购物</item>
-        <item>酒店</item>
+    </string-array>
+
+    <!--主图更多搜索标签 油车-->
+    <string-array name="main_search_more_categories_phev_name">
+        <item>加油站</item>
+        <item>充电站</item>
+        <item>卫生间</item>
+        <item>停车场</item>
+        <item>服务区</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>维修</item>
     </string-array>
 
     <!--主图更多搜索标签 电车-->
@@ -672,7 +683,6 @@
         <item>洗车</item>
         <item>维修</item>
         <item>购物</item>
-        <item>酒店</item>
     </string-array>
 
     <!--沿途搜索标签 油车-->
@@ -685,7 +695,18 @@
         <item>洗车</item>
         <item>维修</item>
         <item>购物</item>
-        <item>酒店</item>
+    </string-array>
+
+    <!--沿途搜索标签 混动车-->
+    <string-array name="along_way_categories_phev_name">
+        <item>加油站</item>
+        <item>充电站</item>
+        <item>卫生间</item>
+        <item>停车场</item>
+        <item>服务区</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>维修</item>
     </string-array>
 
     <!--沿途搜索标签 电车-->
@@ -698,7 +719,6 @@
         <item>洗车</item>
         <item>维修</item>
         <item>购物</item>
-        <item>酒店</item>
     </string-array>
 
 

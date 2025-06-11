@@ -12,7 +12,6 @@
             android:layout_height="@dimen/dp_600"
             android:layout_marginStart="@dimen/dp_310"
             android:layout_marginTop="@dimen/dp_520"
-            android:layout_marginEnd="@dimen/dp_2039"
             android:layout_marginBottom="@dimen/dp_180"
             android:background="@drawable/shape_bg_dialog"
             android:paddingHorizontal="@dimen/dp_100"

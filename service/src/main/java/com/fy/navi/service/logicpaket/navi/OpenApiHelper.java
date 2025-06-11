@@ -243,7 +243,7 @@ public final class OpenApiHelper {
      * @param mapTypeId 屏幕id
      */
     public static void exitPreview(final MapType mapTypeId) {
-        if (NAVI_PACKAGE.getFixedOverViewStatus()) {
+        if (NAVI_PACKAGE.getFixedOverViewStatus() || NAVI_PACKAGE.getClusterFixOverViewStatus()) {
             Logger.i(TAG, "exitPreview: 固定全览状态，不能退出全览");
             return;
         }

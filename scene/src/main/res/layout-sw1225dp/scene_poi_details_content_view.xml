@@ -40,7 +40,6 @@
                 android:id="@+id/cs_poi_no_result"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_608"
-                android:background="@drawable/bg_poi_main_tab"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

@@ -27,6 +27,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected VM mViewModel;
     protected StackManager mStackManager;
     protected String mScreenId;
+    private String mLastClosedFragmentName;
 
     public BaseActivity() {
         super();
@@ -315,4 +316,14 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             decorView.setSystemUiVisibility(option);
         }
     }
+
+
+    public String getLastClosedFragmentName() {
+        return mLastClosedFragmentName;
+    }
+
+    public void setMLastClosedFragmentName(final String lastClosedFragmentName) {
+        this.mLastClosedFragmentName = lastClosedFragmentName;
+    }
+
 }

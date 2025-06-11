@@ -26,6 +26,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_434"
             android:layout_height="@dimen/dp_155"
+            android:layout_marginTop="@dimen/dp_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
             android:visibility="@{ViewModel.mTopNaviBarVisibility ? View.VISIBLE : View.GONE}"
@@ -109,6 +110,7 @@
             android:layout_height="@dimen/dp_192"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
+            android:layout_marginStart="@dimen/dp_m_51"
             app:layout_constraintBottom_toBottomOf="@id/sl_zhiJia"
             app:layout_constraintStart_toEndOf="@id/sl_zhiJia">
 
@@ -243,51 +245,61 @@
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/scl_navi_continue"
+        <androidx.cardview.widget.CardView
+            android:layout_width="@dimen/dp_140"
+            android:layout_height="@dimen/dp_124"
             clickCommand="@{ViewModel.naviContinue}"
-            android:layout_width="@dimen/dp_209"
-            android:layout_height="@dimen/dp_192"
-            android:layout_marginStart="@dimen/dp_m_51"
-            android:background="@drawable/bg_shadow_navi_ndlc_8155"
-            android:padding="@dimen/dp_34"
             android:visibility="@{ViewModel.mIsOnTouch ? View.VISIBLE : View.GONE}"
+            app:cardBackgroundColor="@color/color_2461ea"
+            app:cardCornerRadius="@dimen/dp_15"
+            android:elevation="@dimen/dp_25"
+            android:layout_marginStart="@dimen/dp_m_17"
             app:layout_constraintBottom_toBottomOf="@id/sl_zhiJia"
             app:layout_constraintStart_toEndOf="@id/scl_guidance_action"
             app:layout_constraintTop_toTopOf="@id/sl_zhiJia">
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/iv_continue"
-                style="@style/style_one_third_navi_action_img"
-                android:background="@drawable/img_navigation_black_58"
-                app:layout_constraintBottom_toTopOf="@id/tv_continue"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed" />
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/scl_navi_continue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/tv_continue"
-                style="@style/style_one_third_navi_action_text"
-                android:text="@string/navi_continue_navi"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_continue" />
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_continue"
+                    style="@style/style_one_third_navi_action_img"
+                    android:background="@drawable/img_navigation_white_58"
+                    app:layout_constraintBottom_toTopOf="@id/tv_continue"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_continue"
+                    style="@style/style_one_third_navi_action_text"
+                    android:text="@string/navi_continue_navi"
+                    android:textColor="@color/white_always"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_continue" />
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <!--引导信息-->
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_guidance_board"
             android:layout_width="@dimen/dp_613"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155_transparent"
             android:orientation="vertical"
             android:padding="@dimen/dp_34"
             android:visibility="@{ViewModel.mNaviActionBarVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <!--tbt-->
             <com.fy.navi.scene.ui.navi.SceneNaviTbtView

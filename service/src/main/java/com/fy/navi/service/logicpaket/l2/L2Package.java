@@ -68,8 +68,8 @@ public class L2Package implements L2DriveObserver {
         mLayerAdapter.updateOddInfo(mapTypeId, oddInfoList, pathId);
     }
 
-    public int getTrafficLightDis(long curSegIdx, long curLinkIdx) {
-        return mL2Adapter.getTrafficLightDis(curSegIdx, curLinkIdx);
+    public int getLinkDist(long curSegIdx, long curLinkIdx) {
+        return mL2Adapter.getLinkDist(curSegIdx, curLinkIdx);
     }
 
     private static final class Helper {

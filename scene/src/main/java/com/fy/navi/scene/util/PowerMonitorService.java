@@ -1,10 +1,10 @@
 package com.fy.navi.scene.util;
 
-import android.os.CountDownTimer;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.callback.OnPowerChangeListener;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -13,6 +13,7 @@ import com.fy.navi.service.logicpaket.signal.SignalCallback;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * @author: QiuYaWei
@@ -22,25 +23,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class PowerMonitorService implements SignalCallback {
     private static final String TAG = "PowerMonitorService";
-    private static final long TOTAL_TIME = Long.MAX_VALUE;
-    private static final long INTERVAL = 2 * 1000 * 60L;//间隔事件2分钟
+    private static final long INTERVAL = 120;//间隔事件2分钟即120秒
     private static final float EDGE_DISTANCE = 50f; // 续航里程小于50KM提醒
     private final boolean mDeviceIsCar;
     private final boolean mIsPureGasCar; // 是否是纯油车
     private final CopyOnWriteArrayList<OnPowerChangeListener> mPowerChangeListener;
     private final SignalPackage mSignalPackage;
     private final CalibrationPackage mCalibrationPackage;
-    private final CountDownTimer mCountDownTimer = new CountDownTimer(TOTAL_TIME, INTERVAL) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-            checkRemainBattery();
-        }
-
-        @Override
-        public void onFinish() {
-            Logger.i(TAG, "onFinish");
-        }
-    };
+    private ScheduledFuture scheduledFuture;
 
     public PowerMonitorService() {
         mSignalPackage = SignalPackage.getInstance();
@@ -51,17 +41,31 @@ public class PowerMonitorService implements SignalCallback {
     }
 
     public void startSchedule() {
-        if (mDeviceIsCar) {
-            mCountDownTimer.start();
-        } else {
-            Logger.w(TAG, "不是汽车，无需执行定时器！");
+        try {
+            if (mDeviceIsCar) {
+                stopSchedule();
+                scheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(() -> {
+                    checkRemainBattery();
+                },0, INTERVAL);
+            } else {
+                Logger.w(TAG, "不是汽车，无需执行定时器！");
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "startSchedule failed:" + e.getMessage());
         }
     }
 
     public void stopSchedule() {
         Logger.i(TAG, "stopSchedule");
-        if (mCountDownTimer != null) {
-            mCountDownTimer.cancel();
+        try {
+            if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
+                final boolean cancelResult = scheduledFuture.cancel(true);
+                Logger.i(TAG, "stopSchedule:" + cancelResult);
+            } else {
+                Logger.i(TAG, "stopSchedule failed, scheduledFuture is null or had completed");
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "stopSchedule failed:" + e.getMessage());
         }
     }
 

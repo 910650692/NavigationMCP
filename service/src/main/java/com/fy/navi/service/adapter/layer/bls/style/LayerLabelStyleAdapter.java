@@ -1,17 +1,10 @@
 package com.fy.navi.service.adapter.layer.bls.style;
 
-import android.view.View;
-import android.widget.TextView;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizLabelControl;
-import com.autonavi.gbl.layer.PopPointLayerItem;
 import com.autonavi.gbl.layer.model.BizLabelType;
 import com.autonavi.gbl.map.layer.LayerItem;
-import com.fy.navi.service.R;
-import com.fy.navi.service.define.layer.refix.LayerItemData;
-import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 
 public class LayerLabelStyleAdapter extends BaseStyleAdapter {
 

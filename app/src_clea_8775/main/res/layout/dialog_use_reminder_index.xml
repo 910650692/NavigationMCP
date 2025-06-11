@@ -8,7 +8,9 @@
         android:layout_height="match_parent">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            style="@style/dialog_buick_parent"
+            android:layout_width="@dimen/dp_1760"
+            android:layout_height="@dimen/dp_800"
+            android:background="@drawable/bg_confirm_dialog"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -16,9 +18,14 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/dialog_title"
-                style="@style/dialog_buick_title"
-                android:layout_marginTop="@dimen/dp_70"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_48"
                 android:text="@string/reminder_use_agreement"
+                android:textSize="@dimen/sp_46"
+                android:textColor="@color/dialog_title_color"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/dp_160"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -28,37 +35,45 @@
                 android:id="@+id/ll_sub_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dp_100"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginHorizontal="@dimen/dp_164"
+                android:layout_marginTop="@dimen/dp_65"
                 android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/dialog_title">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/reminder_click_view"
-                    style="@style/dialog_buick_sub_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_32"
+                    android:textColor="@color/authorization_request_content"
                     android:text="@string/reminder_click_to_view"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/reminder_terms_service"
-                    style="@style/dialog_buick_high_light"
-                    android:layout_marginStart="@dimen/dp_6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_32"
+                    android:textColor="@color/use_reminder_color"
+                    android:layout_marginStart="@dimen/dp_7"
                     android:text="@string/reminder_page_service"
                     app:layout_constraintStart_toEndOf="@+id/reminder_click_view"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     style="@style/dialog_buick_sub_title"
-                    android:layout_marginStart="@dimen/dp_6"
-                    android:text="、"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:text="，"
                     app:layout_constraintStart_toEndOf="@+id/reminder_terms_service"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/reminder_page_privacy"
-                    style="@style/dialog_buick_high_light"
-                    android:layout_marginStart="@dimen/dp_6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_32"
+                    android:textColor="@color/use_reminder_color"
                     android:text="@string/reminder_page_privacy"
                     app:layout_constraintStart_toEndOf="@+id/reminder_click_view1"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
@@ -68,15 +83,20 @@
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/net_scrollView"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_266"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_height="@dimen/dp_297"
+                android:scrollbars="vertical"
+                android:scrollbarStyle="outsideInset"
+                android:scrollbarThumbVertical="@drawable/custom_scrollbar_thumb"
+                android:layout_marginTop="@dimen/dp_48"
                 app:layout_constraintEnd_toEndOf="@id/ll_sub_content"
                 app:layout_constraintStart_toStartOf="@id/ll_sub_content"
                 app:layout_constraintTop_toBottomOf="@+id/ll_sub_content">
 
                 <com.fy.navi.ui.view.SkinTextView
-                    style="@style/dialog_buick_content"
-                    android:lineSpacingExtra="@dimen/dp_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_32"
+                    android:textColor="@color/authorization_request_content"
                     android:paddingBottom="@dimen/dp_15"
                     android:text="@string/reminder_user_terms_personal_info" />
 
@@ -94,47 +114,36 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dialog_title" />
 
-            <View
-                android:id="@+id/line"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:layout_marginStart="@dimen/dp_48"
-                android:layout_marginEnd="@dimen/dp_48"
-                android:background="#4D818199"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/net_scrollView" />
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_128"
+                android:layout_height="@dimen/dp_88"
                 android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/dp_664"
+                android:layout_marginStart="@dimen/dp_160"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/line">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_commit"
-                    style="@style/dialog_buick_positive_btn"
-                    android:layout_width="@dimen/dp_0"
+                    android:layout_width="@dimen/dp_352"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/agree" />
-
-                <View
-                    android:layout_width="@dimen/dp_2"
-                    android:layout_height="match_parent"
-                    android:background="#4D818199" />
+                    android:text="@string/agree"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/sp_29"
+                    android:background="@drawable/authorization_agree_bg"/>
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_cancel"
-                    style="@style/dialog_buick_negative_btn"
-                    android:layout_width="@dimen/dp_0"
+                    android:layout_width="@dimen/dp_352"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/not_agree_and_exit" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_29"
+                    android:text="@string/not_agree_and_exit"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:background="@drawable/authorization_disagree_bg"/>
 
             </com.fy.navi.ui.view.SkinLinearLayout>
 

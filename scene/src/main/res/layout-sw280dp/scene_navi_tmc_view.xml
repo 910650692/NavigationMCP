@@ -17,7 +17,7 @@
         android:focusable="false">
 
         <com.fy.navi.ui.view.SkinImageView
-            android:layout_width="@dimen/dp_22"
+            android:layout_width="@dimen/dp_46"
             android:layout_height="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_6"
             android:focusable="false"
@@ -30,7 +30,7 @@
             android:id="@+id/tmrtr_resources"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_28"
+            android:layout_marginStart="@dimen/dp_52"
             android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

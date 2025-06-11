@@ -59,7 +59,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_TBT;
     }
 
@@ -118,6 +118,9 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
     @Override
     public void onDestroy() {
         mISceneCallback = null;
+        if (mScreenViewModel != null) {
+            mScreenViewModel.onDestroy();
+        }
     }
 
     /**

@@ -24,6 +24,15 @@ import java.util.ArrayList;
  */
 public class SceneQuickSearchViewImpl extends BaseSceneModel<SceneQuickSearchView> implements ISceneQuickSearchView {
     private final SearchPackage mSearchPackage;
+    private int mTaskId;
+
+    /**
+     * 获取高德SDK请求任务Id
+     * @return 请求任务Id
+     */
+    public int getMTaskId() {
+        return mTaskId;
+    }
     public SceneQuickSearchViewImpl(final SceneQuickSearchView screenView) {
         super(screenView);
         mSearchPackage = SearchPackage.getInstance();
@@ -58,15 +67,19 @@ public class SceneQuickSearchViewImpl extends BaseSceneModel<SceneQuickSearchVie
      */
     public void suggestionSearch(final String key) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "suggestionSearch  key:" + key);
-        mSearchPackage.suggestionSearch(key);
+        mTaskId = mSearchPackage.suggestionSearch(key);
     }
 
-    public void createPoiMarker(PoiInfoEntity poiInfo){
+    /**
+     * 清除poi扎标
+     * @param poiInfo 清除扎标对象
+     */
+    public void createPoiMarker(final PoiInfoEntity poiInfo){
         mSearchPackage.clearLabelMark();
-        ArrayList<PoiInfoEntity> arrayList = new ArrayList<>();
+        final ArrayList<PoiInfoEntity> arrayList = new ArrayList<>();
         arrayList.add(poiInfo);
-        SearchResultEntity searchResultEntity = new SearchResultEntity().setPoiList(arrayList);
-        Logger.d("huangli","createLabelMarker: ");
+        final SearchResultEntity searchResultEntity = new SearchResultEntity().setPoiList(arrayList);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"createLabelMarker: ");
         mSearchPackage.createLabelMarker(searchResultEntity);
     }
 }

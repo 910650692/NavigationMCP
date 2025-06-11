@@ -547,6 +547,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        mViewSurvival = true;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mViewSurvival = false;
@@ -972,8 +978,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             Logger.d(TAG, "Already in navigation");
             return;
         }
-        //清除终点停车场扎标
-        LayerPackage.getInstance().clearLabelItem(MapType.MAIN_SCREEN_MAIN_MAP);
         mStartNavi = false;
         ThreadManager.getInstance().postDelay(mStartNaviTimer, START_NAVI_TIME);
         final Bundle bundle = new Bundle();
@@ -1072,16 +1076,16 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param success 算路成功
      */
     public void hideProgressUI(final boolean success) {
-        if (!mViewSurvival) {
-            Logger.d(TAG, "VIEW IS CLOSE");
-            return;
-        }
         if (success) {
             mRefreshable = false;
             ThreadManager.getInstance().postDelay(mRefreshTimer, REFRESH_TIME);
         }
         ThreadManager.getInstance().postUi(() -> {
             mView.hideProgressUI();
+            if (!mViewSurvival) {
+                Logger.d(TAG, "VIEW IS CLOSE");
+                return;
+            }
             if (success) {
                 cancelTimer();
                 initTimer();
@@ -1316,7 +1320,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mRouteChargeTotalMileage.set(TimeUtils.getInstance().getDistanceMsg(routeLineInfo.getMDistance()));
             final EvRangeOnRouteInfo evRangeOnRouteInfo = mModel.getRangeOnRouteInfo(mModel.getCurrentIndex());
             mRouteTotalDistance = routeLineInfo.getMDistance();
-            if (evRangeOnRouteInfo.isMCanArrived()) {
+            if (evRangeOnRouteInfo == null || evRangeOnRouteInfo.isMCanArrived()) {
                 mRouteProgressChargeExhaustVisibility.set(false);
                 mRouteProgressChargeExhaust.set(100);
                 mExhaustDistance = mRouteTotalDistance;
@@ -1350,6 +1354,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         }
         mView.showRouteSearchChargeListUI(poiInfoEntities, gasChargeAlongList, listSearchType, type);
         if (type == 1) {
+            return;
+        }
+        if (poiInfoEntities == null || poiInfoEntities.isEmpty()) {
             return;
         }
         //初始化进度条扎点
@@ -1568,7 +1575,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param routeIndex 路线索引
      */
     public void updateSelectRouteUI(final int routeIndex) {
-        ThreadManager.getInstance().postUi(() -> mView.updateSelectRouteUI(routeIndex));
+        mView.updateSelectRouteUI(routeIndex);
     }
 
     /***

@@ -12,7 +12,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_820"
-        android:layout_height="@dimen/dp_120"
+        android:layout_height="wrap_content"
         android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -24,7 +24,8 @@
             android:focusable="true"
             android:minWidth="@dimen/dp_285"
             android:maxWidth="@dimen/dp_716"
-            android:layout_gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             android:background="@drawable/bg_details_bottom_go_hear_selector"
             app:layout_constraintEnd_toStartOf="@+id/stl_go_first"
@@ -68,7 +69,8 @@
             android:minWidth="@dimen/dp_285"
             android:background="@drawable/bg_cancel"
             android:gravity="center"
-            android:layout_gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:text="@string/go_first"
             android:textColor="@color/search_quick_tab_view_color"
             android:textSize="@dimen/sp_46"

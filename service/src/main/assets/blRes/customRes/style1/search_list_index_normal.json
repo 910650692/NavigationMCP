@@ -2,11 +2,11 @@
   "point_layer_item_style": {
     "normal_style": {
       "poi_marker_id": "layer_icon_search_poi_normal",
-      "poi_marker_info": "marker_info_common_point_center"
+      "poi_marker_info": "{\"anchor\":5,\"x_ratio\":0.5,\"y_ratio\":0.0}"
     },
     "focus_style": {
       "poi_marker_id": "layer_icon_search_poi_focused",
-      "poi_marker_info": "marker_info_common_point_center"
+      "poi_marker_info": "{\"anchor\":5,\"x_ratio\":0.5,\"y_ratio\":0.0}"
     }
   }
 }

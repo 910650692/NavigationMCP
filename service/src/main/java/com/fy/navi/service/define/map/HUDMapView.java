@@ -6,6 +6,9 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.utils.ScreenUtils;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+
 public class HUDMapView extends FullScreenMapView {
     private boolean mOpenScreenStatus = true;
     private boolean mIsBindView = false;
@@ -37,22 +40,22 @@ public class HUDMapView extends FullScreenMapView {
 
     @Override
     public long getMapViewWidth() {
-        return 328;
+        return ScreenUtils.Companion.getInstance().dp2px(328);
     }
 
     @Override
     public long getMapViewHeight() {
-        return 172;
+        return ScreenUtils.Companion.getInstance().dp2px(172);
     }
 
     @Override
     public long getScreenWidth() {
-        return 328;
+        return ScreenUtils.Companion.getInstance().dp2px(328);
     }
 
     @Override
     public long getScreenHeight() {
-        return 172;
+        return ScreenUtils.Companion.getInstance().dp2px(172);
     }
 
     @Override

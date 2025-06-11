@@ -196,6 +196,9 @@ public interface ILayerApi {
      */
     CarModeType getCarModeType(MapType mapTypeId);
 
+    /* 设置车标是否显示 */
+    void setCarLogoVisible(MapType mapTypeId, boolean visible);
+
     /* 设置车标预览模式 */
     void setPreviewMode(MapType mapTypeId, boolean bPreview);
 

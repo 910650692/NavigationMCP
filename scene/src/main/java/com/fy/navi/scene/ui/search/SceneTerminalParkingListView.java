@@ -9,11 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.databinding.TerminalParkingResultViewBinding;
 import com.fy.navi.scene.impl.search.SceneTerminalViewImpl;
 import com.fy.navi.scene.ui.adapter.TerminalParkingResultAdapter;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -113,11 +116,20 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
 
     /**
      * 更新搜索结果
+     * @param taskId 任务id
      * @param searchResultEntity 搜索结果实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
+            return;
+        }
+        if (ConvertUtils.isEmpty(mScreenViewModel)) {
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
+                + " currentId: " + mScreenViewModel.getMTaskId());
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
         if (mAdapter != null) {

@@ -5,13 +5,14 @@ import android.app.Application;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.ObservableField;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
@@ -27,6 +28,8 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.calibration.PowerType;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
+
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * @author: QiuYaWei
@@ -52,35 +55,11 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
     public ObservableField<Boolean> mNextManeuverVisible = new ObservableField<>(false);
     private boolean mIsSetCrossRect = false; // 是否设置过路口大图显示区域
     // 触摸态后开启倒计时，8秒后进入沉浸态
-    private CountDownTimer immersiveCountDownTimer = new CountDownTimer(8000, 1000) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-
-        }
-
-        @Override
-        public void onFinish() {
-            if (!mModel.isOnImmersive()) {
-                mModel.openOrCloseImmersive(true);
-            }
-        }
-    };
+    private final long INTERVAL = 1;
+    private final long TOTAL_TIME = 8;
+    private ScheduledFuture immersiveScheduledFuture;
     // 全览后开启倒计时，8秒退出全览
-    private CountDownTimer preiveCountDownTimer = new CountDownTimer(8000, 1000) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-
-        }
-
-        @Override
-        public void onFinish() {
-            Logger.i(TAG, "exit preview!", "mIsOnShowPreview:" + mIsOnShowPreview.get());
-            if (mIsOnShowPreview.get()) {
-                mModel.closePreview();
-                mIsOnShowPreview.set(false);
-            }
-        }
-    };
+    private ScheduledFuture previewScheduledFuture;
 
     @Override
     public void onCreate() {
@@ -176,16 +155,42 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
      */
     public Action showOrClosePreview = () -> {
         Logger.i(TAG, "showOrClosePreview:" + mIsOnShowPreview.get());
-        preiveCountDownTimer.cancel();
         if (mIsOnShowPreview.get()) {
             mModel.closePreview();
             mIsOnShowPreview.set(false);
         } else {
             mModel.showPreview();
             mIsOnShowPreview.set(true);
-            preiveCountDownTimer.start();
+            startPreviewSchedule();
         }
     };
+
+    private void startPreviewSchedule() {
+        try {
+            stopPreviewSchedule();
+            previewScheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
+                if (mIsOnShowPreview.get()) {
+                    mModel.closePreview();
+                    mIsOnShowPreview.set(false);
+                }
+            }, TOTAL_TIME);
+        } catch (Exception e) {
+            Logger.e(TAG, "startPreviewSchedule failed:" + e.getMessage());
+        }
+    }
+
+    private void stopPreviewSchedule() {
+        try {
+            if (!ConvertUtils.isNull(previewScheduledFuture) && !previewScheduledFuture.isDone()) {
+                boolean cancelResult = previewScheduledFuture.cancel(true);
+                Logger.i(TAG, "stopPreviewSchedule:" + cancelResult);
+            } else {
+                Logger.i(TAG, "stopPreviewSchedule not need do, preiveScheduledFuture is null or has completed!");
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "stopPreviewSchedule failed:" + e.getMessage());
+        }
+    }
 
     /***
      * 静音或者取消静音
@@ -255,11 +260,37 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
     }
 
     public void onImmersiveStatusChange(ImersiveStatus lastImersiveStatus) {
-        immersiveCountDownTimer.cancel();
+        stopImmersiveSchedule();
         mIsOnTouch.set(lastImersiveStatus == ImersiveStatus.TOUCH && mModel.isOnNavigating());
         mIsOnShowPreview.set(lastImersiveStatus == ImersiveStatus.TOUCH && mModel.isOnNavigating());
         if (!mModel.isOnImmersive()) {
-            immersiveCountDownTimer.start();
+            startImmersiveSchedule();
+        }
+    }
+
+    private void startImmersiveSchedule() {
+        try {
+            stopImmersiveSchedule();
+            immersiveScheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
+                if (!mModel.isOnImmersive()) {
+                    mModel.openOrCloseImmersive(true);
+                }
+            }, TOTAL_TIME);
+        } catch (Exception e) {
+            Logger.i(TAG, "startImmersiveSchedule failed:" + e.getMessage());
+        }
+    }
+
+    private void stopImmersiveSchedule() {
+        try {
+            if (!ConvertUtils.isNull(immersiveScheduledFuture) && !immersiveScheduledFuture.isDone()) {
+                final boolean cancelResult = immersiveScheduledFuture.cancel(true);
+                Logger.i(TAG, "stopImmersiveSchedule:" + cancelResult);
+            } else {
+                Logger.i(TAG, "stopImmersiveSchedule not need do, immersiveScheduledFuture is null or has completed!");
+            }
+        } catch (Exception e) {
+            Logger.i(TAG, "stopImmersiveSchedule failed:" + e.getMessage());
         }
     }
 
@@ -295,5 +326,12 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
 
     public void onConfigurationChanged(ThemeType type) {
         mModel.onConfigurationChanged(type);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopPreviewSchedule();
+        stopImmersiveSchedule();
     }
 }

@@ -30,10 +30,11 @@ public class BaseMapPointSearchViewModel extends BaseViewModel<MapPointSearchFra
 
     /**
      * notifySearchResult
-     * @param searchResultEntity
+     * @param taskId 任务id
+     * @param searchResultEntity 数据回调实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
-        mView.notifySearchResult(searchResultEntity);
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        mView.notifySearchResult(taskId, searchResultEntity);
     }
 
 

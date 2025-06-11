@@ -189,6 +189,7 @@ public class FileUtils {
 
     /**
      * 删除指定文件夹下的所有文件和子文件夹
+     *
      * @param dir 文件夹路径
      * @return 是否删除成功
      */
@@ -211,6 +212,7 @@ public class FileUtils {
 
     /**
      * 删除多个文件夹下的所有文件和子文件夹
+     *
      * @param dirs 文件夹路径数组
      * @return 是否删除成功
      */
@@ -229,6 +231,7 @@ public class FileUtils {
 
     /**
      * 获取指定文件夹下的所有文件的总大小
+     *
      * @param dir 文件夹路径
      * @return 文件夹大小（字节）
      */
@@ -251,6 +254,7 @@ public class FileUtils {
 
     /**
      * 获取多个文件夹下的所有文件的总大小
+     *
      * @param dirs 文件夹路径数组
      * @return 文件夹总大小（字节）
      */
@@ -269,6 +273,7 @@ public class FileUtils {
 
     /**
      * 格式化文件大小为指定格式
+     *
      * @param size 文件大小（字节）
      * @return 格式化后的字符串
      */
@@ -445,7 +450,8 @@ public class FileUtils {
             if (assetsRelPath.endsWith("/"))
                 assetsRelPath = assetsRelPath.substring(0, assetsRelPath.length() - 1);
             String[] fileNames = assetManager.list(assetsRelPath);
-            if (ConvertUtils.isEmpty(fileNames)) copyAssetsFolder(assetsRelPath, destPath, recreateDestFileIfNeed);
+            if (ConvertUtils.isEmpty(fileNames))
+                copyAssetsFolder(assetsRelPath, destPath, recreateDestFileIfNeed);
             for (String fileName : fileNames) {
                 String[] childFileNames = assetManager.list(assetsRelPath + "/" + fileName);
                 if (ConvertUtils.isEmpty(childFileNames))
@@ -507,7 +513,7 @@ public class FileUtils {
                 result = new byte[inputStream.available()];
                 inputStream.read(result);
             } catch (IOException ioException) {
-                Logger.e(ioException.toString(), new Object[0]);
+                Logger.e("TAG", "读取本地文件异常 " + ioException.toString());
             } finally {
                 safetyClose(inputStream);
             }
@@ -537,6 +543,7 @@ public class FileUtils {
 
     /**
      * 设置目录及文件权限为 777
+     *
      * @param dirPath 目录
      * @return 是否成功
      */
@@ -577,6 +584,7 @@ public class FileUtils {
 
     /**
      * 应用内部缓存目录
+     *
      * @return 内部沙箱位置：/data/data/0/your_package/files
      */
     private void getAppFilePath() {
@@ -585,6 +593,7 @@ public class FileUtils {
 
     /**
      * 应用外部缓存目录
+     *
      * @return 外部沙箱位置：sdcard/Android/data/your_package/files
      */
     private void getEmulatedPhonePath() {

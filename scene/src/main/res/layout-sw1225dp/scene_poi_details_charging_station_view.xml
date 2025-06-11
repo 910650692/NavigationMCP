@@ -182,6 +182,7 @@
             android:background="@drawable/bg_charge_appointment"
             android:gravity="center"
             android:maxLines="1"
+            android:visibility="gone"
             android:text="@string/charge_appointment"
             android:textColor="@color/bg_route_big_window_select"
             android:textSize="@dimen/sp_22"

@@ -1,5 +1,6 @@
 package com.fy.navi.scene.impl.route;
 
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.route.ISceneRouteResultList;
 import com.fy.navi.scene.ui.route.SceneRouteResultListView;
@@ -16,6 +17,6 @@ public class SceneRouteResultListImpl extends BaseSceneModel<SceneRouteResultLis
 
     @Override
     public void selectRoute(final int index) {
-        mRoutePackage.selectRoute(mMapTypeId, index);
+        ThreadManager.getInstance().execute(() -> mRoutePackage.selectRoute(mMapTypeId, index));
     }
 }

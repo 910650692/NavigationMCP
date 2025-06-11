@@ -136,7 +136,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                         if (SearchPackage.getInstance().isAlongWaySearch()) {
                             RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                         }
-                        closeAllFragmentsUntilTargetFragment("MainAlongWaySearchFragment");
+//                        closeAllFragmentsUntilTargetFragment("MainAlongWaySearchFragment");
                     } else {
                         //如果是常用地址/收到的点跳转的收藏界面，那么点击导航按钮，根据来源页面的HomeCompany类型收藏为收藏点/常去的点
                         FavoriteManager.getInstance().addFavorite(poiInfoEntity, mHomeCompanyType);
@@ -298,6 +298,12 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     public void setPowerType(final int powerType){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: "+powerType);
         mScreenViewModel.mPowerType.setValue(powerType);
+        if (mCollectionType == AutoMapConstant.CollectionType.COLLECTION) {
+            if (mScreenViewModel.mPowerType != null) {
+                mViewBinding.tvFavoriteSwitch.setVisibility((mScreenViewModel.mPowerType.getValue() == 1
+                        || mScreenViewModel.mPowerType.getValue() == 2) ? VISIBLE : GONE);
+            }
+        }
     }
 
     private void hideEmptyView(){

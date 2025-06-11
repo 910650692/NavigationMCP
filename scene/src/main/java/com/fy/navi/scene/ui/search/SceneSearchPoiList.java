@@ -20,6 +20,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
@@ -569,7 +570,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 if (mPageNum == 1) {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "已经是第一页，无法刷新");
                 } else {
-                    performSearch(--mPageNum, getEditText());
+                    performSearch(--mPageNum, getEditText(), false);
                 }
                 mViewBinding.pullRefreshLayout.finishRefresh();
             }
@@ -579,7 +580,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 if (mPageNum >= maxPageNum || (!ConvertUtils.isEmpty(mSearchResultEntity) && mSearchResultEntity.getPoiList().size() < MAX_LIST_NUMBER)) {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "没有更多数据了，pageNum: " + mPageNum + " / maxPageNum: " + maxPageNum);
                 } else {
-                    performSearch(++mPageNum, getEditText());
+                    performSearch(++mPageNum, getEditText(), false);
                 }
                 mViewBinding.pullRefreshLayout.finishLoadMore();
             }
@@ -591,30 +592,38 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      *
      * @param pageNum 页码
      * @param keyword 关键字
+     * @param isReSearch 是否重搜
      */
-    public void performSearch(final int pageNum, final String keyword) {
+    public void performSearch(final int pageNum, final String keyword, final boolean isReSearch) {
         if (keyword == null || keyword.trim().isEmpty()) {
             Logger.w(MapDefaultFinalTag.SEARCH_HMI_TAG, "搜索关键字为空，取消搜索");
             return;
         }
 
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "执行搜索 - 类型: " + mSearchType + ", 关键字: " + keyword + ", 页码: " + pageNum);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "执行搜索 - 类型: " + mSearchType
+                + ", 关键字: " + keyword + ", 页码: " + pageNum + " ,isReSearch: " + isReSearch);
         if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
         } else {
             mSearchLoadingDialog = new SearchLoadingDialog(getContext());
             mSearchLoadingDialog.show();
         }
+        if (mSearchType == AutoMapConstant.SearchType.SEARCH_KEYWORD
+                || mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+            //沿途搜不支持离线，无需切换离线模式重搜
+            ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+            ThreadManager.getInstance().postDelay(mTimeoutTask, 6000);
+        }
         switch (mSearchType) {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
                 if (mCityCode != 0) {
-                    mScreenViewModel.keywordSearch(pageNum, keyword, mCityCode, false);
+                    mScreenViewModel.keywordSearch(pageNum, keyword, mCityCode, false, isReSearch);
                 } else {
-                    mScreenViewModel.keywordSearch(pageNum, keyword);
+                    mScreenViewModel.keywordSearch(pageNum, keyword, isReSearch);
                 }
                 break;
             case AutoMapConstant.SearchType.AROUND_SEARCH:
-                mScreenViewModel.aroundSearch(pageNum, keyword, mPoiInfoEntity, String.valueOf(mRange));
+                mScreenViewModel.aroundSearch(pageNum, keyword, mPoiInfoEntity, String.valueOf(mRange), isReSearch);
                 break;
             case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:
                 mScreenViewModel.alongWaySearch(keyword);
@@ -623,6 +632,18 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 Logger.w(MapDefaultFinalTag.SEARCH_HMI_TAG, "未知搜索类型: " + mSearchType);
         }
     }
+
+    private final Runnable mTimeoutTask = new Runnable() {
+        @Override
+        public void run() {
+            if (mScreenViewModel != null) {
+                //超时后放弃本次搜索，转成离线搜索
+                mScreenViewModel.abortSearch();
+                performSearch(mPageNum, mSearchText, true);
+            }
+
+        }
+    };
 
     /**
      * 设置搜索框文本并进行搜索
@@ -636,7 +657,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         this.mSearchText = searchText;
         mViewBinding.searchTextBarView.searchBarTextView.setText(searchText);
         this.mPageNum = 1;
-        performSearch(mPageNum, searchText);
+        performSearch(mPageNum, searchText, false);
     }
 
     public void setPoiInfoEntity(final PoiInfoEntity poiInfo) {
@@ -674,10 +695,16 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
     /**
      * 退回到搜索结果列表页面时，重新扎标
+     * @param name 上次关闭的Fragment界面
      */
-    public void reloadPoiMarker() {
+    public void reloadPoiMarker(final String name) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "name: " + name);
         if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
-            mScreenViewModel.updatePoiMarker(mResultEntity.getPoiList(), 0);
+            if (ConvertUtils.equals(name, "RouteFragment")) {
+                mScreenViewModel.addPoiMarker(mResultEntity.getPoiList(), 0);
+            } else {
+                mScreenViewModel.updatePoiMarker(mResultEntity.getPoiList(), 0);
+            }
         }
     }
 
@@ -687,14 +714,18 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      * @param searchResultEntity 搜索结果实体
      */
     public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
-        if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
+        if (mSearchLoadingDialog != null && mSearchLoadingDialog.isShowing()) {
             mSearchLoadingDialog.dismiss();
+        }
+        if (ConvertUtils.isEmpty(mScreenViewModel)) {
+            return;
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
                 + " currentId: " + mScreenViewModel.getMTaskId());
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
+        ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         mTaskId = mScreenViewModel.getMTaskId();
         // 处理用户搜索意图
         if(searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())){
@@ -729,6 +760,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
         if (mScreenViewModel.isAlongWaySearch()) {
             mViewBinding.routeRightTabListChargeScene.setVisibility(VISIBLE);
+            if(!ConvertUtils.isEmpty(searchResultEntity.getKeyword())){
+                final String queryType = com.android.utils.ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
+                mViewBinding.routeRightTabListChargeScene.setSearchCharge(queryType.equals(searchResultEntity.getKeyword()));
+            }
             mViewBinding.routeRightTabListChargeScene.registerRouteSelectObserver(TAG, this);
         } else {
             mViewBinding.routeRightTabListChargeScene.setVisibility(GONE);
@@ -804,6 +839,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      * @param taskId 任务id
      */
     public void notifySilentSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        // 1055723 容错处理
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mScreenViewModel is Null");
+            return;
+        }
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
             mSearchLoadingDialog.dismiss();
         }
@@ -1002,5 +1042,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"count: "+count);
         return count > 0;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
     }
 }

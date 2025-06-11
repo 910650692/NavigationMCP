@@ -1,11 +1,15 @@
 package com.fy.navi.scene.ui.navi.manager;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +31,7 @@ public class NaviSceneManager implements INaviSceneEvent {
     private final CopyOnWriteArrayList<NaviSceneBase> showSceneList;
     /*** 被隐藏的Scene **/
     private final CopyOnWriteArrayList<NaviSceneBase> hideSceneList;
+    private final Runnable mRunnable;
     private boolean mIsCanAddScene;
 
     private final List<NaviSceneId> hideByMoreSetup = new ArrayList<>(Arrays.asList(
@@ -37,6 +42,12 @@ public class NaviSceneManager implements INaviSceneEvent {
         sceneViewList = new ConcurrentHashMap<>();
         showSceneList = new CopyOnWriteArrayList<>();
         hideSceneList = new CopyOnWriteArrayList<>();
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                restoreList();
+            }
+        };
     }
 
     public static NaviSceneManager getInstance() {
@@ -49,7 +60,8 @@ public class NaviSceneManager implements INaviSceneEvent {
             Logger.i(TAG, "sceneBase is null");
             return;
         }
-        if (NaviSceneBase.SCENE_STATE_HIDE == sceneBase.getSceneState() || NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) {
+        if (NaviSceneBase.SCENE_STATE_HIDE == sceneBase.getSceneState() ||
+                NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) {
             return;
         }
         Logger.i(TAG, "onHideScene Name -> " + sceneBase.getSceneName());
@@ -61,7 +73,8 @@ public class NaviSceneManager implements INaviSceneEvent {
             NaviSceneBase newSceneBase = getSceneById(cardId);
             if (!ConvertUtils.isEmpty(newSceneBase)) { // 先判断集合中是否已经包含该场景
                 if (ConvertUtils.isEmpty(showSceneList)) { // 如果showSceneList为空则直接展示
-                    Logger.i(TAG, "没有任何卡片在显示，直接展示新卡片", "newSceneBase -> " + newSceneBase.getSceneName());
+                    Logger.i(TAG, "没有任何卡片在显示，直接展示新卡片",
+                            "newSceneBase -> " + newSceneBase.getSceneName());
                     showScene(newSceneBase);
                 } else {
                     if (NaviSceneBase.SCENE_STATE_SHOW == newSceneBase.getSceneState()) { // 正在展示中不进行任何操作
@@ -69,7 +82,9 @@ public class NaviSceneManager implements INaviSceneEvent {
                     } else { // 没在展示，则根据碰撞规则展示Scene
                         ArrayList<NaviSceneBase> temporaryList = new ArrayList<>(showSceneList);
                         int showSceneListSize = temporaryList.size(); // 有人知道为什么要用size，而不是直接用showSceneList.size吗， 动脑筋猜一猜
-                        Logger.d(TAG, "当前展示的Scene集合长度:" + showSceneListSize + " 新卡:Name:" + newSceneBase.getSceneName() + " State:" + newSceneBase.getSceneState() + " Id:" + cardId.ordinal());
+                        Logger.d(TAG, "当前展示的Scene集合长度:" + showSceneListSize +
+                                " 新卡:Name:" + newSceneBase.getSceneName() + " State:" +
+                                newSceneBase.getSceneState() + " Id:" + cardId.ordinal());
                         StringBuilder logShowAndShow = new StringBuilder();
                         StringBuilder logShowAndClose = new StringBuilder();
                         StringBuilder logShowAndHide = new StringBuilder();
@@ -84,7 +99,8 @@ public class NaviSceneManager implements INaviSceneEvent {
                         boolean isDefault = false;
                         for (int i = 0; i < showSceneListSize; i++) {// 遍历所有显示的Scene，在根据定制的规则来判定正在显示的Scene是否需要隐藏或关闭
                             if (i >= temporaryList.size()) {
-                                Logger.e(TAG, "ArrayIndexOutOfBoundsException", "i:" + i, "size:" + temporaryList.size());
+                                Logger.e(TAG, "ArrayIndexOutOfBoundsException", "i:" +
+                                        i, "size:" + temporaryList.size());
                                 break;
                             }
                             NaviSceneBase oldSceneView = temporaryList.get(i);
@@ -267,7 +283,7 @@ public class NaviSceneManager implements INaviSceneEvent {
         Logger.i(TAG, "addNaviScene", "id -> " + id.name(), "naviScene：" + naviScene.getSceneName() +
                 " mIsCanAddScene -> " + mIsCanAddScene);
         // 因为launcher巡航等页面会复用navi的scene所以这里只能在navi页面起来后才能添加scene
-        if (!mIsCanAddScene) {
+        if (!mIsCanAddScene || naviScene.getCategory() != NumberUtils.NUM_1) {
             return;
         }
         if (ConvertUtils.isContain(sceneViewList, id)) {
@@ -396,6 +412,12 @@ public class NaviSceneManager implements INaviSceneEvent {
     }
 
     public void restoreList() {
+        if (!ConvertUtils.isEmpty(sceneViewList) && sceneViewList.size() < NumberUtils.NUM_22) {
+            ThreadManager.getInstance().removeHandleTask(mRunnable);
+            ThreadManager.getInstance().postDelay(mRunnable, NumberUtils.NUM_100);
+        }
+        ConvertUtils.clear(showSceneList);
+        ConvertUtils.clear(hideSceneList);
         for (Map.Entry<NaviSceneId, NaviSceneBase> entry : sceneViewList.entrySet()) {
             NaviSceneBase base = entry.getValue();
             if (base.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW) {

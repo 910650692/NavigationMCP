@@ -1,5 +1,6 @@
 package com.fy.navi.vrbridge.bean;
 
+import com.baidu.oneos.protocol.bean.ArrivalBean;
 import com.baidu.oneos.protocol.callback.PoiCallback;
 import com.baidu.oneos.protocol.callback.RespCallback;
 
@@ -9,6 +10,7 @@ public class SingleCommandInfo {
     private int mIntParam;
     private String mPoiName;
     private String mPoiType;
+    private ArrivalBean mArrivalBean;
     private PoiCallback mPoiCallback;
     private RespCallback mRespCallback;
 
@@ -34,6 +36,14 @@ public class SingleCommandInfo {
 
     public void setPoiType(final String poiType) {
         mPoiType = poiType;
+    }
+
+    public ArrivalBean getArrivalBean() {
+        return mArrivalBean;
+    }
+
+    public void setArrivalBean(final ArrivalBean arrivalBean) {
+        mArrivalBean = arrivalBean;
     }
 
     public PoiCallback getPoiCallback() {

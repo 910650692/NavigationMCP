@@ -372,15 +372,24 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
 
     /**
      * 更新搜索结果
+     * @param taskId 任务id
      * @param searchResultEntity 搜索结果实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if ((searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) && !getEditText().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             mViewBinding.skRcvSuggestion.setVisibility(GONE);
             mViewBinding.recyclerNoHint.setVisibility(VISIBLE);
             mViewBinding.recyclerNoHint.setText(ResourceUtils.Companion.getInstance().getString(R.string.sug_search_result_no_data));
             mAdapter.clearList();
+            return;
+        }
+        if (ConvertUtils.isEmpty(mScreenViewModel)) {
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
+                + " currentId: " + mScreenViewModel.getMTaskId());
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
         if (searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getKeyword())) {

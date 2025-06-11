@@ -1,7 +1,6 @@
 package com.fy.navi.scene.ui.navi.hangingcard;
 
 import android.content.Context;
-import android.os.CountDownTimer;
 import android.view.View;
 
 import androidx.annotation.CallSuper;
@@ -10,7 +9,7 @@ import androidx.databinding.ViewDataBinding;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.scene.util.HandCardType;
@@ -24,6 +23,7 @@ import com.fy.navi.ui.view.SwipeDeleteLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * @author: QiuYaWei
@@ -36,29 +36,17 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
     private final MapType mapType = MapType.MAIN_SCREEN_MAIN_MAP;
     protected T mBinding;
     protected HandCardType mType;
-    protected final long TOTAL_TIME = 8000;
-    protected final long INTERVAL_TIME = 1000;
+    protected final long TOTAL_TIME = 8;// 单位：秒
+    protected final long INTERVAL_TIME = 1; // 单位：秒
+    private final long DELAY_TIME_AFTER_RESUME = 2;// 单位：秒
+    private final long DELAY_NO_TIME = 0;
     protected long mCountTime = TOTAL_TIME;
     protected OnCardChangeListener mListener;
     private RoutePackage mRoutePackage;
     // 切换路线，需要算路，这个是算路请求ID
     private long mChangeDestinationId;
     protected ArrayList<PoiInfoEntity> mList = new ArrayList<>();
-    protected CountDownTimer mCountDownTimer = new CountDownTimer(mCountTime, INTERVAL_TIME) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-            mCountTime = millisUntilFinished;
-        }
-
-        @Override
-        public void onFinish() {
-            Logger.i(TAG, "onFinish");
-            resetTimer();
-            if (!ConvertUtils.isNull(mListener)) {
-                mListener.onTimerFinished(mType);
-            }
-        }
-    };
+    protected ScheduledFuture scheduledFuture;
 
     public CardView(@NonNull Context context, final OnCardChangeListener listener, final List<PoiInfoEntity> list, HandCardType type) {
         super(context);
@@ -83,6 +71,7 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         Logger.i(TAG, "onDetachedFromWindow");
+        closeTimer();
         mRoutePackage.unRegisterRouteObserver(TAG);
         if (!ConvertUtils.isNull(getSwipeView())) {
             getSwipeView().removeSwipeActionListener();
@@ -136,32 +125,31 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      * 开启定时器
      */
     public void startTimer() {
-        Logger.i(TAG, "startTimer");
-        mCountDownTimer.cancel();
-        mCountDownTimer.start();
+        Logger.i(TAG, "startTimer:" + mCountTime);
+        startSchedule(DELAY_NO_TIME);
     }
 
     /***
      * 暂停定时器
      */
     public void pauseTimer() {
-        Logger.i(TAG, "pauseTimer");
-        mCountDownTimer.cancel();
+        Logger.i(TAG, "pauseTimer:" + mCountTime);
+        stopSchedule();
     }
 
     /****
      * 恢复定时器
      */
     public void resumeTimer() {
-        Logger.i(TAG, "resumeTimer");
-        mCountDownTimer.start();
+        Logger.i(TAG, "resumeTimer:" + mCountTime);
+        startSchedule(DELAY_TIME_AFTER_RESUME);
     }
 
     /***
      * 关闭定时器
      */
     public void closeTimer() {
-        mCountDownTimer.cancel();
+        stopSchedule();
         mCountTime = TOTAL_TIME;
     }
 
@@ -169,7 +157,7 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      * 重置定时器
      */
     public void resetTimer() {
-        mCountDownTimer.cancel();
+        stopSchedule();
         mCountTime = TOTAL_TIME;
     }
 
@@ -220,4 +208,39 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      * @param isExpand
      */
     public void setExpandState(boolean isExpand){}
+
+    private void startSchedule(final long delayTime) {
+        try {
+            scheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+                mCountTime --;
+                onTimerEnd();
+            }, delayTime, INTERVAL_TIME);
+        } catch (Exception e) {
+            Logger.e(TAG, "startSchedule failed:" + e.getMessage());
+        }
+    }
+
+    private void stopSchedule() {
+        Logger.i(TAG, "stopSchedule", "remainTime:" + mCountTime);
+        try {
+            if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
+                final boolean cancelResult = scheduledFuture.cancel(true);
+                Logger.i(TAG, "stopSchedule:" + cancelResult);
+            } else {
+                Logger.i(TAG, "stopSchedule failed, scheduledFuture is null or had completed");
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "stopSchedule failed:" + e.getMessage());
+        }
+    }
+
+    private void onTimerEnd() {
+        if (mCountTime <= 0) {
+            Logger.i(TAG, "onTimerEnd-Success!");
+            stopSchedule();
+            if (!ConvertUtils.isNull(mListener)) {
+                mListener.onTimerFinished(mType);
+            }
+        }
+    }
 }

@@ -69,6 +69,11 @@ public class LayerAdapter {
         return mLayerApi.getCarModeType(mapTypeId);
     }
 
+    /* 设置车标是否显示 */
+    public void setCarLogoVisible(MapType mapTypeId, boolean visible) {
+        mLayerApi.setCarLogoVisible(mapTypeId, visible);
+    }
+
     /* 设置凯迪车型骨骼车标 */
     public void setCadiSkeletonCarModel(MapType mapTypeId) {
         mLayerApi.setCadiSkeletonCarModel(mapTypeId);

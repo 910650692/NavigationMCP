@@ -20,6 +20,7 @@ import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
@@ -110,15 +111,30 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
 
     /**
      * 关键字搜索
+     * @param pageNum 页码
+     * @param keyword 关键字
+     * @param isReSearch 是否超时重算
+     */
+    public void keywordSearch(final int pageNum, final String keyword, final boolean isReSearch) {
+        logSearch("keywordSearch", keyword);
+        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, false, isReSearch);
+        final SearchHistoryItemBean item = new SearchHistoryItemBean();
+        item.setName(keyword);
+        item.setUpdateTime(System.currentTimeMillis());
+        mUserTrackPackage.addSearchHistory(item);
+    }
+
+    /**
+     * 关键字搜索
      * @param pageNum 页数
      * @param keyword 关键字
      * @param adCode 城市编码
      * @param isSilent 是否静默搜
      */
-    public void keywordSearch(final int pageNum, final String keyword, final int adCode, final boolean isSilent) {
+    public void keywordSearch(final int pageNum, final String keyword, final int adCode, final boolean isSilent, final boolean isReSearch) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "keywordSearch", keyword);
-        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent);
-        SearchHistoryItemBean item = new SearchHistoryItemBean();
+        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent, isReSearch);
+        final SearchHistoryItemBean item = new SearchHistoryItemBean();
         item.setName(keyword);
         item.setUpdateTime(System.currentTimeMillis());
         mUserTrackPackage.addSearchHistory(item);
@@ -163,16 +179,28 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      * @param keyword   关键字
      * @param poiInfoEntity 周边搜索的中心点信息
      * @param range 搜索范围
+     * @param isReSearch 是否重搜
      */
-    public void aroundSearch(final int pageNum, final String keyword, final PoiInfoEntity poiInfoEntity, final String range) {
+    public void aroundSearch(final int pageNum, final String keyword, final PoiInfoEntity poiInfoEntity, final String range, final boolean isReSearch) {
         if (poiInfoEntity == null || poiInfoEntity.getPoint() == null) {
             logSearch("aroundSearch", "自车位置附件搜索");
-            mTaskId = mSearchPackage.aroundSearch(pageNum, keyword);
+            if (isReSearch) {
+                final GeoPoint userLoc = new GeoPoint();
+                userLoc.setLon(PositionPackage.getInstance().getLastCarLocation().getLongitude());
+                userLoc.setLat(PositionPackage.getInstance().getLastCarLocation().getLatitude());
+                mTaskId = mSearchPackage.reAroundSearch(pageNum, keyword, userLoc, range);
+            } else {
+                mTaskId = mSearchPackage.aroundSearch(pageNum, keyword);
+            }
             return;
         }
         final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
         logSearch("aroundSearch", keyword);
-        mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, geoPoint, range);
+        if (isReSearch) {
+            mTaskId = mSearchPackage.reAroundSearch(pageNum, keyword, geoPoint, range);
+        } else {
+            mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, geoPoint, range, false);
+        }
     }
 
     /**
@@ -185,10 +213,12 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     }
 
     /**
-     * 中止搜索
+     * 中止当前搜索
      */
     public void abortSearch() {
-        mSearchPackage.abortSearch();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "abortSearch");
+        mTaskId = 0;
+        mSearchPackage.abortSearch(getMTaskId());
     }
 
     /**
@@ -255,18 +285,20 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
 
     /**
      * 沿途搜附加卡片点击事件
-     * @param keword 关键字
+     * @param keyword 关键字
      * @param tabIndex 索引
      */
-    public void onTabListGasChargeClick(final String keword, final int tabIndex) {
+    public void onTabListGasChargeClick(final String keyword, final int tabIndex) {
         mListSearchType = tabIndex;
         if (tabIndex == 0) {
-            mTaskId = mSearchPackage.enRouteKeywordSearch(keword);
+            mTaskId = mSearchPackage.enRouteKeywordSearch(keyword);
         } else if (tabIndex == 1) {
             final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-            mTaskId = mSearchPackage.aroundSearch(1, keword, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
+            if (endPoint != null && !ConvertUtils.isEmpty(endPoint.getRealPos())) {
+                mTaskId = mSearchPackage.aroundSearch(1, keyword, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
+            }
         } else {
-            mTaskId = mSearchPackage.aroundSearch(1, keword);
+            mTaskId = mSearchPackage.aroundSearch(1, keyword);
         }
     }
 

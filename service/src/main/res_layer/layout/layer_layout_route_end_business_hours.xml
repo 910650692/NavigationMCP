@@ -1,36 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:background="@drawable/layer_image_route_end_business_hours_bg"
-        android:orientation="horizontal"
-        android:gravity="center"
+    <TextView
+        android:id="@+id/route_end_business_hours_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/route_end_business_hours_text"
-            android:textSize="@dimen/sp_24"
-            android:paddingVertical="@dimen/dp_10"
-            android:paddingHorizontal="@dimen/dp_30"
-            android:textColor="@color/layer_route_via_charge_time_text_color"
-            tools:text="营业时间 08:00-20:00"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/layer_image_route_end_business_hours_bg"
+        android:paddingHorizontal="@dimen/dp_30"
+        android:paddingVertical="@dimen/dp_10"
+        android:textColor="@color/layer_route_via_charge_time_text_color"
+        android:textSize="@dimen/sp_24"
+        tools:text="营业时间 08:00-20:00" />
 
     <ImageView
         android:id="@+id/route_end_bg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/layer_search_end_bg"/>
+        android:src="@drawable/layer_search_end_bg" />
 
 </LinearLayout>

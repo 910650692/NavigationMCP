@@ -19,6 +19,14 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
     private final RoutePackage mRoutePackage;
     private int mTaskId;
 
+    /**
+     * 获取高德SDK请求任务Id
+     * @return 请求任务Id
+     */
+    public int getMTaskId() {
+        return mTaskId;
+    }
+
     public SceneTerminalViewImpl(final SceneTerminalParkingListView sceneTerminalParking) {
         super(sceneTerminalParking);
         this.mSearchPackage = SearchPackage.getInstance();

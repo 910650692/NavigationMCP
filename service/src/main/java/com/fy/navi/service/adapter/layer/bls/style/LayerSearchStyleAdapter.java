@@ -134,7 +134,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     public IUpdateBitmapViewProcessor provideUpdateBitmapViewProcessor(LayerItem item) {
         int index = getLayerItemIndex(item);
         if (item.getBusinessType() == BizSearchType.BizSearchTypePoiAlongRoute) {
-            return new IUpdateBitmapViewProcessor() {
+            return new IUpdateBitmapViewProcessor<>() {
                 @Override
                 public void onFocusProcess(View rootView, LayerItemData data) {
                     SearchAlongWayLayerItem chargeItem = (SearchAlongWayLayerItem) item;
@@ -142,7 +142,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     TextView position = rootView.findViewById(R.id.search_along_way_charge_position);
                     TextView fastTextView = rootView.findViewById(R.id.search_along_way_charge_fast);
                     TextView slowTextView = rootView.findViewById(R.id.search_along_way_charge_slow);
-                    position.setText(String.valueOf(index + 1));
+                    safetySetText(position, String.valueOf(index + 1));
                     Logger.d(TAG, "自定义沿途搜充电站扎标-选中态 index " + (index + 1));
                     int fastFree = info.fastFree;
                     int fastTotal = info.fastTotal;
@@ -154,13 +154,13 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     }
                     Context context = rootView.getContext();
                     String fastString = context.getString(R.string.layer_search_along_way_charge_fast, fastFree, fastTotal);
-                    fastTextView.setText(fastString);
+                    safetySetText(fastTextView, fastString);
 
                     if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
                         slowTextView.setVisibility(GONE);
                     }
                     String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
-                    slowTextView.setText(slowString);
+                    safetySetText(slowTextView, slowString);
                 }
 
                 @Override
@@ -170,7 +170,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     TextView position = rootView.findViewById(R.id.search_along_way_charge_position);
                     TextView fastTextView = rootView.findViewById(R.id.search_along_way_charge_fast);
                     TextView slowTextView = rootView.findViewById(R.id.search_along_way_charge_slow);
-                    position.setText(String.valueOf(index + 1));
+                    safetySetText(position, String.valueOf(index + 1));
                     Logger.d(TAG, "自定义沿途搜充电站扎标-普通态 index " + (index + 1));
                     int fastFree = info.fastFree;
                     int fastTotal = info.fastTotal;
@@ -182,13 +182,13 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     }
                     Context context = rootView.getContext();
                     String fastString = context.getString(R.string.layer_search_along_way_charge_fast, fastFree, fastTotal);
-                    fastTextView.setText(fastString);
+                    safetySetText(fastTextView, fastString);
 
                     if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
                         slowTextView.setVisibility(GONE);
                     }
                     String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
-                    slowTextView.setText(slowString);
+                    safetySetText(slowTextView, slowString);
                 }
             };
         } else if (item.getBusinessType() == BizSearchType.BizSearchTypePoiParkRoute) {
@@ -215,15 +215,34 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     int spaceFree = parkingInfo.getSpaceFree();
                     Logger.d(TAG, "自定义终点停车场扎标 spaceFree " + spaceFree + " spaceTotal " + spaceTotal);
                     String spaceResult = judgeParkingSpace(context, spaceFree, spaceTotal);
-                    titleTextView.setText(context.getString(R.string.layer_search_park_route_title, spaceResult));
+                    safetySetText(titleTextView, context.getString(R.string.layer_search_park_route_title, spaceResult));
 
                     if (spaceFree == NumberUtils.NUM_0 || spaceTotal == NumberUtils.NUM_0) {
-                        detailPercentageTextView.setVisibility(GONE);
+                        if (!ConvertUtils.isEmpty(detailPercentageTextView)) {
+                            detailPercentageTextView.setVisibility(GONE);
+                        }
                     } else {
                         int ratio = spaceFree / spaceTotal * 100;
-                        detailPercentageTextView.setText(context.getString(R.string.layer_search_park_route_detail_percentage, ratio));
+                        safetySetText(detailPercentageTextView, context.getString(R.string.layer_search_park_route_detail_percentage, ratio));
                     }
-                    detailTotalTextView.setText(context.getString(R.string.layer_search_park_route_detail_total, spaceTotal));
+                    String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
+                    try {
+                        int detailTotalCount = Integer.parseInt(detailTotalString);
+                        if (detailTotalCount == -1) {
+                            if (!ConvertUtils.isEmpty(detailTotalTextView)) {
+                                detailTotalTextView.setVisibility(GONE);
+                            }
+                        } else {
+                            if (!ConvertUtils.isEmpty(detailTotalTextView)) {
+                                detailTotalTextView.setText(detailTotalString);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Logger.e(TAG, "类型转换错误");
+                        if (!ConvertUtils.isEmpty(detailTotalTextView)) {
+                            detailTotalTextView.setVisibility(GONE);
+                        }
+                    }
                 }
 
                 @Override
@@ -248,15 +267,32 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     int spaceFree = parkingInfo.getSpaceFree();
                     Logger.d(TAG, "自定义终点停车场扎标 spaceFree " + spaceFree + " spaceTotal " + spaceTotal);
                     String spaceResult = judgeParkingSpace(context, spaceFree, spaceTotal);
-                    titleTextView.setText(context.getString(R.string.layer_search_park_route_title, spaceResult));
+                    safetySetText(titleTextView, context.getString(R.string.layer_search_park_route_title, spaceResult));
 
                     if (spaceFree == NumberUtils.NUM_0 || spaceTotal == NumberUtils.NUM_0) {
                         detailPercentageTextView.setVisibility(GONE);
                     } else {
                         int ratio = spaceFree / spaceTotal * 100;
-                        detailPercentageTextView.setText(context.getString(R.string.layer_search_park_route_detail_percentage, ratio));
+                        safetySetText(detailPercentageTextView, context.getString(R.string.layer_search_park_route_detail_percentage, ratio));
                     }
-                    detailTotalTextView.setText(context.getString(R.string.layer_search_park_route_detail_total, spaceTotal));
+                    String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
+                    try {
+                        int detailTotalCount = Integer.parseInt(detailTotalString);
+                        if (detailTotalCount == -1) {
+                            if (!ConvertUtils.isEmpty(detailTotalTextView)) {
+                                detailTotalTextView.setVisibility(GONE);
+                            }
+                        } else {
+                            if (!ConvertUtils.isEmpty(detailTotalTextView)) {
+                                detailTotalTextView.setText(detailTotalString);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Logger.e(TAG, "类型转换错误");
+                        if (!ConvertUtils.isEmpty(detailTotalTextView)) {
+                            detailTotalTextView.setVisibility(GONE);
+                        }
+                    }
                 }
             };
         } else if (item.getBusinessType() == BizSearchType.BizSearchTypePoiParentPoint) {
@@ -307,7 +343,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     Context context = rootView.getContext();
                     String fastString = context.getString(R.string.layer_search_along_way_charge_fast, fastFree, fastTotal);
                     if (!ConvertUtils.isEmpty(fastText) && isShowFast) {
-                        fastText.setText(fastString);
+                        safetySetText(fastText, fastString);
                     }
 
                     if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
@@ -318,7 +354,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     }
                     String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
                     if (!ConvertUtils.isEmpty(slowText) && isShowSlow) {
-                        slowText.setText(slowString);
+                        safetySetText(slowText, slowString);
                     }
 
                     if (!isShowFast && !isShowSlow) {
@@ -391,7 +427,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     Context context = rootView.getContext();
                     String fastString = context.getString(R.string.layer_search_along_way_charge_fast, fastFree, fastTotal);
                     if (!ConvertUtils.isEmpty(fastText)) {
-                        fastText.setText(fastString);
+                        safetySetText(fastText, fastString);
                     }
 
                     if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
@@ -402,7 +438,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     }
                     String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
                     if (!ConvertUtils.isEmpty(slowText)) {
-                        slowText.setText(slowString);
+                        safetySetText(slowText, slowString);
                     }
 
                     if (!isShowFast && !isShowSlow) {
@@ -456,6 +492,18 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             };
         }
         return super.provideUpdateBitmapViewProcessor(item);
+    }
+
+    private void safetySetText(TextView textView, String string) {
+        if (ConvertUtils.isEmpty(textView)) {
+            Logger.e(TAG, "safetySetText textView == null");
+            return;
+        }
+        if (ConvertUtils.isEmpty(string)) {
+            Logger.e(TAG, "safetySetText string is Empty");
+            textView.setVisibility(GONE);
+        }
+        textView.setText(string);
     }
 
     /* 更新搜索结果数据 */

@@ -67,21 +67,21 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stv_remaining_distance_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:focusable="false"
             android:gravity="center"
-            android:maxWidth="@dimen/dp_410"
             android:maxLines="1"
-            android:ellipsize="end"
             android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_46"
             android:visibility="@{naviEta.mDistanceTimeVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/gl_arrive"
+            app:layout_constraintEnd_toStartOf="@+id/stv_arrive_time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_arrive"
             tools:text="123公里·10小时53分钟"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stv_arrive_default"

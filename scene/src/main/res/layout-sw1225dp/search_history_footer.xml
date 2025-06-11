@@ -44,7 +44,7 @@
             android:layout_marginLeft="@dimen/dp_9"
             android:text="@string/shv_clear_record"
             android:textColor="@color/search_color_ffffff_70"
-            android:textSize="@dimen/sp_32"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_delete"
             app:layout_constraintEnd_toEndOf="parent"

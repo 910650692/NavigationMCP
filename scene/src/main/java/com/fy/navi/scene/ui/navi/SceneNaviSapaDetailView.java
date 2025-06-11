@@ -43,7 +43,7 @@ public class SceneNaviSapaDetailView extends NaviSceneBase<SceneNaviSapaDetailVi
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SAPA_DETAIL_INFO;
     }
 

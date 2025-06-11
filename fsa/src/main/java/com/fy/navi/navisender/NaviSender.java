@@ -70,8 +70,8 @@ public class NaviSender {
             };
             mSdNavigationStatusGroup.setNaviStatCrntRdLvl(curRoadClass);
             mSdNavigationStatusGroup.setNaviStatCrntRdLvl_Inv(1);
-            mSdNavigationStatusGroup.setNaviStatRmnDist(naviETAInfo.getAllDist() / 5);
-            logs.add("remainDist= " + naviETAInfo.getAllDist());
+            mSdNavigationStatusGroup.setNaviStatRmnDist(naviETAInfo.getRemainDist() / 5);
+            logs.add("remainDist= " + naviETAInfo.getRemainDist());
             mSdNavigationStatusGroup.setNaviStatRmnDist_Inv(1);
             ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = naviETAInfo.getViaRemain();
             if (viaRemain != null && !viaRemain.isEmpty()) {
@@ -87,9 +87,9 @@ public class NaviSender {
             SignalPackage.getInstance().setSdNavigationStatus(mSdNavigationStatusGroup);
 
             mRoadConditionGroupSecond.setDataInv(1);
-            mRoadConditionGroupSecond.setEstimRemnDistn(naviETAInfo.getAllDist() / 1000);
-            mRoadConditionGroupSecond.setEstimRemnTim(naviETAInfo.getAllTime());
-            logs.add("remainTime= " + naviETAInfo.getAllTime());
+            mRoadConditionGroupSecond.setEstimRemnDistn(naviETAInfo.getRemainDist() / 1000);
+            mRoadConditionGroupSecond.setEstimRemnTim(naviETAInfo.getRemainTime());
+            logs.add("remainTime= " + naviETAInfo.getRemainTime());
             SignalPackage.getInstance().setRoadConditionGroupSecond(mRoadConditionGroupSecond);
 
             ArrayList<NaviEtaInfo.NaviTimeAndDist> chargeStationRemain = naviETAInfo.getChargeStationRemain();
@@ -123,7 +123,7 @@ public class NaviSender {
                 logs.add("null");
             } else {
                 NaviCongestionDetailInfoEntity entity = naviCongestionInfoEntity.getCongestionInfos().get(0);
-                int distanceToTrafficJamRoad = L2Package.getInstance().getTrafficLightDis(entity.getBeginSegmentIndex(), entity.getBeginLinkIndex());
+                int distanceToTrafficJamRoad = L2Package.getInstance().getLinkDist(entity.getBeginSegmentIndex(), entity.getBeginLinkIndex());
                 logs.add("distance= " + distanceToTrafficJamRoad);
                 int distanceOnTrafficJamRoad = entity.getRemainDist();
                 logs.add("length= " + distanceOnTrafficJamRoad);

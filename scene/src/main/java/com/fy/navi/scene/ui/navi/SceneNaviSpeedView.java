@@ -41,7 +41,7 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_SPEED;
     }
 
