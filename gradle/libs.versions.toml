@@ -47,6 +47,7 @@ carUiLib = "2.6.0"
 vehicleapi = "0.0.15"
 basic = "0.3.1"
 protobean = "0.5.20"
+leakcanary = "2.14"
 
 [libraries]
 adapter-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava", version.ref = "adapterRxjava" }
@@ -95,6 +96,8 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 projectlombok-lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombokVersion" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
 net-basic = {module = "com.patac.hmi.library:net_basic", version.ref = "basic"}
+leak_canary = {module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

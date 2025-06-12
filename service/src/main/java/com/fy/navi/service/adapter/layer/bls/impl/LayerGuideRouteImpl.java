@@ -174,21 +174,19 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     }
 
     /*全览转换 */
-    public PreviewParams getPathResultBound(ArrayList<?> pathResult) {
+    public PreviewParams.RectDouble getPathResultBound(ArrayList<?> pathResult) {
         PreviewParams previewParams = new PreviewParams();
         if (ConvertUtils.isEmpty(pathResult)) {
             Logger.e(TAG, "getPathResultBound pathResult is Empty");
-            return previewParams;
+            return new PreviewParams.RectDouble();
         }
         ArrayList<PathInfo> pathInfos = (ArrayList<PathInfo>) pathResult;
         RectDouble rectDouble = BizGuideRouteControl.getPathResultBound(pathInfos);
         Logger.d(TAG, "path info 转换为预览巨型区域参数：", rectDouble);
-        previewParams.setRouteLine(true);
-        previewParams.setbUseRect(true);
         if (!ConvertUtils.isEmpty(rectDouble)) {
-            previewParams.setMapBound(new PreviewParams.RectDouble(rectDouble.left, rectDouble.right, rectDouble.top, rectDouble.bottom));
+            return new PreviewParams.RectDouble(rectDouble.left, rectDouble.right, rectDouble.top, rectDouble.bottom);
         }
-        return previewParams;
+        return new PreviewParams.RectDouble();
     }
 
     /**

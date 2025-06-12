@@ -746,14 +746,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                             intent.setData(Uri.parse("tel:" + phoneString.get(0)));
                                             final Context context = getContext();
                                             context.startActivity(intent);
-                                        } catch (ActivityNotFoundException e) {// 提示用户无法拨打电话
-                                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No app found to handle the call action: " + e.getMessage());
-                                        } catch (SecurityException e) {// 提示用户权限不足
-                                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Permission denied for making a call: " + e.getMessage());
-                                        } catch (NullPointerException e) {// 提示用户数据无效
-                                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Null pointer exception: " + e.getMessage());
-                                        } catch (IllegalArgumentException e) {// 提示用户电话号码无效
-                                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Invalid phone number: " + e.getMessage());
+                                        } catch (Exception e){
+                                            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone error " + e.toString());
                                         }
                                     }
                                     @Override
@@ -923,6 +917,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.scenePoiDetailsChargingStationView.poiChargePrice.setText(
                     getContext().getString(
                             R.string.charge_price, ConvertUtils.stringFormatTwo(chargeInfo.getCurrentElePrice())));
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setVisibility(
+                    ConvertUtils.isEmpty(chargeInfo.getCurrentServicePrice()) ? View.GONE : View.VISIBLE);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setText(
                     getContext().getString(
                             R.string.charge_park_price, chargeInfo.getCurrentServicePrice()));

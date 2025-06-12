@@ -132,7 +132,7 @@ public class LayerAdapterImpl implements ILayerApi {
      * @return
      */
     @Override
-    public PreviewParams getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult) {
+    public PreviewParams.RectDouble getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult) {
         return layersPoolManager.get(mapTypeId).getLayerGuideRoute().getPathResultBound(pathResult);
     }
 

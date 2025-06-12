@@ -1390,6 +1390,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (ConvertUtils.isEmpty(param)) {
             return;
         }
+        Logger.d(TAG, "onRouteTMCInfo： " + GsonUtils.toJson(param));
         mViewModel.setTMCView(param);
     }
 

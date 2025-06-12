@@ -90,7 +90,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
-
 public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implements
         IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
         IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack,
@@ -106,7 +105,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private ImersiveStatus mCurrentStatus = ImersiveStatus.IMERSIVE;
     private List<NaviViaEntity> mViaList = new ArrayList<>();
     private NaviEtaInfo mNaviEtaInfo;
-    private Runnable mRunnable;
+    private Runnable mEndPoiSearchRunnable;
+    private Runnable mCloseClusterOverView;
+    private Runnable mOnClusterMapOpenOrClose;
+    private volatile boolean mIsClusterOpen;
     private int mEndSearchId;
 
     public static final int BRIDGE_SWITCH = 1;
@@ -185,27 +187,73 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.registerCallBack(NaviConstant.KEY_NAVI_MODEL, this);
         mClusterMapOpenCloseManager.addClusterMapOpenCloseListener(this);
-        mRunnable = new Runnable() {
+        initRunnable();
+        // 因为生命周期是和HMI绑定的，如果页面重启并且是在导航台进入三分钟一次的终点POI查询
+        if (NaviStatus.NaviStatusType.NAVING.equals(
+                mNaviSatusPackage.getCurrentNaviStatus())) {
+            ThreadManager.getInstance().removeHandleTask(mEndPoiSearchRunnable);
+            ThreadManager.getInstance().postUi(mEndPoiSearchRunnable);
+        }
+        mNextManeuverEntity = new NextManeuverEntity();
+    }
+
+    private void initRunnable() {
+        mEndPoiSearchRunnable = new Runnable() {
             @Override
             public void run() {
                 try {
                     endPoiSearch();
-                    ThreadManager.getInstance().removeHandleTask(mRunnable);
+                    ThreadManager.getInstance().removeHandleTask(mEndPoiSearchRunnable);
                     ThreadManager.getInstance().
                             postDelay(this,
                                     NumberUtils.NUM_3 * NumberUtils.NUM_60 * NumberUtils.NUM_1000);
                 } catch (Exception e) {
-                    Logger.e(TAG, e.getMessage());
+                    Logger.e(TAG, "mEndPoiSearchRunnable ", e.getMessage());
                 }
             }
         };
-        // 因为生命周期是和HMI绑定的，如果页面重启并且是在导航台进入三分钟一次的终点POI查询
-        if (NaviStatus.NaviStatusType.NAVING.equals(
-                mNaviSatusPackage.getCurrentNaviStatus())) {
-            ThreadManager.getInstance().removeHandleTask(mRunnable);
-            ThreadManager.getInstance().postUi(mRunnable);
-        }
-        mNextManeuverEntity = new NextManeuverEntity();
+        mCloseClusterOverView = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    boolean overViewFix = mNaviPackage.getFixedOverViewStatus();
+                    Logger.i(TAG, " overViewFix = " +
+                            overViewFix);
+                    if (!overViewFix) {
+                        if (mViewModel != null) {
+                            mViewModel.naviPreviewSwitch(NumberUtils.NUM_0);
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.e(TAG, "mCloseClusterOverView ", e.getMessage());
+                }
+            }
+        };
+        mOnClusterMapOpenOrClose = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (mIsClusterOpen) {
+                        if (NaviStatus.NaviStatusType.NAVING.equals(mNaviSatusPackage.getCurrentNaviStatus())) {
+                            openClusterOverView();
+                        }
+                    } else {
+                        if (NaviStatus.NaviStatusType.NAVING.equals(mNaviSatusPackage.getCurrentNaviStatus()) &&
+                                mNaviPackage.getClusterFixOverViewStatus()) {
+                            closeClusterOverViewInEightSec();
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.e(TAG, "onClusterMapOpenOrClose Exception:", e.getMessage());
+                }
+            }
+        };
+    }
+
+    private void releaseRunnable() {
+        ThreadManager.getInstance().removeHandleTask(mEndPoiSearchRunnable);
+        ThreadManager.getInstance().removeHandleTask(mCloseClusterOverView);
+        ThreadManager.getInstance().removeHandleTask(mOnClusterMapOpenOrClose);
     }
 
     @Override
@@ -240,8 +288,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             }
             drawEndPoint(mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP));
             // 开始三分钟查询一次终点POI信息
-            ThreadManager.getInstance().removeHandleTask(mRunnable);
-            ThreadManager.getInstance().postUi(mRunnable);
+            ThreadManager.getInstance().removeHandleTask(mEndPoiSearchRunnable);
+            ThreadManager.getInstance().postUi(mEndPoiSearchRunnable);
             Logger.i(TAG, "startNaviSuccess");
             String isOpen = SettingPackage.getInstance().getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
             Logger.i(TAG, "isOpen:" + isOpen);
@@ -300,19 +348,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mTimes = NumberUtils.NUM_8;
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
             if (mTimes == NumberUtils.NUM_0) {
-                ThreadManager.getInstance().postUi(new Runnable() {
-                    @Override
-                    public void run() {
-                        boolean overViewFix = mNaviPackage.getFixedOverViewStatus();
-                        Logger.i(TAG, " overViewFix = " +
-                                overViewFix);
-                        if (!overViewFix) {
-                            if (mViewModel != null) {
-                                mViewModel.naviPreviewSwitch(NumberUtils.NUM_0);
-                            }
-                        }
-                    }
-                });
+                ThreadManager.getInstance().postUi(mCloseClusterOverView);
             }
             mTimes--;
         }, NumberUtils.NUM_0, NumberUtils.NUM_1);
@@ -527,6 +563,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onDestroy() {
         super.onDestroy();
+        cancelClusterOverViewTimer();
         NaviSceneManager.getInstance().destroySceneView();
         mNetWorkUtils.unRegisterNetworkObserver(this);
         ImmersiveStatusScene.getInstance().unRegisterCallback("NaviGuidanceModel");
@@ -541,8 +578,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (mTipManager != null) {
             mTipManager.unInit();
         }
-        ThreadManager.getInstance().postUi(mRunnable);
-        mRunnable = null;
+        releaseRunnable();
+        mEndPoiSearchRunnable = null;
+        mCloseClusterOverView = null;
+        mOnClusterMapOpenOrClose = null;
     }
 
     @Override
@@ -741,9 +780,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onVoiceOverview(final MapType mapTypeId, final boolean open) {
         Logger.i(TAG, "onVoiceOverview open:" + open);
         if (open) {
-            mViewModel.naviPreviewSwitch(ENTER_PREVIEW);
+            if (mViewModel != null) {
+                mViewModel.naviPreviewSwitch(ENTER_PREVIEW);
+            }
         } else {
-            mViewModel.naviPreviewSwitch(EXIT_PREVIEW);
+            if (mViewModel != null) {
+                mViewModel.naviPreviewSwitch(EXIT_PREVIEW);
+            }
         }
 
     }
@@ -831,16 +874,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onClusterMapOpenOrClose(boolean isOpen) {
         Logger.i(TAG, "onClusterMapOpenOrClose isOpen:" + isOpen);
-        if (isOpen) {
-            if (NaviStatus.NaviStatusType.NAVING.equals(mNaviSatusPackage.getCurrentNaviStatus())) {
-                openClusterOverView();
-            }
-        } else {
-            if (NaviStatus.NaviStatusType.NAVING.equals(mNaviSatusPackage.getCurrentNaviStatus()) &&
-                    mNaviPackage.getClusterFixOverViewStatus()) {
-                closeClusterOverViewInEightSec();
-            }
-        }
+        mIsClusterOpen = isOpen;
+        ThreadManager.getInstance().postUi(mOnClusterMapOpenOrClose);
     }
 
     public interface OnNetStatusChangeListener {
@@ -1152,5 +1187,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mRoutePackage.clearRouteLine(MapTypeManager.getInstance().
                 getMapTypeIdByName(mViewModel.mScreenId));
         mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
+        // 清楚搜索图层的扎标
+        mSearchPackage.clearLabelMark();
     }
 }

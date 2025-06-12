@@ -17,6 +17,7 @@ import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -30,13 +31,13 @@ import java.util.List;
 public class AosRestrictedPackage implements QueryRestrictedObserver {
     private static final String TAG = "AosRestrictedPackage";
     private final BlAosAdapter mBlAosAdapter;
-    private final MapAdapter mMapAdapter;
+    private final MapPackage mMapPackage;
     private final Hashtable<String, IAosRestrictedObserver> restrictedObserverList;
     private final Hashtable<String, List<IMapPackageCallback>> callbackTables = new Hashtable<>();
 
     private AosRestrictedPackage() {
         mBlAosAdapter = BlAosAdapter.getInstance();
-        mMapAdapter = MapAdapter.getInstance();
+        mMapPackage = MapPackage.getInstance();
         restrictedObserverList = new Hashtable<>();
         mBlAosAdapter.addRestrictedObserver("AosRestrictedPackage", this);
     }
@@ -90,19 +91,13 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
      * @param mapTypeId 屏幕ID
      */
     public void showRestrictedAreaPreview(final MapType mapTypeId, final RouteRestrictionParam param, final int index) {
-        final PreviewParams previewParams = new PreviewParams();
-        previewParams.setRouteLine(false);
-        previewParams.setbUseRect(false);
+        List<PreviewParams.PointD> points = new ArrayList<>();
         if (!ConvertUtils.isEmpty(param) && !ConvertUtils.isEmpty(param.getMRestrictedArea())
                 && !ConvertUtils.isEmpty(param.getMRestrictedArea().getMPointList())
                 && index < param.getMRestrictedArea().getMPointList().size() ) {
-            previewParams.setPoints(param.getMRestrictedArea().getMPointList().get(index));
+            points = param.getMRestrictedArea().getMPointList().get(index);
         }
-        previewParams.setScreenLeft(1200);
-        previewParams.setScreenRight(600);
-        previewParams.setScreenTop(210);
-        previewParams.setScreenBottom(140);
-        mMapAdapter.showPreview(mapTypeId, previewParams);
+        mMapPackage.showPreview(mapTypeId, false, 1200, 210, 600, 140, points);
     }
 
     @Override

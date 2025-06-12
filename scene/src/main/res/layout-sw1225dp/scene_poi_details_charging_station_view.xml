@@ -223,7 +223,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_14"
-            android:maxLines="1"
+
             android:text="停车费   : 会员免费"
             android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_26"

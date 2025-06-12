@@ -48,7 +48,7 @@
                 android:drawableEnd="@drawable/img_rdeact_edit"
                 tools:text = "上海市浦东新区碧波路888号"
                 android:gravity="center_vertical"
-                android:textColor="@color/forecast_content"
+                android:textColor="@color/forecast_title"
                 android:textSize="@dimen/sp_46"
                 app:layout_constraintTop_toBottomOf="@+id/forecast_title"
                 app:layout_constraintLeft_toLeftOf="@+id/forecast_title"

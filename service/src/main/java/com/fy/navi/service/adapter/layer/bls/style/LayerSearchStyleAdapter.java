@@ -3,28 +3,22 @@ package com.fy.navi.service.adapter.layer.bls.style;
 import static android.view.View.GONE;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizSearchControl;
 import com.autonavi.gbl.layer.SearchAlongWayLayerItem;
-import com.autonavi.gbl.layer.SearchChargeStationLayerItem;
-import com.autonavi.gbl.layer.SearchParentLayerItem;
 import com.autonavi.gbl.layer.model.BizChargeStationInfo;
 import com.autonavi.gbl.layer.model.BizSearchType;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.fy.navi.service.R;
 import com.fy.navi.service.define.layer.refix.LayerItemData;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchPoint;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.layer.refix.LayerSearchAlongRouteType;
-import com.fy.navi.service.define.layer.refix.LayerSearchPOIType;
-import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
@@ -40,16 +34,10 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     private static final String KEY_SEARCH_ALONG_WAY_CHARGE = "search_along_way_charge";
     //终点可停车-自定义停车场扎标
     private static final String KEY_SEARCH_PARK_ROUTE = "search_park_route";
-    //搜索列表默认扎标
-    private static final String KEY_SEARCH_LIST_INDEX_NORMAL = "search_list_index_normal";
     //搜索列表可见数字扎标
-    private static final String KEY_SEARCH_LIST_INDEX_FOCUSED = "search_list_index_focused";
-    //充电站-自定义扎标
-    private static final String KEY_SEARCH_CHARGE_POINT = "search_charge_point";
-    //充电站-已预约扎标
-    private static final String KEY_SEARCH_CHARGE_APPOINTMENT = "search_charge_appointment";
-    //充电站-列表可见数字扎标
-    private static final String KEY_SEARCH_CHARGE_LIST_INDEX_FOCUSED = "search_charge_list_index_focused";
+    private static final String KEY_SEARCH_LIST_FOCUSED_INDEX = "search_list_focused_index";
+    //充电桩列表可见数字扎标
+    private static final String KEY_SEARCH_LIST_CHARGE_FOCUSED_INDEX = "search_list_charge_focused_index";
 
     private final AtomicReference<List<PoiInfoEntity>> mPoiInfoList = new AtomicReference(new ArrayList<>());
 
@@ -62,56 +50,38 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     public String provideLayerItemStyleJson(LayerItem item) {
         switch (item.getBusinessType()) {
             case BizSearchType.BizSearchTypePoiParentPoint -> {
-                int index = getLayerItemIndex(item);
-                if (!ConvertUtils.isEmpty(mPoiInfoList.get()) && index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
+                int index = getIndexOfLayerItem(item);
+                if (index <= 11 && (mPoiInfoList.get().size() > index)) {
                     PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
                     if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
-                        Logger.d(TAG, "搜索列表可见数字扎标-index " + index);
-                        return KEY_SEARCH_LIST_INDEX_FOCUSED;
+                        Logger.d(TAG, "搜索列表可见数字扎标-index =" + index);
+                        return KEY_SEARCH_LIST_FOCUSED_INDEX + "_" + index;
                     }
                 }
             }
-            case BizSearchType.BizSearchTypePoiAlongRoute -> {
-                if (item instanceof SearchAlongWayLayerItem alongWayLayerItem) {
-                    int typeCode = alongWayLayerItem.getMTypeCode();
-                    Logger.d(TAG, "沿途搜类型 typeCode " + typeCode);
-                    switch (typeCode) {
-                        case LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE -> {
-                            Logger.d(TAG, "沿途搜-自定义充电站扎标");
-                            return KEY_SEARCH_ALONG_WAY_CHARGE;
-                        }
-                    }
-                }
-            }
+//            case BizSearchType.BizSearchTypePoiAlongRoute -> {
+//                if (item instanceof SearchAlongWayLayerItem alongWayLayerItem) {
+//                    int typeCode = alongWayLayerItem.getMTypeCode();
+//                    Logger.d(TAG, "沿途搜类型 typeCode " + typeCode);
+//                    switch (typeCode) {
+//                        case LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE -> {
+//                            Logger.d(TAG, "沿途搜-自定义充电站扎标");
+//                            return KEY_SEARCH_ALONG_WAY_CHARGE;
+//                        }
+//                    }
+//                }
+//            }
             case BizSearchType.BizSearchTypePoiParkRoute -> {
                 Logger.d(TAG, "自定义终点停车场扎标");
                 return KEY_SEARCH_PARK_ROUTE;
             }
             case BizSearchType.BizSearchTypeChargeStation -> {
-                int index = getLayerItemIndex(item);
-                if (ConvertUtils.isEmpty(mPoiInfoList.get())) {
-                    Logger.d(TAG, "充电站-自定义扎标-Default mPoiInfoList is Empty");
-                    return KEY_SEARCH_CHARGE_POINT;
-                } else {
-                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
-                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
-                        if (ConvertUtils.isEmpty(poiInfoEntity) || !poiInfoEntity.isMIsVisible()) {
-                            List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
-                            if (ConvertUtils.isEmpty(chargeInfoList) || ConvertUtils.isEmpty(chargeInfoList.get(0)) ||
-                                    !chargeInfoList.get(0).isMIsAppointment()) {
-                                Logger.d(TAG, "充电站-自定义扎标-Default");
-                                return KEY_SEARCH_CHARGE_POINT;
-                            } else {
-                                Logger.d(TAG, "充电站-已预约扎标");
-                                return KEY_SEARCH_CHARGE_APPOINTMENT;
-                            }
-                        } else {
-                            Logger.d(TAG, "充电站-列表可见数字扎标-index " + index);
-                            return KEY_SEARCH_CHARGE_LIST_INDEX_FOCUSED;
-                        }
-                    } else {
-                        Logger.d(TAG, "充电站-自定义扎标-下标越界-Default");
-                        return KEY_SEARCH_CHARGE_POINT;
+                int index = getIndexOfLayerItem(item);
+                if (index <= 11 && (mPoiInfoList.get().size() > index)) {
+                    PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
+                    if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
+                        Logger.d(TAG, "搜索充电桩 列表可见数字扎标-index =" + index);
+                        return KEY_SEARCH_LIST_CHARGE_FOCUSED_INDEX + "_" + index;
                     }
                 }
             }
@@ -295,201 +265,6 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     }
                 }
             };
-        } else if (item.getBusinessType() == BizSearchType.BizSearchTypePoiParentPoint) {
-            return new IUpdateBitmapViewProcessor() {
-                @Override
-                public void onNormalProcess(View rootView, LayerItemData data) {
-                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
-                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
-                        if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
-                            Logger.d(TAG, "搜索列表可见数字扎标-index " + index);
-                            ImageView imageView = rootView.findViewById(R.id.search_charge_list_focused);
-                            if (ConvertUtils.isEmpty(imageView)) {
-                                Logger.e(TAG, "搜索列表可见数字扎标 imageView == null");
-                                return;
-                            }
-                            TypedArray imageArray = rootView.getContext().getResources().obtainTypedArray(R.array.layer_icon_search_list_poi_array);
-                            try {
-                                int resourceId = imageArray.getResourceId(index, 0);
-                                imageView.setImageResource(resourceId);
-                            } finally {
-                                imageArray.recycle();
-                            }
-                        }
-                    }
-                }
-            };
-        } else if (item.getBusinessType() == BizSearchType.BizSearchTypeChargeStation) {
-            return new IUpdateBitmapViewProcessor() {
-                @Override
-                public void onFocusProcess(View rootView, LayerItemData data) {
-                    SearchChargeStationLayerItem info = (SearchChargeStationLayerItem) item;
-                    LinearLayout linearLayout = rootView.findViewById(R.id.search_charge_detail_linear);
-                    TextView fastText = rootView.findViewById(R.id.search_charge_detail_fast);
-                    TextView slowText = rootView.findViewById(R.id.search_charge_detail_slow);
-                    boolean isShowFast = true;
-                    boolean isShowSlow = true;
-                    int fastFree = info.getMChargeStationInfo().fastFree;
-                    int fastTotal = info.getMChargeStationInfo().fastTotal;
-                    int slowFree = info.getMChargeStationInfo().slowFree;
-                    int slowTotal = info.getMChargeStationInfo().slowTotal;
-
-                    if (fastFree == NumberUtils.NUM_0 && fastTotal == NumberUtils.NUM_0) {
-                        if (!ConvertUtils.isEmpty(fastText)) {
-                            fastText.setVisibility(GONE);
-                            isShowFast = false;
-                        }
-                    }
-                    Context context = rootView.getContext();
-                    String fastString = context.getString(R.string.layer_search_along_way_charge_fast, fastFree, fastTotal);
-                    if (!ConvertUtils.isEmpty(fastText) && isShowFast) {
-                        safetySetText(fastText, fastString);
-                    }
-
-                    if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
-                        if (!ConvertUtils.isEmpty(slowText)) {
-                            slowText.setVisibility(GONE);
-                            isShowSlow = false;
-                        }
-                    }
-                    String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
-                    if (!ConvertUtils.isEmpty(slowText) && isShowSlow) {
-                        safetySetText(slowText, slowString);
-                    }
-
-                    if (!isShowFast && !isShowSlow) {
-                        linearLayout.setVisibility(GONE);
-                    }
-
-                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
-                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
-                        if (ConvertUtils.isEmpty(poiInfoEntity) || !poiInfoEntity.isMIsVisible()) {
-                            List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
-                            if (ConvertUtils.isEmpty(chargeInfoList) || ConvertUtils.isEmpty(chargeInfoList.get(0)) ||
-                                    !chargeInfoList.get(0).isMIsAppointment()) {
-                                Logger.d(TAG, "充电站-自定义扎标-Focus-非list可见图元-非预约");
-                                ImageView imageView = rootView.findViewById(R.id.search_charge_focused);
-                                if (ConvertUtils.isEmpty(imageView)) {
-                                    Logger.e(TAG, "充电站-自定义扎标-Focus imageView == null");
-                                    return;
-                                }
-                                String brand = chargeInfoList.get(0).getMBrand();
-                                int brandIndex = getSearchChargeBrandIndex(brand);
-                                if (brandIndex == NumberUtils.NUM_ERROR) {
-                                    return;
-                                }
-                                TypedArray imageArray = rootView.getContext().getResources().obtainTypedArray(R.array.layer_icon_search_brand_normal_focused);
-                                try {
-                                    int resourceId = imageArray.getResourceId(brandIndex, 0);
-                                    imageView.setImageResource(resourceId);
-                                } finally {
-                                    imageArray.recycle();
-                                }
-                            }
-                        } else {
-                            Logger.d(TAG, "充电站-列表可见数字扎标-index " + index);
-                            ImageView imageView = rootView.findViewById(R.id.search_charge_focused);
-                            if (ConvertUtils.isEmpty(imageView)) {
-                                Logger.e(TAG, "充电站-列表可见数字扎标-Focused imageView == null");
-                                return;
-                            }
-                            TypedArray imageArray = rootView.getContext().getResources().obtainTypedArray(R.array.layer_icon_search_list_poi_array);
-                            try {
-                                int resourceId = imageArray.getResourceId(index, 0);
-                                Logger.e(TAG, "充电站-列表可见数字扎标-Focused index " + index);
-                                imageView.setImageResource(resourceId);
-                            } finally {
-                                imageArray.recycle();
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onNormalProcess(View rootView, LayerItemData data) {
-                    SearchChargeStationLayerItem info = (SearchChargeStationLayerItem) item;
-                    LinearLayout linearLayout = rootView.findViewById(R.id.search_charge_detail_linear);
-                    TextView fastText = rootView.findViewById(R.id.search_charge_detail_fast);
-                    TextView slowText = rootView.findViewById(R.id.search_charge_detail_slow);
-                    boolean isShowFast = true;
-                    boolean isShowSlow = true;
-                    int fastFree = info.getMChargeStationInfo().fastFree;
-                    int fastTotal = info.getMChargeStationInfo().fastTotal;
-                    int slowFree = info.getMChargeStationInfo().slowFree;
-                    int slowTotal = info.getMChargeStationInfo().slowTotal;
-
-                    if (fastFree == NumberUtils.NUM_0 && fastTotal == NumberUtils.NUM_0) {
-                        if (!ConvertUtils.isEmpty(fastText)) {
-                            fastText.setVisibility(GONE);
-                            isShowFast = false;
-                        }
-                    }
-                    Context context = rootView.getContext();
-                    String fastString = context.getString(R.string.layer_search_along_way_charge_fast, fastFree, fastTotal);
-                    if (!ConvertUtils.isEmpty(fastText)) {
-                        safetySetText(fastText, fastString);
-                    }
-
-                    if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
-                        if (!ConvertUtils.isEmpty(slowText)) {
-                            slowText.setVisibility(GONE);
-                            isShowSlow = false;
-                        }
-                    }
-                    String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
-                    if (!ConvertUtils.isEmpty(slowText)) {
-                        safetySetText(slowText, slowString);
-                    }
-
-                    if (!isShowFast && !isShowSlow) {
-                        linearLayout.setVisibility(GONE);
-                    }
-
-                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
-                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
-                        if (ConvertUtils.isEmpty(poiInfoEntity) || !poiInfoEntity.isMIsVisible()) {
-                            List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
-                            if (ConvertUtils.isEmpty(chargeInfoList) || ConvertUtils.isEmpty(chargeInfoList.get(0)) ||
-                                    !chargeInfoList.get(0).isMIsAppointment()) {
-                                Logger.d(TAG, "充电站-自定义扎标-Normal-非list可见图元-非预约");
-                                ImageView imageView = rootView.findViewById(R.id.search_charge_focused);
-                                if (ConvertUtils.isEmpty(imageView)) {
-                                    Logger.e(TAG, "充电站-自定义扎标-Normal imageView == null");
-                                    return;
-                                }
-                                String brand = chargeInfoList.get(0).getMBrand();
-                                int brandIndex = getSearchChargeBrandIndex(brand);
-                                if (brandIndex == NumberUtils.NUM_ERROR) {
-                                    Logger.d(TAG, "充电站-自定义扎标-Normal-Default扎标");
-                                    return;
-                                }
-                                TypedArray imageArray = rootView.getContext().getResources().obtainTypedArray(R.array.layer_icon_search_brand_normal_array);
-                                try {
-                                    int resourceId = imageArray.getResourceId(brandIndex, 0);
-                                    imageView.setImageResource(resourceId);
-                                } finally {
-                                    imageArray.recycle();
-                                }
-                            }
-                        } else {
-                            Logger.d(TAG, "充电站-列表可见数字扎标-index " + index);
-                            ImageView imageView = rootView.findViewById(R.id.search_charge_focused);
-                            if (ConvertUtils.isEmpty(imageView)) {
-                                Logger.e(TAG, "充电站-列表可见数字扎标-Normal imageView == null");
-                                return;
-                            }
-                            TypedArray imageArray = rootView.getContext().getResources().obtainTypedArray(R.array.layer_icon_search_list_poi_array);
-                            try {
-                                int resourceId = imageArray.getResourceId(index, 0);
-                                Logger.d(TAG, "充电站-列表可见数字扎标-Normal index " + index);
-                                imageView.setImageResource(resourceId);
-                            } finally {
-                                imageArray.recycle();
-                            }
-                        }
-                    }
-                }
-            };
         }
         return super.provideUpdateBitmapViewProcessor(item);
     }
@@ -548,7 +323,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     }
 
     private int getLayerItemIndex(LayerItem item) {
-        if(item == null){
+        if (item == null) {
             Logger.e(TAG, "getLayerItemIndex item == null");
             return 0;
         }
@@ -574,23 +349,19 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
         }
     }
 
-    //获取充电站品牌对应下标
-    private int getSearchChargeBrandIndex(String brand) {
-        int index = NumberUtils.NUM_ERROR;
-        if (ConvertUtils.isEmpty(brand)) {
-            Logger.e(TAG, "getSearchChargeBrandIndex brand == null");
-            return index;
+
+
+    @Override
+    public List<CustomUpdatePair> updateTextureUpdatePair(LayerItem item) {
+        List<CustomUpdatePair> customUpdatePairs = new ArrayList<>();
+        switch (item.getBusinessType()) {
+            case BizSearchType.BizSearchTypeChargeStation: {
+                //TODO判断是否已经预约
+//                customUpdatePairs.add(createUpdateStylePair("best_icon","display:flex;"));
+                break;
+            }
         }
-        if (brand.contains("国家电网")) {
-            index = 0;
-        } else if (brand.contains("普天")) {
-            index = 1;
-        } else if (brand.contains("星星")) {
-            index = 2;
-        } else if (brand.contains("特来电")) {
-            index = 3;
-        }
-        Logger.d(TAG, "getSearchChargeBrandIndex index " + index);
-        return index;
+        return customUpdatePairs;
     }
+
 }

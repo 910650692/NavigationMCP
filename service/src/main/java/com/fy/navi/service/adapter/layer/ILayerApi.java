@@ -40,7 +40,7 @@ public interface ILayerApi {
 
     /*========================================= ROUTE LAYER START =========================================*/
     /* 全览参数句柄转换 */
-    PreviewParams getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult);
+    PreviewParams.RectDouble getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult);
 
     /* 绘制路线 */
     void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult);

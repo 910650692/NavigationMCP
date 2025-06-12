@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="false"
+        android:scrollbars="none"
         android:fillViewport="true">
 
         <com.android.car.ui.FocusArea
@@ -284,7 +285,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/map_display_des">
 
-                    <com.fy.navi.ui.view.SkinCheckBox
+                    <com.fy.navi.scene.ui.setting.DynamicCheckBox
                         clickCommand="@{viewModel.mChargingStationClick}"
                         android:id="@+id/charging_station"
                         android:layout_width="@dimen/dp_344"
@@ -297,10 +298,10 @@
                         android:focusable="true"
                         android:layout_marginEnd="@dimen/dp_36"
                         android:text="@string/setting_guide_charging_station"
-                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:textColor="@drawable/setting_checkbox_text_color_selector"
                         android:textSize="@dimen/sp_46" />
 
-                    <com.fy.navi.ui.view.SkinCheckBox
+                    <com.fy.navi.scene.ui.setting.DynamicCheckBox
                         clickCommand="@{viewModel.mRoadConditionClick}"
                         android:id="@+id/road_condition"
                         android:layout_width="@dimen/dp_344"
@@ -311,10 +312,10 @@
                         android:gravity="center"
                         android:focusable="true"
                         android:text="@string/setting_guide_road_condition"
-                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:textColor="@drawable/setting_checkbox_text_color_selector"
                         android:textSize="@dimen/sp_46" />
 
-                    <com.fy.navi.ui.view.SkinCheckBox
+                    <com.fy.navi.scene.ui.setting.DynamicCheckBox
                         clickCommand="@{viewModel.mFavoritePointClick}"
                         android:id="@+id/favorite_point"
                         android:layout_width="@dimen/dp_344"
@@ -326,7 +327,7 @@
                         android:focusable="true"
                         android:layout_marginStart="@dimen/dp_36"
                         android:text="@string/setting_guide_favorite_point"
-                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:textColor="@drawable/setting_checkbox_text_color_selector"
                         android:textSize="@dimen/sp_46" />
 
                 </com.fy.navi.ui.view.SkinLinearLayout>

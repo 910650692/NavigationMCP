@@ -204,8 +204,8 @@
                     <com.fy.navi.ui.view.SkinTextView
                         clickCommand="@{viewModel.mSwitchCruiseBroadcastClick}"
                         android:id="@+id/switch_eagle_eye_map"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/dp_96"
+                        android:layout_height="@dimen/dp_48"
                         android:layout_gravity="center"
                         android:background="@{viewModel.mIsCruiseBroadcast ? @drawable/img_setting_switch_on : @drawable/img_setting_switch_off}" />
 

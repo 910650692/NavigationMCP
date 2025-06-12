@@ -85,6 +85,8 @@ public class WeChatModel extends BaseModel<WeChatViewModel> implements WeChatCal
                 mViewModel.setIsBind(true);
                 mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
             }
+        } else {
+            Logger.d(TAG, "notifyWeixinStatus result == null");
         }
     }
 

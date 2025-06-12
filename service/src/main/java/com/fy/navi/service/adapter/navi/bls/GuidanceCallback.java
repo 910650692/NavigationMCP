@@ -479,17 +479,6 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
                     }
                 }
             }
-        } else if (rerouteOption.getRouteType() == RouteType.RouteTypeTMC) {
-            final SoundInfoEntity soundInfo = new SoundInfoEntity();
-            String info = ResourceUtils.Companion.getInstance().getString(R.string.route_type_tmc);
-            soundInfo.setText(info);
-            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
-                for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
-                    if (guidanceObserver != null) {
-                        guidanceObserver.onPlayTTS(soundInfo);
-                    }
-                }
-            }
         }
     }
 

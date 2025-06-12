@@ -51,6 +51,7 @@ import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,7 +82,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private final MapDataAdapter mMapDataAdapter;
     private final SearchAdapter mSearchAdapter;
     private final LayerAdapter mLayerAdapter;
-    private final MapAdapter mMapAdapter;
+    private final MapPackage mMapPackage;
     private final RouteAdapter mRouteAdapter;
     private final NavistatusAdapter mNavistatusAdapter;
     private final UserTrackAdapter mUserTrackAdapter;
@@ -96,7 +97,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private SearchPackage() {
         mManager = HistoryManager.getInstance();
         mManager.init();
-        mMapAdapter = MapAdapter.getInstance();
+        mMapPackage = MapPackage.getInstance();
         mPositionAdapter = PositionAdapter.getInstance();
         mMapDataAdapter = MapDataAdapter.getInstance();
         mSearchAdapter = SearchAdapter.getInstance();
@@ -255,7 +256,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .page(page)
                 .queryType(AutoMapConstant.SearchQueryType.NORMAL)
                 .searchType(AutoMapConstant.SearchType.SEARCH_KEYWORD)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .userLoc(userLoc)
                 .checkedLevel("")
@@ -289,7 +290,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .page(page)
                 .queryType(AutoMapConstant.SearchQueryType.NORMAL)
                 .searchType(AutoMapConstant.SearchType.SEARCH_KEYWORD)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .userLoc(userLoc)
                 .isReSearch(isReSearch)
@@ -326,7 +327,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .isReSearch(isReSearch)
                 .queryType(AutoMapConstant.SearchQueryType.NORMAL)
                 .searchType(AutoMapConstant.SearchType.SEARCH_KEYWORD)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .adCode(adCode)
                 .userLoc(userLoc)
                 .build();
@@ -360,7 +361,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .page(page)
                 .queryType(AutoMapConstant.SearchQueryType.NORMAL)
                 .searchType(AutoMapConstant.SearchType.SEARCH_KEYWORD)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .userLoc(userLoc)
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .retainState(retain)
@@ -394,7 +395,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .page(page)
                 .queryType(AutoMapConstant.SearchQueryType.NORMAL)
                 .searchType(AutoMapConstant.SearchType.SEARCH_KEYWORD)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .userLoc(userLoc)
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .build();
@@ -633,7 +634,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .searchType(isTerminal ? AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH : AutoMapConstant.SearchType.AROUND_SEARCH)
                 .userLoc(userLoc)
                 .poiLoc(geoPoint)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .build();
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing around search.");
@@ -667,7 +668,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .searchType(AutoMapConstant.SearchType.AROUND_SEARCH)
                 .userLoc(userLoc)
                 .poiLoc(geoPoint)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .range(range)
                 .build();
@@ -703,7 +704,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .searchType(AutoMapConstant.SearchType.AROUND_SEARCH)
                 .userLoc(userLoc)
                 .poiLoc(geoPoint)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .range(range)
                 .build();
@@ -735,7 +736,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .searchType(AutoMapConstant.SearchType.AROUND_SEARCH)
                 .userLoc(userLoc)
                 .poiLoc(userLoc)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .build();
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing around search with userLoc.");
@@ -777,7 +778,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .page(page)
                 .searchType(AutoMapConstant.SearchType.ALONG_WAY_SEARCH)
                 .userLoc(userLoc)
-                .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .naviType(2)
                 .startPoint(startPoint)
@@ -1201,32 +1202,21 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * 移动主图，将搜索扎标移到主图中心点
      * @param poiList 需要扎标的数据列表
      */
-    private void showPreview(final List<PoiInfoEntity> poiList) {
+    public void showPreview(final List<PoiInfoEntity> poiList) {
         if (ConvertUtils.isEmpty(poiList)) {
             return;
         }
-        final PreviewParams previewParams = new PreviewParams();
         final List<PreviewParams.PointD> points = poiList.stream()
                 .filter(poiInfo -> poiInfo.getPoint() != null)
                 .map(poiInfo -> new PreviewParams.PointD(poiInfo.getPoint().getLon(), poiInfo.getPoint().getLat()))
                 .collect(Collectors.toList());
-        previewParams.setPoints(points);
-        previewParams.setbUseRect(false);
-        if (ConvertUtils.isEmpty(previewParams)) {
-            Logger.e(TAG, "previewParams is null");
-            return;
-        }
-        previewParams.setScreenLeft(1350);
-        previewParams.setScreenRight(600);
-        previewParams.setScreenTop(210);
-        previewParams.setScreenBottom(140);
         if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
-            mMapAdapter.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, previewParams);
+            mMapPackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, false, 1350, 210, 600, 140, points);
         } else {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointPreview");
             if (!ConvertUtils.isEmpty(poiList.get(0).getPoint())) {
-                mMapAdapter.setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP, poiList.get(0).getPoint());
+                mMapPackage.setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP, poiList.get(0).getPoint());
             }
         }
     }
@@ -1239,23 +1229,12 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (ConvertUtils.isEmpty(poiList)) {
             return;
         }
-        final PreviewParams previewParams = new PreviewParams();
         final List<PreviewParams.PointD> points = poiList.stream()
                 .map(poiInfo -> new PreviewParams.PointD(poiInfo.getLon(), poiInfo.getLat()))
                 .collect(Collectors.toList());
-        previewParams.setPoints(points);
-        previewParams.setbUseRect(false);
-        if (ConvertUtils.isEmpty(previewParams)) {
-            Logger.e(TAG, "previewParams is null");
-            return;
-        }
-        previewParams.setScreenLeft(1350);
-        previewParams.setScreenRight(600);
-        previewParams.setScreenTop(210);
-        previewParams.setScreenBottom(140);
         if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
-            mMapAdapter.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, previewParams);
+            mMapPackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, false, 1350, 210, 600, 140, points);
         }
     }
 

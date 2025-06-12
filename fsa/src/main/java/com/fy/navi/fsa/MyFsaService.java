@@ -103,6 +103,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private ScheduledFuture mParkingLotSF;
     private ScheduledFuture mServiceSF;
     private ScheduledFuture mGasStationSF;
+    private SapaInfoEntity mSapaInfoEntity;
 
     private boolean mIsHudInit = false;
     private boolean mIsHudServiceStart = false;
@@ -1154,13 +1155,14 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 }
                 mServiceSF.cancel(true);
             } else {
+                mSapaInfoEntity = sapaInfoEntity;
                 if (mServiceSF != null) {
                     return;
                 }
                 mServiceSF = ThreadManager.getInstance().asyncWithFixDelay(new Runnable() {
                     @Override
                     public void run() {
-                        FsaNaviScene.getInstance().updateHighwayService(MyFsaService.this, sapaInfoEntity);
+                        FsaNaviScene.getInstance().updateHighwayService(MyFsaService.this, mSapaInfoEntity);
                     }
                 }, 0, 15, TimeUnit.SECONDS);
             }

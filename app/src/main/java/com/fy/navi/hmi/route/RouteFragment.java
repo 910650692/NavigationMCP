@@ -1,6 +1,7 @@
 package com.fy.navi.hmi.route;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -500,11 +501,16 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             Logger.d("mRouteRequestLoadingDialog is showing");
             return;
         }
-        mRouteRequestLoadingDialog = new RouteRequestLoadingDialog(
-                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
-        mRouteRequestLoadingDialog.setOnCloseClickListener(mViewModel);
-        if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
-            mRouteRequestLoadingDialog.show();
+        final Context context = this.getContext();
+        if (context == null) {
+            return;
+        }
+        if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
+            mRouteRequestLoadingDialog = new RouteRequestLoadingDialog(context);
+            mRouteRequestLoadingDialog.setOnCloseClickListener(mViewModel);
+            if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
+                mRouteRequestLoadingDialog.show();
+            }
         }
     }
 
@@ -535,10 +541,15 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             Logger.d("mSearchLoadingDialog is showing");
             return;
         }
-        mSearchLoadingDialog = new RouteSearchLoadingDialog(
-                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
-        if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
-            mSearchLoadingDialog.show();
+        final Context context = this.getContext();
+        if (context == null) {
+            return;
+        }
+        if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
+            mSearchLoadingDialog = new RouteSearchLoadingDialog(context);
+            if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
+                mSearchLoadingDialog.show();
+            }
         }
     }
 
@@ -570,20 +581,25 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             return;
         }
         mViewModel.cancelTimer();
-        mMsgTopDialog = new MsgTopDialog(
-                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()), TripID.ROUTE_LOW_BATTER,
-                mViewModel.getMsgDialogTop(), mViewModel.getMsgDialogLeft());
-        mMsgTopDialog.setTitle(title);
-        mMsgTopDialog.setContent(content);
-        mMsgTopDialog.setDialogClickListener(new IBaseDialogClickListener() {
-            @Override
-            public void onCommitClick(final TripID tripID) {
-                if (tripID == TripID.ROUTE_LOW_BATTER) {
-                    mBinding.routeLineInfoSwitchEnergy.setChecked(true);
+        final Context context = this.getContext();
+        if (context == null) {
+            return;
+        }
+        if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
+            mMsgTopDialog = new MsgTopDialog(context, TripID.ROUTE_LOW_BATTER,
+                    mViewModel.getMsgDialogTop(), mViewModel.getMsgDialogLeft());
+            mMsgTopDialog.setTitle(title);
+            mMsgTopDialog.setContent(content);
+            mMsgTopDialog.setDialogClickListener(new IBaseDialogClickListener() {
+                @Override
+                public void onCommitClick(final TripID tripID) {
+                    if (tripID == TripID.ROUTE_LOW_BATTER) {
+                        mBinding.routeLineInfoSwitchEnergy.setChecked(true);
+                    }
                 }
-            }
-        });
-        mMsgTopDialog.showDialog();
+            });
+            mMsgTopDialog.showDialog();
+        }
     }
 
     /***

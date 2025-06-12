@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.layer.bls.style;
 
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.observer.PrepareLayerParamInner;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
@@ -15,6 +16,20 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
 
     public BaseStyleAdapter(int engineID) {
         super(engineID);
+    }
+
+    protected int getIndexOfLayerItem(LayerItem item) {
+        if (item == null) {
+            Logger.e(TAG, "getLayerItemIndex item == null");
+            return 0;
+        }
+        String id = item.getID();
+        try {
+            return Integer.parseInt(id) + 1;
+        } catch (Exception e) {
+            Logger.e(TAG, "getLayerItemIndex ID format: " + id);
+            return 0;
+        }
     }
 
     /**

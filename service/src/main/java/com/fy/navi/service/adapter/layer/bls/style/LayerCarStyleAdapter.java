@@ -69,7 +69,6 @@ public class LayerCarStyleAdapter extends BaseStyleAdapter {
     }
 
     public void updateCarSpeed(int speed) {
-        Logger.d(TAG, "更新车速");
         if (speed >= 0 && speed != speeds.get()) {
             speeds.set(speed);
         }

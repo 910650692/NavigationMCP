@@ -16,5 +16,4 @@
     <string name="charge_equipment_reversion">已约</string>
     <string name="charge_equipment_error">故障</string>
     <string name="route_type_yaw">您已偏航，已为您重新规划路线</string>
-    <string name="route_type_tmc">道路拥堵，已为您重新规划路线</string>
 </resources>

@@ -43,6 +43,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         mAccountPackage = AccountPackage.getInstance();
         mSettingPackage = SettingPackage.getInstance();
         mWeChatPackage = WeChatPackage.getInstance();
+        mWeChatPackage.initWeChatService();
         mSettingManager = SettingManager.getInstance();
         mSettingManager.init();
         mHistoryManager = HistoryManager.getInstance();
@@ -105,7 +106,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         if (result != null && result.getCode() == 1) {
             if (result.getProfileInfo() != null) {
                 mViewModel.updateUserInfo(result.getProfileInfo().getNickname(), result.getProfileInfo().getAvatar());
-
+                mWeChatPackage.sendReqWsPpAutoWeixinStatus();
                 //For Bury Point
                 sendBuryPointForCompleteBindingAccount();
             }
@@ -117,7 +118,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         if (result != null && result.getCode() == 1) {
             if (result.getProfileInfo() != null) {
                 mViewModel.updateUserInfo(result.getProfileInfo().getNickname(), result.getProfileInfo().getAvatar());
-
+                mWeChatPackage.sendReqWsPpAutoWeixinStatus();
                 //For Bury Point
                 sendBuryPointForCompleteBindingAccount();
             }
@@ -201,6 +202,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
      */
     public boolean getWechatStatus() {
         final String isBind = mSettingManager.getValueByKey(SettingController.KEY_SETTING_IS_WE_CHAT_BIND);
+        Logger.d("getWechatStatus = " + isBind);
         return isBind.equals(SettingController.VALUE_GENERIC_TRUE);
     }
 

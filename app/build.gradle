@@ -215,6 +215,7 @@ android {
 dependencies {
     implementation libs.bundles.android.library
     implementation libs.car.ui.lib
+    debugImplementation libs.leak.canary
     implementation files('src\\libs\\PatacLauncherManager.jar')
     testImplementation libs.bundles.test.junit
     androidTestImplementation libs.bundles.android.junit

@@ -20,4 +20,6 @@
     <color name="cluster_title_transparent_ninety">#E6FFFFFF</color>
     <color name="cluster_unit_transparent_sixty">#99FFFFFF</color>
     <color name="cluster_custom_dark_gray">#ED232735</color>
+
+    <color name="dialog_cancel_text_b3181818">#99FFFFFF</color>
 </resources>

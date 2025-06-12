@@ -20,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.android.utils.log.Logger;
-import com.android.utils.thread.ThreadManager;
 import com.fy.navi.adas.L2PPManager;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BuildConfig;
@@ -28,19 +27,9 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.LayoutTestBinding;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.engine.GaodeLogLevel;
-import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.navistatus.NaviStatus;
-import com.fy.navi.service.define.setting.SettingConstant;
-import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.hud.HudPackage;
-import com.fy.navi.service.logicpaket.hud.IHudCallback;
-import com.fy.navi.service.logicpaket.map.IEglScreenshotCallBack;
-import com.fy.navi.service.logicpaket.map.MapPackage;
-import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
-import com.fy.navi.service.logicpaket.navi.NaviPackage;
-import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.recorder.RecorderPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
@@ -112,22 +101,6 @@ public class TestWindow {
         mBinding.testGaodeLogLevel.setAdapter(createNaiAdapter());
     }
 
-    private final IHudCallback mIEglScreenshotCallBack = new IHudCallback() {
-        @Override
-        public void onEGLScreenshot(MapType mapType, byte[] bytes) {
-            Logger.d(TAG, "onEGLScreenshot-->");
-            ThreadManager.getInstance().postUi(() -> {
-                if (mapType != MapType.HUD_MAP) {
-                    return;
-                }
-                Logger.d(TAG, "onEGLScreenshot--> bytes: " + bytes.length);
-                byte[] bytearry = processPicture(bytes, (int) mBinding.hudMapview.getMapViewWidth(), (int) mBinding.hudMapview.getMapViewHeight());
-                Bitmap bitmap = Bitmap.createBitmap((int) mBinding.hudMapview.getMapViewWidth(), (int) mBinding.hudMapview.getMapViewHeight(), Bitmap.Config.ARGB_8888);
-                bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytearry));
-                mBinding.testHud.setImageBitmap(bitmap);
-            });
-        }
-    };
 
     private boolean checkOverlayPermission(Context context) {
         return Settings.canDrawOverlays(context);
@@ -166,10 +139,6 @@ public class TestWindow {
 
     private void initAction() {
         mBinding.close.setOnClickListener(v -> removeViewFromWindow());
-        mBinding.testStartNavi.setOnClickListener(v -> NaviPackage.getInstance().startNavigation(SettingConstant.ISSIMULATEMODE));
-        mBinding.testStopNavi.setOnClickListener(v -> NaviPackage.getInstance().stopNavigation());
-        mBinding.testCurrentCityData.setOnClickListener(v -> MapDataPackage.getInstance().getCityInfo(310000));
-        mBinding.testKeyCityData.setOnClickListener(v -> MapDataPackage.getInstance().searchAdCode("海"));
         mBinding.testCalibration.setOnClickListener(v -> {
             CalibrationPackage calibration = CalibrationPackage.getInstance();
             calibration.powerType();
@@ -227,16 +196,6 @@ public class TestWindow {
             MyFsaService.getInstance().onReceiveRequest(9201, "24");
         });
 
-        mBinding.testInsertData.setOnClickListener(v -> {
-            SettingManager dbHelper = new SettingManager();
-            dbHelper.insertValue("", "");
-        });
-
-        mBinding.testDeleteData.setOnClickListener(v -> {
-            SettingManager dbHelper = new SettingManager();
-            dbHelper.deleteAll();
-        });
-
         mBinding.testShowDr.setOnClickListener(v -> {
             Activity mActivity = mActivityRef.get();
             removeViewFromWindow();
@@ -258,17 +217,16 @@ public class TestWindow {
             removeViewFromWindow();
         });
 
-        mBinding.testSelectText.setOnClickListener(v -> toggleSelection(mBinding.testSelectText));
-        mBinding.testSelectTextBg.setOnClickListener(v -> toggleSelection(mBinding.testSelectTextBg));
-        mBinding.testSelectTextBg1.setOnClickListener(v -> toggleSelection(mBinding.testSelectTextBg1));
-        mBinding.testForegroundText.setOnClickListener(v -> toggleSelection(mBinding.testForegroundText));
-
-        mBinding.testL2pp.setOnClickListener(v -> L2PPManager.getInstance().testInit());
-
 
         mBinding.testNavLog.setOnCheckedChangeListener((buttonView, checked) -> {
             if (buttonView.isPressed()) {
-                Logger.switchLog(checked);
+                if(BuildConfig.DEBUG){
+                    Logger.switchLog(checked);
+                }else {
+                    //release 下log全关
+                    Logger.switchLog(false);
+                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
+                }
             }
         });
 
@@ -287,9 +245,15 @@ public class TestWindow {
 
         mBinding.testGaodeLog.setOnCheckedChangeListener((buttonView, checked) -> {
             if (buttonView.isPressed()) {
-                if (checked) {
-                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
-                } else {
+                if(BuildConfig.DEBUG){
+                    if (checked) {
+                        EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
+                    } else {
+                        EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
+                    }
+                }else {
+                    //release 下log全关
+                    Logger.switchLog(false);
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
                 }
             }
@@ -351,14 +315,6 @@ public class TestWindow {
                 }
             }
         });
-
-        mBinding.openHudMapview.setOnClickListener(view -> {
-            mBinding.hudMapview.setIsBindView(true);
-            HudPackage.getInstance().initHudService(mBinding.hudMapview);
-            HudPackage.getInstance().registerHudCallback(TAG, mIEglScreenshotCallBack);
-        });
-
-        mBinding.closeHudMapview.setOnClickListener(view -> HudPackage.getInstance().unInitHudService());
     }
 
     private void initLogLevel() {

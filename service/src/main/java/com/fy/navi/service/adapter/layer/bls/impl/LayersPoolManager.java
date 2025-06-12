@@ -105,10 +105,10 @@ public class LayersPoolManager {
     }
 
     private void createLayerPool(MapType mapTypeId) {
-        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "创建图层池");
-        MapView mapView = MapViewPoolManager.getInstance().get(mapTypeId).getMapview();
+        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId + " 创建图层池");
+//        MapView mapView = MapViewPoolManager.getInstance().get(mapTypeId).getMapview();
         //TODO 优化获取底图的方案
-//        MapView mapView = getMapview(mapTypeId);
+        MapView mapView = getMapview(mapTypeId);
         LayersPool layersPool = new LayersPool(getBizControlService(), mapView, AppCache.getInstance().getMContext(), mapTypeId);
         layersPools.put(mapTypeId, layersPool);
     }

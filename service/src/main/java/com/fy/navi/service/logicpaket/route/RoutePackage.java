@@ -66,6 +66,7 @@ import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
@@ -112,7 +113,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     private NaviAdapter mNaviAdapter;
     private LayerAdapter mLayerAdapter;
     private PositionAdapter mPositionAdapter;
-    private MapAdapter mMapAdapter;
+    private MapPackage mMapPackage;
     private BlAosAdapter mBlAosAdapter;
 
     private EngineAdapter mEngineAdapter;
@@ -167,7 +168,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mNaviAdapter = NaviAdapter.getInstance();
         mLayerAdapter = LayerAdapter.getInstance();
         mPositionAdapter = PositionAdapter.getInstance();
-        mMapAdapter = MapAdapter.getInstance();
+        mMapPackage = MapPackage.getInstance();
         mBlAosAdapter = BlAosAdapter.getInstance();
         mSignalPackage = SignalPackage.getInstance();
         mCalibrationPackage = CalibrationPackage.getInstance();
@@ -247,6 +248,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
         if (!mNaviStatusAdapter.isGuidanceActive()) {
             mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.SELECT_ROUTE);
+        }
+
+        if (!mNaviStatusAdapter.isGuidanceActive()) {
+            mLayerAdapter.setCarLogoVisible(requestRouteResult.getMMapTypeId(), false);
         }
     }
 
@@ -1102,9 +1107,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             }
             routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
             mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
-            if (!mNaviStatusAdapter.isGuidanceActive()) {
-                mLayerAdapter.setCarLogoVisible(mapTypeId, false);
-            }
+//            if (!mNaviStatusAdapter.isGuidanceActive()) {
+//                mLayerAdapter.setCarLogoVisible(mapTypeId, false);
+//            }
         });
     }
 
@@ -1185,20 +1190,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public void showPreview(final MapType mapTypeId) {
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.setFollowMode(mapTypeId, false);
+            mLayerAdapter.closeDynamicLevel(mapTypeId);
             if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
                 return;
             }
             final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
-            final PreviewParams previewParams = mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList());
-            if (ConvertUtils.isEmpty(previewParams)) {
-                Logger.e(TAG, "previewParams is null");
-                return;
-            }
-            previewParams.setScreenLeft(1350);
-            previewParams.setScreenRight(600);
-            previewParams.setScreenTop(210);
-            previewParams.setScreenBottom(140);
-            mMapAdapter.showPreview(mapTypeId, previewParams);
+            mMapPackage.showPreview(mapTypeId, true, 1350, 210, 600, 140, mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList()));
         });
     }
 
@@ -1213,16 +1210,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return;
         }
         final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
-        final PreviewParams previewParams = mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList());
-        if (ConvertUtils.isEmpty(previewParams)) {
-            Logger.e(TAG, "previewParams is null");
-            return;
-        }
-        previewParams.setScreenLeft(1350);
-        previewParams.setScreenRight(600);
-        previewParams.setScreenTop(210);
-        previewParams.setScreenBottom(200);
-        mMapAdapter.showPreview(mapTypeId, previewParams);
+        mMapPackage.showPreview(mapTypeId, true, 1350, 210, 600, 200, mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList()));
     }
 
     /**
@@ -1236,16 +1224,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return;
         }
         final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
-        final PreviewParams previewParams = mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList());
-        if (ConvertUtils.isEmpty(previewParams)) {
-            Logger.e(TAG, "previewParams is null");
-            return;
-        }
-        previewParams.setScreenLeft(rect.left);
-        previewParams.setScreenRight(rect.right);
-        previewParams.setScreenTop(rect.top);
-        previewParams.setScreenBottom(rect.bottom);
-        mMapAdapter.showPreview(mapTypeId, previewParams);
+        mMapPackage.showPreview(mapTypeId, true, rect.left, rect.top, rect.right, rect.bottom, mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList()));
     }
 
     /**

@@ -92,11 +92,13 @@ public class WeChatImplHelper implements ICallBackWsPpAutoWeixinStatus,
      */
     public void sendReqWsPpAutoWeixinStatus() {
         if (mBLAosService == null) {
+            Logger.d(TAG,"sendReqWsPpAutoWeixinStatus mBLAosService == null");
             return;
         }
         final GWsPpAutoWeixinStatusRequestParam pAosRequest = new GWsPpAutoWeixinStatusRequestParam();
         pAosRequest.product = 1; // 固定值 1  硬件类型（1: 高德车机）
         mBLAosService.sendReqWsPpAutoWeixinStatus(pAosRequest, this);
+        Logger.d(TAG,"sendReqWsPpAutoWeixinStatus = " + GsonUtils.toJson(pAosRequest));
     }
 
     /**

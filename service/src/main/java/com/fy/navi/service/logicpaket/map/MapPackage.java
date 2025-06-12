@@ -230,11 +230,71 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         return mMapAdapter.getMapSurfaceParam(mapTypeId);
     }
 
+    public String getMapBound(MapType mapTypeId) {
+        return mMapAdapter.getMapBound(mapTypeId);
+    }
+
     public void showPreview(MapType mapTypeId, PreviewParams previewParams) {
+        layerAdapter.setPreviewMode(mapTypeId, true);
         mMapAdapter.showPreview(mapTypeId, previewParams);
     }
 
+    /**
+     * 显示预览
+     *
+     * @param mapTypeId
+     * @param isRouteLine 不知道传什么，可以传默认值true
+     * @param screenLeft
+     * @param screenTop
+     * @param screenRight
+     * @param screenBottom
+     * @param mapBound
+     */
+    public void showPreview(MapType mapTypeId, boolean isRouteLine, int screenLeft, int screenTop, int screenRight, int screenBottom, PreviewParams.RectDouble mapBound) {
+        PreviewParams previewParams = new PreviewParams();
+        previewParams.setMapBound(mapBound);
+        previewParams.setbUseRect(true);
+        previewParams.setRouteLine(isRouteLine);
+        previewParams.setScreenLeft(screenLeft);
+        previewParams.setScreenTop(screenTop);
+        previewParams.setScreenRight(screenRight);
+        previewParams.setScreenBottom(screenBottom);
+        showPreview(mapTypeId, previewParams);
+        if (mapBound != null){
+            Logger.i(TAG, "mapBound: " + mapBound.toString());
+        } else {
+            Logger.i(TAG, "mapBound: null");
+        }
+    }
+
+    public void showPreview(MapType mapTypeId, boolean isRouteLine, int screenLeft, int screenTop, int screenRight, int screenBottom, List<PreviewParams.PointD> points) {
+        PreviewParams previewParams = new PreviewParams();
+        previewParams.setPoints(points);
+        previewParams.setbUseRect(false);
+        previewParams.setRouteLine(isRouteLine);
+        previewParams.setScreenLeft(screenLeft);
+        previewParams.setScreenTop(screenTop);
+        previewParams.setScreenRight(screenRight);
+        previewParams.setScreenBottom(screenBottom);
+        showPreview(mapTypeId, previewParams);
+        Logger.d(TAG, "points size " + points.size());
+    }
+
+    public void showPreview(MapType mapTypeId, boolean isRouteLine, PreviewParams.RectDouble mapBound){
+        PreviewParams previewParams = new PreviewParams();
+        previewParams.setMapBound(mapBound);
+        previewParams.setbUseRect(true);
+        previewParams.setRouteLine(isRouteLine);
+        showPreview(mapTypeId, previewParams);
+        if (mapBound != null){
+            Logger.i(TAG, "mapBound: " + mapBound.toString());
+        } else {
+            Logger.i(TAG, "mapBound: null");
+        }
+    }
+
     public void exitPreview(MapType mapTypeId) {
+        layerAdapter.setPreviewMode(mapTypeId, false);
         mMapAdapter.exitPreview(mapTypeId);
     }
 

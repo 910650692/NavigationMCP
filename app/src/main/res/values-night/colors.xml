@@ -10,6 +10,9 @@
     <color name="color_black_35">#59FFFFFF</color>
     <color name="color_authorization_dialog_bg">#191A21</color>
 
+    <color name="permission_quest_dialog_title">#FFFFFFFF</color>
+    <color name="permission_quest_dialog_content">#99FFFFFF</color>
+
     <color name="search_main_tab_img_shape_bg">#4019181D</color>
     <color name="search_main_tab_img_bg">#FF000000</color>
     <color name="search_color_383839_100">#D2D3D7</color>

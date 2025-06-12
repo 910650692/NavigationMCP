@@ -117,6 +117,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
      * @param status true 已绑定，false 未绑定
      */
     public void setCarConnectStatus(final boolean status) {
+        Logger.i("SettingOthersFragment", "setCarConnectStatus status = " + status);
         if (mViewModel.getIsLogin() && status) {
             mBinding.settingOthersCarConnectText.setTextColor(
                     ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));

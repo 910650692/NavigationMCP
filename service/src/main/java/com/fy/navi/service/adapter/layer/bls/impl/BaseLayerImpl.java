@@ -170,51 +170,31 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     @Override
     public boolean getCustomTexture(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, CustomTextureParam customTexture) {
         boolean result = super.getCustomTexture(layer, item, styleInfo, customTexture);
+        customTexture.cmbFileInfo.vecResPath.add(GBLCacheFilePath.BLS_ASSETS_LAYER_PATH);
+        customTexture.cmbFileInfo.strPkgName = GBLCacheFilePath.CMB_FILE_NAME;
         if (getStyleAdapter() != null) {
-            Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                    + "; 父类  result =" + result);
             List<CustomUpdatePair> customUpdatePairs = styleAdapter.updateTextureUpdatePair(item);
             if (!customUpdatePairs.isEmpty()) {
                 customTexture.updateList.addAll(customUpdatePairs);
             }
         }
-
-//        String html = TextureStylePoolManager.get().getHtml(getMapType(), styleInfo.markerId, layer, item, getStyleAdapter());
-//        if (TextUtils.isEmpty(html)) {
-//            Logger.e(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-//                    + "; 解析HTM异常. ");
-//            return false;
-//        }
-//        customTexture.markerKey.markerKey = BigInteger.valueOf(item.getBusinessType());
-//        customTexture.markerKey.customXmlStr = html;
-//        customTexture.cmbFileInfo.vecResPath.add(GBLCacheFilePath.BLS_ASSETS_LAYER_PATH);
-//        customTexture.cmbFileInfo.strPkgName = GBLCacheFilePath.CMB_FILE_NAME;
-//        TextureMarkerInfo markerInfoBean = TextureStylePoolManager.get().getMarkerInfo(getMapType(), layer, item, styleInfo.markerInfo);
-//        if (markerInfoBean == null) {
-//            markerInfoBean = new TextureMarkerInfo();
-//            Logger.d(TAG, "采用默认锚点信息");
-//        }
-//        customTexture.attrs.anchorType = markerInfoBean.getAnchor();
-//        customTexture.attrs.xOffset = markerInfoBean.getX_offset();
-//        customTexture.attrs.yOffset = markerInfoBean.getY_offset();
-//        customTexture.attrs.xRatio = markerInfoBean.getX_ratio();
-//        customTexture.attrs.yRatio = markerInfoBean.getY_ratio();
-
+        Logger.v(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
+                + "; 父类  result =" + result + "\n " + customTexture.markerKey.customXmlStr);
         return result;
     }
 
     @Override
     public boolean updateCustomTexture(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, CustomUpdateParam updateParam) {
         boolean result = super.updateCustomTexture(layer, item, styleInfo, updateParam);
-        Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
+        Logger.v(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
                 + "; 父类  result =" + result);
-        //TODO
-//        if (getStyleAdapter() != null) {
-//            List<CustomUpdatePair> customUpdatePairs = styleAdapter.updateTextureUpdatePair(item);
-//            if (!customUpdatePairs.isEmpty()) {
-//                updateParam.updateList.addAll(customUpdatePairs);
-//            }
-//        }
+        if (getStyleAdapter() != null) {
+            List<CustomUpdatePair> customUpdatePairs = getStyleAdapter().updateTextureUpdatePair(item);
+            if (!customUpdatePairs.isEmpty()) {
+                updateParam.updateList.addAll(customUpdatePairs);
+            }
+        }
+
         return result;
     }
 
@@ -226,10 +206,10 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         }
         if (TextUtils.isEmpty(styleJson)) {
             styleJson = super.getLayerStyle(layer, item, forJava);
-            Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
+            Logger.v(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
                     + ";使用 默认纹理 样式配置");
         }
-        Logger.d(TAG, "纹理样式 =" + styleJson.replaceAll("\\s", ""));
+        Logger.v(TAG, "纹理样式 =" + styleJson.replaceAll("\\s", ""));
         return styleJson;
     }
 
@@ -239,7 +219,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         LayerTexture texture = layer.getMapView().getLayerTexture(markerId);
         if (getStyleAdapter() != null && ConvertUtils.isNull(texture)) {
             String markerRes = styleInfo.markerId;
-            if (!(TextUtils.isEmpty(markerRes) || "-1".equals(markerRes) || markerRes.endsWith(".xml"))) {
+            if (!(TextUtils.isEmpty(markerRes) || "-1".equals(markerRes) || "id_static".equals(markerRes) || markerRes.endsWith(".xml"))) {
                 texture = TexturePoolManager.get().createLayerTexture(context, getMapType(), layer, item, styleInfo, getStyleAdapter());
                 if (layer.getMapView().addLayerTexture(texture)) {
                     markerId = texture.resID;
@@ -248,7 +228,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                         + "\n" + "使用 自定义  纹理信息 :{ markerRes = " + styleInfo.markerId + " ; resID = " + texture.resID + " ; markerId = " + markerId + " }");
             }
         } else {
-            Logger.d(TAG, getClass().getSimpleName() + " " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 :" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
+            Logger.v(TAG, getClass().getSimpleName() + " " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 :" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
                     + "\n" + "使用 默认  纹理信息 :{ markerRes = " + styleInfo.markerId + " ; resID = " + texture.resID + " ; markerId = " + markerId + " }");
         }
         return markerId;
@@ -267,7 +247,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
             Logger.e(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 :" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
                     + "\n" + "使用 自定义  3D 纹理信息 :{ markerRes = " + str3DModelId + " ; markerId = " + markerId + " }");
         } else {
-            Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 :" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
+            Logger.v(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 :" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
                     + "\n" + " 使用 默认  3D 纹理信息 :{ markerRes = " + str3DModelId + " ; markerId = " + markerId + " }");
         }
 

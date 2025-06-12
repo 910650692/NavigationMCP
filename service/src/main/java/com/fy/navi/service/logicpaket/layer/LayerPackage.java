@@ -51,7 +51,8 @@ public class LayerPackage implements ILayerAdapterCallBack {
     }
 
     public boolean initLayerService() {
-        return initLayerService(MapType.MAIN_SCREEN_MAIN_MAP);
+//        return initLayerService(MapType.MAIN_SCREEN_MAIN_MAP);
+        return true;
     }
 
     public boolean initLayerService(MapType mapTypeId) {

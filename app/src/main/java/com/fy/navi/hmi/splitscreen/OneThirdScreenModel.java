@@ -239,7 +239,6 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
         openOrCloseImmersive(false);
         mNaviPackage.setPreviewStatus(true);
         mLayerPackage.setFollowMode(MAP_TYPE, false);
-        mLayerPackage.setPreviewMode(MAP_TYPE, true);
         mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
         mRoutePackage.oneThirdScreeShowPreview(MAP_TYPE, getPreviewRect());
     }
@@ -249,7 +248,6 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
         openOrCloseImmersive(true);
         mNaviPackage.setPreviewStatus(false);
         mLayerPackage.setFollowMode(MAP_TYPE, true);
-        mLayerPackage.setPreviewMode(MAP_TYPE, false);
         mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, false);
         mMapPackage.exitPreview(MAP_TYPE);
     }

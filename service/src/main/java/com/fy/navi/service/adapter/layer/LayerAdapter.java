@@ -97,7 +97,7 @@ public class LayerAdapter {
         return mLayerApi.setFollowMode(mapTypeId, bFollow);
     }
 
-    public PreviewParams getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult) {
+    public PreviewParams.RectDouble getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult) {
         return mLayerApi.getPathResultBound(mapTypeId, pathResult);
     }
 

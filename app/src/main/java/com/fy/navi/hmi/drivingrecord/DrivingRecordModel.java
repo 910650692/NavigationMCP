@@ -157,15 +157,7 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
                 final LayerItemUserTrackDepth layerItemUserTrackDepth = new LayerItemUserTrackDepth();
                 layerItemUserTrackDepth.setGpsTrackDepthBean(depInfo);
                 LayerPackage.getInstance().addLayerItemOfUserTrackDepth(MapType.MAIN_SCREEN_MAIN_MAP, layerItemUserTrackDepth, false);
-                final PreviewParams mPreviewParam = new PreviewParams();
-                mPreviewParam.setMapBound(getTrackBound(depInfo.getTrackPoints()));
-                mPreviewParam.setScreenLeft(1350);
-                mPreviewParam.setScreenRight(500);
-                mPreviewParam.setScreenTop(170);
-                mPreviewParam.setScreenBottom(20);
-                mPreviewParam.setbUseRect(true);
-                mPreviewParam.setRouteLine(true);
-                MapPackage.getInstance().showPreview(MapType.MAIN_SCREEN_MAIN_MAP,mPreviewParam);
+                MapPackage.getInstance().showPreview(MapType.MAIN_SCREEN_MAIN_MAP, true, 1350, 170, 500, 20, getTrackBound(depInfo.getTrackPoints()));
                 mUserTrackPackage.setIsNeedShowDialog(false);
             }
         }

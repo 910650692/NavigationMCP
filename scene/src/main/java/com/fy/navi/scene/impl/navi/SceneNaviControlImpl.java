@@ -110,7 +110,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             mCallBack.closeNavi();
         }
         mNaviPackage.onNaviClose(true);
-        mRoutePackage.clearRouteLine(mMapTypeId);
         mNaviPackage.stopNavigation();
         cancelTimer();
         mNaviPackage.setPreviewStatus(false);

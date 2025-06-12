@@ -522,7 +522,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         } catch (IllegalStateException e) {
             Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
-            closeLocationCallback();
+            closeSearchCallback();
         }
     }
 

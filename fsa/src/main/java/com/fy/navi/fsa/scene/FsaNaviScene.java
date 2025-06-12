@@ -134,11 +134,25 @@ public final class FsaNaviScene {
         final RemainInfo remainInfo = new RemainInfo();
         remainInfo.setArrivalTime(getArrivalTime(naviETAInfo.getRemainTime()));
         remainInfo.setArrivalDay(getArrivalDay(naviETAInfo.getRemainTime()));
-        remainInfo.setRemainTime(naviETAInfo.getRemainTime());
+        remainInfo.setRemainTime(parseTimeString(naviETAInfo.getRemainTime()));
         remainInfo.setRemainDistance(naviETAInfo.getRemainDist());
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_REMAIN_TIME_DISTANCE, GsonUtils.toJson(remainInfo));
     }
-
+    private int parseTimeString(int time) {
+        if (time <= 0) {return 0;}
+        String timeStr = TimeUtils.switchHourAndMimuteFromSecond(
+                AppCache.getInstance().getMContext(), time);
+        if (timeStr != null && !timeStr.isEmpty()) {
+            try {
+                return Integer.parseInt(timeStr);
+            } catch (NumberFormatException e) {
+                Logger.e(FsaConstant.FSA_TAG, "Failed to parse time string: " + timeStr, e);
+            }
+        } else {
+            Logger.w(FsaConstant.FSA_TAG, "TimeUtils returned empty or null");
+        }
+        return 0;
+    }
     public int getArrivalDay(final int time) {
         if (time <= 0) {return 0;}
         //天数

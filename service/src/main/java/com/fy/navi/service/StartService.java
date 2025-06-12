@@ -199,7 +199,7 @@ public class StartService {
     }
 
     private boolean initLayerService() {
-        Logger.d(TAG,"lvv", "5555");
+        Logger.d(TAG, "initLayerService");
         boolean initLayerResult = LayerPackage.getInstance().initLayerService();
         if (initLayerResult) {
             Logger.i(TAG, "Layer service init success");

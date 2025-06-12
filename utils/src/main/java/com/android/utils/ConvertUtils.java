@@ -1167,7 +1167,7 @@ public class ConvertUtils {
 
     /**
      * 按照固定的策略取整距离数值，与TBT保持一致
-     * 1）10公里级别向下取整；
+     * 1）100公里级别向下取整；
      * 2）1公里级别的四舍五入；
      * 3）1公里以下的暂不修改。
      *
@@ -1176,18 +1176,19 @@ public class ConvertUtils {
      */
     public static String[] formatDistanceArray(Context context, int distance) {
         String[] distancs = new String[2];
-        if (distance >= 10000) {
+        if (distance >= 100000) {
             //10公里级
             distance = (distance / 1000) * 1000;
-        } else if (distance >= 1000) {
-            //1公里级，精确到小数点后一位
-            distance = ((distance + 50) / 100) * 100;
         }
 
         if (distance >= 1000) {
             int kiloMeter = distance / 1000;
             int leftMeter = distance % 1000;
             leftMeter = leftMeter / 100;
+            if (leftMeter >= 5) {
+                kiloMeter = kiloMeter + 1;
+                leftMeter = 0;
+            }
 
             StringBuffer sb = new StringBuffer();
 

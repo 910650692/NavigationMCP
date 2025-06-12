@@ -72,9 +72,6 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
      * 设置界面CheckBox点击监听
      */
     public void updateCheckBoxTextColor() {
-        mBinding.chargingStation.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
-        mBinding.favoritePoint.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
-        mBinding.roadCondition.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
         mBinding.fontSizeStandard.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
         mBinding.fontSizeLarge.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
         mBinding.naviHeadUp.setOnCheckedChangeListener(this::updateCheckBoxTextColor);

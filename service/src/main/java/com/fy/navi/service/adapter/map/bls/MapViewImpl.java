@@ -186,7 +186,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     private void createMapDevice() {
         ServiceMgr.getServiceMgrInstance().setUiLooper(0, Looper.getMainLooper());
         DeviceAttribute devAttribute = new DeviceAttribute();
-        devAttribute.renderVendorType = MapRenderVendor.OpenGL3;
+        devAttribute.renderVendorType = MapRenderVendor.OpenGL2;
         devAttribute.uiTaskDeviceId = EngineAdapter.getInstance().mapDeviceID(mapType);
         devAttribute.deviceWorkMode = EGLDeviceWorkMode.EGLDeviceWorkMode_WithThreadWithEGLContextDrawIn;
         if (!ConvertUtils.isNull(getMapService())) {

@@ -108,9 +108,7 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
         }
         mLayerPackage.setFollowMode(mMapTypeId, false);
         mLayerPackage.setDynamicLevelLock(mMapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
-        final PreviewParams previewParams = new PreviewParams();
-        previewParams.setMapBound(getParkingBound());
-        mapPackage.showPreview(mMapTypeId, previewParams);
+        mapPackage.showPreview(mMapTypeId, true, getParkingBound());
     }
 
     public void exitPreview() {

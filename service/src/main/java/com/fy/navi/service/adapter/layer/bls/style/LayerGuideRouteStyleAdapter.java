@@ -107,28 +107,19 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             }
             case BizRouteType.BizRouteTypeEndPoint -> {
                 if (item instanceof RoutePathPointItem) {
-                    if (ConvertUtils.isEmpty(mRouteResult) ||
-                            ConvertUtils.isEmpty(mRouteResult.getMLayerItemRouteEndPoint()) ||
-                            ConvertUtils.isEmpty(mRouteResult.getMLayerItemRouteEndPoint()
-                                    .get(mRouteControl.getSelectedPathIndex())) ||
-                            mRouteResult.getMLayerItemRouteEndPoint()
-                                    .get(mRouteControl.getSelectedPathIndex()).getRestNum() == NumberUtils.NUM_ERROR) {
-                        Logger.d(TAG, "终点扎标-默认扎标");
-                        return KEY_ROAD_END_DEFAULT;
-                    } else {
-                        LayerItemRouteEndPoint layerItemRouteEndPoint = mRouteResult.getMLayerItemRouteEndPoint()
-                                .get(mRouteControl.getSelectedPathIndex());
-                        LayerPointItemType endPointType = layerItemRouteEndPoint.getEndPointType();
-                        if (endPointType == LayerPointItemType.ROUTE_POINT_END_OIL ||
-                                endPointType == LayerPointItemType.ROUTE_POINT_END_BATTERY) {
-                            Logger.d(TAG, "终点扎标-剩余续航");
-                            return KEY_ROAD_END_SURPLUS_POWER_POINT;
-                        } else if (endPointType == LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS) {
-                            Logger.d(TAG, "终点扎标-营业时间");
-                            return KEY_ROAD_END_BUSINESS_HOURS_POINT;
-                        } else if (endPointType == LayerPointItemType.ROUTE_POINT_END) {
+                    LayerPointItemType routeEndType = getRouteEndPoint();
+                    switch (routeEndType) {
+                        case ROUTE_POINT_END -> {
                             Logger.d(TAG, "终点扎标-默认扎标");
                             return KEY_ROAD_END_DEFAULT;
+                        }
+                        case ROUTE_POINT_END_BUSINESS_HOURS -> {
+                            Logger.d(TAG, "终点扎标-营业时间");
+                            return KEY_ROAD_END_BUSINESS_HOURS_POINT;
+                        }
+                        default -> {
+                            Logger.d(TAG, "终点扎标-剩余续航");
+                            return KEY_ROAD_END_SURPLUS_POWER_POINT;
                         }
                     }
                 } else {
@@ -426,9 +417,10 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     //转换终点扎标数据
-    private void getRouteEndPoint() {
+    public LayerPointItemType getRouteEndPoint() {
+        LayerPointItemType endType = LayerPointItemType.ROUTE_POINT_END;
         int selectPathIndex = mRouteControl.getSelectedPathIndex();
-        if (ConvertUtils.isNull(mRouteResult)) return;
+        if(ConvertUtils.isNull(mRouteResult)) return endType;
         List<RouteLineInfo> mRouteLineInfos = mRouteResult.getMRouteLineInfos();
         int mCarType = CalibrationPackage.getInstance().powerType();
         if (mCarType == 0 || mCarType == 2) {
@@ -438,20 +430,26 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
             if (num != 0) {
                 mRouteEndPoint.setRestNum(num);
+                endType = LayerPointItemType.ROUTE_POINT_END_OIL;
             } else {
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
                 mRouteEndPoint.setRestNum(-1);
+                endType = LayerPointItemType.ROUTE_POINT_END;
             }
         } else {
             if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
                 mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
                 mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
+                endType = LayerPointItemType.ROUTE_POINT_END_BATTERY;
             } else {
-                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
                 mRouteEndPoint.setRestNum(-1);
+                endType = LayerPointItemType.ROUTE_POINT_END;
             }
         }
         Logger.d(TAG, "getRouteEndPoint type " + mRouteEndPoint.getEndPointType() + " num " +
                 mRouteEndPoint.getRestNum() + " string " + mRouteEndPoint.getBusinessHours());
+        return endType;
     }
 
     //转换补能规划数据

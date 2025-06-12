@@ -232,7 +232,6 @@ public final class OpenApiHelper {
         Logger.i(TAG, "enterPreview");
         NAVI_PACKAGE.setPreviewStatus(true);
         LAYER_PACKAGE.setFollowMode(mapTypeId, false);
-        LAYER_PACKAGE.setPreviewMode(mapTypeId,true);
         // 关闭自动比例尺
         NAVI_PACKAGE.closeDynamicLevel(mapTypeId);
         ROUTE_PACKAGE.naviShowPreview(mapTypeId);
@@ -254,7 +253,6 @@ public final class OpenApiHelper {
         // 回到当前位置
         MAP_PACKAGE.goToCarPosition(mapTypeId, false, false);
         LAYER_PACKAGE.setFollowMode(mapTypeId, true);
-        LAYER_PACKAGE.setPreviewMode(mapTypeId,false);
         // bugID：1023666 导航中缩放地图然后点击继续导航，恢复到导航跟随态的过程时间太长
         setCurrentZoomLevel(mapTypeId);
         final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
