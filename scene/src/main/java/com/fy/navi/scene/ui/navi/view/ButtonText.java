@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 
 import androidx.annotation.Nullable;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.ui.view.SkinTextView;
 
 /**
@@ -41,6 +43,7 @@ public class ButtonText extends SkinTextView {
             // 手指松开反馈点击事件并恢复控件原有的透明度
             if (isClickable()) {
                 setAlpha(1.0f);
+                this.playSoundEffect(SoundEffectConstants.CLICK);
                 callOnClick();
             }
             return true;

@@ -51,7 +51,8 @@ public class ChargeInfo implements Parcelable {
     private int mFastVolt;
     private int mFastPower;
     private boolean mIsAppointment;  //是否预约
-
+    private long mLatestChargeTimestamp; // 表示最近一次充电的时间戳（单位为秒）
+    private long mSearchTimestamp;
     /** SGM 自营站字段 **/
     private String mOperatorId; // 运营商id
     private String mStationId; // 充电站id
@@ -593,7 +594,6 @@ public class ChargeInfo implements Parcelable {
     public void setLowPrice(String lowPrice) {
         this.mLowPrice = lowPrice;
     }
-
     protected ChargeInfo(final Parcel in) {
         mChildType = in.readInt();
         mSlowFree = in.readInt();
@@ -633,6 +633,8 @@ public class ChargeInfo implements Parcelable {
         mCostItem = in.createTypedArrayList(CostTime.CREATOR);
         mEquipmentInfo = in.createTypedArrayList(EquipmentInfo.CREATOR);
         mIsAppointment = in.readBoolean();
+        mLatestChargeTimestamp = in.readLong();
+        mSearchTimestamp = in.readLong();
     }
 
     public static final Creator<ChargeInfo> CREATOR = new Creator<ChargeInfo>() {
@@ -692,5 +694,7 @@ public class ChargeInfo implements Parcelable {
         parcel.writeInt(mFastChargingTotal);
         parcel.writeString(mParkFee);
         parcel.writeString(mLowPrice);
+        parcel.writeLong(mLatestChargeTimestamp);
+        parcel.writeLong(mSearchTimestamp);
     }
 }

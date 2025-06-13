@@ -25,6 +25,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.exportservice.ExportIntentParam;
 import com.fy.navi.hmi.databinding.FloatingWindowLayoutBinding;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.hmi.startup.StartupActivity;
@@ -248,18 +249,18 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
      * 启动Navi_App
      */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
-    public void openSelf(int pageCode) {
+    public void openSelf(final int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
+        ExportIntentParam.setIntentPage(pageCode);
         Class startCls = StartupActivity.class;
         boolean isActivityExist = StackManager.getInstance().isActivityExist(MAP_TYPE.name(), MapActivity.class);
         if (isActivityExist) {
             startCls = MapActivity.class;
         }
         Logger.i(TAG, "isActivityExist:" + isActivityExist);
-        Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
+        final Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
         final ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
-        intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
     }

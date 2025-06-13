@@ -234,4 +234,9 @@ public class MapAdapterImpl implements IMapApi {
         mapViewPoolManager.get(mapTypeId).setMapLabelClickable(enable);
     }
 
+    @Override
+    public void resetTickCount(MapType mapTypeId, int tickCount) {
+        mapViewPoolManager.get(mapTypeId).resetTickCount(tickCount);
+    }
+
 }

@@ -13,6 +13,7 @@ import androidx.databinding.ObservableField;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.exportservice.ExportIntentParam;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
@@ -244,16 +245,16 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
     /***
      * 启动Navi_App
      */
-    public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
+    public void startMapActivity(final int pageCode, final PoiInfoEntity poiInfo) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
+        ExportIntentParam.setIntentPage(pageCode);
+        if (null != poiInfo) {
+            ExportIntentParam.setPoiInfo(poiInfo);
+        }
         Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
         ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
         Bundle bundle = new Bundle();
-        bundle.putInt(INaviConstant.PAGE_EXTRA, pageCode);
-        if (poiInfo != null) {
-            bundle.putParcelable(INaviConstant.POI_INFO_EXTRA, poiInfo);
-        }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(bundle);
         AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());

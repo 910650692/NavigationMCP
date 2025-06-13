@@ -19,44 +19,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class LayersPoolManager {
 
     private String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
 
     private final HashMap<MapType, LayersPool> layersPools = new HashMap<>();
-
-//    private final Hashtable<MapType, List<ILayerAdapterCallBack>> mLayerPackageCallBacks = new Hashtable<>();
-
+    
     private BizControlService bizControlService;
     private MapService mapService;
 
     public void addLayerClickCallback(MapType mapTypeId, ILayerAdapterCallBack observer) {
-//        if (!mLayerPackageCallBacks.containsKey(mapTypeId)) {
-//            mLayerPackageCallBacks.put(mapTypeId, new ArrayList<>());
-//        }
-//        if (!mLayerPackageCallBacks.get(mapTypeId).contains(observer)) {
-//            Logger.d(TAG, mapTypeId + " 注册回调 ：" + observer.getClass().getSimpleName() + ";size =" + mLayerPackageCallBacks.get(mapTypeId).size());
-//            get(mapTypeId).addLayerClickCallback(observer);
-//            mLayerPackageCallBacks.get(mapTypeId).add(observer);
-//        }
-        if (layersPools.containsKey(mapTypeId)) {
-            layersPools.get(mapTypeId).addLayerClickCallback(observer);
-        }
+        get(mapTypeId).addLayerClickCallback(observer);
     }
 
     public void removeClickCallback(MapType mapTypeId, ILayerAdapterCallBack observer) {
-//        if (!mLayerPackageCallBacks.containsKey(mapTypeId)) {
-//            mLayerPackageCallBacks.put(mapTypeId, new ArrayList<>());
-//        }
-//        if (mLayerPackageCallBacks.get(mapTypeId).contains(observer)) {
-//            Logger.d(TAG, mapTypeId + " 移除回调 ：" + observer.getClass().getSimpleName() + ";size =" + mLayerPackageCallBacks.get(mapTypeId).size());
-//            get(mapTypeId).removeClickCallback(observer);
-//            mLayerPackageCallBacks.get(mapTypeId).remove(observer);
-//        }
-        if (layersPools.containsKey(mapTypeId)) {
-            layersPools.get(mapTypeId).removeClickCallback(observer);
-        }
+        get(mapTypeId).removeClickCallback(observer);
     }
 
     private static final class Holder {
@@ -98,7 +77,7 @@ public class LayersPoolManager {
 
     public LayersPool get(MapType mapTypeId) {
         if (!layersPools.containsKey(mapTypeId)) {
-            Logger.d(TAG, "lvv", "222");
+            Logger.d(TAG, "获取图层失败 创建图层 ");
             createLayerPool(mapTypeId);
         }
         return layersPools.get(mapTypeId);
@@ -106,9 +85,9 @@ public class LayersPoolManager {
 
     private void createLayerPool(MapType mapTypeId) {
         Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId + " 创建图层池");
-//        MapView mapView = MapViewPoolManager.getInstance().get(mapTypeId).getMapview();
+        MapView mapView = MapViewPoolManager.getInstance().get(mapTypeId).getMapview();
         //TODO 优化获取底图的方案
-        MapView mapView = getMapview(mapTypeId);
+//        MapView mapView = getMapview(mapTypeId);
         LayersPool layersPool = new LayersPool(getBizControlService(), mapView, AppCache.getInstance().getMContext(), mapTypeId);
         layersPools.put(mapTypeId, layersPool);
     }

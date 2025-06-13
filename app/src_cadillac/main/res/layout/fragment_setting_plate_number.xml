@@ -139,6 +139,7 @@
                     android:focusable="true"
                     android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                     android:src="@drawable/img_plate_number_clear"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
                     app:layout_constraintTop_toTopOf="@+id/setting_plate_number_number" />
 

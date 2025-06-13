@@ -110,6 +110,15 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     }
 
     /**
+     * poi批量搜索
+     * @param poiList pid list
+     * @param scene 搜索场景
+     */
+    public void poiListSearch(final List<String> poiList, final int scene) {
+        mSearchPackage.poiListSearch(poiList, scene, false);
+    }
+
+    /**
      * 关键字搜索
      * @param pageNum 页码
      * @param keyword 关键字
@@ -152,6 +161,24 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     public void keywordSearch(final int pageNum, final String keyword, final String retain, final String classifyData, final boolean isSilentSearch) {
         logSearch("keywordSearch classifyData: ", classifyData);
         mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, retain, classifyData, isSilentSearch);
+        SearchHistoryItemBean item = new SearchHistoryItemBean();
+        item.setName(keyword);
+        item.setUpdateTime(System.currentTimeMillis());
+        mUserTrackPackage.addSearchHistory(item);
+    }
+
+    /**
+     * 关键字搜索2.0(二筛版本)
+     *
+     * @param keyword      关键字
+     * @param pageNum      搜索页数
+     * @param retain       筛选回传参数，使用搜索结果中的SearchClassifyInfo.retainState值原样回传
+     * @param classifyData 二筛参数
+     * @param isSilentSearch 是否静默搜索
+     */
+    public void keywordSearchByQuickFilter(final int pageNum, final String keyword, final String retain, final String classifyData, final boolean isSilentSearch) {
+        logSearch("keywordSearch classifyData: ", classifyData);
+        mTaskId = mSearchPackage.keywordSearchByQuickFilter(pageNum, keyword, retain, classifyData, isSilentSearch);
         SearchHistoryItemBean item = new SearchHistoryItemBean();
         item.setName(keyword);
         item.setUpdateTime(System.currentTimeMillis());
@@ -338,4 +365,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         return mTaskId;
     }
 
+    public int getBrand(){
+        return mCalibrationPackage.brand();
+    }
 }

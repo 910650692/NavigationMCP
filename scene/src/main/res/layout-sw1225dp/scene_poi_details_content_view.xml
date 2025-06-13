@@ -204,7 +204,7 @@
                         android:layout_width="@dimen/dp_36"
                         android:layout_height="@dimen/dp_36"
                         android:src="@drawable/img_electricity_medium_42"
-                        android:visibility="@{(ScenePoiDetailContentView.mPowerType == 0) ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{(ScenePoiDetailContentView.mPowerType == 1) ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="@+id/poi_arrival_capacity"
                         app:layout_constraintEnd_toStartOf="@+id/poi_arrival_capacity"
                         app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
@@ -219,7 +219,7 @@
                         android:maxLines="1"
                         android:textColor="@color/poi_details_bottom_ff_00"
                         android:textSize="@dimen/sp_29"
-                        android:visibility="@{(ScenePoiDetailContentView.mPowerType == 0) ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{(ScenePoiDetailContentView.mPowerType == 1) ? View.VISIBLE : View.GONE}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
                         tools:text="15%到达" />

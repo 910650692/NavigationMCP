@@ -2,7 +2,6 @@ package com.fy.navi.service.adapter.search.bls;
 
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
@@ -24,6 +23,8 @@ import com.autonavi.gbl.search.model.PoiDetailProductInfo;
 import com.autonavi.gbl.search.model.PoiDetailSearchResult;
 import com.autonavi.gbl.search.model.PoiDetailShelfInfo;
 import com.autonavi.gbl.search.model.SearchAlongWayResult;
+import com.autonavi.gbl.search.model.SearchBatchPoiDetailInfo;
+import com.autonavi.gbl.search.model.SearchBatchPoiDetailResult;
 import com.autonavi.gbl.search.model.SearchCategoryInfo;
 import com.autonavi.gbl.search.model.SearchChildCategoryInfo;
 import com.autonavi.gbl.search.model.SearchDeepInfoResult;
@@ -311,7 +312,7 @@ public final class SearchResultMapper {
 //                    }
 //                }
                 searchResultEntity.setLocalInfoList(categoryLocalInfoList);
-                searchResultEntity.setMLevel2LocalInfoList(categoryLocalInfoList2);
+                searchResultEntity.setLevel2LocalInfoList(categoryLocalInfoList2);
             }
         }
 
@@ -507,7 +508,9 @@ public final class SearchResultMapper {
                 .setFast_total(fastTotal)
                 .setCurrentElePrice(searchPoiInfo.chargingStationInfo.current_ele_price)
                 .setCurrentServicePrice(searchPoiInfo.chargingStationInfo.parkPrice)
-                .setMBrand(searchPoiInfo.chargingStationInfo.brand_desc);
+                .setMBrand(searchPoiInfo.chargingStationInfo.brand_desc)
+                .setMLatestChargeTimestamp(searchPoiInfo.chargingStationInfo.latestChargeTimestamp)
+                .setMSearchTimestamp(searchPoiInfo.chargingStationInfo.searchTimestamp);
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "brand is: " + searchPoiInfo.chargingStationInfo.brand_desc
                     + " ,park_category: " + searchPoiInfo.chargingStationInfo.park_category);
         for (ChargingPlugInfo chargingPlugInfo : searchPoiInfo.chargingStationInfo.plugsInfo) {
@@ -588,7 +591,9 @@ public final class SearchResultMapper {
                 .setSort_price(ConvertUtils.str2Int(searchPoiInfo.hotelInfo.priceLowest))
                 .setMPoiAoiBounds(poiAoiBounds)
                 .setMRoadPolygonBounds(roadBounds)
-                .setChargeInfoList(chargeInfos);
+                .setChargeInfoList(chargeInfos)
+                .setIsFastest(searchPoiInfo.basicInfo.isFastest)
+                .setIsClosest(searchPoiInfo.basicInfo.isClosest);
     }
 
     /**
@@ -960,6 +965,24 @@ public final class SearchResultMapper {
     }
 
     /**
+     * 将pid批量搜索结果 SearchEnRouteResult 转换为 SearchResultEntity
+     * @param requestParameterBuilder 请求参数
+     * @param result 搜索结果
+     * @return SearchResultEntity
+     */
+    public SearchResultEntity mapFromSearchBatchResult(final SearchRequestParameter requestParameterBuilder, final SearchBatchPoiDetailResult result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.errorCode, result.errorMessage);
+        final List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiInfos)
+                .orElse(new ArrayList<>())
+                .stream()
+                .map(this::convertToPoiInfoEntity)
+                .collect(Collectors.toList());
+        searchResultEntity.setPoiList(poiList);
+        searchResultEntity.setPoiType(Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork()) ? 1 : 0);//0=离线数据，1=在线数据
+        return searchResultEntity;
+    }
+
+    /**
      * 将POI详情搜索结果 PoiDetailSearchResult 转换为 SearchResultEntity
      * @param requestParameterBuilder 请求参数
      * @param result 搜索结果
@@ -978,6 +1001,59 @@ public final class SearchResultMapper {
             }
         }
         return searchResultEntity;
+    }
+
+    /**
+     * 将SearchBatchPoiDetailInfo转换成PoiInfoEntity
+     * @param poiInfo SearchBatchPoiDetailInfo
+     * @return PoiInfoEntity
+     */
+    private PoiInfoEntity convertToPoiInfoEntity(final SearchBatchPoiDetailInfo poiInfo) {
+        //充电站信息
+        final List<ChargeInfo> chargeInfos = new ArrayList<>();
+        final int slowFree = poiInfo.chargingStationInfo.slowPileInfo.free;
+        final int slowTotal = poiInfo.chargingStationInfo.slowPileInfo.num;
+        final int fastFree = poiInfo.chargingStationInfo.fastPileInfo.free;
+        final int fastTotal = poiInfo.chargingStationInfo.fastPileInfo.num;
+        final ChargeInfo chargeInfo = new ChargeInfo()
+                .setSlow_free(slowFree)
+                .setSlow_total(slowTotal)
+                .setFast_free(fastFree)
+                .setFast_total(fastTotal)
+                .setCurrentElePrice(String.valueOf(poiInfo.chargingStationInfo.currentPrice.charging))
+                .setCurrentServicePrice(poiInfo.chargingStationInfo.parkPrice);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "slow free: " + poiInfo.chargingStationInfo.slowPileInfo.free
+                + " slow total: " + poiInfo.chargingStationInfo.slowPileInfo.num
+                + " fast free: " + poiInfo.chargingStationInfo.fastPileInfo.free
+                + " fast total: " + poiInfo.chargingStationInfo.fastPileInfo.num
+                + " current price: " + poiInfo.chargingStationInfo.currentPrice.charging
+                + " address: " + poiInfo.locationInfo.addressInfo.address
+                + " name: " + poiInfo.basicInfo.name
+                + " childType: " + poiInfo.basicInfo.childType
+                + " parkPrice: " + poiInfo.chargingStationInfo.parkPrice);
+        chargeInfos.add(chargeInfo);
+
+
+        //标签信息
+        final List<LabelInfo> labelInfos = new ArrayList<>();
+        for (SearchLabelInfo searchLabelInfo : poiInfo.labelInfos) {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, " label info type: " + searchLabelInfo.type + " ,content: " + searchLabelInfo.content);
+            final LabelInfo labelInfo = new LabelInfo()
+                    .setMContent(searchLabelInfo.content)
+                    .setMType(searchLabelInfo.type);
+            labelInfos.add(labelInfo);
+        }
+
+        return new PoiInfoEntity()
+                .setMChildType(poiInfo.basicInfo.childType)
+                .setPointTypeCode(poiInfo.basicInfo.typeCode)
+                .setPid(poiInfo.basicInfo.poiId)
+                .setName(poiInfo.basicInfo.name)
+                .setAddress(poiInfo.locationInfo.addressInfo.address)
+                .setPoint(new GeoPoint(poiInfo.basicInfo.location.lon, poiInfo.basicInfo.location.lat))
+                .setBusinessTime(poiInfo.basicInfo.openTime)
+                .setMLableList(labelInfos)
+                .setChargeInfoList(chargeInfos);
     }
 
     /**

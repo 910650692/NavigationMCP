@@ -32,18 +32,15 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
-import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.BuildConfig;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -636,6 +633,10 @@ public class BaseNaviGuidanceViewModel extends
         mCurrentEnergy = mModel.getEnergy();
     }
 
+    public void setCurrentPreferences(String currentPreferences) {
+        mCurrentPreferences = currentPreferences;
+    }
+
     public void setNaviSimState(boolean isSim) {
         mNaviSim.set(isSim && BuildConfig.DEBUG);
     }
@@ -754,6 +755,12 @@ public class BaseNaviGuidanceViewModel extends
     public void onMeterAction() {
         if (null != mView) {
             mView.onMeterAction();
+        }
+    }
+
+    public void onPassByClick() {
+        if (mView != null) {
+            mView.onPassByClick();
         }
     }
 }

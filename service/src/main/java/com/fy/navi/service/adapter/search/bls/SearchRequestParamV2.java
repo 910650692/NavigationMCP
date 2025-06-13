@@ -15,6 +15,7 @@ import com.autonavi.gbl.search.model.KeywordSearchRqbxyParam;
 import com.autonavi.gbl.search.model.KeywordSearchTQueryParam;
 import com.autonavi.gbl.search.model.SearchAggregateParam;
 import com.autonavi.gbl.search.model.SearchAlongWayParam;
+import com.autonavi.gbl.search.model.SearchBatchPoiDetailParam;
 import com.autonavi.gbl.search.model.SearchDataType;
 import com.autonavi.gbl.search.model.SearchEnrouteCategoryParam;
 import com.autonavi.gbl.search.model.SearchEnrouteKeywordParam;
@@ -69,6 +70,19 @@ public final class SearchRequestParamV2 {
         param.userLoc.lon = searchRequestInfo.getUserLoc().getLon();
         param.userLoc.lat = searchRequestInfo.getUserLoc().getLat();
         param.switchParam.needAdcode = true;
+        return param;
+    }
+
+    /**
+     * 联想搜索
+     *
+     * @param searchRequestInfo SearchRequestParameter
+     * @return SearchSuggestionParam
+     */
+    public SearchBatchPoiDetailParam convertToSearchBatchParam(final SearchRequestParameter searchRequestInfo) {
+        final SearchBatchPoiDetailParam param = new SearchBatchPoiDetailParam();
+        param.poiIds = new ArrayList<>(searchRequestInfo.getPoiIdList());
+        param.scene = searchRequestInfo.getMScene();
         return param;
     }
 

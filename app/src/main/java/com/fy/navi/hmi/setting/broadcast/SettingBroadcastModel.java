@@ -1,5 +1,7 @@
 package com.fy.navi.hmi.setting.broadcast;
 
+import android.text.TextUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.setting.SettingController;
@@ -146,23 +148,35 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
         mSettingPackage.setCruiseBroadcastOpen(isOpen);
     }
 
+    private String mBroadcastTypeTts = "";
     @Override
     public void onSettingChanged(final String key, final String value) {
-        Logger.d(TAG,"onSettingChanged, key = " + key + ", value = " + value);
+        Logger.d(TAG, "onSettingChanged, key = " + key + ", value = " + value);
+        String tts = "";
         if (key.equals(SettingController.KEY_SETTING_NAVI_BROADCAST)) {
             switch (value) {
                 case SettingController.VALUE_NAVI_BROADCAST_DETAIL:
                     ThreadManager.getInstance().postUi(() -> mViewModel.onNaviBroadcastChange(true, false, false));
+                    tts = String.format(ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_broadcast_switch),
+                            ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_broadcast_detail));
                     break;
                 case SettingController.VALUE_NAVI_BROADCAST_CONCISE:
                     ThreadManager.getInstance().postUi(() -> mViewModel.onNaviBroadcastChange(false, true, false));
+                    tts = String.format(ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_broadcast_switch),
+                            ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_broadcast_concise));
                     break;
                 case SettingController.VALUE_NAVI_BROADCAST_SIMPLE:
                     ThreadManager.getInstance().postUi(() -> mViewModel.onNaviBroadcastChange(false, false, true));
+                    tts = String.format(ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_broadcast_switch),
+                            ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_broadcast_minimalism));
                     break;
                 default:
                     break;
             }
+        }
+        if (!TextUtils.isEmpty(tts) && !TextUtils.equals(mBroadcastTypeTts, tts)) {
+            SpeechPackage.getInstance().synthesize(tts);
+            mBroadcastTypeTts = tts;
         }
     }
 

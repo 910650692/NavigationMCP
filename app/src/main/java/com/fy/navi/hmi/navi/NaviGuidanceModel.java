@@ -55,6 +55,7 @@ import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.route.RoutePriorityType;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteWayID;
@@ -93,12 +94,13 @@ import java.util.concurrent.ScheduledFuture;
 public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implements
         IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
         IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack,
-        SearchResultCallback, ClusterMapOpenCloseListener {
+        SearchResultCallback, ClusterMapOpenCloseListener, SettingPackage.SettingChangeCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_MODEL;
     private final NaviPackage mNaviPackage;
     private final RoutePackage mRoutePackage;
     private final LayerPackage mLayerPackage;
     private final MapPackage mMapPackage;
+    private final SettingPackage mSettingPackage;
     private final MessageCenterManager messageCenterManager;
     private final ClusterMapOpenCloseManager mClusterMapOpenCloseManager;
     private final NaviStatusPackage mNaviSatusPackage;
@@ -145,6 +147,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
+        mSettingPackage = SettingPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
@@ -186,6 +189,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mCurrentNetStatus = mNetWorkUtils.checkNetwork();
         mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.registerCallBack(NaviConstant.KEY_NAVI_MODEL, this);
+        mSettingPackage.setSettingChangeCallback(TAG, this);
         mClusterMapOpenCloseManager.addClusterMapOpenCloseListener(this);
         initRunnable();
         // 因为生命周期是和HMI绑定的，如果页面重启并且是在导航台进入三分钟一次的终点POI查询
@@ -571,6 +575,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
         mRoutePackage.unRegisterRouteObserver(NaviConstant.KEY_NAVI_MODEL);
+        mSettingPackage.unRegisterSettingChangeCallback(TAG);
         mClusterMapOpenCloseManager.removeListener(this);
         if (mNaviPackage != null) {
             mNaviPackage.unregisterObserver(NaviConstant.KEY_NAVI_MODEL);
@@ -1127,6 +1132,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
+    public void onRoutePreferenceChange(RoutePreferenceID routePreferenceID) {
+        Logger.i(TAG, "routePreferenceID: ", routePreferenceID);
+        if (mViewModel != null) {
+            mViewModel.setCurrentPreferences(getPreferences());
+        }
+    }
+
+    @Override
     public void stopSpeech() {
         if (null != mNaviPackage) {
             mNaviPackage.stopSpeech();
@@ -1189,5 +1202,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
         // 清楚搜索图层的扎标
         mSearchPackage.clearLabelMark();
+    }
+
+    @Override
+    public void onPassByClick(final MapType mapType) {
+        if (mapType == MapType.MAIN_SCREEN_MAIN_MAP) {
+            if (mViewModel != null) {
+                mViewModel.onPassByClick();
+            }
+        }
     }
 }

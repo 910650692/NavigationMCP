@@ -85,8 +85,8 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_name"
-                android:layout_width="match_parent"
-                android:maxWidth="@dimen/dp_638"
+                android:layout_width="wrap_content"
+                android:maxWidth="@dimen/dp_488"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -100,7 +100,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5"
                 tools:text="德国慕尼黑" />
-
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/search_label"
+                android:layout_width="wrap_content"
+                android:paddingLeft="@dimen/dp_4"
+                android:paddingRight="@dimen/dp_4"
+                tools:text="最快"
+                android:textSize="@dimen/sp_26"
+                android:gravity="center"
+                android:textColor="@color/dialog_msg_top_button_color"
+                android:visibility="visible"
+                android:background="@drawable/bg_parking_recommended"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/poi_name"
+                app:layout_constraintBottom_toBottomOf="@+id/poi_name"
+                app:layout_constraintStart_toEndOf="@+id/poi_name"/>
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_distance"
                 android:layout_width="wrap_content"

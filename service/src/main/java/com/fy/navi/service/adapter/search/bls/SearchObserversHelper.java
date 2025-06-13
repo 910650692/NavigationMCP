@@ -11,6 +11,7 @@ import com.autonavi.gbl.search.model.PoiDetailSearchResult;
 import com.autonavi.gbl.search.model.PoiShopListSearchResult;
 import com.autonavi.gbl.search.model.SceneSearchResult;
 import com.autonavi.gbl.search.model.SearchAlongWayResult;
+import com.autonavi.gbl.search.model.SearchBatchPoiDetailResult;
 import com.autonavi.gbl.search.model.SearchDeepInfoResult;
 import com.autonavi.gbl.search.model.SearchEnrouteResult;
 import com.autonavi.gbl.search.model.SearchLineDeepInfoResult;
@@ -26,6 +27,7 @@ import com.autonavi.gbl.search.observer.IPoiCmallDetailSearchObserver;
 import com.autonavi.gbl.search.observer.IPoiDetailSearchObserver;
 import com.autonavi.gbl.search.observer.IPoiShopListSearchObserver;
 import com.autonavi.gbl.search.observer.ISceneSearchObserver;
+import com.autonavi.gbl.search.observer.ISearchBatchPoiDetailObserver;
 import com.autonavi.gbl.search.observer.ISearchEnrouteObserver;
 import com.autonavi.gbl.search.observer.ISuggestionSearchObserver;
 import com.autonavi.gbl.util.errorcode.common.Service;
@@ -44,7 +46,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class SearchObserversHelper implements IKeyWordSearchObserverV2, ISuggestionSearchObserver,
         IPoiDetailSearchObserver, IPoiCmallDetailSearchObserver, ISceneSearchObserver, IPoiShopListSearchObserver,
         IGSearchNearestObserver, IGSearchLineDeepInfoObserver, IGSearchAlongWayObserver, IAggregateSearchObserver,
-        ISearchEnrouteObserver , IGSearchDeepInfoObserver {
+        ISearchEnrouteObserver , IGSearchDeepInfoObserver, ISearchBatchPoiDetailObserver {
 
     private final Map<Class<?>, SearchCallbackWrapper<?>> mCallbackWrapperMap = new ConcurrentHashMap<>();
     private static final AtomicReference<SearchObserversHelper> INSTANCE = new AtomicReference<>();
@@ -179,5 +181,12 @@ public final class SearchObserversHelper implements IKeyWordSearchObserverV2, IS
         return "SearchObserversHelper{" +
                 "callbackWrapperMap=" + mCallbackWrapperMap.keySet() +
                 '}';
+    }
+
+    @Override
+    public void onResult(final SearchBatchPoiDetailResult searchBatchPoiDetailResult) {
+        handleResult((int) searchBatchPoiDetailResult.taskId, searchBatchPoiDetailResult.errorCode,
+                searchBatchPoiDetailResult, SearchBatchPoiDetailResult.class);
+
     }
 }

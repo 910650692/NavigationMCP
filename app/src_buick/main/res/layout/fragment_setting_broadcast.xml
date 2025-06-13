@@ -12,6 +12,7 @@
     <com.fy.navi.ui.view.SkinScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="none"
         android:fillViewport="true">
 
         <com.fy.navi.ui.view.SkinLinearLayout

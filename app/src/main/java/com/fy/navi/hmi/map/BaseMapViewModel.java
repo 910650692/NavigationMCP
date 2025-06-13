@@ -25,6 +25,7 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
+import com.fy.navi.exportservice.ExportIntentParam;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.favorite.FavoriteHelper;
 import com.fy.navi.hmi.favorite.HomeCompanyFragment;
@@ -41,6 +42,7 @@ import com.fy.navi.hmi.search.mainsearch.MainSearchFragment;
 import com.fy.navi.hmi.search.searchresult.SearchResultFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
 import com.fy.navi.hmi.traffic.TrafficEventFragment;
+import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.service.AutoMapConstant;
@@ -949,14 +951,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         updateLimitInfo(routeRestrictionParam);
     }
 
-    //传递搜索参数
-    public void setExtraKeyword(String keyword) {
-        if (null == keyword || keyword.isEmpty()) {
-            return;
-        }
-        mModel.setSearchKeyword(keyword);
-    }
-
     /**
      * 获取收藏点（家、公司、常用地址、收藏）
      *
@@ -1174,5 +1168,51 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         String finalTitle = title;
         String finalContent = content;
         ThreadManager.getInstance().postUi(() -> mView.showTripDialog(finalTitle, finalContent));
+    }
+
+    /**
+     * 处理外部应用打开Map对应页面指令.
+     * @param intentPage
+     */
+    public void processPageIntent(final int intentPage) {
+        switch (intentPage) {
+            case INaviConstant.OpenIntentPage.SEARCH_PAGE:
+                final String keyword = ExportIntentParam.getKeyword();
+                if (!ConvertUtils.isEmpty(keyword)) {
+                    searchForExtraKeyword(keyword);
+                } else {
+                    openSearchFragment.call();
+                }
+                ExportIntentParam.setKeyword("");
+                break;
+            case INaviConstant.OpenIntentPage.GO_HOME:
+                openHomeFragment.call();
+                break;
+            case INaviConstant.OpenIntentPage.GO_COMPANY:
+                openCompanyFragment.call();
+                break;
+            case INaviConstant.OpenIntentPage.POI_DETAIL_PAGE:
+                final PoiInfoEntity poiInfo = ExportIntentParam.getPoiInfo();
+                if (null != poiInfo) {
+                    toPoiDetailFragment(poiInfo);
+                }
+                ExportIntentParam.setPoiInfo(null);
+                break;
+            case INaviConstant.OpenIntentPage.ROUTE_PAGE:
+                final PoiInfoEntity endPoint = ExportIntentParam.getPoiInfo();
+                if (null != endPoint) {
+                    openRoute(endPoint);
+                }
+                ExportIntentParam.setPoiInfo(null);
+                break;
+            case INaviConstant.OpenIntentPage.START_NAVIGATION:
+                startNaviForRouteOver();
+                break;
+            case INaviConstant.OpenIntentPage.SEARCH_RESULT_PAGE:
+                //todo
+                break;
+            default:
+                break;
+        }
     }
 }

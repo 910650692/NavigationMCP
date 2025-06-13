@@ -66,9 +66,10 @@
     <color name="search_main_tab_img_shape_bg">#408C889B</color>
     <color name="search_color_383839_100">#383839</color>
 
-    <color name="forecast_title">#000000</color>
+    <color name="forecast_title">#B3000000</color>
     <color name="forecast_title_sure">#3377FF</color>
     <color name="forecast_title_cancel">#000000</color>
+    <color name="forecast_content_edit">#2461EA</color>
 
     <!--Route-->
     <color name="bg_route_root_bg">#F8F8FA</color>

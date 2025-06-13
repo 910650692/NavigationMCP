@@ -374,6 +374,43 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * 关键字搜索2.0(二筛版本)
+     *
+     * @param keyword      关键字
+     * @param page         搜索页数
+     * @param retain       筛选回传参数，使用搜索结果中的SearchClassifyInfo.retainState值原样回传
+     * @param classifyData 二筛参数
+     * @param isSilentSearch 是否静默搜索
+     * @return taskId
+     */
+    public int keywordSearchByQuickFilter(final int page, final String keyword, final String retain,
+                             final String classifyData, final boolean isSilentSearch) {
+        if (keyword == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute keyword search: searchRequestParameterBuilder is null.");
+            return -1;
+        }
+        final GeoPoint userLoc = new GeoPoint();
+        userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .isSilentSearch(isSilentSearch)
+                .keyword(keyword)
+                .page(page)
+                .queryType(AutoMapConstant.SearchQueryType.NORMAL)
+                .searchType(AutoMapConstant.SearchType.SEARCH_KEYWORD)
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .userLoc(userLoc)
+                .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
+                .retainState(retain)
+                .checkedLevel("2")
+                .classifyV2Level2Data(classifyData)
+                .build();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, KEY_SEARCH_EXECUTING);
+        addSearchKeywordRecord(keyword);
+        return mSearchAdapter.keywordSearch(requestParameterBuilder);
+    }
+
+    /**
      * 关键字静默搜索
      *
      * @param keyword 关键字
@@ -873,6 +910,27 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     *  pid批量搜索
+     * @param pidList   pid列表
+     * @param scene scene推荐场景取值， 0: 无效场景，1: 搜索详情页场景，2：路线规划页场景，3：导航结束页场景，4：导航中
+     * @param isSilent 是否静默搜
+     * @return taskId
+     */
+    public int poiListSearch(final List<String> pidList,final int scene, final boolean isSilent) {
+        if (ConvertUtils.isEmpty(pidList)) {
+            return 0;
+        }
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .isSilentSearch(isSilent)
+                .searchType(AutoMapConstant.SearchType.PID_LIST_SEARCH)
+                .poiIdList(pidList)
+                .scene(scene)
+                .build();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "poiListSearch.");
+        return mSearchAdapter.poiListSearch(requestParameterBuilder);
+    }
+
+    /**
      * 添加搜索记录
      *
      * @param keyword 关键字
@@ -1304,6 +1362,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "setChildIndex: " + index);
         mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT
                 , index);
+        mMapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 2);
     }
 
     /**
@@ -1328,7 +1387,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         } else {
             searchType = LayerPointItemType.SEARCH_PARENT_POINT;
         }
-        Logger.d(TAG, "createPoiMarker searchType " + searchType);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "createPoiMarker searchType " + searchType);
         sMarkerInfoMap.put(searchType, layerItemSearchResult);
         mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, searchType, layerItemSearchResult, true);
         showPreview(poiList);

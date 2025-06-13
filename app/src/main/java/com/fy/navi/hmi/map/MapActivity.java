@@ -1,6 +1,5 @@
 package com.fy.navi.hmi.map;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +19,6 @@ import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
-import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.dialog.MsgTopDialog;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
@@ -31,7 +29,6 @@ import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.route.RouteTMCParam;
-import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.FragmentIntent;
 import com.fy.navi.ui.base.StackManager;
@@ -119,8 +116,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = getIntent();
-        getIntentExtra(intent);
     }
 
     @Override
@@ -217,47 +212,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     // 更新当前的比例尺数值
     public void updateOnMapScaleChanged(String scale) {
         mBinding.sceneScaleView.updateOnMapLevelChanged(scale);
-    }
-
-    private void getIntentExtra(Intent intent) {
-        if (null == intent) return;
-        //外部应用打开地图时指定的响应界面
-        int intentPage = intent.getIntExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
-        Logger.i(TAG, "intentPage:" + intentPage);
-        intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
-        mViewModel.stopCruise();
-        switch (intentPage) {
-            case INaviConstant.OpenIntentPage.SEARCH_PAGE:
-                String keyword = intent.getStringExtra(INaviConstant.SEARCH_KEYWORD_EXTRA);
-                if (!ConvertUtils.isEmpty(keyword)) {
-                    mViewModel.setExtraKeyword(keyword);
-                } else {
-                    mBinding.skIvBasicSearch.callOnClick();
-                }
-                break;
-            case INaviConstant.OpenIntentPage.GO_HOME:
-                mBinding.skIvBasicHome.callOnClick();
-                break;
-            case INaviConstant.OpenIntentPage.GO_COMPANY:
-                mBinding.skIvBasicBus.callOnClick();
-                break;
-            case INaviConstant.OpenIntentPage.POI_DETAIL_PAGE:
-                PoiInfoEntity poiInfo = intent.getParcelableExtra(INaviConstant.POI_INFO_EXTRA);
-                if (null != poiInfo) {
-                    mViewModel.toPoiDetailFragment(poiInfo);
-                }
-                break;
-            case INaviConstant.OpenIntentPage.ROUTE_PAGE:
-                PoiInfoEntity endPoint = intent.getParcelableExtra(INaviConstant.ROUTE_END_POI);
-                mViewModel.openRoute(endPoint);
-                break;
-            case INaviConstant.OpenIntentPage.START_NAVIGATION:
-                mViewModel.startNaviForRouteOver();
-                break;
-            default:
-                break;
-        }
-        intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
     }
 
     public void setMessageImg(int res) {

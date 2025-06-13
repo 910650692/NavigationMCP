@@ -19,7 +19,6 @@ import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.limit.LimitCitySelectionFragment;
 import com.fy.navi.hmi.limit.LimitDriveFragment;
-import com.fy.navi.service.utils.GasCarTipManager;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
 import com.fy.navi.hmi.search.parking.TerminalParkingFragment;
 import com.fy.navi.scene.RoutePath;
@@ -29,7 +28,6 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
-import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapType;
@@ -54,6 +52,7 @@ import com.fy.navi.service.define.route.RouteRestirctionID;
 import com.fy.navi.service.define.route.RouteRestrictionInfo;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
+import com.fy.navi.service.define.route.RouteSupplementParams;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.define.route.RouteWeatherParam;
@@ -94,6 +93,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private List<RouteLineInfo> mRouteLineInfos;
     private List<RouteWeatherInfo> mRouteWeatherInfos;
     private RouteChargeStationParam mRouteChargeStationParam;
+    private boolean mChargeStationReady = false;
     private List<RouteRestrictionInfo> mRouteRestrictionInfo;
     private List<RouteParam> mRouteParams;
     private Map<Integer, PoiInfoEntity> mTaskMap = new HashMap<>();
@@ -961,6 +961,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         clearWeatherView();
         clearRestArea();
         clearRestrictionView();
+        mChargeStationReady = false;
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showProgressUI();
             mViewModel.showNomalRouteUI(false);
@@ -985,6 +986,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteSlected(final MapType mapTypeId, final int routeIndex, boolean isFirst) {
+        if (routeIndex == -1) {
+            return;
+        }
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
             if (!isFirst) {
                 if (!ConvertUtils.isEmpty(mViewModel)) {
@@ -1016,12 +1020,39 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     }
                 }
             }
+
+            //TODO CR
+//            if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
+//                    && mRouteChargeStationParam.getMRouteSupplementParams() != null
+//                    && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
+//                    && routeIndex < mRouteChargeStationParam.getMRouteSupplementParams().size()
+//                    && mChargeStationReady) {
+//                final RouteSupplementParams routeSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams().get(routeIndex);
+//                mViewModel.updateSupplementPointsView(routeSupplementParams.getMRouteSupplementInfos()
+//                        , routeSupplementParams.getMTotalDistance());
+//            }
         }
     }
 
     @Override
     public void onRouteChargeStationInfo(final RouteChargeStationParam routeChargeStationParam) {
         mRouteChargeStationParam = routeChargeStationParam;
+
+        //TODO CR
+//        if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
+//                && mRouteChargeStationParam.getMRouteSupplementParams() != null
+//                && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
+//                && getCurrentIndex() < mRouteChargeStationParam.getMRouteSupplementParams().size()) {
+//            mChargeStationReady = true;
+//            final RouteSupplementParams routeSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams().get(getCurrentIndex());
+//            mViewModel.updateSupplementPointsView(routeSupplementParams.getMRouteSupplementInfos()
+//                    , routeSupplementParams.getMTotalDistance());
+//        } else {
+//            if (!ConvertUtils.isEmpty(mViewModel)) {
+//                mViewModel.withoutSupplementPointsView();
+//            }
+//        }
+
     }
 
     @Override
@@ -1054,6 +1085,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             case ROUTE_POINT_START:
             case ROUTE_POINT_END:
             case ROUTE_POINT_VIA:
+            case ROUTE_POINT_VIA_CHARGE:
                 final PoiInfoEntity poiInfo = new PoiInfoEntity();
                 poiInfo.setPoint(new GeoPoint(item.getLog(), item.getLat()));
                 final Bundle poiBundle = new Bundle();
@@ -1084,12 +1116,13 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     return;
                 }
                 final ArrayList<RouteChargeStationInfo> routeChargeStationInfos = mRouteChargeStationParam.getMRouteChargeStationInfos();
-                if (routeChargeStationInfos == null) {
+                if (routeChargeStationInfos == null || getCurrentIndex() == -1 || routeChargeStationInfos.isEmpty()
+                || getCurrentIndex() >= routeChargeStationInfos.size()) {
                     return;
                 }
                 final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfo = routeChargeStationInfos.get(getCurrentIndex())
                         .getMRouteChargeStationDetailInfo();
-                if (routeChargeStationDetailInfo == null || routeChargeStationDetailInfo.size() <= item.getIndex()) {
+                if (routeChargeStationDetailInfo == null || routeChargeStationDetailInfo.size() <= item.getIndex() || item.getIndex() == -1) {
                     return;
                 }
                 final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ALTER_CHARGE_FRAGMENT).navigation();
@@ -1098,6 +1131,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                         routeChargeStationDetailInfo.get((int) item.getIndex()));
                 closeAllFragmentsUntilTargetFragment("AlterChargeFragment");
                 addFragment((BaseFragment) chargeFragment, chargeBundle);
+
+                //TODO CR
+//                final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT).navigation();
+//                final Bundle chargeBundle = new Bundle();
+//                chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
+//                        routeChargeStationDetailInfo.get((int) item.getIndex()));
+//                closeAllFragmentsUntilTargetFragment("AlterChargeFragment");
+//                addFragment((BaseFragment) chargeFragment, chargeBundle);
                 break;
             case ROUTE_POINT_END_PARK:
                 clearEndParkPoint();
@@ -1106,6 +1147,28 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             default:
                 break;
     }
+}
+
+/**
+ * 跳转至补能规划界面
+ * */
+public void jumpToSupplementPlan() {
+    if (mRouteChargeStationParam == null) {
+        return;
+    }
+    final ArrayList<RouteSupplementParams> routeSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams();
+    if (routeSupplementParams == null || getCurrentIndex() == -1 || routeSupplementParams.isEmpty()
+            || getCurrentIndex() >= routeSupplementParams.size()) {
+        return;
+    }
+    final RouteSupplementParams routeSupplementParam = routeSupplementParams.get(getCurrentIndex());
+    if (routeSupplementParam == null ) {
+        return;
+    }
+    final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT).navigation();
+    final Bundle chargeBundle = new Bundle();
+    chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT, routeSupplementParam);
+    addPoiDetailsFragment((BaseFragment) chargeFragment, chargeBundle);
 }
 
 /**

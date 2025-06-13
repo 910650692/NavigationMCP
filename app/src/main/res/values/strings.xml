@@ -191,6 +191,7 @@
     <string name="route_selected_charge_station">当前站点</string>
     <string name="route_alter_charge_stations">以下充电站可供替换：</string>
     <string name="route_alter">替换</string>
+    <string name="route_check_alter">查看备选站</string>
     <string name="route_charge_stations_cost">￥%s/%s</string>
     <string name="route_charge_stations_total_number">/%s</string>
     <string name="route_expected_battery_depletion">预计电量耗尽</string>
@@ -359,7 +360,7 @@
     <string name="setting_guide_route_preference">路线偏好</string>
     <string name="setting_guide_avoid_limit">避开限行</string>
     <string name="setting_guide_charging_plan">补能规划</string>
-    <string name="setting_guide_charging_plan_des">到达目的地有电量风险时，将自动规划含充电站的路线</string>
+    <string name="setting_guide_charging_plan_des">到达目的地有电量风险时,将自动规划含充电站的路线</string>
     <string name="setting_guide_car_number">沪AFY120</string>
     <string name="setting_guide_plate_number_first_tip">第一位只能输入字母</string>
     <string name="setting_guide_plate_number_check_not_available">车牌校验未通过</string>
@@ -601,6 +602,7 @@
     <string name="low_battery_warning">电量不够到达终点，请查找沿途充电站</string>
     <string name="forecast_title_home">预测家的地址是</string>
     <string name="forecast_title_company">预测公司的地址是</string>
+    <string name="forecast_content_edit">编辑</string>
     <string name="forecast_set_home">设置家成功</string>
     <string name="forecast_set_company">设置公司成功</string>
     <!--引导相关-->

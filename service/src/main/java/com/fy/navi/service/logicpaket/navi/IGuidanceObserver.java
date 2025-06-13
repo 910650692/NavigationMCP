@@ -235,5 +235,11 @@ public interface IGuidanceObserver {
 
     }
 
-    default void onCloseNavi(boolean isNaviClose) {}
+    default void onCloseNavi(boolean isNaviClose) {
+
+    }
+
+    default void onPassByClick(MapType mapType) {
+
+    }
 }

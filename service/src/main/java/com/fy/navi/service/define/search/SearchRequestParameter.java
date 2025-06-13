@@ -90,6 +90,8 @@ public final class SearchRequestParameter {
     private SearchRetainParamInfo mRetainParam;
     //是否由重算触发
     private boolean mIsReSearch = false;
+    //scene推荐场景取值， 0: 无效场景，1: 搜索详情页场景，2：路线规划页场景，3：导航结束页场景，4：导航中
+    private int mScene = 0;
     //搜索半径
     private String mRange;
     private String mIdpUserId;
@@ -266,6 +268,7 @@ public final class SearchRequestParameter {
         this.mClassifyV2Level3Data = builder.mClassifyV2Level3Data;
         this.mGeoobj = builder.mGeoobj;
         this.mType = builder.mType;
+        this.mScene = builder.mScene;
         this.mIsReSearch = builder.mIsReSearch;
         this.mPathInfo = builder.mPathInfo;
         this.mPoiIdList = builder.mPoiIdList;
@@ -413,6 +416,7 @@ public final class SearchRequestParameter {
         private String mClassifyV2Level3Data;
         private String mGeoobj;
         private int mType;
+        private int mScene;
         private boolean mIsReSearch;
         private Object mPathInfo;
         private List<String> mPoiIdList;
@@ -717,6 +721,16 @@ public final class SearchRequestParameter {
          */
         public Builder type(final int type) {
             this.mType = type;
+            return this;
+        }
+
+        /**
+         * 推荐场景
+         * @param scene 推荐场景
+         * @return Builder
+         */
+        public Builder scene(final int scene) {
+            this.mScene = scene;
             return this;
         }
 

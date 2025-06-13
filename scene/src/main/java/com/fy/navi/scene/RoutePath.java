@@ -27,5 +27,6 @@ public class RoutePath {
     public static class Route {
         public static final String ROUTE_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/route/RouteFragment";
         public static final String ALTER_CHARGE_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/route/alternative/AlterChargeFragment";
+        public static final String NEW_ALTER_CHARGE_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/route/newalternative/NewAlterChargeFragment";
     }
 }

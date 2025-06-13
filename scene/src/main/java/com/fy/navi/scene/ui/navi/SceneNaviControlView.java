@@ -12,7 +12,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.scene.BuildConfig;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviControlViewBinding;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
@@ -196,6 +195,9 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      * 导航继续
      */
     public void naviContinue() {
+        if (mScreenViewModel == null) {
+            return;
+        }
         mScreenViewModel.naviContinue();
     }
 
@@ -203,6 +205,9 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      * @param type 0:退出全览 1:切换全览
      */
     public void naviPreviewSwitch(final int type) {
+        if (mScreenViewModel == null) {
+            return;
+        }
         mScreenViewModel.naviPreviewSwitch(type);
     }
 
@@ -210,11 +215,17 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      * 显示控制条更多
      */
     public void showControlDetails() {
+        if (mScreenViewModel == null) {
+            return;
+        }
         mScreenViewModel.moreSetup();
     }
 
     public void onMeterAction() {
         ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getString(R.string.navi_meter_start), 3000);
+        if (mScreenViewModel == null) {
+            return;
+        }
         mScreenViewModel.clickToShowOverview();
         mScreenViewModel.onFixedOverView();
     }

@@ -14,12 +14,14 @@ public class LayerItemRouteReplaceChargePoint extends LayerItemData {
 
     private RouteAlterChargeStationInfo info;
     private int index;
+    private int type;   //0:补能点, 1: 充电站途经点
 
     @Override
     public String toString() {
         return "LayerItemRouteReplaceChargePoint{" +
-                "info=" + info +
-                ", index=" + index +
-                '}';
+            "info=" + info +
+            ", index=" + index +
+            ", type=" + type +
+            '}';
     }
 }

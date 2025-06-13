@@ -3,6 +3,7 @@ package com.fy.navi.hmi.navi;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
@@ -10,6 +11,7 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
+import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.DialogForecastAddressBinding;
 import com.fy.navi.service.AutoMapConstant;
@@ -39,6 +41,9 @@ public class ForecastAddressDialog extends BaseFullScreenDialog<DialogForecastAd
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setDialogView();
+
         if(!ConvertUtils.isEmpty(mOftenArrivedItemInfo.getWstrAddress())){
             mViewBinding.forecastContent.setText(mOftenArrivedItemInfo.getWstrAddress());
         }
@@ -70,6 +75,18 @@ public class ForecastAddressDialog extends BaseFullScreenDialog<DialogForecastAd
             onDismiss();
             mIForecastAddressCallBack.addressClick();
         });
+
+        mViewBinding.forecastEdit.setOnClickListener(v -> {
+            onDismiss();
+            mViewBinding.forecastContent.callOnClick();
+        });
+    }
+
+    private void setDialogView() {
+        if(BuildConfig.FLAVOR.equals("clea_local_8155")){
+            mViewBinding.forecastContent.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+            mViewBinding.forecastEdit.setVisibility(View.VISIBLE);
+        }
     }
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_HOME_PREDICTION)

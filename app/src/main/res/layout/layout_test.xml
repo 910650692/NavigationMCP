@@ -7,227 +7,213 @@
     android:background="#99EEEEEE"
     android:padding="@dimen/dp_20">
 
-    <TextView
-        android:id="@+id/test_version"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:text="调试信息："
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:padding="@dimen/dp_16"
-        android:background="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <com.fy.navi.ui.view.SkinTextView
-        android:id="@+id/close"
-        android:text="关闭"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:padding="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_2"
-        android:background="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/test_version"
-        />
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <com.fy.navi.ui.view.SkinTextView
-        android:id="@+id/test_calibration"
-        android:text="@string/test_calibration"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:padding="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_2"
-        android:background="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/close"
-        />
+            <TextView
+                android:id="@+id/test_version"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="@dimen/dp_16"
+                android:text="调试信息："
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <com.fy.navi.ui.view.SkinTextView
-        android:id="@+id/test_signal"
-        android:text="@string/test_signal"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:padding="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_2"
-        android:background="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/test_calibration"
-        />
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/close"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:background="@color/white"
+                android:padding="@dimen/dp_16"
+                android:text="关闭"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/test_version" />
 
-    <com.fy.navi.ui.view.SkinTextView
-        android:id="@+id/test_open_cluster_activity"
-        android:text="@string/test_open_cluster_activity"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:padding="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_2"
-        android:background="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/test_signal"
-        />
-    <com.fy.navi.ui.view.SkinTextView
-        android:id="@+id/test_close_cluster_activity"
-        android:text="@string/test_close_cluster_activity"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:padding="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_2"
-        android:background="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/test_open_cluster_activity"
-        />
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/test_calibration"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:background="@color/white"
+                android:padding="@dimen/dp_16"
+                android:text="@string/test_calibration"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/close" />
 
-    <com.fy.navi.ui.view.SkinTextView
-        android:id="@+id/test_show_dr"
-        android:layout_width="@dimen/dp_250"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="20dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="@dimen/dp_5"
-        android:text="显示DR调试面板"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_close_cluster_activity"
-        app:marquee="true" />
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/test_signal"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:background="@color/white"
+                android:padding="@dimen/dp_16"
+                android:text="@string/test_signal"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/test_calibration" />
 
-    <com.fy.navi.ui.view.SkinTextView
-        android:id="@+id/test_hide_dr"
-        android:layout_width="@dimen/dp_250"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginStart="@dimen/dp_20"
-        android:background="@color/white"
-        android:gravity="center"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="@dimen/dp_5"
-        android:text="关闭DR调试面板"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
-        app:layout_constraintBottom_toBottomOf="@id/test_show_dr"
-        app:layout_constraintStart_toEndOf="@id/test_show_dr"
-        app:layout_constraintTop_toTopOf="@id/test_show_dr"
-        app:marquee="true" />
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/test_open_cluster_activity"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:background="@color/white"
+                android:padding="@dimen/dp_16"
+                android:text="@string/test_open_cluster_activity"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/test_signal" />
 
-    <com.fy.navi.ui.view.SkinTextView
-        android:id="@+id/test_open_loc_log"
-        android:layout_width="@dimen/dp_250"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="20dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="@dimen/dp_5"
-        android:text="开启定位日志"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_show_dr"
-        app:marquee="true" />
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/test_close_cluster_activity"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:background="@color/white"
+                android:padding="@dimen/dp_16"
+                android:text="@string/test_close_cluster_activity"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/test_open_cluster_activity" />
 
-    <com.fy.navi.ui.view.SkinTextView
-        android:id="@+id/test_close_loc_log"
-        android:layout_width="@dimen/dp_250"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginStart="@dimen/dp_20"
-        android:background="@color/white"
-        android:gravity="center"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="@dimen/dp_5"
-        android:text="关闭定位日志"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
-        app:layout_constraintBottom_toBottomOf="@id/test_open_loc_log"
-        app:layout_constraintStart_toEndOf="@id/test_open_loc_log"
-        app:layout_constraintTop_toTopOf="@id/test_open_loc_log"
-        app:marquee="true" />
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/test_show_dr"
+                android:layout_width="@dimen/dp_250"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginTop="20dp"
+                android:background="@color/white"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="@dimen/dp_5"
+                android:text="显示DR调试面板"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_close_cluster_activity"
+                app:marquee="true" />
 
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/test_hide_dr"
+                android:layout_width="@dimen/dp_250"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_20"
+                android:background="@color/white"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="@dimen/dp_5"
+                android:text="关闭DR调试面板"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintBottom_toBottomOf="@id/test_show_dr"
+                app:layout_constraintStart_toEndOf="@id/test_show_dr"
+                app:layout_constraintTop_toTopOf="@id/test_show_dr"
+                app:marquee="true" />
 
-    <com.fy.navi.ui.view.SkinCheckBox
-        android:id="@+id/test_nav_log"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:checked="true"
-        android:text="nav日志开关"
-        android:textSize="@dimen/sp_25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_open_loc_log" />
+            <com.fy.navi.ui.view.SkinCheckBox
+                android:id="@+id/navi_pos_record"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginTop="20dp"
+                android:button="@null"
+                android:checked="false"
+                android:drawableStart="@drawable/switch_route_button"
+                android:gravity="top"
+                android:text="定位日志"
+                android:textSize="@dimen/sp_25"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_show_dr" />
 
-    <Spinner
-        android:id="@+id/test_nai_log_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        app:layout_constraintBottom_toBottomOf="@+id/test_nav_log"
-        app:layout_constraintLeft_toRightOf="@+id/test_nav_log"
-        app:layout_constraintTop_toTopOf="@+id/test_nav_log" />
+            <com.fy.navi.ui.view.SkinCheckBox
+                android:id="@+id/test_nav_log"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                android:checked="true"
+                android:text="nav日志开关"
+                android:textSize="@dimen/sp_25"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navi_pos_record" />
+
+            <Spinner
+                android:id="@+id/test_nai_log_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
+                app:layout_constraintBottom_toBottomOf="@+id/test_nav_log"
+                app:layout_constraintLeft_toRightOf="@+id/test_nav_log"
+                app:layout_constraintTop_toTopOf="@+id/test_nav_log" />
 
 
-    <com.fy.navi.ui.view.SkinCheckBox
-        android:id="@+id/test_gaode_log"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="高德日志开关"
-        android:textSize="@dimen/sp_25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_nav_log" />
+            <com.fy.navi.ui.view.SkinCheckBox
+                android:id="@+id/test_gaode_log"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="高德日志开关"
+                android:textSize="@dimen/sp_25"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_nav_log" />
 
-    <Spinner
-        android:id="@+id/test_gaode_log_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        app:layout_constraintBottom_toBottomOf="@+id/test_gaode_log"
-        app:layout_constraintLeft_toRightOf="@+id/test_gaode_log"
-        app:layout_constraintTop_toTopOf="@+id/test_gaode_log" />
+            <Spinner
+                android:id="@+id/test_gaode_log_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
+                app:layout_constraintBottom_toBottomOf="@+id/test_gaode_log"
+                app:layout_constraintLeft_toRightOf="@+id/test_gaode_log"
+                app:layout_constraintTop_toTopOf="@+id/test_gaode_log" />
 
-    <com.fy.navi.ui.view.SkinCheckBox
-        android:id="@+id/navi_record"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_54"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
-        android:button="@null"
-        android:checked="false"
-        android:drawableStart="@drawable/switch_route_button"
-        android:gravity="top"
-        android:text="@string/test_start_record"
-        android:textSize="@dimen/sp_25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_gaode_log" />
+            <com.fy.navi.ui.view.SkinCheckBox
+                android:id="@+id/navi_record"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:button="@null"
+                android:checked="false"
+                android:drawableStart="@drawable/switch_route_button"
+                android:gravity="top"
+                android:text="@string/test_start_record"
+                android:textSize="@dimen/sp_25"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_gaode_log" />
 
-    <com.fy.navi.ui.view.SkinCheckBox
-        android:id="@+id/record_play"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_54"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
-        android:button="@null"
-        android:checked="false"
-        android:drawableStart="@drawable/switch_route_button"
-        android:gravity="top"
-        android:text="开始播放回放"
-        android:textSize="@dimen/sp_25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/navi_record" />
+            <com.fy.navi.ui.view.SkinCheckBox
+                android:id="@+id/record_play"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:button="@null"
+                android:checked="false"
+                android:drawableStart="@drawable/switch_route_button"
+                android:gravity="top"
+                android:text="开始播放回放"
+                android:textSize="@dimen/sp_25"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navi_record" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </com.fy.navi.ui.view.SkinConstraintLayout>

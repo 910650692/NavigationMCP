@@ -149,4 +149,9 @@ public interface IMapApi {
     boolean getIsEnterPreview(MapType mapTypeId);
 
     void setMapLabelClickable(MapType mapTypeId,boolean enable);
+
+    /**
+     * 刷帧
+     */
+    void resetTickCount(MapType mapTypeId, int tickCount);
 }

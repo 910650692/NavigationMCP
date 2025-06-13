@@ -43,6 +43,19 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/dialog_button_layout" />
 
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/forecast_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forecast_content_edit"
+                android:layout_marginStart="@dimen/dp_10"
+                android:textColor="@color/forecast_content_edit"
+                android:textSize="@dimen/sp_29"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/forecast_content"
+                app:layout_constraintLeft_toRightOf="@+id/forecast_content"
+                app:layout_constraintTop_toTopOf="@+id/forecast_content" />
+
             <com.fy.navi.ui.view.SkinView
                 android:layout_width="@dimen/dp_1054"
                 android:layout_height="@dimen/dp_2"

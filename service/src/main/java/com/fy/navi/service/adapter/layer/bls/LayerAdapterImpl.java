@@ -384,7 +384,6 @@ public class LayerAdapterImpl implements ILayerApi {
             layersPoolManager.get(mapTypeId).getLayerSearch().clearAllItems();
         }
         boolean searchMarker = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchMarker(type, searchResult);
-        Logger.d(TAG, "updateSearchMarker " + searchMarker);
         return searchMarker;
     }
 

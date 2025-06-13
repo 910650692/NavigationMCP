@@ -13,6 +13,7 @@ import androidx.databinding.ObservableField;
 import com.android.utils.log.Logger;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.exportservice.ExportIntentParam;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppCache;
@@ -130,17 +131,15 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
      * 启动Navi_App
      */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
-    public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
+    public void startMapActivity(final int pageCode, final PoiInfoEntity poiInfo) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
-        Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(INaviConstant.PAGE_EXTRA, pageCode);
-        if (poiInfo != null) {
-            bundle.putParcelable(INaviConstant.POI_INFO_EXTRA, poiInfo);
+        ExportIntentParam.setIntentPage(pageCode);
+        if (null != poiInfo) {
+            ExportIntentParam.setPoiInfo(poiInfo);
         }
+        final Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
-        ActivityOptions options = ActivityOptions.makeBasic();
+        final ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
         AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
@@ -149,13 +148,7 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
      * 启动Navi_App
      */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
-    public void startMapActivity(int pageCode) {
-        Logger.i(TAG, "startMapActivity:" + pageCode);
-        Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
-        intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchDisplayId(0);
-        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+    public void startMapActivity(final int pageCode) {
+        startMapActivity(pageCode, null);
     }
 }

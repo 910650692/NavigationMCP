@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -81,6 +82,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author baipeng0904
@@ -108,6 +110,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private int mChildSelectIndex = -1;
     private boolean mIsCollectStatus = false;
     private boolean mIsEnd = false;
+    private String mLabelName = "";
     private ETAInfo mEtaInfo;
     private ValueAnimator mAnimator;
     private float mAngelTemp = 0;
@@ -929,6 +932,22 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setVisibility(GONE);
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setVisibility(GONE);
             }
+
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getLatestChargeTimestamp: "+chargeInfo.getMLatestChargeTimestamp());
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getMSearchTimestamp: "+chargeInfo.getMSearchTimestamp());
+            if(!ConvertUtils.isEmpty(chargeInfo.getMSearchTimestamp()) && !ConvertUtils.isEmpty(chargeInfo.getMSearchTimestamp())) {
+                String timeStr = TimeUtils.getInstance().getTimeStr(chargeInfo.getMSearchTimestamp() - chargeInfo.getMLatestChargeTimestamp());
+                mViewBinding.scenePoiDetailsChargingStationView.latestCharge.setVisibility(VISIBLE);
+                mViewBinding.scenePoiDetailsChargingStationView.latestCharge.setText(getContext().getString(R.string.latest_charge,timeStr));
+            }else{
+                mViewBinding.scenePoiDetailsChargingStationView.latestCharge.setVisibility(GONE);
+            }
+            if(!ConvertUtils.isEmpty(mLabelName)){
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeLabel.setVisibility(VISIBLE);
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeLabel.setText(mLabelName);
+            }else{
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeLabel.setVisibility(GONE);
+            }
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeBusinessLayout.setVisibility(View.GONE);
@@ -1615,6 +1634,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         .setPoiType(1);
                 onSearchResult(mScreenViewModel.getMTaskId(),searchResultEntity);
                 reloadPoiLabelMarker();
+                mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_PARENT_POINT);
             }else if(!ConvertUtils.isEmpty(poiInfo.getPid()) && poiInfo.getPid().startsWith("C")){
                 mScreenViewModel.keywordSearch(poiInfo);
             }else{
@@ -1963,6 +1983,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     public void setIsEnd(final boolean isEnd) {
         this.mIsEnd = isEnd;
+    }
+
+    public void setLabelName(String label){
+        this.mLabelName = label;
     }
 
 }

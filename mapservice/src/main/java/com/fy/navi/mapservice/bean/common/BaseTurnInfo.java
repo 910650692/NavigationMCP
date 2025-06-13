@@ -7,12 +7,12 @@ import android.os.Parcelable;
 public class BaseTurnInfo implements Parcelable {
 
     private int mType;
-    private int mRemainTime; //剩余时间/s
-    private String mFormatTime; //格式化后的剩余时间
-    private int mRemainDist; //剩余距离/m
-    private String mFormatDist; //格式化后的剩余距离
-    private String mFormatArrive; //格式化后的到达时间
-    private String mFormatDay; //到达天数，为空不显示 eg +1  +2
+    private int mRemainTime; //剩余时间，单位秒
+    private String mFormatTime; //格式化后的剩余时间 eg:xx小时xx分钟
+    private int mRemainDist; //剩余距离，单位米
+    private String mFormatDist; //格式化后的剩余距离 eg:xx公里或xx米
+    private String mFormatArrive; //格式化后的到达时间 eg: 01:52
+    private String mFormatDay; //到达天数，标识是否跨天到达，为空不显示 eg: +1/+2
     private String mCurRouteName = ""; //当前道路名
     private int mCurRoadClass; //当前道路等级
     /**
@@ -25,7 +25,7 @@ public class BaseTurnInfo implements Parcelable {
     private int mNextManeuverID = -1; //下个路口转向ID
     private int mNextDist; //下个路口距离/m
     private int mRingOutCnt; //剩余红绿灯数量
-    private int mDriveDist; //已经行驶的距离
+    private int mDriveDist; //已经行驶的距离，单位米
 
     public BaseTurnInfo() {
 

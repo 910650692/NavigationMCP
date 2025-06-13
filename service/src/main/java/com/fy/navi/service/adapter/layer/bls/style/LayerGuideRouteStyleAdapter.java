@@ -42,7 +42,6 @@ import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.utils.GasCarTipManager;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +67,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     private static final String KEY_ROAD_VIA_CHARGE_STATION = "road_via_charge_station";
     //路线替换补能点扎标
     private static final String KEY_SEARCH_REPLACE_CHARGE = "road_via_replace_charge";
+    //途经点是充电站的扎标
+    private static final String KEY_ROAD_ROUTE_VIA_CHARGE_STATION = "road_route_via_charge_station";
 
     private final AtomicReference<Rect> mRect = new AtomicReference<>();;
     private VectorCrossBean mVectorCrossBean;
@@ -147,6 +148,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     if (pathId == LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
                         Logger.d(TAG, "途经点扎标-自定义扎标");
                         return KEY_SEARCH_REPLACE_CHARGE;
+                    } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal()) {
+                        Logger.d(TAG, "途经点扎标-充电站");
+                        return KEY_ROAD_ROUTE_VIA_CHARGE_STATION;
                     }
                     Logger.d(TAG, "途经点扎标-默认扎标");
                     return super.provideLayerItemStyleJson(item);
@@ -185,6 +189,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     long pathId = viaPoint.getPathId();
                     if (pathId == LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
                         return getRouteReplaceChargePoint(item);
+                    } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal()) {
+                        return getRouteViaChargePoint(item);
                     } else {
                         return super.provideLayerItemData(item);
                     }
@@ -283,6 +289,15 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             Logger.e(TAG, "替换补能充电站扎标 rootView == null");
                             return;
                         }
+                        if (ConvertUtils.isEmpty(data)) {
+                            Logger.e(TAG, "the data is empty");
+                            return;
+                        }
+
+                        if (data.getType() == 1) {
+                            setViaChargeStationInfo(rootView, data);
+                            return;
+                        }
                         Context context = rootView.getContext();
                         TextView positionView = rootView.findViewById(R.id.search_replace_charge_position);
                         LinearLayout wholeLinearLayout = rootView.findViewById(R.id.search_replace_charge_whole_linear);
@@ -332,9 +347,39 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             countLinearLayout.setVisibility(VISIBLE);
                         }
                     }
+
+                    @Override
+                    public void onFocusProcess(LayerItem layerItem, View rootView, LayerItemRouteReplaceChargePoint data) {
+                        if (ConvertUtils.isEmpty(rootView)) {
+                            Logger.e(TAG, "替换补能充电站扎标 rootView == null");
+                            return;
+                        }
+                        if (ConvertUtils.isEmpty(data)) {
+                            Logger.e(TAG, "the data is empty");
+                            return;
+                        }
+                        if (data.getType() == 1) {
+                            setViaChargeStationInfo(rootView, data);
+                        }
+                    }
                 };
             default -> super.provideUpdateBitmapViewProcessor(item);
         };
+    }
+
+    /**
+     * 途经点充电站数据  //todo 暂时没有数据
+     * @param rootView
+     * @param data
+     */
+    private void setViaChargeStationInfo(View rootView, LayerItemRouteReplaceChargePoint data) {
+        final TextView fastText = rootView.findViewById(R.id.route_charge_station_fast);
+        final TextView slowText = rootView.findViewById(R.id.route_charge_station_slow);
+        final Context context = rootView.getContext();
+        final String fastString = context.getString(R.string.layer_route_replace_charge_fast, "5/5");
+        safetySetText(fastText, fastString);
+        final String slowString = context.getString(R.string.layer_route_replace_charge_slow, "6/6");
+        safetySetText(slowText, slowString);
     }
 
     private void safetySetText(TextView textView, String string) {
@@ -398,6 +443,18 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         return mRect.get();
     }
 
+    /**
+     * 获取途经点充电站数据   //todo mViaList还没有充电站数据
+     * @param item
+     * @return LayerItemRouteReplaceChargePoint
+     */
+    private LayerItemRouteReplaceChargePoint getRouteViaChargePoint(LayerItem item) {
+        LayerItemRouteReplaceChargePoint chargePoint = new LayerItemRouteReplaceChargePoint();
+        chargePoint.setIndex(Integer.parseInt(item.getID()));
+        chargePoint.setType(1);
+        return chargePoint;
+    }
+
     //转换替换补能点扎标数据
     private LayerItemRouteReplaceChargePoint getRouteReplaceChargePoint(LayerItem item) {
         LayerItemRouteReplaceChargePoint chargePoint = new LayerItemRouteReplaceChargePoint();
@@ -409,6 +466,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             chargePoint.setInfo(chargeStationInfo);
         }
         chargePoint.setIndex(replaceChargeIndex);
+        chargePoint.setType(0);
         Logger.d(TAG, "getRouteReplaceChargePoint index " + index +
                 " mReplaceChargeInfos.size " + mReplaceChargeInfos.size() +
                 " replaceChargeIndex " + replaceChargeIndex +

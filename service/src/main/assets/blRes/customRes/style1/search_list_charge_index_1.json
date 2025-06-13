@@ -1,0 +1,20 @@
+{
+  "point_layer_item_style": {
+    "normal_style": {
+      "poi_marker_id": "global_image_b_poi_1_hl_day_night",
+      "poi_marker_info": "marker_info_point_center_up",
+      "bg_marker_info": "marker_info_point_center_up",
+      "bg_marker_id": "search_list_charge_index_label.xml",
+      "bg_show_rect": {
+        "y1": 0,
+        "x1": 0,
+        "y2": 0.25,
+        "x2": 1
+      }
+    },
+    "focus_style": {
+      "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+      "poi_marker_info": "marker_info_point_center_up"
+    }
+  }
+}

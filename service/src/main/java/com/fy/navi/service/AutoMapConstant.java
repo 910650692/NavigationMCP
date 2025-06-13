@@ -67,6 +67,7 @@ public interface AutoMapConstant {
         int POI_DETAIL_SEARCH = 15; // POI详情搜索，仅支持洗车，美食和景点
         int TERMINAL_PARK_AROUND_SEARCH = 16; // 终点停车场周边搜索
         int MAIN_SEARCH_ICON = 17; // 主图页面搜索
+        int PID_LIST_SEARCH = 18; // Pid批量搜做
     }
 
     /*** ！！！搜索相关,数据传递key,只能添加不能删除！！！ */
@@ -129,6 +130,7 @@ public interface AutoMapConstant {
     @interface RouteBundleKey {
         String BUNDLE_KEY_START_NAVI_SIM = "bundle_key_route_start_navi_sim";
         String BUNDLE_KEY_ALTER_CHARGE_STATION = "bundle_key_alter_charge_station";
+        String BUNDLE_KEY_SUPPLEMENT = "bundle_key_supplement";
     }
 
     @interface CommonBundleKey {
@@ -377,6 +379,11 @@ public interface AutoMapConstant {
         int HAS_CHILD_HAS_GRAND = 2;
         int CHILD_NO_GRAND = 3;
         int CHILD_HAS_GRAND = 4;
+    }
+
+    @interface SupplementType {
+        int SUPPLEMENT_POINT = 0;
+        int REPLACE_SUPPLEMENT_POINT = 1;
     }
 
     @interface PosLastLocation {

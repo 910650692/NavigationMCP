@@ -1,10 +1,12 @@
 package com.fy.navi.scene.ui.search;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -36,6 +38,7 @@ import com.fy.navi.scene.impl.search.SceneSearchPoiListImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.FilterChildListAdapter;
 import com.fy.navi.scene.ui.adapter.FilterListAdapter;
+import com.fy.navi.scene.ui.adapter.QuickFilterListAdapter;
 import com.fy.navi.scene.ui.adapter.SearchResultAdapter;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -71,6 +74,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private FilterChildListAdapter mFilterOneChildAdapter;
     private FilterChildListAdapter mFilterTwoChildAdapter;
     private FilterChildListAdapter mFilterThreeChildAdapter;
+    private QuickFilterListAdapter mQuickFilterListAdapter;
     private int maxPageNum = 1;
     private int mPageNum = 1;
     private SearchLoadingDialog mSearchLoadingDialog;
@@ -81,6 +85,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private List<SearchCategoryLocalInfo> mLocalInfoList;
     private boolean mIsFilterViewShow = false;
     private final int mHorizontalSpacing = 12;
+    private final int mQuickLabelHorizontalSpacing = 14;
     private final int mChildHorizontalSpacing = 16;
     private final int mChildVerticalSpacing = 16;
     private final int mSpanCount = 3;
@@ -90,6 +95,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private int mCurrentSelectedIndex2 = -1;
     //第三个一级菜单当前正在被选中的二级菜单下标
     private int mCurrentSelectedIndex3 = -1;
+    private int mCurrentSelectedQuick = -1;
     private int mHomeCompanyType;
     private int mRange = 5000;
     private int mCityCode = 0;
@@ -100,7 +106,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private SearchResultEntity mSearchResultEntity;
     private int mTaskId;
     private boolean mIsEnd = false;
-
+    private List<SearchChildCategoryLocalInfo> mChildQuickList;
 
     public SceneSearchPoiList(@NonNull final Context context) {
         super(context);
@@ -137,6 +143,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         setupFilterActions();
         setupChildListActions();
         mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+        mCurrentSelectedQuick = -1;
     }
 
     /**
@@ -180,6 +187,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchFilterView.searchFilterList3Child.setAdapter(mFilterThreeChildAdapter);
         mViewBinding.searchFilterView.searchFilterList3Child.addItemDecoration(gridDecoration);
 
+        // 快筛adapter
+        final RecyclerView.ItemDecoration quickItemDecoration = new HorizontalSpaceItemDecoration(mQuickLabelHorizontalSpacing);
+        mViewBinding.searchLabelFilter.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        mQuickFilterListAdapter = new QuickFilterListAdapter();
+        mViewBinding.searchLabelFilter.setAdapter(mQuickFilterListAdapter);
+        mViewBinding.searchLabelFilter.addItemDecoration(quickItemDecoration);
+
         mAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
@@ -194,6 +208,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
                 bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);
                 bundle.putBoolean("IS_END", mIsEnd);
+                if(!ConvertUtils.isEmpty(mChildQuickList) && mCurrentSelectedQuick > 0){
+                    bundle.putString("LABEL",mChildQuickList.get(mCurrentSelectedQuick).getName());
+                }
                 addPoiDetailsFragment((BaseFragment) fragment, bundle);
             }
 
@@ -358,28 +375,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
 
         });
-        mViewBinding.chargeFilter.setOnClickListener(view -> {
-//            mIsChargeSelf = !mIsChargeSelf;
-//            mViewBinding.chargeFilter.setSelected(mIsChargeSelf);
-//            if (mIsChargeSelf) {
-//                mAdapter.clearList();
-//                if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
-//                    Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
-//                } else {
-//                    mSearchLoadingDialog = new SearchLoadingDialog(getContext());
-//                    mSearchLoadingDialog.show();
-//                }
-//                // 请求SGM自营站数据
-//                mScreenViewModel.queryStationNewResult(mResultEntity);
-//            } else {
-//                mScreenViewModel.clearLabelMarker();
-//                mScreenViewModel.addPoiMarker(mSearchResultEntity.getPoiList(), 0);
-//                mAdapter.notifyList(mSearchResultEntity);
-//                updatePoiMarkerVisibleState();
-//                mViewBinding.recyclerSearchResult.scrollToPosition(0);
-//            }
-            ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter_hint));
-        });
     }
 
     /**
@@ -389,6 +384,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
         mViewBinding.searchFilterView.searchFilterConfirm.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click confirm: ");
+            mCurrentSelectedQuick = -1;
             mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
             mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
             mIsFilterViewShow = false;
@@ -413,7 +409,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mViewBinding.searchFilterView.searchFilterRoot.setVisibility(VISIBLE);
                 mViewBinding.pullRefreshLayout.setVisibility(GONE);
                 mViewBinding.searchResultNoData.setVisibility(GONE);
-                mViewBinding.chargeFilter.setVisibility(GONE);
+                mViewBinding.searchLabelFilter.setVisibility(GONE);
                 mIsFilterViewShow = true;
                 if (null != mResultEntity) {
                     mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(
@@ -510,6 +506,36 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mCurrentSelectedIndex3 = position;
                 refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
                 mFilterThreeChildAdapter.setCategoryList(childList);
+            }
+        });
+        mQuickFilterListAdapter.setItemClickListener(new QuickFilterListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(List<SearchChildCategoryLocalInfo> list,int position) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"value: "+list + "position: "+position);
+                if(position>list.size()) return;
+                if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
+                    Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+                } else {
+                    mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+                    mSearchLoadingDialog.show();
+                }
+                if(mCurrentSelectedQuick == position){
+                    mCurrentSelectedQuick = -1;
+                    mScreenViewModel.keywordSearch(mPageNum,mSearchText);
+                    return;
+                }
+                mCurrentSelectedQuick = position;
+                SearchChildCategoryLocalInfo info = list.get(position);
+                if("charge".equals(info.getValue())){
+                    mAdapter.clearList();
+                    // 请求SGM自营站数据
+                    mScreenViewModel.queryStationNewResult(mResultEntity);
+//                    mSearchLoadingDialog.dismiss();
+//                    ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter_hint));
+                }else{
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"value: "+info.getValue());
+                    mScreenViewModel.keywordSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                }
             }
         });
     }
@@ -727,14 +753,34 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         mTaskId = mScreenViewModel.getMTaskId();
-        // 处理用户搜索意图
-        if(searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())){
-            boolean isChargeQuery = isChargeQuery(searchResultEntity.getQueryTypeList());
-            boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
-            boolean isOffline = searchResultEntity.getPoiType() == 0;
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isChargeQuery: "+isChargeQuery+" isPowerType: "+isPowerType+" isOffline: "+isOffline);
-            // 意图为充电站且是电车且非离线才显示自营标签,测试生产环境未解决，解决后释放
-            mViewBinding.chargeFilter.setVisibility(isChargeQuery && isPowerType && !isOffline ? VISIBLE : GONE);
+        // 处理用户搜索意图,意图为充电站显示快筛列表
+        if(searchResultEntity != null
+                && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())
+                && isChargeQuery(searchResultEntity.getQueryTypeList())){
+            // todo: 功能暂时隐藏
+//            mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
+//            mChildQuickList = mapCustomLabel(searchResultEntity.getLevel2LocalInfoList(),searchResultEntity);
+//            for (int i = 0; i < mChildQuickList.size(); i++) {
+//                mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
+//            }
+//            if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1){
+//                mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
+//            }
+//            mQuickFilterListAdapter.setLabelList(mChildQuickList);
+        // 自营站返回
+        }else if(searchResultEntity != null && searchResultEntity.getIsNetData()){
+            // todo: 功能暂时隐藏
+//            mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
+//            mChildQuickList = mapCustomLabel(new ArrayList<>(),searchResultEntity);
+//            for (int i = 0; i < mChildQuickList.size(); i++) {
+//                mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
+//            }
+//            if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1){
+//                mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
+//            }
+//            mQuickFilterListAdapter.setLabelList(mChildQuickList);
+        }else{
+            mViewBinding.searchLabelFilter.setVisibility(GONE);
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
@@ -765,6 +811,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mViewBinding.routeRightTabListChargeScene.setSearchCharge(queryType.equals(searchResultEntity.getKeyword()));
             }
             mViewBinding.routeRightTabListChargeScene.registerRouteSelectObserver(TAG, this);
+
         } else {
             mViewBinding.routeRightTabListChargeScene.setVisibility(GONE);
         }
@@ -806,6 +853,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mSearchResultEntity = searchResultEntity;
             }
             mAdapter.notifyList(searchResultEntity);
+            //poi批量搜测试代码
+//            List<String> pidList = new ArrayList<>();
+//            for (PoiInfoEntity poiInfo : searchResultEntity.getMPoiList()) {
+//                pidList.add(poiInfo.getPid());
+//            }
+//            mScreenViewModel.poiListSearch(pidList, 2);
             updatePoiMarkerVisibleState();
             mViewBinding.recyclerSearchResult.scrollToPosition(0);
         }
@@ -1036,7 +1089,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         int count = 0;
         for (int i = 0; i < list.size(); i++) {
             String type = list.get(i);
-            if(queryType.equals(type.split("=")[0].trim()) && Double.parseDouble(type.split("=")[1].trim()) > threshold){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"type: "+type);
+            if(queryType.equals(type.split("=")[0].trim())
+                    && !type.split("=")[1].trim().contains(";")
+                    && Double.parseDouble(type.split("=")[1].trim()) > threshold){
                 count++;
             }
         }
@@ -1048,5 +1104,49 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     public void onDestroy() {
         super.onDestroy();
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+    }
+
+    /**
+     * 处理快筛标签列表
+     * @param list 二筛列表
+     * @return
+     */
+    private List<SearchChildCategoryLocalInfo> mapCustomLabel(List<SearchCategoryLocalInfo> list,SearchResultEntity searchResultEntity) {
+        // 高配车型
+        List<SearchChildCategoryLocalInfo> childListByHigh = new ArrayList<>();
+        // 低配车型
+        List<SearchChildCategoryLocalInfo> childListByLow = new ArrayList<>();
+        if (ConvertUtils.isNull(list)) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "SearchCategoryLocalInfo is empty");
+            return new ArrayList<>();
+        }
+        boolean isPowerType = mScreenViewModel.powerType() == 1;
+        boolean isOffline = searchResultEntity.getPoiType() == 0;
+        // 添加自营快筛
+        if (isPowerType && !isOffline) {
+            SearchChildCategoryLocalInfo chargeItem = new SearchChildCategoryLocalInfo()
+                    .setName(ResourceUtils.Companion.getInstance().getString(R.string.search_charge_self))
+                    .setValue("charge");
+            childListByHigh.add(chargeItem);
+            childListByLow.add(chargeItem);
+        }
+        if (isPowerType) {
+            // 添加免费停车快筛
+            SearchChildCategoryLocalInfo parkItem = new SearchChildCategoryLocalInfo()
+                    .setName(ResourceUtils.Companion.getInstance().getString(R.string.filter_select_free_park))
+                    .setValue("searchlist_charging_type_free_parking");
+            childListByLow.add(parkItem);
+            // 添加快充快筛
+            SearchChildCategoryLocalInfo chargeItem = new SearchChildCategoryLocalInfo()
+                    .setName(ResourceUtils.Companion.getInstance().getString(R.string.filter_select_fast))
+                    .setValue("searchlist_charging_mode_fast");
+            childListByHigh.add(chargeItem);
+        }
+        // 别克：性价比车型1，凯迪：高品质车型2
+        childListByHigh.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : list.get(0).getCategoryLocalInfos());
+        childListByLow.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : list.get(0).getCategoryLocalInfos());
+        int brand = mScreenViewModel.getBrand();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"brand: "+brand);
+        return brand == 2 ? childListByHigh : childListByLow;
     }
 }

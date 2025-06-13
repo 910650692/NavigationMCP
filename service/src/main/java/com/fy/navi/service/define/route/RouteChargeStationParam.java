@@ -16,6 +16,8 @@ public class RouteChargeStationParam {
     private MapType mMapTypeId;
     /*** 充电站 **/
     private ArrayList<RouteChargeStationInfo> mRouteChargeStationInfos;
+    /*** 补能点扎标信息 **/
+    private ArrayList<RouteSupplementParams> mRouteSupplementParams;
     /*** 底图上的路线图层信息 **/
     private ArrayList<?> mPathInfoList = new ArrayList<>();
 }

@@ -25,6 +25,7 @@
     <color name="bg_route_item_select">#FF2C2F38</color>
     <color name="bg_route_item_unselect">#FF1E2027</color>
     <color name="bg_route_detail_color">#802C2F38</color>
+    <color name="bg_route_replace_supplement_color">#1E1F26</color>
     <color name="bg_route_big_window_select">#FF1D59C3</color>
     <color name="bg_route_big_window_unselect">#FF2C2D36</color>
     <color name="bg_route_button_select_color">#FF1D59C3</color>

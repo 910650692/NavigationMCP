@@ -51,6 +51,7 @@ import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteRestAreaDetailsInfo;
 import com.fy.navi.service.define.route.RouteRestirctionID;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
+import com.fy.navi.service.define.route.RouteSupplementInfo;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.route.RouteWeatherID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
@@ -59,7 +60,6 @@ import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.search.ServiceAreaInfo;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.fy.navi.service.define.utils.NumberUtils;
-import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -141,6 +141,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public ObservableField<Integer> getSecondaryPoiVisibility() {
         return mSecondaryPoiVisibility;
     }
+
+    private boolean mShowSupplement = false;
 
     /**
      * 主页面-偏好页
@@ -466,6 +468,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         @Override
         public void run() {
             if (mSecondaryPoiVisibility != null) {
+                //TODO CR
+//                if (mShowSupplement) {
+//                    mSecondaryPoiVisibility.set(2);
+//                } else {
+//                    mSecondaryPoiVisibility.set(0);
+//                }
                 mSecondaryPoiVisibility.set(0);
             }
         }
@@ -930,6 +938,17 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     public Action getChargeCancelClick() {
         return mChargeCancelClick;
+    }
+
+    private Action mSupplementClick = () -> {
+        if (mModel != null) {
+            cancelTimer();
+            mModel.jumpToSupplementPlan();
+        }
+    };
+
+    public Action getSupplementClick() {
+        return mSupplementClick;
     }
 
     /***
@@ -1658,6 +1677,33 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         }
         mChargePoiDistanceList.remove(index);
         updateExhaustDistance();
+    }
+
+    /***
+     * 添加主屏补能规划界面
+     */
+    public void updateSupplementPointsView(final ArrayList<RouteSupplementInfo> routeSupplementInfos, final float totalDistance) {
+        if (routeSupplementInfos == null || routeSupplementInfos.isEmpty()) {
+            withoutSupplementPointsView();
+            return;
+        }
+        mShowSupplement = true;
+        final Integer value = mSecondaryPoiVisibility.get();
+        if (value != null && (value > 2 || value == 0)) {
+            mSecondaryPoiVisibility.set(2);
+        }
+        mView.updateSupplementPointsView(routeSupplementInfos, totalDistance);
+    }
+
+    /***
+     * 添加主屏补能规划界面
+     */
+    public void withoutSupplementPointsView() {
+        mShowSupplement = false;
+        final Integer value = mSecondaryPoiVisibility.get();
+        if (value != null && value >= 2) {
+            mSecondaryPoiVisibility.set(0);
+        }
     }
 
     /***

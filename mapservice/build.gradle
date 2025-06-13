@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-def lib_version = "0.2.27"
+def lib_version = "0.3.1"
 
 android {
     namespace 'com.fy.navi.mapservice'

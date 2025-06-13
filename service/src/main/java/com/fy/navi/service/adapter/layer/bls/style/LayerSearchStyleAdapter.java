@@ -14,6 +14,7 @@ import com.autonavi.gbl.layer.model.BizChargeStationInfo;
 import com.autonavi.gbl.layer.model.BizSearchType;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
+import com.autonavi.gbl.map.layer.model.LayerItemType;
 import com.fy.navi.service.R;
 import com.fy.navi.service.define.layer.refix.LayerItemData;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchPoint;
@@ -31,13 +32,14 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
 
     private BizSearchControl mSearchControl;
     //沿途搜-自定义充电站扎标
+    private static final String KEY_SEARCH_POINT_ALONG_WAY_CHARGE = "search_point_along_way_charge";
     private static final String KEY_SEARCH_ALONG_WAY_CHARGE = "search_along_way_charge";
     //终点可停车-自定义停车场扎标
     private static final String KEY_SEARCH_PARK_ROUTE = "search_park_route";
     //搜索列表可见数字扎标
-    private static final String KEY_SEARCH_LIST_FOCUSED_INDEX = "search_list_focused_index";
+    private static final String KEY_SEARCH_LIST_INDEX = "search_list_index";
     //充电桩列表可见数字扎标
-    private static final String KEY_SEARCH_LIST_CHARGE_FOCUSED_INDEX = "search_list_charge_focused_index";
+    private static final String KEY_SEARCH_LIST_CHARGE_INDEX = "search_list_charge_index";
 
     private final AtomicReference<List<PoiInfoEntity>> mPoiInfoList = new AtomicReference(new ArrayList<>());
 
@@ -55,22 +57,10 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
                     if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
                         Logger.d(TAG, "搜索列表可见数字扎标-index =" + index);
-                        return KEY_SEARCH_LIST_FOCUSED_INDEX + "_" + index;
+                        return KEY_SEARCH_LIST_INDEX + "_" + index;
                     }
                 }
             }
-//            case BizSearchType.BizSearchTypePoiAlongRoute -> {
-//                if (item instanceof SearchAlongWayLayerItem alongWayLayerItem) {
-//                    int typeCode = alongWayLayerItem.getMTypeCode();
-//                    Logger.d(TAG, "沿途搜类型 typeCode " + typeCode);
-//                    switch (typeCode) {
-//                        case LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE -> {
-//                            Logger.d(TAG, "沿途搜-自定义充电站扎标");
-//                            return KEY_SEARCH_ALONG_WAY_CHARGE;
-//                        }
-//                    }
-//                }
-//            }
             case BizSearchType.BizSearchTypePoiParkRoute -> {
                 Logger.d(TAG, "自定义终点停车场扎标");
                 return KEY_SEARCH_PARK_ROUTE;
@@ -81,7 +71,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
                     if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
                         Logger.d(TAG, "搜索充电桩 列表可见数字扎标-index =" + index);
-                        return KEY_SEARCH_LIST_CHARGE_FOCUSED_INDEX + "_" + index;
+                        return KEY_SEARCH_LIST_CHARGE_INDEX + "_" + index;
                     }
                 }
             }
@@ -348,7 +338,6 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             return context.getResources().getString(R.string.layer_search_park_route_resource_shortage);
         }
     }
-
 
 
     @Override

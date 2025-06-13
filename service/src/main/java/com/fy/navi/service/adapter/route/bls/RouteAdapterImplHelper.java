@@ -24,6 +24,8 @@ import com.fy.navi.service.define.route.RouteCurrentPathParam;
 import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.route.RoutePriorityType;
+import com.fy.navi.service.define.route.RouteSupplementParams;
+import com.fy.navi.service.define.route.RouteSupplementInfo;
 import com.fy.navi.service.define.route.RouteTMCParam;
 import com.fy.navi.service.define.route.RouteWeatherID;
 import com.fy.navi.service.define.search.ParkingInfo;
@@ -936,28 +938,43 @@ public class RouteAdapterImplHelper {
      */
     private void handlerChargingStation(final RouteChargeStationParam routeChargeStationParam,
                                         final ArrayList<PathInfo> pathInfoList, final long requestId, final MapType mapTypeId) {
+        //TODO CR
         routeChargeStationParam.setMRequestId(requestId);
         routeChargeStationParam.setMMapTypeId(mapTypeId);
         final ArrayList<RouteChargeStationInfo> chargeStationInfos = new ArrayList<>();
+//        final ArrayList<RouteSupplementParams> mRouteSupplementParams = new ArrayList<>();
         routeChargeStationParam.setMPathInfoList(pathInfoList);
         for (PathInfo pathInfo : pathInfoList) {
             final RouteChargeStationInfo routeChargeStationInfo = new RouteChargeStationInfo();
+//            final RouteSupplementParams routeSupplementInfo = new RouteSupplementParams();
             final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfos = new ArrayList<>();
+//            final ArrayList<RouteSupplementInfo> routeSupplementInfos = new ArrayList<>();
             if (pathInfo.getChargeStationInfo() == null || pathInfo.getChargeStationInfo().isEmpty()) {
                 Logger.d("handlerChargingStation null");
                 routeChargeStationInfo.setMRouteChargeStationDetailInfo(routeChargeStationDetailInfos);
+//                routeSupplementInfo.setMRouteSupplementInfos(routeSupplementInfos);
                 chargeStationInfos.add(routeChargeStationInfo);
+//                mRouteSupplementParams.add(routeSupplementInfo);
                 continue;
             }
             Logger.d("handlerChargingStation " + GsonUtils.toJson(pathInfo.getChargeStationInfo()));
             for (ChargeStationInfo chargeStationInfo : pathInfo.getChargeStationInfo()) {
                 final RouteChargeStationDetailInfo routeChargeStationDetailInfo = getRouteChargeStationDetailInfo(chargeStationInfo);
+//                final RouteSupplementInfo routeSupplementParam = getRouteSupplementParam(chargeStationInfo);
+//                routeSupplementParam.setMRouteChargeStationDetailInfo(routeChargeStationDetailInfo);
                 routeChargeStationDetailInfos.add(routeChargeStationDetailInfo);
+//                routeSupplementInfos.add(routeSupplementParam);
             }
             routeChargeStationInfo.setMRouteChargeStationDetailInfo(routeChargeStationDetailInfos);
+//            routeSupplementInfo.setMRouteSupplementInfos(routeSupplementInfos);
+//            routeSupplementInfo.setMTotalDistance(pathInfo.getLength());
+
+            // TODO 途径点列表转化
             chargeStationInfos.add(routeChargeStationInfo);
+//            mRouteSupplementParams.add(routeSupplementInfo);
         }
         routeChargeStationParam.setMRouteChargeStationInfos(chargeStationInfos);
+//        routeChargeStationParam.setMRouteSupplementParams(mRouteSupplementParams);
         for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
             if (resultObserver == null) {
                 continue;
@@ -990,6 +1007,22 @@ public class RouteAdapterImplHelper {
         infos.setMRemainingPercent(info.remainingPercent);
         infos.setMIndex(info.index);
         return infos;
+    }
+
+    /**
+     * 转化补能点信息
+     *
+     * @param info 充电站信息
+     * @return 充电站信息
+     */
+    private RouteSupplementInfo getRouteSupplementParam(final ChargeStationInfo info) {
+        final RouteSupplementInfo param = new RouteSupplementInfo();
+        param.setMName(info.name);
+        param.setMChargeTime(info.chargeTime);
+        param.setMPoiID(info.poiID);
+        param.setMShow(new com.fy.navi.service.define.route
+                .Coord2DDouble(ConvertUtils.transProjectionLatAndLon(info.show.lon), ConvertUtils.transProjectionLatAndLon(info.show.lat)));
+        return param;
     }
 
     /**

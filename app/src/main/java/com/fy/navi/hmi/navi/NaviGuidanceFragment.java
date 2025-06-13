@@ -677,4 +677,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void onMeterAction() {
         mBinding.sceneNaviControl.onMeterAction();
     }
+
+    public void onPassByClick() {
+        if (mBinding.sceneNaviControlMore != null) {
+            mBinding.sceneNaviControlMore.onPassByClick();
+        }
+    }
 }

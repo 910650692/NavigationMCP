@@ -133,9 +133,9 @@ public interface INaviConstant {
         int SEARCH_PAGE = 1; //搜索界面
         int ROUTE_PAGE = 2; //路线规划界面
         int POI_DETAIL_PAGE = 3; // poi详情页面
-        int GO_HOME = 4;
-        int GO_COMPANY = 5;
-        int START_NAVIGATION = 6;
+        int GO_HOME = 4; //回家
+        int GO_COMPANY = 5; //去公司
+        int START_NAVIGATION = 6; //开始导航
         int SEARCH_RESULT_PAGE = 7; // 搜索结果页
     }
 
@@ -144,6 +144,11 @@ public interface INaviConstant {
         int COMMON_NAVIGATION = 1; //正常导航，普通面板
         int IN_YAW = 3; //偏航状态
         int UN_NAME_ROAD = 6; //无数据道路
+    }
+
+    interface ScheduleInterval {
+        int THREE_MINUTE = 180;
+        int FIVE_MINUTE = 300;
     }
 
 }

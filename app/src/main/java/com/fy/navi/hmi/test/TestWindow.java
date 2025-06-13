@@ -84,6 +84,7 @@ public class TestWindow {
         initData();
         addViewToWindow();
         initLogLevel();
+        mBinding.naviPosRecord.setChecked(PositionPackage.getInstance().isOpenLocLog());
     }
 
     private void initData() {
@@ -207,22 +208,21 @@ public class TestWindow {
             DebugWindow.getInstance().hide();
         });
 
-        mBinding.testOpenLocLog.setOnClickListener(v -> {
-            PositionPackage.getInstance().locationLogSwitch(true);
-            removeViewFromWindow();
+        mBinding.naviPosRecord.setOnCheckedChangeListener((buttonView, checked) -> {
+            if (buttonView.isPressed()) {
+                if (checked) {
+                    PositionPackage.getInstance().locationLogSwitch(true);
+                } else {
+                    PositionPackage.getInstance().locationLogSwitch(false);
+                }
+            }
         });
-
-        mBinding.testCloseLocLog.setOnClickListener(v -> {
-            PositionPackage.getInstance().locationLogSwitch(false);
-            removeViewFromWindow();
-        });
-
 
         mBinding.testNavLog.setOnCheckedChangeListener((buttonView, checked) -> {
             if (buttonView.isPressed()) {
-                if(BuildConfig.DEBUG){
+                if (BuildConfig.DEBUG) {
                     Logger.switchLog(checked);
-                }else {
+                } else {
                     //release 下log全关
                     Logger.switchLog(false);
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
@@ -245,13 +245,13 @@ public class TestWindow {
 
         mBinding.testGaodeLog.setOnCheckedChangeListener((buttonView, checked) -> {
             if (buttonView.isPressed()) {
-                if(BuildConfig.DEBUG){
+                if (BuildConfig.DEBUG) {
                     if (checked) {
                         EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
                     } else {
                         EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
                     }
-                }else {
+                } else {
                     //release 下log全关
                     Logger.switchLog(false);
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
@@ -287,7 +287,7 @@ public class TestWindow {
             if (buttonView.isPressed()) {
                 Activity activity = mActivityRef.get();
                 if (checked) {
-                    if(RecorderPackage.getInstance().isPlaying()){
+                    if (RecorderPackage.getInstance().isPlaying()) {
                         RecorderPackage.getInstance().stopPlayback();
                         mBinding.recordPlay.setChecked(false);
                     }
@@ -303,7 +303,7 @@ public class TestWindow {
             if (buttonView.isPressed()) {
                 Activity activity = mActivityRef.get();
                 if (checked) {
-                    if(RecorderPackage.getInstance().isRecording()){
+                    if (RecorderPackage.getInstance().isRecording()) {
                         RecorderPackage.getInstance().stopRecorder();
                         mBinding.naviRecord.setChecked(false);
                     }

@@ -81,6 +81,8 @@ public class FilterListAdapter extends RecyclerView.Adapter<FilterListAdapter.Ho
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder localInfo is null");
             return;
         }
+        holder.mFilterItemBinding.filterText.setSelected(false);
+        holder.mFilterItemBinding.filterRoot.setSelected(false);
         String filterTitle = "";
         String filterTitleMore = ResourceUtils.Companion.getInstance().getString(R.string.filter_select_more);
         if(!ConvertUtils.isEmpty(localInfo.getName())){

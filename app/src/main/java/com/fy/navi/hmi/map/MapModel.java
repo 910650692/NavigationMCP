@@ -30,8 +30,10 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
+import com.fy.navi.exportservice.ExportIntentParam;
 import com.fy.navi.hmi.setting.SettingFragment;
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
+import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.utils.ThreeFingerFlyingScreenManager;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.account.AccountQRCodeLoginFragment;
@@ -159,7 +161,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private static final String TAG = "MapModel";
     private long limitQueryTaskId;
     private long limitEndNumberTaskId;
-    private String mExtraKeyword;
     private int mCurrentCityCode;
     private int mCompanyOrHomeType;
     private String mLicense = "";
@@ -243,12 +244,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onStart() {
         super.onStart();
-        if (!ConvertUtils.isEmpty(mExtraKeyword)) {
-            if (null != mViewModel) {
-                mViewModel.searchForExtraKeyword(mExtraKeyword);
-            }
-            mExtraKeyword = null;
-        }
     }
 
     @Override
@@ -447,6 +442,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             mViewModel.initTimer();
             addFavoriteToMap();
             speedMonitor.registerSpeedCallBack();
+            processExportCommand();
         }
     }
 
@@ -738,15 +734,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public String getNaviStatus() {
         return mNaviStatusPackage.getCurrentNaviStatus();
-    }
-
-    /**
-     * 外部应用打开地图传递的搜索关键字.
-     *
-     * @param keyword String.
-     */
-    public void setSearchKeyword(String keyword) {
-        mExtraKeyword = keyword;
     }
 
     private ContinueNaviDialog mContinueNaviDialog;
@@ -1586,5 +1573,20 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onScreenModeChanged(ScreenType screenType, String jsonPath) {
         mapVisibleAreaDataManager.loadData(jsonPath);
+    }
+
+    /**
+     * 主图加载完成后执行外部应用通过对外交互传递过来的指令.
+     */
+    private void processExportCommand() {
+        final int intentPage = ExportIntentParam.getIntentPage();
+        if(INaviConstant.OpenIntentPage.NONE == intentPage) {
+            return;
+        }
+
+        ExportIntentParam.setIntentPage(INaviConstant.OpenIntentPage.NONE);
+        if (null != mViewModel) {
+            mViewModel.processPageIntent(intentPage);
+        }
     }
 }

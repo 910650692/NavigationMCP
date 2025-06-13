@@ -2,7 +2,6 @@ package com.fy.navi.scene.ui.navi;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -17,9 +16,11 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.SceneNaviControlMoreImpl;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.scene.ui.navi.view.SwipeView;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapMode;
+import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 
 /**
@@ -226,5 +227,27 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
     public void onNetStatusChange(boolean isConnected) {
         Logger.i(TAG, "onNetStatusChange isConnected:" + isConnected);
         mScreenViewModel.refreshRouteCauseNet();
+    }
+
+    public void setSwipeListener(SwipeView.DownSwipeListener downSwipeListener) {
+        if (mViewBinding != null && mViewBinding.svBarArea != null) {
+            if (mViewBinding.svBarArea instanceof SwipeView) {
+                ((SwipeView) mViewBinding.svBarArea).setDownSwipeListener(downSwipeListener);
+            }
+        }
+    }
+
+    public void removeSwipeListener() {
+        if (mViewBinding != null && mViewBinding.svBarArea != null) {
+            if (mViewBinding.svBarArea instanceof SwipeView) {
+                ((SwipeView) mViewBinding.svBarArea).setDownSwipeListener(null);
+            }
+        }
+    }
+
+    public void onPassByClick() {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.alongSearch(NumberUtils.NUM_4);
+        }
     }
 }

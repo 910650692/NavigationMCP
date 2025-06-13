@@ -1,6 +1,8 @@
 package com.fy.navi.hmi.setting.guide.platenumber;
 
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -59,6 +61,26 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         mBinding.settingPlateNumberNumber.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 showPlateNumberKeyboard();
+            }
+        });
+        mBinding.settingPlateNumberNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    mBinding.settingPlateNumberClear.setVisibility(View.GONE);
+                } else {
+                    mBinding.settingPlateNumberClear.setVisibility(View.VISIBLE);
+                }
             }
         });
         mBinding.settingProvinceKeyboard.setOnProvinceSelectedListener(province -> {

@@ -2,6 +2,9 @@
 package com.fy.navi.scene.ui.adapter;
 
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -43,7 +46,10 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -65,6 +71,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private int mParentSelectIndex;
     private int mLastParentSelectIndex;
     private boolean isFirstRefresh = true;
+    private String mLabelName = "";
     public void setOnItemClickListener(final OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
@@ -85,6 +92,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         this.mPoiEntities = new ArrayList<>();
         mSearchPackage = SearchPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
+        mLabelName = "";
     }
 
     /**
@@ -151,16 +159,23 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
-            holder.mResultItemBinding.poiNum.setVisibility(View.VISIBLE);
-            holder.mResultItemBinding.poiIcon.setVisibility(View.GONE);
+            holder.mResultItemBinding.poiNum.setVisibility(VISIBLE);
+            holder.mResultItemBinding.poiIcon.setVisibility(GONE);
             holder.mResultItemBinding.setLayoutPosition(String.valueOf(position + 1));
         } else {
-            holder.mResultItemBinding.poiNum.setVisibility(View.GONE);
-            holder.mResultItemBinding.poiIcon.setVisibility(View.VISIBLE);
+            holder.mResultItemBinding.poiNum.setVisibility(GONE);
+            holder.mResultItemBinding.poiIcon.setVisibility(VISIBLE);
         }
         if (mPoiInfoEntity != null && ConvertUtils.isEmpty(mPoiInfoEntity.getAddress())) {
-            holder.mResultItemBinding.subLineView.setVisibility(View.GONE);
+            holder.mResultItemBinding.subLineView.setVisibility(GONE);
         }
+        if(mPoiInfoEntity != null && (mPoiInfoEntity.isClosest() || mPoiInfoEntity.isFastest())){
+            holder.mResultItemBinding.searchLabel.setVisibility(VISIBLE);
+            holder.mResultItemBinding.searchLabel.setText(mPoiInfoEntity.isClosest() ? R.string.search_label_closest : R.string.search_label_fastest);
+        }else{
+            holder.mResultItemBinding.searchLabel.setVisibility(GONE);
+        }
+
         //预搜索高亮搜索文本
         if (mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
             holder.mResultItemBinding.poiName.setText(matcherSearchTitle(AppCache.getInstance().
@@ -179,6 +194,31 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_add);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
                         ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_add));
+            }
+            if(!ConvertUtils.isEmpty(mPoiInfoEntity.getMLableList())){
+                String labelName = "";
+                ArrayList<String> labelList = new ArrayList<>();
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"size: "+mPoiInfoEntity.getMLableList().size());
+                for (int i = 0; i < mPoiInfoEntity.getMLableList().size(); i++) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"type: "+mPoiInfoEntity.getMLableList().get(i).getMType());
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"content: "+mPoiInfoEntity.getMLableList().get(i).getMContent());
+                    String content = mPoiInfoEntity.getMLableList().get(i).getMContent();
+                    // 仅展示其中的四种标签:最近，最顺路，反向，需下高速
+                    if(ResourceUtils.Companion.getInstance().getString(R.string.label_nearest).equals(content)
+                            || ResourceUtils.Companion.getInstance().getString(R.string.label_optimal).equals(content)
+                            || ResourceUtils.Companion.getInstance().getString(R.string.label_opposite).equals(content)
+                            || ResourceUtils.Companion.getInstance().getString(R.string.label_exit_highway).equals(content)){
+                        labelList.add(content);
+                    }
+                }
+                if(!ConvertUtils.isEmpty(labelList)){
+                    labelName = getPriorityString(labelList);
+                    holder.mResultItemBinding.searchLabel.setVisibility(VISIBLE);
+                    holder.mResultItemBinding.searchLabel.setText(labelName);
+                }else{
+                    holder.mResultItemBinding.searchLabel.setVisibility(GONE);
+                }
+
             }
         } else {
             holder.mResultItemBinding.textNavi.setText(R.string.st_go_here);
@@ -293,7 +333,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshNormalView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshNormalView do nothing");
-        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
     }
 
     /**
@@ -303,22 +343,22 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private void refreshScenicSpotView(final ResultHolder resultHolder) {
         final int pointTypeCode = mSearchPackage.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
         if (pointTypeCode == AutoMapConstant.PointTypeCode.OTHERS) {
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.GONE);
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(GONE);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(GONE);
             if (ConvertUtils.isEmpty(mPoiInfoEntity) || ConvertUtils.isEmpty(mPoiInfoEntity.getChildInfoList())) {
-                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
             }
         } else {
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.VISIBLE);
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.VISIBLE);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(VISIBLE);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(VISIBLE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
         }
-        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(View.VISIBLE);
-        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
+        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(GONE);
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setAdapter(null);
         if (mPoiInfoEntity.getAverageCost() == -1 || mPoiInfoEntity.getAverageCost() == 0) {
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.GONE);
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(GONE);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(GONE);
         } else {
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setText(String.valueOf(mPoiInfoEntity.getAverageCost()));
         }
@@ -341,7 +381,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                         });
             }
             scenicChildAdapter.setChildInfoList(childInfoList);
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(VISIBLE);
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setLayoutManager(
                     new GridLayoutManager(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount));
             if (resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.getItemDecorationCount() == 0) {
@@ -385,7 +425,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 mLastParentSelectIndex = resultHolder.getAdapterPosition();
             });
         }
-        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(VISIBLE);
     }
 
     /**
@@ -394,7 +434,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshServiceAreaView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshServiceAreaView");
-        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
     }
 
     /***
@@ -442,25 +482,25 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             return;
         }
         resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.poiParkingFreeTotal.setText("");
-        resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(VISIBLE);
         final ParkingInfo parkingInfo = mPoiInfoEntity.getParkingInfoList().get(0);
         String parkString = "";
         final int spaceFree = parkingInfo.getSpaceFree();
         final int spaceTotal = parkingInfo.getSpaceTotal();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "spaceFree :" + spaceFree + " spaceTotal :" + spaceTotal);
         if (spaceFree == -1 && spaceTotal == -1) {
-            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(View.GONE);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(GONE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
         } else if (spaceFree == -1) {
             parkString = resultHolder.mResultItemBinding.getRoot().getContext().getString(R.string.parking_lot_total, spaceTotal);
-            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(VISIBLE);
             resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.poiParkingFreeTotal.setText(parkString);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
         } else {
-            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(VISIBLE);
             parkString = resultHolder.mResultItemBinding.getRoot().getContext().getString(R.string.parking_lot_status, spaceFree, spaceTotal);
             resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.poiParkingFreeTotal.setText(parkString);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
         }
     }
 
@@ -470,15 +510,15 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshCateringView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshCateringView" + mPoiInfoEntity.getAverageCost());
-        resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemCateringView.poiCateringPrice.setText("");
         if (mPoiInfoEntity.getAverageCost() == -1) {
-            resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(View.GONE);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(GONE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
         } else {
             resultHolder.mResultItemBinding.scenePoiItemCateringView.poiCateringPrice.setText(String.valueOf(mPoiInfoEntity.getAverageCost()));
-            resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(View.VISIBLE);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(VISIBLE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
         }
     }
 
@@ -488,7 +528,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshCarWashView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshCarWashView");
-        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
     }
 
     /**
@@ -497,34 +537,41 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshChargeStationView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshChargeStationView");
-        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
         // 重置includeview中视图状态避免数据重用导致数据异常加载
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastRoot.setVisibility(View.VISIBLE);
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowRoot.setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastRoot.setVisibility(VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowRoot.setVisibility(VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setText("");
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setText("");
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setVisibility(VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setText("");
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setText("");
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(VISIBLE);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mLabelName: "+mLabelName);
+        if(!ConvertUtils.isEmpty(mLabelName)){
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeLabel.setVisibility(VISIBLE);
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeLabel.setText(mLabelName);
+        }else{
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeLabel.setVisibility(GONE);
+        }
 
         final List<ChargeInfo> chargeInfos = mPoiInfoEntity.getChargeInfoList();
         if (ConvertUtils.isEmpty(chargeInfos)) {
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
             return;
         } else {
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
         }
         final ChargeInfo chargeInfo = chargeInfos.get(0);
         final String fastFree = chargeInfo.getFast_free() == 0 ? "" : chargeInfo.getFast_free() + "";
         String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "/" + chargeInfo.getFast_total();
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setText(fastFree);
         if (ConvertUtils.isEmpty(fastFree) && ConvertUtils.isEmpty(fastTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastRoot.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastRoot.setVisibility(GONE);
         } else if (ConvertUtils.isEmpty(fastFree)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setVisibility(GONE);
         } else if (ConvertUtils.isEmpty(fastTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setVisibility(GONE);
         }
         if (!ConvertUtils.isEmpty(fastTotal)) {
             if (ConvertUtils.isEmpty(fastFree)) {
@@ -537,11 +584,11 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         String slowTotal = chargeInfo.getSlow_total() == 0 ? "" : "/" + chargeInfo.getSlow_total();
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setText(slowFree);
         if (ConvertUtils.isEmpty(slowFree) && ConvertUtils.isEmpty(slowTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowRoot.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowRoot.setVisibility(GONE);
         } else if (ConvertUtils.isEmpty(slowFree)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setVisibility(GONE);
         } else if (ConvertUtils.isEmpty(slowTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(GONE);
         }
         if (!ConvertUtils.isEmpty(slowTotal)) {
             if (ConvertUtils.isEmpty(slowFree)) {
@@ -553,7 +600,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargePrice.setText(
                 resultHolder.mResultItemBinding.getRoot().getContext().getString(
                 R.string.charge_price_simple, chargeInfo.getCurrentElePrice()));
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.getRoot().setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.getRoot().setVisibility(VISIBLE);
 
     }
 
@@ -578,14 +625,14 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             // 使用ArrayList构造函数创建新的列表
             final ArrayList<GasStationInfo> newList = new ArrayList<>(subList);
             gasStationAdapter.setGasStationList(newList);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
         } else if (!ConvertUtils.isEmpty(gasStationInfos) && gasStationInfos.size() <= 2) {
             gasStationAdapter.setGasStationList(gasStationInfos);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.VISIBLE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
         } else {
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
+            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
         }
-        resultHolder.mResultItemBinding.scenePoiItemGasView.getRoot().setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemGasView.getRoot().setVisibility(VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemGasView.poiGasOilList.setLayoutManager(
                 new GridLayoutManager(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount));
         resultHolder.mResultItemBinding.scenePoiItemGasView.poiGasOilList.setAdapter(gasStationAdapter);
@@ -646,6 +693,38 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             }
         }
         return spannableString;
+    }
+
+    /**
+     * 设置快筛label
+     * @param labelName
+     */
+    public void setQuickLabel(String labelName){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"QuickLabel: "+labelName);
+        mLabelName = labelName;
+    }
+
+    public String getPriorityString(ArrayList<String> tags) {
+        List<String> priorityOrder = Arrays.asList(
+                ResourceUtils.Companion.getInstance().getString(R.string.label_optimal),
+                ResourceUtils.Companion.getInstance().getString(R.string.label_nearest),
+                ResourceUtils.Companion.getInstance().getString(R.string.label_opposite),
+                ResourceUtils.Companion.getInstance().getString(R.string.label_exit_highway)
+        );
+        for (String priority : priorityOrder) {
+            if (tags.contains(priority)) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"priority: "+priority);
+                // 映射：需调头-》反向、最近-》最快速
+                if(ResourceUtils.Companion.getInstance().getString(R.string.label_opposite).equals(priority)){
+                    return ResourceUtils.Companion.getInstance().getString(R.string.label_opposite_rv);
+                }else if(ResourceUtils.Companion.getInstance().getString(R.string.label_nearest).equals(priority)){
+                    return ResourceUtils.Companion.getInstance().getString(R.string.label_nearest_rv);
+                }else{
+                    return priority;
+                }
+            }
+        }
+        return "";
     }
 
     public interface OnItemClickListener {

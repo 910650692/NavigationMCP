@@ -200,6 +200,16 @@ final public class SearchAdapter {
     }
 
     /**
+     * pid批量搜
+     *
+     * @param searchRequestParameter 参数{@link SearchRequestParameter}
+     * @return taskId
+     */
+    public int poiListSearch(final SearchRequestParameter searchRequestParameter) {
+        return mSearchApi.poiListSearch(searchRequestParameter);
+    }
+
+    /**
      * 中止所有正在进行的搜索任务.
      */
     public void abortSearch() {

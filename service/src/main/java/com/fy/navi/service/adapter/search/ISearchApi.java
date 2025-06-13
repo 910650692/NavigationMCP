@@ -65,6 +65,13 @@ public interface ISearchApi {
     int enRouteKeywordSearch(SearchRequestParameter searchRequestParameter);
 
     /**
+     * pid批量搜索
+     * @param searchRequestParameter SearchRequestParameter
+     * @return taskId
+     */
+    int poiListSearch(SearchRequestParameter searchRequestParameter);
+
+    /**
      * V2 POI详情搜索
      * @param searchRequestParameterBuilder SearchRequestParameter
      * @return taskId

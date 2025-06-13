@@ -134,6 +134,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 if (pathId == LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
                     //途经点点击-自定义替换补能点扎标
                     type = LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE;
+                } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal()){
+                    //途经点点击-充电站扎标
+                    type = LayerPointItemType.ROUTE_POINT_VIA_CHARGE;
                 } else {
                     //途经点点击-默认扎标
                     type = LayerPointItemType.ROUTE_POINT_VIA;
@@ -193,10 +196,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      * 绘制路线以及路线上的元素.
      */
     private void updatePaths() {
-        int result = getLayerGuideRouteControl().updatePaths();
-        Logger.d(TAG, "LayerGuideRouteImpl", "updatePaths result : " + result);
         getLayerGuideRouteControl().updatePathArrow();
         setRouteJamBubblesVisible(true);
+        int result = getLayerGuideRouteControl().updatePaths();
+        Logger.d(TAG, "LayerGuideRouteImpl", "updatePaths result : " + result);
     }
 
     /**
@@ -209,7 +212,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             Logger.e(TAG, "路线绘制参数为空，无法进行路线渲染");
             return;
         }
-        Logger.d(TAG, "drawRouteLine");
+        Logger.d(TAG, "drawRouteLine ");
         //更新路线图层数据
         getStyleAdapter().updateRouteResult(routeResult);
         //设置路线信息
@@ -376,11 +379,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     private RoutePoints getRoutePoints(RouteLinePoints info) {
         RoutePoints infos = new RoutePoints();
-        ArrayList<RoutePoint> start = new ArrayList<>();
-        ArrayList<RoutePoint> end = new ArrayList<>();
-        ArrayList<RoutePoint> via = new ArrayList<>();
         if (!ConvertUtils.isEmpty(info.getMStartPoints())) {
-            for (int t = 0; t < info.getMStartPoints().size(); t++) {
+            int size = info.getMStartPoints().size();
+            for (int t = 0; t < size; t++) {
                 RoutePoint point = new RoutePoint();
                 point.mIsDraw = info.getMStartPoints().get(t).isMIsDraw();
                 point.mPathId = info.getMStartPoints().get(t).getMPathId();
@@ -388,19 +389,22 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 point.mPos = new Coord3DDouble(info.getMStartPoints().get(t).getMPos().getLon()
                         , info.getMStartPoints().get(t).getMPos().getLat()
                         , info.getMStartPoints().get(t).getMPos().getZ());
-                start.add(point);
+                infos.mStartPoints.add(point);
             }
         }
         if (!ConvertUtils.isEmpty(info.getMViaPoints())) {
-            for (int t = 0; t < info.getMViaPoints().size(); t++) {
+            int size = info.getMViaPoints().size();
+            for (int t = 0; t < size; t++) {
                 RoutePoint point = new RoutePoint();
                 point.mIsDraw = info.getMViaPoints().get(t).isMIsDraw();
                 point.mPathId = info.getMViaPoints().get(t).getMPathId();
+                //TODO, 目前不能区分普通点和充电站,等有完整数据时再作判断
+//                point.mPathId = LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal();
                 point.mType = info.getMViaPoints().get(t).getMType();
                 point.mPos = new Coord3DDouble(info.getMViaPoints().get(t).getMPos().getLon()
                         , info.getMViaPoints().get(t).getMPos().getLat()
                         , info.getMViaPoints().get(t).getMPos().getZ());
-                via.add(point);
+                infos.mViaPoints.add(point);
             }
         }
         if (!ConvertUtils.isEmpty(info.getMEndPoints())) {
@@ -412,13 +416,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 point.mPos = new Coord3DDouble(info.getMEndPoints().get(t).getMPos().getLon()
                         , info.getMEndPoints().get(t).getMPos().getLat()
                         , info.getMEndPoints().get(t).getMPos().getZ());
-                end.add(point);
+                infos.mEndPoints.add(point);
             }
         }
-        infos.mStartPoints = start;
-        infos.mViaPoints = via;
-        infos.mEndPoints = end;
-        mViaList = via;
+        mViaList = new ArrayList<>(infos.mViaPoints);
         return infos;
     }
 
@@ -703,12 +704,11 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      * @param pathInfoList
      * @param selectIndex
      */
-    public void setPathInfos(ArrayList<?> pathInfoList, int selectIndex) {
+    private void setPathInfos(ArrayList<?> pathInfoList, int selectIndex) {
         if (ConvertUtils.isEmpty(pathInfoList)) {
             Logger.e(TAG, "setPathInfos pathInfoList is Empty");
             return;
         }
-        getLayerGuideRouteControl().clearPaths();
         long pathCount = pathInfoList == null ? 0 : pathInfoList.size();
         ArrayList<BizPathInfoAttrs> bizPathInfoAttrs = new ArrayList<>();
         mPathInfoList = (ArrayList<PathInfo>) pathInfoList;
@@ -774,7 +774,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     public void clearPaths() {
         Logger.d(TAG, "clearPaths");
         getLayerGuideRouteControl().clearPaths();
-        getMapView().destroyTexture(getDynamicsMarkerId(1));
     }
 
     /**
@@ -838,15 +837,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getLayerGuideRouteControl().setPathArrowSegment(segmentsIndexs);
     }
 
-    /**
-     * 释放终点动态纹理
-     *
-     * @return markerId
-     * @brief 获取动态markerId
-     */
-    private int getDynamicsMarkerId(int index) {
-        return 0x660000 + 0x60000 + index;
-    }
 
     //更新导航交通事件图层
     void updateLocalTrafficEventInfo(ArrayList<LayerItemTrafficEvent> vecTrafficEventInfo) {

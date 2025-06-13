@@ -234,4 +234,8 @@ public class MapAdapter {
     public void setMapLabelClickable(MapType mapTypeId,boolean enable){
         mIMapApi.setMapLabelClickable(mapTypeId,enable);
     }
+
+    public void resetTickCount(MapType mapTypeId, int tickCount) {
+        mIMapApi.resetTickCount(mapTypeId, tickCount);
+    }
 }

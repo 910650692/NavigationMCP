@@ -48,6 +48,8 @@ public interface IVrBridgeConstant {
         String FAST_SPEED = "CHOOSE_FASTER_ROUTE"; //耗时最少
         String PREFER_RECOMMEND = "CHOOSE_RECOMMEND_ROUTE"; //智能推荐
         String AUTO_ROUTE = "CHOOSE_AUTOP_ROUTE"; //智驾优先（当前SD不支持此偏好）
+        String MAIN_ROUTE = "CHOOSE_MAINROAD_ROUTE";
+        String NOT_SUPPORT_TYPE = "不支持的偏好类型";
     }
 
     //检索条件的key值
@@ -61,7 +63,7 @@ public interface IVrBridgeConstant {
     }
 
     interface DistanceValue {
-        String NEAREST  = "NEAREST"; //最近的
+        String NEAREST = "NEAREST"; //最近的
         String FURTHEST = "FURTHEST"; //最远的
         String NEARBY = "NEARBY"; //附近的
     }
@@ -197,6 +199,253 @@ public interface IVrBridgeConstant {
         String CHANGE_VIEW = "map_view"; //切换地图视角
         String ZOOM_LEVEL = "zoom_level"; //缩放底图
         String ROUTE_NAVIGATION = "route_navi";
+    }
+
+    interface ResponseString {
+        String ALREADY_IN = "当前已为";
+        String IN_ALREADY = "已切换为";
+
+        String NOT_SUPPORT_ZOOM_COMMAND = "不支持的的缩放指令";
+        String ALREADY_MAX_SIZE = "当前已为最大地图";
+        String ALREADY_MIN_SIZE = "当前已为最小地图";
+        String ZOOM_TO_MAX = "已放大地图到最大";
+        String ZOOM_TO_MIN = "已缩小地图到最小";
+        String ZOOM_IN = "地图已放大";
+        String ZOOM_OUT = "地图已缩小";
+
+        String ALREADY_SHOW_PREVIEW = "当前已展示路线全览";
+        String ALREADY_EXIT_PREVIEW = "当前未展示路线全览";
+        String SHOW_PREVIEW = "已展示路线全览";
+        String EXIT_PREVIEW = "已退出路线全览";
+        String NAVI_CANT_SHOW_PREVIEW = "当前不在导航状态，无法查看路线全览哦";
+
+        String NOT_SUPPORT_LIGHT_NAVI = "暂不支持切换经典导航";
+        String NOT_SUPPORT_THIS_FUNCTION = "不支持此功能";
+        String NOT_SUPPORT_OPERATE = "不支持的操作类型";
+
+        String ALREADY_IN_NAVI = "当前已在导航中";
+        String LETS_GO = "开始出发";
+        String WHERE_TO_GO = "请问你要去哪里呢";
+        String NAVI_END = "导航结束";
+        String NOT_IN_NAVI = "当前不在导航状态";
+        String RESUME_NAVI = "已恢复导航";
+        String OK = "好的";
+        String NOT_SUPPORT_NAVI_COMMAND = "不支持的的导航指令";
+
+        String NOT_SUPPORT_VR_CTRL = "该功能暂不支持语音控制";
+
+        String EMPTY_ROAD_NAME = "指定道路名称为空";
+
+        String NOT_SUPPORT_AFTER_ADD_VIA = "添加途经点后不支持该功能";
+
+        String PLEASE_NAVI_FIRST = "请先发起导航";
+
+        String CANT_FIND_WAY_TO_GO = "没有找到走";
+        String CANT_FIND_WAY_NOT_GO = "没有找到不走";
+        String RATIONAL_ROUTE = "的合理路线";
+        String INFORMATION = "的信息";
+
+        String CURRENT_ROUTE_INCLUDE_ROAD = "当前线路已通过此道路";
+
+        String ALREADY_REFRESH_ROUTE = "已为你更新路线";
+
+        String ALREADY_SWITCH_PREFERENCE = "已切换路线偏好";
+        String NOT_HIGHWAY = "不走高速";
+        String AVOID_JAM = "躲避拥堵";
+        String FIRST_HIGHWAY = "高速优先";
+        String LESS_CHARGE = "少收费";
+        String FAST_SPEED = "时间优先";
+        String PREFER_RECOMMEND = "智能推荐";
+        String MAIN_ROUTE = "大路优先";
+
+        String ALREADY_IS = "当前已是";
+        String STH_ROUTE = "的路线";
+        String ALREADY_USE = "已使用";
+        String PLAN = "方案";
+
+        String ROUTE_RESULT_VOID = "当前路线规划结果为空";
+        String NOT_IN_RANGE = "不在选择范围内";
+
+        String ALREADY_CHOOSE = "已选择第";
+        String ROUTE_NUM = "条路线";
+        String NOT_SUPPORT_CHOOSE_ROUTE = "不支持选则路线";
+
+        String NOT_SUPPORT_SETTING_TYPE = "不支持的设置类型";
+
+        String CANT_LOCATE_POS = "不好意思，我定位不到你在哪里";
+
+        String SWITCH_MAIN_ROAD = "已切换到主路";
+        String ALREADY_MAIN_ROAD = "当前已在主路";
+        String SWITCH_SUB_ROAD = "已切换到辅路";
+        String ALREADY_SUB_ROAD = "当前已在辅路";
+        String NO_SUPPORT_OTHER_ROAD_OPTION = "不支持主路和辅路之外的选项";
+        String NO_ROAD_TO_SWITCH = "当前没有主辅路可切换";
+        String FIRST_NAVI_PLEASE = "先发起导航才能切换主辅路";
+
+        String SWITCH_MAIN_BRIDGE = "已切换到桥上";
+        String ALREADY_MAIN_BRIDGE = "当前已在桥上";
+        String SWITCH_SUB_BRIDGE = "已切换到桥下";
+        String ALREADY_SUB_BRIDGE = "当前已在桥下";
+        String NO_SUPPORT_OTHER_BRIDGE_OPTION = "不支持桥上和桥下以外的选项";
+        String NO_BRIDGE_TO_SWITCH = "当前没有桥上下可切换";
+        String FIRST_NAVI_PLEAS = "先发起导航才能切换桥上下";
+
+        String CURRENT_SPEED_LIMIT = "当前道路限速";
+        String CAUTION_DRIVE = "km/h，请小心驾驶";
+        String NO_LIMIT_INFO = "前方暂无限速信息，不过也不要开的太快哦";
+        String NO_NAVI_NO_INFO = "当前不在导航状态，没有行程相关信息哦";
+
+        String DEST_REMAIN_LIGHT = "离目的地剩余";
+        String TRAFFIC_LIGHT = "个红绿灯";
+        String NO_LIGHT_INFO = "暂无红绿灯信息，请稍后再试";
+        String NO_EMPTY_DEST = "目的地不可为空";
+        String DEST_REMAIN_DIST = "距目的地还有";
+        String APART_FIRST_VIA = "距第一个途径点还有";
+        String DEST_REMAIN_TIME = "到目的地大约需要";
+        String APART_FIRST_POI = "距第一个途径点大约需要";
+        String NO_INFO = "没有查询到相关信息，请稍后重试";
+
+        String NET_TRASH = "当前网路状态不佳，请稍后再试";
+
+        String ADD_HOME_BEFORE_GET = "未找到家的地址，先去添加吧";
+        String ADD_COMPANY_BEFORE_GET = "未找到公司的地址，先去添加吧";
+        String ADD_HOME_WITH_SAY = "未找到家的地址，先去添加吧，试试说：设置家的地址";
+        String ADD_COMPANY_WITH_SAY = "未找到公司的地址，先去添加吧，试试说：设置公司的地址";
+        String CANT_FIND = "未找到";
+        String TRY_OTHER = ",试试别的吧";
+
+        String NO_INFO_TRY_OTHER = "没有查询到相关信息，试试别的吧";
+
+        String PASS_BY_PARAM_EMPTY = "沿途搜参数为空";
+        String NAVI_BEFORE_PASSBY_ROUTE = "需要发起导航，才能帮你规划沿途的路线，试试说：导航回家";
+        String OFFLINE_NOT_SUPPORT = "当前使用离线算路，不支持该功能";
+
+        String BRIEF = "简洁播报模式";
+        String DETAILED = "详细播报模式";
+        String MINIMALIST = "极简模式";
+        String NOT_SUPPORT_BROADCAST = "不支持的播报模式";
+
+        String NORTH_2D = "正北模式";
+        String CAR_2D = "2D模式";
+        String NOT_SUPPORT_MODE = "不支持的地图模式";
+
+        String EMPTY_FAVORITE = "收藏目的地为空";
+        String GET_DEST_INFO_FAIL = "获取目的地信息失败";
+        String CANT_GET_LOCAL_INFO = "不好意思，无法获取当前定位信息";
+        String NOT_SUPPORT_FAVORITE_TYPE = "不支持的收藏类型";
+
+        String OPEN_FAVORITE = "已打开收藏地址";
+        String CANT_OPEN_FAVORITE_NAVI = "导航中无法打开收藏地址";
+        String OPEN_HISTORY = "已打开收藏地址";
+        String CANT_OPEN_HISTORY_NAVI = "导航中无法打开收藏地址";
+
+        String NOT_SUPPORT_FILTER_TYPE = "不支持的筛选类型";
+        String ALREADY_CLOSE_MAP = "已为你关闭地图";
+
+        String NOT_SUPPORT_TEAM = "不支持组队相关功能";
+
+        String NAVI_VOICE_ALREADY_CLOSED = "当前导航声音已关闭";
+        String NAVI_VOICE_CLOSED = "已关闭导航声音";
+        String NAVI_VOICE_ALREADY_OPENED = "当前导航声音已关闭";
+        String NAVI_VOICE_OPENED = "已关闭导航声音";
+
+        String MANEUVER_ICON_TURN_LEFT = "下一个路口需要左转";
+        String MANEUVER_ICON_TURN_RIGHT = "下一个路口需要右转";
+        String MANEUVER_ICON_SLIGHT_LEFT = "下一个路口向左前方行驶";
+        String MANEUVER_ICON_SLIGHT_RIGHT = "下一个路口向右前方行驶";
+        String MANEUVER_ICON_TURN_HARD_LEFT = "下一个路口向左后方行驶";
+        String MANEUVER_ICON_TURN_HARD_RIGHT = "下一个路口向右后方行驶";
+        String MANEUVER_ICON_U_TURN = "下一个路口左转掉头";
+        String MANEUVER_ICON_CONTINUE = "下一个路口直行";
+        String MANEUVER_ICON_WAY = "前方到达途径点";
+        String MANEUVER_ICON_ENTRY_RING = "下一个路口右拐驶入环岛";
+        String MANEUVER_ICON_LEAVE_RING = "下一个路口右拐驶出环岛";
+        String MANEUVER_ICON_SAPA = "前方到达服务区";
+        String MANEUVER_ICON_TOLLGATE = "前方到达收费站";
+        String MANEUVER_ICON_DESTINATION = "前方到达目的地";
+        String MANEUVER_ICON_TUNNEL = "前方进入隧道";
+        String MANEUVER_ICON_ENTRY_LEFT_RING = "下一个路口左拐驶入环岛";
+        String MANEUVER_ICON_LEAVE_LEFT_RING = "下一个路口左拐驶出环岛";
+        String MANEUVER_ICON_U_TURN_RIGHT = "下一个路口右转掉头";
+        String MANEUVER_ICON_SPECIAL_CONTINUE = "前方顺行路段，无需转向";
+        String MANEUVER_ICON_ENTRY_RING_LEFT = "前方右转驶入环岛后，需左转驶出环岛";
+        String MANEUVER_ICON_ENTRY_RING_RIGHT = "前方右转驶入环岛后，需右转驶出环岛";
+        String MANEUVER_ICON_ENTRY_RING_CONTINUE = "前方右转驶入环岛后，需直行驶出环岛";
+        String MANEUVER_ICON_ENTRY_RING_U_TURN = "前方右转驶入环岛后，需掉头驶出环岛";
+        String MANEUVER_ICON_ENTRY_LEFT_RING_LEFT = "前方左转驶入环岛后，需左转驶出环岛";
+        String MANEUVER_ICON_ENTRY_LEFT_RING_RIGHT = "前方左转驶入环岛后，需右转驶出环岛";
+        String MANEUVER_ICON_ENTRY_LEFT_RING_CONTINUE = "前方左转驶入环岛后，需直行驶出环岛";
+        String MANEUVER_ICON_ENTRY_LEFT_RING_U_TURN = "前方左转驶入环岛后，需掉头驶出环岛";
+        String MANEUVER_ICON_ENTRY_RING1 = "驶入环岛入口1";
+        String MANEUVER_ICON_ENTRY_RING2 = "驶入环岛入口2";
+        String MANEUVER_ICON_ENTRY_RING3 = "驶入环岛入口3";
+        String MANEUVER_ICON_ENTRY_RING4 = "驶入环岛入口4";
+        String MANEUVER_ICON_ENTRY_RING5 = "驶入环岛入口5";
+        String MANEUVER_ICON_ENTRY_RING6 = "驶入环岛入口6";
+        String MANEUVER_ICON_ENTRY_RING7 = "驶入环岛入口7";
+        String MANEUVER_ICON_ENTRY_RING8 = "驶入环岛入口8";
+        String MANEUVER_ICON_ENTRY_RING9 = "驶入环岛入口9";
+        String MANEUVER_ICON_ENTRY_RING10 = "驶入环岛入口10";
+        String MANEUVER_ICON_LEAVE_RING1 = "驶出环岛出口1";
+        String MANEUVER_ICON_LEAVE_RING2 = "驶出环岛出口2";
+        String MANEUVER_ICON_LEAVE_RING3 = "驶出环岛出口3";
+        String MANEUVER_ICON_LEAVE_RING4 = "驶出环岛出口4";
+        String MANEUVER_ICON_LEAVE_RING5 = "驶出环岛出口5";
+        String MANEUVER_ICON_LEAVE_RING6 = "驶出环岛出口6";
+        String MANEUVER_ICON_LEAVE_RING7 = "驶出环岛出口7";
+        String MANEUVER_ICON_LEAVE_RING8 = "驶出环岛出口8";
+        String MANEUVER_ICON_LEAVE_RING9 = "驶出环岛出口9";
+        String MANEUVER_ICON_LEAVE_RING10 = "驶出环岛出口10";
+        String MANEUVER_ICON_MERGE_LEFT = "前方需靠左行驶";
+        String MANEUVER_ICON_MERGE_RIGHT = "前方需靠右行驶";
+        String UNKNOWN_ROAD_INFO = "未知道路信息，请稍后再试";
+
+        String OFFLINE_CANT_SEARCH = "离线导航，路况查询不可用";
+        String NO_ROAD_INFO = "暂无路况信息，请稍后再试";
+
+        String ABNORMAL_POI = "地点信息异常，请重试";
+        String ONLY_SUPPORT_POI_ON_ROUTE = "仅支持导航路线上的路况信息查询哦";
+        String NO_ROUTE_INFO = "缺少线路信息，请重试";
+        String ROAD_CONDITION = "路况";
+        String CURRENT_POS = "当前位置到";
+
+        String SMOOTH = "畅通";
+        String LITTLE_SMOOTH = "缓行";
+        String BLOCK = "拥堵";
+        String SEVER_BLOCK = "严重拥堵";
+        String SEVER_SMOOTH = "极度通畅";
+        String NO_ROAD_CONDITION = "暂未查询到相应路况信息，请稍后再试";
+        String UNKNOWN_ROAD_CONDITION = "未知状态，请稍后再试";
+        String UNKNOWN_SEARCH_PARAM = "未知查询条件，请稍后再试";
+
+
+
+        String EMPTY_SEARCH_CALLBACK = "空的搜索结果回调";
+        String EMPTY_DEST = "目的地为空";
+        String NOT_SUPPORT_INTENTION = "不支持的搜索/导航意图";
+        String DETAIL_SEARCH_NO_RESULT = "详情搜无返回结果";
+        String NO_RESULT_TRY_OTHER = "未找到相关结果，试试别的吧";
+        String EMPTY_RESULT_TRY_OTHER= "结果为空，试试别的吧";
+        String SEARCH = "搜索";
+        String MULTI_DEST_EMPTY = "多目的地导航途径点信息为空";
+        String PROCESSING_MULTI_DEST = "正在顺序执行多目的处理";
+        String OUT_OF_CHOICE_RANGE = "超出选择范围";
+        String LAST_SEARCH_RESULT_EMPTY = "上一轮搜索结果为空";
+        String SESSION_ID_NOT_MATCH = "sessionId不匹配";
+        String NOT_SUPPORT_COMMENT = "不支持的指令";
+        String NO_PROPER_DEST = "没找到符合条件的地点";
+        String SEARCH_CONDITION_EMPTY = "检索条件为空";
+        String CANT_GET_POS_INFO = "无法获取当前定位信息，请稍后重试";
+        String CANT_GET_LOCATION = "无法获取当前位置，请稍后重试";
+        String CURRENT_LOCATE = "当前定位";
+        String AROUND = "附近";
+        String ADD_FAVORITE = "已为你收藏";
+        String CANT_ADD_EMPTY_POI = "空的poi名称，无法收藏";
+        String NO_SUCH_INFO = "暂未查询到相应信息，请稍后再试";
+        String NOT_SUPPORT_CURRENT_SORT = "不支持该排序，请继续选择";
+        String NOT_SUPPORT_SORT_TYPE = "不支持的排序类型";
+        String SORT_RESULT_EMPTY = "排序搜索结果为空";
+
     }
 
 }

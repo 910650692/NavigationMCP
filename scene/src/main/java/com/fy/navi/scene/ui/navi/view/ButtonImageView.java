@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 
 import androidx.annotation.Nullable;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.ui.view.SkinImageView;
 
 /**
@@ -38,6 +40,7 @@ public class ButtonImageView extends SkinImageView {
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             // 手指松开反馈点击事件并恢复控件原有的透明度
             setAlpha(1.0f);
+            this.playSoundEffect(SoundEffectConstants.CLICK);
             callOnClick();
             return true;
         }

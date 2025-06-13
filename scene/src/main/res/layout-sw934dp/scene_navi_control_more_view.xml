@@ -40,11 +40,10 @@
                 app:layout_constraintStart_toStartOf="@+id/sv_tools"
                 app:layout_constraintTop_toTopOf="@+id/sv_tools"/>
 
-            <com.fy.navi.ui.view.SkinView
+            <com.fy.navi.scene.ui.navi.view.SwipeView
                 android:id="@+id/sv_bar_area"
                 android:layout_width="@dimen/dp_166"
                 android:layout_height="@dimen/dp_30"
-                clickCommand="@{naviControl.backControl}"
                 app:layout_constraintEnd_toEndOf="@+id/sv_tools"
                 app:layout_constraintStart_toStartOf="@+id/sv_tools"
                 app:layout_constraintTop_toTopOf="@+id/sv_tools"/>

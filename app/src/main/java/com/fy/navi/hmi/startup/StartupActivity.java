@@ -20,10 +20,8 @@ import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityStartupBinding;
 import com.fy.navi.hmi.permission.PermissionUtils;
-import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -84,28 +82,6 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
         if (intent != null && intent.getIntExtra(BuryConstant.EventName.AMAP_RETURN_DEFAULT, 0)
                 == BuryConstant.EventName.AMAP_RETURN_DEFAULT_CODE) {
             sendBuryPointForReset();
-        }
-        //外部应用打开地图时指定的响应界面
-        if (null != intent) {
-            int intentPage = intent.getIntExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
-            String keyword = "";
-            PoiInfoEntity endPoint = null;
-            switch (intentPage) {
-                case INaviConstant.OpenIntentPage.SEARCH_PAGE:
-                    //搜索关键字
-                    keyword = intent.getStringExtra(INaviConstant.SEARCH_KEYWORD_EXTRA);
-                    break;
-                case INaviConstant.OpenIntentPage.ROUTE_PAGE:
-                    //算路终点
-                    endPoint = intent.getParcelableExtra(INaviConstant.ROUTE_END_POI);
-                    break;
-                default:
-                    break;
-            }
-            if (intentPage != INaviConstant.OpenIntentPage.NONE) {
-                mViewModel.setExtraParams(intentPage, keyword, endPoint);
-            }
-            intent.putExtra(INaviConstant.PAGE_EXTRA, INaviConstant.OpenIntentPage.NONE);
         }
     }
 

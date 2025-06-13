@@ -371,6 +371,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         return mapCenter;
     }
 
+    public void resetTickCount(int tickCount){
+        getMapview().resetTickCount(tickCount);
+    }
+
     public boolean setTrafficStates(boolean isOpen) {
         int status = isOpen ? 1 : 0;
         boolean result = getMapview().setControllerStatesOperator(MapControllerStatesType.MAP_CONTROLLER_ONOFF_TRAFFIC_STATE, status, true);

@@ -92,7 +92,7 @@
                 android:paddingEnd="@dimen/dp_50"
                 android:text="@string/setting_guide_plate_number_default"
                 android:textSize="@dimen/sp_29"
-                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textColor="@color/setting_bg_tab_text_select"
                 app:layout_constraintStart_toEndOf="@+id/setting_plate_number_title_text"
                 app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
 
@@ -117,6 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_22"
                 android:src="@drawable/img_plate_number_clear"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
                 app:layout_constraintBottom_toBottomOf="@id/setting_plate_number_number"
                 app:layout_constraintTop_toTopOf="@+id/setting_plate_number_number" />

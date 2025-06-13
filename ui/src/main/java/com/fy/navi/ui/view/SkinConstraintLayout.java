@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.ui.R;
 
 public class SkinConstraintLayout extends ConstraintLayout {
@@ -55,6 +57,7 @@ public class SkinConstraintLayout extends ConstraintLayout {
         } else if (event.getAction() == MotionEvent.ACTION_UP && mIsClickChangeColor) {
             // 手指松开反馈点击事件并恢复控件原有的透明度
             setAlpha(1.0f);
+            this.playSoundEffect(SoundEffectConstants.CLICK);
             callOnClick();
             return true;
         } else if (event.getAction() == MotionEvent.ACTION_CANCEL && mIsClickChangeColor) {

@@ -218,6 +218,10 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         mMapAdapter.setMapLabelClickable(mapTypeId,enable);
     }
 
+    public void resetTickCount(MapType mapTypeId, int tickCount){
+        mMapAdapter.resetTickCount(mapTypeId,tickCount);
+    }
+
     public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {
         return mMapAdapter.mapToLonLat(mapTypeId, mapX, mapY);
     }

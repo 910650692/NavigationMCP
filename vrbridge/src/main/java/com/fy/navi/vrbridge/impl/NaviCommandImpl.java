@@ -71,18 +71,18 @@ public class NaviCommandImpl implements NaviCommandListener {
 
         if (TextUtils.isEmpty(sessionId) || TextUtils.isEmpty(passBy)) {
             Logger.e(IVrBridgeConstant.TAG, "session or passBy is empty");
-            return CallResponse.createFailResponse("沿途搜参数为空");
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.PASS_BY_PARAM_EMPTY);
         }
         if (!MapStateManager.getInstance().isNaviStatus()) {
             //非导航态不支持沿途搜
             Logger.w(IVrBridgeConstant.TAG, "alongSearch in no navigation");
-            return CallResponse.createFailResponse("需要发起导航，才能帮你规划沿途的路线，试试说：导航回家");
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NAVI_BEFORE_PASSBY_ROUTE);
         }
         final RouteCurrentPathParam pathParam = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
         if (null != pathParam && !pathParam.isMIsOnlineRoute()) {
             //离线算路不支持沿途搜
             Logger.w(IVrBridgeConstant.TAG, "alongSearch in offline road");
-            return CallResponse.createFailResponse("当前使用离线算路，不支持该功能");
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.OFFLINE_NOT_SUPPORT);
         }
 
         VoiceSearchManager.getInstance().handlePassBy(sessionId, passBy, poiType, poiCallback);
@@ -91,7 +91,7 @@ public class NaviCommandImpl implements NaviCommandListener {
 
     @Override
     public CallResponse onPassbyAdd(final String s, final String s1, final String s2, final PoiCallback poiCallback) {
-        return CallResponse.createNotSupportResponse("暂不支持该功能");
+        return CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_THIS_FUNCTION);
     }
 
 }

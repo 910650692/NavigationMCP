@@ -103,6 +103,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
         final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
         final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
+        final String labelName = parsedArgs.getString("LABEL","");
         final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
         mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity,true);
         mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
@@ -110,6 +111,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
         mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
         mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
+        mBinding.scenePoiDetailContentView.setLabelName(labelName);
     }
 
     @Override

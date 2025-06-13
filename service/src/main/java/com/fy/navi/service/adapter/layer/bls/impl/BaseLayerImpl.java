@@ -83,6 +83,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         this.mapType = mapType;
         this.styleAdapter = createStyleAdapter();
         setParam(styleAdapter);
+        this.bizService.setCollisionIntervalTime(getEngineId(), 500);
     }
 
     public int getEngineId() {

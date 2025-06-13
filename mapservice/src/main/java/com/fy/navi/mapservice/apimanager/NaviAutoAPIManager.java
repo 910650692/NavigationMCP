@@ -14,6 +14,7 @@ import com.fy.navi.mapservice.callback.OnDistrictInfoChangeListener;
 import com.fy.navi.mapservice.callback.OnGuidePanelDataListener;
 import com.fy.navi.mapservice.callback.OnInitStateChangeListener;
 import com.fy.navi.mapservice.callback.OnLocationChangeListener;
+import com.fy.navi.mapservice.callback.OnNaviBroadcastStateListener;
 import com.fy.navi.mapservice.callback.OnNaviStatusChangeListener;
 import com.fy.navi.mapservice.callback.OnRoutePlanResultListener;
 import com.fy.navi.mapservice.callback.OnSearchResultListener;
@@ -22,7 +23,7 @@ import com.fy.navi.mapservice.callback.OnSrNaviInfoChangeListener;
 import com.fy.navi.mapservice.callback.OnTurnInfoChangeListener;
 import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
-import com.fy.navi.mapservice.common.INaviAutoGuideStatusCallBack;
+import com.fy.navi.mapservice.common.INaviAutoCountDownLightCallback;
 import com.fy.navi.mapservice.common.INaviAutoLocationCallback;
 import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
 import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
@@ -50,6 +51,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     private final List<OnSpeedLimitChangeListener> mSpeedLimitListenerList = new ArrayList<>();
     private final List<OnTurnInfoChangeListener> mTurnInfoListenerList = new ArrayList<>();
     private final List<OnSrNaviInfoChangeListener> mSrNaviInfoListenerList = new ArrayList<>();
+    private final List<OnNaviBroadcastStateListener> mNaviBroadcastListenerList = new ArrayList<>();
 
     public static NaviAutoAPIManager getInstance() {
         return SingleHolder.INSTANCE;
@@ -139,7 +141,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 mBinder.addNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
                 mBinder.addNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
                 mBinder.addNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
-                mBinder.addNaviAutoGuideStatusCallBack(mPkgName, mNaviAutoGuideCallBack);
+                mBinder.addNaviAutoCountDownLightCallback(mPkgName, mCountDownLightCallback);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "registerNaviAutoApiCallback error: " + exception.getMessage());
             }
@@ -156,7 +158,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 mBinder.removeNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
                 mBinder.removeNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
                 mBinder.removeNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
-                mBinder.removeNaviAutoGuideStatusCallBack(mPkgName, mNaviAutoGuideCallBack);
+                mBinder.removeNaviAutoCountDownLightCallback(mPkgName, mCountDownLightCallback);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "unRegisterNaviAutoApiCallback error: " + exception.getMessage());
             }
@@ -196,15 +198,43 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onCountDownLightInfo(final String lightInfo) {
-            Logger.d(TAG, mPkgName + "--> onCountDownLightInfo");
-            for (OnSrNaviInfoChangeListener srNaviInfoChangeListener : mSrNaviInfoListenerList) {
-                if (null != srNaviInfoChangeListener) {
+        public void onNaviStartAfterFiveMinutes() {
+            Logger.d(TAG, mPkgName + "--> onNaviStartAfterFiveMinutes");
+            for (OnNaviStatusChangeListener listener : mNaviStatusListenerList) {
+                if (null != listener) {
                     try {
-                        srNaviInfoChangeListener.onCountDownLightInfo(lightInfo);
-                    } catch (NullPointerException | IllegalStateException | IllegalArgumentException
-                             | ClassCastException exception) {
-                        Logger.e(TAG, "dispatch onCountDownLightInfo error: " + exception.getMessage());
+                        listener.onNaviStartAfterFiveMinutes();
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch naviStartDelay error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onNaviManualStop() {
+            Logger.d(TAG, mPkgName + "--> onNaviManualStop");
+            for (OnNaviStatusChangeListener listener : mNaviStatusListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onNaviManualStop();
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch naviStop error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onNaviBroadcastStatus(final boolean open) {
+            for (OnNaviBroadcastStateListener naviBroadcastStateListener : mNaviBroadcastListenerList) {
+                if (null != naviBroadcastStateListener) {
+                    try {
+                        naviBroadcastStateListener.onNaviBroadcastStateChanged(open);
+                    } catch (NullPointerException | IllegalArgumentException | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch naviBroadcastState: " + exception.getMessage());
                     }
                 }
             }
@@ -342,32 +372,17 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
     };
 
-    private final INaviAutoGuideStatusCallBack mNaviAutoGuideCallBack = new INaviAutoGuideStatusCallBack.Stub() {
+    private final INaviAutoCountDownLightCallback mCountDownLightCallback = new INaviAutoCountDownLightCallback.Stub() {
         @Override
-        public void onNaviStartAfterFiveMinutes() {
-            Logger.d(TAG, mPkgName + "--> onNaviStartAfterFiveMinutes");
-            for (OnNaviStatusChangeListener listener : mNaviStatusListenerList) {
-                if (null != listener) {
+        public void onCountDownLightInfo(final String lightInfo) {
+            Logger.d(TAG, mPkgName + "--> onCountDownLightInfo");
+            for (OnSrNaviInfoChangeListener srNaviInfoChangeListener : mSrNaviInfoListenerList) {
+                if (null != srNaviInfoChangeListener) {
                     try {
-                        listener.onNaviStartAfterFiveMinutes();
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
-                             | IllegalStateException exception) {
-                        Logger.e(TAG, "dispatch naviStartDelay error: " + exception.getMessage());
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void onNaviManualStop() {
-            Logger.d(TAG, mPkgName + "--> onNaviManualStop");
-            for (OnNaviStatusChangeListener listener : mNaviStatusListenerList) {
-                if (null != listener) {
-                    try {
-                        listener.onNaviManualStop();
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
-                             | IllegalStateException exception) {
-                        Logger.e(TAG, "dispatch naviStop error: " + exception.getMessage());
+                        srNaviInfoChangeListener.onCountDownLightInfo(lightInfo);
+                    } catch (NullPointerException | IllegalStateException | IllegalArgumentException
+                             | ClassCastException exception) {
+                        Logger.e(TAG, "dispatch onCountDownLightInfo error: " + exception.getMessage());
                     }
                 }
             }
@@ -683,6 +698,28 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     }
 
     /**
+     * 添加引导播报状态改变监听.
+     *
+     * @param naviBroadcastStateListener OnNaviBroadcastStateListener.
+     */
+    public void addNaviBroadcastChangeListener(final OnNaviBroadcastStateListener naviBroadcastStateListener) {
+        if (mInitStatus && null != naviBroadcastStateListener && !mNaviBroadcastListenerList.contains(naviBroadcastStateListener)) {
+            mNaviBroadcastListenerList.add(naviBroadcastStateListener);
+        }
+    }
+
+    /**
+     * 移除引导播报状态改变监听.
+     *
+     * @param naviBroadcastStateListener OnNaviBroadcastStateListener.
+     */
+    public void removeNaviBroadcastChangeListener(final OnNaviBroadcastStateListener naviBroadcastStateListener) {
+        if (mInitStatus && null != naviBroadcastStateListener) {
+            mNaviBroadcastListenerList.remove(naviBroadcastStateListener);
+        }
+    }
+
+    /**
      * 打开地图HMI.
      */
     public void openMap() {
@@ -973,6 +1010,91 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
             }
         }
         return result;
+    }
+
+    /**
+     * Launcher widget接口，回家.
+     */
+    public void backHome() {
+        if (mInitStatus && checkBinder()) {
+            try {
+                mBinder.backHome(mPkgName);
+            } catch (RemoteException exception) {
+                Logger.w(TAG, mPkgName + "backHome error:" + exception.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Launcher widget接口，去公司.
+     */
+    public void goCompany() {
+        if (mInitStatus && checkBinder()) {
+            try {
+                mBinder.goCompany(mPkgName);
+            } catch (RemoteException exception) {
+                Logger.w(TAG, mPkgName + "goCompany error:" + exception.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Launcher widget接口，点击搜索按钮.
+     */
+    public void openBasicSearch() {
+        if (mInitStatus && checkBinder()) {
+            try {
+                mBinder.openBasicSearch(mPkgName);
+            } catch (RemoteException exception) {
+                Logger.w(TAG, mPkgName + "openBasicSearch error:" + exception.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 获取当前引导播报状态.
+     *
+     * @return true-打开  false-关闭.
+     */
+    public boolean getNaviBroadcastStatus() {
+        boolean open = false;
+        if (mInitStatus && checkBinder()) {
+            try {
+                open = mBinder.getNaviBroadcastStatus(mPkgName);
+            } catch (RemoteException exception) {
+                Logger.w(TAG, mPkgName + "getBroadcast status error:" + exception.getMessage());
+            }
+        }
+
+        return open;
+    }
+
+    /**
+     * Launcher widget接口，打开/关闭引导播报.
+     *
+     * @param open  true-打开  false-关闭.
+     */
+    public void toggleNaviBroadcast(final boolean open) {
+        if (mInitStatus && checkBinder()) {
+            try {
+                mBinder.toggleNaviBroadcast(mPkgName, open);
+            } catch (RemoteException exception) {
+                Logger.w(TAG, mPkgName + "toggleNaviBroadcast error:" + exception.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Launcher widget接口，引导时点击添加途径点.
+     */
+    public void clickPassBySearch() {
+        if (mInitStatus && checkBinder()) {
+            try {
+                mBinder.clickPassBySearch(mPkgName);
+            } catch (RemoteException exception) {
+                Logger.w(TAG, mPkgName + "clickPassBySearch error:" + exception.getMessage());
+            }
+        }
     }
 
 

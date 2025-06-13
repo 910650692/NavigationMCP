@@ -6,5 +6,9 @@ interface INaviAutoStatusCallback {
 
     void onPanelData(int panelDataStatus);
 
-    void onCountDownLightInfo(String lightInfo);
+    void onNaviStartAfterFiveMinutes();
+
+    void onNaviManualStop();
+
+    void onNaviBroadcastStatus(boolean open);
 }

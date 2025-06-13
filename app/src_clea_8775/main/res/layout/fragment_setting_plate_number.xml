@@ -117,6 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_22"
                 android:src="@drawable/img_plate_number_clear"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
                 app:layout_constraintBottom_toBottomOf="@id/setting_plate_number_number"
                 app:layout_constraintTop_toTopOf="@+id/setting_plate_number_number" />

@@ -82,6 +82,7 @@
     <color name="forecast_title">#FFFFFF</color>
     <color name="forecast_title_sure">#E5B586</color>
     <color name="forecast_title_cancel">#FFFFFF</color>
+    <color name="forecast_content_edit">#005CFF</color>
 
     <color name="setting_white">#FFFFFFFF</color>
     <color name="setting_black">#FF000000</color>

@@ -194,6 +194,20 @@ public class SearchResultEntity implements Parcelable {
         return this;
     }
 
+    public List<SearchCategoryLocalInfo> getLevel2LocalInfoList() {
+        return mLevel2LocalInfoList;
+    }
+
+    /**
+     * 设置快筛列表
+     * @param level2LocalInfoList 快筛列表
+     * @return SearchResultEntity
+     */
+    public SearchResultEntity setLevel2LocalInfoList(final List<SearchCategoryLocalInfo> level2LocalInfoList){
+        this.mLevel2LocalInfoList = level2LocalInfoList;
+        return this;
+    }
+
     public int getTotal() {
         return mTotal;
     }

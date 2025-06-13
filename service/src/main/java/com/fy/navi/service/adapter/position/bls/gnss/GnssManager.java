@@ -94,7 +94,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback,
                     Logger.e(TAG, "Location permissions are not granted");
                     return;
                 }
-                if (!mIsInited) {
+                if (mIsInited) {
                     mLocationManager.removeUpdates(this);
                     mLocationManager.requestLocationUpdates(selectProvider(),
                             1000L, // 更新间隔时间（毫秒）

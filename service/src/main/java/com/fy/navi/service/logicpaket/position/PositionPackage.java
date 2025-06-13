@@ -35,6 +35,8 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     public GeoPoint currentGeo;
     private AtomicBoolean atomicBoolean = new AtomicBoolean(false);
     private GpsTrackPointBean mGpsTrackPointBean;
+    private boolean isOpenLocLog = false;
+
     public static PositionPackage getInstance() {
         return Helper.POSITIONING_PACKAGE;
     }
@@ -166,6 +168,7 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
 
     /**
      * 获取GpsTrackPointBean
+     *
      * @return GpsTrackPointBean
      */
     public GpsTrackPointBean getGpsTrackPointBean() {
@@ -238,7 +241,15 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
 
     /*是否开启定位日志*/
     public void locationLogSwitch(boolean isOpen) {
+        if (isOpenLocLog == isOpen) {
+            return;
+        }
         mPositionAdapter.locationLogSwitch(isOpen);
+        isOpenLocLog = isOpen;
+    }
+
+    public boolean isOpenLocLog() {
+        return isOpenLocLog;
     }
 
     private static final class Helper {

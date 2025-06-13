@@ -1293,4 +1293,22 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             }
         });
     }
+
+    /**
+     * 外部接口点击引导界面沿途搜按钮.
+     *
+     * @param mapType MapType，默认只有主图MAIN.
+     */
+    public void exportOpenPassBy(final MapType mapType) {
+        Logger.i(TAG, "openPassByPage");
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onPassByClick(mapType);
+                    }
+                }
+            }
+        });
+    }
 }

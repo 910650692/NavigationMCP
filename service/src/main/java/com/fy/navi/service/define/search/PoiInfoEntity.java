@@ -119,6 +119,12 @@ public class PoiInfoEntity implements Parcelable {
 
     // 是否是终点
     private boolean mIsEndPoint = false;
+    
+    // 距离用户当前位置最快的点
+    private boolean mIsFastest = false;
+
+    // 距离用户当前位置最近的点
+    private boolean mIsClosest = false;
 
     /**
      * 设置poi类型
@@ -708,6 +714,24 @@ public class PoiInfoEntity implements Parcelable {
         return this;
     }
 
+    public boolean isFastest(){
+        return mIsFastest;
+    }
+
+    public PoiInfoEntity setIsFastest(boolean isFastest){
+        this.mIsFastest = isFastest;
+        return this;
+    }
+
+    public boolean isClosest(){
+        return mIsClosest;
+    }
+
+    public PoiInfoEntity setIsClosest(boolean isClosest){
+        this.mIsClosest = isClosest;
+        return this;
+    }
+
     protected PoiInfoEntity(final Parcel in) {
         mPoiType = in.readInt();
         mPid = in.readString();
@@ -756,6 +780,8 @@ public class PoiInfoEntity implements Parcelable {
         mIsCollect = in.readBoolean();
         mReservationInfo = in.readParcelable(ReservationInfo.class.getClassLoader());
         mIsLocres = in.readBoolean();
+        mIsClosest = in.readBoolean();
+        mIsFastest = in.readBoolean();
         // 新增字段 mPoiAoiBounds 的反序列化
         // 读取外层列表的大小
         final int outerSize = in.readInt();
@@ -850,6 +876,8 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeBoolean(mIsCollect);
         parcel.writeParcelable(mReservationInfo,i);
         parcel.writeBoolean(mIsLocres);
+        parcel.writeBoolean(mIsClosest);
+        parcel.writeBoolean(mIsFastest);
 
         final int aoiBoundsSize = ConvertUtils.isEmpty(mPoiAoiBounds) ? 0 : mPoiAoiBounds.size();
         parcel.writeInt(aoiBoundsSize);

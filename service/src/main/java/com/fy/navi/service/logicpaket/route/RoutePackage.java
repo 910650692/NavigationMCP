@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
+import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.path.option.PathInfo;
@@ -54,6 +55,8 @@ import com.fy.navi.service.define.route.RouteRestAreaParam;
 import com.fy.navi.service.define.route.RouteRestTollGateParam;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
+import com.fy.navi.service.define.route.RouteSupplementParams;
+import com.fy.navi.service.define.route.RouteSupplementInfo;
 import com.fy.navi.service.define.route.RouteTMCParam;
 import com.fy.navi.service.define.route.RouteTrafficIncidentParam;
 import com.fy.navi.service.define.route.RouteWayID;
@@ -86,6 +89,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Getter;
 
@@ -109,6 +113,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     private Map<MapType, RequestRouteResult> mRequestRouteResults;
     private ArrayList<EvRangeOnRouteInfo> mEvRangeOnRouteInfos;
     private RouteAdapter mRouteAdapter;
+    private SearchAdapter mSearchAdapter;
     private NavistatusAdapter mNaviStatusAdapter;
     private NaviAdapter mNaviAdapter;
     private LayerAdapter mLayerAdapter;
@@ -164,6 +169,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mRequestRouteResults = new HashMap<>();
         mEvRangeOnRouteInfos = new ArrayList<>();
         mRouteAdapter = RouteAdapter.getInstance();
+        mSearchAdapter = SearchAdapter.getInstance();
         mNaviStatusAdapter = NavistatusAdapter.getInstance();
         mNaviAdapter = NaviAdapter.getInstance();
         mLayerAdapter = LayerAdapter.getInstance();
@@ -340,6 +346,47 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             return;
         }
+        //TODO CR
+//        if (routeChargeStationParam == null) {
+//            return;
+//        }
+//        final ArrayList<RouteSupplementParams> routeSupplementParams = routeChargeStationParam.getMRouteSupplementParams();
+//        if (routeSupplementParams == null || routeSupplementParams.isEmpty()) {
+//            return;
+//        }
+//        final AtomicInteger infoTotal = new AtomicInteger(0);
+//        for (int i = 0; i < routeSupplementParams.size(); i++) {
+//            final ArrayList<RouteSupplementInfo> routeSupplementInfo = routeSupplementParams.get(i)
+//                    .getMRouteSupplementInfos();
+//            if (routeSupplementInfo != null && !routeSupplementInfo.isEmpty()) {
+//                final AtomicInteger paramTotal = new AtomicInteger(0);
+//                for (int j = 0; j< routeSupplementInfo.size(); j++) {
+//                    final int currentIndex = j;
+//                    getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeSupplementInfo.get(currentIndex).getMShow().getLon(),
+//                            routeSupplementInfo.get(currentIndex).getMShow().getLat()))
+//                            .thenAccept(etaInfo -> {
+//                                routeSupplementInfo.get(currentIndex).setMDistance(etaInfo.getDistance());
+//                                routeSupplementInfo.get(currentIndex).setMUnitDistance(TimeUtils.getInstance()
+//                                        .getDistanceString(etaInfo.getDistance()));
+//                                paramTotal.getAndIncrement();
+//                                if (paramTotal.get() == routeSupplementInfo.size()) {
+//                                    infoTotal.getAndIncrement();
+//                                    if (infoTotal.get() == routeSupplementParams.size()) {
+//                                        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+//                                            if (ConvertUtils.isEmpty(routeResultObserver)) {
+//                                                continue;
+//                                            }
+//                                            routeResultObserver.onRouteChargeStationInfo(routeChargeStationParam);
+//                                        }
+//                                    }
+//                                }
+//                            })
+//                            .exceptionally(error -> {
+//                                Logger.d(TAG, "showChargeStationDetail error:" + error);
+//                                return null;
+//                            });
+//                }
+//            }
         for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
             if (ConvertUtils.isEmpty(routeResultObserver)) {
                 continue;
@@ -1096,21 +1143,19 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void showRouteLine(final MapType mapTypeId) {
-        ThreadManager.getInstance().execute(() -> {
-            RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
-            if (ConvertUtils.isEmpty(requestRouteResult)) return;
-            final List<RouteLineInfo> routeLineInfos = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMRouteLineInfos();
-            final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMLineLayerParam();
-            final ArrayList<String> arrivalTimes = new ArrayList<>();
-            for (RouteLineInfo routeLineInfo : routeLineInfos) {
-                arrivalTimes.add(routeLineInfo.getMTravelTime());
-            }
-            routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
-            mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
+        RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (ConvertUtils.isEmpty(requestRouteResult)) return;
+        final List<RouteLineInfo> routeLineInfos = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMRouteLineInfos();
+        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMLineLayerParam();
+        final ArrayList<String> arrivalTimes = new ArrayList<>();
+        for (RouteLineInfo routeLineInfo : routeLineInfos) {
+            arrivalTimes.add(routeLineInfo.getMTravelTime());
+        }
+        routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
+        mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
 //            if (!mNaviStatusAdapter.isGuidanceActive()) {
 //                mLayerAdapter.setCarLogoVisible(mapTypeId, false);
 //            }
-        });
     }
 
     /*更新终点扎标数据*/
@@ -1190,7 +1235,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public void showPreview(final MapType mapTypeId) {
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.setFollowMode(mapTypeId, false);
-            mLayerAdapter.closeDynamicLevel(mapTypeId);
             if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
                 return;
             }
@@ -1731,6 +1775,22 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_YAW);
         param.setRouteRequestCallBackType(isHome ? 0 : 1);
         mRouteAdapter.requestRoute(param, routeParams);
+    }
+
+    /**
+     *
+     * @param geoPoint 经纬度点
+     * @return ETAInfo 包含距离，剩余时间和剩余电量
+     */
+    public CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(final GeoPoint geoPoint) {
+        final GeoPoint userLoc = new GeoPoint();
+        userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .userLoc(userLoc)
+                .poiLoc(geoPoint)
+                .build();
+        return mSearchAdapter.getTravelTimeFutureIncludeChargeLeft(requestParameterBuilder);
     }
 
     public Map<MapType, Long> getRequestIds() {

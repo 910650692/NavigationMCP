@@ -28,6 +28,7 @@ public enum LayerPointItemType {
     ROUTE_POINT_END_BUSINESS_HOURS,  //终点营业时间扎标
 
     ROUTE_POINT_VIA,        //途经点默认扎标
+    ROUTE_POINT_VIA_CHARGE,     //途经点是充电站扎标
     ROUTE_POINT_VIA_CHARGE_STATION,  //路线补能规划扎标
     ROUTE_POINT_VIA_REPLACE_CHARGE,  //替换补能扎标
 

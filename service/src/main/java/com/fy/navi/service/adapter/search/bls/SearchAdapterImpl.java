@@ -20,6 +20,8 @@ import com.autonavi.gbl.search.model.PoiDetailSearchResult;
 import com.autonavi.gbl.search.model.SearchAggregateParam;
 import com.autonavi.gbl.search.model.SearchAlongWayParam;
 import com.autonavi.gbl.search.model.SearchAlongWayResult;
+import com.autonavi.gbl.search.model.SearchBatchPoiDetailParam;
+import com.autonavi.gbl.search.model.SearchBatchPoiDetailResult;
 import com.autonavi.gbl.search.model.SearchDeepInfoParam;
 import com.autonavi.gbl.search.model.SearchDeepInfoResult;
 import com.autonavi.gbl.search.model.SearchEnrouteKeywordParam;
@@ -230,6 +232,22 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (errCode, result) -> notifySearchSuccess((int) searchResult.taskId, searchRequestParameter, result)
         );
         mSearchObserversHelper.registerCallback(SearchEnrouteResult.class, callbackWrapper);
+        return mTaskId.get();
+    }
+
+    @Override
+    public int poiListSearch(final SearchRequestParameter searchRequestParameter) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "poiListSearch");
+        final SearchCallbackWrapper<SearchBatchPoiDetailResult> callbackWrapper = createCallbackWrapper(
+                SearchBatchPoiDetailResult.class,
+                (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameter, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result)
+        );
+
+        mSearchObserversHelper.registerCallback(SearchBatchPoiDetailResult.class, callbackWrapper);
+        final SearchBatchPoiDetailParam param = SearchRequestParamV2.getInstance().convertToSearchBatchParam(searchRequestParameter);
+        final TaskResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
+        mTaskId.set((int)searchResult.taskId);
         return mTaskId.get();
     }
 

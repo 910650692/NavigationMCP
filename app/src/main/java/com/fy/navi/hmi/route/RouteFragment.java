@@ -50,6 +50,7 @@ import com.fy.navi.service.define.route.RoutePriorityType;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteRestAreaDetailsInfo;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
+import com.fy.navi.service.define.route.RouteSupplementInfo;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.GasStationInfo;
@@ -59,7 +60,6 @@ import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.action.ViewAdapterKt;
 import com.fy.navi.ui.base.BaseFragment;
-import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.ui.define.TripID;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 import com.fy.navi.ui.view.SkinConstraintLayout;
@@ -811,6 +811,14 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             }
         });
     }
+
+    /***
+     * 添加主屏补能规划界面
+     */
+    public void updateSupplementPointsView(final ArrayList<RouteSupplementInfo> routeSupplementInfos, final float total) {
+        mBinding.routeRouteSupplementPoints.updateSupplementPointsView(routeSupplementInfos, total);
+    }
+
 
     /***
      * 展示服务区POI详情数据

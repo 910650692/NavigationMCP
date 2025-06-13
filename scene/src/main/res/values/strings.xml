@@ -38,6 +38,8 @@
     <string name="search_charge_self_filter_hint">功能环境不具备</string>
     <string name="search_charge_current_time">当前</string>
     <string name="reservation_max_time">当日取消次数已达3次，无法继续预约</string>
+    <string name="search_label_fastest">最快</string>
+    <string name="search_label_closest">最近</string>
     <!--引导-->
     <string name="km">公里</string>
     <string name="kilometre">km</string>
@@ -177,6 +179,9 @@
     <string name="route_service_details_remove_via">删除途经点</string>
     <string name="route_service_details_add_via_charge">添加</string>
     <string name="route_service_details_remove_via_charge">移除</string>
+    <string name="route_supplement_info">推荐充电%s次,共%s分钟</string>
+    <string name="route_supplement_plan">充电规划</string>
+    <string name="route_replace">替换</string>
     <string name="route_invalid">-</string>
     <string name="confirm">是的</string>
     <string name="cancel">取消</string>
@@ -222,6 +227,12 @@
     <string name="parking_lot_status">%d/%d</string>
     <string name="st_home">家</string>
     <string name="st_company">公司</string>
+    <string name="label_nearest">最近</string>
+    <string name="label_nearest_rv">最快速</string>
+    <string name="label_optimal">最顺路</string>
+    <string name="label_opposite">需调头</string>
+    <string name="label_opposite_rv">反向</string>
+    <string name="label_exit_highway">需下高速</string>
 
     <!--充电站详情页-->
     <string name="charge_title_fast">快</string>
@@ -307,6 +318,9 @@
     <string name="travel_max_time">预计到达时间大于30分钟不支持预约</string>
     <string name="address_loading">地址获取中</string>
     <string name="filter_select_more">(可多选)</string>
+    <string name="filter_select_fast">快充</string>
+    <string name="filter_select_free_park">免费停车</string>
+    <string name="latest_charge">%s内有人充电</string>
     <!--搜索主页快捷搜-->
     <string-array name="main_search_categories_name">
         <item>加油站</item>

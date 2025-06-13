@@ -7,6 +7,7 @@ import com.autonavi.gbl.search.model.AggregateSearchResult;
 import com.autonavi.gbl.search.model.KeywordSearchResultV2;
 import com.autonavi.gbl.search.model.PoiDetailSearchResult;
 import com.autonavi.gbl.search.model.SearchAlongWayResult;
+import com.autonavi.gbl.search.model.SearchBatchPoiDetailResult;
 import com.autonavi.gbl.search.model.SearchDeepInfoResult;
 import com.autonavi.gbl.search.model.SearchEnrouteResult;
 import com.autonavi.gbl.search.model.SearchLineDeepInfoResult;
@@ -85,6 +86,9 @@ public class SearchResultCallbackHelper {
                 break;
             case AutoMapConstant.SearchType.POI_DETAIL_SEARCH:
                 resultList = handlePoiDetailSearch(requestParameterBuilder, result);
+                break;
+            case AutoMapConstant.SearchType.PID_LIST_SEARCH:
+                resultList = handlePoiListSearch(requestParameterBuilder, result);
                 break;
             default:
                 Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Unknown search type: " + requestParameterBuilder.getSearchType());
@@ -241,6 +245,21 @@ public class SearchResultCallbackHelper {
             return null;
         }
         return SearchResultMapper.getInstance().mapFromSearchPoiDetailSearchResult(requestParameterBuilder, poiDetailSearchResult);
+    }
+
+    /**
+     * POI批量搜索回调分发
+     * @param requestParameterBuilder 请求参数
+     * @param result 回调数据
+     * @return SearchResultEntity
+     * @param <T> 泛型参数
+     */
+    private <T> SearchResultEntity handlePoiListSearch(final SearchRequestParameter requestParameterBuilder, final T result) {
+        if (!(result instanceof SearchBatchPoiDetailResult batchPoiDetailResult)) {
+         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Invalid result type for poi detail search");
+            return null;
+        }
+        return SearchResultMapper.getInstance().mapFromSearchBatchResult(requestParameterBuilder, batchPoiDetailResult);
     }
 
     /**

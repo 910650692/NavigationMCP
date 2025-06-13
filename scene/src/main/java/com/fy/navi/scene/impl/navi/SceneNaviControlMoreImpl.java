@@ -22,6 +22,7 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.ui.navi.SceneNaviControlMoreView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.scene.ui.navi.view.SwipeView;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapMode;
@@ -37,12 +38,11 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.speech.SpeechPackage;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMoreView> implements
-        ISceneNaviControl {
+        ISceneNaviControl, SwipeView.DownSwipeListener {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
@@ -80,6 +80,9 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
                     }
                 }
             }
+        }
+        if (mScreenView != null) {
+            mScreenView.setSwipeListener(this);
         }
     }
 
@@ -310,6 +313,9 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
         super.onDestroy();
         mImmersiveStatusScene = null;
         cancelTimer();
+        if (mScreenView != null) {
+            mScreenView.removeSwipeListener();
+        }
     }
 
     /**
@@ -404,5 +410,10 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
             mMapPackage = MapPackage.getInstance();
         }
         return mMapPackage.getCurrentMapMode(mMapTypeId);
+    }
+
+    @Override
+    public void onDownSwipe() {
+        backControl();
     }
 }

@@ -63,6 +63,7 @@
     <color name="route_tbt_color_gray">#C9CBCE</color>
     <color name="route_vai_remove_color">#4B535D</color>
     <color name="route_white">#FFFFFFFF</color>
+    <color name="route_progressBar_color">#4ABA59</color>
 
     <color name="text_route_defult">#B3000000</color>
     <color name="text_route_title">#66000000</color>
@@ -70,6 +71,7 @@
     <color name="bg_route_big_window_select">#FF2461EA</color>
     <color name="bg_route_big_window_unselect">#338E97B9</color>
     <color name="bg_route_detail_color">#26B2AFC2</color>
+    <color name="bg_route_replace_supplement_color">#26B2AFC2</color>
     <color name="bg_route_button_select_color">#FF2461EA</color>
     <color name="bg_route_secondary_select">#1A2461EA</color>
 
