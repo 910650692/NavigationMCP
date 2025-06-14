@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.poi;
 
+import static com.android.utils.TimeUtils.formatTimeRange;
 import static com.android.utils.TimeUtils.isCurrentTimeInRange;
 
 import android.app.Activity;
@@ -9,6 +10,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -217,7 +219,11 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         CostTime currentCostTime = new CostTime();
         if (!ConvertUtils.isEmpty(costTimes)) {
             for (int i = 0; i < costTimes.size(); i++) {
-                if (isCurrentTimeInRange(costTimes.get(i).getTime())) {
+                String time = costTimes.get(i).getTime();
+                if(!ConvertUtils.isEmpty(time)){
+                    time = formatTimeRange(time);
+                }
+                if (isCurrentTimeInRange(time)) {
                     currentCostTime = costTimes.get(i);
                 }
             }

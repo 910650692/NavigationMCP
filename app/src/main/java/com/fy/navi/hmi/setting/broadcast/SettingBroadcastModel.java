@@ -42,6 +42,7 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
     public void onDestroy() {
         super.onDestroy();
         mSpeechPackage.removeObserver("SettingBroadcastModel");
+        mSettingPackage.unRegisterSettingChangeCallback("SettingBroadcastModel");
     }
 
     /**

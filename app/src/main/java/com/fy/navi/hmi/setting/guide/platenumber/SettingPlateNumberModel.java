@@ -24,6 +24,10 @@ public class SettingPlateNumberModel extends BaseModel<SettingPlateNumberViewMod
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mSettingPackage != null) {
+            mSettingPackage.unRegisterCallBack("SettingPlateNumberModel");
+        }
+        SettingUpdateObservable.getInstance().removeObserver(MODEL_NAME, this);
     }
 
     @Override

@@ -55,6 +55,8 @@ public class PoiInfoEntity implements Parcelable {
     private boolean mIsVisible;      //是否可见，搜索结果列表页面添加选中效果
     //是否包含子孙节点?  0:没有子节点  1:有子节点没有孙节点 2:有子节点有孙节点 3:本身是子节点没有孙节点 4:本身是子节点有孙节点
     private int mChildType;
+    //批量搜充电站类型
+    private int mChargeChildType;
     // 是否是行政区信息
     private boolean mIsLocres;
 
@@ -763,6 +765,7 @@ public class PoiInfoEntity implements Parcelable {
         mSortPrice = in.readInt();
         mIsVisible = in.readBoolean();
         mChildType = in.readInt();
+        mChargeChildType = in.readInt();
         mCityInfo = in.readParcelable(CityInfo.class.getClassLoader());
         mFavoriteInfo = in.readParcelable(FavoriteInfo.class.getClassLoader());
         mRetainParam = in.readParcelable(SearchRetainParamInfo.class.getClassLoader());
@@ -858,7 +861,7 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeInt(mSortRate);
         parcel.writeInt(mSortPrice);
         parcel.writeBoolean(mIsVisible);
-        parcel.writeInt(mChildType);
+        parcel.writeInt(mChargeChildType);
         parcel.writeParcelable(mCityInfo, i);
         parcel.writeParcelable(mFavoriteInfo, i);
         parcel.writeParcelable(mRetainParam, i);

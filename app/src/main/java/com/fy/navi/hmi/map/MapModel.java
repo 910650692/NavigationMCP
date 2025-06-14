@@ -31,6 +31,7 @@ import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.exportservice.ExportIntentParam;
+import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.setting.SettingFragment;
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
 import com.fy.navi.mapservice.bean.INaviConstant;
@@ -230,6 +231,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mNaviStatusPackage = NaviStatusPackage.getInstance();
         mapVisibleAreaDataManager = MapVisibleAreaDataManager.getInstance();
 
+        layerPackage.initCarLogoByFlavor(MapType.MAIN_SCREEN_MAIN_MAP, BuildConfig.FLAVOR);
         addGestureListening();//添加收拾监听
     }
 

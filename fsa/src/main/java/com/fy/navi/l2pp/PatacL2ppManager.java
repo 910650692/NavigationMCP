@@ -1,4 +1,4 @@
-package com.fy.navi.clslink;
+package com.fy.navi.l2pp;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,11 +29,11 @@ import com.cls.vehicle.adas.map.v1.MpilotSDRouteSegments;
 import com.cls.vehicle.adas.map.v1.MpilotSDRouteViaRoad;
 import com.cls.vehicle.adas.map.v1.ParkingLotInfoList;
 import com.fy.navi.adas.JsonLog;
-import com.fy.navi.adas.L2NopTts;
 import com.fy.navi.fsa.R;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.navi.L2NaviBean;
 import com.fy.navi.service.define.route.RouteL2Data;
+import com.fy.navi.service.define.signal.SignalConst;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.l2.L2InfoCallback;
 import com.fy.navi.service.logicpaket.l2.L2Package;
@@ -42,41 +42,121 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.signal.SignalCallback;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.google.protobuf.Any;
-import com.google.rpc.Status;
 import com.sgm.cls.sdk.uprotocol.cloudevent.datamodel.CloudEventAttributes;
 import com.sgm.cls.sdk.uprotocol.cloudevent.factory.CloudEventFactory;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import com.fy.navi.service.define.signal.SignalConst;
 
 import io.cloudevents.CloudEvent;
 
-public class ClsLinkManager {
-    private static final String TAG = "ClsLinkManager";
-    private ClsLink mClsLink;
-    public static final String TBT_URI = "cls:/adas.map/1/mpilot_navigation#MpilotNavigationInformation";
-    public static final String ROUTE_URI = "cls:/adas.map/1/mpilot_navigation#MpilotSDRouteList";
-    private SubscriptionClient.FutureStub mUSubscription;
-    private boolean tbtTopic = false;
-    private boolean routeTopic = false;
+/**
+ * PATAC L2++ 管理类
+ */
+public class PatacL2ppManager {
+    private static final String TAG = PatacL2ppManager.class.getSimpleName();
 
-    public static ClsLinkManager getInstance() {
-        return ClsLinkManager.SingleHolder.INSTANCE;
+    private static final String TBT_URI = "cls:/adas.map/1/mpilot_navigation#MpilotNavigationInformation";
+    private static final String ROUTE_URI = "cls:/adas.map/1/mpilot_navigation#MpilotSDRouteList";
+
+    private ClsLink mClsLink;
+    private SubscriptionClient.FutureStub mUSubscription;
+    private boolean mInitialized = false;
+    private boolean mTbtTopic = false;
+    private boolean mRouteTopic = false;
+
+    //region INSTANCE
+    public static PatacL2ppManager getInstance() {
+        return PatacL2ppManager.SingleHolder.INSTANCE;
     }
 
     private final static class SingleHolder {
-        private static final ClsLinkManager INSTANCE = new ClsLinkManager();
+        private static final PatacL2ppManager INSTANCE = new PatacL2ppManager();
     }
 
-    private ClsLinkManager() {
+    private PatacL2ppManager() {
+    }
+    //endregion
+
+    //region 初始化反初始化
+    public void init() {
+        // 标定配置判断
+        if (CalibrationPackage.getInstance().adasConfigurationType() != 9) {
+            Logger.i(TAG, "not PATAC L2++ configuration");
+            return;
+        }
+        Logger.d(TAG, "init start");
+        ExecutorService executor = new ThreadPoolExecutor(16, Integer.MAX_VALUE,
+                60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        Context context = AppCache.getInstance().getMContext();
+        mClsLink = ClsLink.create(context, executor, (link, ready) -> {
+            // ClsLink连接状态回调
+            Logger.d(TAG, "clslink connection status callback: " + ready);
+            if (ready) {
+                if (mInitialized) {
+                    Logger.i(TAG, "initialized");
+                    return;
+                }
+                mClsLink = link;
+                L2Package.getInstance().registerCallback(TAG, mL2InfoCallback);
+                RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
+                SignalPackage.getInstance().registerObserver(TAG, mSignalCallback);
+                mUSubscription = SubscriptionClient.newFutureStub(link);
+                // 创建tbt数据服务
+                createTopic(TBT_URI);
+                // 创建route数据服务
+                createTopic(ROUTE_URI);
+                mInitialized = true;
+            } else {
+                if (!mInitialized) {
+                    Logger.i(TAG, "not initialized");
+                    return;
+                }
+                L2Package.getInstance().unregisterCallback(TAG);
+                RoutePackage.getInstance().unRegisterRouteObserver(TAG);
+                SignalPackage.getInstance().unregisterObserver(TAG);
+                mTbtTopic = false;
+                mRouteTopic = false;
+                mInitialized = false;
+            }
+        });
+        // ClsLink连接
+        mClsLink.connect();
+        Logger.d(TAG, "init end");
     }
 
+    private void createTopic(String uri) {
+        if (mUSubscription == null) {
+            Logger.d(TAG, "mUSubscription == null");
+            return;
+        }
+        CreateTopicRequest createTopicRequest = CreateTopicRequest.newBuilder()
+                .setTopic(Topic.newBuilder().setUri(uri).build())
+                .build();
+        mUSubscription.createTopic(createTopicRequest).whenComplete((status, throwable) -> {
+            Logger.d(TAG, "create topic result: " + status.getCode() + ", " + uri);
+            if (TBT_URI.equals(uri) && status.getCode() == 0) {
+                Logger.d(TAG, "tbt topic create success");
+                mTbtTopic = true;
+            }
+            if (ROUTE_URI.equals(uri) && status.getCode() == 0) {
+                Logger.d(TAG, "route topic create success");
+                mRouteTopic = true;
+            }
+            if (mTbtTopic && mRouteTopic) {
+                Logger.d(TAG, "send topic create success broadcast");
+                Intent intent = new Intent("com.fy.navi.hmi.topic.release");
+                AppCache.getInstance().getMContext().sendBroadcast(intent);
+            }
+        });
+        Logger.d(TAG, "createTopic: " + uri);
+    }
+    //endregion
+
+    //region SD Map功能
     private final L2InfoCallback mL2InfoCallback = new L2InfoCallback() {
         @Override
         public void onSdTbtDataChange(L2NaviBean l2NaviBean) {
@@ -108,7 +188,7 @@ public class ClsLinkManager {
             locationCoordinates.setLongitudeX(l2NaviBean.getVehiclePosition().getLocationLongitude());
             locationCoordinates.setLatitudeY(l2NaviBean.getVehiclePosition().getLocationLatitude());
             mpilotEgoVehicleInfo.setLocationCoordinates(locationCoordinates);
-            mpilotEgoVehicleInfo.setLocationLinkIndex((int)l2NaviBean.getVehiclePosition().getLocationLinkIndex());
+            mpilotEgoVehicleInfo.setLocationLinkIndex((int) l2NaviBean.getVehiclePosition().getLocationLinkIndex());
             mpilotEgoVehicleInfo.setLocationLinkOffset(l2NaviBean.getVehiclePosition().getLocationLinkOffset());
             mpilotEgoVehicleInfo.setMainSideRots(l2NaviBean.getVehiclePosition().getMainSideRots());
             mpilotEgoVehicleInfo.setNaviStatus(l2NaviBean.getVehiclePosition().getNaviStatus());
@@ -389,183 +469,122 @@ public class ClsLinkManager {
         }
     };
 
-    public void init() {
-        Logger.d(TAG, "init: ");
-        int adasConfigurationType = CalibrationPackage.getInstance().adasConfigurationType();
-        if (adasConfigurationType == 3) {
-            ExecutorService executor = new ThreadPoolExecutor(16, Integer.MAX_VALUE, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-            ClsLink.ServiceLifecycleListener listener = new ClsLink.ServiceLifecycleListener() {
-                @Override
-                public void onLifecycleChanged(ClsLink link, boolean ready) {
-                    Logger.d(TAG, "receiving link connection lifecycle event. IsReady: " + ready);
-                    if (ready) {
-                        mClsLink = link;
-                        mUSubscription = SubscriptionClient.newFutureStub(link);
-                        L2Package.getInstance().registerCallback(TAG, mL2InfoCallback);
-                        RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
-                        createTopic(TBT_URI);
-                        createTopic(ROUTE_URI);
-                    } else {
-                        L2Package.getInstance().unregisterCallback(TAG);
-                        RoutePackage.getInstance().unRegisterRouteObserver(TAG);
-                    }
-                }
-            };
-            mClsLink = ClsLink.create(AppCache.getInstance().getMContext(), executor, listener);
-            mClsLink.connect();
-        } else {
-            Logger.i(TAG, "not CLEA Arch ADM configuration");
-        }
-        if (adasConfigurationType == 8 || adasConfigurationType == 9) {
-            initNopTts();
-        } else {
-            Logger.i(TAG, "not Nop tts");
-        }
-    }
-
-    private void initNopTts() {
-        SignalPackage.getInstance().registerObserver(TAG, new SignalCallback() {
-            @Override
-            public void onNaviOnADASStateChanged(int state) {
-                Context context = AppCache.getInstance().getMContext();
-                switch (state) {
-                    case SignalConst.L2_NOP.CLOSE_TO_NOA_AREA_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.close_to_noa_area_true));
-                        break;
-                    case SignalConst.L2_NOP.STATUS_ACTIVE_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.status_active_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.STATUS_NORMAL_TO_OVERRIDE_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.status_normal_to_override_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.STATUS_OVERRIDE_TO_NORMAL_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.status_override_to_normal_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.CLOSE_TO_TIGHT_CURVE_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.close_to_tight_curve_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.INTO_TIGHT_CURVE_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.into_tight_curve_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.TAKE_STEERING_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.take_steering_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.MERGE_INTO_MAIN_ROAD_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.merge_into_main_road_true));
-                        break;
-                    case SignalConst.L2_NOP.LANE_CHANGING_TO_FOLLOW_ROUTE_LEFT:
-                        L2NopTts.sendTTS(context.getString(R.string.lane_changing_to_follow_route_left));
-                        break;
-                    case SignalConst.L2_NOP.LANE_CHANGING_TO_FOLLOW_ROUTE_RIGHT:
-                        L2NopTts.sendTTS(context.getString(R.string.lane_changing_to_follow_route_right));
-                        break;
-                    case SignalConst.L2_NOP.TEXT_TO_SPEECH_LANE_CHANGE_ABORT_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.text_to_speech_lane_change_abort_true));
-                        break;
-                    case SignalConst.L2_NOP.DISTANCE_TO_RAMP_2000M_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.distance_to_ramp_2000m_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.DISTANCE_TO_RAMP_500M_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.distance_to_ramp_500m_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.COMPLICATED_ROAD_CONDITION_LANE_CHANGE_FAILED_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.complicated_road_condition_lane_change_failed_true), true);
-                        break;
-                    case SignalConst.L2_NOP.CHANGING_TO_FAST_LANE_LEFT:
-                        L2NopTts.sendTTS(context.getString(R.string.changing_to_fast_lane_left));
-                        break;
-                    case SignalConst.L2_NOP.CONFIRM_CHANGE_TO_FAST_LANE_LEFT:
-                        L2NopTts.sendTTS(context.getString(R.string.confirm_change_to_fast_lane_left));
-                        break;
-                    case SignalConst.L2_NOP.CHANGING_TO_FAST_LANE_RIGHT:
-                        L2NopTts.sendTTS(context.getString(R.string.changing_to_fast_lane_right));
-                        break;
-                    case SignalConst.L2_NOP.CONFIRM_CHANGE_TO_FAST_LANE_RIGHT:
-                        L2NopTts.sendTTS(context.getString(R.string.confirm_change_to_fast_lane_right));
-                        break;
-                    case SignalConst.L2_NOP.EXIT_RAMP_TO_NON_LIMITED_ACCESS_ROAD_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.exit_ramp_to_non_limited_access_road_true));
-                        break;
-                    case SignalConst.L2_NOP.DISTANCE_TO_END_500M_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.distance_to_end_500m_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.FINISHED_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.finished_indication_on_true), true);
-                        break;
-                    case SignalConst.L2_NOP.TAKE_VEHICLE_CONTROL_INDICATION_ON_TRUE:
-                        L2NopTts.sendTTS(context.getString(R.string.take_vehicle_control_indication_on_true));
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_CONSTRUCTION:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_construction), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_MAP_UNAVAILABLE:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_map_unavailable), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_GPS_UNAVAILABLE:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_gps_unavailable), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_TRAFFIC_JAM:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_traffic_jam), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_TIGHTCURVE:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_tightcurve), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_SPEEDOUTLIMIT:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_speedoutlimit), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_COMPLICATED_ROAD_CONDITION:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_complicated_road_condition), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_UNAVAILABLE:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_unavailable), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_TUNNEL:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_tunnel), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_SERVICE_NAVIGATION_ON_ADAS_SYSTEM:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_service_navigation_on_adas_system), true);
-                        break;
-                    case SignalConst.L2_NOP.DEACTIVATION_REASON_DRIVER_ACTION:
-                        L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_driver_action), true);
-                        break;
-                    default:
-                        Logger.w("not find state");
-                }
-            }
-        });
-    }
-
-
     private void publish(String uri, Any protoPayload) {
         CloudEvent cloudEvent = CloudEventFactory.publish(uri, protoPayload, CloudEventAttributes.empty());
         mClsLink.publish(cloudEvent);
     }
+    //endregion
 
-    private void createTopic(String uri) {
-        if (mUSubscription == null) {
-            Logger.d(TAG, "mUSubscription == null");
-            return;
-        }
-        CreateTopicRequest createTopicRequest = CreateTopicRequest.newBuilder()
-                .setTopic(Topic.newBuilder().setUri(uri).build())
-                .build();
-        CompletableFuture<Status> status = mUSubscription.createTopic(createTopicRequest).whenComplete(new BiConsumer<>() {
-            @Override
-            public void accept(Status status, Throwable throwable) {
-                Logger.d(TAG, "accept: " + status.getCode() + ", " + uri);
-                if (TBT_URI.equals(uri) && status.getCode() == 0) {
-                    tbtTopic = true;
-                }
-                if (ROUTE_URI.equals(uri) && status.getCode() == 0) {
-                    routeTopic = true;
-                }
-                if (tbtTopic && routeTopic) {
-                    Logger.d(TAG, "sendBroadcast");
-                    Intent intent = new Intent("com.fy.navi.hmi.topic.release");
-                    AppCache.getInstance().getMContext().sendBroadcast(intent);
-                }
+    //region TTS播报功能
+    private final SignalCallback mSignalCallback = new SignalCallback() {
+        @Override
+        public void onNaviOnADASStateChanged(int state) {
+            Logger.d(TAG, "signal callback state= " + state);
+            Context context = AppCache.getInstance().getMContext();
+            switch (state) {
+                case SignalConst.L2_NOP.CLOSE_TO_NOA_AREA_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.close_to_noa_area_true));
+                    break;
+                case SignalConst.L2_NOP.STATUS_ACTIVE_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.status_active_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.STATUS_NORMAL_TO_OVERRIDE_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.status_normal_to_override_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.STATUS_OVERRIDE_TO_NORMAL_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.status_override_to_normal_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.CLOSE_TO_TIGHT_CURVE_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.close_to_tight_curve_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.INTO_TIGHT_CURVE_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.into_tight_curve_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.TAKE_STEERING_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.take_steering_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.MERGE_INTO_MAIN_ROAD_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.merge_into_main_road_true));
+                    break;
+                case SignalConst.L2_NOP.LANE_CHANGING_TO_FOLLOW_ROUTE_LEFT:
+                    L2NopTts.sendTTS(context.getString(R.string.lane_changing_to_follow_route_left));
+                    break;
+                case SignalConst.L2_NOP.LANE_CHANGING_TO_FOLLOW_ROUTE_RIGHT:
+                    L2NopTts.sendTTS(context.getString(R.string.lane_changing_to_follow_route_right));
+                    break;
+                case SignalConst.L2_NOP.TEXT_TO_SPEECH_LANE_CHANGE_ABORT_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.text_to_speech_lane_change_abort_true));
+                    break;
+                case SignalConst.L2_NOP.DISTANCE_TO_RAMP_2000M_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.distance_to_ramp_2000m_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.DISTANCE_TO_RAMP_500M_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.distance_to_ramp_500m_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.COMPLICATED_ROAD_CONDITION_LANE_CHANGE_FAILED_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.complicated_road_condition_lane_change_failed_true), true);
+                    break;
+                case SignalConst.L2_NOP.CHANGING_TO_FAST_LANE_LEFT:
+                    L2NopTts.sendTTS(context.getString(R.string.changing_to_fast_lane_left));
+                    break;
+                case SignalConst.L2_NOP.CONFIRM_CHANGE_TO_FAST_LANE_LEFT:
+                    L2NopTts.sendTTS(context.getString(R.string.confirm_change_to_fast_lane_left));
+                    break;
+                case SignalConst.L2_NOP.CHANGING_TO_FAST_LANE_RIGHT:
+                    L2NopTts.sendTTS(context.getString(R.string.changing_to_fast_lane_right));
+                    break;
+                case SignalConst.L2_NOP.CONFIRM_CHANGE_TO_FAST_LANE_RIGHT:
+                    L2NopTts.sendTTS(context.getString(R.string.confirm_change_to_fast_lane_right));
+                    break;
+                case SignalConst.L2_NOP.EXIT_RAMP_TO_NON_LIMITED_ACCESS_ROAD_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.exit_ramp_to_non_limited_access_road_true));
+                    break;
+                case SignalConst.L2_NOP.DISTANCE_TO_END_500M_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.distance_to_end_500m_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.FINISHED_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.finished_indication_on_true), true);
+                    break;
+                case SignalConst.L2_NOP.TAKE_VEHICLE_CONTROL_INDICATION_ON_TRUE:
+                    L2NopTts.sendTTS(context.getString(R.string.take_vehicle_control_indication_on_true));
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_CONSTRUCTION:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_construction), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_MAP_UNAVAILABLE:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_map_unavailable), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_GPS_UNAVAILABLE:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_gps_unavailable), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_TRAFFIC_JAM:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_traffic_jam), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_TIGHTCURVE:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_tightcurve), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_SPEEDOUTLIMIT:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_speedoutlimit), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_COMPLICATED_ROAD_CONDITION:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_complicated_road_condition), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_UNAVAILABLE:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_unavailable), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_TUNNEL:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_tunnel), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_SERVICE_NAVIGATION_ON_ADAS_SYSTEM:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_service_navigation_on_adas_system), true);
+                    break;
+                case SignalConst.L2_NOP.DEACTIVATION_REASON_DRIVER_ACTION:
+                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_driver_action), true);
+                    break;
+                default:
+                    Logger.w("not find state: " + state);
             }
-        });
-        Logger.d(TAG, "createTopic: " + status + ", " + uri);
-    }
+        }
+    };
+    //endregion
 }

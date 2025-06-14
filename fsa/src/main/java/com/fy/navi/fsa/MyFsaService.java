@@ -561,19 +561,15 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      * @param info       使用payload装在的信息，json格式.
      */
     public void sendEvent(final int functionId, final String info, final boolean isSave) {
-        if (!checkSubscribe(functionId)) {
-            Logger.v(FsaConstant.FSA_TAG, "sendEvent: not subscribe functionId = " + functionId);
-            return;
-        }
         final FsaServiceEvent event = (FsaServiceEvent) mService.eventHandler.getEventById(functionId);
         event.setOutputPayload(info.getBytes(StandardCharsets.UTF_8));
         JsonLog.saveJsonToCache(info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
         if (functionId == FsaConstant.FsaFunction.ID_ENLARGE_ICON || functionId == FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP) {
-            Logger.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId));
+            Logger.d(FsaConstant.FSA_TAG, "sendEvent: ",functionId, "-" , FsaIdString.function2String(functionId));
         } else if (functionId == FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD) {//三指飞屏
-            Logger.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId));
+            Logger.d(FsaConstant.FSA_TAG, "sendEvent: ",functionId, "-" ,FsaIdString.function2String(functionId));
         } else {
-            Logger.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId) + ", info = " + info);
+            Logger.d(FsaConstant.FSA_TAG, "sendEvent: ",functionId, "-" , FsaIdString.function2String(functionId) ," info = " , info);
         }
         mService.eventHandler.sendEvent(event, FSACatalog.DeviceName.UNKNOWN);
         if (isSave) {

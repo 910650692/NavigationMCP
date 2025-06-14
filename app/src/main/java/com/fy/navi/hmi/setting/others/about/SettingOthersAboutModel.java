@@ -47,6 +47,7 @@ public class SettingOthersAboutModel extends BaseModel<SettingOthersAboutViewMod
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mHotUpdatePackage.unRegisterCallBack("SettingOthersAboutModel");
     }
 
     /**

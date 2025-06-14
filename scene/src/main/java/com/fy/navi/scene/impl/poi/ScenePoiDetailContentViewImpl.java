@@ -25,6 +25,7 @@ import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.user.account.AccessTokenParam;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -315,7 +316,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "BUICK";
+            String vehicleBrand = mSearchPackage.getBrandName(CalibrationPackage.getInstance().brand());
             mSearchPackage.updateCollectStatus(idpUserId,accessToken,vehicleBrand,poiInfo);
         });
     }

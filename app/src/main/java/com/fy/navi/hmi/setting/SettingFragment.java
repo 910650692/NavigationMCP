@@ -25,6 +25,11 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class SettingFragment extends BaseFragment<FragmentSettingBinding, SettingViewModel> {
 
+    private static SettingBroadcastFragment mSettingBroadcastFragment;
+    private static FavoriteFragment mFavoriteFragment;
+    private static SettingOthersFragment mSettingOthersFragment;
+    private static SettingNaviFragment mSettingNaviFragment;
+
     @Override
     public int onLayoutId() {
         return R.layout.fragment_setting;
@@ -35,12 +40,14 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
         return BR.ViewModel;
     }
 
+    private ViewPagerAdapter mViewPagerAdapter;
     @Override
     public void onInitView() {
 
         // 禁用滑动
         mBinding.viewPager.setUserInputEnabled(false);
-        mBinding.viewPager.setAdapter(new ViewPagerAdapter(this));
+        mViewPagerAdapter = new ViewPagerAdapter(this);
+        mBinding.viewPager.setAdapter(mViewPagerAdapter);
         initView();
         initListener();
     }
@@ -65,10 +72,10 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
         @Override
         public Fragment createFragment(final int position) {
             return switch (position) {
-                case 1 -> new SettingBroadcastFragment();
-                case 2 -> new FavoriteFragment();
-                case 3 -> new SettingOthersFragment();
-                default -> new SettingNaviFragment();
+                case 1 -> mSettingBroadcastFragment != null ? mSettingBroadcastFragment : new SettingBroadcastFragment();
+                case 2 -> mFavoriteFragment != null ? mFavoriteFragment : new FavoriteFragment();
+                case 3 -> mSettingOthersFragment != null ? mSettingOthersFragment : new SettingOthersFragment();
+                default -> mSettingNaviFragment != null ? mSettingNaviFragment : new SettingNaviFragment();
             };
         }
 
@@ -152,5 +159,16 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
                 // 处理Tab重新选中的情况（可选）
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBinding.viewPager.setAdapter(null);
+        mViewPagerAdapter = null;
+        mSettingBroadcastFragment = null;
+        mFavoriteFragment = null;
+        mSettingOthersFragment = null;
+        mSettingNaviFragment = null;
     }
 }

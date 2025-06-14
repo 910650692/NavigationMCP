@@ -95,6 +95,26 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
         }
     }
 
+    public void unRegisterCallBack(final BehaviorCallBack callback) {
+        if (callback == null) {
+            Logger.e(TAG,"unRegisterCallBack callback == null");
+            return;
+        }
+        if (mCallBacks.contains(callback)){
+            mCallBacks.remove(callback);
+        }
+    }
+
+    public synchronized void unRegisterFavoriteStatusCallback(final FavoriteStatusCallback callback) {
+        if (callback == null) {
+            Logger.e(TAG,"unRegisterFavoriteStatusCallback callback == null");
+            return;
+        }
+        if (mFavoriteStatusCallbacks.contains(callback)){
+            mFavoriteStatusCallbacks.remove(callback);
+        }
+    }
+
     /**
      * 判断用户是否已登录
      * @return 返回登录状态

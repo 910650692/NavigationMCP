@@ -244,6 +244,10 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
         mViewBinding.poiFastInfo.setBackground(getContext().getDrawable(R.drawable.bg_info_normal));
         mViewBinding.poiReservation.setBackground(getContext().getDrawable(R.drawable.bg_info_normal));
         mViewBinding.poiSlowInfo.setBackground(getContext().getDrawable(R.drawable.bg_info_normal));
+
+        mViewBinding.poiFastInfo.setTextColor(getContext().getColor(R.color.text_route_defult));
+        mViewBinding.poiReservation.setTextColor(getContext().getColor(R.color.text_route_defult));
+        mViewBinding.poiSlowInfo.setTextColor(getContext().getColor(R.color.text_route_defult));
     }
 
     public class MyEventHandle {
@@ -256,10 +260,13 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
             mCurrentType = type;
             if(type == 0){
                 mViewBinding.poiSlowInfo.setBackground(getContext().getDrawable(R.drawable.bg_info_select));
+                mViewBinding.poiSlowInfo.setTextColor(getContext().getColor(R.color.navi_color_2461EA_100));
             }else if(type == 1){
                 mViewBinding.poiFastInfo.setBackground(getContext().getDrawable(R.drawable.bg_info_select));
+                mViewBinding.poiFastInfo.setTextColor(getContext().getColor(R.color.navi_color_2461EA_100));
             }else if(type == 2){
                 mViewBinding.poiReservation.setBackground(getContext().getDrawable(R.drawable.bg_info_select));
+                mViewBinding.poiReservation.setTextColor(getContext().getColor(R.color.navi_color_2461EA_100));
             }
             ArrayList<EquipmentInfo> filterEquipmentInfo = filterEquipmentList(type);
             mAdapter.notifyList(filterEquipmentInfo);

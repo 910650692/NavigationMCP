@@ -209,6 +209,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                     final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
                     final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                             .setPid(history.getMPoiId())
+                            .setName(history.getMKeyWord())
                             .setPoint(historyPoint);
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Search.POI_DETAILS_FRAGMENT)

@@ -1,17 +1,22 @@
-package com.fy.navi.adas;
+package com.fy.navi.l2pp;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.adas.JsonLog;
 import com.fy.navi.adas.bean.OddBean;
 import com.fy.navi.fsa.R;
 import com.fy.navi.service.AppCache;
+import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
+import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.L2NaviBean;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.l2.L2InfoCallback;
 import com.fy.navi.service.logicpaket.l2.L2Package;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.signal.SignalCallback;
@@ -28,46 +33,78 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 /**
- * L2++ 管理类
+ * GMC L2++ 管理类
  */
-public final class L2PPManager {
-    //本类TAG
-    private static final String TAG = L2PPManager.class.getSimpleName();
+public final class GmcL2ppManager {
+    private static final String TAG = GmcL2ppManager.class.getSimpleName();
 
-    /**
-     * 车端高级辅助驾驶系统 管理类
-     */
     private AdasManager mAdasManager;
-    /**
-     * 是否初始化
-     */
     private boolean mInitialized = false;
+    private ArrayList<LayerItemRouteOdd> mLayerItemRouteOdds;
+    private long mPathId = -1;
 
-    /**
-     * 获取L2PPManager实例
-     *
-     * @return
-     */
-    public static L2PPManager getInstance() {
+    //region INSTANCE
+    public static GmcL2ppManager getInstance() {
         return SingleHolder.INSTANCE;
     }
 
-    /**
-     * 创建L2PPManager实例
-     */
     private final static class SingleHolder {
-        private static final L2PPManager INSTANCE = new L2PPManager();
+        private static final GmcL2ppManager INSTANCE = new GmcL2ppManager();
     }
 
-    /**
-     * 防止构造函数创建
-     */
-    private L2PPManager() {
+    private GmcL2ppManager() {
+    }
+    //endregion
+
+    //region 初始化反初始化
+    public void init(final AdasManager adasManager) {
+        // 标定配置判断
+        if (CalibrationPackage.getInstance().adasConfigurationType() != 8) {
+            Logger.i(TAG, "gmc l2++ configuration");
+            return;
+        }
+        // 判断是否已经初始化
+        if (mInitialized) {
+            Logger.i(TAG, "initialized");
+            return;
+        }
+        Logger.i(TAG, "init start");
+        mAdasManager = adasManager;
+        // 注册SD Map回调
+        RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
+        L2Package.getInstance().registerCallback(TAG, mL2InfoCallback);
+        // 注册ODD回调
+        mAdasManager.setDataCallback(mDataCallback);
+        NavistatusAdapter.getInstance().registerCallback(mINaviStatusCallback);
+        // 注册TTS回调
+        mAdasManager.registerADUPropertyCallback(mPropertyCallback);
+        SignalPackage.getInstance().registerObserver(TAG, mSignalCallback);
+        // 标注已经初始化
+        mInitialized = true;
+        Logger.i(TAG, "init end");
     }
 
-    /**
-     * 算路观察者
-     */
+    public void uninit() {
+        // 判断是否未初始化
+        if (!mInitialized) {
+            Logger.i(TAG, "not initialized");
+            return;
+        }
+        Logger.i(TAG, "uninit start");
+        // 反注册回调
+        RoutePackage.getInstance().unRegisterRouteObserver(TAG);
+        L2Package.getInstance().unregisterCallback(TAG);
+        mAdasManager.removeDataCallback();
+        NavistatusAdapter.getInstance().unRegisterCallback(mINaviStatusCallback);
+        mAdasManager.unregisterADUPropertyCallback();
+        SignalPackage.getInstance().unregisterObserver(TAG);
+        // 标注未初始化
+        mInitialized = false;
+        Logger.i(TAG, "uninit end");
+    }
+    //endregion
+
+    //region SD Map功能
     private final IRouteResultObserver mIRouteResultObserver = new IRouteResultObserver() {
         /**
          * 路线上充电站数据回调    、
@@ -76,105 +113,132 @@ public final class L2PPManager {
         @Override
         public void onL2DataCallBack(final RouteL2Data routeL2Data) {
             if (routeL2Data == null) {
-                Logger.w(TAG, "onL2DataCallBack: routeL2Data null");
+                Logger.w(TAG, "SD Map route data is null");
                 return;
             }
             String json = GsonUtils.toJson(routeL2Data);
-            Logger.d(TAG, "send route data: ");
-//            JsonLog.print("send route data", json);
+            Logger.d(TAG, "send SD Map route data");
             JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
-            //通过高级辅助驾驶系统管理类 将高德算出来的路线信息发出去
-            //DataType.SDRoute 路线数据
+            // 发送SD Map route数据
             mAdasManager.sendData(DataType.SDRoute, json.getBytes());
         }
     };
 
-    /**
-     * TBT数据
-     */
     private final L2InfoCallback mL2InfoCallback = new L2InfoCallback() {
         @Override
         public void onSdTbtDataChange(final L2NaviBean l2NaviBean) {
             if (l2NaviBean == null) {
-                Logger.w(TAG, "onSdTbtDataChange: l2NaviBean null");
+                Logger.w(TAG, "SD Map tbt data is null");
                 return;
             }
             String json = GsonUtils.toJson(l2NaviBean);
-            Logger.d(TAG, "send tbt data: " + json);
-//            JsonLog.print("send tbt data", json);
+            Logger.d(TAG, "send SD Map tbt data: " + json);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
+            // 发送SD Map tbt数据
             mAdasManager.sendData(DataType.SDPeriodShortData, json.getBytes());
         }
     };
+    //endregion
 
-    /**
-     * Map provider向MFF返回的matching response的接口和数据结构
-     */
+    //region ODD扎标功能
     private final DataCallback mDataCallback = new DataCallback() {
         @Override
         public void onDataCallback(final DataType dataType, final byte[] bytes) {
             if (dataType == null) {
-                Logger.w(TAG, "onDataCallback: dataType null");
+                Logger.w(TAG, "ODD callback dataType null");
                 return;
             }
             if (bytes == null) {
-                Logger.w(TAG, "onDataCallback: bytes null");
+                Logger.w(TAG, "ODD callback bytes null");
                 return;
             }
-            Logger.d(TAG, "onDataCallback: dataType = " + dataType);
+            Logger.d(TAG, "ODD callback dataType= " + dataType);
+            // ODD扎标数据的DataType是DataType.SDMapReserve
             if (dataType != DataType.SDMapReserve) {
                 return;
             }
             final String jsonString = new String(bytes, StandardCharsets.UTF_8);
             JsonLog.saveJsonToCache(jsonString, "l2.json", "l2_odd");
-            Logger.d(TAG, "onDataCallback: oddBean = " + jsonString);
+            Logger.d(TAG, "ODD data fromJson start");
             OddBean oddBean = null;
             try {
+                // ODD扎标数据json转换为OddBean
                 oddBean = GsonUtils.fromJson(jsonString, OddBean.class);
             } catch (Exception e) {
-                Logger.e(TAG, "onDataCallback: fromJson error", e);
+                Logger.e(TAG, "ODD data fromJson error: " + e.getMessage());
             }
             if (oddBean == null) {
-                Logger.e(TAG, "onDataCallback: oddBean null");
+                Logger.e(TAG, "ODD data oddBean null");
                 return;
             }
+            // OddBean转换为图层需要的LayerItemRouteOdd列表
             ArrayList<LayerItemRouteOdd> layerItemRouteOddList = oddBean.toLayerItemRouteOddList();
+            if (layerItemRouteOddList == null) {
+                Logger.e(TAG, "ODD data LayerItemRouteOdd null");
+                return;
+            }
             long pathId = oddBean.getPathId();
-            L2Package.getInstance().updateOddInfo(MapType.MAIN_SCREEN_MAIN_MAP, layerItemRouteOddList, pathId);
+            if (pathId == -1) {
+                Logger.e(TAG, "ODD data pathId -1");
+                return;
+            }
+            String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+            // 如果是导航态则直接扎标，否则就保存，等到导航态再扎标
+            if (NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus) ||
+                    NaviStatus.NaviStatusType.LIGHT_NAVING.equals(currentNaviStatus)) {
+                Logger.d(TAG, "ODD data draw start");
+                L2Package.getInstance().updateOddInfo(MapType.MAIN_SCREEN_MAIN_MAP, layerItemRouteOddList, pathId);
+            } else {
+                Logger.d(TAG, "ODD data save");
+                mLayerItemRouteOdds = layerItemRouteOddList;
+                mPathId = pathId;
+            }
         }
     };
 
-    private final PropertyCallback mPropertyCallback = new PropertyCallback() {
+    private final INaviStatusCallback mINaviStatusCallback = new INaviStatusCallback() {
         @Override
-        public void onPropertyChange(final int propertyId, final byte[] result) {
-            if (result == null) {
-                Logger.w(TAG, "onPropertyChange: result null");
-                return;
+        public void onNaviStatusChange(String naviStatus) {
+            Logger.d(TAG, "navi status change: " + naviStatus);
+            // 导航态时判断是否存在保存的ODD扎标数据，如果有则扎标并清除ODD扎标数据
+            if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(naviStatus)) {
+                if (mPathId != -1 && mLayerItemRouteOdds != null) {
+                    Logger.d(TAG, "saved ODD data draw start");
+                    L2Package.getInstance().updateOddInfo(MapType.MAIN_SCREEN_MAIN_MAP, mLayerItemRouteOdds, mPathId);
+                    mPathId = -1;
+                    mLayerItemRouteOdds = null;
+                } else {
+                    Logger.d(TAG, "not saved ODD data");
+                }
             }
-            Logger.i(TAG, "onPropertyChange: propertyId = " + propertyId);
-            if (propertyId != Properties.ADASWarnings) {
-                return;
-            }
-            ADUProto.ADASWarnings_status status = null;
-            try {
-                status = ADUProto.ADASWarnings_status.parseFrom(result);
-            } catch (InvalidProtocolBufferException e) {
-                Logger.e(TAG, "onPropertyChange: parseFrom error", e);
-            }
-            if (status == null) {
-                Logger.w(TAG, "onPropertyChange: status null");
-                return;
-            }
-            checkPropertyId1(status);
-            checkPropertyId2(status);
         }
     };
+    //endregion
 
-    /**
-     * PropertyId处理1
-     *
-     * @param status ADASWarnings_status
-     */
+    //region TTS播报功能
+    private final PropertyCallback mPropertyCallback = (propertyId, result) -> {
+        if (result == null) {
+            Logger.w(TAG, "ADUProperty callback result null");
+            return;
+        }
+        Logger.i(TAG, "ADUProperty callback propertyId= " + propertyId);
+        if (propertyId != Properties.ADASWarnings) {
+            return;
+        }
+        ADUProto.ADASWarnings_status status = null;
+        try {
+            status = ADUProto.ADASWarnings_status.parseFrom(result);
+        } catch (InvalidProtocolBufferException e) {
+            Logger.e(TAG, "ADUProperty callback error: " + e.getMessage());
+        }
+        if (status == null) {
+            Logger.w(TAG, "ADUProperty callback status null");
+            return;
+        }
+        checkPropertyId1(status);
+        checkPropertyId2(status);
+    };
+
     private void checkPropertyId1(final ADUProto.ADASWarnings_status status) {
 //        final ADUProto.aDAS_ServiceUnavailableWarnings adasServiceUnavailableWarnings = status.getADASServiceUnavailableWarnings();
 //        switch (adasServiceUnavailableWarnings) {
@@ -250,6 +314,7 @@ public final class L2PPManager {
 //                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_service_end_1));
 //                break;
             default:
+                Logger.w(TAG, "getADASServiceEndWarnings: not find " + adasServiceEndWarnings);
         }
 //        final ADUProto.aDAS_SensorCleanWarnings adasSensorCleanWarnings = status.getADASSensorCleanWarnings();
 //        switch (adasSensorCleanWarnings) {
@@ -260,11 +325,6 @@ public final class L2PPManager {
 //        }
     }
 
-    /**
-     * PropertyId处理2
-     *
-     * @param status ADASWarnings_status
-     */
     private void checkPropertyId2(final ADUProto.ADASWarnings_status status) {
         final ADUProto.aDAS_GeneralSafetyWarnings adasGeneralSafetyWarnings = status.getADASGeneralSafetyWarnings();
         switch (adasGeneralSafetyWarnings) {
@@ -311,6 +371,7 @@ public final class L2PPManager {
 //                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_reserve_general_safety_12));
 //                break;
             default:
+                Logger.w(TAG, "getADASGeneralSafetyWarnings: not find " + adasGeneralSafetyWarnings);
         }
         final ADUProto.aDAS_LaneCancelWarnings adasLaneCancelWarnings = status.getADASLaneCancelWarnings();
         switch (adasLaneCancelWarnings) {
@@ -349,16 +410,14 @@ public final class L2PPManager {
 //                L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_adas_lane_diversion_alert));
 //                break;
             default:
+                Logger.w(TAG, "getADASLaneCancelWarnings: not find " + adasLaneCancelWarnings);
         }
     }
 
-    /**
-     * 车速变化
-     */
     private SignalCallback mSignalCallback = new SignalCallback() {
         @Override
         public void onLaneCenteringWarningIndicationRequestIdcmAChanged(final int state) {
-            Logger.i(TAG, "onCanSignalChanged: " + state);
+            Logger.i(TAG, "signal callback state= " + Integer.toHexString(state));
             switch (state) {
                 case 0xD:
                 case 0xB:
@@ -389,61 +448,9 @@ public final class L2PPManager {
                     L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_7), true);
                     break;
                 default:
+                    Logger.i(TAG, "signal callback not find state= " + Integer.toHexString(state));
             }
         }
     };
-
-    /**
-     * 初始化
-     *
-     * @param adasManager
-     */
-    public void init(final AdasManager adasManager) {
-        if (CalibrationPackage.getInstance().adasConfigurationType() != 8) {
-            Logger.i(TAG, "not GB Arch ADCU configuration");
-            return;
-        }
-        if (mInitialized) {
-            Logger.i(TAG, "initialized");
-            return;
-        }
-        mAdasManager = adasManager;
-        RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
-        L2Package.getInstance().registerCallback(TAG, mL2InfoCallback);
-        SignalPackage.getInstance().registerObserver(TAG, mSignalCallback);
-        // odd接口
-        mAdasManager.setDataCallback(mDataCallback);
-        // tts接口
-        mAdasManager.registerADUPropertyCallback(mPropertyCallback);
-        mInitialized = true;
-    }
-
-    public void testInit() {
-        if (mInitialized) {
-            Logger.i(TAG, "initialized");
-            return;
-        }
-        mAdasManager = AdasManager.getInstance(AppCache.getInstance().getMContext());
-        RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
-        L2Package.getInstance().registerCallback(TAG, mL2InfoCallback);
-        SignalPackage.getInstance().registerObserver(TAG, mSignalCallback);
-        mInitialized = true;
-    }
-
-    /**
-     * 销毁
-     */
-    public void uninit() {
-        if (!mInitialized) {
-            Logger.i(TAG, "not initialized");
-            return;
-        }
-        Logger.i(TAG, "uninit");
-        RoutePackage.getInstance().unRegisterRouteObserver(TAG);
-        L2Package.getInstance().unregisterCallback(TAG);
-        SignalPackage.getInstance().unregisterObserver(TAG);
-        mAdasManager.removeDataCallback();
-        mAdasManager.unregisterADUPropertyCallback();
-        mInitialized = false;
-    }
+    //endregion
 }

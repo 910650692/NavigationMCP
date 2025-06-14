@@ -14,6 +14,7 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.account.AccessTokenParam;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -70,7 +71,7 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "BUICK";
+            String vehicleBrand = mSearchPackage.getBrandName(CalibrationPackage.getInstance().brand());
             mSearchPackage.queryCollectStation(idpUserId,accessToken,vehicleBrand);
         });
     }

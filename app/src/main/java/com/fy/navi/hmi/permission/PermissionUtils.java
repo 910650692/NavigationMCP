@@ -186,6 +186,11 @@ public class PermissionUtils {
         }
     }
 
+    public void remove() {
+        context = null;
+        permissionsObserver = null;
+    }
+
     private PermissionUtils() {
         context = StackManager.getInstance().getMainCurrentActivity();
     }

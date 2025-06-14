@@ -10,8 +10,8 @@ public interface NetApiHelper {
     String QUERY_ORDER_TAG = "queryOrder";
 
 
-    String DOMAIN = "test-ninfo-securitygateway.sgmlink.com";
-    //String DOMAIN = "ninfo.vapps-qa.sgmlink.com";
+//    String DOMAIN = "test-ninfo-securitygateway.sgmlink.com";
+    String DOMAIN = "ninfo-securitygateway.sgmlink.com";
 
     // =============================================
 

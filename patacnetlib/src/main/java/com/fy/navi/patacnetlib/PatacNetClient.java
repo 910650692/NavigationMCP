@@ -45,7 +45,7 @@ public final class PatacNetClient {
         if (DeviceUtils.isCar(application)) {
             NetPkiFactory.getInstance().init(
                     application,
-                    new HeaderBean("SELF_DEVELOPED_MAP", "1.0", 667),
+                    new HeaderBean("SELF_DEVELOPED_MAP", "1.0", 668),
                     NetApiHelper.DOMAIN,
                     true
             );

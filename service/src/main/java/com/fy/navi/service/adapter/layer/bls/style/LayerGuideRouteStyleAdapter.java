@@ -477,22 +477,32 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     //转换终点扎标数据
     public LayerPointItemType getRouteEndPoint() {
         LayerPointItemType endType = LayerPointItemType.ROUTE_POINT_END;
+        mRouteEndPoint.setRestNum(-1);
         int selectPathIndex = mRouteControl.getSelectedPathIndex();
         if(ConvertUtils.isNull(mRouteResult)) return endType;
         List<RouteLineInfo> mRouteLineInfos = mRouteResult.getMRouteLineInfos();
+        if (ConvertUtils.isEmpty(mRouteLineInfos)) {
+            Logger.v(TAG, "mRouteLineInfos is Empty");
+            return endType;
+        }
         int mCarType = CalibrationPackage.getInstance().powerType();
         if (mCarType == 0 || mCarType == 2) {
-            final int num = GasCarTipManager.getInstance().getRemainGasPercent(ConvertUtils
-                    .convertMetersToKilometers(mRouteLineInfos.get(selectPathIndex).getMDistance()));
-            Logger.d(TAG, "getRemainGasPercent: " + num);
-            mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
-            if (num != 0) {
-                mRouteEndPoint.setRestNum(num);
-                endType = LayerPointItemType.ROUTE_POINT_END_OIL;
+            if (selectPathIndex < mRouteLineInfos.size()) {
+                final int num = GasCarTipManager.getInstance().getRemainGasPercent(ConvertUtils
+                        .convertMetersToKilometers(mRouteLineInfos.get(selectPathIndex).getMDistance()));
+                Logger.d(TAG, "getRemainGasPercent: " + num);
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
+                if (num != 0) {
+                    mRouteEndPoint.setRestNum(num);
+                    endType = LayerPointItemType.ROUTE_POINT_END_OIL;
+                } else {
+                    mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
+                    mRouteEndPoint.setRestNum(-1);
+                    endType = LayerPointItemType.ROUTE_POINT_END;
+                }
             } else {
-                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
-                mRouteEndPoint.setRestNum(-1);
-                endType = LayerPointItemType.ROUTE_POINT_END;
+                Logger.v(TAG, "selectPathIndex < mRouteLineInfos.size()");
+                return endType;
             }
         } else {
             if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {

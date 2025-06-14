@@ -99,6 +99,7 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
         if (mFailedDialog.isShowing()) {
             mFailedDialog.cancel();
         }
+        PermissionUtils.getInstance().remove();
         super.onDestroy();
     }
 

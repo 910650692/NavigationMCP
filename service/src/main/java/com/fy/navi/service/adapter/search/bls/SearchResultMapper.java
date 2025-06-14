@@ -1045,7 +1045,7 @@ public final class SearchResultMapper {
         }
 
         return new PoiInfoEntity()
-                .setMChildType(poiInfo.basicInfo.childType)
+                .setMChargeChildType(poiInfo.basicInfo.childType)
                 .setPointTypeCode(poiInfo.basicInfo.typeCode)
                 .setPid(poiInfo.basicInfo.poiId)
                 .setName(poiInfo.basicInfo.name)

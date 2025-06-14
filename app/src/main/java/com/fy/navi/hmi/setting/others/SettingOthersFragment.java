@@ -56,6 +56,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
     public void onDestroy() {
         super.onDestroy();
         clearDialog();
+        mViewModel.onDestroy();
     }
 
     /**

@@ -93,8 +93,8 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     /* 设置凯迪车型骨骼车标 */
-    public void setCadiSkeletonCarModel(MapType mapTypeId) {
-        layersPoolManager.get(mapTypeId).getLayerCar().initCadiSkeletonCarModel();
+    public void initCarLogoByFlavor(MapType mapTypeId, String flavor) {
+        layersPoolManager.get(mapTypeId).getLayerCar().initCarLogoByFlavor(flavor);
     }
 
     /* 设置骨骼车标的基础缩放值 */

@@ -262,8 +262,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
             if (!TextUtils.isEmpty(poiId) && poiId.contains("_")) {
                 String[] points = poiId.split("_");
                 if (points.length == 2) {
-                    final double x = Double.parseDouble(points[0]);
-                    final double y = Double.parseDouble(points[1]);
+                    final double x = parseDoubleSafely(points[0], 0.0);
+                    final double y = parseDoubleSafely(points[1], 0.0);
                     info.setPoint(new GeoPoint(x, y));
                 }
             }else {
@@ -272,6 +272,15 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
             return info;
         }
         return baseInfo;
+    }
+
+    public static double parseDoubleSafely(String str, double defaultValue) {
+        try {
+            return Double.parseDouble(str);
+        } catch (NumberFormatException e) {
+            Logger.e("ParseError", "Invalid number: " + str, e);
+            return defaultValue;
+        }
     }
 
     /**

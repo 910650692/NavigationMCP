@@ -75,8 +75,8 @@ public class LayerAdapter {
     }
 
     /* 设置凯迪车型骨骼车标 */
-    public void setCadiSkeletonCarModel(MapType mapTypeId) {
-        mLayerApi.setCadiSkeletonCarModel(mapTypeId);
+    public void initCarLogoByFlavor(MapType mapTypeId, String flavor) {
+        mLayerApi.initCarLogoByFlavor(mapTypeId, flavor);
     }
 
     /* 设置骨骼车标的基础缩放值 */

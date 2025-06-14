@@ -29,6 +29,14 @@ public class SettingOthersPrivacyModel extends BaseModel<SettingOthersPrivacyVie
         NaviStatusPackage.getInstance().registerObserver("SettingOthersPrivacyModel", this);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mSettingPackage != null) {
+            mSettingPackage.unRegisterCallBack("SettingOthersPrivacyModel");
+        }
+    }
+
     /**
      * 初始化各设置项状态值
      */

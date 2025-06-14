@@ -399,6 +399,12 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         initFrequentAddressList();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mViewModel.onDestroy();
+    }
+
     /**
      * 更新名称
      * @param name

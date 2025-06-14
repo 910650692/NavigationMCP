@@ -291,6 +291,7 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
         super.onDestroy();
         SettingUpdateObservable.getInstance().removeObserver(MODEL_NAME, this);
         NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
+        mSettingPackage.unRegisterSettingChangeCallback(MODEL_NAME);
     }
 
     @Override

@@ -36,7 +36,6 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
         getLayerCarControl().setVisible(true);
         getLayerCarControl().setClickable(true);
         getLayerCarControl().addCarObserver(this);
-        initBuickSkeletonCarModel();
         initCarScaleByMapLevel();
     }
 
@@ -74,16 +73,14 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
         });
     }
 
-    /* 设置别克车型骨骼车标 默认品牌车标 */
-    private void initBuickSkeletonCarModel() {
-        initSkeletonCarModel("Buick");
+    public void initCarLogoByFlavor(String flavor){
+        Logger.d(TAG, "flavor is" + flavor);
+        String carModel = switch (flavor){
+            case "cadi" -> "Cadi";
+            default -> "Buick";
+        };
+        initSkeletonCarModel(carModel);
     }
-
-    /* 设置凯迪车型骨骼车标 */ //Todo 后续多车型增加入参
-    public void initCadiSkeletonCarModel() {
-        initSkeletonCarModel("Cadi");
-    }
-
 
     private void initSkeletonCarModel(String carModel) {
         SkeletonDataInfoBase dataInfo = new SkeletonDataInfoBase();

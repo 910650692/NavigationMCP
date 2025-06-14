@@ -12,7 +12,7 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_820"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_1000"
         android:background="@drawable/bg_search_main_tab"
         android:orientation="vertical">
 
@@ -51,21 +51,20 @@
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/recycler_charge_price"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_568"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:maxHeight="@dimen/dp_568" />
+            android:layout_marginEnd="@dimen/dp_52"
+            android:layout_height="@dimen/dp_672" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/charge_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_52"
             android:layout_marginEnd="@dimen/dp_52"
-            android:layout_marginBottom="@dimen/dp_40"
             android:textSize="@dimen/sp_38"
-            tools:text="充电费用由XXXX为您提供,显示价格仅供参考,请以充电站的实际费用为准。" />
+            android:textColor="@color/color_70_000000"
+            android:text="@string/charge_price_content" />
 
     </com.fy.navi.ui.view.SkinLinearLayout>
 

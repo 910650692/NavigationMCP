@@ -67,6 +67,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -92,7 +94,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private static final Map<LayerPointItemType, LayerItemSearchResult> sMarkerInfoMap = new ConcurrentHashMap<>();
     @Getter
     private boolean mIsShow;
-    private Timer timer;
+    private ScheduledFuture mScheduledFuture;
 
     private SearchPackage() {
         mManager = HistoryManager.getInstance();
@@ -577,7 +579,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .userLoc(userLoc)
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .build();
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing poiDetailSearch search.");
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing poiDetailSearch search." + poiId);
         return mSearchAdapter.poiIdSearch(requestParameterBuilder);
     }
 
@@ -1957,12 +1959,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     public void createTimeTick(GeoPoint destPoint){
-        if(!ConvertUtils.isNull(timer)) {
-            timer.cancel();
-        }
-        timer = new Timer();
+        cancelTimeTick();
         Long lastTime = TimeUtils.getInstance().getCurrentMillSeconds();
-        timer.schedule(new TimerTask() {
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(new Runnable() {
             @Override
             public void run() {
                 final GeoPoint currentPoint = new GeoPoint();
@@ -1974,15 +1973,14 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"query travel time error");
                     return null;
                 });
-
             }
-        },0,1000 * 60);
+        },0,60, TimeUnit.SECONDS);
     }
 
     public void cancelTimeTick(){
-        if(!ConvertUtils.isNull(timer)){
-            timer.cancel();
-            timer = null;
+        if (!ConvertUtils.isEmpty(mScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
         }
     }
 }

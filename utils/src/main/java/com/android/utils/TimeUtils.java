@@ -1008,6 +1008,16 @@ public class TimeUtils {
         }
     }
 
+    public static String formatTimeRange(String timeRange) {
+        String[] parts = timeRange.split("~");
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < parts.length; i++) {
+            if (i > 0) result.append("~");
+            result.append(parts[i].substring(0, 5));
+        }
+        return result.toString();
+    }
+
     /**
      * 是否是上班时间和下班时间
      */

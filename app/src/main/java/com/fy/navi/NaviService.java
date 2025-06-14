@@ -23,10 +23,10 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.adas.AdasClient;
 import com.fy.navi.broadcast.SteeringWheelButtonReceiver;
-import com.fy.navi.clslink.ClsLinkManager;
+import com.fy.navi.l2pp.PatacL2ppManager;
 import com.fy.navi.fsa.MyFsaService;
-import com.fy.navi.service.AppCache;
 import com.fy.navi.navisender.NaviSender;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
 import com.fy.navi.vrbridge.VrBridgeManager;
@@ -120,8 +120,8 @@ public class NaviService extends Service {
         public Result doWork() {
             Logger.d(TAG, "FsaInitWorker doWork");
             MyFsaService.getInstance().init();
-            AdasClient.getInstance().start(AppCache.getInstance().getMContext());
-            ClsLinkManager.getInstance().init();
+            AdasClient.getInstance().init(AppCache.getInstance().getMContext());
+            PatacL2ppManager.getInstance().init();
             NaviSender.getInstance().init();
             return Result.success();
         }

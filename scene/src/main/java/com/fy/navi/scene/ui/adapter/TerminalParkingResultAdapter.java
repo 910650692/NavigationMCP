@@ -23,6 +23,7 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,7 +134,9 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
         // 当前位置显示
         holder.mTerminalParkingItemBinding.sktvParkingItemDistance.setText(
                 AppCache.getInstance().getMContext().getString(R.string.st_distance_to_finish, poiEntity.getDistance()));
-
+        if (!ConvertUtils.isEmpty(poiEntity) && !ConvertUtils.isEmpty(poiEntity.getMPoint())) {
+            holder.mTerminalParkingItemBinding.textNavi.setText(SearchPackage.getInstance().calcStraightDistance(poiEntity.getMPoint()));
+        }
         // 处理 item 点击事件（选中状态更新）
         holder.itemView.setOnClickListener(v -> {
             updateSelectedPosition(holder.getAdapterPosition());

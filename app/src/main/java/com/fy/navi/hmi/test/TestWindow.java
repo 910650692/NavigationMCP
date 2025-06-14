@@ -20,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.adas.L2PPManager;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.R;

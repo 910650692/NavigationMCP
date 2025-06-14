@@ -26,6 +26,12 @@ public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadc
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mViewModel.onDestroy();
+    }
+
+    @Override
     public void onInitView() {
         mViewModel.initView();
         setCurrentVoice();

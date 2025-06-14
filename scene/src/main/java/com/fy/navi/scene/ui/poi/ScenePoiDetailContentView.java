@@ -3,7 +3,6 @@ package com.fy.navi.scene.ui.poi;
 
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.LeadingMarginSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -750,6 +748,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                             final Context context = getContext();
                                             context.startActivity(intent);
                                         } catch (Exception e){
+                                            ToastUtils.Companion.getInstance().showCustomToastView("唤起蓝牙电话失败");
                                             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone error " + e.toString());
                                         }
                                     }
@@ -926,9 +925,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     getContext().getString(
                             R.string.charge_park_price, chargeInfo.getCurrentServicePrice()));
             if(mSearchResultEntity.getIsNetData()){
+                mViewBinding.poiTypeText.setVisibility(VISIBLE);
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setVisibility(VISIBLE);
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setVisibility(VISIBLE);
             }else{
+                mViewBinding.poiTypeText.setVisibility(GONE);
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setVisibility(GONE);
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setVisibility(GONE);
             }
@@ -962,13 +963,15 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.
                     setVisibility(View.GONE);
+        }else{
+            final String[] phones = mPoiInfoEntity.getPhone().split(";");
+            final String text = getContext().getString(R.string.poi_phone, phones[0]);
+            initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsChargingStationView.poiPhoneIcon,
+                    mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone,
+                    phones.length > 1, phones);
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setText(text);
         }
-        final String[] phones = mPoiInfoEntity.getPhone().split(";");
-        final String text = getContext().getString(R.string.poi_phone, phones[0]);
-        initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsChargingStationView.poiPhoneIcon,
-                mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone,
-                phones.length > 1, phones);
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setText(text);
+
         mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1949,7 +1952,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         if(!ConvertUtils.isEmpty(mEtaInfo)){
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getTime: "+mEtaInfo.getTime());
-           if(mEtaInfo.getTime() > 30){
+           if(mEtaInfo.getTime() > 30 * 60){
                ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.travel_max_time));
                return;
            }

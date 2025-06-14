@@ -133,7 +133,22 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/search_offline_hint"
                 tools:visibility="gone" />
-
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/poi_type_text"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_46"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@drawable/custom_info_bg_selector_day"
+                android:gravity="center"
+                android:textColor="@color/navi_color_2461EA_100"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintStart_toStartOf="@+id/start_guideline"
+                app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
+                android:text="@string/search_charge_self"
+                android:visibility="visible"
+                />
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/sk_poi_name"
                 android:layout_width="@dimen/dp_0"

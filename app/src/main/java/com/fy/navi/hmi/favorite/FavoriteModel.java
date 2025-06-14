@@ -63,6 +63,8 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mSearchPackage.unRegisterCallBack(TAG);
+        mBehaviorPackage.unRegisterCallBack(this);
     }
 
     /**

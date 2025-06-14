@@ -578,14 +578,14 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     @Override
     public int queryStationNewResult(final SearchRequestParameter searchRequestParameter) {
+        mTaskId.incrementAndGet();
         StationReq req = new StationReq("1.0")
             .setFrom(String.valueOf(searchRequestParameter.getPage()))
             .setSize(String.valueOf(searchRequestParameter.getSize()))
             .setAreaCode(String.valueOf(searchRequestParameter.getAdCode()))
             .setKeyWords(searchRequestParameter.getKeyword())
             .setLat(String.valueOf(searchRequestParameter.getPoiLoc().getLat()))
-            .setLng(String.valueOf(searchRequestParameter.getPoiLoc().getLon()))
-            .setTimestamp(System.currentTimeMillis());
+            .setLng(String.valueOf(searchRequestParameter.getPoiLoc().getLon()));
         final Observable<String> observable = SearchRepository.getInstance().queryStationNewResult(req);
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

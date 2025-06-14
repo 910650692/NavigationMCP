@@ -30,6 +30,12 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mViewModel.onDestroy();
+    }
+
+    @Override
     public void onInitView() {
         //获取初始化数据
         mViewModel.initView();

@@ -110,7 +110,7 @@
             android:text="@string/charge_appointment"
             android:layout_marginTop="@dimen/dp_27"
             android:paddingVertical="@dimen/dp_7"
-            android:textColor="@color/charge_reservation_button_color"
+            android:textColor="@color/charge_card_bg"
             android:textSize="@dimen/sp_38"
             android:onClick="@{() -> handler.openReservation(connectorInfoItem,equipmentInfo)}"
             app:layout_constraintEnd_toEndOf="parent"

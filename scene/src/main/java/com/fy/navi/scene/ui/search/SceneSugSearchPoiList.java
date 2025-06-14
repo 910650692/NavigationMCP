@@ -300,6 +300,10 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
 
         mViewBinding.sclSearchTopView.searchBarEditView.setOnEditorActionListener((v, actionId, event) -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onEditorActionListener actionId: " + actionId);
+            if (ConvertUtils.isEmpty(getEditText())) {
+                hideInput();
+                return true;
+            }
             // 预搜索界面逻辑处理，跳转到搜索结果页面
             final Fragment fragment = (Fragment) ARouter.getInstance()
                     .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)

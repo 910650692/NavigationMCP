@@ -73,7 +73,7 @@
     <string name="main_search_hint">搜索目的地</string>
     <string name="no_search_history">暂无历史记录</string>
     <string name="along_way_search_title">沿途搜</string>
-    <string name="along_way_search_hint">沿途去哪儿,都能搜</string>
+    <string name="along_way_search_hint">沿途去哪儿，都能搜</string>
     <string name="around_search_title">在%s附近搜索</string>
     <string name="around_search_title_current_location">当前位置</string>
 

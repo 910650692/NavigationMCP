@@ -102,6 +102,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.setPreviewMode(mapTypeId, bPreview);
     }
 
+    public void initCarLogoByFlavor(MapType mapTypeId, String flavor){
+        mLayerAdapter.initCarLogoByFlavor(mapTypeId, flavor);
+    }
+
     public int setFollowMode(MapType mapTypeId, boolean bFollow) {
         return mLayerAdapter.setFollowMode(mapTypeId, bFollow);
     }

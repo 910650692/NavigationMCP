@@ -199,7 +199,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getLayerGuideRouteControl().updatePathArrow();
         setRouteJamBubblesVisible(true);
         int result = getLayerGuideRouteControl().updatePaths();
-        Logger.d(TAG, "LayerGuideRouteImpl", "updatePaths result : " + result);
+        Logger.d(TAG, "LayerGuideRouteImpl updatePaths result : " + result);
     }
 
     /**
@@ -764,8 +764,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      */
     public void setSelectedPathIndex(int index) {
         boolean b = getLayerGuideRouteControl().switchSelectedPath(index);
-        Logger.d(TAG, "LayerGuideRouteImpl  updatePaths", "setSelectedPathIndex b" + b + " index " + index);
-        updatePaths();
+        Logger.d(TAG, "LayerGuideRouteImpl updatePaths setSelectedPathIndex b" + b + " index " + index);
     }
 
     /**
@@ -789,7 +788,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, "showRestArea pathInfoList" + pathInfoList + " index" + index);
 
         PathInfo pathInfo = (PathInfo) pathInfoList.get(index);
-        ArrayList<RestAreaInfo> restAreas = pathInfo.getRestAreas(0, 20);
+        ArrayList<RestAreaInfo> restAreas = pathInfo.getRestAreas(0, 100);
         for (RestAreaInfo info : restAreas) {
             BizRouteRestAreaInfo bizRouteRestAreaInfo = new BizRouteRestAreaInfo();
             bizRouteRestAreaInfo.restAreaLabelInfo = info;

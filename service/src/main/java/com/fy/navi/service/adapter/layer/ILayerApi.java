@@ -187,7 +187,7 @@ public interface ILayerApi {
     void setCarMode(MapType mapTypeId, CarModeType carMode);
 
     /* 设置凯迪车型骨骼车标 */
-    void setCadiSkeletonCarModel(MapType mapTypeId);
+    void initCarLogoByFlavor(MapType mapTypeId, String flavor);
 
     /***
      * 获取当前屏幕的车标模式
