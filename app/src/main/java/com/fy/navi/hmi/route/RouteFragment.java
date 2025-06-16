@@ -9,10 +9,10 @@ import android.view.View;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.android.utils.ConvertUtils;
@@ -104,6 +104,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
 
     @Override
     public void onInitView() {
+        initInclude();
         inItCheckBox();
         initViaPoiAdaper();
         initDetailsAdaper();
@@ -113,12 +114,21 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         initCarType();
     }
 
+    private void initInclude() {
+        mBinding.routeLineInfoRoot.setViewModel(mViewModel);
+        mBinding.routeDetailInfoRoot.setViewModel(mViewModel);
+        mBinding.routeServiceListInfoRoot.setViewModel(mViewModel);
+        mBinding.routeChargeListInfoRoot.setViewModel(mViewModel);
+        mBinding.routeWeatherDetails.setViewModel(mViewModel);
+        mBinding.routePoiDetails.setViewModel(mViewModel);
+    }
+
     /***
      * 补能规划
      */
     private void inItCheckBox() {
-        mBinding.routeLineInfoSwitchEnergy.setChecked(SettingPackage.getInstance().getChargingPlan());
-        mBinding.routeLineInfoSwitchEnergy.setOnCheckedChangeListener((compoundButton, b) -> {
+        mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy.setChecked(SettingPackage.getInstance().getChargingPlan());
+        mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy.setOnCheckedChangeListener((compoundButton, b) -> {
             mViewModel.cancelTimer();
             if (b) {
                 hideTrip();
@@ -131,7 +141,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mViewModel.setCurrentEnergy();
             mViewModel.requestRoute(param);
         });
-        BevPowerCarUtils.getInstance().isElecPlanRoute = mBinding.routeLineInfoSwitchEnergy.isChecked();
+        BevPowerCarUtils.getInstance().isElecPlanRoute = mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy.isChecked();
     }
 
     /***
@@ -140,13 +150,13 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private void initViaPoiAdaper() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mBinding.routeLineViaPoiRecycle.setLayoutManager(layoutManager);
+        mBinding.routeLineInfoRoot.routeLineViaPoiRecycle.setLayoutManager(layoutManager);
         mRouteViaPointAdapter = new RouteViaPointAdapter();
         mRouteViaPointAdapter.setDeleteViaPointListener(index -> {
             mViewModel.cancelTimer();
             mViewModel.deleteViaParamMode(index);
         });
-        mBinding.routeLineViaPoiRecycle.setAdapter(mRouteViaPointAdapter);
+        mBinding.routeLineInfoRoot.routeLineViaPoiRecycle.setAdapter(mRouteViaPointAdapter);
         final ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             private int mOriginalPosition = -1;
             private int movePosition = -1;
@@ -192,7 +202,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 return false;
             }
         });
-        touchHelper.attachToRecyclerView(mBinding.routeLineViaPoiRecycle);
+        touchHelper.attachToRecyclerView(mBinding.routeLineInfoRoot.routeLineViaPoiRecycle);
     }
 
     /***
@@ -201,18 +211,18 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private void initDetailsAdaper() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setLayoutManager(layoutManager);
+        mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setLayoutManager(layoutManager);
         mPoiIconAdapter = new RoutePOIIconAdapter();
-        mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setAdapter(mPoiIconAdapter);
+        mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setAdapter(mPoiIconAdapter);
 
         final LinearLayoutManager layoutManager1 = new LinearLayoutManager(getContext());
         layoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mBinding.scenePoiDetailsServiceAreaView.routePoidetailGasStation.setLayoutManager(layoutManager1);
+        mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.routePoidetailGasStation.setLayoutManager(layoutManager1);
         mGasStationAdapter = new RoutePOIGasStationAdapter();
-        mBinding.scenePoiDetailsServiceAreaView.routePoidetailGasStation.setAdapter(mGasStationAdapter);
+        mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.routePoidetailGasStation.setAdapter(mGasStationAdapter);
 
 
-        mBinding.lySecondaryPoi.setItemClickListener(new SceneRouteDescendantsView.OnItemClickListener() {
+        mBinding.routeLineInfoRoot.lySecondaryPoi.setItemClickListener(new SceneRouteDescendantsView.OnItemClickListener() {
             @Override
             public void onItemClick(final PoiInfoEntity poiInfo) {
                 mViewModel.cancelTimer();
@@ -236,21 +246,21 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * Scene 初始化
      */
     private void initRouteScene() {
-        mBinding.routeLineInfoSceneRouteResult.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.routeDetailInfoSceneRouteDetailsResult.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.routeLineInfoSceneRoutePerference.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeLineInfoRoot.routeLineInfoSceneRouteResult.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeLineInfoRoot.routeLineInfoSceneRoutePerference.setScreenId(MapType.valueOf(mScreenId));
         mBinding.routeRightTabListScene.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.routeRightTabListChargeScene.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.routeDetailInfoSceneRouteSearchRefresh.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.routeChargeInfoSceneRouteSearchRefresh.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.routeLineInfoSceneRoutePerference.registerRoutePreferenceObserver(TAG, mViewModel);
-        mBinding.routeLineInfoSceneRouteResult.registerRouteSelectObserver(TAG, mViewModel);
-        mBinding.routeDetailInfoSceneRouteDetailsResult.registerRouteDeatailsCheckedObserver(TAG, mViewModel);
+        mBinding.routeChargeListInfoRoot.routeRightTabListChargeScene.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeServiceListInfoRoot.routeDetailInfoSceneRouteSearchRefresh.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeChargeListInfoRoot.routeChargeInfoSceneRouteSearchRefresh.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeLineInfoRoot.routeLineInfoSceneRoutePerference.registerRoutePreferenceObserver(TAG, mViewModel);
+        mBinding.routeLineInfoRoot.routeLineInfoSceneRouteResult.registerRouteSelectObserver(TAG, mViewModel);
+        mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult.registerRouteDeatailsCheckedObserver(TAG, mViewModel);
         mBinding.routeRightTabListScene.registerRouteSelectObserver(TAG, mViewModel);
-        mBinding.routeRightTabListChargeScene.registerRouteSelectObserver(TAG, mViewModel);
-        mBinding.routeDetailInfoSceneRouteSearchRefresh.registerRouteSearchRefreshObserver(TAG, mViewModel);
-        mBinding.routeChargeInfoSceneRouteSearchRefresh.registerRouteSearchRefreshObserver(TAG, mViewModel);
-        mBinding.scenePoiDetailsGasStationView.poiGasOilList.addItemDecoration(
+        mBinding.routeChargeListInfoRoot.routeRightTabListChargeScene.registerRouteSelectObserver(TAG, mViewModel);
+        mBinding.routeServiceListInfoRoot.routeDetailInfoSceneRouteSearchRefresh.registerRouteSearchRefreshObserver(TAG, mViewModel);
+        mBinding.routeChargeListInfoRoot.routeChargeInfoSceneRouteSearchRefresh.registerRouteSearchRefreshObserver(TAG, mViewModel);
+        mBinding.routePoiDetails.scenePoiDetailsGasStationView.poiGasOilList.addItemDecoration(
                 new GridSpacingItemDecoration(getContext(), mSpanCount, mSpacing, mHorizontalSpacing, false));
     }
 
@@ -260,9 +270,9 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     @SuppressLint("ClickableViewAccessibility")
     private void initTouchCloseTimer() {
         mBinding.routeRightTabListScene.setOnTouchListener(mViewModel);
-        mBinding.routeLineInfoRoot.setOnTouchListener(mViewModel);
-        mBinding.routeDetailInfoRoot.setOnTouchListener(mViewModel);
-        mBinding.routeLineViaPoiRecycle.setOnTouchListener(mViewModel);
+        mBinding.routeLineInfoRoot.getRoot().setOnTouchListener(mViewModel);
+        mBinding.routeDetailInfoRoot.getRoot().setOnTouchListener(mViewModel);
+        mBinding.routeLineInfoRoot.routeLineViaPoiRecycle.setOnTouchListener(mViewModel);
     }
 
     /***
@@ -270,7 +280,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      */
     @SuppressLint("ClickableViewAccessibility")
     private void initTouchListener() {
-        mBinding.routeLineInfoTitle.setOnTouchListener(new View.OnTouchListener() {
+        mBinding.routeLineInfoRoot.routeLineInfoTitle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, final MotionEvent event) {
                 switch (event.getAction()) {
@@ -341,7 +351,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             Logger.i(TAG, "nomal: " + GsonUtils.toJson(routeMsgPushInfo));
             mViewModel.getTitle().set(routeMsgPushInfo.getMName());
             mViewModel.getEndName().set(routeMsgPushInfo.getMName());
-            mBinding.routeDetailInfoSceneRouteDetailsResult.setEndPoint(routeMsgPushInfo.getMName());
+            mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult.setEndPoint(routeMsgPushInfo.getMName());
             mViewModel.requestRouteRestoration(routeMsgPushInfo);
             return;
         }
@@ -352,7 +362,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             Logger.i(TAG, "nomal: " + ConvertUtils.isEmpty(poiInfoEntity));
             mViewModel.getTitle().set(poiInfoEntity.getName());
             mViewModel.getEndName().set(poiInfoEntity.getName());
-            mBinding.routeDetailInfoSceneRouteDetailsResult.setEndPoint(poiInfoEntity.getName());
+            mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult.setEndPoint(poiInfoEntity.getName());
             final RouteRequestParam routeRequestParam = new RouteRequestParam();
             routeRequestParam.setMPoiInfoEntity(poiInfoEntity);
             routeRequestParam.setMRoutePoiType(poiType);
@@ -391,8 +401,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             } else {
                 Logger.e(TAG, ROUTE_ERROR);
             }
-            if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoSceneRoutePerference)) {
-                mBinding.routeLineInfoSceneRoutePerference.resetPreference();
+            if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoRoot.routeLineInfoSceneRoutePerference)) {
+                mBinding.routeLineInfoRoot.routeLineInfoSceneRoutePerference.resetPreference();
             } else {
                 Logger.e(TAG, ROUTE_ERROR);
             }
@@ -404,8 +414,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param isAvoid true
      */
     public void setAvoidStatusUI(final boolean isAvoid) {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeDetailInfoSceneRouteDetailsResult)) {
-            mBinding.routeDetailInfoSceneRouteDetailsResult.setAvoidStatus(isAvoid);
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult)) {
+            mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult.setAvoidStatus(isAvoid);
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -421,8 +431,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             Logger.e(TAG, ROUTE_ERROR);
         }
         setAvoidStatusUI(false);
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeDetailInfoSceneRouteDetailsResult)) {
-            mBinding.routeDetailInfoSceneRouteDetailsResult.startAvoidRoad();
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult)) {
+            mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult.startAvoidRoad();
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -434,8 +444,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_ROUTE_LIST)
     public void setRouteResultListUI(final List<RouteLineInfo> routeLineInfos) {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoSceneRouteResult)) {
-            mBinding.routeLineInfoSceneRouteResult.notifyResultList(routeLineInfos);
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoRoot.routeLineInfoSceneRouteResult)) {
+            mBinding.routeLineInfoRoot.routeLineInfoSceneRouteResult.notifyResultList(routeLineInfos);
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -452,7 +462,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param poiInfoEntity 数据
      */
     public void setRouteSecondaryPoiUI(final int type, final PoiInfoEntity poiInfoEntity) {
-        mBinding.lySecondaryPoi.setUIMode(type, poiInfoEntity);
+        mBinding.routeLineInfoRoot.lySecondaryPoi.setUIMode(type, poiInfoEntity);
     }
 
     /***
@@ -460,8 +470,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param routeLineSegmentInfos 数据
      */
     public void setDetailsResult(final List<RouteLineSegmentInfo> routeLineSegmentInfos) {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeDetailInfoSceneRouteDetailsResult)) {
-            mBinding.routeDetailInfoSceneRouteDetailsResult.notifyRouteDetailsResultList(routeLineSegmentInfos);
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult)) {
+            mBinding.routeDetailInfoRoot.routeDetailInfoSceneRouteDetailsResult.notifyRouteDetailsResultList(routeLineSegmentInfos);
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -471,8 +481,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * 设置补能规划开关
      */
     public void setEnergyChecked() {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoSwitchEnergy)) {
-            mBinding.routeLineInfoSwitchEnergy.setChecked(!mBinding.routeLineInfoSwitchEnergy.isChecked());
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy)) {
+            mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy.setChecked(!mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy.isChecked());
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -484,9 +494,9 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @return 开关状态
      */
     public boolean getEnergyChecked() {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoSwitchEnergy)) {
-            return !mBinding.routeLineInfoSwitchEnergy.isChecked() &&
-                    mBinding.routeLineInfoSwitchEnergy.getVisibility() == View.VISIBLE;
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy)) {
+            return !mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy.isChecked() &&
+                    mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy.getVisibility() == View.VISIBLE;
         } else {
             Logger.e(TAG, ROUTE_ERROR);
             return false;
@@ -569,12 +579,12 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param content
      */
     public void showTripDialog(final String title, final String content) {
-        if (ConvertUtils.isEmpty(mBinding) || ConvertUtils.isEmpty(mBinding.routeLineInfoSwitchEnergy)
+        if (ConvertUtils.isEmpty(mBinding) || ConvertUtils.isEmpty(mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy)
                 || ConvertUtils.isEmpty(mViewModel)) {
             Logger.e(TAG, ROUTE_ERROR);
             return;
         }
-        if (mBinding.routeLineInfoSwitchEnergy.isChecked()) {
+        if (mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy.isChecked()) {
             return;
         }
         if (!ConvertUtils.isEmpty(mMsgTopDialog) && mMsgTopDialog.isShowing()) {
@@ -594,7 +604,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 @Override
                 public void onCommitClick(final TripID tripID) {
                     if (tripID == TripID.ROUTE_LOW_BATTER) {
-                        mBinding.routeLineInfoSwitchEnergy.setChecked(true);
+                        mBinding.routeLineInfoRoot.routeLineInfoSwitchEnergy.setChecked(true);
                     }
                 }
             });
@@ -668,8 +678,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param poiInfoEntities 数据
      */
     public void showRouteSearchListUI(final List<RouteRestAreaDetailsInfo> poiInfoEntities) {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeDetailInfoSceneRouteSearchRefresh)) {
-            mBinding.routeDetailInfoSceneRouteSearchRefresh.notifyResultList(poiInfoEntities);
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeServiceListInfoRoot.routeDetailInfoSceneRouteSearchRefresh)) {
+            mBinding.routeServiceListInfoRoot.routeDetailInfoSceneRouteSearchRefresh.notifyResultList(poiInfoEntities);
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -684,8 +694,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      */
     public void showRouteSearchChargeListUI(final List<PoiInfoEntity> poiInfoEntities
             , final List<RouteParam> gasChargeAlongList, final int searchType, final int type) {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeChargeInfoSceneRouteSearchRefresh)) {
-            mBinding.routeChargeInfoSceneRouteSearchRefresh.notifyResultList(poiInfoEntities, gasChargeAlongList, searchType, type);
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeChargeListInfoRoot.routeChargeInfoSceneRouteSearchRefresh)) {
+            mBinding.routeChargeListInfoRoot.routeChargeInfoSceneRouteSearchRefresh.notifyResultList(poiInfoEntities, gasChargeAlongList, searchType, type);
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -695,8 +705,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * 高亮沿途按钮
      */
     public void highlightAlongTab() {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeRightTabListChargeScene)) {
-            mBinding.routeRightTabListChargeScene.highlightAlongTab();
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeChargeListInfoRoot.routeRightTabListChargeScene)) {
+            mBinding.routeChargeListInfoRoot.routeRightTabListChargeScene.highlightAlongTab();
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -708,8 +718,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param listSearchType 搜索方式
      */
     public void updateChareList(final List<RouteParam> gasChargeAlongList, final int listSearchType) {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeChargeInfoSceneRouteSearchRefresh)) {
-            mBinding.routeChargeInfoSceneRouteSearchRefresh.updateChargeList(gasChargeAlongList, listSearchType);
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeChargeListInfoRoot.routeChargeInfoSceneRouteSearchRefresh)) {
+            mBinding.routeChargeListInfoRoot.routeChargeInfoSceneRouteSearchRefresh.updateChargeList(gasChargeAlongList, listSearchType);
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -720,8 +730,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param routeIndex 选中路线索引
      */
     public void updateSelectRouteUI(final int routeIndex) {
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoSceneRouteResult)) {
-            mBinding.routeLineInfoSceneRouteResult.updateSelectRouteUI(routeIndex);
+        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mBinding.routeLineInfoRoot.routeLineInfoSceneRouteResult)) {
+            mBinding.routeLineInfoRoot.routeLineInfoSceneRouteResult.updateSelectRouteUI(routeIndex);
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
@@ -732,14 +742,14 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param progress 百分比
      */
     public void updateRouteChargeExhaustUi(final float progress) {
-        if (ConvertUtils.isEmpty(mBinding) || ConvertUtils.isEmpty(mBinding.routeChargeExhaustionPoint)) {
+        if (ConvertUtils.isEmpty(mBinding) || ConvertUtils.isEmpty(mBinding.routeChargeListInfoRoot.routeChargeExhaustionPoint)) {
             Logger.e(TAG, ROUTE_ERROR);
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            final ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mBinding.routeChargeExhaustionPoint.getLayoutParams();
+            final ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mBinding.routeChargeListInfoRoot.routeChargeExhaustionPoint.getLayoutParams();
             layoutParams.horizontalBias = progress;
-            mBinding.routeChargeExhaustionPoint.setLayoutParams(layoutParams);
+            mBinding.routeChargeListInfoRoot.routeChargeExhaustionPoint.setLayoutParams(layoutParams);
         });
     }
 
@@ -749,12 +759,12 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param progress 百分比
      */
     public void addRouteChargePoiUi(final PoiInfoEntity poiInfoEntity, final float progress) {
-        if (ConvertUtils.isEmpty(mBinding) || ConvertUtils.isEmpty(mBinding.routeChargeProgressIcons)) {
+        if (ConvertUtils.isEmpty(mBinding) || ConvertUtils.isEmpty(mBinding.routeChargeListInfoRoot.routeChargeProgressIcons)) {
             Logger.e(TAG, ROUTE_ERROR);
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            final SkinConstraintLayout routeChargeProgressLayout = mBinding.routeChargeProgressIcons;
+            final SkinConstraintLayout routeChargeProgressLayout = mBinding.routeChargeListInfoRoot.routeChargeProgressIcons;
             final LayoutInflater inflater = getLayoutInflater();
             final View customViewItem = inflater.inflate(R.layout.item_route_charge_progress, routeChargeProgressLayout, false);
             customViewItem.setId(View.generateViewId());
@@ -787,7 +797,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             if (mRouteChargeProgressViews != null) {
                 final View view = mRouteChargeProgressViews.get(poiInfoEntity);
                 if (view != null) {
-                    mBinding.routeChargeProgressIcons.removeView(view);
+                    mBinding.routeChargeListInfoRoot.routeChargeProgressIcons.removeView(view);
                 }
                 mRouteChargeProgressViews.remove(poiInfoEntity);
             }
@@ -803,8 +813,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 for (PoiInfoEntity poiInfoEntity : mRouteChargeProgressViews.keySet()) {
                     final View view = mRouteChargeProgressViews.get(poiInfoEntity);
                     if (view != null && !ConvertUtils.isEmpty(mBinding)
-                            && !ConvertUtils.isEmpty(mBinding.routeChargeProgressIcons)) {
-                        mBinding.routeChargeProgressIcons.removeView(view);
+                            && !ConvertUtils.isEmpty(mBinding.routeChargeListInfoRoot.routeChargeProgressIcons)) {
+                        mBinding.routeChargeListInfoRoot.routeChargeProgressIcons.removeView(view);
                     }
                     mRouteChargeProgressViews.remove(poiInfoEntity);
                 }
@@ -816,7 +826,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * 添加主屏补能规划界面
      */
     public void updateSupplementPointsView(final ArrayList<RouteSupplementInfo> routeSupplementInfos, final float total) {
-        mBinding.routeRouteSupplementPoints.updateSupplementPointsView(routeSupplementInfos, total);
+        mBinding.routeLineInfoRoot.routeRouteSupplementPoints.updateSupplementPointsView(routeSupplementInfos, total);
     }
 
 
@@ -827,30 +837,30 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     @SuppressLint("SetTextI18n")
     public void showServiceDetailsUI(final PoiInfoEntity info) {
         if (ConvertUtils.isEmpty(info) || ConvertUtils.isEmpty(mBinding)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsServiceAreaView)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaFacility)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaOil)
-                || ConvertUtils.isEmpty(mBinding.stlPhone)) {
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsServiceAreaView)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaPhone)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaHours)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaFacility)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaOil)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.stlPhone)) {
             Logger.e(TAG, ROUTE_ERROR);
             return;
         }
         if (ConvertUtils.isEmpty(info.getPhone())) {
-            mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.setVisibility(View.GONE);
-            mBinding.stlPhone.setVisibility(View.GONE);
+            mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.setVisibility(View.GONE);
+            mBinding.routePoiDetails.stlPhone.setVisibility(View.GONE);
         } else {
-            mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.setVisibility(View.VISIBLE);
-            mBinding.stlPhone.setVisibility(View.VISIBLE);
-            mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone
+            mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.setVisibility(View.VISIBLE);
+            mBinding.routePoiDetails.stlPhone.setVisibility(View.VISIBLE);
+            mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaPhone
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_poi_details_phone) + info.getPhone());
         }
 
         if (ConvertUtils.isEmpty(info.getBusinessTime())) {
-            mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setVisibility(View.GONE);
+            mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setVisibility(View.GONE);
         } else {
-            mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setVisibility(View.VISIBLE);
-            mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours
+            mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setVisibility(View.VISIBLE);
+            mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaHours
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_poi_details_bussTime) + info.getBusinessTime());
         }
 
@@ -878,7 +888,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                     break;
             }
             if (!serviceAreaChildList.isEmpty()) {
-                mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setVisibility(View.VISIBLE);
+                mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setVisibility(View.VISIBLE);
                 final List<ServiceAreaInfo.ServiceAreaChild> serviceAreaChildArrayList = new ArrayList<>();
                 final List<String> codes = new ArrayList<>();
                 for (ServiceAreaInfo.ServiceAreaChild child : serviceAreaChildList) {
@@ -898,7 +908,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                     }
                 }
                 if (ConvertUtils.isEmpty(gasType)) {
-                    mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaOil.setVisibility(View.GONE);
+                    mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaOil.setVisibility(View.GONE);
                 } else {
                     final List<String> gasString = new ArrayList<>();
                     if (gasType.contains("|")) {
@@ -910,11 +920,11 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                     if (!ConvertUtils.isEmpty(mGasStationAdapter)) {
                         mGasStationAdapter.setRouteBeanList(gasString);
                     }
-                    mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaOil.setVisibility(View.VISIBLE);
+                    mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaOil.setVisibility(View.VISIBLE);
                 }
             } else {
-                mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setVisibility(View.GONE);
-                mBinding.scenePoiDetailsServiceAreaView.poiServiceAreaOil.setVisibility(View.GONE);
+                mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setVisibility(View.GONE);
+                mBinding.routePoiDetails.scenePoiDetailsServiceAreaView.poiServiceAreaOil.setVisibility(View.GONE);
             }
         }
     }
@@ -937,77 +947,77 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      */
     @SuppressLint("SetTextI18n")
     public void showChargeDetailsUI(final PoiInfoEntity info) {
-        mBinding.sivArrivalCapacity.setVisibility(View.VISIBLE);
-        mBinding.poiArrivalCapacity.setVisibility(View.VISIBLE);
+        mBinding.routePoiDetails.sivArrivalCapacity.setVisibility(View.VISIBLE);
+        mBinding.routePoiDetails.poiArrivalCapacity.setVisibility(View.VISIBLE);
         if (ConvertUtils.isEmpty(info) || ConvertUtils.isEmpty(mBinding)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargeImg)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargePrice)
-                || ConvertUtils.isEmpty(mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice)
-                || ConvertUtils.isEmpty(mBinding.stlPhone)) {
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeImg)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeAreaPhone)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiCharegBusinessHours)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeFastTotal)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeFastOccupied)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeSlowOccupied)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeSlowTotal)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargePrice)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeParkPrice)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.stlPhone)) {
             Logger.e(TAG, ROUTE_ERROR);
             return;
         }
-        ViewAdapterKt.loadImageUrl(mBinding.scenePoiDetailsChargingStationView.poiChargeImg
+        ViewAdapterKt.loadImageUrl(mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeImg
                 , info.getImageUrl(), com.fy.navi.scene.R.drawable.test_pic, com.fy.navi.scene.R.drawable.test_pic);
         if (ConvertUtils.isEmpty(info.getPhone())) {
-            mBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setVisibility(View.GONE);
-            mBinding.stlPhone.setVisibility(View.GONE);
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setVisibility(View.GONE);
+            mBinding.routePoiDetails.stlPhone.setVisibility(View.GONE);
         } else {
-            mBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setVisibility(View.VISIBLE);
-            mBinding.stlPhone.setVisibility(View.VISIBLE);
-            mBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setVisibility(View.VISIBLE);
+            mBinding.routePoiDetails.stlPhone.setVisibility(View.VISIBLE);
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeAreaPhone
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_poi_details_phone) + info.getPhone());
         }
 
         if (ConvertUtils.isEmpty(info.getBusinessTime())) {
-            mBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setVisibility(View.GONE);
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setVisibility(View.GONE);
         } else {
-            mBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setVisibility(View.VISIBLE);
-            mBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setVisibility(View.VISIBLE);
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiCharegBusinessHours
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_poi_details_bussTime) + info.getBusinessTime());
         }
         if (!ConvertUtils.isEmpty(info.getChargeInfoList()) && !info.getChargeInfoList().isEmpty()) {
             final ChargeInfo chargeInfo = info.getChargeInfoList().get(0);
             if (chargeInfo.getSlowVolt() == 0 && chargeInfo.getSlowPower() == 0
                     && chargeInfo.getSlow_free() == 0 && chargeInfo.getSlow_total() == 0) {
-                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setVisibility(View.GONE);
+                mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setVisibility(View.GONE);
             } else {
-                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.
+                mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeSlowLayout.
                         setVisibility(View.VISIBLE);
             }
             if (chargeInfo.getFastVolt() == 0 && chargeInfo.getFastPower() == 0
                     && chargeInfo.getFast_free() == 0 && chargeInfo.getFast_total() == 0) {
-                mBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setVisibility(View.GONE);
+                mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeFastLayout.setVisibility(View.GONE);
             } else {
-                mBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.
+                mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeFastLayout.
                         setVisibility(View.VISIBLE);
             }
-            mBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(chargeInfo.getFast_free() + "");
-            mBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(chargeInfo.getFast_free() + "");
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeFastTotal
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_jg) + chargeInfo.getFast_free());
-            mBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot
                     .setText(chargeInfo.getFastPower() + "kw." + chargeInfo.getFastVolt() + "v");
 
-            mBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(chargeInfo.getSlow_free() + "");
-            mBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(chargeInfo.getSlow_free() + "");
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeSlowTotal
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_jg) + chargeInfo.getSlow_total());
-            mBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot
                     .setText(chargeInfo.getSlowPower() + "kw." + chargeInfo.getSlowVolt() + "v");
 
-            mBinding.scenePoiDetailsChargingStationView.poiChargePrice
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargePrice
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free)
                             + chargeInfo.getCurrentElePrice()
                             + ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free_unit));
-            mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice
+            mBinding.routePoiDetails.scenePoiDetailsChargingStationView.poiChargeParkPrice
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_park_free)
                             + chargeInfo.getCurrentServicePrice());
         }
@@ -1019,8 +1029,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      */
     public void showPOIDetailCharge(final int leftCharge) {
         if (ConvertUtils.isEmpty(mBinding)
-                || ConvertUtils.isEmpty(mBinding.poiArrivalCapacity)
-                || ConvertUtils.isEmpty(mBinding.sivArrivalCapacity)) {
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.poiArrivalCapacity)
+                || ConvertUtils.isEmpty(mBinding.routePoiDetails.sivArrivalCapacity)) {
             Logger.e(TAG, ROUTE_ERROR);
             return;
         }
@@ -1029,20 +1039,20 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             //0-20电量，显示低电量图片，文本变红
             //小于0%电量，显示空电量图片，文本变红
             if (leftCharge >= 50 && leftCharge <= 100) {
-                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_full_42);
-                mBinding.poiArrivalCapacity.setTextColor(
+                mBinding.routePoiDetails.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_full_42);
+                mBinding.routePoiDetails.poiArrivalCapacity.setTextColor(
                         ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.text_color_route_item_select));
             } else if (leftCharge > 20 && leftCharge < 50) {
-                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_medium_42);
-                mBinding.poiArrivalCapacity.setTextColor(
+                mBinding.routePoiDetails.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_medium_42);
+                mBinding.routePoiDetails.poiArrivalCapacity.setTextColor(
                         ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.text_color_route_item_select));
             } else if (leftCharge > 0 && leftCharge <= 20) {
-                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_low_42);
-                mBinding.poiArrivalCapacity.setTextColor(
+                mBinding.routePoiDetails.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_low_42);
+                mBinding.routePoiDetails.poiArrivalCapacity.setTextColor(
                         ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.search_color_delete_bg));
             } else if (leftCharge <= 0) {
-                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_empty_42);
-                mBinding.poiArrivalCapacity.setTextColor(
+                mBinding.routePoiDetails.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_empty_42);
+                mBinding.routePoiDetails.poiArrivalCapacity.setTextColor(
                         ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.search_color_delete_bg));
             }
         }
@@ -1055,9 +1065,9 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     public void setPreferenceMaxWidth(final boolean batter) {
         ThreadManager.getInstance().postUi(() -> {
             if (batter) {
-                mBinding.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithBatter);
+                mBinding.routeLineInfoRoot.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithBatter);
             } else {
-                mBinding.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithoutBatter);
+                mBinding.routeLineInfoRoot.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithoutBatter);
             }
         });
     }
@@ -1067,24 +1077,24 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param info POI数据
      */
     public void showPOIDetailGas(final PoiInfoEntity info) {
-        mBinding.sivArrivalCapacity.setVisibility(View.GONE);
-        mBinding.poiArrivalCapacity.setVisibility(View.GONE);
+        mBinding.routePoiDetails.sivArrivalCapacity.setVisibility(View.GONE);
+        mBinding.routePoiDetails.poiArrivalCapacity.setVisibility(View.GONE);
         final List<GasStationInfo> gasStationInfos = info.getStationList();
         for (GasStationInfo gasStationInfo : gasStationInfos) {
             gasStationInfo.setPrice(getContext().getString(R.string.route_oil_price, gasStationInfo.getPrice()));
         }
         final GasStationAdapter gasStationAdapter = new GasStationAdapter();
         gasStationAdapter.setGasStationList(gasStationInfos);
-        mBinding.scenePoiDetailsGasStationView.poiGasBusinessHours.
+        mBinding.routePoiDetails.scenePoiDetailsGasStationView.poiGasBusinessHours.
                 setText(getContext().getString(R.string.route_business_hour, info.getBusinessTime()));
         if (ConvertUtils.isEmpty(info.getPhone())) {
-            mBinding.scenePoiDetailsGasStationView.poiGasPhone.setVisibility(View.GONE);
+            mBinding.routePoiDetails.scenePoiDetailsGasStationView.poiGasPhone.setVisibility(View.GONE);
         }
-        mBinding.scenePoiDetailsGasStationView.poiGasPhone.setText(
+        mBinding.routePoiDetails.scenePoiDetailsGasStationView.poiGasPhone.setText(
                 getContext().getString(R.string.route_poi_phone, info.getPhone()));
-        mBinding.scenePoiDetailsGasStationView.poiGasOilList.setLayoutManager(
+        mBinding.routePoiDetails.scenePoiDetailsGasStationView.poiGasOilList.setLayoutManager(
                 new GridLayoutManager(getContext(), mSpanCount));
-        mBinding.scenePoiDetailsGasStationView.poiGasOilList.setAdapter(gasStationAdapter);
+        mBinding.routePoiDetails.scenePoiDetailsGasStationView.poiGasOilList.setAdapter(gasStationAdapter);
     }
 
     /***
@@ -1093,15 +1103,15 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      */
     public void showPOIButton(final boolean isStartOrEnd) {
         if (isStartOrEnd) {
-            mBinding.stvStartRoute.setAlpha(0.5f);
-            mBinding.stvStartRoute.setClickable(false);
+            mBinding.routePoiDetails.stvStartRoute.setAlpha(0.5f);
+            mBinding.routePoiDetails.stvStartRoute.setClickable(false);
         } else {
-            mBinding.stvStartRoute.setAlpha(1);
-            mBinding.stvStartRoute.setClickable(true);
+            mBinding.routePoiDetails.stvStartRoute.setAlpha(1);
+            mBinding.routePoiDetails.stvStartRoute.setClickable(true);
         }
     }
 
     public View getRootViewForMFC() {
-        return  mBinding.routeLineInfoBgRouteStartNavi;
+        return  mBinding.routeLineInfoRoot.routeLineInfoBgRouteStartNavi;
     }
 }

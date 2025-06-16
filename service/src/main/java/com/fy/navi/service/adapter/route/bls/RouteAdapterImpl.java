@@ -4,6 +4,8 @@ import static com.autonavi.gbl.common.path.model.PointType.PointTypeStart;
 import static com.autonavi.gbl.common.path.option.ParalleType.paralleTypeMainSide;
 import static com.autonavi.gbl.common.path.option.ParalleType.paralleTypeOverhead;
 
+import android.os.Build;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -204,8 +206,9 @@ public class RouteAdapterImpl implements IRouteApi {
             final RouteChargingPreference chargingPreference = new RouteChargingPreference();
             chargingPreference.brands.addAll(mRouteService.getSupportedChargingPreference().brands);
             mRouteService.setChargingPreference(chargingPreference);
-            mRouteService.setElecInfoConfig(getElecInfoConfig());
-            Logger.i(TAG, GsonUtils.toJson(getElecInfoConfig()));
+            ElecInfoConfig elecInfoConfig = getElecInfoConfig();
+            mRouteService.setElecInfoConfig(elecInfoConfig);
+            Logger.d(TAG, GsonUtils.toJson(elecInfoConfig));
         }
     }
 

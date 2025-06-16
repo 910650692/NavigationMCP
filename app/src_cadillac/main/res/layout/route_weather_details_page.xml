@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.route.RouteViewModel" />
+    </data>
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_922"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_shadow_navi_cadillac"
+        android:clickable="true"
+        android:focusable="false"
+        android:paddingHorizontal="@dimen/dp_51"
+        android:paddingVertical="@dimen/dp_51">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/route_weather_details_iv"
+            android:layout_width="@dimen/dp_82"
+            android:layout_height="@dimen/dp_82"
+            android:layout_marginStart="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_76"
+            android:focusable="false"
+            android:src="@{ViewModel.getWeatherDrawable()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/img_route_weather_clear" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_weather_details_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_52"
+            android:focusable="false"
+            android:text="@{ViewModel.getWeatherName()}"
+            android:textColor="@color/text_route_detail_title"
+            android:textSize="@dimen/sp_52"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/route_weather_details_iv"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="阴转晴" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_weather_details_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_10"
+            android:focusable="false"
+            android:text="@{ViewModel.getWeatherCityName()}"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_38"
+            app:layout_constraintStart_toEndOf="@+id/route_weather_details_iv"
+            app:layout_constraintTop_toBottomOf="@+id/route_weather_details_title"
+            tools:text="孝感市" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            clickCommand="@{ViewModel.getCloseWeatherDetailsClick()}"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:layout_marginTop="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_36"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+            android:focusable="true"
+            android:src="@drawable/icon_poi_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_weather_details_distance_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_40"
+            android:focusable="false"
+            android:text="@{ViewModel.getWeatherTimeAndDistance()}"
+            android:textColor="@color/text_route_detail_title"
+            android:textSize="@dimen/sp_46"
+            app:layout_constraintStart_toStartOf="@+id/route_weather_details_iv"
+            app:layout_constraintTop_toBottomOf="@+id/route_weather_details_city"
+            tools:text="54.2公里 40分钟" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_weather_details_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_36"
+            android:focusable="false"
+            android:text="@{ViewModel.getWeatherDiscription()}"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_38"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/route_weather_details_distance_time"
+            app:layout_constraintTop_toBottomOf="@+id/route_weather_details_distance_time"
+            tools:text="途径延安时段时晴，预计将持续至明天以后，影响路段共303公里，温度5℃~15℃。" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_weather_details_update_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_50"
+            android:focusable="false"
+            android:text="@{ViewModel.getWeatherUpdateTime()}"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_38"
+            app:layout_constraintStart_toStartOf="@+id/route_weather_details_description"
+            app:layout_constraintTop_toBottomOf="@+id/route_weather_details_description"
+            tools:text="高德交通：更新于13分钟前" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_weather_details_button"
+            clickCommand="@{ViewModel.getWeatherAviodClick()}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_100"
+            android:background="@drawable/selector_route_preference_sel"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="@string/route_avoid"
+            android:textColor="@color/route_white"
+            android:textSize="@dimen/sp_40"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

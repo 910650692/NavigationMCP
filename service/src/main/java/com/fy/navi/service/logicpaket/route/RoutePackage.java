@@ -639,14 +639,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(param)) {
             return NumberUtils.NUM_ERROR;
         }
-        if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
-            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
-                if (ConvertUtils.isEmpty(routeResultObserver)) {
-                    continue;
-                }
-                routeResultObserver.onRouteRequest();
-            }
-        }
         final RouteParam routeParam = getRouteParamFromPoiInfoEntity(param.getMPoiInfoEntity(), param.getMRoutePoiType());
         final List<RouteParam> paramList = getParamList(param.getMMapTypeId(), routeParam);
         if (ConvertUtils.isEmpty(paramList) || paramList.size() < 2) {
@@ -670,6 +662,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
         final long requestId = mRouteAdapter.requestRoute(param, paramList);
         mRequestId.put(param.getMMapTypeId(), requestId);
+        if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
+            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+                if (ConvertUtils.isEmpty(routeResultObserver)) {
+                    continue;
+                }
+                routeResultObserver.onRouteRequest();
+            }
+        }
         return requestId;
     }
 

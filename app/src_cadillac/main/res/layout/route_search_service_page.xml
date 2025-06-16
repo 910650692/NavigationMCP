@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.route.RouteViewModel" />
+    </data>
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="@dimen/dp_922"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="false">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.fy.navi.ui.view.SkinView
+                android:id="@+id/route_service_list_info_info_bg_title"
+                android:layout_width="@dimen/dp_922"
+                android:layout_height="@dimen/dp_254"
+                android:background="@drawable/bg_shadow_navi_cadillac"
+                android:focusable="false"
+                android:outlineSpotShadowColor="@color/bg_route_shadow_list"
+                android:paddingHorizontal="@dimen/dp_51"
+                android:paddingVertical="@dimen/dp_51"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/route_service_list_info_info_img_close"
+                clickCommand="@{ViewModel.getCloseServicelistClick()}"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginStart="@dimen/dp_71"
+                android:layout_marginTop="@dimen/dp_90"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                android:focusable="true"
+                android:src="@drawable/img_route_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/route_service_list_info_info_bg_title" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_60"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_93"
+                android:focusable="false"
+                android:text="@string/route_search_keyword_service"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_45"
+                app:layout_constraintStart_toEndOf="@id/route_service_list_info_info_img_close"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_service_list_info_refresh"
+                clickCommand="@{ViewModel.getServiceRefreshClick()}"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_68"
+                android:layout_marginEnd="@dimen/dp_81"
+                android:gravity="center"
+                android:text="@string/route_service_list_refresh"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_30"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/route_service_list_info_info_bg_title"
+                app:layout_constraintEnd_toEndOf="@id/route_service_list_info_info_bg_title"
+                app:layout_constraintTop_toTopOf="@id/route_service_list_info_info_bg_title" />
+
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/route_service_list_info_tv_avoid_road"
+                clickCommand="@{ViewModel.getServiceRefreshClick()}"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:src="@drawable/img_route_service_refresh"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/route_service_list_info_refresh"
+                app:layout_constraintEnd_toStartOf="@+id/route_service_list_info_refresh"
+                app:layout_constraintTop_toTopOf="@id/route_service_list_info_refresh" />
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_930"
+            android:layout_marginTop="@dimen/dp_m_82">
+
+        <com.fy.navi.scene.ui.route.SceneRouteSearchRefreshListView
+            android:id="@+id/route_detail_info_scene_route_search_refresh"
+            android:layout_width="@dimen/dp_922"
+            android:layout_height="@dimen/dp_930"
+            android:layout_marginTop="@dimen/dp_m_82"
+            android:background="@drawable/bg_shadow_navi_cadillac"
+            android:focusable="false"
+            android:paddingHorizontal="@dimen/dp_51"
+            android:paddingVertical="@dimen/dp_51"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/route_service_list_info_info_bg_title" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/route_search_online_warn"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_46"
+            android:visibility="@{ViewModel.getSearchNoDateVisibility() ? View.VISIBLE: View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/route_detail_info_scene_route_search_refresh"
+            app:layout_constraintEnd_toEndOf="@+id/route_detail_info_scene_route_search_refresh"
+            app:layout_constraintStart_toStartOf="@+id/route_detail_info_scene_route_search_refresh"
+            app:layout_constraintTop_toTopOf="@+id/route_detail_info_scene_route_search_refresh" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+    </com.fy.navi.ui.view.SkinLinearLayout>
+</layout>

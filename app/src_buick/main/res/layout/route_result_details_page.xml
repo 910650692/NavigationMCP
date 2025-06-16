@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.route.RouteViewModel" />
+    </data>
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/route_detail_info_root"
+        android:layout_width="@dimen/dp_698"
+        android:layout_height="wrap_content"
+        android:clickable="true">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/route_detail_info_bg_title"
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_170"
+            android:paddingVertical="@dimen/dp_29"
+            android:paddingHorizontal="@dimen/dp_29"
+            android:background="@drawable/bg_shadow_navi_buick"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/route_detail_info_img_close"
+                clickCommand="@{ViewModel.getCloseDetailsRouteClick()}"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginStart="@dimen/dp_14"
+                android:layout_marginTop="@dimen/dp_27"
+                android:src="@drawable/img_route_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_detail_info_tv_sim_navi"
+                clickCommand="@{ViewModel.getStartSimNaviClick()}"
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:background="@drawable/bg_route_details_defult_label"
+                android:gravity="center"
+                android:text="@string/route_sim_navi"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_30"
+                android:visibility="@{ViewModel.getRouteDetailsVisibility() ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_detail_info_tv_avoid"
+                clickCommand="@{ViewModel.getAvoidClick()}"
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:background="@{ViewModel.getAvoidBackground() ? @drawable/bg_route_details_avoid_road : @drawable/bg_route_details_defult_label}"
+                android:clickable="@{ViewModel.getAvoidClickable()}"
+                android:gravity="center"
+                android:text="@string/route_avoid"
+                android:textColor="@{ViewModel.getAvoidTestColor()}"
+                android:textSize="@dimen/sp_30"
+                android:visibility="@{ViewModel.getRouteDetailsVisibility() ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_detail_info_tv_avoid_road"
+                clickCommand="@{ViewModel.getAvoidRoadClick()}"
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:background="@drawable/bg_route_details_avoid_road"
+                android:gravity="center"
+                android:text="@string/route_avoid_road"
+                android:textColor="@color/route_white"
+                android:textSize="@dimen/sp_30"
+                android:visibility="@{ViewModel.getRouteDetailsVisibility() ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/route_detail_info_tv_sim_navi"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        <com.fy.navi.scene.ui.route.SceneRouteDetailsResultListView
+            android:id="@+id/route_detail_info_scene_route_details_result"
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_640"
+            android:layout_marginTop="@dimen/dp_132"
+            android:paddingHorizontal="@dimen/dp_29"
+            android:paddingVertical="@dimen/dp_29"
+            android:background="@drawable/bg_shadow_navi_buick"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>
