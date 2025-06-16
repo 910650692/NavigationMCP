@@ -38,6 +38,7 @@ import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
 import com.fy.navi.service.define.route.RouteChargeStationInfo;
+import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -70,7 +71,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     //途经点是充电站的扎标
     private static final String KEY_ROAD_ROUTE_VIA_CHARGE_STATION = "road_route_via_charge_station";
 
-    private final AtomicReference<Rect> mRect = new AtomicReference<>();;
+    private final AtomicReference<Rect> mRect = new AtomicReference<>();
     private VectorCrossBean mVectorCrossBean;
     private RasterImageBean mRasterImageBean;
     private final BizGuideRouteControl mRouteControl;
@@ -107,35 +108,20 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 return KEY_ROAD_START_DEFAULT;
             }
             case BizRouteType.BizRouteTypeEndPoint -> {
-                if (item instanceof RoutePathPointItem) {
-                    LayerPointItemType routeEndType = getRouteEndPoint();
-                    switch (routeEndType) {
-                        case ROUTE_POINT_END -> {
-                            Logger.d(TAG, "终点扎标-默认扎标");
-                            return KEY_ROAD_END_DEFAULT;
-                        }
-                        case ROUTE_POINT_END_BUSINESS_HOURS -> {
-                            Logger.d(TAG, "终点扎标-营业时间");
-                            return KEY_ROAD_END_BUSINESS_HOURS_POINT;
-                        }
-                        default -> {
-                            Logger.d(TAG, "终点扎标-剩余续航");
-                            return KEY_ROAD_END_SURPLUS_POWER_POINT;
-                        }
-                    }
-                } else {
-                    Logger.d(TAG, "终点扎标-默认扎标");
                     return KEY_ROAD_END_DEFAULT;
-                }
             }
             case BizRouteType.BizRouteTypeEnergyEmptyPoint -> {
                 Logger.d(TAG, "能量耗尽点");
                 return KEY_ROAD_ENERGY_EMPTY;
             }
             case BizRouteType.BizRouteTypeViaChargeStationPoint -> {
-                if (ConvertUtils.isEmpty(mRouteResult) ||
-                        ConvertUtils.isEmpty(mRouteResult.getMRouteChargeStationParam()) ||
-                        ConvertUtils.isEmpty(mRouteResult.getMRouteChargeStationParam().getMRouteChargeStationInfos())) {
+                if (ConvertUtils.isEmpty(mRouteResult)) {
+                    Logger.d(TAG, "默认补能规划扎标");
+                    return super.provideLayerItemStyleJson(item);
+                }
+                RouteChargeStationParam routeChargeStationParam = mRouteResult.getMRouteChargeStationParam();
+                if (ConvertUtils.isEmpty(routeChargeStationParam)
+                        || ConvertUtils.isEmpty(routeChargeStationParam.getMRouteChargeStationInfos())) {
                     Logger.d(TAG, "默认补能规划扎标");
                     return super.provideLayerItemStyleJson(item);
                 }
@@ -176,7 +162,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         switch (item.getBusinessType()) {
             case BizRouteType.BizRouteTypeEndPoint -> {
                 //终点扎标数据
-                getRouteEndPoint();
+                setRouteEndPoint();
                 return mRouteEndPoint;
             }
             case BizRouteType.BizRouteTypeViaChargeStationPoint -> {
@@ -214,16 +200,15 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                         }
                         LayerPointItemType endPointType = data.getEndPointType();
                         Logger.d(TAG, "更新终点扎标样式 endPointType " + endPointType);
-                        if (endPointType == LayerPointItemType.ROUTE_POINT_END_OIL ||
-                            endPointType == LayerPointItemType.ROUTE_POINT_END_BATTERY) {
-                            TextView text = rootView.findViewById(R.id.route_end_detail);
-                            if (ConvertUtils.isEmpty(data)) {
-                                Logger.e(TAG, "更新终点扎标信息 getEndPointInfo is null");
-                                return;
-                            }
-                            Logger.d(TAG, "更新终点扎标信息 data " + data.toString());
-                            LayerPointItemType pointType = data.getEndPointType();
-                            int restNum = data.getRestNum();
+                        TextView text = rootView.findViewById(R.id.route_end_detail);
+                        if (ConvertUtils.isEmpty(data)) {
+                            Logger.e(TAG, "更新终点扎标信息 getEndPointInfo is null");
+                            return;
+                        }
+                        Logger.d(TAG, "更新终点扎标信息 data " + data);
+                        int restNum = data.getRestNum();
+                        if (restNum > 0) {
+                            final LayerPointItemType pointType = data.getEndPointType();
                             String string = "";
                             switch (pointType) {
                                 case ROUTE_POINT_END_BATTERY -> {
@@ -239,12 +224,13 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             int endIndex = string.length() - 1;
                             // 设置加粗样式
                             spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            safetySetText(text, spannableString.toString());
-                        } else if (endPointType == LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS) {
-                            Logger.d(TAG, "终点扎标-营业时间 data " + data.toString());
-                            TextView textView = rootView.findViewById(R.id.route_end_business_hours_text);
-                            safetySetText(textView, data.getBusinessHours());
+                            safetySetText(text, string);
+                        } else {
+                            safetySetText(text, "");
                         }
+                        Logger.d(TAG, "终点扎标-营业时间 data " + data.toString());
+                        final TextView textView = rootView.findViewById(R.id.route_end_business);
+                        safetySetText(textView, data.getBusinessHours());
                     }
                 };
             // 补能规划扎标
@@ -468,22 +454,23 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         chargePoint.setIndex(replaceChargeIndex);
         chargePoint.setType(0);
         Logger.d(TAG, "getRouteReplaceChargePoint index " + index +
-                " mReplaceChargeInfos.size " + mReplaceChargeInfos.size() +
-                " replaceChargeIndex " + replaceChargeIndex +
-                " mViaCount " + mViaCount);
+            " mReplaceChargeInfos.size " + mReplaceChargeInfos.size() +
+            " replaceChargeIndex " + replaceChargeIndex +
+            " mViaCount " + mViaCount);
         return chargePoint;
     }
 
     //转换终点扎标数据
-    public LayerPointItemType getRouteEndPoint() {
-        LayerPointItemType endType = LayerPointItemType.ROUTE_POINT_END;
+    private void setRouteEndPoint() {
         mRouteEndPoint.setRestNum(-1);
         int selectPathIndex = mRouteControl.getSelectedPathIndex();
-        if(ConvertUtils.isNull(mRouteResult)) return endType;
+        if (ConvertUtils.isNull(mRouteResult)) {
+            return;
+        }
         List<RouteLineInfo> mRouteLineInfos = mRouteResult.getMRouteLineInfos();
         if (ConvertUtils.isEmpty(mRouteLineInfos)) {
             Logger.v(TAG, "mRouteLineInfos is Empty");
-            return endType;
+            return;
         }
         int mCarType = CalibrationPackage.getInstance().powerType();
         if (mCarType == 0 || mCarType == 2) {
@@ -494,30 +481,24 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
                 if (num != 0) {
                     mRouteEndPoint.setRestNum(num);
-                    endType = LayerPointItemType.ROUTE_POINT_END_OIL;
                 } else {
                     mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
                     mRouteEndPoint.setRestNum(-1);
-                    endType = LayerPointItemType.ROUTE_POINT_END;
                 }
             } else {
                 Logger.v(TAG, "selectPathIndex < mRouteLineInfos.size()");
-                return endType;
             }
         } else {
             if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
                 mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
                 mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
-                endType = LayerPointItemType.ROUTE_POINT_END_BATTERY;
             } else {
                 mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
                 mRouteEndPoint.setRestNum(-1);
-                endType = LayerPointItemType.ROUTE_POINT_END;
             }
         }
         Logger.d(TAG, "getRouteEndPoint type " + mRouteEndPoint.getEndPointType() + " num " +
-                mRouteEndPoint.getRestNum() + " string " + mRouteEndPoint.getBusinessHours());
-        return endType;
+            mRouteEndPoint.getRestNum() + " BusinessHours is " + mRouteEndPoint.getBusinessHours());
     }
 
     //转换补能规划数据
@@ -640,7 +621,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         }
         if (mRasterImageBean != null) {
             RasterImageBean.RasterImageLayerItemStyleBean rasterImageLayerItemStyleBean =
-                    mRasterImageBean.getRaster_image_layer_item_style();
+                mRasterImageBean.getRaster_image_layer_item_style();
             if (ConvertUtils.isEmpty(rasterImageLayerItemStyleBean)) {
                 Logger.e(TAG, "updateRasterCross rasterImageLayerItemStyleBean is Empty");
                 return oldJson;
