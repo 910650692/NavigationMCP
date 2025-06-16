@@ -21,13 +21,11 @@ import java.math.BigInteger;
  * @Author lvww
  * @date 2024/11/24
  */
-public class PositionAdapterImpl implements IPositionApi  , ISpeedCallback {
+public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private PositionBlsStrategy positionStrategy;
     private LocSigFusionManager mLocSigFusionManager;
     private LocMode mLocMode = LocMode.DrBack;
-    private boolean mDrBackFusionEnable = true;
-    private boolean mDrRecordEnable;
     private VehicleSpeedController mVehicleSpeedController;
 
     public PositionAdapterImpl() {
@@ -51,7 +49,6 @@ public class PositionAdapterImpl implements IPositionApi  , ISpeedCallback {
 
     @Override
     public boolean init() {
-        // TODO: 2025/2/25 此处定位模式需要在存储中配置,临时使用constant配置  GNSS/后端融合切换
         mLocMode = PositionConstant.isDrBack ? LocMode.DrBack : LocMode.GNSS;
         if (mLocMode == LocMode.DrBack) {
             mVehicleSpeedController = new VehicleSpeedController(AppCache.getInstance().getMContext(), this);
@@ -93,32 +90,10 @@ public class PositionAdapterImpl implements IPositionApi  , ISpeedCallback {
         return positionStrategy.wgs84ToGcj02(geoPoint);
     }
 
-    @Override
-    public void setDrBackFusionEnable(boolean enable) {
-        Logger.i(TAG, "enable：" + enable);
-        if (!enable) {
-            positionStrategy.updateSdkLocStatus(false);
-        }
-        mDrBackFusionEnable = enable;
-        if (mLocSigFusionManager != null) {
-            mLocSigFusionManager.setDrBackFusionEnable(enable);
-        }
-    }
-
-    @Override
-    public void setRecordEnable(boolean enable) {
-        Logger.i(TAG, "enable：" + enable);
-        mDrRecordEnable = enable;
-        if (mLocSigFusionManager != null) {
-            mLocSigFusionManager.setRecordEnable(enable);
-        }
-    }
-
     /***初始化定位模块***/
     public void init(LocMode locMode) {
         mLocSigFusionManager = new LocSigFusionManager(AppCache.getInstance().getMApplication().getApplicationContext(),
                 locMode, positionStrategy);
-        mLocSigFusionManager.setDrBackFusionEnable(mDrBackFusionEnable);
         mLocSigFusionManager.init();
     }
 
@@ -138,7 +113,7 @@ public class PositionAdapterImpl implements IPositionApi  , ISpeedCallback {
     public void onSpeedChanged(float speed) {
         Logger.i(TAG, "Current speed: " + speed);
         if (mLocSigFusionManager != null) {
-            mLocSigFusionManager.onSpeedChanged(speed);
+            mLocSigFusionManager.onMeterSpeedChanged(speed);
         }
     }
 

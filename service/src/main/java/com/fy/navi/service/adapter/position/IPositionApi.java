@@ -36,12 +36,6 @@ public interface IPositionApi {
 
     GeoPoint wgs84ToGcj02(GeoPoint geoPoint);
 
-    /*后端融合是否生效 true：生效 false：禁用*/
-    void setDrBackFusionEnable(boolean enable);
-
-    /*开启dr录制 true：生效 false：禁用（此接口为预留）*/
-    void setRecordEnable(boolean enable);
-
     /**
      * @param gear 挡位
      */

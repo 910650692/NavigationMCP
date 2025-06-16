@@ -13,57 +13,69 @@ import com.autonavi.gbl.pos.model.LocSignData;
 import com.autonavi.gbl.pos.model.LocSpeedometer;
 import com.autonavi.gbl.pos.observer.IPosSensorParaObserver;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
 import com.fy.navi.service.adapter.position.PositionConstant;
 import com.fy.navi.service.adapter.position.bls.PositionBlsStrategy;
-import com.fy.navi.service.adapter.position.bls.analysis.AnalysisType;
-import com.fy.navi.service.adapter.position.bls.analysis.LossRateAnalysisManager;
 import com.fy.navi.service.adapter.position.bls.comm.LocationUtil;
-import com.fy.navi.service.adapter.position.bls.dr.DRLogService;
-import com.fy.navi.service.adapter.position.bls.listener.ILocBackFusionDataSource;
-import com.fy.navi.service.adapter.position.bls.listener.ILossRateAnalysisListener;
-import com.fy.navi.service.adapter.position.bls.source.CarLocBackFusionDataSource;
+import com.fy.navi.service.adapter.position.bls.gnss.GnssManager;
+import com.fy.navi.service.adapter.position.bls.listener.IDrSensorListener;
+import com.fy.navi.service.adapter.position.bls.listener.ILocationListener;
+import com.fy.navi.service.adapter.position.bls.sensor.DrSensorManager;
 import com.fy.navi.service.define.position.LocGpgsvWrapper;
 import com.fy.navi.service.define.position.LocMode;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFusionDataObserver , IPosSensorParaObserver {
+public class LocSigFusionManager implements IPosSensorParaObserver, ILocationListener, IDrSensorListener {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private final PositionBlsStrategy mPositionBlsStrategy;
-    protected boolean mIsEnable = true;
-    private final ILocBackFusionDataSource mDataSource;
     private PosService mPosService;
     private boolean mIsDrMode;// 是否开启DR模式
-    private Runnable mCustomTimer;
-    private ScheduledFuture mScheduledFuture;
-    private float mCarMeterSpeed = 0f;  //仪表车速 1hz 一秒一次
+    private DrSensorManager mSensorManager;
+    private GnssManager mGnssManager;
 
     public LocSigFusionManager(Context context, LocMode locMode, PositionBlsStrategy positionBlsStrategy) {
         Logger.i(TAG, "locMode：" + locMode);
         this.mPositionBlsStrategy = positionBlsStrategy;
-        mDataSource = new CarLocBackFusionDataSource(context, locMode, this, mPositionBlsStrategy);
         mPosService = mPositionBlsStrategy.getPosService();
-        addObserver();
-        startTimerTask();
-    }
-
-    public void addObserver() {
-        if (mPosService != null) {
-            mPosService.addSensorParaObserver(this);
+        mGnssManager = new GnssManager(context, this, locMode);
+        if (locMode == LocMode.DrBack) {
+            mSensorManager = new DrSensorManager(context, this);
         }
     }
 
-    public void removeObserver() {
+    public void init() {
+        Logger.i(TAG, " init");
+        if (mPosService != null) {
+            mPosService.addSensorParaObserver(this);
+        }
+        if (mSensorManager != null) {
+            mSensorManager.init();
+        }
+        if (mGnssManager != null) {
+            mGnssManager.init();
+        }
+    }
+
+    public void unInit() {
+        Logger.i(TAG, " unInit");
         if (mPosService != null) {
             mPosService.removeSensorParaObserver(this);
+        }
+        if (mSensorManager != null) {
+            mSensorManager.uninit();
+        }
+        if (mGnssManager != null) {
+            mGnssManager.unInit();
         }
     }
 
     @Override
     public void onLocGyroInfo(LocSignData locSignData) {
-        if (!mIsEnable || null == locSignData) {
+        if (null == locSignData) {
             return;
         }
         locSignData.dataType = LocDataType.LocDataGyro;
@@ -72,7 +84,7 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
 
     @Override
     public void onLocAcce3dInfo(LocSignData locSignData) {
-        if (!mIsEnable || null == locSignData) {
+        if (null == locSignData) {
             return;
         }
         locSignData.dataType = LocDataType.LocDataAcce3D;
@@ -81,7 +93,7 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
 
     @Override
     public void onLocPulseInfo(LocSignData locSignData) {
-        if (!mIsEnable || null == locSignData) {
+        if (null == locSignData) {
             return;
         }
         locSignData.dataType = LocDataType.LocDataPulse;
@@ -90,15 +102,19 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
 
     @Override
     public void onGpsInfo(LocGnss locGnss) {
-        if (!mIsEnable || null == locGnss) {
+        if (null == locGnss) {
             return;
         }
-        mPositionBlsStrategy.setGnssInfo(locGnss);
+        LocSignData data = new LocSignData();
+        data.dataType = LocDataType.LocDataGnss;
+        data.gnss = locGnss;
+        mPositionBlsStrategy.setSignInfo(data);
+        mPositionBlsStrategy.updateSdkLocStatus(true);
     }
 
     @Override
     public void onGSVInfo(LocGpgsvWrapper wrapper) {
-        if (!mIsEnable) {
+        if (wrapper == null) {
             return;
         }
         LocSignData locSignData = new LocSignData();
@@ -107,21 +123,34 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
         mPositionBlsStrategy.setSignInfo(locSignData);
     }
 
-    public void init() {
-        mDataSource.init();
+    @Override
+    public void onLocMeterInfo(LocSpeedometer locSpeedometer) {
+        if (locSpeedometer == null) {
+            return;
+        }
+        LocSignData locSignData = new LocSignData();
+        locSignData.speedometer = locSpeedometer;
+        locSignData.dataType = LocDataType.LocDataSpeedometer;
+        mPositionBlsStrategy.setSignInfo(locSignData);
     }
 
-    public void unInit() {
-        mDataSource.unInit();
+    @Override
+    public void onSatelliteNum(int num) {
+        if (mPositionBlsStrategy != null && mPositionBlsStrategy.getCallBack() != null) {
+            List<IPositionAdapterCallback> callbacks = mPositionBlsStrategy.getCallBack();
+            if (callbacks != null) {
+                for (IPositionAdapterCallback callback : callbacks) {
+                    callback.onSatelliteNum(num);
+                }
+            }
+        }
     }
 
-    public void setDrBackFusionEnable(boolean enable) {
-        mDataSource.setDrBackFusionEnable(enable);
-        mIsEnable = enable;
-    }
-
-    public void setRecordEnable(boolean enable) {
-        mDataSource.setRecordEnable(enable);
+    @Override
+    public void onGpsCheckTimeOut() {
+        if (mPositionBlsStrategy != null) {
+            mPositionBlsStrategy.updateGnssState(false);
+        }
     }
 
     public void setCustomPOI(double lon, double lat) {
@@ -134,19 +163,21 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
         Logger.i(TAG, " setCustomPOI customPOI lon=" + lon + " lat=" + lat);
     }
 
-    public void onSpeedChanged(float speed) {
-        mCarMeterSpeed = speed;
+    public void onMeterSpeedChanged(float speed) {
+        if (mGnssManager != null) {
+            mGnssManager.onMeterSpeedChanged(speed);
+        }
     }
 
     public void onPulseSpeedChanged(float speed) {
-        if (mDataSource != null) {
-            mDataSource.onPulseSpeedChanged(speed);
+        if (mSensorManager != null) {
+            mSensorManager.onPulseSpeedChanged(speed);
         }
     }
 
     public void onGearChanged(int gear) {
-        if (mDataSource != null) {
-            mDataSource.onGearChanged(gear);
+        if (mSensorManager != null) {
+            mSensorManager.onGearChanged(gear);
         }
     }
 
@@ -159,35 +190,6 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
         Logger.d(TAG, "onSensorParaUpdate info：" + s + ",mIsDrMode：" + mIsDrMode);
         if (mIsDrMode) {
             mPositionBlsStrategy.onLocAnalysisResult(PositionConstant.DRDebugEvent.DR_TYPE_SENSOR, s);
-        }
-        mDataSource.updateSensorPara(s);
-    }
-
-
-    private void startTimerTask() {
-        Logger.i(TAG, "LocSpeedometer");
-        stopTimerTask();
-        mCustomTimer = new Runnable() {
-            @Override
-            public void run() {
-                // 创建LocSpeedometer对象
-                LocSpeedometer locSpeedometer = new LocSpeedometer();
-                locSpeedometer.value = mCarMeterSpeed;
-                locSpeedometer.tickTime = new BigInteger(String.valueOf(SystemClock.elapsedRealtime()));
-                LocSignData locSignData = new LocSignData();
-                locSignData.speedometer = locSpeedometer;
-                mPositionBlsStrategy.setSignInfo(locSignData);
-                Logger.d("LocSpeedometer",mCarMeterSpeed);
-            }
-        };
-        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(mCustomTimer, 0, 1000, TimeUnit.MILLISECONDS);
-    }
-
-    private void stopTimerTask() {
-        Logger.i(TAG, "stopTimerTask");
-        if (mScheduledFuture != null) {
-            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
-            mCustomTimer = null;
         }
     }
 }

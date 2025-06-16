@@ -10,10 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.MemoryFile;
-import android.os.Message;
 import android.os.SystemClock;
-
-import androidx.annotation.NonNull;
 
 import com.android.utils.log.Logger;
 import com.android.utils.thread.LooperType;
@@ -26,9 +23,7 @@ import com.autonavi.gbl.pos.model.LocSignData;
 import com.autonavi.gbl.pos.model.LocThreeAxis;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.position.PositionConstant;
-import com.fy.navi.service.adapter.position.bls.analysis.AnalysisType;
 import com.fy.navi.service.adapter.position.bls.listener.IDrSensorListener;
-import com.fy.navi.service.adapter.position.bls.listener.ILossRateAnalysisInterface;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -38,8 +33,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/***Sensor数据（陀螺仪、加速度计）管理类***/
-public class DrSensorManager implements SensorEventListener, Handler.Callback {
+/***Sensor数据（陀螺仪、加速度计、温度、脉冲）管理类***/
+public class DrSensorManager implements SensorEventListener {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private final SensorManager mSensorManager;
     // 加速度计单位（系统给的是m/s^2，需要转换成定位需要的g）
@@ -52,49 +47,66 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
     private float mAccYValue;
     private float mAccZValue;
     private long mAccTime = 0;
-    private long mRawAccTime = 0;//录制
 
     private float mGyroXValue;
     private float mGyroYValue;
     private float mGyroZValue;
     private long mGyroTime = 0;
-    private long mRawGyroTime = 0;
 
     private long mCarSpeedTime;
-    private long mRawCarSpeedTime;
     private float mCarSpeed = 0;
     private Runnable mCustomTimer;
     private final IDrSensorListener mListener;
-    private boolean mIsRecordRaw = false;//是否开启DR录制
-    private AtomicInteger mIsGyroReady;
-    private AtomicInteger mIsAccReady;
+    private AtomicInteger mIsGyroReady = new AtomicInteger(0);
+    private AtomicInteger mIsAccReady = new AtomicInteger(0);
+    private AtomicInteger mTemperatureCount = new AtomicInteger(0);
     // TODO: 2025/2/24 挡位获取
     private int mGear;
     private MountAngleManager.MountAngleInfo mAngleInfo;
-
-    private boolean mIsEnable = true;
-    private final AtomicBoolean mIsStarted;
+    private AtomicBoolean mIsStarted = new AtomicBoolean();
     private Handler mHandler;
-    private Handler mTemperatureHandler;
     private final LocSignData mLocSignData;
     private ScheduledFuture mScheduledFuture;
     private Sensor mAccelerometer;
-    private static final int MSG_SEND_TEMPERATURE = 1;
     private SensorDirectChannel mDirectChannel;
     private MemoryFile mMemoryFile;
 
     public DrSensorManager(Context context, IDrSensorListener listener) {
+        Logger.i(TAG, "DrSensorManager ");
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(SENSOR_SERVICE);
         mListener = listener;
-        mIsGyroReady = new AtomicInteger(0);
-        mIsAccReady = new AtomicInteger(0);
-        mAngleInfo = MountAngleManager.getInstance().getMountAngleInfo();
-        mIsStarted = new AtomicBoolean();
-        mHandler = new Handler(ThreadManager.getInstance().getLooper(LooperType.SENSOR));
-        mTemperatureHandler = new Handler(ThreadManager.getInstance().getLooper(LooperType.TEMPERATURE), this);
         mLocSignData = new LocSignData();
-        initializeTemperature();
-        Logger.i(TAG, "init DrSensorManager " + mAngleInfo);
+        mAngleInfo = MountAngleManager.getInstance().getMountAngleInfo();
+    }
+
+    public synchronized void init() {
+        Logger.i(TAG, "init status=" + mIsStarted.get());
+        if (mIsStarted.compareAndSet(false, true)) {
+            Logger.i(TAG, "real init");
+            mHandler = new Handler(ThreadManager.getInstance().getLooper(LooperType.SENSOR));
+            initializeTemperature();
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 1000 * 100, mHandler);//陀螺仪传感器
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 1000 * 100, mHandler);//加速度传感器
+            mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(this::startSensorReport, 0, 100, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    public void uninit() {
+        Logger.i(TAG, "unInit cur status=" + mIsStarted.get());
+        if (mIsStarted.compareAndSet(true, false)) {
+            Logger.i(TAG, "real stop ");
+            stopSensorReport();
+            mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
+            mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+            if (mDirectChannel != null) {
+                mDirectChannel.close();
+            }
+            if (mMemoryFile != null) {
+                mMemoryFile.close();
+            }
+            mMemoryFile = null;
+            mDirectChannel = null;
+        }
     }
 
     private void initializeTemperature() {
@@ -115,75 +127,26 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
         }
     }
 
-    public synchronized void setEnable(boolean isEnable) {
-        Logger.i(TAG, "setEnable old=" + mIsEnable + " new=" + isEnable);
-        if (isEnable != mIsEnable) {
-            if (isEnable) {
-                onStart();
-            } else {
-                onStop();
+    private void startSensorReport() {
+        Logger.i(TAG, " startTimerTask :" + mIsGyroReady.get() + ",mIsAccReady.get()：" + mIsAccReady.get() + ",mCarSpeed " + mCarSpeed + ",mTemperatureCount：" + mTemperatureCount.get());
+        if (mIsGyroReady.get() == 1) {
+            setLocGyroInfo();
+        }
+        if (mIsAccReady.get() == 1) {
+            setLocAcce3DInfo();
+        }
+        setLocPulseInfo();
+        if (mTemperatureCount.get() == 0) {
+            parseTemperature();
+        } else {
+            mTemperatureCount.incrementAndGet();
+            if (mTemperatureCount.get() == 10) {
+                mTemperatureCount.set(0);
             }
         }
-        mIsEnable = isEnable;
     }
 
-    public synchronized void init() {
-        Logger.i(TAG, " init isEnable=" + mIsEnable);
-        if (mIsEnable) {
-            onStart();
-        }
-    }
-
-    private void onStart() {
-        Logger.i(TAG, "onStart cur status=" + mIsStarted.get() + " isEnable=" + mIsEnable);
-        if (mIsStarted.compareAndSet(false, true)) {
-            Logger.i(TAG, "mSensorManager registerListener");
-            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 1000 * 100, mHandler);//陀螺仪传感器
-            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 1000 * 100, mHandler);//加速度传感器
-            mTemperatureHandler.sendEmptyMessage(MSG_SEND_TEMPERATURE);
-            startTimerTask();
-        }
-    }
-
-    private void onStop() {
-        Logger.i(TAG, "onStop cur status=" + mIsStarted.get() + " isEnable=" + mIsEnable);
-        if (mIsStarted.compareAndSet(true, false)) {
-            Logger.i(TAG, "real stop ");
-            stopTimerTask();
-            mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
-            mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-            mTemperatureHandler.removeCallbacksAndMessages(null);
-            if (mDirectChannel != null) {
-                mDirectChannel.close();
-            }
-            if (mMemoryFile != null) {
-                mMemoryFile.close();
-            }
-            mMemoryFile = null;
-            mDirectChannel = null;
-        }
-    }
-
-    private void startTimerTask() {
-        Logger.i(TAG, "startTimerTask");
-        stopTimerTask();
-        mCustomTimer = new Runnable() {
-            @Override
-            public void run() {
-                Logger.i(TAG, "DrSensorManager startTimerTask :" + mIsGyroReady.get() + ",mIsAccReady.get()：" + mIsAccReady.get() + ",mCarSpeed " + mCarSpeed);
-                if (mIsGyroReady.get() == 1) {
-                    setLocGyroInfo(false);
-                }
-                if (mIsAccReady.get() == 1) {
-                    setLocAcce3DInfo(false);
-                }
-                setLocPulseInfo(false);
-            }
-        };
-        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(mCustomTimer, 0, 100, TimeUnit.MILLISECONDS);
-    }
-
-    private void stopTimerTask() {
+    private void stopSensorReport() {
         Logger.i(TAG, "stopTimerTask");
         if (mScheduledFuture != null) {
             ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
@@ -193,64 +156,38 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
 
     /**
      * 陀螺仪
-     * 是否开启录制
-     *
-     * @param isRaw true：开启  false：未开启
      */
-    private void setLocGyroInfo(boolean isRaw) {
+    private void setLocGyroInfo() {
         long gyroTime, tickTime;
-        if (isRaw) {
-            if (mRawGyroTime == 0) {
-                mRawGyroTime = SystemClock.elapsedRealtime();
-            }
-            gyroTime = SystemClock.elapsedRealtime() - mRawGyroTime;
-            mRawGyroTime = SystemClock.elapsedRealtime();
-            tickTime = mRawGyroTime;
-        } else {
-            if (mGyroTime == 0) {
-                mGyroTime = SystemClock.elapsedRealtime();
-            }
-            gyroTime = SystemClock.elapsedRealtime() - mGyroTime;
+        if (mGyroTime == 0) {
             mGyroTime = SystemClock.elapsedRealtime();
-            tickTime = mGyroTime;
         }
+        gyroTime = SystemClock.elapsedRealtime() - mGyroTime;
+        mGyroTime = SystemClock.elapsedRealtime();
+        tickTime = mGyroTime;
         LocGyro sensorData = mLocSignData.gyro;
         sensorData.axis = LocThreeAxis.LocAxisAll; // 有效数据轴
         sensorData.valueX = mGyroXValue;
         sensorData.valueY = mGyroYValue;
         sensorData.valueZ = mGyroZValue;
         sensorData.temperature = mTemperature;
-        Logger.d(TAG, mTemperature);
         sensorData.tickTime = BigInteger.valueOf(tickTime);
         sensorData.interval = (int) gyroTime;
         sensorData.dataType = LocDataType.LocDataGyro;
-        mListener.onLocGyroInfo(mLocSignData, isRaw);
+        mListener.onLocGyroInfo(mLocSignData);
     }
 
     /**
      * 3D加速度计
-     * 是否开启录制
-     *
-     * @param isRaw true：开启  false：未开启
      */
-    private void setLocAcce3DInfo(boolean isRaw) {
+    private void setLocAcce3DInfo() {
         long accTime, tickTime;
-        if (isRaw) {
-            if (mRawAccTime == 0) {
-                mRawAccTime = SystemClock.elapsedRealtime();
-            }
-            accTime = SystemClock.elapsedRealtime() - mRawAccTime;
-            mRawAccTime = SystemClock.elapsedRealtime();
-            tickTime = mRawAccTime;
-        } else {
-            if (mAccTime == 0) {
-                mAccTime = SystemClock.elapsedRealtime();
-            }
-            accTime = SystemClock.elapsedRealtime() - mAccTime;
+        if (mAccTime == 0) {
             mAccTime = SystemClock.elapsedRealtime();
-            tickTime = mAccTime;
         }
-
+        accTime = SystemClock.elapsedRealtime() - mAccTime;
+        mAccTime = SystemClock.elapsedRealtime();
+        tickTime = mAccTime;
         LocAcce3d sensorData = mLocSignData.acce3D;
         sensorData.axis = LocThreeAxis.LocAxisAll; // 有效数据轴
         sensorData.acceX = mAccXValue;
@@ -259,54 +196,26 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
         sensorData.tickTime = BigInteger.valueOf(tickTime);
         sensorData.interval = (int) accTime;
         sensorData.dataType = LocDataType.LocDataAcce3D;
-        mListener.onLocAcce3dInfo(mLocSignData, isRaw);
+        mListener.onLocAcce3dInfo(mLocSignData);
     }
 
     /**
      * 速度脉冲
-     * 是否开启录制
-     *
-     * @param isRaw true：开启  false：未开启
      */
-    private void setLocPulseInfo(boolean isRaw) {
+    private void setLocPulseInfo() {
         long speedTime, tickTime;
-        if (isRaw) {
-            if (mRawCarSpeedTime == 0) {
-                mRawCarSpeedTime = SystemClock.elapsedRealtime();
-            }
-            speedTime = SystemClock.elapsedRealtime() - mRawCarSpeedTime;
-            mRawCarSpeedTime = SystemClock.elapsedRealtime();
-            tickTime = mRawCarSpeedTime;
-        } else {
-            if (mCarSpeedTime == 0) {
-                mCarSpeedTime = SystemClock.elapsedRealtime();
-            }
-            speedTime = SystemClock.elapsedRealtime() - mCarSpeedTime;
-            mCarSpeedTime = SystemClock.elapsedRealtime();
-            tickTime = mCarSpeedTime;
-        }
         if (mCarSpeedTime == 0) {
             mCarSpeedTime = SystemClock.elapsedRealtime();
         }
+        speedTime = SystemClock.elapsedRealtime() - mCarSpeedTime;
+        mCarSpeedTime = SystemClock.elapsedRealtime();
+        tickTime = mCarSpeedTime;
         LocPulse locPulse = mLocSignData.pulse;
         locPulse.tickTime = BigInteger.valueOf(tickTime);
         locPulse.interval = (int) speedTime;
         locPulse.dataType = LocDataType.LocDataPulse;
         locPulse.value = mCarSpeed;
-        mListener.onLocPulseInfo(mLocSignData, isRaw);
-    }
-
-    public void setRecordRaw(boolean recordRaw) {
-        Logger.i(TAG, " setRecordRaw " + recordRaw);
-        mIsRecordRaw = recordRaw;
-        mRawAccTime = 0;
-        mRawGyroTime = 0;
-        mRawCarSpeedTime = 0;
-    }
-
-    public void uninit() {
-        Logger.i(TAG, " unInit");
-        onStop();
+        mListener.onLocPulseInfo(mLocSignData);
     }
 
     @Override
@@ -348,9 +257,6 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
                         if (mIsAccReady.get() == 0) {
                             mIsAccReady.compareAndSet(0, 1);
                         }
-                        if (mIsRecordRaw) {
-                            setLocAcce3DInfo(true);
-                        }
                     } else {
                         //陀螺仪
                         mGyroXValue = (float) (x * GYR_UNIT);
@@ -358,9 +264,6 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
                         mGyroZValue = (float) (z * GYR_UNIT);
                         if (mIsGyroReady.get() == 0) {
                             mIsGyroReady.compareAndSet(0, 1);
-                        }
-                        if (mIsRecordRaw) {
-                            setLocGyroInfo(true);
                         }
                     }
                 }
@@ -374,16 +277,11 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
      * 车速变化
      */
     public void onPulseSpeedChanged(float speed) {
-        //        Logger.d(TAG, "  onVelocityPulseChanged=" + speed);
         int ratio = 1;
         if (mGear == PositionConstant.GearType.GEAR_REVERSE) {
             ratio = -1;
         }
         mCarSpeed = ratio * speed;
-        if (mIsRecordRaw) {
-            setLocPulseInfo(true);
-        }
-        Logger.d("LocPulsemeter",mCarSpeed);
     }
 
     /**
@@ -401,28 +299,12 @@ public class DrSensorManager implements SensorEventListener, Handler.Callback {
         Logger.d(TAG, " onGearChanged gear=" + gear);
     }
 
-    @Override
-    public boolean handleMessage(@NonNull Message msg) {
-        if (msg.what == MSG_SEND_TEMPERATURE) {
-            parseTemperature();
-            mTemperatureHandler.removeMessages(MSG_SEND_TEMPERATURE);
-            mTemperatureHandler.sendEmptyMessageDelayed(MSG_SEND_TEMPERATURE, 10000);
-        }
-        return false;
-    }
-
     private void parseTemperature() {
         try {
             if (mMemoryFile != null) {
                 byte[] buffer = new byte[1024];
                 int bytesRead = mMemoryFile.readBytes(buffer, 0, 0, 1024);
                 if (bytesRead >= 4) {
-                    // Log raw buffer for debugging
-                    StringBuilder hex = new StringBuilder();
-                    for (byte b : buffer) {
-                        hex.append(String.format("%02X ", b));
-                    }
-//                    Logger.d(TAG, "Raw buffer: " + hex.toString());
                     ByteBuffer byteBuffer = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN);
                     mTemperature = byteBuffer.getFloat(24); // Adjust offset if needed
                     Logger.d(TAG, "Parsed temperature: " + mTemperature + "°C");

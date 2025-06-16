@@ -17,15 +17,13 @@ import java.math.BigInteger;
 /***卫星星历获取***/
 public class GSVInstrument extends GnssStatus.Callback {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
-    private ILocationListener mListener;
     private IUsedSatelliteNumCallback mCallback;
     /**
      * 星历卫星数据最大值
      */
     public static final int MAX_GPS_SATELLITE_NUM = 16;
 
-    public GSVInstrument(@NonNull ILocationListener listener, IUsedSatelliteNumCallback callback) {
-        mListener = listener;
+    public GSVInstrument( IUsedSatelliteNumCallback callback) {
         mCallback = callback;
     }
 
@@ -87,7 +85,7 @@ public class GSVInstrument extends GnssStatus.Callback {
             // 时间戳需与GNSS信号传入的时间戳同源
             locGpgsvGPS.tickTime = BigInteger.valueOf(realtime);
             wrapper.attributes.averageSnr = totalSnr / n;
-            mListener.onGSVInfo(wrapper);
+            mCallback.onGSVInfo(wrapper);
 //            Logger.d(TAG, "setGSVData:");
         } else {
             Logger.e(TAG, "n：" + n + ",realtime：" + realtime);

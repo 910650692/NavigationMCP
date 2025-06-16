@@ -4,13 +4,13 @@ import com.autonavi.gbl.pos.model.LocSignData;
 
 
 public interface IDrSensorListener {
-    /*陀螺仪*/
-    void onLocGyroInfo(LocSignData locGyro, boolean isRaw);
+    /*陀螺仪信号 10HZ*/
+    void onLocGyroInfo(LocSignData locSignData);
 
-    /*加速度计*/
-    void onLocAcce3dInfo(LocSignData locAcce3d, boolean isRaw);
+    /*加速度计信号 10HZ*/
+    void onLocAcce3dInfo(LocSignData locSignData);
 
-    /*车速脉冲*/
-    void onLocPulseInfo(LocSignData locPulse, boolean isRaw);
+    /*车速脉冲信号 10HZ*/
+    void onLocPulseInfo(LocSignData locSignData);
 
 }

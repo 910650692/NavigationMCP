@@ -134,9 +134,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         posWorkPath.contextPath = contextDir;//存放定位上下文文件目录
         LocModeType locModeType = LocationFuncSwitch.getLocModeType(locMode, mPositionConfig);
         initLocation();
-        if (ConvertUtils.isEmpty(mPosService)) {
-            return false;
-        }
         mPosService.setDefaultPos(new Coord3DDouble(locInfoBean.getLongitude(), locInfoBean.getLatitude(), locInfoBean.getAltitude()));
         // 添加位置信息观察者
         mPosService.addLocInfoObserver(this, 0);
@@ -413,22 +410,13 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         return gcj02Point;
     }
 
-    /**
-     * 设置GNSS定位信息
-     *
-     * @param gnssInfo LocDataType.LocDataGnss
-     */
-    public void setGnssInfo(LocGnss gnssInfo) {
-        if (!checkValid()) {
-            return;
-        }
-        mSdkLocStatus = LocStatus.ON_LOCATION_GPS_OK;
-        updateSdkLocStatus(true);
-        LocSignData data = new LocSignData();
-        data.dataType = LocDataType.LocDataGnss;
-        data.gnss = gnssInfo;
-        if (mPosService != null) {
-            mPosService.setSignInfo(data);
+    public void updateGnssState(boolean isGnssSuccess) {
+        if (isGnssSuccess) {
+            mSdkLocStatus = LocStatus.ON_LOCATION_GPS_OK;
+            updateSdkLocStatus(true);
+        } else {
+            mSdkLocStatus = LocStatus.ON_LOCATION_FAIL;
+            updateSdkLocStatus(false);
         }
     }
 
@@ -443,11 +431,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
 
     private boolean checkValid() {
         return mPosService != null && mPosService.isInit() == ServiceInitStatus.ServiceInitDone;
-    }
-
-    public void onGpsCheckTimeOut() {
-        mSdkLocStatus = LocStatus.ON_LOCATION_FAIL;
-        updateSdkLocStatus(false);
     }
 
     private void startLocStorageTimerTask() {
