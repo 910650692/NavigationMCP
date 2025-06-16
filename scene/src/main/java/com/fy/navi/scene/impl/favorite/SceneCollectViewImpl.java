@@ -31,6 +31,10 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
     // 动力类型标定
     public MutableLiveData<Integer> mPowerType = new MutableLiveData<>();
     private final SearchPackage mSearchPackage;
+    private int mTaskId;
+    public int getMTaskId() {
+        return mTaskId;
+    }
     public SceneCollectViewImpl(final SceneCollectView screenView) {
         super(screenView);
         mPowerType = new MutableLiveData<>(-1);
@@ -57,42 +61,22 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
         AccountPackage.getInstance().sendSGMLoginRequest(mScreenView.getContext());
     }
 
-    public void queryCollectStation(Activity context){
-        AccessTokenParam param = new AccessTokenParam(
-                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
-                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
-                null,
-                context,
-                null,
-                null,
-                null,
-                null);
-
+    public void queryCollectStation(AccessTokenParam param){
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
             String vehicleBrand = mSearchPackage.getBrandName(CalibrationPackage.getInstance().brand());
-            mSearchPackage.queryCollectStation(idpUserId,accessToken,vehicleBrand);
+            mTaskId = mSearchPackage.queryCollectStation(idpUserId,accessToken,vehicleBrand);
         });
     }
 
-    public void updateCollectStatus(Activity context,PoiInfoEntity poiInfoEntity){
-        AccessTokenParam param = new AccessTokenParam(
-                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
-                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
-                null,
-                context,
-                null,
-                null,
-                null,
-                null);
-
+    public void updateCollectStatus(AccessTokenParam param,PoiInfoEntity poiInfoEntity){
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "BUICK";
+            String vehicleBrand = mSearchPackage.getBrandName(CalibrationPackage.getInstance().brand());
             poiInfoEntity.setIsCollect(true);
-            mSearchPackage.updateCollectStatus(idpUserId,accessToken,vehicleBrand,poiInfoEntity);
+            mTaskId = mSearchPackage.updateCollectStatus(idpUserId,accessToken,vehicleBrand,poiInfoEntity);
         });
     }
 }

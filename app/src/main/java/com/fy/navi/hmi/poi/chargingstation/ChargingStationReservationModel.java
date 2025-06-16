@@ -1,6 +1,8 @@
 package com.fy.navi.hmi.poi.chargingstation;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -32,16 +34,45 @@ public class ChargingStationReservationModel extends BaseModel<BaseChargingStati
 
     @Override
     public void onNetSearchResult(int taskId, String searchKey, BaseRep result) {
-        switch (searchKey){
-            case AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO:
-                mViewModel.onQueryEquipmentResult(result);
-                break;
-            case AutoMapConstant.NetSearchKey.UNLOCK_GROUND:
-                mViewModel.onLockGround(result);
-            case AutoMapConstant.NetSearchKey.UPDATE_RESERVATION:
-                mViewModel.onCancelReservation(result);
-            case AutoMapConstant.NetSearchKey.QUERY_RESERVATION:
-                mViewModel.onQueryReservation(result);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mCallbackId: " + mCallbackId + "currentCallbackId: " +mSearchPackage.getCurrentCallbackId());
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            switch (searchKey) {
+                case AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO:
+                    mViewModel.onQueryEquipmentResult(taskId,result);
+                    break;
+                case AutoMapConstant.NetSearchKey.UNLOCK_GROUND:
+                    mViewModel.onLockGround(taskId,result);
+                    break;
+                case AutoMapConstant.NetSearchKey.UPDATE_RESERVATION:
+                    mViewModel.onCancelReservation(taskId,result);
+                    break;
+                case AutoMapConstant.NetSearchKey.QUERY_RESERVATION:
+                    mViewModel.onQueryReservation(taskId,result);
+                    break;
+            }
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId);
+        }
+    }
+
+    @Override
+    public void onNetSearchResultError(int taskId, String searchKey, String message) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mCallbackId: " + mCallbackId + "currentCallbackId: " +mSearchPackage.getCurrentCallbackId());
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            switch (searchKey) {
+                case AutoMapConstant.NetSearchKey.UNLOCK_GROUND:
+                    mViewModel.onLockGroundError(taskId,message);
+                    break;
+                case AutoMapConstant.NetSearchKey.UPDATE_RESERVATION:
+                    mViewModel.onCancelReservationError(taskId,message);
+                    break;
+                case AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO:
+                case AutoMapConstant.NetSearchKey.QUERY_RESERVATION:
+                    mViewModel.onSearchError(taskId,message);
+                    break;
+            }
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId);
         }
     }
 }

@@ -84,10 +84,17 @@ public class BaseCollectViewModel extends BaseViewModel<CollectFragment, Collect
                         }
                     }
                 }
-                mView.setAdapterDataByNet(list);
+                mView.notifyNetSearchResult(taskId,list);
             } catch (JSONException e) {
-                throw new RuntimeException("转换JSONObject失败", e);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e.getMessage());
+                notifyNetSearchResultError(taskId,e.getMessage());
             }
+        }else{
+            notifyNetSearchResultError(taskId,result.getMessage());
         }
+    }
+
+    public void notifyNetSearchResultError(int taskId,String message){
+        mView.notifySearchResultByNetError(taskId,message);
     }
 }

@@ -185,6 +185,12 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         }
     }
 
+    /**
+     * 网络搜索结果成功回调
+     * @param taskId 任务ID
+     * @param searchKey 任务来源
+     * @param result 搜索结果
+     */
     @Override
     public void onNetSearchResult(int taskId, String searchKey, BaseRep result) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onNetSearchResult");
@@ -196,6 +202,24 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             callback.onNetSearchResult(taskId,searchKey,result);
         }
     }
+
+    /**
+     * 网络搜索结果失败回调
+     * @param taskId 任务ID
+     * @param searchKey 任务来源
+     * @param message 错误消息
+     */
+    @Override
+    public void onNetSearchResultError(int taskId, String searchKey, String message) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onNetSearchResultError");
+        for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
+            final String identifier = entry.getKey();
+            mCurrentCallbackId.set(identifier);
+            final SearchResultCallback callback = entry.getValue();
+            callback.onNetSearchResultError(taskId,searchKey,message);
+        }
+    }
+
 
     /**
      * 注册 HMI 搜索回调
@@ -1778,9 +1802,13 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 
-    /*
-    * 查询充电站收藏列表
-    * */
+    /**
+     * 查询收藏的自营站列表
+     * @param idpUserId 用户id
+     * @param accessToken token
+     * @param vehicleBrand 车型品牌 BUICK, CHEVY, CADILLAC, CADILLAC_IQ
+     * @return TaskId
+     */
     public int queryCollectStation(String idpUserId,String accessToken,String vehicleBrand){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .idpUserId(idpUserId)
@@ -1790,25 +1818,29 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.queryCollectStation(requestParameterBuilder);
     }
 
-    /*
-    * 查询自营站列表
-    * */
-    public int queryStationNewResult(SearchResultEntity entity){
+    /**
+     * 查询自营站列表
+     * @param keyword 搜索关键字
+     * @return taskId
+     */
+    public int queryStationNewResult(String keyword){
         final GeoPoint point = new GeoPoint();
         point.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
         point.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
 
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
-                .keyword(entity.getKeyword())
+                .keyword(keyword)
                 .poiLoc(point)
                 .adCode(getAcCode())
                 .build();
         return mSearchAdapter.queryStationNewResult(requestParameterBuilder);
     }
 
-    /*
-     * 查询自营站信息
-     * */
+    /**
+     * 查询云端自营站详情
+     * @param poiInfo 充电站信息
+     * @return TaskId
+     */
     public int queryStationInfo(PoiInfoEntity poiInfo){
         final GeoPoint point = new GeoPoint();
         point.setLon(poiInfo.getPoint().getLon());
@@ -1821,18 +1853,27 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.queryStationInfo(requestParameterBuilder);
     }
 
-    /*
-     * 查询充电桩信息
-     * */
-    public int queryEquipmentInfo(EquipmentInfo info, PoiInfoEntity poiInfo){
+    /**
+     * 查询充电桩详情信息
+     * @param equipmentId 充电桩id
+     * @param operatorId 运营商id
+     * @param stationId 充电站id
+     * @return taskId
+     */
+    public int queryEquipmentInfo(String equipmentId, String operatorId, String stationId){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
-                .operatorId(poiInfo.getOperatorId())
-                .stationId(poiInfo.getStationId())
-                .equipmentId(info.getmEquipmentId())
+                .operatorId(operatorId)
+                .stationId(stationId)
+                .equipmentId(equipmentId)
                 .build();
         return mSearchAdapter.queryEquipmentInfo(requestParameterBuilder);
     }
 
+    /**
+     * 查询充电桩详情信息
+     * @param info 预约单信息
+     * @return taskId
+     */
     public int queryEquipmentInfo(ReservationInfo info){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .operatorId(info.getmOperatorId())
@@ -1857,9 +1898,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         }
     }
 
-    /*
+    /**
      * 创建公桩预约
-     * */
+     * @param item 充电桩接口
+     * @param poiInfo 充电站信息
+     * @param idpUserId 用户id
+     * @param accessToken token
+     * @param vehicleBrand 1.别克 2.凯迪 3.雪佛兰 4.奥特能 5.泛亚
+     * @return taskId
+     */
     public int createReservation(ConnectorInfoItem item, PoiInfoEntity poiInfo,String idpUserId,String accessToken,String vehicleBrand){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .operatorId(poiInfo.getOperatorId())
@@ -1873,6 +1920,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.createReservation(requestParameterBuilder);
     }
 
+    /**
+     * 解开地锁
+     * @param item 充电桩接口
+     * @param poiInfo 充电站信息
+     * @param idpUserId 用户id
+     * @param accessToken token
+     * @param vehicleBrand 1.别克 2.凯迪 3.雪佛兰 4.奥特能 5.泛亚
+     * @return taskId
+     */
     public int unGroundLock(ConnectorInfoItem item, PoiInfoEntity poiInfo,String idpUserId,String accessToken,String vehicleBrand){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .accessToken(accessToken)
@@ -1885,6 +1941,14 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.unGroundLock(requestParameterBuilder);
     }
 
+    /**
+     * 修改收藏状态
+     * @param idpUserId 用户id
+     * @param accessToken token
+     * @param vehicleBrand BUICK, CHEVY, CADILLAC, CADILLAC_IQ
+     * @param poiInfo 充电站信息
+     * @return taskId
+     */
     public int updateCollectStatus(String idpUserId,String accessToken,String vehicleBrand,PoiInfoEntity poiInfo){
         ArrayList<SavedStations> list = new ArrayList<>();
         SavedStations savedStations = new SavedStations()
@@ -1903,10 +1967,17 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.updateCollectStatus(requestParameterBuilder);
     }
 
-    public int queryReservation(PoiInfoEntity poiInfoEntity,String brandId,int status,String idpUserId,String accessToken){
+    /**
+     * 查询当前用户的预约单列表
+     * @param brandId 1.凯迪 2.别克 3.雪佛兰 4.奥特能
+     * @param status 1：已预约 2：已完成 3：已取
+     * @param idpUserId 用户id
+     * @param accessToken token
+     * @return taskId
+     */
+    public int queryReservation(String brandId,int status,String idpUserId,String accessToken){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .vehicleBrand(brandId)
-                .operatorId(poiInfoEntity.getOperatorId())
                 .type(status)
                 .idpUserId(idpUserId)
                 .accessToken(accessToken)
@@ -1914,9 +1985,16 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.queryReservation(requestParameterBuilder);
     }
 
-    public int cancelReservation(ReservationInfo reservationInfo,String idpUserId,String accessToken){
+    /**
+     * 取消预约
+     * @param preNum 预约单号
+     * @param idpUserId 用户id
+     * @param accessToken token
+     * @return taskId
+     */
+    public int cancelReservation(String preNum,String idpUserId,String accessToken){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
-                .preNum(reservationInfo.getmPreNum())
+                .preNum(preNum)
                 .idpUserId(idpUserId)
                 .accessToken(accessToken)
                 .build();
@@ -1924,7 +2002,11 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
 
     }
 
-    // 映射云端侧对应的brandId
+    /**
+     * 映射云端侧对应的brandId
+     * @param brandId 1 Buick 2 Cadillac 3 Chevrolet
+     * @return
+     */
     public String getBrandId(int brandId){
         return switch (brandId){
             case 1 -> "2";
@@ -1934,7 +2016,11 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         };
     }
 
-    // 映射云端侧对应的brandName
+    /**
+     * 映射云端侧对应的brandName
+     * @param brandId 1 Buick 2 Cadillac 3 Chevrolet
+     * @return
+     */
     public String getBrandName(int brandId){
         return switch (brandId){
             case 1 -> "BUICK";
@@ -1959,6 +2045,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return false;
     }
 
+    /**
+     * 创建预约倒计时，30分钟内需提醒用户充电
+     * @param destPoint 充电桩的坐标信息
+     */
     public void createTimeTick(GeoPoint destPoint){
         cancelTimeTick();
         Long lastTime = TimeUtils.getInstance().getCurrentMillSeconds();
@@ -1978,6 +2068,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         },0,60, TimeUnit.SECONDS);
     }
 
+    /**
+     * 取消预约倒计时
+     */
     public void cancelTimeTick(){
         if (!ConvertUtils.isEmpty(mScheduledFuture)) {
             ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);

@@ -217,6 +217,7 @@
     <string name="mps_set_company">设置为公司</string>
     <string name="mps_set_company_success">设置公司成功</string>
     <string name="mps_set_collect">收藏成功</string>
+    <string name="mps_set_collect_error">收藏失败</string>
     <string name="mps_set_add">添加</string>
     <string name="favorite_item_top">置顶</string>
     <string name="oil_type_92">92#</string>
@@ -241,7 +242,9 @@
     <string name="charge_title_price">全天时段费用</string>
     <string name="charge_appointment">预约</string>
     <string name="charge_appointment_look">查看预约</string>
+    <string name="charge_appointment_look_error">预约失败</string>
     <string name="charge_cancel_appointment">取消预约</string>
+    <string name="charge_cancel_appointment_error">取消预约失败</string>
     <string name="charge_unlock">降地锁</string>
     <string name="charge_lock">已降</string>
     <string name="charge_img">看图找站</string>

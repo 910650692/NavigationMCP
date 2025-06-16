@@ -552,6 +552,10 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         mSearchNotificationHelper.notifyNetCallbacks(taskId,searchKey,result);
     }
 
+    private void notifyNetSearchError(final int taskId,String searchKey,String message){
+        mSearchNotificationHelper.notifyNetCallbacksError(taskId,searchKey,message);
+    }
+
     private void notifyTipDialog(String status){
         mSearchNotificationHelper.notifyTipDialog(status);
     }
@@ -599,12 +603,14 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                         notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_LIST, rep);
                     }catch (Exception e){
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                        notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_LIST, e.getMessage());
                     }
                 }
 
                 @Override
                 public void onFailed(ApiException apiException) {
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                    notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_LIST, apiException.getMessage());
                 }
             });
         return mTaskId.get();
@@ -616,6 +622,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     @Override
     public int queryCollectStation(SearchRequestParameter searchRequestParameter) {
+        mTaskId.incrementAndGet();
         StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
                 .setPageSize(searchRequestParameter.getSize())
                 .setPageNum(searchRequestParameter.getPage())
@@ -634,19 +641,27 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                         notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST, rep);
                     }catch (Exception e){
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                        notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST, e.getMessage());
                     }
                 }
 
                 @Override
                 public void onFailed(ApiException apiException) {
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                    notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST, apiException.getMessage());
                 }
             });
         return mTaskId.get();
     }
 
+    /**
+     * 充电站详情查询
+     * @param searchRequestParameter 查询参数
+     * @return task id
+     */
     @Override
     public int queryStationInfo(SearchRequestParameter searchRequestParameter) {
+        mTaskId.incrementAndGet();
         StationReq req = new StationReq("1.0")
                 .setLng(String.valueOf(searchRequestParameter.getPoiLoc().getLon()))
                 .setLat(String.valueOf(searchRequestParameter.getPoiLoc().getLat()))
@@ -665,20 +680,27 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                         notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_INFO, rep);
                     }catch (Exception e){
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                        notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_INFO, e.getMessage());
                     }
                 }
 
                 @Override
                 public void onFailed(ApiException apiException) {
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                    notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_INFO, apiException.getMessage());
                 }
             });
-
         return mTaskId.get();
     }
 
+    /**
+     * 充电桩详情查询
+     * @param searchRequestParameter 查询参数
+     * @return task id
+     */
     @Override
     public int queryEquipmentInfo(SearchRequestParameter searchRequestParameter) {
+        mTaskId.incrementAndGet();
         StationReq req = new StationReq("1.0")
                 .setOperatorId(searchRequestParameter.getOperatorId())
                 .setStationId(searchRequestParameter.getStationId())
@@ -695,6 +717,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
                         notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO, rep);
                     }catch (Exception e){
+                        notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO, e.getMessage());
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
                     }
                 }
@@ -702,13 +725,20 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 @Override
                 public void onFailed(ApiException apiException) {
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                    notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO, apiException.getMessage());
                 }
             });
         return mTaskId.get();
     }
 
+    /**
+     * 创建预约
+     * @param searchRequestParameter 请求参数
+     * @return task id
+     */
     @Override
     public int createReservation(SearchRequestParameter searchRequestParameter) {
+        mTaskId.incrementAndGet();
         StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
                 .setOperatorId(searchRequestParameter.getOperatorId())
                 .setStationId(searchRequestParameter.getStationId())
@@ -729,19 +759,27 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                             notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.CREATE_RESERVATION, rep);
                         }catch (Exception e){
                             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                            notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.CREATE_RESERVATION, e.getMessage());
                         }
                     }
 
                     @Override
                     public void onFailed(ApiException apiException) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                        notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.CREATE_RESERVATION, apiException.getMessage());
                     }
                 });
 
         return mTaskId.get();
     }
 
+    /**
+     * 解开地锁
+     * @param searchRequestParameter 入参
+     * @return taskId
+     */
     public int unGroundLock(SearchRequestParameter searchRequestParameter) {
+        mTaskId.incrementAndGet();
         StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
                 .setOperatorId(searchRequestParameter.getOperatorId())
                 .setBrandId(searchRequestParameter.getVehicleBrand())
@@ -761,19 +799,27 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                             notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.UNLOCK_GROUND, rep);
                         }catch (Exception e){
                             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                            notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.UNLOCK_GROUND, e.getMessage());
                         }
                     }
 
                     @Override
                     public void onFailed(ApiException apiException) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                        notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.UNLOCK_GROUND, apiException.getMessage());
                     }
                 });
 
         return mTaskId.get();
     }
 
+    /**
+     * 更新收藏状态
+     * @param searchRequestParameter 入参
+     * @return taskId
+     */
     public int updateCollectStatus(SearchRequestParameter searchRequestParameter){
+        mTaskId.incrementAndGet();
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         HashMap<String, Object> map = new HashMap();
         map.put("savedStations",searchRequestParameter.getSavedStationsJson());
@@ -796,20 +842,27 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                             notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.UPDATE_COLLECT, rep);
                         }catch (Exception e){
                             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                            notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.UPDATE_COLLECT, e.getMessage());
                         }
                     }
 
                     @Override
                     public void onFailed(ApiException apiException) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                        notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.UPDATE_COLLECT, apiException.getMessage());
                     }
                 });
         return mTaskId.get();
     }
 
+    /**
+     * 查询预约单
+     * @param searchRequestParameter 入参
+     * @return taskId
+     */
     public int queryReservation(SearchRequestParameter searchRequestParameter){
+        mTaskId.incrementAndGet();
         StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
-                .setOperatorId(searchRequestParameter.getOperatorId())
                 .setStatus(searchRequestParameter.getType())
                 .setBrandId(searchRequestParameter.getVehicleBrand());
         req.setAccessToken(searchRequestParameter.getAccessToken());
@@ -826,19 +879,27 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                             notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_RESERVATION, rep);
                         }catch (Exception e){
                             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                            notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_RESERVATION, e.getMessage());
                         }
                     }
 
                     @Override
                     public void onFailed(ApiException apiException) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                        notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_RESERVATION, apiException.getMessage());
                     }
                 });
 
         return mTaskId.get();
     }
 
+    /**
+     * 取消预约
+     * @param searchRequestParameter 入参
+     * @return taskId
+     */
     public int cancelReservation(SearchRequestParameter searchRequestParameter){
+        mTaskId.incrementAndGet();
         StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
                 .setPreNum(searchRequestParameter.getPreNum())
                 .setStatus(3);
@@ -856,19 +917,25 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                             notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.UPDATE_RESERVATION, rep);
                         }catch (Exception e){
                             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                            notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.UPDATE_RESERVATION, e.getMessage());
                         }
                     }
 
                     @Override
                     public void onFailed(ApiException apiException) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                        notifyNetSearchError(mTaskId.get(), AutoMapConstant.NetSearchKey.UPDATE_RESERVATION, apiException.getMessage());
                     }
                 });
 
         return mTaskId.get();
     }
 
-    // travelTime 单位：分钟
+    /**
+     * 计算预约剩余时间
+     * @param lastTime 预约时间
+     * @param travelTime 到达时间
+     */
     public void calcTip(Long lastTime, Long travelTime){
         Long currentTime = TimeUtils.getInstance().getCurrentMillSeconds();
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"lastTime: "+lastTime);
@@ -877,11 +944,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         Long time = TimeUtils.getInstance().convert2Minutes(currentTime - lastTime, TimeUnit.MILLISECONDS);
         // 预约剩余时间-到达时间 < 5 min
         if(MAXTIMEOUT - time > 0 && (MAXTIMEOUT - time) - travelTime < TIPTIME){
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"timeQuick");
             notifyTipDialog("timeQuick");
             return;
         }
         // 超过最大预约时间
         if(time > MAXTIMEOUT){
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"timeOut");
             notifyTipDialog("timeOut");
         }
     }

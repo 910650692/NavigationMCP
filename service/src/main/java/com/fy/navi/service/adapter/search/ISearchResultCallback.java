@@ -35,7 +35,23 @@ public interface ISearchResultCallback {
      * @param taskId             任务ID
      */
     void onSilentSearchResult(int taskId, @SearchErrorCode.ErrorCode int errorCode, String message, SearchResultEntity searchResultEntity);
-    // 网络接口回调
+
+    /**
+     * 网络接口成功回调
+     *
+     * @param taskId 任务ID
+     * @param searchKey 任务来源
+     * @param result 搜索结果
+     */
     void onNetSearchResult(int taskId,String searchKey,BaseRep result);
+
+    /**
+     * 网络接口失败回调
+     *
+     * @param taskId 任务ID
+     * @param searchKey 任务来源
+     * @param message 错误消息
+     */
+    void onNetSearchResultError(int taskId,String searchKey,String message);
     void onTipDialog(String status);
 }

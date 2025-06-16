@@ -72,27 +72,31 @@ public class ChargingStationReservationListFragment extends BaseFragment<Fragmen
         mBinding.sceneChargeReservationList.notifyEquipmentInfo(type,poiInfoEntity);
     }
 
-    public void notifyCreateReservationSuccess(){
-        mBinding.sceneChargeReservationList.notifyCreateReservationSuccess();
+    public void notifyCreateReservationSuccess(int taskId){
+        mBinding.sceneChargeReservationList.notifyCreateReservationSuccess(taskId);
     }
 
-    public void notifyEquipmentResult(EquipmentInfo info){
-        mBinding.sceneChargeReservationList.notifyEquipmentResult(info);
+    public void onSearchError(int taskId,String message){
+        mBinding.sceneChargeReservationList.onSearchError(taskId,message);
     }
 
-    public void notifyUnLockResult(){
-        mBinding.sceneChargeReservationList.notifyUnLockResult();
+    public void notifyEquipmentResult(int taskId,EquipmentInfo info){
+        mBinding.sceneChargeReservationList.notifyEquipmentResult(taskId,info);
     }
 
-    public void notifyCancelReservation(ArrayList<ReservationInfo> list){
-        mBinding.sceneChargeReservationList.notifyCancelReservation(list);
+    public void notifyUnLockResult(int taskId){
+        mBinding.sceneChargeReservationList.notifyUnLockResult(taskId);
     }
 
-    public void notifyCancelSuccess(){
-        mBinding.sceneChargeReservationList.notifyCancelSuccess();
+    public void notifyCancelReservation(int taskId,ArrayList<ReservationInfo> list){
+        mBinding.sceneChargeReservationList.notifyCancelReservation(taskId,list);
     }
 
-    public void notifyReadyReservation(ArrayList<ReservationInfo> list){
-        mBinding.sceneChargeReservationList.notifyReadyReservation(list);
+    public void notifyCancelSuccess(int taskId){
+        mBinding.sceneChargeReservationList.notifyCancelSuccess(taskId);
+    }
+
+    public void notifyReadyReservation(int taskId,ArrayList<ReservationInfo> list){
+        mBinding.sceneChargeReservationList.notifyReadyReservation(taskId,list);
     }
 }

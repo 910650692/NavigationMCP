@@ -1,6 +1,7 @@
 package com.fy.navi.hmi.poi;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -17,6 +18,7 @@ import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.ui.base.BaseFragment;
 
 /**
@@ -26,6 +28,7 @@ import com.fy.navi.ui.base.BaseFragment;
 @Route(path = RoutePath.Search.POI_DETAILS_FRAGMENT)
 public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, PoiDetailsViewModel> {
     private SearchResultEntity mSearchResultEntity;
+    private AccessTokenParam mParams;
     @Override
     public int onLayoutId() {
         return R.layout.fragment_poi_details;
@@ -39,6 +42,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     @Override
     public void onInitView() {
         mBinding.scenePoiDetailContentView.setScreenId(MapType.valueOf(mScreenId));
+        mParams = getAccessTokenParam(getActivity());
     }
 
     @Override
@@ -150,16 +154,24 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mBinding.scenePoiDetailContentView.onSilentSearchResult(taskId, searchResultEntity);
     }
 
-    public void onNotifyCollectStatus(BaseRep result){
-        mBinding.scenePoiDetailContentView.onCollectUpdate(result.getResultCode());
+    public void onNotifyCollectStatus(int taskId){
+        mBinding.scenePoiDetailContentView.onCollectUpdate(taskId);
     }
 
     public void onNetSearchResult() {
-        mViewModel.searchCollectList(getActivity());
+        mViewModel.searchCollectList(mParams);
+    }
+
+    public void onNetSearchResultError(final int taskId, String message) {
+        mBinding.scenePoiDetailContentView.onNetSearchResultError(taskId, message);
+    }
+
+    public void onNotifyCollectStatusError(final int taskId, String message){
+        mBinding.scenePoiDetailContentView.onNotifyCollectStatusError(taskId, message);
     }
 
     public void searchReservation(){
-        mViewModel.searchReservation(getActivity());
+        mViewModel.searchReservation(mParams);
     }
 
     /**
@@ -173,5 +185,18 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private AccessTokenParam getAccessTokenParam(Activity activity){
+        if(!ConvertUtils.isNull(activity)) return null;
+        return new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
     }
 }

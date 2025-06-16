@@ -29,7 +29,10 @@ public class ReservationInfo implements Parcelable {
     private String mUserId;
     @SerializedName("createTime")
     private String mCreateTime;
-
+    @SerializedName("lng")
+    private String mLng;
+    @SerializedName("lat")
+    private String mLat;
 
     public String getmPreNum() {
         return mPreNum;
@@ -94,6 +97,24 @@ public class ReservationInfo implements Parcelable {
         return this;
     }
 
+    public String getmLng(){
+        return mLng;
+    }
+
+    public ReservationInfo setmLng(String mLng){
+        this.mLng = mLng;
+        return this;
+    }
+
+    public String getmLat(){
+        return mLat;
+    }
+
+    public ReservationInfo setmLat(String mLat){
+        this.mLat = mLat;
+        return this;
+    }
+
     protected ReservationInfo(Parcel in) {
         mPreNum = in.readString();
         mStatus = in.readInt();
@@ -102,6 +123,8 @@ public class ReservationInfo implements Parcelable {
         mEquipmentId = in.readString();
         mUserId = in.readString();
         mCreateTime = in.readString();
+        mLat = in.readString();
+        mLng = in.readString();
     }
 
     public static final Creator<ReservationInfo> CREATOR = new Creator<ReservationInfo>() {
@@ -130,5 +153,7 @@ public class ReservationInfo implements Parcelable {
         parcel.writeString(mEquipmentId);
         parcel.writeString(mUserId);
         parcel.writeString(mCreateTime);
+        parcel.writeString(mLat);
+        parcel.writeString(mLng);
     }
 }

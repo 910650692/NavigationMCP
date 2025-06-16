@@ -23,6 +23,7 @@ import com.fy.navi.service.define.search.CostTime;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.ReservationInfo;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
@@ -50,6 +51,11 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     @Override
     protected PoiDetailsModel initModel() {
         return new PoiDetailsModel();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
     }
 
     /**
@@ -156,12 +162,21 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                 }
             } catch (JSONException e) {
                 Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
+                notifyNetSearchResultError(taskId,e.getMessage());
             }
+        }else{
+            notifyNetSearchResultError(taskId,result.getMessage());
         }
     }
 
-    public void notifyCollectStatus(BaseRep result){
-        mView.onNotifyCollectStatus(result);
+    public void notifyCollectStatus(int taskId,BaseRep result){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
+        if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
+            mView.onNotifyCollectStatus(taskId);
+        }else{
+            notifyCollectStatusError(taskId,result.getMessage());
+        }
+
     }
 
     public void notifyCollectList(BaseRep result){
@@ -187,7 +202,10 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                 mView.searchReservation();
             } catch (JSONException e) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
+                notifyCollectListError(result.getMessage());
             }
+        }else{
+            notifyCollectListError(result.getMessage());
         }
     }
 
@@ -211,8 +229,27 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                 });
             } catch (JSONException e) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
+                notifyReservationListError(result.getMessage());
             }
+        }else{
+            notifyReservationListError(result.getMessage());
         }
+    }
+
+    public void notifyNetSearchResultError(int taskId, String message){
+        mView.onNetSearchResultError(taskId,message);
+    }
+
+    public void notifyCollectStatusError(int taskId, String message){
+        mView.onNotifyCollectStatusError(taskId,message);
+    }
+
+    public void notifyCollectListError(String message){
+        notifyNetSearchResultError(mTaskId,message);
+    }
+
+    public void notifyReservationListError(String message){
+        notifyNetSearchResultError(mTaskId,message);
     }
 
     private CostTime getCurrentElePrice(ArrayList<CostTime> costTimes) {
@@ -231,11 +268,11 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         return currentCostTime;
     }
 
-    public void searchCollectList(Activity activity){
-        mModel.searchCollectList(activity);
+    public void searchCollectList(AccessTokenParam param){
+        mModel.searchCollectList(param);
     }
 
-    public void searchReservation(Activity activity){
-        mModel.queryReservation(mSearchResultEntity,activity);
+    public void searchReservation(AccessTokenParam param){
+        mModel.queryReservation(mSearchResultEntity,param);
     }
 }

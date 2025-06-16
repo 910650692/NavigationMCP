@@ -44,42 +44,41 @@ public class BaseChargingStationReservationViewModel extends BaseViewModel<Charg
         return mRootClick;
     }
 
-    public void onQueryEquipmentResult(BaseRep result){
+    public void onQueryEquipmentResult(int taskId,BaseRep result){
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
             try {
                 JSONArray jsonArray = new JSONArray(GsonUtils.toJson(result.getDataSet()));
                 EquipmentInfo equipmentInfo = GsonUtils.fromJson(String.valueOf(jsonArray.get(0)), EquipmentInfo.class);
-                mView.notifyEquipmentInfo(equipmentInfo);
+                mView.notifyEquipmentInfo(taskId,equipmentInfo);
             } catch (JSONException e) {
                 ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.query_error));
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e);
             }
         }else{
-            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.query_error));
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");
+            onSearchError(taskId,result.getMessage());
         }
     }
 
-    public void onLockGround(BaseRep result){
+    public void onLockGround(int taskId,BaseRep result){
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
-            mView.notifyLockGround();
-            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.unlock_success));
+            mView.notifyLockGround(taskId);
         }else{
-            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.unlock_error));
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");
+            onLockGroundError(taskId,result.getMessage());
         }
     }
 
-    public void onCancelReservation(BaseRep result){
+    public void onCancelReservation(int taskId,BaseRep result){
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
-            mView.notifyCancelSuccess();
+            mView.notifyCancelSuccess(taskId);
         }else{
-            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.query_error));
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");
+            onCancelReservationError(taskId,result.getMessage());
         }
     }
 
-    public void onQueryReservation(BaseRep result){
+    public void onQueryReservation(int taskId,BaseRep result){
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
             ArrayList<ReservationInfo> list = new ArrayList<>();
@@ -94,12 +93,26 @@ public class BaseChargingStationReservationViewModel extends BaseViewModel<Charg
                         list.add(reservationInfo);
                     }
                 }
-                mView.notifyCancelReservation(list);
+                mView.notifyCancelReservation(taskId,list);
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: ",e.getMessage());
+                onSearchError(taskId,e.getMessage());
             }
         }else{
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");
+            onSearchError(taskId,result.getMessage());
         }
+    }
+
+    public void onLockGroundError(int taskId,String message){
+        mView.notifyLockGroundError(taskId,message);
+    }
+
+    public void onCancelReservationError(int taskId,String message){
+        mView.notifyCancelReservationError(taskId,message);
+    }
+
+    public void onSearchError(int taskId,String message){
+        mView.notifySearchError(taskId,message);
     }
 }

@@ -128,10 +128,6 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     public void notifyNetSearchResult(int taskId,BaseRep result){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code: "+result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
-            if(!AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
-                mView.notifySearchResultByNetError(result.getResultCode());
-                return;
-            }
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
             try {
                 JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
@@ -175,10 +171,14 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
                 mView.notifySearchResultByNet(taskId,searchResultEntity);
             }catch (JSONException e){
                 Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e);
-                mView.notifySearchResultByNetError("idle");
+                notifyNetSearchResultError(taskId,"idle");
             }
         }else{
-            mView.notifySearchResultByNetError("idle");
+            notifyNetSearchResultError(taskId,"idle");
         }
+    }
+
+    public void notifyNetSearchResultError(int taskId,String message){
+        mView.notifySearchResultByNetError(taskId,message);
     }
 }

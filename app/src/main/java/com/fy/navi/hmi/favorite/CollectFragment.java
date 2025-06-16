@@ -119,7 +119,11 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
         });
     }
 
-    public void setAdapterDataByNet(ArrayList<PoiInfoEntity> poiInfoEntity){
-        mBinding.collectView.setAdapterData(poiInfoEntity);
+    public void notifyNetSearchResult(int taskId,ArrayList<PoiInfoEntity> poiInfoEntity){
+        mBinding.collectView.notifyNetSearchResult(taskId,poiInfoEntity);
+    }
+
+    public void notifySearchResultByNetError(int taskId,String message){
+        mBinding.collectView.notifySearchResultByNetError(taskId,message);
     }
 }

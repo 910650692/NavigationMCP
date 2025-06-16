@@ -110,8 +110,25 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
 
     @Override
     public void onNetSearchResult(int taskId,String searchKey,BaseRep result) {
-        if(AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST.equals(searchKey)){
-            mViewModel.notifyNetSearchResult(taskId,result);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mCallbackId: " + mCallbackId + "currentCallbackId: " +mSearchPackage.getCurrentCallbackId());
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            if(AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST.equals(searchKey)){
+                mViewModel.notifyNetSearchResult(taskId,result);
+            }
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId);
+        }
+    }
+
+    @Override
+    public void onNetSearchResultError(int taskId, String searchKey, String message) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mCallbackId: " + mCallbackId + "currentCallbackId: " +mSearchPackage.getCurrentCallbackId());
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            if(AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST.equals(searchKey)){
+                mViewModel.notifyNetSearchResultError(taskId,message);
+            }
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId);
         }
     }
 }

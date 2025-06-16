@@ -113,37 +113,72 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
 
     @Override
     public void onNetSearchResult(final int taskId,String searchKey,BaseRep result) {
-        switch (searchKey){
-            case AutoMapConstant.NetSearchKey.QUERY_STATION_INFO:
-                mViewModel.notifyNetSearchResult(taskId,result);
-                break;
-            case AutoMapConstant.NetSearchKey.UPDATE_COLLECT:
-                mViewModel.notifyCollectStatus(result);
-                break;
-            case AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST:
-                mViewModel.notifyCollectList(result);
-                break;
-            case AutoMapConstant.NetSearchKey.QUERY_RESERVATION:
-                mViewModel.notifyReservationList(result);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mCallbackId: " + mCallbackId + "currentCallbackId: " +mSearchPackage.getCurrentCallbackId());
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            switch (searchKey) {
+                case AutoMapConstant.NetSearchKey.QUERY_STATION_INFO:
+                    mViewModel.notifyNetSearchResult(taskId, result);
+                    break;
+                case AutoMapConstant.NetSearchKey.UPDATE_COLLECT:
+                    mViewModel.notifyCollectStatus(taskId,result);
+                    break;
+                case AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST:
+                    // 自查询
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mTaskId: "+mTaskId+"---taskId: "+taskId);
+                    if(mTaskId == taskId && !ConvertUtils.isNull(mViewModel)){
+                        mViewModel.notifyCollectList(result);
+                    }
+                    break;
+                case AutoMapConstant.NetSearchKey.QUERY_RESERVATION:
+                    // 自查询
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mTaskId: "+mTaskId+"---taskId: "+taskId);
+                    if(mTaskId == taskId && !ConvertUtils.isNull(mViewModel)){
+                        mViewModel.notifyReservationList(result);
+                    }
+                    break;
+            }
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId);
         }
     }
 
-    public void searchCollectList(Activity activity){
-        AccessTokenParam param = new AccessTokenParam(
-                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
-                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
-                null,
-                activity,
-                null,
-                null,
-                null,
-                null);
+    @Override
+    public void onNetSearchResultError(int taskId, String searchKey, String message) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mCallbackId: " + mCallbackId + "currentCallbackId: " +mSearchPackage.getCurrentCallbackId());
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            switch (searchKey) {
+                case AutoMapConstant.NetSearchKey.QUERY_STATION_INFO:
+                    mViewModel.notifyNetSearchResultError(taskId, message);
+                    break;
+                case AutoMapConstant.NetSearchKey.UPDATE_COLLECT:
+                    mViewModel.notifyCollectStatusError(taskId, message);
+                    break;
+                case AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST:
+                    // 自查询
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mTaskId: "+mTaskId+"---taskId: "+taskId);
+                    if(mTaskId == taskId && !ConvertUtils.isNull(mViewModel)){
+                        mViewModel.notifyCollectListError(message);
+                    }
+                    break;
+                case AutoMapConstant.NetSearchKey.QUERY_RESERVATION:
+                    // 自查询
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mTaskId: "+mTaskId+"---taskId: "+taskId);
+                    if(mTaskId == taskId && !ConvertUtils.isNull(mViewModel)){
+                        mViewModel.notifyReservationListError(message);
+                    }
+                    break;
+            }
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId);
+        }
+    }
 
+    public void searchCollectList(AccessTokenParam param){
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
             String vehicleBrand = mSearchPackage.getBrandName(mCalibrationPackage.brand());
-            mSearchPackage.queryCollectStation(idpUserId,accessToken,vehicleBrand);
+            mTaskId = mSearchPackage.queryCollectStation(idpUserId,accessToken,vehicleBrand);
         });
     }
 
@@ -152,23 +187,13 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         return AccountPackage.getInstance().isSGMLogin();
     }
 
-    public void queryReservation(SearchResultEntity searchResultEntity,Activity activity){
-        AccessTokenParam param = new AccessTokenParam(
-                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
-                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
-                null,
-                activity,
-                null,
-                null,
-                null,
-                null);
-
+    public void queryReservation(SearchResultEntity searchResultEntity,AccessTokenParam param){
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
             String brandId = mSearchPackage.getBrandId(mCalibrationPackage.brand());
             int status = 1;
-            mSearchPackage.queryReservation(searchResultEntity.getPoiList().get(0),brandId,status,idpUserId,accessToken);
+            mTaskId = mSearchPackage.queryReservation(brandId,status,idpUserId,accessToken);
         });
     }
 }

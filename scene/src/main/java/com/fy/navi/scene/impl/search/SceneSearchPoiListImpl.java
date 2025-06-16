@@ -360,9 +360,13 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     }
 
     // 查询自营站列表
-    public int queryStationNewResult(SearchResultEntity searchResultEntity){
-        mTaskId = mSearchPackage.queryStationNewResult(searchResultEntity);
-        return mTaskId;
+    public void queryStationNewResult(SearchResultEntity searchResultEntity){
+        if(ConvertUtils.isNull(searchResultEntity)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"searchResultEntity is null");
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"keyword: "+searchResultEntity.getKeyword());
+        mTaskId = mSearchPackage.queryStationNewResult(searchResultEntity.getKeyword());
     }
 
     public int getBrand(){

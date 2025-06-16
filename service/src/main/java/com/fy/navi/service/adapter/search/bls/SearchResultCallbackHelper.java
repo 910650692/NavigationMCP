@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.search.bls;
 
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.search.model.AggregateSearchResult;
@@ -289,12 +290,20 @@ public class SearchResultCallbackHelper {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "net Callbacks is null");
             return;
         }
-        //todo result转成ResponseEntity类型
-        //ResponseEntity entity = GsonUtils.convertToT(result, ResponseEntity.class);
-        //或者用别的转换的方法
-        //将entity透出到别的模块那边使用
+
         for (ISearchResultCallback callback : mSearchResponseCallbackList) {
             callback.onNetSearchResult(taskId,searchKey,result);
+        }
+    }
+
+    public void notifyNetCallbacksError(final int taskId,String searchKey,String message){
+        if (mSearchResponseCallbackList == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "net Callbacks is null");
+            return;
+        }
+
+        for (ISearchResultCallback callback : mSearchResponseCallbackList) {
+            callback.onNetSearchResultError(taskId,searchKey,message);
         }
     }
 

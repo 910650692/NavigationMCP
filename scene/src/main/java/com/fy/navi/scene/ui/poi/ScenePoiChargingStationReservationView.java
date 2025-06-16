@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
@@ -26,6 +27,7 @@ import com.fy.navi.scene.databinding.SceneReservationDetailViewBinding;
 import com.fy.navi.scene.impl.poi.ScenePoiChargingStationReservationViewImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.service.AppCache;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.route.RoutePoiType;
@@ -33,6 +35,7 @@ import com.fy.navi.service.define.search.ConnectorInfoItem;
 import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.ReservationInfo;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -48,6 +51,7 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
     private EquipmentInfo mEquipmentInfo;
     private Integer mCancelNumber = 0;
     private static final Integer MAX_CANCEL = 3;
+    private AccessTokenParam mParams;
 
     public ScenePoiChargingStationReservationView(@NonNull Context context) {
         super(context);
@@ -77,6 +81,12 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        mParams = getAccessTokenParam((Activity) getContext());
+    }
+
+    @Override
     protected void initObserver() {
 
     }
@@ -86,25 +96,58 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
         if(!ConvertUtils.isNull(mPoiInfoEntity.getReservationInfo())){
             mReservationInfo = mPoiInfoEntity.getReservationInfo();
             mScreenViewModel.queryEquipmentInfo(mReservationInfo);
-            mScreenViewModel.queryReservation(mPoiInfoEntity,(Activity) getContext());
+            mScreenViewModel.queryReservation(mPoiInfoEntity,mParams);
         }
         refreshEtaInfoView();
     }
 
-    public void notifyEquipmentInfo(EquipmentInfo equipmentInfo){
+    public void notifyEquipmentInfo(int taskId,EquipmentInfo equipmentInfo){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
         mEquipmentInfo = equipmentInfo;
         refreshEquipmentInfoView();
     }
 
-    public void notifyLockGroundSuccess(){
+    public void notifyLockGroundSuccess(int taskId){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
+        ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.unlock_tip_success));
         mScreenViewModel.queryEquipmentInfo(mReservationInfo);
     }
 
-    public void notifyCancelSuccess(){
+    public void notifyCancelSuccess(int taskId){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
         mScreenViewModel.queryEquipmentInfo(mReservationInfo);
     }
 
-    public void notifyCancelReservation(ArrayList<ReservationInfo> list){
+    public void notifyCancelReservation(int taskId,ArrayList<ReservationInfo> list){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
         mCancelNumber = list.size();
     }
 
@@ -200,7 +243,7 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
         new ChargeStationConfirmDialog.Build(getContext()).setDialogObserver(new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
-                mScreenViewModel.unGroundLock(mEquipmentInfo.getmConnectorInfoItem().get(0),mPoiInfoEntity,(Activity) getContext());
+                mScreenViewModel.unGroundLock(mEquipmentInfo.getmConnectorInfoItem().get(0),mPoiInfoEntity,mParams);
             }
         })
         .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.sure_unlock))
@@ -236,12 +279,59 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
             if(mCancelNumber >= MAX_CANCEL){
                 return;
             }
-            mScreenViewModel.cancelReservation(mReservationInfo,(Activity) getContext());
+            mScreenViewModel.cancelReservation(mReservationInfo,mParams);
             }
         })
         .setTitle(getContext().getString(R.string.cancel_num_tip,mCancelNumber.toString()))
         .setConfirmTitle(ResourceUtils.Companion.getInstance().getString(R.string.dsc_confirm))
         .build().show();
 
+    }
+
+    public void notifyLockGroundError(int taskId,String message){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
+        ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.unlock_tip_fail));
+    }
+
+    public void notifyCancelReservationError(int taskId,String message){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"message: "+message + "--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
+        ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.charge_cancel_appointment_error));
+    }
+
+    public void notifySearchError(int taskId,String message){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"message: "+message + "--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+        }
+    }
+
+    private AccessTokenParam getAccessTokenParam(Activity activity){
+        if(!ConvertUtils.isNull(activity)) return null;
+        return new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
     }
 }

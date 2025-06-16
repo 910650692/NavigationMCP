@@ -188,8 +188,8 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         mBinding.scenePoiList.notifySearchResult(taskId, searchResultEntity);
     }
 
-    public void notifySearchResultByNetError(String errorCode){
-        mBinding.scenePoiList.notifySearchResultNetError(errorCode);
+    public void notifySearchResultByNetError(int taskId,String message){
+        mBinding.scenePoiList.notifySearchResultNetError(taskId,message);
     }
 
     @Override

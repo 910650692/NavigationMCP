@@ -1,6 +1,7 @@
 package com.fy.navi.scene.impl.poi;
 
 import android.app.Activity;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -36,6 +37,7 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
     public MutableLiveData<PoiInfoEntity> mPoiInfo = new MutableLiveData<>();
     private final SearchPackage mSearchPackage;
     private final CalibrationPackage mCalibrationPackage;
+    private int mTaskId;
     public ScenePoiChargingStationReservationListViewImpl(ScenePoiChargingStationReservationListView mScreenView) {
         super(mScreenView);
         searchType = new MutableLiveData<>(1);
@@ -46,79 +48,62 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
         mScreenView.closeFragment();
     }
 
-    public void queryEquipmentInfo(EquipmentInfo info,PoiInfoEntity poiInfo){
-        mSearchPackage.queryEquipmentInfo(info,poiInfo);
+    public int getMTaskId() {
+        return mTaskId;
     }
 
-    public void createReversion(ConnectorInfoItem item, PoiInfoEntity poiInfo, Activity activity){
-        AccessTokenParam param = new AccessTokenParam(
-                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
-                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
-                null,
-                activity,
-                null,
-                null,
-                null,
-                null);
+    public void queryEquipmentInfo(EquipmentInfo info,PoiInfoEntity poiInfo){
+        if(ConvertUtils.isNull(info) || ConvertUtils.isNull(poiInfo)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"info or poiInfo is null");
+            return;
+        }
+        mTaskId = mSearchPackage.queryEquipmentInfo(info.getmEquipmentId(),poiInfo.getStationId(),poiInfo.getOperatorId());
+    }
+
+    public void createReversion(ConnectorInfoItem item, PoiInfoEntity poiInfo, AccessTokenParam param){
+        if(ConvertUtils.isNull(item) || ConvertUtils.isNull(poiInfo) || ConvertUtils.isNull(param)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"info is null");
+            return;
+        }
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
             String vehicleBrand = mSearchPackage.getBrandId(mCalibrationPackage.brand());
-            mSearchPackage.createReservation(item, poiInfo,idpUserId,accessToken,vehicleBrand);
+            mTaskId = mSearchPackage.createReservation(item, poiInfo,idpUserId,accessToken,vehicleBrand);
         });
-
     }
 
-    public void unGroundLock(ConnectorInfoItem item, PoiInfoEntity poiInfo, Activity activity){
-        AccessTokenParam param = new AccessTokenParam(
-                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
-                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
-                null,
-                activity,
-                null,
-                null,
-                null,
-                null);
+    public void unGroundLock(ConnectorInfoItem item, PoiInfoEntity poiInfo, AccessTokenParam param){
+        if(ConvertUtils.isNull(item) || ConvertUtils.isNull(poiInfo) || ConvertUtils.isNull(param)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"info is null");
+            return;
+        }
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
             String vehicleBrand = String.valueOf(mCalibrationPackage.brand());
-            mSearchPackage.unGroundLock(item, poiInfo,idpUserId,accessToken,vehicleBrand);
+            mTaskId = mSearchPackage.unGroundLock(item, poiInfo,idpUserId,accessToken,vehicleBrand);
         });
     }
 
-    public void queryReservation(PoiInfoEntity poiInfo,Activity activity,Integer status){
-        AccessTokenParam param = new AccessTokenParam(
-                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
-                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
-                null,
-                activity,
-                null,
-                null,
-                null,
-                null);
+    public void queryReservation(PoiInfoEntity poiInfo,AccessTokenParam param,Integer status){
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "2";
-            mSearchPackage.queryReservation(poiInfo,vehicleBrand,status,idpUserId,accessToken);
+            String vehicleBrand = mSearchPackage.getBrandId(mCalibrationPackage.brand());
+            mTaskId = mSearchPackage.queryReservation(vehicleBrand,status,idpUserId,accessToken);
         });
     }
 
-    public void cancelReservation(ReservationInfo reservationInfo, Activity activity){
-        AccessTokenParam param = new AccessTokenParam(
-                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
-                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
-                null,
-                activity,
-                null,
-                null,
-                null,
-                null);
+    public void cancelReservation(ReservationInfo reservationInfo, AccessTokenParam param){
+        if(ConvertUtils.isNull(reservationInfo) || ConvertUtils.isNull(param)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"reservationInfo or activity is null");
+            return;
+        }
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            mSearchPackage.cancelReservation(reservationInfo,idpUserId,accessToken);
+            mTaskId = mSearchPackage.cancelReservation(reservationInfo.getmPreNum(),idpUserId,accessToken);
         });
     }
 

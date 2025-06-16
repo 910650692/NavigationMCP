@@ -66,19 +66,31 @@ public class ChargingStationReservationFragment extends BaseFragment<FragmentCha
         mBinding.sceneChargeReservation.notifyPoiInfo(poiInfoEntity);
     }
 
-    public void notifyEquipmentInfo(EquipmentInfo equipmentInfo){
-        mBinding.sceneChargeReservation.notifyEquipmentInfo(equipmentInfo);
+    public void notifyEquipmentInfo(int taskId,EquipmentInfo equipmentInfo){
+        mBinding.sceneChargeReservation.notifyEquipmentInfo(taskId,equipmentInfo);
     }
 
-    public void notifyLockGround(){
-        mBinding.sceneChargeReservation.notifyLockGroundSuccess();
+    public void notifyLockGround(int taskId){
+        mBinding.sceneChargeReservation.notifyLockGroundSuccess(taskId);
     }
 
-    public void notifyCancelSuccess(){
-        mBinding.sceneChargeReservation.notifyCancelSuccess();
+    public void notifyCancelSuccess(int taskId){
+        mBinding.sceneChargeReservation.notifyCancelSuccess(taskId);
     }
 
-    public void notifyCancelReservation(ArrayList<ReservationInfo> list){
-        mBinding.sceneChargeReservation.notifyCancelReservation(list);
+    public void notifyCancelReservation(int taskId,ArrayList<ReservationInfo> list){
+        mBinding.sceneChargeReservation.notifyCancelReservation(taskId,list);
+    }
+
+    public void notifyLockGroundError(int taskId,String message){
+        mBinding.sceneChargeReservation.notifyLockGroundError(taskId,message);
+    }
+
+    public void notifyCancelReservationError(int taskId,String message){
+        mBinding.sceneChargeReservation.notifyCancelReservationError(taskId,message);
+    }
+
+    public void notifySearchError(int taskId,String message){
+        mBinding.sceneChargeReservation.notifySearchError(taskId,message);
     }
 }

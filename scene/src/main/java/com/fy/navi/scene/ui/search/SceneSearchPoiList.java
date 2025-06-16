@@ -879,10 +879,19 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
     }
 
-    public void notifySearchResultNetError(String code){
+    public void notifySearchResultNetError(int taskId,String message){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error message: " + message + "--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
             mSearchLoadingDialog.dismiss();
         }
+        mViewBinding.searchResultNoData.setVisibility(VISIBLE);
     }
 
     /**

@@ -144,6 +144,10 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
 
     // 云端自营站查询详情
     public void doSearchByNet(final PoiInfoEntity poiInfoEntity){
+        if(ConvertUtils.isNull(poiInfoEntity)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"poiInfoEntity is null");
+            return;
+        }
         mTaskId = mSearchPackage.queryStationInfo(poiInfoEntity);
     }
 
@@ -317,7 +321,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
             String vehicleBrand = mSearchPackage.getBrandName(CalibrationPackage.getInstance().brand());
-            mSearchPackage.updateCollectStatus(idpUserId,accessToken,vehicleBrand,poiInfo);
+            mTaskId = mSearchPackage.updateCollectStatus(idpUserId,accessToken,vehicleBrand,poiInfo);
         });
     }
 

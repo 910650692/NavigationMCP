@@ -34,23 +34,23 @@ public class BaseChargingStationReservationListViewModel extends BaseViewModel<C
         return new ChargingStationReservationListModel();
     }
 
-    public void onCreateReservationResult(BaseRep result){
+    public void onCreateReservationResult(int taskId,BaseRep result){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getResultCode"+result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
-            mView.notifyCreateReservationSuccess();
+            mView.notifyCreateReservationSuccess(taskId);
         }else{
             ToastUtils.Companion.getInstance().showCustomToastView(result.getMessage());
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getError"+result.getMessage());
         }
     }
 
-    public void onQueryEquipmentResult(BaseRep result){
+    public void onQueryEquipmentResult(int taskId,BaseRep result){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getResultCode"+result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
             try {
                 JSONArray jsonArray = new JSONArray(GsonUtils.toJson(result.getDataSet()));
                 EquipmentInfo equipmentInfo = GsonUtils.fromJson(String.valueOf(jsonArray.get(0)), EquipmentInfo.class);
-                mView.notifyEquipmentResult(equipmentInfo);
+                mView.notifyEquipmentResult(taskId,equipmentInfo);
             } catch (JSONException e) {
                 ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.query_error));
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e);
@@ -61,18 +61,17 @@ public class BaseChargingStationReservationListViewModel extends BaseViewModel<C
         }
     }
 
-    public void onUnLockResult(BaseRep result){
+    public void onUnLockResult(int taskId,BaseRep result){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getResultCode"+result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
-            mView.notifyUnLockResult();
-            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.unlock_success));
+            mView.notifyUnLockResult(taskId);
         }else{
             ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.unlock_error));
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getError"+result.getMessage());
         }
     }
 
-    public void onQueryReservation(BaseRep result){
+    public void onQueryReservation(int taskId,BaseRep result){
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
             ArrayList<ReservationInfo> cancelList = new ArrayList<>();
@@ -92,25 +91,31 @@ public class BaseChargingStationReservationListViewModel extends BaseViewModel<C
                     }
                 }
                 if(!ConvertUtils.isEmpty(cancelList)){
-                    mView.notifyCancelReservation(cancelList);
+                    mView.notifyCancelReservation(taskId,cancelList);
                 }else if(!ConvertUtils.isEmpty(PreList)){
-                    mView.notifyReadyReservation(PreList);
+                    mView.notifyReadyReservation(taskId,PreList);
                 }
 
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error message: "+ e.getMessage());
+                onSearchError(taskId,e.getMessage());
             }
         }else{
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");
+            onSearchError(taskId,result.getMessage());
         }
     }
 
-    public void onCancelReservation(BaseRep result){
+    public void onCancelReservation(int taskId,BaseRep result){
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
-            mView.notifyCancelSuccess();
+            mView.notifyCancelSuccess(taskId);
         }else{
-            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.query_error));
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");
+            onSearchError(taskId,result.getMessage());
         }
+    }
+
+    public void onSearchError(int taskId,String message){
+        mView.onSearchError(taskId,message);
     }
 }

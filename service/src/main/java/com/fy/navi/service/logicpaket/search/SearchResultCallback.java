@@ -72,8 +72,24 @@ public interface SearchResultCallback {
 
     }
 
-    // 网络回调
+    /**
+     * 成功的搜索结果回调
+     * @param taskId 任务ID
+     * @param searchKey 任务来源
+     * @param result 搜索结果
+     */
     default void onNetSearchResult(int taskId,String searchKey,BaseRep result) {
+    }
+
+    /**
+     * 网络接口失败回调
+     *
+     * @param taskId 任务ID
+     * @param searchKey 任务来源
+     * @param message 错误消息
+     */
+    default void onNetSearchResultError(int taskId,String searchKey,String message){
+
     }
 
     /**

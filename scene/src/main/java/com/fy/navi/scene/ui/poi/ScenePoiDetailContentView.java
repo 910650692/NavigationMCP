@@ -506,15 +506,45 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         reloadPoiLabelMarker();
     }
 
-    public void onCollectUpdate(String code){
-        if("0000".equals(code)){
-            mIsCollectStatus = !mIsCollectStatus;
-            final int favoriteIcon = !mIsCollectStatus ? R.drawable.img_star58 :
-                    R.drawable.icon_basic_ic_star_fav;
-            mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), favoriteIcon));
-            ToastUtils.Companion.getInstance().showCustomToastView(mIsCollectStatus ? getContext().getString(R.string.sha_has_favorite) : getContext().getString(R.string.sha_cancel_favorite));
+    public void onCollectUpdate(int taskId){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
         }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
+        mIsCollectStatus = !mIsCollectStatus;
+        final int favoriteIcon = !mIsCollectStatus ? R.drawable.img_star58 :
+                R.drawable.icon_basic_ic_star_fav;
+        mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
+                ContextCompat.getDrawable(getContext(), favoriteIcon));
+        ToastUtils.Companion.getInstance().showCustomToastView(mIsCollectStatus ? getContext().getString(R.string.sha_has_favorite) : getContext().getString(R.string.sha_cancel_favorite));
+    }
+
+    public void onNetSearchResultError(int taskId,String message){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"message: "+ message + "taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"message: "+message);
+    }
+
+    public void onNotifyCollectStatusError(int taskId,String message){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"message: "+ message + "--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
+        ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.mps_set_collect_error));
     }
 
     /**

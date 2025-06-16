@@ -34,6 +34,7 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.BaseFragment;
@@ -56,6 +57,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     private boolean mIsChargingCollect = false;
     private boolean mIsAsyncData = true;
     private final static String PATAC_ACTION_LOGIN = "patac.hmi.user.intent.action.LOGIN";
+    private AccessTokenParam mParams;
 
     public SceneCollectView(@NonNull final Context context) {
         super(context);
@@ -91,6 +93,12 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
         registerBroadcast();
         setupRecyclerView();
         setViewClick();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mParams = getAccessTokenParam((Activity) getContext());
     }
 
     /**
@@ -171,7 +179,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
 
             @Override
             public void updateCollectStatus(PoiInfoEntity poiInfoEntity) {
-                mScreenViewModel.updateCollectStatus((Activity) getContext(),poiInfoEntity);
+                mScreenViewModel.updateCollectStatus(mParams,poiInfoEntity);
             }
         });
     }
@@ -222,7 +230,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             }
             if(mIsAsyncData){
                 // 获取收藏数据
-                mScreenViewModel.queryCollectStation((Activity) getContext());
+                mScreenViewModel.queryCollectStation(mParams);
             }else{
                 mViewBinding.sllNoCharge.setVisibility(VISIBLE);
             }
@@ -347,5 +355,43 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     public void onDestroy() {
         super.onDestroy();
         getContext().unregisterReceiver(mAccountReceiver);
+    }
+
+    public void notifyNetSearchResult(int taskId, ArrayList<PoiInfoEntity> poiInfoEntity){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
+        setAdapterData(poiInfoEntity);
+    }
+
+    public void notifySearchResultByNetError(int taskId,String message){
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error message: " + message + "--taskId: "+taskId + "--currentTaskId: "+mScreenViewModel.getMTaskId());
+        if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
+            return;
+        }
+        hideEmptyView();
+        mViewBinding.sllNoNet.setVisibility(VISIBLE);
+    }
+
+    private AccessTokenParam getAccessTokenParam(Activity activity){
+        if(!ConvertUtils.isNull(activity)) return null;
+        return new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
     }
 }
