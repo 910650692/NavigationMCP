@@ -134,6 +134,9 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         posWorkPath.contextPath = contextDir;//存放定位上下文文件目录
         LocModeType locModeType = LocationFuncSwitch.getLocModeType(locMode, mPositionConfig);
         initLocation();
+        if (ConvertUtils.isEmpty(mPosService)) {
+            return false;
+        }
         mPosService.setDefaultPos(new Coord3DDouble(locInfoBean.getLongitude(), locInfoBean.getLatitude(), locInfoBean.getAltitude()));
         // 添加位置信息观察者
         mPosService.addLocInfoObserver(this, 0);
