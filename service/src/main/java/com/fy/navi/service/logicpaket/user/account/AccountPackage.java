@@ -20,17 +20,18 @@ import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 
 import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public final class AccountPackage implements AccountAdapterCallBack {
     private final AccountAdapter mAccountAdapter;
-    private final Hashtable<String, AccountCallBack> mCallBacks;
+    private final ConcurrentHashMap<String, AccountCallBack> mCallBacks;
     private final CommonManager mCommonManager;
     private boolean mIsLogin = false; // 判断当前用户是否已登录。  默认false，未登录
     private final HistoryManager mHistoryManager;
 
     private AccountPackage() {
-        mCallBacks = new Hashtable<>();
+        mCallBacks = new ConcurrentHashMap<>();
         mAccountAdapter = AccountAdapter.getInstance();
         mCommonManager = CommonManager.getInstance();
         mCommonManager.init();
@@ -190,10 +191,14 @@ public final class AccountPackage implements AccountAdapterCallBack {
      * @param key 回调key
      * @param callback 回调
      */
-    public synchronized void registerCallBack(final String key, final AccountCallBack callback) {
+    public void registerCallBack(final String key, final AccountCallBack callback) {
         if (callback != null && !mCallBacks.contains(callback)) {
             mCallBacks.put(key,callback);
         }
+    }
+
+    public void unRegisterCallBack(final String key) {
+        mCallBacks.remove(key);
     }
 
     /**

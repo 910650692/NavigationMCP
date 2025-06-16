@@ -84,7 +84,7 @@ class ToastUtils private constructor() {
         ConvertUtils.checkParam("show", msg, time)
         val view = LayoutInflater.from(mContext).inflate(R.layout.toast_base_view, null)
         val toastText = view.findViewById<TextView>(R.id.toast_text)
-        mToast = Toast(mContext)
+        if (mToast == null) mToast = Toast(mContext)
         mToast?.view = view
         mToast!!.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, ResourceUtils.getInstance().getDimensionPixelSize(R.dimen.dp_20))
         mToast?.setDuration(time)
@@ -98,7 +98,7 @@ class ToastUtils private constructor() {
         ConvertUtils.checkParam("show", view, msg)
         var toastText = view.findViewById<TextView>(R.id.toast_text)
         toastText.text = msg
-        mToast = Toast(mContext)
+        if (mToast == null) mToast = Toast(mContext)
         mToast?.view = view
         mToast?.setDuration(Toast.LENGTH_SHORT)
         mToast?.show()
@@ -114,7 +114,13 @@ class ToastUtils private constructor() {
     private fun show(sequence: CharSequence?, duration: Int, cancel: Boolean) {
         ConvertUtils.checkParam("show", sequence)
         if (cancel) cancelView()
-        mToast = Toast.makeText(mContext, sequence, duration)
+        if (mToast == null) {
+            mToast = Toast.makeText(mContext, sequence, duration)
+        } else {
+            mToast?.setText(sequence)
+            mToast?.setDuration(duration)
+        }
+
         mToast?.show()
         sendBuryPointForShowToast(sequence.toString())
     }

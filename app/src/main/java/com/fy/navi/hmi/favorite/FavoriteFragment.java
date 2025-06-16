@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
@@ -42,6 +44,7 @@ import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.view.SkinEditText;
 import com.fy.navi.ui.view.SkinGridLayout;
 import com.fy.navi.ui.view.SkinImageView;
+import com.fy.navi.ui.view.SkinNestedScrollView;
 import com.fy.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
@@ -50,7 +53,7 @@ import java.util.Map;
 import java.util.Objects;
 
 
-public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, FavoriteViewModel> {
+public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, FavoriteViewModel> implements ViewTreeObserver.OnScrollChangedListener {
 
     private final static String TAG = FavoriteFragment.class.getSimpleName();
     private ArrayList<PoiInfoEntity> mFavoriteList = new ArrayList<>();
@@ -68,11 +71,11 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     private SkinTextView mRenameBtn;
     private SkinGridLayout mFreqAddressLayout;
     private View mAnchorView;
-    private int mThreeScreenHeight;
+    private int mThreeScreenHeight = 0;
     private int mOldScrollY;
     private boolean mIsStopScroll;
     private boolean mIsTouchEvent;
-    private long mFlingTime;    //惯性滑动时间
+    private long mFlingTime = 0;    //惯性滑动时间
 
     @Override
     public int onLayoutId() {
@@ -626,7 +629,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
                         break;
                     case  MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
-                        mFlingTime = System.currentTimeMillis();
+                        mFlingTime = getCurrentTime();
                         mIsTouchEvent = false;
                         break;
                     default:
@@ -638,27 +641,55 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
 
         // 设置滚动监听
-        mBinding.favoriteScroll.getViewTreeObserver().addOnScrollChangedListener(
-                () -> {
-                    final int scrollY = mBinding.favoriteScroll.getScrollY();
-                    final int scrollX = mBinding.favoriteScroll.getScrollX();
-                    if (scrollY == 0 && mIsStopScroll && !(mIsTouchEvent || System.currentTimeMillis() - mFlingTime < 300)) {
-                        mBinding.favoriteScroll.scrollTo(scrollX, mOldScrollY);
-                        return;
-                    }
-                    mOldScrollY = Math.max(scrollY, 0);
-                    mIsStopScroll = true;
-                    Logger.d("scrollY", "scrollY: " + scrollY);
-                    mBinding.layoutTop.setVisibility(
-                            scrollY >= mThreeScreenHeight ? View.VISIBLE : View.INVISIBLE
-                    );
+        SkinNestedScrollView favoriteScroll = mBinding.favoriteScroll;
+        if (null != favoriteScroll) {
+            favoriteScroll.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(@NonNull View v) {
+                    ViewTreeObserver observer = v.getViewTreeObserver();
+                    observer.addOnScrollChangedListener(FavoriteFragment.this);//attach时注册
                 }
-        );
+
+                @Override
+                public void onViewDetachedFromWindow(@NonNull View v) {
+                    ViewTreeObserver viewTreeObserver = v.getViewTreeObserver();
+                    viewTreeObserver.removeOnScrollChangedListener(FavoriteFragment.this);//detach时反注册
+                }
+            });
+        }
 
         // 按钮点击事件
         mBinding.layoutTop.setOnClickListener(v -> {
             mIsStopScroll = false;
             mBinding.favoriteScroll.smoothScrollTo(0, 0); // 平滑滚动
         });
+    }
+
+    /**
+     * 只需要实现滚动监听
+     */
+    @Override
+    public void onScrollChanged() {
+        final int scrollY = mBinding.favoriteScroll.getScrollY();
+        final int scrollX = mBinding.favoriteScroll.getScrollX();
+        if (scrollY == 0 && mIsStopScroll && !(mIsTouchEvent || getCurrentTime() - mFlingTime < 300)) {
+            mBinding.favoriteScroll.scrollTo(scrollX, mOldScrollY);
+            return;
+        }
+        mOldScrollY = Math.max(scrollY, 0);
+        mIsStopScroll = true;
+        int visibility = mBinding.layoutTop.getVisibility();
+        if (scrollY >= mThreeScreenHeight && (visibility == View.INVISIBLE || visibility == View.GONE)) {
+            mBinding.layoutTop.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        if (scrollY < mThreeScreenHeight && visibility == View.VISIBLE) {
+            mBinding.layoutTop.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private long getCurrentTime() {
+        return System.currentTimeMillis();
     }
 }

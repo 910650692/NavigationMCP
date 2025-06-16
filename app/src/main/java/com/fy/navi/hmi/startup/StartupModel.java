@@ -83,6 +83,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     public void onDestroy() {
         super.onDestroy();
         StartService.getInstance().unregisterSdkCallback(this);
+        ActivatePackage.getInstance().removeActObserver(mActObserver);
     }
 
     @Override

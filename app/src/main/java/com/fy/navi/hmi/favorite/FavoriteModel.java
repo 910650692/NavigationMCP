@@ -65,6 +65,7 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         super.onDestroy();
         mSearchPackage.unRegisterCallBack(TAG);
         mBehaviorPackage.unRegisterCallBack(this);
+        SettingUpdateObservable.getInstance().removeObserver("FavoriteModel", this);
     }
 
     /**

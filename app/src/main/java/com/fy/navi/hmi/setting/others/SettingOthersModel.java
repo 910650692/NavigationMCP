@@ -60,6 +60,8 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
     @Override
     public void onDestroy() {
         super.onDestroy();
+        SettingUpdateObservable.getInstance().removeObserver(MODEL_NAME, this);
+        mAccountPackage.unRegisterCallBack(MODEL_NAME);
         mWeChatPackage.unRegisterCallBack(MODEL_NAME);
     }
 

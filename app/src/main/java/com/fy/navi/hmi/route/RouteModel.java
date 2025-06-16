@@ -140,6 +140,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     public void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "unRegisterCallBack");
+        ImmersiveStatusScene.getInstance().unRegisterCallback(TAG);
         mRoutePackage.clearRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP);
         mRoutePackage.unRegisterRouteObserver(TAG);
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
