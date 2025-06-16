@@ -355,7 +355,12 @@ public final class SuperCruiseManager {
         final NaviLinkProto.NaviLink.Builder builder = NaviLinkProto.NaviLink.newBuilder();
         builder.setRoadInfo(mRoadInfoBuilder.build());
         builder.setSpeedLimit(mSpeedLimitBuilder.build());
-        builder.setDataAvailable(mSpeedLimitDataAvailabl);
+        int brand = CalibrationPackage.getInstance().brand();
+        if (brand == 2) { // TODO　SuperCruise提供ADAS测试用，后续需要删除
+            builder.setDataAvailable(true);
+        } else {
+            builder.setDataAvailable(mSpeedLimitDataAvailabl);
+        }
         final NaviLinkProto.NaviLink naviLink = builder.build();
         mAdasManager.sendNavilink(naviLink);
         // 下面的部分用于log打印
