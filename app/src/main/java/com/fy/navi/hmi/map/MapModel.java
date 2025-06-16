@@ -32,6 +32,7 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.exportservice.ExportIntentParam;
 import com.fy.navi.hmi.BuildConfig;
+import com.fy.navi.hmi.launcher.FloatViewManager;
 import com.fy.navi.hmi.setting.SettingFragment;
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
 import com.fy.navi.mapservice.bean.INaviConstant;
@@ -450,6 +451,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
+        FloatViewManager.getInstance().hideAllCardWidgets();
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         //触控态开始回车位倒计时
         startSelfParkingTimer();

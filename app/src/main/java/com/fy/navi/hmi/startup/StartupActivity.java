@@ -19,6 +19,7 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityStartupBinding;
+import com.fy.navi.hmi.launcher.FloatViewManager;
 import com.fy.navi.hmi.permission.PermissionUtils;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
@@ -74,6 +75,7 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
                 Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
             }
         });
+        FloatViewManager.getInstance().hideAllCardWidgets();
     }
 
     @Override

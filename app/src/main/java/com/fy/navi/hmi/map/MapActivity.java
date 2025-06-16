@@ -18,6 +18,7 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
+import com.fy.navi.hmi.launcher.FloatViewManager;
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
 import com.fy.navi.scene.dialog.MsgTopDialog;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
@@ -240,6 +241,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onFragmentSizeChanged();
         mViewModel.stopCruise();
         setMapFocusable(false);
+        FloatViewManager.getInstance().hideAllCardWidgets();
     }
 
     public void setMapFocusable(boolean b) {
