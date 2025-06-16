@@ -320,6 +320,7 @@
                 android:layout_marginStart="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_20"
                 android:maxLines="1"
+                android:visibility="gone"
                 android:text="@string/charge_img"
                 android:textColor="@color/text_route_defult"
                 android:textSize="@dimen/sp_26"
@@ -333,6 +334,7 @@
                 android:layout_marginEnd="@dimen/dp_20"
                 android:maxLines="1"
                 android:text="@string/charge_img_confirm"
+                android:visibility="gone"
                 android:textColor="@color/text_route_defult"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintBaseline_toBaselineOf="@+id/poi_charge_img_title"
@@ -342,11 +344,11 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/poi_charge_img_card"
                 android:layout_width="@dimen/dp_436"
-                android:layout_height="@dimen/dp_158"
-                android:layout_marginTop="@dimen/dp_14"
+                android:layout_height="@dimen/dp_178"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/poi_charge_img_title">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/poi_charge_img"
