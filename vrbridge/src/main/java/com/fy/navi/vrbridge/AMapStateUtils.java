@@ -10,7 +10,7 @@ import com.android.utils.log.Logger;
 import com.baidu.bridge.BridgeSdk;
 import com.baidu.oneos.protocol.IStateManager;
 import com.baidu.oneos.protocol.SystemStateCons.NaviStateCons;
-import com.fy.navi.vrbridge.bean.MapLocation;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.vrbridge.bean.MapState;
 
 final public class AMapStateUtils {
@@ -187,40 +187,29 @@ final public class AMapStateUtils {
     }
 
     /**
-     * 保存定位信息
+     * 更新定位信息给语音，按照沟通要求，需包含：provider、speed、bearing、latitude、longitude.
      *
-     * @param mapLocation 示例：{"gpsTickCount":0,"sysTickCount":1720598461888,"vaccuracy":0,"provider":"test",
-     *                    "bearing":0,"resultCode":10000,"accuracy":0,"lon":116.39747,"type":0,"sourceFlag":1,
-     *                    "speed":0,"lat":39.9088229}
+     * @param locInfo LocInfoBean，回调的定位信息.
+     *
      */
-    public static void saveMapLocation(final MapLocation mapLocation) {
-        if (null == mapLocation) {
+    public static void saveMapLocation(final LocInfoBean locInfo) {
+        if (null == locInfo) {
             return;
         }
 
-        JSONObject data = null;
-        try {
-            final String mapLocationStr = GsonUtils.toJson(mapLocation);
-            data = new JSONObject(mapLocationStr);
-        } catch (JSONException exception) {
-            Logger.e(IVrBridgeConstant.TAG, "parse mapLocation error");
-        }
-        if (null == data) {
-            return;
-        }
         final HashMap<String, Object> map = new HashMap<>();
-        map.put("provider", data.optString("provider"));
-        map.put("speed", data.optInt("speed"));
-        map.put("bearing", data.optInt("bearing"));
-        final double lon = data.optDouble("lon"); // 经度
-        final double lat = data.optDouble("lat"); // 纬度
-        final double[] doubles = gcj02ToBd09(lat, lon);
-        map.put("lon", doubles[1]); // 返回Bd09坐标系的经纬度
+        map.put("provider", locInfo.getProvider());
+        map.put("speed", (int) locInfo.getSpeed());
+        map.put("bearing", (int) locInfo.getBearing());
+        final double[] doubles = gcj02ToBd09(locInfo.getLatitude(), locInfo.getLongitude());
+        // 返回Bd09坐标系的经纬度
         map.put("lat", doubles[0]);
+        map.put("lon", doubles[1]);
         try {
+            Logger.d(IVrBridgeConstant.TAG, "update voice LocationInfo");
             BridgeSdk.getInstance().getRemote(IStateManager.class).updateNaviLocation(map);
         } catch (ClassCastException | NullPointerException exception) {
-            Logger.e(IVrBridgeConstant.TAG, "updateNaviLocation: " + exception.getMessage());
+            Logger.e(IVrBridgeConstant.TAG, "updateNaviLocation error:" + exception.getMessage());
         }
     }
 

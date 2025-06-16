@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
@@ -36,14 +37,11 @@ import com.fy.navi.service.logicpaket.user.account.AccountCallBack;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.service.logicpaket.user.behavior.FavoriteStatusCallback;
-import com.fy.navi.vrbridge.bean.MapLocation;
 import com.fy.navi.vrbridge.bean.MapState;
 import com.fy.navi.vrbridge.impl.VoiceSearchManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public final class MapStateManager {
 
@@ -53,8 +51,6 @@ public final class MapStateManager {
     private NaviEtaInfo mEtaInfo = null; //TBT信息
     private int mLimitSpeed = 0; //当前道路限速
     private LocParallelInfoEntity mParallelInfo = null; //平行路信息
-    private Timer mLocationIntervalTimer; //定位信息倒计时
-    private LocationIntervalTask mLocationIntervalTask;
     private int mLocationInterval = 10; //语音定位信息最多10s更新一次
 
 
@@ -276,18 +272,10 @@ public final class MapStateManager {
 
         @Override
         public void onLocationInfo(final LocInfoBean locationInfo) {
-            if (mLocationInterval == 0) {
-                final MapLocation mapLocation = new MapLocation();
-                mapLocation.setLon(locationInfo.getLongitude());
-                mapLocation.setLat(locationInfo.getLatitude());
-                mapLocation.setBearing((int) locationInfo.getBearing());
-                mapLocation.setProvider(locationInfo.getProvider());
-                mapLocation.setSpeed((int) locationInfo.getSpeed());
-                AMapStateUtils.saveMapLocation(mapLocation);
+            if (mLocationInterval == 0 && null != locationInfo) {
+                AMapStateUtils.saveMapLocation(locationInfo);
                 mLocationInterval = 10;
-                mLocationIntervalTimer = new Timer();
-                mLocationIntervalTask = new LocationIntervalTask();
-                mLocationIntervalTimer.schedule(mLocationIntervalTask, 1000, 1000);
+                ThreadManager.getInstance().asyncDelay(() -> mLocationInterval = 0, mLocationInterval);
             }
         }
 
@@ -302,26 +290,7 @@ public final class MapStateManager {
         }
     };
 
-    //收到定位信息后，开始倒计时，10s才允许再次更新位置新
-    private final class LocationIntervalTask extends TimerTask {
-        @Override
-        public void run() {
-            countDownInterval();
-        }
-    }
 
-    /**
-     * 定位信息倒计时.
-     */
-    private void countDownInterval() {
-        mLocationInterval--;
-        if (mLocationInterval == 0) {
-            if (null != mLocationIntervalTimer) {
-                mLocationIntervalTimer.cancel();
-            }
-            mLocationIntervalTask = null;
-        }
-    }
 
     private final IGuidanceObserver mGuidanceObserver = new IGuidanceObserver() {
         @Override
