@@ -27,6 +27,7 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
+import com.fy.navi.service.define.navi.NaviModelSaveEntity;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
@@ -763,6 +764,12 @@ public class BaseNaviGuidanceViewModel extends
         Logger.i(TAG, "onPassByClick");
         if (mView != null) {
             mView.onPassByClick();
+        }
+    }
+
+    public void restoreNavigationByRebuild() {
+        if (mModel != null) {
+            mModel.restoreNavigationByRebuild();
         }
     }
 }

@@ -38,6 +38,7 @@ import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviExchangeEntity;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
+import com.fy.navi.service.define.navi.NaviModelSaveEntity;
 import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.NaviStartType;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
@@ -117,10 +118,14 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private List<OnPreViewStatusChangeListener> mOnPreViewStatusChangeListeners =
             new CopyOnWriteArrayList<>();
 
+    private final NaviModelSaveEntity mModelSaveEntity;
+    private boolean mIsShowLanes;
+
     private NaviPackage() {
         mGuidanceObservers = new Hashtable<>();
         mManager = HistoryManager.getInstance();
         mManager.init();
+        mModelSaveEntity = new NaviModelSaveEntity();
     }
 
     /**
@@ -369,6 +374,29 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         return mIsClusterFixOverView;
     }
 
+    public void restoreNavigationByRebuild() {
+        Logger.i(TAG, "restoreNavigationByRebuild");
+        if (ConvertUtils.isEmpty(mModelSaveEntity)) {
+            Logger.e(TAG, "restoreNavigationByRebuild", "mModelSaveEntity is null");
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onNaviInfo(mModelSaveEntity.getNaviEtaInfo());
+                        guidanceObserver.onManeuverInfo(mModelSaveEntity.getNaviManeuverInfo());
+                        guidanceObserver.onUpdateTMCLightBar(mModelSaveEntity.getNaviTmcInfo());
+                        guidanceObserver.onNaviSpeedOverallInfo(mModelSaveEntity.
+                                getSpeedOverallEntity());
+                        guidanceObserver.onNaviSAPAInfo(mModelSaveEntity.getSapaInfoEntity());
+                        guidanceObserver.onLaneInfo(mIsShowLanes, mModelSaveEntity.getLaneInfo());
+                    }
+                }
+            }
+        });
+    }
+
     private static final class Helper {
         private static final NaviPackage NAVI_PACKAGE = new NaviPackage();
     }
@@ -466,6 +494,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {
+                        mModelSaveEntity.setNaviEtaInfo(naviETAInfo);
                         guidanceObserver.onNaviInfo(naviETAInfo);
                     }
                 }
@@ -475,11 +504,13 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     @Override
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {
-        Logger.i(TAG, "onLaneInfo: " + (isShowLane));
+        Logger.i(TAG, "onLaneInfo: " + isShowLane);
+        mIsShowLanes = isShowLane;
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {
+                        mModelSaveEntity.setLaneInfo(laneInfoEntity);
                         guidanceObserver.onLaneInfo(isShowLane, laneInfoEntity);
                     }
                 }
@@ -587,6 +618,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {
+                        mModelSaveEntity.setNaviManeuverInfo(respData);
                         guidanceObserver.onManeuverInfo(respData);
                     }
                 }
@@ -601,6 +633,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {
+                        mModelSaveEntity.setNaviTmcInfo(naviTmcInfo);
                         guidanceObserver.onUpdateTMCLightBar(naviTmcInfo);
                     }
                 }
@@ -624,6 +657,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                     for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                         if (guidanceObserver != null) {
+                            mModelSaveEntity.setSpeedOverallEntity(speedEntity);
                             guidanceObserver.onNaviSpeedOverallInfo(speedEntity);
                         }
                     }
@@ -657,6 +691,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {
+                        mModelSaveEntity.setSapaInfoEntity(sapaInfoEntity);
                         guidanceObserver.onNaviSAPAInfo(sapaInfoEntity);
                     }
                 }

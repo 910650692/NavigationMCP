@@ -44,8 +44,10 @@ import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.StackManager;
@@ -132,7 +134,18 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void onGetFragmentData() {
         Logger.i(TAG, "onGetFragmentData");
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
-        mViewModel.startNavigation(getArguments());
+        String naviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        if (mViewModel == null) {
+            Logger.e(TAG, "mViewModel is null");
+            return;
+        }
+        // 如果当前导航状态不是导航中，则开始导航
+        if (!NaviStatus.NaviStatusType.NAVING.equals(naviStatus)) {
+            mViewModel.startNavigation(getArguments());
+        } else {
+            // 恢复导航页面数据
+            mViewModel.restoreNavigationByRebuild();
+        }
         mViewModel.setDefultPlateNumberAndAvoidLimitSave();
         mViewModel.initShowScene(NAVI_SCENE_CONTROL, NAVI_SCENE_TBT, NAVI_SCENE_ETA, NAVI_SCENE_TMC);
     }

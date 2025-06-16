@@ -1,12 +1,4 @@
-package com.fy.navi.hmi.navi;
-
-import com.fy.navi.service.define.navi.CrossImageEntity;
-import com.fy.navi.service.define.navi.LaneInfoEntity;
-import com.fy.navi.service.define.navi.NaviEtaInfo;
-import com.fy.navi.service.define.navi.NaviManeuverInfo;
-import com.fy.navi.service.define.navi.NaviTmcInfo;
-import com.fy.navi.service.define.navi.SapaInfoEntity;
-import com.fy.navi.service.define.navi.SpeedOverallEntity;
+package com.fy.navi.service.define.navi;
 
 public class NaviModelSaveEntity {
     private SpeedOverallEntity mSpeedOverallEntity;

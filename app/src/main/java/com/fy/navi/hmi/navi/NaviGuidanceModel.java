@@ -465,12 +465,20 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onManeuverInfo(final NaviManeuverInfo info) {
+        if (ConvertUtils.isEmpty(info)) {
+            Logger.i(TAG, "onManeuverInfo info is null");
+            return;
+        }
         mViewModel.onManeuverInfo(info);
     }
 
     @Override
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
-        Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo = ", naviTmcInfo.toString());
+        if (ConvertUtils.isEmpty(naviTmcInfo)) {
+            Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo is null");
+            return;
+        }
+        Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo = " + naviTmcInfo.toString());
         mNaviPackage.setTmcData(naviTmcInfo);
         mViewModel.onUpdateTMCLightBar(naviTmcInfo, mIsShowAutoAdd);
     }
@@ -494,6 +502,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onNaviSpeedOverallInfo(final SpeedOverallEntity speedCameraInfo) {
+        if (ConvertUtils.isEmpty(speedCameraInfo)) {
+            Logger.i(TAG, "onNaviSpeedOverallInfo speedCameraInfo is null");
+            return;
+        }
         mViewModel.onNaviSpeedCameraInfo(speedCameraInfo);
     }
 
@@ -506,6 +518,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
+        if (ConvertUtils.isEmpty(sapaInfoEntity)) {
+            Logger.i(TAG, "onNaviSAPAInfo sapaInfoEntity is null");
+            return;
+        }
         mViewModel.onNaviSAPAInfo(sapaInfoEntity);
     }
 
@@ -540,6 +556,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
+        if (ConvertUtils.isEmpty(laneInfo)) {
+            Logger.i(TAG, "onLaneInfo laneInfo is null");
+            return;
+        }
         mViewModel.onLaneInfo(isShowLane, laneInfo);
     }
 
@@ -876,6 +896,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         Logger.i(TAG, "onClusterMapOpenOrClose isOpen:", isOpen);
         mIsClusterOpen = isOpen;
         ThreadManager.getInstance().postUi(mOnClusterMapOpenOrClose);
+    }
+
+    public void restoreNavigationByRebuild() {
+        mNaviPackage.restoreNavigationByRebuild();
     }
 
     public interface OnNetStatusChangeListener {
