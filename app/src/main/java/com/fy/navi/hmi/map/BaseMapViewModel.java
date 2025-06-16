@@ -625,7 +625,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void toPoiDetailFragment(PoiInfoEntity entity) {
-        if (needInterceptor() && FavoriteHelper.getInstance().getHomeCompanyType() == -1) {
+
+        if (needInterceptorByVai() && FavoriteHelper.getInstance().getHomeCompanyType() == -1) {
             return;
         }
         if (FavoriteHelper.getInstance().getHomeCompanyType() != -1) {
@@ -948,6 +949,16 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || currentStatus == NaviStatus.NaviStatusType.LIGHT_NAVING
                 || currentStatus == NaviStatus.NaviStatusType.SELECT_ROUTE
                 || currentStatus == NaviStatus.NaviStatusType.ROUTING;
+    }
+
+    /**
+     * 如果处于特定状态不允许POI响应点击事件, 排除算路态
+     * @return
+     */
+    private boolean needInterceptorByVai() {
+        String currentStatus = mModel.getNaviStatus();
+        return currentStatus == NaviStatus.NaviStatusType.NAVING
+                || currentStatus == NaviStatus.NaviStatusType.LIGHT_NAVING;
     }
 
     public void onNaviStatusChange() {
