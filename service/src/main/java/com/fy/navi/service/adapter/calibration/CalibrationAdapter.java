@@ -22,6 +22,10 @@ public final class CalibrationAdapter {
         mCalibrationApi = (CalibrationApi) AdapterConfig.getObject(CALIBRATION_API_PKG, CALIBRATION_API_CLS);
     }
 
+    public void init() {
+        mCalibrationApi.init();
+    }
+
     /**
      * powerType
      * @return int

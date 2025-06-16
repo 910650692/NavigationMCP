@@ -4,6 +4,8 @@ import java.util.Map;
 
 public interface CalibrationApi {
 
+    void init();
+
     /**
      * powerType
      * @return int

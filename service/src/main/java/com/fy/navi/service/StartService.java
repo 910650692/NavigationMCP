@@ -13,6 +13,7 @@ import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.activate.ActivatePackage;
 import com.fy.navi.service.logicpaket.activate.IActivateObserver;
 import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.engine.IEngineObserver;
@@ -202,6 +203,7 @@ public class StartService {
 
     private void initOtherService() {
         Logger.i(TAG, "initOtherService start");
+        CalibrationPackage.getInstance().init();
         SearchPackage.getInstance().initSearchService();
         NaviPackage.getInstance().initNaviService();
         SettingPackage.getInstance().init();

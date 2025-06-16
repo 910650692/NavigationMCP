@@ -22,6 +22,10 @@ public final class CalibrationPackage {
         mCalibrationAdapter = CalibrationAdapter.getInstance();
     }
 
+    public void init() {
+        mCalibrationAdapter.init();
+    }
+
     /**
      * 动力类型标定
      * -1 无效值
