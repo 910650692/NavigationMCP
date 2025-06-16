@@ -26,7 +26,7 @@
             android:id="@+id/search_main_tab"
             clickCommand="@{ViewModel.intercept}"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_87"
+            android:layout_height="@dimen/dp_95"
             android:layout_marginStart="@dimen/dp_34"
             android:layout_marginTop="@dimen/dp_85"
             android:background="@drawable/bg_search_main_tab"
@@ -36,8 +36,7 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="@dimen/dp_366"
-                android:layout_height="@dimen/dp_87"
-                android:background="@drawable/bg_search_main_tab"
+                android:layout_height="@dimen/dp_95"
                 android:visibility="@{ViewModel.tmcModeVisibility ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -79,8 +78,7 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="@dimen/dp_591"
-                android:layout_height="@dimen/dp_102"
-                android:background="@drawable/bg_search_main_tab"
+                android:layout_height="@dimen/dp_95"
                 android:visibility="@{ViewModel.tmcModeVisibility ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -187,7 +185,8 @@
             android:layout_marginTop="@dimen/dp_24"
             android:visibility="@{ViewModel.naviHomeVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="@id/search_main_tab"
-            app:layout_constraintTop_toBottomOf="@id/search_main_tab" />
+            app:layout_constraintTop_toBottomOf="@id/search_main_tab"
+            tools:visibility="gone" />
 
         <!--ND独有 回家，公司view-->
         <com.fy.navi.scene.ui.map.SceneGoHomeView
