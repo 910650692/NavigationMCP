@@ -236,10 +236,13 @@ public class NaviSender {
                         SignalPackage.getInstance().setDistanceToTrafficJamRoadAvailability(1);
                         SignalPackage.getInstance().setDistanceOnTrafficJamRoad(naviTmcInfoData.getDistance() / 10); // 拥堵路段的长度 单位km
                         SignalPackage.getInstance().setDistanceOnTrafficJamRoadAvailability(1);
-                        int speed = (int) (naviTmcInfoData.getDistance() / naviTmcInfoData.getTravelTime() * 3.6);
-                        SignalPackage.getInstance().setTrafficJamRoadAverageSpeed(speed); // 拥堵路段的平均车速 单位km/h
+                        int travelTime = naviTmcInfoData.getTravelTime();
+                        if (travelTime > 0) {
+                            int speed = (int) (naviTmcInfoData.getDistance() / travelTime * 3.6);
+                            SignalPackage.getInstance().setTrafficJamRoadAverageSpeed(speed); // 拥堵路段的平均车速 单位km/h
+                            Logger.d(TAG, PREFIX + "拥堵路段发送: ", distance, naviTmcInfoData.getDistance(), speed);
+                        }
                         SignalPackage.getInstance().setTrafficJamRoadAverageSpeedAvailability(1);
-                        Logger.d(TAG, PREFIX + "拥堵路段发送: ", distance, naviTmcInfoData.getDistance(), speed);
                         break;
                     }
                 } else {
