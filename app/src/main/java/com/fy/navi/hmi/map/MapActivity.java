@@ -1,8 +1,12 @@
 package com.fy.navi.hmi.map;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -293,5 +297,23 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
         });
         mMsgTopDialog.showDialog();
+    }
+
+    /**
+     * 监听触摸事件，当焦点不在exitText中时隐藏软键盘
+     * @param ev
+     * @return
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View view = getCurrentFocus();
+            if (!ConvertUtils.isNull(view)
+                    && !ConvertUtils.isNull(mViewModel)
+                    && mViewModel.isShouldHideKeyboard(view, ev)) {
+                mViewModel.hideKeyboard(view);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

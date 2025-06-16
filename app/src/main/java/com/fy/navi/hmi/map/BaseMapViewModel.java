@@ -4,8 +4,13 @@ import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Looper;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -1265,4 +1270,26 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public Action switchSr = () -> {
     };
+
+    // 判断是否点击了非 EditText 区域
+    public boolean isShouldHideKeyboard(View view, MotionEvent event) {
+        if (view instanceof EditText) {
+            int[] location = {0, 0};
+            view.getLocationOnScreen(location);
+            int left = location[0];
+            int top = location[1];
+            int right = left + view.getWidth();
+            int bottom = top + view.getHeight();
+            return !(event.getRawX() >= left && event.getRawX() <= right
+                    && event.getRawY() >= top && event.getRawY() <= bottom);
+        }
+        return false;
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) mView.getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }
