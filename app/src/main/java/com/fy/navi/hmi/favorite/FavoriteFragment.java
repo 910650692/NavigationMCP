@@ -658,7 +658,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         // 按钮点击事件
         mBinding.layoutTop.setOnClickListener(v -> {
             mIsStopScroll = false;
-            mBinding.favoriteScroll.fullScroll(ScrollView.FOCUS_UP); // 平滑滚动
+            mBinding.favoriteScroll.smoothScrollTo(0, 0); // 平滑滚动
         });
     }
 }
