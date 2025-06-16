@@ -11,6 +11,7 @@ public class BaseTurnInfo implements Parcelable {
     private String mFormatTime; //格式化后的剩余时间 eg:xx小时xx分钟
     private int mRemainDist; //剩余距离，单位米
     private String mFormatDist; //格式化后的剩余距离 eg:xx公里或xx米
+    private long mArriveTime; //预计到达时间 格林时间+剩余秒数
     private String mFormatArrive; //格式化后的到达时间 eg: 01:52
     private String mFormatDay; //到达天数，标识是否跨天到达，为空不显示 eg: +1/+2
     private String mCurRouteName = ""; //当前道路名
@@ -26,6 +27,7 @@ public class BaseTurnInfo implements Parcelable {
     private int mNextDist; //下个路口距离/m
     private int mRingOutCnt; //剩余红绿灯数量
     private int mDriveDist; //已经行驶的距离，单位米
+    private int mTotalDist; //导航总距离，单位米
 
     public BaseTurnInfo() {
 
@@ -96,6 +98,7 @@ public class BaseTurnInfo implements Parcelable {
                 ", \nmAllDist= " + mRemainDist +
                 ", \nmFormatDist= '" + mFormatDist + '\'' +
                 ", \nmFormatArrive= '" + mFormatArrive + '\'' +
+                ", \nmArriveTime= '" + mArriveTime + '\'' +
                 ", \nmFormatDay= '" + mFormatDay + '\'' +
                 ", \nmCurRouteName= '" + mCurRouteName + '\'' +
                 ", \nmCurRoadClass= " + mCurRoadClass +
@@ -105,6 +108,7 @@ public class BaseTurnInfo implements Parcelable {
                 ", \nmNextDist= " + mNextDist +
                 ", \nmRingOutCnt= " + mRingOutCnt +
                 ", \nmDriveDist= " + mDriveDist+
+                ", \nmTotalDist= " + mTotalDist+
                 '}';
     }
 
@@ -226,6 +230,22 @@ public class BaseTurnInfo implements Parcelable {
 
     public void setDriveDist(final int driveDist) {
         this.mDriveDist = driveDist;
+    }
+
+    public int getTotalDist() {
+        return mTotalDist;
+    }
+
+    public void setTotalDist(int mTotalDist) {
+        this.mTotalDist = mTotalDist;
+    }
+
+    public long getArriveTime() {
+        return mArriveTime;
+    }
+
+    public void setArriveTime(long mArriveTime) {
+        this.mArriveTime = mArriveTime;
     }
 
 }

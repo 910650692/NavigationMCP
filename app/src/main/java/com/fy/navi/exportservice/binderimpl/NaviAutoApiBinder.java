@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
@@ -114,6 +115,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
     private ScheduledFuture mGuideStatusHolder;
     private int mTmcTotalDistance = 0;
+    private int mTmcFinishDistance = 0;
 
     //当前引导面板状态
     private int mGuidePanelStatus;
@@ -219,6 +221,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     mDistrictIntervalFuture.cancel(true);
                     mDistrictIntervalFuture = null;
                 }
+                mGeoSearchInterval = 0;
             }, mGeoSearchInterval);
         }
     }
@@ -693,6 +696,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
                 if (null != naviTmcInfo && null != naviTmcInfo.getLightBarDetail()) {
                     mTmcTotalDistance = naviTmcInfo.getLightBarDetail().getTotalDistance();
+                    mTmcFinishDistance = naviTmcInfo.getLightBarDetail().getFinishDistance();
                 }
             }
 
@@ -763,10 +767,12 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         mBaseTurnInfo.setFormatDist(formatDist);
         builder.setLength(0);
 
-        if (0 == mBaseTurnInfo.getDriveDist()) {
-            final int processDistance =  mTmcTotalDistance - mBaseTurnInfo.getRemainDist();
-            mBaseTurnInfo.setDriveDist(processDistance);
+        if (0 >= mBaseTurnInfo.getDriveDist()) {
+            mBaseTurnInfo.setDriveDist(mTmcFinishDistance);
         }
+        mBaseTurnInfo.setTotalDist(mTmcTotalDistance);
+        long totalTime = TimeUtils.getInstance().getCurrentSecondS() + mBaseTurnInfo.getRemainTime();
+        mBaseTurnInfo.setArriveTime(totalTime);
 
         final int remainTime = mBaseTurnInfo.getRemainTime();
         final String formatTime = TimeUtils.switchHourAndMimuteFromSecond(
@@ -946,7 +952,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     private void closeCountDownLightCallback() {
         try {
             mCountDownLightCallbackList.finishBroadcast();
-        } catch (IllegalStateException  illegalStateException) {
+        } catch (IllegalStateException illegalStateException) {
             Logger.i(TAG, "closeCountDownLightCallback error");
         }
     }
