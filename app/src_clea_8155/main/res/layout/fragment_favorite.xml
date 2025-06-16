@@ -111,13 +111,14 @@
                         android:textSize="@dimen/sp_26" />
 
                     <com.fy.navi.ui.view.SkinImageView
-                        clickCommand="@{ViewModel.mMoreHome}"
                         android:id="@+id/more_Home"
-                        android:layout_width="@dimen/dp_49"
-                        android:layout_height="@dimen/dp_49"
-                        android:layout_marginEnd="@dimen/dp_20"
-                        android:layout_centerVertical="true"
+                        clickCommand="@{ViewModel.mMoreHome}"
+                        android:layout_width="@dimen/dp_69"
+                        android:layout_height="@dimen/dp_69"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/dp_20"
+                        android:padding="@dimen/dp_20"
                         android:src="@drawable/img_favorite_more" />
                 </com.fy.navi.ui.view.SkinRelativeLayout>
 
@@ -162,13 +163,14 @@
                         android:textSize="@dimen/sp_26" />
 
                     <com.fy.navi.ui.view.SkinImageView
-                        clickCommand="@{ViewModel.mMoreCompany}"
                         android:id="@+id/more_company"
-                        android:layout_width="@dimen/dp_49"
-                        android:layout_height="@dimen/dp_49"
-                        android:layout_marginEnd="@dimen/dp_20"
-                        android:layout_centerVertical="true"
+                        clickCommand="@{ViewModel.mMoreCompany}"
+                        android:layout_width="@dimen/dp_69"
+                        android:layout_height="@dimen/dp_69"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/dp_20"
+                        android:padding="@dimen/dp_20"
                         android:src="@drawable/img_favorite_more" />
                 </com.fy.navi.ui.view.SkinRelativeLayout>
 
