@@ -6,6 +6,7 @@ import android.util.Log;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.TimeUtils;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.model.Coord2DInt32;
 import com.autonavi.gbl.common.path.model.ChargingArgumentsInfo;
@@ -1520,14 +1521,28 @@ public class RouteAdapterImplHelper {
      * @param routeCurrentPathParam 路线信息
      */
     public void sendL2SData(final RouteCurrentPathParam routeCurrentPathParam) {
-        final PathInfo pathInfo = (PathInfo) routeCurrentPathParam.getMPathInfo();
-        final RouteL2Data routeL2Data = getRouteL2Data(pathInfo);
-        for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
-            if (resultObserver == null) {
-                continue;
+        ThreadManager.getInstance().runAsync(() -> {
+            if (routeCurrentPathParam == null) {
+                Logger.e(TAG, "sendL2SData: routeCurrentPathParam == null");
+                return;
             }
-            resultObserver.onRouteL2Info(routeL2Data);
-        }
+            final PathInfo pathInfo = (PathInfo) routeCurrentPathParam.getMPathInfo();
+            long startTime = System.currentTimeMillis();
+            if (pathInfo == null) {
+                Logger.e(TAG, "sendL2SData: pathInfo == null");
+                return;
+            }
+            final RouteL2Data routeL2Data = getRouteL2Data(pathInfo);
+            long middleTime = System.currentTimeMillis();
+            for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
+                if (resultObserver == null) {
+                    continue;
+                }
+                resultObserver.onRouteL2Info(routeL2Data);
+            }
+            long endTime = System.currentTimeMillis();
+            Logger.d(TAG, "getRouteL2Data time: ", middleTime - startTime, endTime - middleTime);
+        });
     }
 
     /**
