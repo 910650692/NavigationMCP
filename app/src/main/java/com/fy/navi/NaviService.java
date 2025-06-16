@@ -81,7 +81,7 @@ public class NaviService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.i(TAG, "onStartCommand");
         boolean sdkStatus = StartService.getInstance().checkSdkIsNeedInit();
-        Logger.i(TAG, "校验Sdk是否需要初始化sdkStatus：" + sdkStatus);
+        Logger.i(TAG, "校验Sdk是否需要初始化sdkStatus：" , sdkStatus);
         if (sdkStatus) StartService.getInstance().startInitSdk();
         stopSelf();
         return super.onStartCommand(intent, flags, startId);

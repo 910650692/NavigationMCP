@@ -49,14 +49,14 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public void bindMapView(IBaseScreenMapView mapView) {
-        Logger.d(TAG, "MapAdapterImpl bindMapView :" + mapView.provideMapTypeId().toString());
+        Logger.d(TAG, "MapAdapterImpl bindMapView :" , mapView.provideMapTypeId().toString());
         MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),
                 mapView.getMapViewWidth(), mapView.getMapViewHeight(),
                 mapView.getScreenWidth(), mapView.getScreenHeight(),
                 mapView.getScreenDensityDpi(), mapView.isOpenScreen());
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.get(mapView.provideMapTypeId(), mapViewParams);
        boolean isBindView = mapView.isBindMapView();
-        Logger.d(TAG, "MapAdapterImpl 是否依赖可见视图" + isBindView);
+        Logger.d(TAG, "MapAdapterImpl 是否依赖可见视图" , isBindView);
         if(!isBindView) return;
         mapSurfaceViewImp.changeMapViewParams(mapViewParams);
         mapView.bindMapView(mapSurfaceViewImp);
@@ -64,7 +64,7 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public void changeMapView(IBaseScreenMapView mapView) {
-        Logger.d(TAG, "MapAdapterImpl bindMapView :" + mapView.provideMapTypeId().toString());
+        Logger.d(TAG, "MapAdapterImpl bindMapView :" , mapView.provideMapTypeId().toString());
         MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),
                 mapView.getMapViewWidth(), mapView.getMapViewHeight(),
                 mapView.getScreenWidth(), mapView.getScreenHeight(),
@@ -76,7 +76,7 @@ public class MapAdapterImpl implements IMapApi {
     @Override
     public void unBindMapView(IBaseScreenMapView mapView) {
         if(null == mapView) return;
-        Logger.d(TAG, "MapAdapterImpl unBindMapView :" + mapView.provideMapTypeId().toString());
+        Logger.d(TAG, "MapAdapterImpl unBindMapView :" , mapView.provideMapTypeId().toString());
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.get(mapView.provideMapTypeId());
         mapView.unBindMapView(mapSurfaceViewImp);
     }
@@ -122,7 +122,7 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public void setMapCenterInScreen(MapType mapTypeId, int x, int y) {
-        Logger.d(TAG, "map left: " + x, "map top: " + y);
+        Logger.d(TAG, "map left: " , x, "map top: " , y);
         mapViewPoolManager.get(mapTypeId).setMapCenterInScreen(x, y);
     }
     /**
@@ -130,7 +130,7 @@ public class MapAdapterImpl implements IMapApi {
      */
     @Override
     public void setHudMapCenterInScreen(MapType mapTypeId, int x, int y) {
-        Logger.d(TAG, "map left: " + x, "map top: " + y);
+        Logger.d(TAG, "map left: " , x, "map top: " , y);
         mapViewPoolManager.get(mapTypeId).setHudMapCenterInScreen(x, y);
     }
 

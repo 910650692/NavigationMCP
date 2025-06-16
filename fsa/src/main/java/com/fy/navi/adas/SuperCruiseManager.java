@@ -78,7 +78,7 @@ public final class SuperCruiseManager {
                 mRoadInfoBuilder.setControlledAccess(false);
                 return;
             }
-            Logger.i(TAG, "onNaviInfo: " + naviETAInfo.curRoadClass);
+            Logger.i(TAG, "onNaviInfo: " , naviETAInfo.curRoadClass);
             switch (naviETAInfo.curRoadClass) {
                 case 0: // 高速公路
                     mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_HIGHWAY);
@@ -126,7 +126,7 @@ public final class SuperCruiseManager {
                 return;
             }
             mZoneSpeedLimit = speedEntity.getSpeedLimit();
-            Logger.i(TAG, "onNaviSpeedOverallInfo: " + mZoneSpeedLimit);
+            Logger.i(TAG, "onNaviSpeedOverallInfo: " , mZoneSpeedLimit);
         }
 
         @Override
@@ -137,13 +137,13 @@ public final class SuperCruiseManager {
                 return;
             }
             mEleEyeSpeedLimit = cameraInfo.getSpeed();
-            Logger.i(TAG, "onNaviCameraInfo: " + mEleEyeSpeedLimit);
+            Logger.i(TAG, "onNaviCameraInfo: " , mEleEyeSpeedLimit);
         }
 
         @Override
         public void onCurrentRoadSpeed(final int speed) {
             mRoadSpeedLimit = speed;
-            Logger.i(TAG, "onCurrentRoadSpeed: " + mRoadSpeedLimit);
+            Logger.i(TAG, "onCurrentRoadSpeed: " , mRoadSpeedLimit);
         }
     };
 
@@ -160,7 +160,7 @@ public final class SuperCruiseManager {
                 mCruiseSpeedLimit = 0;
                 return;
             }
-            Logger.i(TAG, "onShowCruiseCameraExt: " + cruiseInfoEntity.getSpeed());
+            Logger.i(TAG, "onShowCruiseCameraExt: " , cruiseInfoEntity.getSpeed());
             // 取第一个有效值
             for (int i = 0; i < cruiseInfoEntity.getSpeed().size(); i++) {
                 final Short speed = cruiseInfoEntity.getSpeed().get(i);
@@ -282,7 +282,7 @@ public final class SuperCruiseManager {
         mRoadInfoBuilder.setDrivingSideCategory(NaviLinkProto.RoadInfo.DrivingSideCategoryEnum.NAVILINK_DRIVING_SIDE_LEFT);
         // 地图数据的日期
         final Boolean networkCapabilities = NetWorkUtils.Companion.getInstance().checkNetwork();
-        Logger.i(TAG, "initData: networkCapabilities = " + networkCapabilities);
+        Logger.i(TAG, "initData: networkCapabilities = " , networkCapabilities);
         if (Boolean.TRUE.equals(networkCapabilities)) {
             setOnlineMapVersion();
         } else {
@@ -386,7 +386,7 @@ public final class SuperCruiseManager {
         superCruiseJson.setSpeedCategory(String.valueOf(mSpeedLimitBuilder.getSpeedCategory()));
         final String json = GsonUtils.toJson(superCruiseJson);
         JsonLog.saveJsonToCache(json, "sc.json");
-        Logger.d(TAG, "sendData: " + json);
+        Logger.d(TAG, "sendData: " , json);
 //        JsonLog.print(TAG, json);
     }
 
@@ -502,7 +502,7 @@ public final class SuperCruiseManager {
 
     private void setOnlineMapVersion() {
         final LocalDate currentDate = LocalDate.now();
-        Logger.i(TAG, "setOnlineMapVersion: " + currentDate);
+        Logger.i(TAG, "setOnlineMapVersion: " , currentDate);
         setMapVersion(currentDate.getYear(), currentDate.getMonthValue());
     }
 
@@ -511,7 +511,7 @@ public final class SuperCruiseManager {
             final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
             final int adCode = MapDataPackage.getInstance().getAdCodeByLonLat(locInfoBean.getLongitude(), locInfoBean.getLatitude());
             final String mapDataID = MapDataPackage.getInstance().getDataFileVersion(adCode);
-            Logger.i(TAG, "setOfflineMapVersion: " + mapDataID);
+            Logger.i(TAG, "setOfflineMapVersion: " , mapDataID);
             // 例：3_24_12_02_01_111111
             String[] strings = mapDataID.split("_");
             setMapVersion(Integer.parseInt("20" + strings[1]), Integer.parseInt(strings[2]));
@@ -521,7 +521,7 @@ public final class SuperCruiseManager {
     }
 
     private void setMapVersion(int year, int month) {
-        Logger.i(TAG, "setMapVersion: " + year + ", " + month);
+        Logger.i(TAG, "setMapVersion: " , year , ", " , month);
         mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(year));
         final int quarter = (month - 1) / 3;
         mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(quarter));

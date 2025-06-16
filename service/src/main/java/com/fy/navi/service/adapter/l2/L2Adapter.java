@@ -183,7 +183,7 @@ public class L2Adapter {
         public void onNaviInfo(NaviEtaInfo naviEtaInfo) {
             mNaviEtaInfo = naviEtaInfo;
             if (naviEtaInfo == null) {
-                Logger.i(TAG, PREFIX + "引导面板 null");
+                Logger.i(TAG, PREFIX , "引导面板 null");
                 return;
             }
             ArrayList<String> logs = new ArrayList<>();
@@ -226,7 +226,7 @@ public class L2Adapter {
             int rampDist = getRampDist(naviEtaInfo);
             logs.add("rampDist= " + rampDist);
             l2NaviBean.setRampDist(rampDist);
-            Logger.i(TAG, PREFIX + "引导面板: ", logs);
+            Logger.i(TAG, PREFIX , "引导面板: ", logs);
 
             if (naviEtaInfo.getRemainDist() <= 2000) {
                 RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -269,7 +269,7 @@ public class L2Adapter {
             L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
             String text = pInfo.getText();
             vehiclePosition.setTtsText(text); // 语音播报对应的文本（导航状态，前方一个）
-            Logger.i(TAG, PREFIX + "语音播报" + text);
+            Logger.i(TAG, PREFIX , "语音播报" , text);
         }
 
         @Override
@@ -280,7 +280,7 @@ public class L2Adapter {
         @Override
         public void onLaneInfoReceived(ArrayList<LaneInfoEntity> laneInfoList) {
             if (laneInfoList == null || laneInfoList.isEmpty()) {
-                Logger.i(TAG, PREFIX + "后续车道信息 null");
+                Logger.i(TAG, PREFIX , "后续车道信息 null");
                 List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = l2NaviBean.getAheadIntersections();
                 aheadIntersections.clear();
                 return;
@@ -307,14 +307,14 @@ public class L2Adapter {
                     break;
                 }
             }
-            Logger.i(TAG, PREFIX + "后续车道信息", laneInfoList);
+            Logger.i(TAG, PREFIX , "后续车道信息", laneInfoList);
         }
 
         @Override
         public void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
             L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
             if (!isShowLane) {
-                Logger.i(TAG, PREFIX + "车道隐藏");
+                Logger.i(TAG, PREFIX , "车道隐藏");
                 crossInfoDataBean.setHighLightLanes(new ArrayList<>());
                 crossInfoDataBean.setHighLightLaneTypes(new ArrayList<>());
                 crossInfoDataBean.setBackLaneType(new ArrayList<>());
@@ -328,7 +328,7 @@ public class L2Adapter {
                 return;
             }
             if (ConvertUtils.isEmpty(laneInfoEntity)) {
-                Logger.i(TAG, PREFIX + "车道 null");
+                Logger.i(TAG, PREFIX , "车道 null");
                 return;
             }
             boolean hasTidalLane = false;
@@ -358,12 +358,12 @@ public class L2Adapter {
             crossInfoDataBean.setLinkIndex(laneInfoEntity.getLinkIdx()); // 与segment_index结合使用，用于映射到导航路径上
             crossInfoDataBean.setTimestamp(System.currentTimeMillis());
 
-            Logger.i(TAG, PREFIX + "车道--------------------------------------");
-            Logger.i(TAG, PREFIX + "车道   高亮", highLightLanes, hasTidalLane);
-            Logger.i(TAG, PREFIX + "车道   前景", laneInfoEntity.getFrontLane());
-            Logger.i(TAG, PREFIX + "车道   背景", laneInfoEntity.getBackLane());
-            Logger.i(TAG, PREFIX + "车道分时前景", laneInfoEntity.getFrontLaneType());
-            Logger.i(TAG, PREFIX + "车道分时背景", laneInfoEntity.getBackLaneType());
+            Logger.i(TAG, PREFIX , "车道--------------------------------------");
+            Logger.i(TAG, PREFIX , "车道   高亮", highLightLanes, hasTidalLane);
+            Logger.i(TAG, PREFIX , "车道   前景", laneInfoEntity.getFrontLane());
+            Logger.i(TAG, PREFIX , "车道   背景", laneInfoEntity.getBackLane());
+            Logger.i(TAG, PREFIX , "车道分时前景", laneInfoEntity.getFrontLaneType());
+            Logger.i(TAG, PREFIX , "车道分时背景", laneInfoEntity.getBackLaneType());
         }
 
         @Override

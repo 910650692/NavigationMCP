@@ -78,9 +78,9 @@ public final class NaviSceneRule {
     public static int getCollisionType(final NaviSceneId curCard, final NaviSceneId newCard) {
         final int curIndex = curCard.ordinal();//列
         final int newIndex = newCard.ordinal();//行
-        Logger.i("NaviSceneRule", "行 curCard：" + curCard + ",curIndex：" + curIndex + "\n" + "列 newCard：" + newCard + ",newIndex：" + newIndex);
+        Logger.i("NaviSceneRule", "行 curCard：" , curCard , ",curIndex：" , curIndex , "\n" , "列 newCard：" , newCard , ",newIndex：" , newIndex);
         final int maxIndex = NaviSceneId.values().length - 1;
-        Logger.i("NaviSceneRule", "maxIndex：" + maxIndex + ",COLLISION_MATRIX.length：" + COLLISION_MATRIX.length);
+        Logger.i("NaviSceneRule", "maxIndex：" , maxIndex , ",COLLISION_MATRIX.length：" , COLLISION_MATRIX.length);
         //非法值;
         if (curIndex > maxIndex || newIndex > maxIndex ||
                 curIndex >= COLLISION_MATRIX.length || newIndex >= COLLISION_MATRIX.length) {

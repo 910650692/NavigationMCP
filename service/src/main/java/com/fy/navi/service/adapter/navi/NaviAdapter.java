@@ -214,7 +214,7 @@ public final class NaviAdapter {
      * @param naviTmcInfo NaviTmcInfo
      */
     public void setTmcData(final NaviTmcInfo naviTmcInfo) {
-        Logger.i(TAG, "setTmcData = " + naviTmcInfo.toString());
+        Logger.i(TAG, "setTmcData = " , naviTmcInfo.toString());
         mNaviTmcInfo = naviTmcInfo;
     }
 
@@ -252,7 +252,7 @@ public final class NaviAdapter {
      */
     public int getTmcStatus(final String a, final String b, final String c,
                             final MapType mapTypeId) {
-        Logger.i(TAG, "getTmcStatus a:" + a + " b:" + b + " c:" + c + " mapTypeId:" +
+        Logger.i(TAG, "getTmcStatus a:" , a , " b:" , b , " c:" , c , " mapTypeId:" ,
                 mapTypeId);
         final PathInfo pathInfo = (PathInfo)
                 Objects.requireNonNull(mRouteAdapter.getCurrentPath(mapTypeId)).getMPathInfo();
@@ -365,7 +365,7 @@ public final class NaviAdapter {
      */
     private int getPointTmcStatus(final String viaName, final PathInfo pathInfo) {
         final short viaSegmentIdx = getViaSegIdx(viaName, pathInfo);
-        Logger.i(TAG, "getPointTmcStatus viaSegmentIdx:" + viaSegmentIdx);
+        Logger.i(TAG, "getPointTmcStatus viaSegmentIdx:" , viaSegmentIdx);
         if (viaSegmentIdx < 0 && viaSegmentIdx != -2) {
             return -1;
         }

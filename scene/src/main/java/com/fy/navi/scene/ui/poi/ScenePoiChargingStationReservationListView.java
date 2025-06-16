@@ -113,7 +113,7 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
             @Override
             public void onItemClick(ConnectorInfoItem info,EquipmentInfo equipmentInfo) {
                 mCurrentEquipmentInfo = equipmentInfo;
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"Cancel Time: "+mCancelNumber);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"Cancel Time: ",mCancelNumber);
                 if(mCancelNumber >= MAX_CANCEL){
                     ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.reservation_max_time));
                     return;
@@ -160,7 +160,7 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
     }
 
     public void notifyEquipmentInfo(int type, PoiInfoEntity poiInfoEntity){
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"notifyEquipmentInfo type: "+type);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"notifyEquipmentInfo type: ",type);
 
         mScreenViewModel.mPoiInfo.setValue(poiInfoEntity);
         mCurrentType = type;
@@ -292,7 +292,7 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
     }
 
     private ArrayList<EquipmentInfo> filterEquipmentList(int type){
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"type: "+type);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"type: ",type);
         ArrayList<EquipmentInfo> equipmentInfos = new ArrayList<>();
         return switch (type) {
             case AutoMapConstant.EquipmentType.FAST, AutoMapConstant.EquipmentType.SLOW -> {

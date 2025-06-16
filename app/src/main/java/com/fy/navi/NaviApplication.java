@@ -37,6 +37,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
     @Override
     public void onCreate() {
         super.onCreate();
+        Logger.setDefaultTag(MapDefaultFinalTag.DEFAULT_TAG);
         initComponent();
     }
 
@@ -62,7 +63,6 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         ThreadManager.getInstance().execute(() -> {
             AppCache.getInstance().setMApplication(this);
             AppCache.getInstance().setMContext(getApplicationContext());
-            Logger.setDefaultTag(MapDefaultFinalTag.DEFAULT_TAG);
             registerActivityLifecycleCallbacks(NaviApplication.this);
             BaseTestCarType testCarType = new TestCarType();
             initARouter();

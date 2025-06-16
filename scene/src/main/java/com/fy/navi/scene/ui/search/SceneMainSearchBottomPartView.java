@@ -192,7 +192,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
         mSearchHistoryAdapter.setOnItemClickListener(new SearchHistoryAdapter.ItemClickListener() {
             @Override
             public void onItemClick(final int position, final History history) {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "BP====onItemClick position:" + position + " history:" + history);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "BP====onItemClick position:" , position , " history:" , history);
                 if (history.getMType() == AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY) {
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
@@ -226,7 +226,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                 poiInfoEntity.setAddress(history.getMEndPoiName());
                 poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
                 poiInfoEntity.setPid(history.getMPoiId());
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onNaviClick: historyPoint = " + history.getMEndPoint());
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onNaviClick: historyPoint = " , history.getMEndPoint());
 
                 final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
                 final GeoPoint geoPoint = new GeoPoint();

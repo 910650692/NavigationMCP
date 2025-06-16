@@ -54,7 +54,7 @@ public class ComponentTollStation extends SkinConstraintLayout {
      */
     public void updateTollStationData(final SapaInfoEntity.SAPAItem sapaItem,
                                       final boolean isFirst) {
-        Logger.i(TAG, "ComponentTollStation：" + sapaItem.toString() + ",isFirst：" +
+        Logger.i(TAG, "ComponentTollStation：" , sapaItem.toString() , ",isFirst：" ,
                 isFirst);
         mBinding.stvTollName.setText(sapaItem.getName());
         mBinding.stvDistance.setText(TimeUtils.getInstance().getDistanceString(

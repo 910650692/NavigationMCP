@@ -201,7 +201,7 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
 
                 })
                 .exceptionally(error -> {
-                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" + error);
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" , error);
                     return null;
                 });
     }

@@ -159,7 +159,7 @@ public class DeviceUtils {
         UiModeManager manager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
         if (manager == null) return deviceType;
         deviceType = manager.getCurrentModeType();
-        Log.i("A_MAP", "getDeviceType deviceType =" + deviceType);
+        Logger.i("A_MAP", "getDeviceType deviceType =" + deviceType);
         return deviceType;
     }
 

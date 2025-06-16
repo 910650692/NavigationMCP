@@ -108,7 +108,7 @@ public class SceneRouteGasStationChargeServiceView
      * */
     @SuppressLint("UseCompatLoadingForDrawables")
     public void setSearchCharge(boolean isCharge) {
-        Logger.d(MapDefaultFinalTag.ROUTE_HMI_TAG,"isCharge: "+isCharge);
+        Logger.d(MapDefaultFinalTag.ROUTE_HMI_TAG,"isCharge: ",isCharge);
         final Drawable chargeDrawable = getContext().getDrawable(R.drawable.selector_route_tab_list_charge_gas_end);
         final Drawable pointDrawable = getContext().getDrawable(R.drawable.selector_route_tab_list_point_end);
         mViewBinding.routeRightTabListIvWeather.setImageDrawable(isCharge ?  chargeDrawable : pointDrawable);

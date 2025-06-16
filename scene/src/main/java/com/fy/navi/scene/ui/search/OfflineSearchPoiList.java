@@ -182,7 +182,7 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
         });
 
         mViewBinding.offlineSearchTopView.searchBarEditView.setOnEditorActionListener((v, actionId, event) -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onEditorActionListener actionId: " + actionId);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onEditorActionListener actionId: " , actionId);
             mSearchResultList = convertSearchResultList(MapDataPackage.getInstance().searchDownLoaded(getEditText()), getEditText());
             mSearchAdapter.setData(mSearchResultList);
             mSearchAdapter.notifyDataSetChanged();
@@ -224,8 +224,8 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
                 }
             }
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "convertSearchResultList keyword: " + keyword
-                + ", searchResultList size: " + searchResultList.size());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "convertSearchResultList keyword: " , keyword
+                , ", searchResultList size: " , searchResultList.size());
         return searchResultList;
     }
 
@@ -234,7 +234,7 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
      * @param keyword 搜索关键字
      */
     public void suggestionSearch(final String keyword) {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sugSearch search: " + ", Keyword: " + keyword);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sugSearch search: " , ", Keyword: " , keyword);
         mScreenViewModel.suggestionSearch(keyword);
     }
 
@@ -247,8 +247,8 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
         if (ConvertUtils.isEmpty(mScreenViewModel)) {
             return;
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
-                + " currentId: " + mScreenViewModel.getMTaskId());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , taskId
+                , " currentId: " , mScreenViewModel.getMTaskId());
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }

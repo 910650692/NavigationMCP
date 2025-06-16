@@ -73,7 +73,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseStatus onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseStatus onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyStatus(errCode, taskId, resultBean);
@@ -95,7 +95,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseCreate onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseCreate onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyCreateTeam(errCode, taskId, resultBean);
@@ -115,7 +115,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseDissolve onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseDissolve onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyDissolve(errCode, taskId, resultBean);
@@ -136,7 +136,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseJoin onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseJoin onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyJoinTeam(errCode, taskId, resultBean);
@@ -157,7 +157,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseQuit onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseQuit onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyQuitTeam(errCode, taskId, resultBean);
@@ -177,7 +177,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseInvite onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseInvite onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyInvite(errCode, taskId, resultBean);
@@ -198,7 +198,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseKick onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseKick onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyKick(errCode, taskId, resultBean);
@@ -219,7 +219,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseInfo onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseInfo onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyInfo(errCode, taskId, resultBean);
@@ -240,7 +240,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseUpdate onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseUpdate onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyUpdate(errCode, taskId, resultBean);
@@ -260,7 +260,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setCode(result.code);
         resultBean.setMessage(result.message);
 
-        Logger.d(TAG,"GroupResponseSetNickName onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseSetNickName onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifySetNickName(errCode, taskId, resultBean);
@@ -290,7 +290,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
             friends.add(groupFriendBean);
         }
 
-        Logger.d(TAG,"GroupResponseFriendList onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseFriendList onNotify = " , resultBean.toString());
 
         resultBean.friends = friends;
         for (GroupAdapterCallback callBack : mCallBacks) {
@@ -312,7 +312,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
         resultBean.setMessage(result.message);
         resultBean.setUrl(result.url);
 
-        Logger.d(TAG,"GroupResponseInviteQRUrl onNotify = " + resultBean.toString());
+        Logger.d(TAG,"GroupResponseInviteQRUrl onNotify = " , resultBean.toString());
 
         for (GroupAdapterCallback callBack : mCallBacks) {
             callBack.onNotifyInviteQRUrl(errCode, taskId, resultBean);
@@ -421,7 +421,7 @@ public class GroupAdapterImpl implements IGroupApi, IGroupServiceObserver, IMsgP
      */
     @Override
     public int executeRequest(final int requestType, final GroupRequestBean request) {
-        Logger.d(TAG,"GroupRequestStatusBean requestType = "+ requestType +" + request = " + request.toString());
+        Logger.d(TAG,"GroupRequestStatusBean requestType = ", requestType ," + request = " , request.toString());
         return setRequest(requestType, request);
     }
 

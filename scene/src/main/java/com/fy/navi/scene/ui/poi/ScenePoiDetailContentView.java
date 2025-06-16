@@ -195,7 +195,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
 
         } else {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " + poiInfo.getPoint().getLon()
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " , poiInfo.getPoint().getLon()
                     + " ,lat" + poiInfo.getPoint().getLat());
             if (mIsEnd) {
                 RoutePackage.getInstance().requestChangeEnd(mMapTypeId, poiInfo);
@@ -403,13 +403,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             //ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             return;
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
-                + " currentId: " + mScreenViewModel.getMTaskId());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , taskId
+                , " currentId: " , mScreenViewModel.getMTaskId());
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
         showLoading(false);
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " + searchResultEntity.getPoiType());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " , searchResultEntity.getPoiType());
         if (searchResultEntity.getPoiType() == 0) {
             final CityDataInfo cityDataInfo;
             if(!ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
@@ -419,7 +419,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 cityDataInfo = mScreenViewModel.getCityInfo(mScreenViewModel.getAcCode());
             }
             if (cityDataInfo != null) {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "城市数据信息: " + cityDataInfo.getName() +"，城市编码: "
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "城市数据信息: " , cityDataInfo.getName() ,"，城市编码: "
                         + mScreenViewModel.getAcCode());
                 mViewBinding.poiOfflineHint.setVisibility(VISIBLE);
                 mViewBinding.poiOfflineHint.setText(
@@ -437,7 +437,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (mPoiInfoEntity != null && mScreenViewModel != null) {
             ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
             final int pointTypeCode = mScreenViewModel.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "pointTypeCode is: " + pointTypeCode);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "pointTypeCode is: " , pointTypeCode);
             switch (pointTypeCode) {
                 case AutoMapConstant.PointTypeCode.GAS_STATION:
                     refreshGasStationView();
@@ -491,8 +491,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             //ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             return;
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
-                + " currentId: " + mScreenViewModel.getMTaskId());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , taskId
+                , " currentId: " , mScreenViewModel.getMTaskId());
 
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
@@ -555,7 +555,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (mPoiInfoEntity == null || ConvertUtils.isEmpty(mPoiInfoEntity.getChildInfoList())) {
             return;
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onMarkChildClickCallBack is: " + index);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onMarkChildClickCallBack is: " , index);
         final List<ChildInfo> mChildList = mPoiInfoEntity.getChildInfoList();
         if (index < mChildList.size() && index >= 0) {
             final ChildInfo childInfo = mChildList.get(index);
@@ -650,7 +650,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
                 })
                 .exceptionally(error -> {
-                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" + error);
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" , error);
                     return null;
                 });
     }
@@ -707,7 +707,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private void initPoiBusinessTimeIconObserver(final SkinImageView businessTimeIconView, final SkinTextView businessTime,
                                           final boolean hasMultiple, final String[] businessTimes) {
 
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "initPoiBusinessTimeIconObserver hasMultiple: " + hasMultiple);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "initPoiBusinessTimeIconObserver hasMultiple: " , hasMultiple);
 
         // 添加下拉按钮逻辑
         businessTimeIconView.setVisibility(hasMultiple ? View.VISIBLE : View.GONE);
@@ -764,7 +764,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         phoneString.add(phone);
                     }
                     if (!ConvertUtils.isEmpty(phoneString) && !ConvertUtils.isEmpty(phoneString.get(0))) {
-                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone: " + phoneString.get(0));
+                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone: " , phoneString.get(0));
                         phoneProp.append(phoneString.get(0));
                         new SearchConfirmDialog.Build(getContext())
                                 .setDialogObserver(new IBaseDialogClickListener() {
@@ -893,7 +893,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * 刷新充电桩视图
      */
     private void refreshChargeStationView() {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "imageUrl is: " + mPoiInfoEntity.getImageUrl());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "imageUrl is: " , mPoiInfoEntity.getImageUrl());
         final List<ChargeInfo> chargeInfos = mPoiInfoEntity.getChargeInfoList();
         if (!ConvertUtils.isEmpty(chargeInfos)) {
             final ChargeInfo chargeInfo = chargeInfos.get(0);
@@ -964,8 +964,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setVisibility(GONE);
             }
 
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getLatestChargeTimestamp: "+chargeInfo.getMLatestChargeTimestamp());
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getMSearchTimestamp: "+chargeInfo.getMSearchTimestamp());
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getLatestChargeTimestamp: ",chargeInfo.getMLatestChargeTimestamp());
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getMSearchTimestamp: ",chargeInfo.getMSearchTimestamp());
             if(!ConvertUtils.isEmpty(chargeInfo.getMSearchTimestamp()) && !ConvertUtils.isEmpty(chargeInfo.getMSearchTimestamp())) {
                 String timeStr = TimeUtils.getInstance().getTimeStr(chargeInfo.getMSearchTimestamp() - chargeInfo.getMLatestChargeTimestamp());
                 mViewBinding.scenePoiDetailsChargingStationView.latestCharge.setVisibility(VISIBLE);
@@ -1174,7 +1174,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         String parkString = "";
         final int spaceFree = parkingInfo.getSpaceFree();
         final int spaceTotal = parkingInfo.getSpaceTotal();
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "spaceFree :" + spaceFree + " spaceTotal :" + spaceTotal);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "spaceFree :" , spaceFree , " spaceTotal :" , spaceTotal);
         if (spaceFree == -1 && spaceTotal == -1) {
             mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotOccupied.setVisibility(GONE);
         } else if (spaceFree == -1) {

@@ -295,7 +295,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void searchForExtraKeyword(String keyword) {
         try {
-            Logger.d(SEARCH_HMI_TAG, "searchExtraKeyword: " + keyword);
+            Logger.d(SEARCH_HMI_TAG, "searchExtraKeyword: " , keyword);
             Bundle bundle = new Bundle();
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
             bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
@@ -456,7 +456,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             type = bundle.getInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, -1);
             searchKey = bundle.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON, -1);
         }
-        Logger.i(TAG, "setMapCenterInScreen type:" + type);
+        Logger.i(TAG, "setMapCenterInScreen type:" , type);
         mModel.goToCarPosition();
         mModel.setMapCenterInScreen();
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
@@ -700,7 +700,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         TrafficEventFragment trafficEventFragment;
         BaseFragment fragment = StackManager.getInstance().getCurrentFragment(mScreenId);
         final Lifecycle.State currentState = mView.getLifecycle().getCurrentState();
-        Logger.i(TAG, "openTrafficDetailFragment", "currentState:" + currentState.name());
+        Logger.i(TAG, "openTrafficDetailFragment", "currentState:" , currentState.name());
         if (currentState == Lifecycle.State.RESUMED) {
             if (fragment != null && fragment instanceof TrafficEventFragment) {
                 trafficEventFragment = (TrafficEventFragment) fragment;
@@ -787,7 +787,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         this.restrictedArea = param.getMRestrictedArea();
         // 导航中或者算路中不显示
         boolean statusVis = mModel.getNaviStatus() == NaviStatus.NaviStatusType.NO_STATUS || mModel.getNaviStatus() == NaviStatus.NaviStatusType.CRUISE;
-        Logger.d(TAG, "statusVis:" + statusVis, "restrictedArea:" + (restrictedArea != null));
+        Logger.d(TAG, "statusVis:" , statusVis, "restrictedArea:" , (restrictedArea != null));
 
         boolean flag = false;
         if (this.restrictedArea == null
@@ -819,7 +819,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             //首页消息的显示逻辑  发送package消息
             final boolean showSameDayLimit = mModel.showSameDayLimit();
             if (showSameDayLimit) {
-                Logger.i("showSameDayLimit", "showSameDayLimit" + statusVis);
+                Logger.i("showSameDayLimit", "showSameDayLimit" , statusVis);
                 mModel.managerMessage(new MessageCenterInfo(MessageCenterType.ROAD_LIMIT,
                         ResourceUtils.Companion.getInstance().getString(R.string.message_center_check), 0,
                         ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),

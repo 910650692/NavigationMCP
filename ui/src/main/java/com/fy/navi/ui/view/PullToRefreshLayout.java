@@ -84,7 +84,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
     private void init() {
         cal();
         final int count = getChildCount();
-        Logger.d("SEARCH_HMI_TAG", "count:" + count);
+        Logger.d("SEARCH_HMI_TAG", "count:" , count);
     }
 
     @Override

@@ -269,9 +269,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     @Override
     public void onReceiveRequest(final int functionId, final String payload) {
-        Logger.i(FsaConstant.FSA_TAG, "onReceiveRequest payload==" + FsaIdString.event2String(payload) + " - functionId==" + functionId);
+        Logger.i(FsaConstant.FSA_TAG, "onReceiveRequest payload==" , FsaIdString.event2String(payload) , " - functionId==" , functionId);
         if (FsaConstant.FsaMethod.ID_REQUEST_MSG == functionId) {
-            Logger.i(FsaConstant.FSA_TAG, "received method request: payload = " + payload + " - " + FsaIdString.event2String(payload));
+            Logger.i(FsaConstant.FSA_TAG, "received method request: payload = " , payload , " - " , FsaIdString.event2String(payload));
             // checkStyle 方法太长故进行分割
             handlePayload1(payload);
             handlePayload2(payload);
@@ -286,7 +286,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      * @param payload 客户端事件所带的参数，区分请求内容.
      */
     private void handlePayload1(final String payload) {
-        Logger.d(FsaConstant.FSA_TAG, "handlePayload1" + ThreadManager.getInstance().isMainThread());
+        Logger.d(FsaConstant.FSA_TAG, "handlePayload1" , ThreadManager.getInstance().isMainThread());
         switch (payload) {
             case FsaConstant.FsaEventPayload.OPEN_HUD_MAP:
                 updateMapDisplayStatus(true);
@@ -384,7 +384,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     //开启HUDMapviewActivity方法
     private void switchHudActivity(boolean isHud) {
         int secondeDid = 4; // HUD的DisplayId为4
-        Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: "+isHud+secondeDid);
+        Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: ",isHud,secondeDid);
         if (isHud) {
             Logger.d(FsaConstant.FSA_TAG, "open HudActivity");
             final ActivityOptions options = ActivityOptions.makeBasic();
@@ -410,9 +410,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     }
 
     private void updateMapDisplayStatus(boolean isOpen) {
-        Logger.d(TAG, "updateMapDisplayStatus: " + isOpen);
+        Logger.d(TAG, "updateMapDisplayStatus: " , isOpen);
         String json = buildMapDisplayJson(isOpen);
-        Logger.d(TAG, "Map display status changed: " + json);
+        Logger.d(TAG, "Map display status changed: " , json);
         // 发送挖洞事件
         MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, json);
         try {
@@ -595,7 +595,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      * @param defaultValue 默认数据.
      */
     public void sendEventToMapCheckState(final int functionId, final String naviState, final String defaultValue) {
-        Logger.d(FsaConstant.FSA_TAG, "sendEventToMapCheckState: " + functionId + "-" + FsaIdString.function2String(functionId) + ", naviState = " + naviState);
+        Logger.d(FsaConstant.FSA_TAG, "sendEventToMapCheckState: " , functionId , "-" , FsaIdString.function2String(functionId) , ", naviState = " , naviState);
         if (naviState.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
             sendEventToMap(functionId, defaultValue);
         } else {
@@ -606,7 +606,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     @WorkerThread
     public void processMapCrossPicture(byte[] bytes) {
         if (!isShowCross) {
-            Logger.d(TAG, "isShowImage==" + false);
+            Logger.d(TAG, "isShowImage==" , false);
             return;
         }
         long now = System.currentTimeMillis();
@@ -620,14 +620,14 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         try {
             int width = ScreenUtils.Companion.getInstance().getRealScreenWidth(AppCache.getInstance().getMContext());
             int height = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppCache.getInstance().getMContext());
-            Logger.d(TAG, "startScreenshot width==" + width + "height==" + height);
+            Logger.d(TAG, "startScreenshot width==" , width , "height==" , height);
             orginBitmap = getBitmapFromPool(width, height);
             if (orginBitmap != null) {
                 Logger.d(TAG, "processMapCrossPicture orginBitmap != null");
             }
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
-            Logger.d(TAG, "Bitmap size = " + orginBitmap.getByteCount());
-            Logger.d(TAG, "Buffer size = " + buffer.capacity());
+            Logger.d(TAG, "Bitmap size = " , orginBitmap.getByteCount());
+            Logger.d(TAG, "Buffer size = " , buffer.capacity());
             //buffer.position(0);
             //buffer.rewind();
             orginBitmap.copyPixelsFromBuffer(buffer);
@@ -878,7 +878,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         if (!"gm".equals(Build.MANUFACTURER)) { // 如果是非车机环境
             final DisplayManager displayManager = AppCache.getInstance().getMContext().getSystemService(DisplayManager.class);
             for (Display display : displayManager.getDisplays()) {
-                Logger.d(FsaConstant.FSA_TAG, "dispaly: " + display.getName() + ", id " + display.getDisplayId() + " :" + display);
+                Logger.d(FsaConstant.FSA_TAG, "dispaly: " , display.getName() , ", id " , display.getDisplayId() , " :" , display);
                 if (display.getDisplayId() != 0) {
                     secondeDid = display.getDisplayId();
                     break;
@@ -888,7 +888,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//CLEA平台 仪表的DisplayId=3
             secondeDid = 3;
         }
-        Logger.d(FsaConstant.FSA_TAG, "switchClusterActivity: " + isOpen + secondeDid);
+        Logger.d(FsaConstant.FSA_TAG, "switchClusterActivity: " , isOpen , secondeDid);
         if (isOpen) {
             Logger.d(FsaConstant.FSA_TAG, "open ClusterActivity");
             final ActivityOptions options = ActivityOptions.makeBasic();
@@ -949,7 +949,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             return;
         }
         final int ret = VTServerBQJni.getInstance().nativeInitialize();
-        Logger.d(TAG, "NativeInitialize ret is " + ret);
+        Logger.d(TAG, "NativeInitialize ret is " , ret);
         final VTDescription description = new VTDescription();
         description.width = mWidth;
         description.height = mHeight;
@@ -965,7 +965,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         Logger.d(TAG, "service start");
         final int ret = VTServerBQJni.getInstance().nativeStart();
         mIsHudServiceStart = true;
-        Logger.d(TAG, "service start NativeStart ret is " + ret, "mIsHudServiceStart: " + mIsHudServiceStart);
+        Logger.d(TAG, "service start NativeStart ret is " , ret, "mIsHudServiceStart: " , mIsHudServiceStart);
     }
 
     /**
@@ -975,7 +975,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         Logger.d(TAG, "service stop");
         final int ret = VTServerBQJni.getInstance().nativeStop();
         mIsHudServiceStart = false;
-        Logger.d(TAG, "service stop NativeStop ret is " + ret, "mIsHudServiceStart: " + mIsHudServiceStart);
+        Logger.d(TAG, "service stop NativeStop ret is " , ret, "mIsHudServiceStart: " , mIsHudServiceStart);
     }
 
     /**
@@ -1079,7 +1079,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final IGuidanceObserver mGuidanceObserver = new IGuidanceObserver() {
         @Override
         public void onNaviStart() {
-            Logger.d(TAG, "导航开启 + mIsHudServiceStart：" + mIsHudServiceStart);
+            Logger.d(TAG, "导航开启 + mIsHudServiceStart：" , mIsHudServiceStart);
             if (!mIsHudServiceStart) return;
             HudPackage.getInstance().initHudService();
             HudPackage.getInstance().registerHudCallback(TAG, hudCallback);
@@ -1234,7 +1234,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
         @Override
         public void onNaviStop() {
-            Logger.d(TAG, "导航退出 mIsHudServiceStart：" + mIsHudServiceStart);
+            Logger.d(TAG, "导航退出 mIsHudServiceStart：" , mIsHudServiceStart);
             if (mIsHudServiceStart) HudPackage.getInstance().unInitHudService();
         }
     };
@@ -1263,7 +1263,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             return;
         }
         if (mapTypeId == MapType.HUD_MAP) {//HUD路网图
-            Logger.d(TAG, "onEGLScreenshot--> bytes: " + bytes.length);
+            Logger.d(TAG, "onEGLScreenshot--> bytes: " , bytes.length);
             byte[] bytes1 = processPicture(bytes);
             VTServerBQJni.getInstance().nativeNotifyVideoData(bytes1);
         } else if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {//主图的路口大图

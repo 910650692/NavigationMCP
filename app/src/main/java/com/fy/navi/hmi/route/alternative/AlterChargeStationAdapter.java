@@ -107,7 +107,7 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
                     });
                 })
                 .exceptionally(error -> {
-                    Logger.d("getTravelTimeFuture error:" + error);
+                    Logger.d("getTravelTimeFuture error:" , error);
                     return null;
                 });
     }

@@ -60,7 +60,7 @@ public class NaviSender {
 
     public void init() {
         if (CalibrationPackage.getInstance().architecture() != 0) {
-            Logger.i(TAG, PREFIX + "init: not CLEA calibration");
+            Logger.i(TAG, PREFIX , "init: not CLEA calibration");
             return;
         }
         NaviPackage.getInstance().registerObserver(TAG, mIGuidanceObserver);
@@ -68,14 +68,14 @@ public class NaviSender {
         NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
         PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
         CruisePackage.getInstance().registerObserver(TAG, mICruiseObserver);
-        Logger.i(TAG, PREFIX + "init success");
+        Logger.i(TAG, PREFIX , "init success");
     }
 
     private final ICruiseObserver mICruiseObserver = new ICruiseObserver() {
         @Override
         public void onShowCruiseCameraExt(CruiseInfoEntity cruiseInfoEntity) {
             if (cruiseInfoEntity == null || cruiseInfoEntity.getSpeed() == null) {
-                Logger.i(TAG, PREFIX + "巡航电子眼: null");
+                Logger.i(TAG, PREFIX , "巡航电子眼: null");
                 SignalPackage.getInstance().setVcuSpeedLimitArbitrationResults(255);
                 SignalPackage.getInstance().setVcuSpeedLimitArbitrationResultsAssured(0);
                 return;
@@ -89,14 +89,14 @@ public class NaviSender {
                 }
             }
             if (speed == 0) {
-                Logger.i(TAG, PREFIX + "speed == 0");
+                Logger.i(TAG, PREFIX , "speed == 0");
                 SignalPackage.getInstance().setVcuSpeedLimitArbitrationResults(255);
                 SignalPackage.getInstance().setVcuSpeedLimitArbitrationResultsAssured(0);
                 return;
             }
             SignalPackage.getInstance().setVcuSpeedLimitArbitrationResults(speed);
             SignalPackage.getInstance().setVcuSpeedLimitArbitrationResultsAssured(1);
-            Logger.i(TAG, PREFIX + "巡航电子眼: " + speed);
+            Logger.i(TAG, PREFIX , "巡航电子眼: " , speed);
         }
     };
 
@@ -104,7 +104,7 @@ public class NaviSender {
         @Override
         public void onLocationInfo(LocInfoBean locationInfo) {
             if (locationInfo == null) {
-                Logger.w(TAG, PREFIX + "定位回调: locationInfo == null");
+                Logger.w(TAG, PREFIX , "定位回调: locationInfo == null");
                 return;
             }
             int onGuideRoad = locationInfo.getOnGuideRoad();
@@ -167,12 +167,12 @@ public class NaviSender {
                 SignalPackage.getInstance().setRemainTimeToChargingStationy(naviTimeAndDist.time); // 距离充电站的剩余时长
                 logs.add("chargeStationTime= " + naviTimeAndDist.time);
             }
-            Logger.d(TAG, PREFIX + "引导面板回调: " + logs);
+            Logger.d(TAG, PREFIX , "引导面板回调: " , logs);
         }
 
         @Override
         public void onCurrentRoadSpeed(int speed) {
-            Logger.d(TAG, PREFIX + "道路限速: " + speed);
+            Logger.d(TAG, PREFIX , "道路限速: " , speed);
             mRoadSpeed = speed;
             int sendSpeed = Math.max(mRoadSpeed, mCameraSpeed);
             if (sendSpeed <= 0 || sendSpeed == 0xFF) {
@@ -192,7 +192,7 @@ public class NaviSender {
                 return;
             }
             mCameraSpeed = cameraInfo.getSpeed();
-            Logger.d(TAG, PREFIX + "电子眼限速: " + cameraInfo.getSpeed());
+            Logger.d(TAG, PREFIX , "电子眼限速: " , cameraInfo.getSpeed());
             int sendSpeed = Math.max(mRoadSpeed, mCameraSpeed);
             if (sendSpeed <= 0 || sendSpeed == 0xFF) {
                 SignalPackage.getInstance().setVcuSpeedLimitArbitrationResults(255);
@@ -206,7 +206,7 @@ public class NaviSender {
         @Override
         public void onUpdateTMCLightBar(NaviTmcInfo naviTmcInfo) {
             if (naviTmcInfo == null) {
-                Logger.d(TAG, PREFIX + "光柱图: null");
+                Logger.d(TAG, PREFIX , "光柱图: null");
                 return;
             }
             NaviTmcInfo.NaviLightBarDetail lightBarDetail = naviTmcInfo.getLightBarDetail();
@@ -219,7 +219,7 @@ public class NaviSender {
                         if (naviTmcInfoData == null) {
                             continue;
                         }
-                        Logger.d(TAG, PREFIX + "拥堵路段原始: " + naviTmcInfoData);
+                        Logger.d(TAG, PREFIX , "拥堵路段原始: " , naviTmcInfoData);
                         int status = naviTmcInfoData.getStatus();
                         if (status == 10) {
                             continue;
@@ -252,22 +252,22 @@ public class NaviSender {
                 sendTrafficJamRoadInvalid();
             }
             if (!mRoadGroupDatas.isEmpty()) {
-                Logger.d(TAG, PREFIX + "光柱图 发送中");
+                Logger.d(TAG, PREFIX , "光柱图 发送中");
                 return;
             }
             ArrayList<NaviTmcInfo.NaviLightBarInfo> lightBarInfo = naviTmcInfo.getLightBarInfo();
             if (lightBarInfo == null || lightBarInfo.isEmpty()) {
-                Logger.d(TAG, PREFIX + "光柱图: null 1");
+                Logger.d(TAG, PREFIX , "光柱图: null 1");
                 return;
             }
             NaviTmcInfo.NaviLightBarInfo naviLightBarInfo = lightBarInfo.get(0);
             if (naviLightBarInfo == null || naviLightBarInfo.getItemList() == null) {
-                Logger.d(TAG, PREFIX + "光柱图: null 2");
+                Logger.d(TAG, PREFIX , "光柱图: null 2");
                 return;
             }
             ArrayList<NaviTmcInfo.NaviLightBarItem> itemList = naviLightBarInfo.getItemList();
             if (itemList.isEmpty()) {
-                Logger.d(TAG, PREFIX + "光柱图: null 3");
+                Logger.d(TAG, PREFIX , "光柱图: null 3");
                 return;
             }
             for (int i = 0; i < itemList.size(); i++) {
@@ -308,7 +308,7 @@ public class NaviSender {
                     mRoadGroupDatas.add(roadGroupData);
                 }
             }
-            Logger.d(TAG, PREFIX + "光柱图解析: ", mRoadGroupDatas);
+            Logger.d(TAG, PREFIX , "光柱图解析: ", mRoadGroupDatas);
             mScheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(new Runnable() {
                 @Override
                 public void run() {
@@ -335,7 +335,7 @@ public class NaviSender {
                     mRoadConditionGroupSecond.setLngthDynInfmAryOfNavRut(mRoadGroupDatas.size());
                     mRoadConditionGroupSecond.setDataInv(1);
                     SignalPackage.getInstance().setRoadConditionGroupSecond(mRoadConditionGroupSecond);
-                    Logger.d(TAG, PREFIX + "拥堵信息", logs);
+                    Logger.d(TAG, PREFIX , "拥堵信息", logs);
                     sendIndex++;
                 }
             }, 0, 250, TimeUnit.MILLISECONDS);
@@ -345,7 +345,7 @@ public class NaviSender {
     private final IRouteResultObserver mIRouteResultObserver = new IRouteResultObserver() {
         @Override
         public void onRouteResult(RequestRouteResult requestRouteResult) {
-            Logger.d(TAG, PREFIX + "onRouteResult: ");
+            Logger.d(TAG, PREFIX , "onRouteResult: ");
             mRouteLineInfos = requestRouteResult.getMRouteLineInfos();
             String naviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
             if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(naviStatus)) {
@@ -355,7 +355,7 @@ public class NaviSender {
 
         @Override
         public void onReroute() {
-            Logger.d(TAG, PREFIX + "偏航: ");
+            Logger.d(TAG, PREFIX , "偏航: ");
             mSdNavigationStatusGroup.setNaviStat(4);
             SignalPackage.getInstance().setSdNavigationStatus(mSdNavigationStatusGroup);
             mSdNavigationStatusGroup.setNaviStat(5);
@@ -403,7 +403,7 @@ public class NaviSender {
                     SignalPackage.getInstance().setTotalPredictedTimeFromStartToDestinationOnNavigation((int) routeLineInfo.getMTotalTime()); // 导航预计时长
                     logs.add("roadTime= " + routeLineInfo.getMTotalTime());
                 }
-                Logger.d(TAG, PREFIX + "算路信息: " + logs);
+                Logger.d(TAG, PREFIX , "算路信息: " , logs);
             } else {
                 mSdNavigationStatusGroup.setNaviStatCrntRdLvl(15);
                 mSdNavigationStatusGroup.setNaviStatCrntRdLvl_Inv(0);
@@ -429,7 +429,7 @@ public class NaviSender {
                 SignalPackage.getInstance().setTotalPredictedTimeFromStartToDestinationOnNavigation(0); // 导航预计时长
                 SignalPackage.getInstance().setRemainDistanceToChargingStation(0); // 距离充电站剩余里程
                 SignalPackage.getInstance().setRemainTimeToChargingStationy(0); // 距离充电站的剩余时长
-                Logger.d(TAG, PREFIX + "导航状态: " + logs);
+                Logger.d(TAG, PREFIX , "导航状态: " , logs);
             }
         }
     };

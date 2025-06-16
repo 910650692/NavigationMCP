@@ -94,7 +94,7 @@ public class PatacL2ppManager {
         Context context = AppCache.getInstance().getMContext();
         mClsLink = ClsLink.create(context, executor, (link, ready) -> {
             // ClsLink连接状态回调
-            Logger.d(TAG, "clslink connection status callback: " + ready);
+            Logger.d(TAG, "clslink connection status callback: " , ready);
             if (ready) {
                 if (mInitialized) {
                     Logger.i(TAG, "initialized");
@@ -137,7 +137,7 @@ public class PatacL2ppManager {
                 .setTopic(Topic.newBuilder().setUri(uri).build())
                 .build();
         mUSubscription.createTopic(createTopicRequest).whenComplete((status, throwable) -> {
-            Logger.d(TAG, "create topic result: " + status.getCode() + ", " + uri);
+            Logger.d(TAG, "create topic result: " , status.getCode() , ", " , uri);
             if (TBT_URI.equals(uri) && status.getCode() == 0) {
                 Logger.d(TAG, "tbt topic create success");
                 mTbtTopic = true;
@@ -152,7 +152,7 @@ public class PatacL2ppManager {
                 AppCache.getInstance().getMContext().sendBroadcast(intent);
             }
         });
-        Logger.d(TAG, "createTopic: " + uri);
+        Logger.d(TAG, "createTopic: " , uri);
     }
     //endregion
 
@@ -164,7 +164,7 @@ public class PatacL2ppManager {
                 Logger.w(TAG, "onSdTbtDataChange: l2NaviBean null");
                 return;
             }
-            Logger.d(TAG, "send tbt data: " + l2NaviBean);
+            Logger.d(TAG, "send tbt data: " , l2NaviBean);
             String json = GsonUtils.toJson(l2NaviBean);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
             MpilotNavigationInformation.Builder mpilotNavigationInformation = MpilotNavigationInformation.newBuilder();
@@ -479,7 +479,7 @@ public class PatacL2ppManager {
     private final SignalCallback mSignalCallback = new SignalCallback() {
         @Override
         public void onNaviOnADASStateChanged(int state) {
-            Logger.d(TAG, "signal callback state= " + state);
+            Logger.d(TAG, "signal callback state= " , state);
             Context context = AppCache.getInstance().getMContext();
             switch (state) {
                 case SignalConst.L2_NOP.CLOSE_TO_NOA_AREA_TRUE:

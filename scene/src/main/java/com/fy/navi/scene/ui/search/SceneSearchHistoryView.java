@@ -163,8 +163,8 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
         mSearchHistoryAdapter.setOnItemClickListener(new SearchHistoryAdapter.ItemClickListener() {
             @Override
             public void onItemClick(final int position, final History history) {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "BP====onItemClick position:" + position
-                        + " history:" + history + " homeCompanyType:" + mHomeCompanyType);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "BP====onItemClick position:" , position
+                        , " history:" , history , " homeCompanyType:" , mHomeCompanyType);
                 if (history.getMType() == AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY) {
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)

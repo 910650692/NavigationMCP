@@ -274,9 +274,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void startListenMsg() {
         String uid = "";
         String valueJson = commonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
-        Logger.i(TAG, "getUserInfo valueJson = " + valueJson);
+        Logger.i(TAG, "getUserInfo valueJson = " , valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
-            Logger.i(TAG, "Login = " + uid);
+            Logger.i(TAG, "Login = " , uid);
             msgPushPackage.startListen(uid);
         } else {
             Logger.i(TAG, "Logout");
@@ -284,7 +284,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void loadVisibleAreaJson(String jsonPath) {
-        Logger.d("loadVisibleAreaJson", "loadVisibleAreaJson:" + SplitScreenManager.getInstance().isInMultiWindow());
+        Logger.d("loadVisibleAreaJson", "loadVisibleAreaJson:" , SplitScreenManager.getInstance().isInMultiWindow());
         if (SplitScreenManager.getInstance().isInMultiWindow()) {
             return;
         }
@@ -322,7 +322,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         final int currentCityCode = mapDataPackage.getAdCodeByLonLat(positionPackage.getLastCarLocation().getLongitude(),
                 positionPackage.getLastCarLocation().getLatitude());
 
-        Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, "get CurrentCity Limit " + currentCityCode);
+        Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, "get CurrentCity Limit " , currentCityCode);
         mCurrentCityCode = currentCityCode;
         mLicense = license;
         final RestrictedParam restrictedParam = new RestrictedParam();
@@ -352,7 +352,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         final int currentCityCode = mapDataPackage.getAdCodeByLonLat(positionPackage.getLastCarLocation().getLongitude(),
                 positionPackage.getLastCarLocation().getLatitude());
 
-        Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, "get CurrentCity Limit " + currentCityCode);
+        Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, "get CurrentCity Limit " , currentCityCode);
         mCurrentCityCode = currentCityCode;
         mLicense = license;
 
@@ -387,7 +387,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         }
         MapMode mapModel = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
-        Logger.i(TAG, "setMapCenterInScreen (" + mapVisibleAreaInfo.getMleftscreenoffer() + "," + mapVisibleAreaInfo.getMtopscreenoffer() + ")" + ", mapMode: " + mapModel.ordinal());
+        Logger.i(TAG, "setMapCenterInScreen (" , mapVisibleAreaInfo.getMleftscreenoffer() , "," , mapVisibleAreaInfo.getMtopscreenoffer() , ")" , ", mapMode: " , mapModel.ordinal());
         if(mapModel == MapMode.NORTH_2D){
             Logger.i(TAG, "setMapCenterInScreen NORTH_2D");
             mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), (mapVisibleAreaInfo.getMtopscreenoffer() * 3) / 4);
@@ -437,7 +437,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     positionPackage.getLastCarLocation().getLatitude()));
             signalPackage.registerObserver(mapTypeId.name(), this);
             mapPackage.goToCarPosition(mapTypeId);
-            Logger.d("MapViewModelonCreate3" + getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR).getMleftscreenoffer() + "--" + getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR).getMtopscreenoffer());
             MapVisibleAreaInfo mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
             mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
             naviPackage.registerObserver(mViewModel.mScreenId, this);
@@ -514,7 +513,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus currentImersiveStatus) {
-        Logger.d(TAG, "onImmersiveStatusChange: " + parkingViewExist() + ", currentImersiveStatus: " + currentImersiveStatus);
+        Logger.d(TAG, "onImmersiveStatusChange: " , parkingViewExist() , ", currentImersiveStatus: " , currentImersiveStatus);
         //是触控态的时候显示回车位   否则隐藏
 //        if (Boolean.FALSE.equals(mViewModel.bottomNaviVisibility.get())) return;
         if (parkingViewExist()) {
@@ -604,7 +603,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void queryLimitResult(RouteRestrictionParam param) {
-        Logger.d(TAG, "queryLimitResult success!", "isMainThread:" + (Looper.getMainLooper() == Looper.myLooper()));
+        Logger.d(TAG, "queryLimitResult success!", "isMainThread:" , (Looper.getMainLooper() == Looper.myLooper()));
         // 限行信息查询成功后更新UI
         if (limitQueryTaskId == param.getMRestrictedArea().getMRequestId()) {
             mViewModel.updateLimitInfo(param);
@@ -613,7 +612,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void queryLimitEndNumberResult(final TrafficRestrictResponseParam param) {
-        Logger.d(TAG, "queryLimitResult success!", "isMainThread:" + (Looper.getMainLooper() == Looper.myLooper()));
+        Logger.d(TAG, "queryLimitResult success!", "isMainThread:" , (Looper.getMainLooper() == Looper.myLooper()));
         // 限行信息查询成功后更新UI
         if (limitEndNumberTaskId == param.getTaskId()) {
             mViewModel.updateLimitEndNum(param);
@@ -750,7 +749,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         try {
             if (mHistoryManager != null) {
                 mUncompletedNavi = mHistoryManager.getUncompletedNavi();
-                Logger.i(TAG, "uncompletedNavi " + mUncompletedNavi);
+                Logger.i(TAG, "uncompletedNavi " , mUncompletedNavi);
                 if (mUncompletedNavi == null) return;
                 Date mUpdateTime = mUncompletedNavi.getMUpdateTime();
                 if (mUpdateTime == null) {
@@ -822,12 +821,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_MAP_CAR_CLICK);
         PoiDetailsFragment fragment = new PoiDetailsFragment();
         addPoiDetailsFragment(fragment, bundle);
-        Logger.i("onCarClick", ThreadManager.getInstance().getCurrentThread().getName() + "");
+        Logger.i("onCarClick", ThreadManager.getInstance().getCurrentThread().getName());
     }
 
     @Override
     public void onFavoriteClick(MapType mapTypeId, PoiInfoEntity poiInfo) {
-        Logger.i("onFavoriteClick", ThreadManager.getInstance().getCurrentThread().getName() + "");
+        Logger.i("onFavoriteClick", ThreadManager.getInstance().getCurrentThread().getName());
         ThreadManager.getInstance().postUi(() -> {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfo);
@@ -909,7 +908,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onGearChanged(int gear) {
-        Logger.i(TAG, "onGearChanged:" + gear);
+        Logger.i(TAG, "onGearChanged:" , gear);
         switch (gear) {
             case 0 -> {
                 // 停车
@@ -968,7 +967,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onNaviInfo(NaviEtaInfo naviETAInfo) {
         int scale = mapPackage.getCurrentZoomScale(MapType.MAIN_SCREEN_MAIN_MAP);
         float size = mapPackage.getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP);
-        Logger.i(TAG, "onNaviInfo:", "scale:" + scale, "size:" + size);
+        Logger.i(TAG, "onNaviInfo:", "scale:" , scale, "size:" , size);
     }
 
     @Override
@@ -989,7 +988,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            Logger.i(TAG, "notifyAimPoiPushMessage " + GsonUtils.toJson(msg));
+            Logger.i(TAG, "notifyAimPoiPushMessage " , GsonUtils.toJson(msg));
             final PhoneAddressDialog phoneAddressDialog = new PhoneAddressDialog(
                     StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
             phoneAddressDialog.setTitle(msg.getName());
@@ -1006,7 +1005,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void notifyAimRoutePushMessage(RouteMsgPushInfo routeMsgPushInfo) {
         ThreadManager.getInstance().postUi(() -> {
-            Logger.i(TAG, "notifyAimRoutePushMessage " + routeMsgPushInfo.getMName());
+            Logger.i(TAG, "notifyAimRoutePushMessage " , routeMsgPushInfo.getMName());
             switch (getNaviStatus()) {
                 case NaviStatus.NaviStatusType.SELECT_ROUTE,
                      NaviStatus.NaviStatusType.ROUTING,
@@ -1384,7 +1383,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (ConvertUtils.isEmpty(param)) {
             return;
         }
-        Logger.d(TAG, "onRouteTMCInfo： " + GsonUtils.toJson(param));
+        Logger.d(TAG, "onRouteTMCInfo： " , GsonUtils.toJson(param));
         mViewModel.setTMCView(param);
     }
 
@@ -1415,7 +1414,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onTipDialog(String status) {
-        Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "status: " + status);
+        Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "status: " , status);
         if (ConvertUtils.isNull(mViewModel)) return;
         mViewModel.chargePreTipDialog(status);
     }

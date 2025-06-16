@@ -91,7 +91,7 @@ public class SpeedMonitor implements ISpeedCallback {
     }
 
     private void startSchedule() {
-        Logger.i(TAG, "startSchedule:" + isTiming);
+        Logger.i(TAG, "startSchedule:" , isTiming);
         try {
             isTiming = true;
             scheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(() -> {
@@ -110,7 +110,7 @@ public class SpeedMonitor implements ISpeedCallback {
         try {
             if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
                 boolean cancelResult = scheduledFuture.cancel(true);
-                Logger.i(TAG, "cancelTicket:" + cancelResult);
+                Logger.i(TAG, "cancelTicket:" , cancelResult);
             } else {
                 Logger.d(TAG, "cancelTicket failed: scheduledFuture is null or has completed!");
             }

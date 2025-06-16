@@ -63,7 +63,7 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
      * @param cityCode 城市id
      */
     public void queryLimitPolicyByCityCode(final String cityCode) {
-        Logger.d(TAG, "queryRetry cityCode:" + cityCode);
+        Logger.d(TAG, "queryRetry cityCode:" , cityCode);
         final String license = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
         if (license == null || license.isEmpty()) {
             Logger.d(TAG, "No license plate set");
@@ -96,7 +96,7 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
      */
     public void queryRetry() {
         if (mCurrentCityCode != null && !mCurrentCityCode.isEmpty()) {
-            Logger.d(TAG, "queryRetry cityCode:" + mCurrentCityCode);
+            Logger.d(TAG, "queryRetry cityCode:" , mCurrentCityCode);
             queryLimitPolicyByCityCode(mCurrentCityCode);
         }
     }

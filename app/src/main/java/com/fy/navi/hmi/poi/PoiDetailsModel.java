@@ -47,7 +47,7 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
      * 恢复fragment时，根据数据恢复界面
      */
     public void onReStoreFragment() {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + mTaskId + " ,mSearchResultEntity：" + mSearchResultEntity);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , mTaskId , " ,mSearchResultEntity：" , mSearchResultEntity);
         if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
             final ThreadManager threadManager = ThreadManager.getInstance();
             threadManager.postUi(() -> mViewModel.onSearchResult(mTaskId, mSearchResultEntity));
@@ -57,7 +57,7 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "搜索结果返回，任务ID：" + taskId);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "搜索结果返回，任务ID：" , taskId);
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
                 final ThreadManager threadManager = ThreadManager.getInstance();
@@ -68,7 +68,7 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
                 });
             }
         } else {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "忽略非自己注册的回调，任务ID：" + taskId);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "忽略非自己注册的回调，任务ID：" , taskId);
         }
     }
 
@@ -183,7 +183,7 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     }
 
     public boolean isSGMLogin(){
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isSGMLogin: "+ AccountPackage.getInstance().isSGMLogin());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isSGMLogin: ", AccountPackage.getInstance().isSGMLogin());
         return AccountPackage.getInstance().isSGMLogin();
     }
 

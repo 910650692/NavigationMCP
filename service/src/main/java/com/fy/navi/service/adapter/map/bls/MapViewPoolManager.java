@@ -32,7 +32,7 @@ public class MapViewPoolManager {
     }
 
     public boolean createMapView(MapType mapTypeId) {
-        Logger.d(TAG, "MapSurfaceViewManager init :" + mapTypeId.toString());
+        Logger.d(TAG, "MapSurfaceViewManager init :" , mapTypeId.toString());
         if (!mapViewPools.containsKey(mapTypeId)) {
             createMapViewImpl(mapTypeId, new MapViewParams());
         }
@@ -40,14 +40,14 @@ public class MapViewPoolManager {
     }
 
     private void createMapViewImpl(MapType mapTypeId, MapViewParams mapViewParams) {
-        Logger.d(TAG, "MapSurfaceViewManager create :" + mapTypeId.toString());
+        Logger.d(TAG, "MapSurfaceViewManager create :" , mapTypeId.toString());
         MapViewImpl mapViewImpl = new MapViewImpl(AppCache.getInstance().getMContext());
         mapViewImpl.initMapView(mapTypeId, mapViewParams);
         mapViewPools.put(mapTypeId, mapViewImpl);
     }
 
     public MapViewImpl get(MapType mapTypeId, MapViewParams mapViewParams) {
-        Logger.d(TAG, "MapSurfaceViewManager get :" + mapTypeId.toString());
+        Logger.d(TAG, "MapSurfaceViewManager get :" , mapTypeId.toString());
         if (!mapViewPools.containsKey(mapTypeId)) {
             createMapViewImpl(mapTypeId, mapViewParams);
         }

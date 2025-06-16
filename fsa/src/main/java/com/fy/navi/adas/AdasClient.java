@@ -36,7 +36,7 @@ public final class AdasClient {
     private final AdasServiceConnectListener mServiceConnectListener = new AdasServiceConnectListener() {
         @Override
         public void onServiceReady(final boolean serviceReady) {
-            Logger.d(TAG, "connection status: " + serviceReady);
+            Logger.d(TAG, "connection status: " , serviceReady);
             if (serviceReady) {
                 GmcL2ppManager.getInstance().init(mAdasManager);
                 SuperCruiseManager.getInstance().init(mAdasManager);

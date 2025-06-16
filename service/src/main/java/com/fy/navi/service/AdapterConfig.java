@@ -119,7 +119,7 @@ public class AdapterConfig {
         try {
             return Class.forName(objName).newInstance();
         } catch (IllegalAccessException | InstantiationException | ClassNotFoundException error) {
-            Logger.i("AdapterConfig", "error:" + error.toString());
+            Logger.i("AdapterConfig", "error:" , error.toString());
         }
         return null;
     }

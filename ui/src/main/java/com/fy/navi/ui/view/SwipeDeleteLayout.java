@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 
+import com.android.utils.log.Logger;
+
 public class SwipeDeleteLayout extends LinearLayout {
     private static final String TAG = "SwipeDeleteLayout";
     private View mContentView;
@@ -162,7 +164,7 @@ public class SwipeDeleteLayout extends LinearLayout {
             }
             mDeleteChildView.setLayoutParams(layoutParams);
         } else {
-            Log.d(TAG, "请设置合理的布局！");
+            Logger.d(TAG, "请设置合理的布局！");
         }
     }
 

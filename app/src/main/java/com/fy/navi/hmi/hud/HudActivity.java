@@ -88,7 +88,7 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel>{
 
     private void updateMapThemeType() {
         boolean nightModeEnabled = ThemeUtils.INSTANCE.isNightModeEnabled(this);
-        Logger.d(TAG, "updateMapThemeType:nightModeEnabled:" + nightModeEnabled);
+        Logger.d(TAG, "updateMapThemeType:nightModeEnabled:" , nightModeEnabled);
         ThemeType colorMode = nightModeEnabled ? ThemeType.NIGHT : ThemeType.DAY;
         MapAdapter.getInstance().updateUiStyle(MapType.HUD_MAP, colorMode);
     }

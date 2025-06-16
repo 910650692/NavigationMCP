@@ -82,7 +82,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
             final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
             mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType " + poiType);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType " , poiType);
             mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity,true);
             mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
             mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());

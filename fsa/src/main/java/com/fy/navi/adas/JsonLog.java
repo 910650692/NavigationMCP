@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.service.AppCache;
 
 import org.json.JSONArray;
@@ -39,9 +40,9 @@ public final class JsonLog {
     private static void printLine(final String tag, final boolean isTop) {
         // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
         if (isTop) {
-            Log.d(tag, "╔═══════════════════════════════════════════════════════════════════════════════════════");
+            Logger.d(tag, "╔═══════════════════════════════════════════════════════════════════════════════════════");
         } else {
-            Log.d(tag, "╚═══════════════════════════════════════════════════════════════════════════════════════");
+            Logger.d(tag, "╚═══════════════════════════════════════════════════════════════════════════════════════");
         }
     }
 
@@ -60,7 +61,7 @@ public final class JsonLog {
             final String[] lines = message.split(LINE_SEPARATOR);
             for (String line : lines) {
                 // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
-                Log.d(tag, "║ " + line);
+                Logger.d(tag, "║ " + line);
             }
             printLine(tag, false);
         });
@@ -103,7 +104,7 @@ public final class JsonLog {
                 fileWriter.write(message);
             } catch (IOException e) {
                 // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
-                Log.e(TAG, "Error saving JSON data to cache file: " + file.getAbsolutePath(), e);
+                Logger.e(TAG, "Error saving JSON data to cache file: " + file.getAbsolutePath(), e);
             }
         });
     }

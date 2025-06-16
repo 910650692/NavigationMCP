@@ -29,9 +29,9 @@ public final class FsaServiceEvent extends FSAEvent {
      */
     @Override
     public void onSubscriberChanged(final String ip, final boolean isSubscriber) {
-        Logger.d(TAG, "ip = " + ip
-                + ", functionId = " + getFunctionID() + "-" + FsaIdString.function2String(getFunctionID())
-                + ", isSubscriber = " + isSubscriber);
+        Logger.d(TAG, "ip = " , ip
+                , ", functionId = " , getFunctionID() + "-" , FsaIdString.function2String(getFunctionID())
+                , ", isSubscriber = " , isSubscriber);
         if (isSubscriber) {
             MyFsaService.getInstance().subscribeEvent(getFunctionID(), ip);
         } else {

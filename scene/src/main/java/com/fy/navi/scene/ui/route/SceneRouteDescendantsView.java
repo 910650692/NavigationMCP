@@ -156,7 +156,7 @@ public class SceneRouteDescendantsView extends BaseSceneView<SceneRouteDescendan
      * @param poiInfoEntity 当前POI数据
      * */
     public void setUIMode(final int type, final PoiInfoEntity poiInfoEntity) {
-        Logger.d(MapDefaultFinalTag.ROUTE_HMI_TAG, "setUIMode：" + type);
+        Logger.d(MapDefaultFinalTag.ROUTE_HMI_TAG, "setUIMode：" , type);
         switch (type) {
             //无子孙节点
             case AutoMapConstant.ChildType.DEFAULT:

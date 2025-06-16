@@ -123,7 +123,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
      * 显示卡片，倒计时开始
      */
     public void show() {
-        Logger.d(TAG, "show:" + getClass().getSimpleName(), "callBack :" + (mISceneCallback == null));
+        Logger.d(TAG, "show:" , getClass().getSimpleName(), "callBack :" , (mISceneCallback == null));
         // 新卡片显示需要重置倒计时，隐藏卡片显示使用选线剩余倒计时
         if (mSceneState != SCENE_STATE_HIDE) {
             resetCountdown();
@@ -147,7 +147,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
      * 隐藏卡片，但是倒计时还在
      */
     public void hide() {
-        Logger.d(TAG, "hide:" + getClass().getSimpleName(), "callBack :" + (mISceneCallback == null));
+        Logger.d(TAG, "hide:" , getClass().getSimpleName(), "callBack :" , (mISceneCallback == null));
         // 新卡片如果一开始就是隐藏(有高优卡片显示时新卡创建并隐藏)，显示需要重置倒计时
         if (mSceneState == SCENE_STATE_CLOSE || mSceneState == SCENE_STATE_INIT) {
             resetCountdown();
@@ -163,7 +163,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
      * 关闭卡片，不再响应任何事件
      */
     public void close() {
-        Logger.d(TAG, "close:" + getClass().getSimpleName(), "callBack :" + (mISceneCallback == null));
+        Logger.d(TAG, "close:" , getClass().getSimpleName(), "callBack :" , (mISceneCallback == null));
         mCountdown = 0;
         cancelCountdown();
         if (!ConvertUtils.isNull(mISceneCallback)) {
@@ -234,7 +234,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
      */
     public void notifySceneStateChange(final boolean isVisible) {
         final boolean isCanDo = isVisible != isVisible();
-        Logger.i(TAG, "clsName:" + getClass().getSimpleName(), "notifySceneStateChange success", "isCanDo:" + isCanDo + ",isVisible：" + isVisible);
+        Logger.i(TAG, "clsName:" , getClass().getSimpleName(), "notifySceneStateChange success", "isCanDo:" , isCanDo , ",isVisible：" , isVisible);
         if (isCanDo) {
             getNaviSceneEvent().notifySceneStateChange((isVisible ?
                             INaviSceneEvent.SceneStateChangeType.SceneShowState :

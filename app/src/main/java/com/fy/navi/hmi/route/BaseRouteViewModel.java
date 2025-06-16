@@ -596,7 +596,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             //回到算路结果页需要全览路线
             ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         }
-        Logger.i(TAG, "getCurrentPageUI: " + index);
+        Logger.i(TAG, "getCurrentPageUI: " , index);
         return index;
     }
 
@@ -872,7 +872,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 phoneString.add(phone);
             }
             if (!ConvertUtils.isEmpty(phoneString) && !ConvertUtils.isEmpty(phoneString.get(0))) {
-                Logger.d(TAG, "call phone: " + phoneString.get(0));
+                Logger.d(TAG, "call phone: " , phoneString.get(0));
                 new SearchConfirmDialog.Build(mView.getContext())
                         .setDialogObserver(new IBaseDialogClickListener() {
                             @Override
@@ -1579,7 +1579,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEEXPIREDIMMEDIATELY:
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEWAITLIMITOFF:
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEWAITLIMITOFFSHORT:
-                Logger.i(TAG, "hide restriction: " + routeRestrictionType);
+                Logger.i(TAG, "hide restriction: " , routeRestrictionType);
                 mRestrictionVisibility.set(false);
                 break;
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPENETWORK:

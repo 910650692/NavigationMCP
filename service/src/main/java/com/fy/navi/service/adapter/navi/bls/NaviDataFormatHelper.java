@@ -825,7 +825,7 @@ public final class NaviDataFormatHelper {
                 }
                 naviParkingEntity.setNum(String.valueOf(spaceFree / spaceTotal));
             } else {
-                Logger.d("SceneNaviParkListImpl spaceTotal= " + spaceTotal + ",spaceFree= " + spaceFree);
+                Logger.d("SceneNaviParkListImpl spaceTotal= " , spaceTotal , ",spaceFree= " , spaceFree);
             }
         }
         return naviParkingEntity;

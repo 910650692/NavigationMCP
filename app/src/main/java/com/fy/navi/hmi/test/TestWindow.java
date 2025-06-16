@@ -77,12 +77,14 @@ public class TestWindow {
         }
 
         mBinding = LayoutTestBinding.inflate(LayoutInflater.from(activity));
+        Logger.d(TAG, "isDebug", BuildConfig.DEBUG);
+        mBinding.testNavLog.setChecked(BuildConfig.DEBUG);
+        mBinding.testGaodeLog.setChecked(BuildConfig.DEBUG);
         mWindowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         initLayoutParams();
         initAction();
         initData();
         addViewToWindow();
-        initLogLevel();
         mBinding.naviPosRecord.setChecked(PositionPackage.getInstance().isOpenLocLog());
     }
 
@@ -207,32 +209,17 @@ public class TestWindow {
             DebugWindow.getInstance().hide();
         });
 
-        mBinding.naviPosRecord.setOnCheckedChangeListener((buttonView, checked) -> {
-            if (buttonView.isPressed()) {
-                if (checked) {
-                    PositionPackage.getInstance().locationLogSwitch(true);
-                } else {
-                    PositionPackage.getInstance().locationLogSwitch(false);
-                }
-            }
-        });
-
         mBinding.testNavLog.setOnCheckedChangeListener((buttonView, checked) -> {
-            if (buttonView.isPressed()) {
-                if (BuildConfig.DEBUG) {
-                    Logger.switchLog(checked);
-                } else {
-                    //release 下log全关
-                    Logger.switchLog(false);
-                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
-                }
-            }
+            Logger.switchLog(checked);
+        });
+        mBinding.testGaodeLog.setOnCheckedChangeListener((buttonView, checked) -> {
+            EnginePackage.getInstance().switchLog(checked ? GaodeLogLevel.LOG_DEBUG : GaodeLogLevel.LOG_NONE);
         });
 
         mBinding.testNaiLogLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Logger.setLogLevel(position + 2);
+                if (mBinding.testNavLog.isChecked()) Logger.setLogLevel(position + 2);
             }
 
             @Override
@@ -240,27 +227,10 @@ public class TestWindow {
 
             }
         });
-
-
-        mBinding.testGaodeLog.setOnCheckedChangeListener((buttonView, checked) -> {
-            if (buttonView.isPressed()) {
-                if (BuildConfig.DEBUG) {
-                    if (checked) {
-                        EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
-                    } else {
-                        EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
-                    }
-                } else {
-                    //release 下log全关
-                    Logger.switchLog(false);
-                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
-                }
-            }
-        });
-
         mBinding.testGaodeLogLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!mBinding.testGaodeLog.isChecked()) return;
                 if (position == 0) {
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
                 } else if (position == 1) {
@@ -276,10 +246,19 @@ public class TestWindow {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                mBinding.testGaodeLog.setChecked(false);
             }
         });
 
+        mBinding.naviPosRecord.setOnCheckedChangeListener((buttonView, checked) -> {
+            if (buttonView.isPressed()) {
+                if (checked) {
+                    PositionPackage.getInstance().locationLogSwitch(true);
+                } else {
+                    PositionPackage.getInstance().locationLogSwitch(false);
+                }
+            }
+        });
         mBinding.naviRecord.setChecked(RecorderPackage.getInstance().isRecording());
         mBinding.recordPlay.setChecked(RecorderPackage.getInstance().isPlaying());
         mBinding.naviRecord.setOnCheckedChangeListener((buttonView, checked) -> {
@@ -314,11 +293,6 @@ public class TestWindow {
                 }
             }
         });
-    }
-
-    private void initLogLevel() {
-        Logger.setLogLevel(2);
-        EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
     }
 
     private void toggleSelection(View view) {

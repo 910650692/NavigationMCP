@@ -93,8 +93,8 @@ public class NetQueryManager implements NetMethodExportApi {
 
             @Override
             public void onFailed(final ApiException e) {
-                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE + e.getCode());
-                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG + e.getMessage());
+                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
+                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
                 callBack.onFailed();
             }
         };
@@ -129,8 +129,8 @@ public class NetQueryManager implements NetMethodExportApi {
 
             @Override
             public void onFailed(final ApiException e) {
-                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE + e.getCode());
-                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG + e.getMessage());
+                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
+                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
                 callBack.onFailed();
             }
         };
@@ -165,8 +165,8 @@ public class NetQueryManager implements NetMethodExportApi {
 
             @Override
             public void onFailed(final ApiException e) {
-                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE + e.getCode());
-                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG + e.getMessage());
+                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
+                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
                 callBack.onFailed();
             }
         };
@@ -200,8 +200,8 @@ public class NetQueryManager implements NetMethodExportApi {
 
             @Override
             public void onFailed(final ApiException e) {
-                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE + e.getCode());
-                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG + e.getMessage());
+                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
+                Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
                 callBack.onFailed();
             }
         };

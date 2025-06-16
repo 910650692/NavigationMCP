@@ -196,7 +196,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         mSearchHistoryAdapter.setOnItemClickListener(new SearchHistoryAdapter.ItemClickListener() {
             @Override
             public void onItemClick(final int position, final History history) {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "BP====onItemClick position:" + position + " history:" + history);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "BP====onItemClick position:" , position , " history:" , history);
                 if (history.getMType() == AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY) {
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
@@ -230,7 +230,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                 poiInfoEntity.setAddress(history.getMEndPoiName());
                 poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
                 poiInfoEntity.setPid(history.getMPoiId());
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onNaviClick: historyPoint = " + history.getMEndPoint());
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onNaviClick: historyPoint = " , history.getMEndPoint());
 
                 final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
                 final GeoPoint geoPoint = new GeoPoint();
@@ -299,7 +299,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         });
 
         mViewBinding.sclSearchTopView.searchBarEditView.setOnEditorActionListener((v, actionId, event) -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onEditorActionListener actionId: " + actionId);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onEditorActionListener actionId: " , actionId);
             if (ConvertUtils.isEmpty(getEditText())) {
                 hideInput();
                 return true;
@@ -322,7 +322,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
      * @param keyword 搜索关键字
      */
     public void suggestionSearch(final String keyword) {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sugSearch search: " + ", Keyword: " + keyword);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sugSearch search: " , ", Keyword: " , keyword);
         mScreenViewModel.suggestionSearch(keyword);
     }
 
@@ -341,8 +341,8 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             mAdapter.clearList();
             return;
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
-                + " currentId: " + mScreenViewModel.getMTaskId());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , taskId
+                , " currentId: " , mScreenViewModel.getMTaskId());
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }

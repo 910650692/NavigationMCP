@@ -175,7 +175,7 @@ public class UserTrackImpl implements IUserTrackApi {
         if (mUserTrackService == null) {
             return -1;
         }
-        Logger.d(TAG, "obtainGpsTrackDepInfo psSavePath:" + psSavePath + " psFileName:" + psFileName);
+        Logger.d(TAG, "obtainGpsTrackDepInfo psSavePath:" , psSavePath , " psFileName:" , psFileName);
         return mUserTrackService.obtainGpsTrackDepInfo(psSavePath, psFileName);
     }
 

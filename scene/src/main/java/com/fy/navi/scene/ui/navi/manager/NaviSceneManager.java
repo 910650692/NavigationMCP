@@ -64,7 +64,7 @@ public class NaviSceneManager implements INaviSceneEvent {
                 NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) {
             return;
         }
-        Logger.i(TAG, "onHideScene Name -> " + sceneBase.getSceneName());
+        Logger.i(TAG, "onHideScene Name -> " , sceneBase.getSceneName());
         hideScene(sceneBase);
     }
 
@@ -78,13 +78,13 @@ public class NaviSceneManager implements INaviSceneEvent {
                     showScene(newSceneBase);
                 } else {
                     if (NaviSceneBase.SCENE_STATE_SHOW == newSceneBase.getSceneState()) { // 正在展示中不进行任何操作
-                        Logger.i(TAG, "current " + newSceneBase.getSceneName() + " is show");
+                        Logger.i(TAG, "current " , newSceneBase.getSceneName() + " is show");
                     } else { // 没在展示，则根据碰撞规则展示Scene
                         ArrayList<NaviSceneBase> temporaryList = new ArrayList<>(showSceneList);
                         int showSceneListSize = temporaryList.size(); // 有人知道为什么要用size，而不是直接用showSceneList.size吗， 动脑筋猜一猜
-                        Logger.d(TAG, "当前展示的Scene集合长度:" + showSceneListSize +
-                                " 新卡:Name:" + newSceneBase.getSceneName() + " State:" +
-                                newSceneBase.getSceneState() + " Id:" + cardId.ordinal());
+                        Logger.d(TAG, "当前展示的Scene集合长度:" , showSceneListSize ,
+                                " 新卡:Name:" , newSceneBase.getSceneName() , " State:" ,
+                                newSceneBase.getSceneState() , " Id:" , cardId.ordinal());
                         StringBuilder logShowAndShow = new StringBuilder();
                         StringBuilder logShowAndClose = new StringBuilder();
                         StringBuilder logShowAndHide = new StringBuilder();
@@ -189,7 +189,7 @@ public class NaviSceneManager implements INaviSceneEvent {
         if (NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) {
             return;
         }
-        Logger.i(TAG, "onCloseScene", "Name:" + sceneBase.getSceneName() + " State:" + sceneBase.getSceneState());
+        Logger.i(TAG, "onCloseScene", "Name:" , sceneBase.getSceneName() , " State:" , sceneBase.getSceneState());
         closeScene(sceneBase);
     }
 
@@ -200,14 +200,14 @@ public class NaviSceneManager implements INaviSceneEvent {
         }
         if (NaviSceneBase.SCENE_STATE_CLOSE == sceneView.getSceneState()
                 || NaviSceneBase.SCENE_STATE_HIDE == sceneView.getSceneState()) {
-            Logger.i(TAG, "current sceneView is close 不做处理: " + sceneView.getSceneName());
+            Logger.i(TAG, "current sceneView is close 不做处理: " , sceneView.getSceneName());
             return;
         }
         //Logger.i(TAG, "sceneView -> " + sceneView.getSceneName());
         if (!hideSceneList.contains(sceneView)) {
             hideSceneList.add(sceneView);
         } else {
-            Logger.i(TAG, "hideSceneList 已存在！：" + sceneView.getSceneId().name());
+            Logger.i(TAG, "hideSceneList 已存在！：" , sceneView.getSceneId().name());
         }
         sceneView.hide();
         if (ConvertUtils.isContain(showSceneList, sceneView)) {
@@ -225,7 +225,7 @@ public class NaviSceneManager implements INaviSceneEvent {
         if (!showSceneList.contains(sceneView)) {
             showSceneList.add(sceneView);
         } else {
-            Logger.i(TAG, "showSceneList 已存在！：" + sceneView.getSceneId().name());
+            Logger.i(TAG, "showSceneList 已存在！：" , sceneView.getSceneId().name());
         }
         sceneView.show();
         if (ConvertUtils.isContain(hideSceneList, sceneView)) {
@@ -257,7 +257,7 @@ public class NaviSceneManager implements INaviSceneEvent {
         }
         NaviSceneBase newSceneBase = getSceneById(cardId);
         if (!ConvertUtils.isEmpty(newSceneBase)) {
-            Logger.d(TAG, "getSceneName -> " + newSceneBase.getSceneName(), "getSceneState:" + newSceneBase.getSceneState());
+            Logger.d(TAG, "getSceneName -> " , newSceneBase.getSceneName(), "getSceneState:" , newSceneBase.getSceneState());
             showScene(newSceneBase);
         } else {
             Logger.e(TAG, "newSceneBase==null");
@@ -280,14 +280,14 @@ public class NaviSceneManager implements INaviSceneEvent {
      * @param naviScene 卡片
      */
     public void addNaviScene(final NaviSceneId id, final NaviSceneBase naviScene) {
-        Logger.i(TAG, "addNaviScene", "id -> " + id.name(), "naviScene：" + naviScene.getSceneName() +
-                " mIsCanAddScene -> " + mIsCanAddScene);
+        Logger.i(TAG, "addNaviScene", "id -> " , id.name(), "naviScene：" , naviScene.getSceneName() ,
+                " mIsCanAddScene -> " , mIsCanAddScene);
         // 因为launcher巡航等页面会复用navi的scene所以这里只能在navi页面起来后才能添加scene
         if (!mIsCanAddScene || naviScene.getCategory() != NumberUtils.NUM_1) {
             return;
         }
         if (ConvertUtils.isContain(sceneViewList, id)) {
-            Logger.i("addNaviScene", "已存在！：" + naviScene.getSceneId().name());
+            Logger.i("addNaviScene", "已存在！：" , naviScene.getSceneId().name());
         } else {
             sceneViewList.put(id, naviScene);
         }
@@ -303,7 +303,7 @@ public class NaviSceneManager implements INaviSceneEvent {
 
     @Override
     public void notifySceneStateChange(SceneStateChangeType type, NaviSceneId cardId) {
-        Logger.i("notifySceneStateChange", "type:" + type + " cardId:" + cardId);
+        Logger.i("notifySceneStateChange", "type:" , type , " cardId:" , cardId);
         if (type == SceneStateChangeType.SceneCloseState) {//关闭Scene
             checkSceneReset(cardId);
             onCloseScene(cardId);

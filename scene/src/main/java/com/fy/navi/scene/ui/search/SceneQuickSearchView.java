@@ -156,7 +156,7 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
                     addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
                             AutoMapConstant.SourceFragment.FRAGMENT_AROUND, AutoMapConstant.PoiType.POI_AROUND, poiInfoEntity));
                 } else {
-                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType from " + mSearchType);
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType from " , mSearchType);
                     addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
                             AutoMapConstant.SourceFragment.FRAGMENT_ALONG_WAY, AutoMapConstant.PoiType.POI_AROUND, poiInfoEntity));
                 }
@@ -185,7 +185,7 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
                 final Fragment fragment;
                 switch (mSearchType) {
                     case AutoMapConstant.SearchType.AROUND_SEARCH:
-                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Around search - Type: " + mSearchType);
+                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Around search - Type: " , mSearchType);
                          fragment= (Fragment) ARouter.getInstance().build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
                                 .navigation();
                          String realName = name;
@@ -198,7 +198,7 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
 
                         break;
                     case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:
-                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Along way search - Type: " + mSearchType);
+                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Along way search - Type: " , mSearchType);
 
                         //For Bury Point
                         sendBuryPointForAlongWaySearch(name);
@@ -209,7 +209,7 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
                                 AutoMapConstant.SourceFragment.FRAGMENT_ALONG_WAY, mSearchType, name, null));
                         break;
                     default:
-                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Unsupported search type: " + mSearchType);
+                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Unsupported search type: " , mSearchType);
                 }
             });
         } else {

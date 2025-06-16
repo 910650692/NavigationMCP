@@ -122,7 +122,7 @@ public class ChargeCardView extends CardView<NaviSceneNearProvideStationChargeBi
         if(mBinding == null){
             return;
         }
-        Logger.i(TAG, " setExpandState isExpand:"+isExpand);
+        Logger.i(TAG, " setExpandState isExpand:",isExpand);
         if(isExpand){
             mBinding.clChargeExpand.setVisibility(View.VISIBLE);
             mBinding.clChargeUnexpand.setVisibility(View.GONE);

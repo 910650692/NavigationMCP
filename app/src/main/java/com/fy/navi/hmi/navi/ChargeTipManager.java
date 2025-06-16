@@ -72,7 +72,7 @@ public class ChargeTipManager {
             return;
         }
         this.mViaChargeStation = naviInfoBean.ChargeStationRemain.get(0);
-        Logger.i(TAG, "当前路线上存在充电站途径点且已保存成功！：" + mViaChargeStation.time);
+        Logger.i(TAG, "当前路线上存在充电站途径点且已保存成功！：" , mViaChargeStation.time);
     }
 
     /***
@@ -122,7 +122,7 @@ public class ChargeTipManager {
      * @return 是否有能量耗尽点
      */
     private boolean hasEnergyEndPoint() {
-        Logger.i(TAG, "hasEnergyEndPoint:" + (mEtaInfo != null));
+        Logger.i(TAG, "hasEnergyEndPoint:" , (mEtaInfo != null));
         return mEtaInfo != null;
     }
 
@@ -150,7 +150,7 @@ public class ChargeTipManager {
         final GeoPoint endPoint = mEtaInfo.getEnergyEndPoint().getShow();
         // 获取的单位是米，所以需要除 1000
         distance = mLayerPackage.calcStraightDistance(startPoint, endPoint) / 1000;
-        Logger.i(TAG, "getRemainDistance:" + distance + "KM");
+        Logger.i(TAG, "getRemainDistance:" , distance , "KM");
         return distance;
     }
 
@@ -271,7 +271,7 @@ public class ChargeTipManager {
      * @param entity
      */
     private void notifyUi(final ChargeTipEntity entity) {
-        Logger.i(TAG, "notifyUi", "viewModel:" + (mViewModel == null));
+        Logger.i(TAG, "notifyUi", "viewModel:" , (mViewModel == null));
         if (mViewModel != null && entity != null) {
             mViewModel.notifyBatteryWarning(entity);
             if (!TextUtils.isEmpty(entity.getTtsContent())) {
@@ -285,7 +285,7 @@ public class ChargeTipManager {
      * @param msg
      */
     private void playTts(final String msg) {
-        Logger.i(TAG, "playTts:" + msg);
+        Logger.i(TAG, "playTts:" , msg);
         if (mSpeechPackage != null && !ConvertUtils.isEmpty(msg)) {
             mSpeechPackage.synthesize(msg);
         }

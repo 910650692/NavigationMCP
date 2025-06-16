@@ -61,7 +61,7 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         //FileUtils.createDIR(param.dataPath);
         // 服务初始化
         final int res = mAccountService.init(param);
-        Logger.i(TAG, "initAccountService: initSetting=" + res);
+        Logger.i(TAG, "initAccountService: initSetting=" , res);
         // 添加回调观察者
         mAccountService.addObserver(this);
     }
@@ -133,7 +133,7 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     @Override
     public void notify(final int errCode, final int taskId, final MobileLoginResult result) {
         if (result != null && result.code == 1) {
-            Logger.i(TAG, "MobileLoginResult notify: res=" + result.code);
+            Logger.i(TAG, "MobileLoginResult notify: res=" , result.code);
             Logger.i(TAG, "userId=" + result.profile.uid);
             Logger.i("状态:" + result.profile.username + "已登录," + "id = " + result.profile.uid);
         } else {
@@ -487,7 +487,7 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
             return "";
         }
         Account[] accounts = mAccountManager.getAccountsByType(AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI);
-        Logger.d(TAG, "accounts number :" + accounts.length);
+        Logger.d(TAG, "accounts number :" , accounts.length);
         if (accounts.length == 0) {
             Logger.d(TAG, "无可用账户，将触发添加账户界面");
         }

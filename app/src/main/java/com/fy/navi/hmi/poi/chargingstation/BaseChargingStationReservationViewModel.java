@@ -52,7 +52,7 @@ public class BaseChargingStationReservationViewModel extends BaseViewModel<Charg
                 mView.notifyEquipmentInfo(taskId,equipmentInfo);
             } catch (JSONException e) {
                 ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.query_error));
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: ",e);
             }
         }else{
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");
@@ -80,7 +80,7 @@ public class BaseChargingStationReservationViewModel extends BaseViewModel<Charg
 
     public void onQueryReservation(int taskId,BaseRep result){
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" , result.getResultCode());
             ArrayList<ReservationInfo> list = new ArrayList<>();
             // 回调出的数据转换List
             try {

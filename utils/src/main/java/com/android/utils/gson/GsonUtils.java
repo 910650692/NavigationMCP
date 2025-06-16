@@ -180,7 +180,7 @@ public class GsonUtils {
                         Object obb = dataReplica.get(objReplica);
                         Type dataReplicaGenericType = dataReplica.getGenericType();
                         String clas = dataReplicaGenericType.toString();
-                        Logger.d("clas -> " + clas);
+                        Logger.d("clas -> " , clas);
                         if (!isContainsBasicDataType(clas)) {
                             dataReplica.set(objReplica, obj);
                             break;
@@ -204,7 +204,7 @@ public class GsonUtils {
         if (null == obb) {
             String pathClass = clas.substring(6);
             String className = clas.substring(clas.lastIndexOf(".") + 1);
-            Logger.d("className -> " + pathClass + " className ->" + className);
+            Logger.d("className -> " , pathClass , " className ->" , className);
             Class cla = Class.forName(pathClass);
             Object replicaObj = cla.newInstance();
             dataReplica.set(objReplica, replicaObj);

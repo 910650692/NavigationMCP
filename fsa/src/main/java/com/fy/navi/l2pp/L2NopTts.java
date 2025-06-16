@@ -24,7 +24,7 @@ public class L2NopTts {
      * @param highPriority
      */
     public static void sendTTS(final String tts, final boolean highPriority) {
-        Logger.i(TAG, "sendTTS: tts = " + tts + ", highPriority = " + highPriority);
+        Logger.i(TAG, "sendTTS: tts = " , tts , ", highPriority = " , highPriority);
         final SoundInfoEntity info = new SoundInfoEntity();
         info.setText(tts);
         info.setSoundType(PlayModule.PlayModuleLaneNavi);

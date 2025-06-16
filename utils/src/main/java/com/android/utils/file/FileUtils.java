@@ -560,8 +560,8 @@ public class FileUtils {
             @SuppressLint("SetWorldWritable")
             boolean writable = file.setWritable(true, false);
             boolean executable = file.setExecutable(true, false);
-            Logger.i(TAG, "initEngineParam isDirectory：" + file.isDirectory() + " isFile:" + file.isFile() + " exists:" + file.exists()
-                    + " readable:" + readable + " writable:" + writable + " executable:" + executable + " dirPath:" + dirPath);
+            Logger.i(TAG, "initEngineParam isDirectory：" , file.isDirectory() , " isFile:" , file.isFile() , " exists:" , file.exists()
+                    , " readable:" , readable , " writable:" , writable , " executable:" , executable , " dirPath:" , dirPath);
             return readable && writable && executable;
         } catch (Exception e) {
             Logger.e(TAG, "initEngineParam error：" + e.getMessage());
@@ -599,7 +599,7 @@ public class FileUtils {
     private void getEmulatedPhonePath() {
         boolean isAvailable = isExternalStorageAvailable();
         boolean hasPermission = checkExternalStoragePermission(mContext);
-        Logger.i(TAG, "isAvailable:" + isAvailable + " hasPermission:" + hasPermission);
+        Logger.i(TAG, "isAvailable:" , isAvailable , " hasPermission:" , hasPermission);
         SD_APP_PATH = mContext.getExternalFilesDir(null) + File.separator;
     }
 
@@ -618,7 +618,7 @@ public class FileUtils {
     private boolean checkExternalStoragePermission(Context context) {
         int externalStoragePermissionCheck = ContextCompat.checkSelfPermission(context,
                 Manifest.permission.MANAGE_EXTERNAL_STORAGE);
-        Logger.i(TAG, "externalStoragePermissionCheck:" + externalStoragePermissionCheck);
+        Logger.i(TAG, "externalStoragePermissionCheck:" , externalStoragePermissionCheck);
         return externalStoragePermissionCheck == PackageManager.PERMISSION_GRANTED;
     }
 

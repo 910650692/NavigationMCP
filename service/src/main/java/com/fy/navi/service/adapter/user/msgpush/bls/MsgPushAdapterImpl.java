@@ -179,7 +179,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
 
         if (!autoPushMsgInfoList.isEmpty()) {
 
-            Logger.d(TAG,"autoPushMsgInfoList = " + autoPushMsgInfoList.toString());
+            Logger.d(TAG,"autoPushMsgInfoList = " , autoPushMsgInfoList.toString());
             return autoPushMsgInfoList;
         } else {
             Logger.d(TAG,"Get AutoPushMsgInfoList failed.");
@@ -213,7 +213,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
 
         if (!aimPoiPushMsgInfoList.isEmpty()) {
 
-            Logger.d(TAG,"mAimPoiPushMsgInfoList = " + aimPoiPushMsgInfoList.toString());
+            Logger.d(TAG,"mAimPoiPushMsgInfoList = " , aimPoiPushMsgInfoList.toString());
             return aimPoiPushMsgInfoList;
         } else {
             Logger.d(TAG,"Get AimPoiPushMsgInfoList failed.");

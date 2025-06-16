@@ -132,7 +132,7 @@ public final class GmcL2ppManager {
                 return;
             }
             String json = GsonUtils.toJson(l2NaviBean);
-            Logger.d(TAG, "send SD Map tbt data: " + json);
+            Logger.d(TAG, "send SD Map tbt data: " , json);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
             // 发送SD Map tbt数据
             mAdasManager.sendData(DataType.SDPeriodShortData, json.getBytes());
@@ -152,7 +152,7 @@ public final class GmcL2ppManager {
                 Logger.w(TAG, "ODD callback bytes null");
                 return;
             }
-            Logger.d(TAG, "ODD callback dataType= " + dataType);
+            Logger.d(TAG, "ODD callback dataType= " , dataType);
             // ODD扎标数据的DataType是DataType.SDMapReserve
             if (dataType != DataType.SDMapReserve) {
                 return;
@@ -199,7 +199,7 @@ public final class GmcL2ppManager {
     private final INaviStatusCallback mINaviStatusCallback = new INaviStatusCallback() {
         @Override
         public void onNaviStatusChange(String naviStatus) {
-            Logger.d(TAG, "navi status change: " + naviStatus);
+            Logger.d(TAG, "navi status change: " , naviStatus);
             // 导航态时判断是否存在保存的ODD扎标数据，如果有则扎标并清除ODD扎标数据
             if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(naviStatus)) {
                 if (mPathId != -1 && mLayerItemRouteOdds != null) {
@@ -221,7 +221,7 @@ public final class GmcL2ppManager {
             Logger.w(TAG, "ADUProperty callback result null");
             return;
         }
-        Logger.i(TAG, "ADUProperty callback propertyId= " + propertyId);
+        Logger.i(TAG, "ADUProperty callback propertyId= " , propertyId);
         if (propertyId != Properties.ADASWarnings) {
             return;
         }
@@ -417,7 +417,7 @@ public final class GmcL2ppManager {
     private SignalCallback mSignalCallback = new SignalCallback() {
         @Override
         public void onLaneCenteringWarningIndicationRequestIdcmAChanged(final int state) {
-            Logger.i(TAG, "signal callback state= " + Integer.toHexString(state));
+            Logger.i(TAG, "signal callback state= " , Integer.toHexString(state));
             switch (state) {
                 case 0xD:
                 case 0xB:
@@ -448,7 +448,7 @@ public final class GmcL2ppManager {
                     L2NopTts.sendTTS(AppCache.getInstance().getMContext().getString(R.string.str_signal_changed_7), true);
                     break;
                 default:
-                    Logger.i(TAG, "signal callback not find state= " + Integer.toHexString(state));
+                    Logger.i(TAG, "signal callback not find state= " , Integer.toHexString(state));
             }
         }
     };

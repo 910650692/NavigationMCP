@@ -65,7 +65,7 @@ public class MapModelHelp {
     public void restoreSetting() {
         // 路况开启恢复
         final boolean iShowTmc = mSettingPackage.getConfigKeyRoadEvent();
-        Logger.i(TAG, "restoreUserPreference", "iShowTmc:" + iShowTmc);
+        Logger.i(TAG, "restoreUserPreference", "iShowTmc:" , iShowTmc);
         mMapPackage.setTrafficStates(mMapTypeId, iShowTmc);
         // 视角
         resetMapAngel();
@@ -78,7 +78,7 @@ public class MapModelHelp {
      */
     private void resetMapAngel() {
         final int carMode = mSettingPackage.getConfigKeyMapviewMode();
-        Logger.i(TAG, "resetMapAngel", "carMode:" + carMode);
+        Logger.i(TAG, "resetMapAngel", "carMode:" , carMode);
         switch (carMode) {
             case 0 -> {
                 mMapPackage.switchMapMode(mMapTypeId, MapMode.UP_2D, true);
@@ -101,7 +101,7 @@ public class MapModelHelp {
     private void restoreCarMode() {
         //车标模式, 0: 2D默认车标  1: 3D默认车标 2: 3D骨骼车标  3: 3D车速车标
         final CarModeType carLogo = mSettingPackage.getCarMode();
-        Logger.i(TAG, "restoreCarMode", "车标模式:" + carLogo);
+        Logger.i(TAG, "restoreCarMode", "车标模式:" , carLogo);
         switch (carLogo) {
             case CAR_MODE_DEFAULT -> {
                 mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODE_DEFAULT);
@@ -126,7 +126,7 @@ public class MapModelHelp {
     public void setCruiseScale() {
         final boolean isAutoSizeOpen = mSettingPackage.getAutoScale();
         final boolean is3DDegree = mSettingPackage.getConfigKeyMapviewMode() == 2;
-        Logger.i(TAG, "setCruiseScale", "isAutoSizeOpen:" + isAutoSizeOpen, "is3DDegree:" + is3DDegree);
+        Logger.i(TAG, "setCruiseScale", "isAutoSizeOpen:" , isAutoSizeOpen, "is3DDegree:" , is3DDegree);
         if (isAutoSizeOpen) {
             mMapPackage.setZoomLevel(mMapTypeId, 15);
         } else {
@@ -144,7 +144,7 @@ public class MapModelHelp {
      * @return GeoPoint
      */
     public GeoPoint parseGeoPoint(final String geoPointString) {
-        Logger.i(TAG, "parseGeoPoint:" + geoPointString);
+        Logger.i(TAG, "parseGeoPoint:" , geoPointString);
         if (TextUtils.isEmpty(geoPointString)) {
             throw new NullPointerException("geoPointString is null or empty!");
         }
@@ -188,7 +188,7 @@ public class MapModelHelp {
         }
         final float currentBattery = mSignalPackage.getBatteryEnergy(); // 获取剩余电量
         BevPowerCarUtils.getInstance().initlialHVBattenergy = currentBattery;
-        Logger.i(TAG, "currentBattery:" + currentBattery);
+        Logger.i(TAG, "currentBattery:" , currentBattery);
         mNaviPackage.updateBatteryInfo();
     }
 
@@ -254,7 +254,7 @@ public class MapModelHelp {
         try {
             if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
                 boolean stopResult = scheduledFuture.cancel(true);
-                Logger.i(TAG, "stopSchedule:" + stopResult);
+                Logger.i(TAG, "stopSchedule:" , stopResult);
             } else {
                 Logger.w(TAG, "stopSchedule failed, scheduledFuture is null or has completed!");
             }

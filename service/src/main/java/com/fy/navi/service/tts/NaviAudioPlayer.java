@@ -45,7 +45,7 @@ public class NaviAudioPlayer {
         @Override
         public void onAudioFocusChange(final int focusChange) {
             mGain = focusChange;
-            Logger.d(TAG, "onAudioFocusChange:" + focusChange);
+            Logger.d(TAG, "onAudioFocusChange:" , focusChange);
             if (focusChange == AudioManager.AUDIOFOCUS_LOSS ||
                     focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
                 if (focusChange != AudioManager.AUDIOFOCUS_LOSS) {
@@ -66,7 +66,7 @@ public class NaviAudioPlayer {
         @Override
         public void onAudioFocusChange(final int focusChange) {
             mGain = focusChange;
-            Logger.d(TAG, "onAudioFocusChange:" + focusChange);
+            Logger.d(TAG, "onAudioFocusChange:" , focusChange);
             if (focusChange == AudioManager.AUDIOFOCUS_LOSS ||
                     focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
                 if (focusChange != AudioManager.AUDIOFOCUS_LOSS) {
@@ -111,19 +111,19 @@ public class NaviAudioPlayer {
                     super.onRecordingConfigChanged(configs);
                     for (int i = 0; i < configs.size(); i++) {
                         AudioRecordingConfiguration config = configs.get(i);
-                        Logger.i(TAG, "onRecordingConfigChanged :" + config.toString());
+                        Logger.i(TAG, "onRecordingConfigChanged :" , config.toString());
                         int source = config.getClientAudioSource();
                         switch (source) {
                             //录音源为麦克风
                             case MediaRecorder.AudioSource.MIC: {
 
-                                Logger.i(TAG, "MediaRecorder.AudioSource.MIC getAudioDevice+" + config.getAudioDevice());
+                                Logger.i(TAG, "MediaRecorder.AudioSource.MIC getAudioDevice+" , config.getAudioDevice());
                             }
                             break;
                             //录音源为通话
                             case MediaRecorder.AudioSource.VOICE_COMMUNICATION:
                                 Logger.d(TAG, "It is a Call");
-                                Logger.d(TAG, "MediaRecorder.AudioSource.MIC getAudioDevice+" + config.getAudioDevice());
+                                Logger.d(TAG, "MediaRecorder.AudioSource.MIC getAudioDevice+" , config.getAudioDevice());
                                 break;
                             default:
                                 break;
@@ -171,14 +171,14 @@ public class NaviAudioPlayer {
             Field usageSafetyField = audioAttributesClass.getDeclaredField("USAGE_SAFETY");
             usageSafetyField.setAccessible(true);
             USAGE_SAFETY = (int) usageSafetyField.get(null);
-            Logger.i(TAG, "USAGE_SAFETY 1：" + USAGE_SAFETY);
+            Logger.i(TAG, "USAGE_SAFETY 1：" , USAGE_SAFETY);
 
             Class<? extends AudioAttributes.Builder> aClass = builder.getClass();
             Field field = aClass.getDeclaredField("mUsage");
             field.setAccessible(true);
             field.set(builder, USAGE_SAFETY);
 
-            Logger.i(TAG, "setUsageSafety：" + USAGE_SAFETY + ",-->" + field.get(builder));
+            Logger.i(TAG, "setUsageSafety：" , USAGE_SAFETY , ",-->" , field.get(builder));
         } catch (Exception e) {
             Logger.e(TAG, "Failed to get ", e);
             builder.setUsage(AudioAttributes.USAGE_MEDIA);//设置音频流的用途为媒体播放
@@ -193,7 +193,7 @@ public class NaviAudioPlayer {
             init();
         }
         mGain = mAudioManager.requestAudioFocus(mIsNormalTTS ? mNaviFocusRequest : mMediaFocusRequest);
-        Logger.d(TAG, "requestNaviAudioFocus:" + mGain + ",mIsNormalTTS：" + mIsNormalTTS);
+        Logger.d(TAG, "requestNaviAudioFocus:" , mGain , ",mIsNormalTTS：" , mIsNormalTTS);
         return AudioManager.AUDIOFOCUS_REQUEST_GRANTED == mGain;
     }
 
@@ -228,7 +228,7 @@ public class NaviAudioPlayer {
     }
 
     public AudioTrack createAudioTrack(int reqId, int sampleRate, boolean isNormalTTS) {
-        Logger.d(TAG, "createAudioTrack isNormalTTS ：" + isNormalTTS + ",reqId：" + reqId);
+        Logger.d(TAG, "createAudioTrack isNormalTTS ：" , isNormalTTS , ",reqId：" , reqId);
         mIsNormalTTS = isNormalTTS;
         //计算AudioTrack的最小缓冲区大小，用于优化音频性能和避免音频抖动
         int bufsize = AudioTrack.getMinBufferSize(sampleRate,
@@ -266,7 +266,7 @@ public class NaviAudioPlayer {
             mISSDKTTSPlaying.postValue(true);
         }
         AudioTrack audioTrack = mAudioTrackMap.get(reqId);
-        Logger.d(TAG, "playTTS audioTrack reqId = " + reqId);
+        Logger.d(TAG, "playTTS audioTrack reqId = " , reqId);
         if (null == audioTrack || audioTrack.getSampleRate() != sampleRate) {
             audioTrack = createAudioTrack(reqId, sampleRate, mIsNormalTTS);
         }
@@ -318,7 +318,7 @@ public class NaviAudioPlayer {
             default:
                 break;
         }
-        Logger.i(TAG, "playNaviWarningSound type: " + type + " resId:" + resId);
+        Logger.i(TAG, "playNaviWarningSound type: " , type , " resId:" , resId);
         if(resId == 0){
             return;
         }

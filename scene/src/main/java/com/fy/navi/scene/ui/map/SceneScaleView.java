@@ -60,7 +60,7 @@ public class SceneScaleView extends BaseSceneView<SceneScaleBinding, SceneScaleI
      * @param scale current scale
      */
     public void updateOnMapLevelChanged(String scale) {
-        Logger.d("updateOnMapLevelChanged", "scale:" + scale);
+        Logger.d("updateOnMapLevelChanged", "scale:" , scale);
         ThreadManager.getInstance().postUi(() -> {
             if (ConvertUtils.isNull(mViewBinding) || ConvertUtils.isNull(mViewBinding.screenScaleSize)) {
                 Logger.e("updateOnMapLevelChanged", "binding is null:" + (mViewBinding == null));

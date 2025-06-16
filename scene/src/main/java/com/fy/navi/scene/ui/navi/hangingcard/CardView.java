@@ -50,7 +50,7 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
 
     public CardView(@NonNull Context context, final OnCardChangeListener listener, final List<PoiInfoEntity> list, HandCardType type) {
         super(context);
-        Logger.i(TAG, "view create success", "type:" + type.name());
+        Logger.i(TAG, "view create success", "type:" , type.name());
         mRoutePackage = RoutePackage.getInstance();
         this.mListener = listener;
         this.mList.clear();
@@ -105,7 +105,7 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
 
     @Override
     public void onDelete(SwipeDeleteLayout layout) {
-        Logger.i(TAG, "onDelete:" + mType.name());
+        Logger.i(TAG, "onDelete:" , mType.name());
         resetTimer();
         if (!ConvertUtils.isNull(mListener)) {
             mListener.onTimerFinished(mType);
@@ -125,7 +125,7 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      * 开启定时器
      */
     public void startTimer() {
-        Logger.i(TAG, "startTimer:" + mCountTime);
+        Logger.i(TAG, "startTimer:" , mCountTime);
         startSchedule(DELAY_NO_TIME);
     }
 
@@ -133,7 +133,7 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      * 暂停定时器
      */
     public void pauseTimer() {
-        Logger.i(TAG, "pauseTimer:" + mCountTime);
+        Logger.i(TAG, "pauseTimer:" , mCountTime);
         stopSchedule();
     }
 
@@ -141,7 +141,7 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      * 恢复定时器
      */
     public void resumeTimer() {
-        Logger.i(TAG, "resumeTimer:" + mCountTime);
+        Logger.i(TAG, "resumeTimer:" , mCountTime);
         startSchedule(DELAY_TIME_AFTER_RESUME);
     }
 
@@ -221,11 +221,11 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
     }
 
     private void stopSchedule() {
-        Logger.i(TAG, "stopSchedule", "remainTime:" + mCountTime);
+        Logger.i(TAG, "stopSchedule", "remainTime:" , mCountTime);
         try {
             if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
                 final boolean cancelResult = scheduledFuture.cancel(true);
-                Logger.i(TAG, "stopSchedule:" + cancelResult);
+                Logger.i(TAG, "stopSchedule:" , cancelResult);
             } else {
                 Logger.i(TAG, "stopSchedule failed, scheduledFuture is null or had completed");
             }

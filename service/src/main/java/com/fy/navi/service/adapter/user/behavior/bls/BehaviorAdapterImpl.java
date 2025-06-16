@@ -303,7 +303,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         item.point_y = (int) (poiInfo.getPoint().getLat() * BASE_POINT);
         // 添加成功返回 FavoriteItem 对应的存档ID
         final String result = mBehaviorService.addFavorite(item, SyncMode.SyncModeNow);
-        Logger.d(TAG, "addFavorite result = ", result + " " + item.point_x);
+        Logger.d(TAG, "addFavorite result = ", result , " " , item.point_x);
         return result;
     }
 

@@ -256,7 +256,7 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
                     mRouteSearchTimeAndDistance.set(MessageFormat.format("{0}  {1}", pair.first, pair.second));
                 })
                 .exceptionally(error -> {
-                    Logger.d(TAG, "showChargeStationDetail error:" + error);
+                    Logger.d(TAG, "showChargeStationDetail error:" , error);
                     return null;
                 });
         mModel.getTravelTimeFutureWithEv(new GeoPoint(poiInfoEntities.getPoint().getLon(),
@@ -270,7 +270,7 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
 
                 })
                 .exceptionally(error -> {
-                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "showChargeStationDetail error:" + error);
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "showChargeStationDetail error:" , error);
                     return null;
                 });
     }
@@ -295,7 +295,7 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
                     mDistance.set(pair.first);
                 })
                 .exceptionally(error -> {
-                    Logger.d(TAG, "getTravelTimeFuture error:" + error);
+                    Logger.d(TAG, "getTravelTimeFuture error:" , error);
                     return null;
                 });
     }
@@ -336,7 +336,7 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
                 phoneString.add(phone);
             }
             if (!ConvertUtils.isEmpty(phoneString) && !ConvertUtils.isEmpty(phoneString.get(0))) {
-                Logger.d(TAG, "call phone: " + phoneString.get(0));
+                Logger.d(TAG, "call phone: " , phoneString.get(0));
                 new SearchConfirmDialog.Build(mView.getContext())
                         .setDialogObserver(new IBaseDialogClickListener() {
                             @Override

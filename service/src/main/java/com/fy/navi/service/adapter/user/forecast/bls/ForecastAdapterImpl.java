@@ -48,7 +48,7 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
         param.nTopArrivedMaxCnt = 8; // 常去地点列表最大个数, 也决定了获取常去地点接口返回的最大数据量
         mForecastService.addObserver(this);
         final int res = mForecastService.init(param);
-        Logger.d("initService res = " + res);
+        Logger.d("initService res = " , res);
     }
 
     @Override
@@ -63,14 +63,14 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      */
     @Override
     public int addLocalArrivedData(final OftenArrivedItemInfo info) {
-        Logger.d(TAG,"addLocalArrivedData info = " + GsonUtils.toJson(info));
+        Logger.d(TAG,"addLocalArrivedData info = " , GsonUtils.toJson(info));
         final OftenArrivedItem oftenArrivedItem = new OftenArrivedItem();
         GsonUtils.copyBean(info, oftenArrivedItem);
         oftenArrivedItem.dateTime.date = info.getDate();
         oftenArrivedItem.dateTime.time = info.getTime();
         if (mForecastService != null) {
             final int ret = mForecastService.addLocalArrivedData(ArrivedType.ForcastLocal, oftenArrivedItem);
-            Logger.d(TAG,"addLocalArrivedData  ret = " + ret);
+            Logger.d(TAG,"addLocalArrivedData  ret = " , ret);
             return ret;
         }
         return 0;
@@ -83,10 +83,10 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      */
     @Override
     public int deleteLocalArrivedData(final String name) {
-        Logger.d(TAG,"delLocalArrivedData name = " + name);
+        Logger.d(TAG,"delLocalArrivedData name = " , name);
         if (mForecastService != null) {
             final int ret =  mForecastService.delLocalArrivedData(ArrivedType.ForcastLocal, name);
-            Logger.d(TAG,"delLocalArrivedData  ret = " + ret);
+            Logger.d(TAG,"delLocalArrivedData  ret = " , ret);
             return ret;
         }
         return 0;
@@ -105,7 +105,7 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
                 final OftenArrivedItemInfo itemInfo = getOftenArrivedItemInfo(oftenArrivedItem);
                 infos.add(itemInfo);
             }
-            Logger.d(TAG,"getArrivedDataList  infos = " + GsonUtils.toJson(infos));
+            Logger.d(TAG,"getArrivedDataList  infos = " , GsonUtils.toJson(infos));
             return infos;
         }
         return null;

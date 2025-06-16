@@ -118,7 +118,7 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
 
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
-        Logger.i(TAG, "onRouteDrawLine:" + routeLineLayerParam.getMMapTypeId());
+        Logger.i(TAG, "onRouteDrawLine:" , routeLineLayerParam.getMMapTypeId());
     }
 
     @Override
@@ -135,7 +135,7 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
 
     @Override
     public void onNaviStatusChange(final String naviStatus) {
-        Logger.d(TAG, "onNaviStatusChange:" + naviStatus);
+        Logger.d(TAG, "onNaviStatusChange:" , naviStatus);
     }
 
     /**

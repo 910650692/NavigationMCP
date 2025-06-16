@@ -43,7 +43,7 @@ public class GasCarTipManager {
     public int getRemainGasPercent(final float distance) {
         if (isNeedTip(distance)) {
             final float remainDis = getRemainDistance();
-            Logger.i(TAG, "getRemainGasPercent", "distance:" + distance, "remainDis:" + remainDis);
+            Logger.i(TAG, "getRemainGasPercent", "distance:" , distance, "remainDis:" , remainDis);
             if (remainDis <= 0) {
                 return 0;
             }
@@ -58,7 +58,7 @@ public class GasCarTipManager {
      */
     public void openMonitor() {
         final boolean isNeedGas = isGasCar();
-        Logger.i(TAG, "startMonitor", "mMonitorOnGoing:" + mMonitorOnGoing, "isNeedGas:" + isNeedGas);
+        Logger.i(TAG, "startMonitor", "mMonitorOnGoing:" , mMonitorOnGoing, "isNeedGas:" , isNeedGas);
         if (isNeedGas && !mMonitorOnGoing) {
             startSchedule();
             mMonitorOnGoing = true;
@@ -69,7 +69,7 @@ public class GasCarTipManager {
      * 关闭油量监视器
      */
     public void closeMonitor() {
-        Logger.i(TAG, "closeMonitor", "mMonitorOnGoing:" + mMonitorOnGoing);
+        Logger.i(TAG, "closeMonitor", "mMonitorOnGoing:" , mMonitorOnGoing);
         if (mMonitorOnGoing) {
             stopSchedule();
             mMonitorOnGoing = false;
@@ -130,7 +130,7 @@ public class GasCarTipManager {
         try {
             if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
                 final boolean cancelResult = scheduledFuture.cancel(true);
-                Logger.i(TAG, "stopSchedule:" + cancelResult);
+                Logger.i(TAG, "stopSchedule:" , cancelResult);
             } else {
                 Logger.w(TAG, "stopSchedule not need do, scheduledFuture is null or had completed!");
             }

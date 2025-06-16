@@ -1955,7 +1955,7 @@ public class RouteAdapterImplHelper {
             }
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mRequsetId);
             if (ConvertUtils.isEmpty(requestRouteResult)) {
-                Log.e(TAG, "onRerouteInfo: 请求参数已经被清空");
+                Logger.e(TAG, "onRerouteInfo: 请求参数已经被清空");
                 return;
             }
             requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);

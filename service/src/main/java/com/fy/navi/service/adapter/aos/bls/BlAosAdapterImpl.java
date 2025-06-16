@@ -129,7 +129,7 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
         if (200 != gReStrictedAreaResponseParam.mHttpAckCode) return;
         long taskId = gReStrictedAreaResponseParam.mReqHandle;
         restrictedAreaDetailMap.get(taskId);
-        Logger.d(TAG, "start callBack to hmi:" + (restrictedObserver.size()));
+        Logger.d(TAG, "start callBack to hmi:" , (restrictedObserver.size()));
         RouteRestrictionParam param = new RouteRestrictionParam();
         param.setMRestrictedArea(getRestrictedAreaDetail(gReStrictedAreaResponseParam, taskId));
         param.setMReStrictedAreaResponseParam(gReStrictedAreaResponseParam);
@@ -207,7 +207,7 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
                     restrictedAreaDetailsList.add(restrictedAreaDetails);
                 }
             }
-            Logger.d(TAG, "getRestrictedAreaDetail:" + cityNames);
+            Logger.d(TAG, "getRestrictedAreaDetail:" , cityNames);
             restrictedArea.setMPointList(pointLists);
             restrictedArea.setMCityNames(cityNames);
             restrictedArea.setMCityPosition(cityPositions);
@@ -251,7 +251,7 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
 
     @Override
     public void onRecvAck(GTrafficEventCommentResponseParam gTrafficEventCommentResponseParam) {
-        Logger.i(TAG, "onRecvAck-赞/踩-回调:" + gTrafficEventCommentResponseParam.message);
+        Logger.i(TAG, "onRecvAck-赞/踩-回调:" , gTrafficEventCommentResponseParam.message);
         boolean isSuccess = gTrafficEventCommentResponseParam.mHttpAckCode == 200;
         for (QueryRestrictedObserver resultObserver : restrictedObserver.values()) {
             if (resultObserver == null) continue;
@@ -270,7 +270,7 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
 
     @Override
     public void onRecvAck(GWsDynamicInfoEventPraiseStampStatusQueryResponseParam responseParam) {
-        Logger.i(TAG, "onRecvAck-赞/踩查询结果：" + responseParam.status, "msg:" + responseParam.message);
+        Logger.i(TAG, "onRecvAck-赞/踩查询结果：" , responseParam.status, "msg:" , responseParam.message);
         FyCriticism fyCriticism = new FyCriticism();
         fyCriticism.taskId = responseParam.mReqHandle;
         fyCriticism.status = responseParam.status;

@@ -115,7 +115,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void notifyNetSearchResult(int taskId,BaseRep result){
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" , result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             JSONObject jsonObject = null;
             try {
@@ -134,7 +134,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                         .setFast_free(chargeInfo.getFastChargingFree())
                         .setCurrentServicePrice(chargeInfo.getParkFee());
                 CostTime currentTime = getCurrentElePrice(chargeInfo.getCostItem());
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"currentTime: "+currentTime.getTime());
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"currentTime: ",currentTime.getTime());
                 chargeInfo.setCurrentElePrice(currentTime.getmElectricityFee());
                 chargeList.add(chargeInfo);
                 PoiInfoEntity poiInfoEntity = GsonUtils.fromJson(GsonUtils.toJson(result.getDataSet()),PoiInfoEntity.class);
@@ -180,7 +180,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void notifyCollectList(BaseRep result){
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code",result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
             // 回调出的数据转换List
@@ -193,15 +193,15 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                             JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
                             String searchPoiId = mSearchResultEntity.getPoiList().get(j).getOperatorId();
                             String collectPoiId = object.getString("operatorId");
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId: "+searchPoiId);
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId string: "+collectPoiId);
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId: ",searchPoiId);
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId string: ",collectPoiId);
                             mSearchResultEntity.getPoiList().get(j).setIsCollect(collectPoiId.equals(searchPoiId));
                         }
                     }
                 }
                 mView.searchReservation();
             } catch (JSONException e) {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: ",e);
                 notifyCollectListError(result.getMessage());
             }
         }else{
@@ -210,7 +210,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void notifyReservationList(BaseRep result){
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code",result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             // 回调出的数据转换List
             try {
@@ -228,7 +228,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                     mView.onSearchResult(mTaskId,mSearchResultEntity);
                 });
             } catch (JSONException e) {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: ",e);
                 notifyReservationListError(result.getMessage());
             }
         }else{

@@ -41,7 +41,7 @@ public final class PatacNetClient {
     public void init(final Application application) {
         // 设置网络断开时间
         NetConfigUtils.getInstance().setConnectTimeOut(DEFAULT_CONNECT_TIMEOUT);
-        Logger.d(NetApiHelper.ACTIVATE_TAG, "NetConfigUtils is car: " + DeviceUtils.isCar(application));
+        Logger.d(NetApiHelper.ACTIVATE_TAG, "NetConfigUtils is car: " , DeviceUtils.isCar(application));
         if (DeviceUtils.isCar(application)) {
             NetPkiFactory.getInstance().init(
                     application,

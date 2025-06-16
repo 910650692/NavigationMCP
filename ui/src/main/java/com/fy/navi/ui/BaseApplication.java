@@ -20,11 +20,11 @@ public class BaseApplication extends Application implements Application.Activity
     @Override
     public void onCreate() {
         super.onCreate();
+        UtilsManager.init(this);
         if (DeviceUtils.isCar(this) && getSystemService(UserManager.class).isSystemUser()) {
             Logger.d(TAG, "CurrentisSystemuser,killprocess");
             System.exit(0);
         }
-        UtilsManager.init(this);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class BaseApplication extends Application implements Application.Activity
                 Logger.i(getClass().getSimpleName(), "系统内存充足但不多。可以考虑释放一些资源");
                 break;
             default:
-                Logger.i(getClass().getSimpleName(), "未知的level = " + level);
+                Logger.i(getClass().getSimpleName(), "未知的level = " , level);
                 break;
         }
     }

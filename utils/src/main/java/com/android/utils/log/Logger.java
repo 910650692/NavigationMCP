@@ -60,10 +60,6 @@ public class Logger {
         LogUtils.setDefaultTag(defaultTag);
     }
 
-    public static void initLogUtils(boolean logSwitch, int level, String defaultTag) {
-        LogUtils.initLogUtils(logSwitch, level, defaultTag);
-    }
-
     public static final String getDefaultTag() {
         return LogUtils.getDefaultTagName();
     }

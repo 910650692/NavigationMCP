@@ -109,7 +109,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         if (mActivity != null) {
             mActivity.setMLastClosedFragmentName(getClass().getSimpleName());
         }
-        Logger.i("NaviApp_Search", "onStop" + getClass().getSimpleName());
+        Logger.i("NaviApp_Search", "onStop" , getClass().getSimpleName());
     }
 
     @Override

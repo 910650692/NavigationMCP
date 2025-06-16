@@ -203,7 +203,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     mScreenViewModel.setSelectIndex(poiInfoEntity, position, mSearchType);
                 }
                 final int poiType = getPoiType(mAdapter.getHomeCompanyType());
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " + poiType + " homeCompany: " + mAdapter.getHomeCompanyType());
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " , poiType , " homeCompany: " , mAdapter.getHomeCompanyType());
                 final Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
                         AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
                 bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);

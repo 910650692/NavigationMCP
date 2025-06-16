@@ -117,7 +117,7 @@ public final class FsaNaviScene {
         turnInfo.setDistanceToNextTurn(naviETAInfo.getNextDist());
         final int maneuverID = convertTbtType(naviETAInfo.getCurManeuverID());
         turnInfo.setTurnKind(maneuverID);
-        Logger.d(FsaConstant.FSA_TAG, "updateTbtInfo: " + naviETAInfo.getCurManeuverID() + " - " + maneuverID);
+        Logger.d(FsaConstant.FSA_TAG, "updateTbtInfo: " , naviETAInfo.getCurManeuverID() , " - " , maneuverID);
         turnInfo.setStraight(naviETAInfo.getCurManeuverID() == FsaConstant.FsaTurnKind.ICON_CONTINUE);
         turnInfo.setRoadLevel(naviETAInfo.curRoadClass);
         if (null != naviETAInfo.NaviInfoData && naviETAInfo.NaviInfoData.size() > naviETAInfo.NaviInfoFlag) {
@@ -175,7 +175,7 @@ public final class FsaNaviScene {
         if (time <= 0) {return "";}
         //时间
         String arriveTime = TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), time);
-        Logger.d(FsaConstant.FSA_TAG,arriveTime+"新增时间");
+        Logger.d(FsaConstant.FSA_TAG,arriveTime,"新增时间");
         return arriveTime;
     }
     /**
@@ -362,7 +362,7 @@ public final class FsaNaviScene {
      * @param isShowLane     是否显示车道线
      */
     public void updateLaneLineInfo(final MyFsaService fsaService, final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {
-        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: isShowLane = " + isShowLane + " --------");
+        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: isShowLane = " , isShowLane , " --------");
         if (!isShowLane) {
             final LaneLineInfo laneLineInfo = new LaneLineInfo();
             laneLineInfo.setShowType(FsaConstant.HIDE);
@@ -374,9 +374,9 @@ public final class FsaNaviScene {
             Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: laneInfoEntity = null");
             return;
         }
-        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: frontLane = " + laneInfoEntity.getFrontLane());
-        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: backLane = " + laneInfoEntity.getBackLane());
-        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: optimalLane = " + laneInfoEntity.getOptimalLane());
+        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: frontLane = " , laneInfoEntity.getFrontLane());
+        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: backLane = " , laneInfoEntity.getBackLane());
+        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: optimalLane = " , laneInfoEntity.getOptimalLane());
         final LaneLineInfo laneLineInfo = new LaneLineInfo();
         if (mLaneLineInfo == null || mLaneLineInfo.getShowType() == FsaConstant.HIDE) {
             laneLineInfo.setShowType(FsaConstant.SHOW);
@@ -590,7 +590,7 @@ public final class FsaNaviScene {
      * @param isShowImage   boolean.
      */
     public void updateEnlargeMap(final MyFsaService fsaService, final boolean isShowImage, final CrossImageEntity naviImageInfo) {
-        Logger.d(FsaConstant.FSA_TAG, "updateEnlargeMap: isShowImage = " + isShowImage);
+        Logger.d(FsaConstant.FSA_TAG, "updateEnlargeMap: isShowImage = " , isShowImage);
         if (!isShowImage || null == naviImageInfo) {
             final EnlargeMap enlargeMap = new EnlargeMap();
             enlargeMap.setStatus(FsaConstant.HIDE);
@@ -613,7 +613,7 @@ public final class FsaNaviScene {
             junctionViewInfo.setImageMimeType("image/jpeg");
             junctionViewInfo.setImageBytes(Base64.getEncoder().encodeToString(fsaService.getCrossImg()));
             enlargeMap.setJunctionViewInfo(junctionViewInfo);
-            Logger.d(FsaConstant.FSA_TAG, "updateEnlargeMap: " + enlargeMap);
+            Logger.d(FsaConstant.FSA_TAG, "updateEnlargeMap: " , enlargeMap);
             fsaService.sendEvent(FsaConstant.FsaFunction.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
             fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
         }, 700, TimeUnit.MILLISECONDS);

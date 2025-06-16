@@ -56,7 +56,7 @@ public class CardManager {
                 flag.set(true);
             }
         });
-        Logger.i(TAG, "judgeDestinationIsHomeOrCompany:" + flag);
+        Logger.i(TAG, "judgeDestinationIsHomeOrCompany:" , flag);
         return flag.get();
     }
 

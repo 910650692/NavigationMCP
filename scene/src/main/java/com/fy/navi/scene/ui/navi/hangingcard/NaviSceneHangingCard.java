@@ -175,7 +175,7 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
         final boolean hasViaTabShow = CardManager.getInstance().getSceneOnShow(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO);
         final boolean hasControlShow = CardManager.getInstance().getSceneOnShow(NaviSceneId.NAVI_SCENE_CONTROL);
         mIsOnlyOne = hasViaTabShow && hasControlShow && mIsHideThird;
-        Logger.i(TAG, "assembleLayout hasViaTabShow:" + hasViaTabShow + " hasControlShow:" + hasControlShow + " mIsOnlyOne:" + mIsOnlyOne);
+        Logger.i(TAG, "assembleLayout hasViaTabShow:" , hasViaTabShow , " hasControlShow:" , hasControlShow , " mIsOnlyOne:" , mIsOnlyOne);
         assembleExpandLayout(mIsExpand);
     }
 
@@ -221,7 +221,7 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
             constraintSet.clone(mViewBinding.clHangingCard);
             constraintSet.connect(mViewBinding.llSecond.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, secondTop);
             constraintSet.applyTo(mViewBinding.clHangingCard);
-            Logger.i(TAG, "assembleExpandLayout secondTop:" + secondTop);
+            Logger.i(TAG, "assembleExpandLayout secondTop:" , secondTop);
         } else if (uiList.size() == 3) {
             addChild(uiList.get(0), mViewBinding.llFirst, true);
             addChild(uiList.get(1), mViewBinding.llSecond, isExpand);
@@ -248,9 +248,9 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
             constraintSet.connect(mViewBinding.llSecond.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, secondTop);
             constraintSet.connect(mViewBinding.llThird.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, thirdTop);
             constraintSet.applyTo(mViewBinding.clHangingCard);
-            Logger.i(TAG, "assembleExpandLayout secondTop:" + secondTop + " thirdTop:" + thirdTop);
+            Logger.i(TAG, "assembleExpandLayout secondTop:" , secondTop , " thirdTop:" , thirdTop);
         }
-        Logger.i(TAG, "assembleExpandLayout size:" + uiList.size() + " isExpand:" + isExpand + " mIsHideThird:" + mIsHideThird + " mIsOnlyOne:" + mIsOnlyOne);
+        Logger.i(TAG, "assembleExpandLayout size:" , uiList.size() , " isExpand:" , isExpand , " mIsHideThird:" , mIsHideThird , " mIsOnlyOne:" , mIsOnlyOne);
     }
 
     /***

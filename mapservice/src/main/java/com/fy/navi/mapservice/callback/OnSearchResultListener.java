@@ -12,7 +12,7 @@ public interface OnSearchResultListener {
      * @param errorCode int,错误码.
      */
     default void onSearchError(boolean silent, int errorCode) {
-        Logger.d(INaviConstant.NAVI_COMMON_TAG, "searchError: " + silent + ", code: " + errorCode);
+        Logger.d(INaviConstant.NAVI_COMMON_TAG, "searchError: " , silent , ", code: " , errorCode);
     }
 
     /**
@@ -22,7 +22,7 @@ public interface OnSearchResultListener {
      * @param result String, BaseSearchResult对应的json类型字符串.
      */
     default void onSearchResult(boolean silent, String result) {
-        Logger.d(INaviConstant.NAVI_COMMON_TAG, "searchSuccess, silent:" + silent + ", result: " + result);
+        Logger.d(INaviConstant.NAVI_COMMON_TAG, "searchSuccess, silent:" , silent , ", result: " , result);
     }
 
     /**
@@ -32,6 +32,6 @@ public interface OnSearchResultListener {
      * @param reverseResult String, BaseSearchPoi对应的json类型字符串.
      */
     default void onReverseGeoSearchResult(int taskId, String reverseResult) {
-        Logger.d(INaviConstant.NAVI_COMMON_TAG, "reverseSearch, taskId:" + taskId + ", result: " + reverseResult);
+        Logger.d(INaviConstant.NAVI_COMMON_TAG, "reverseSearch, taskId:" , taskId , ", result: " , reverseResult);
     }
 }

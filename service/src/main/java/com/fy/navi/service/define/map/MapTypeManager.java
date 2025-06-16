@@ -27,13 +27,13 @@ public class MapTypeManager {
     }
 
     public MapType getCurrentMapTypeId() {
-        Logger.d(TAG, "getCurrentMapTypeId:" + currentMapTypeId.name());
+        Logger.d(TAG, "getCurrentMapTypeId:" , currentMapTypeId.name());
         return currentMapTypeId;
     }
 
     public void setCurrentMapTypeId(MapType currentMapTypeId) {
         this.currentMapTypeId = currentMapTypeId;
-        Logger.d(TAG, "setCurrentMapTypeId:" + currentMapTypeId.name());
+        Logger.d(TAG, "setCurrentMapTypeId:" , currentMapTypeId.name());
     }
 
     public MapType getMapTypeIdByName(@Nullable String name) {

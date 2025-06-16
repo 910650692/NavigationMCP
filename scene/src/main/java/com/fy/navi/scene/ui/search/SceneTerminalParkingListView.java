@@ -127,8 +127,8 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
         if (ConvertUtils.isEmpty(mScreenViewModel)) {
             return;
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
-                + " currentId: " + mScreenViewModel.getMTaskId());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , taskId
+                , " currentId: " , mScreenViewModel.getMTaskId());
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }

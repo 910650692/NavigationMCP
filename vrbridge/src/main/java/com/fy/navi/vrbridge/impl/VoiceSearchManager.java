@@ -164,7 +164,7 @@ public final class VoiceSearchManager {
             //关键字和taskId是否匹配
             final boolean taskEqual = mSearchTaskId == taskId;
             final boolean keywordEqual = Objects.equals(mKeyword, keyword);
-            Logger.d(IVrBridgeConstant.TAG, "taskEqual: " + taskEqual + ", keywordEqual: " + keywordEqual);
+            Logger.d(IVrBridgeConstant.TAG, "taskEqual: " , taskEqual , ", keywordEqual: " , keywordEqual);
             //两个条件都不匹配，不继续执行
             if (!(taskEqual || keywordEqual)) {
                 return;
@@ -272,9 +272,9 @@ public final class VoiceSearchManager {
                 case IVrBridgeConstant.VoiceSearchType.SHOW_POI_DETAIL:
                     //查询当前位置
                     if (searchSuccess) {
-                        Logger.d(IVrBridgeConstant.TAG, "showPoiInfo: " + firstPoi.getAddress()
-                                + ", lon: " + firstPoi.getPoint().getLon()
-                                + ", lat: " + firstPoi.getPoint().getLat());
+                        Logger.d(IVrBridgeConstant.TAG, "showPoiInfo: " , firstPoi.getAddress()
+                                , ", lon: " , firstPoi.getPoint().getLon()
+                                , ", lat: " , firstPoi.getPoint().getLat());
                         showPoiDetail(firstPoi);
                     } else if (null != mRespCallback) {
                         final CallResponse poiDetailResponse = CallResponse.createFailResponse("不好意思，我定位不到你在哪里");
@@ -307,7 +307,7 @@ public final class VoiceSearchManager {
 
         @Override
         public void onShowStateChanged(final boolean isShow) {
-            Logger.d(IVrBridgeConstant.TAG, "showSearchListPage: " + isShow);
+            Logger.d(IVrBridgeConstant.TAG, "showSearchListPage: " , isShow);
             if (mListPageOpened == isShow) {
                 return;
             }
@@ -363,7 +363,7 @@ public final class VoiceSearchManager {
             //多目的（一个目的地和一到多个途径点）
             mSearchType = IVrBridgeConstant.VoiceSearchType.WITH_PASS_BY;
         }
-        Logger.d(IVrBridgeConstant.TAG, " keywordSearch voiceInnerType: " + mSearchType);
+        Logger.d(IVrBridgeConstant.TAG, " keywordSearch voiceInnerType: " , mSearchType);
         switch (mSearchType) {
             case IVrBridgeConstant.VoiceSearchType.ONLY_KEYWORD:
             case IVrBridgeConstant.VoiceSearchType.WITH_PREFER:
@@ -556,7 +556,7 @@ public final class VoiceSearchManager {
             try {
                 final List<PoiBean> poiBeanList = VoiceConvertUtil.convertSearchResult(mSearchResultList);
                 final int size = poiBeanList.size();
-                Logger.d(IVrBridgeConstant.TAG, "responseToVoice, totalSearchSize: " + size);
+                Logger.d(IVrBridgeConstant.TAG, "responseToVoice, totalSearchSize: " , size);
                 mPoiCallback.onPoiSearch(mSessionId, poiBeanList, size);
             } catch (NullPointerException npe) {
                 Logger.w(IVrBridgeConstant.TAG, " error: " + npe.getMessage());
@@ -670,7 +670,7 @@ public final class VoiceSearchManager {
         boolean containCompany = false;
         //处理途径点
         final int size = passByPoi.size();
-        Logger.d(IVrBridgeConstant.TAG, "disposeMultipleDest: passByPoiSize = " + size);
+        Logger.d(IVrBridgeConstant.TAG, "disposeMultipleDest: passByPoiSize = " , size);
         for (int i = 0; i < size; i++) {
             final PoiBean poiBean = passByPoi.valueAt(i);
             final String name = poiBean.getName();
@@ -686,7 +686,7 @@ public final class VoiceSearchManager {
                 containCompany = true;
                 mNormalDestList.put(i, singleDestInfo);
             } else if (mGenericsList.contains(type)) {
-                Logger.d(IVrBridgeConstant.TAG, "process " + type);
+                Logger.d(IVrBridgeConstant.TAG, "process " , type);
                 mGenericsDestList.put(i, singleDestInfo);
             } else {
                 mNormalDestList.put(i, singleDestInfo);
@@ -706,7 +706,7 @@ public final class VoiceSearchManager {
             containCompany = true;
             mNormalDestList.put(size, singleDestInfo);
         } else if (mGenericsList.contains(destType)) {
-            Logger.d(IVrBridgeConstant.TAG, "process " + destType);
+            Logger.d(IVrBridgeConstant.TAG, "process " , destType);
             mGenericsDestList.put(size, singleDestInfo);
         } else {
             mNormalDestList.put(size, singleDestInfo);
@@ -729,7 +729,7 @@ public final class VoiceSearchManager {
             }
         }
 
-        Logger.d(IVrBridgeConstant.TAG, "multipleDest normal size: " + mNormalDestList.size() + ", generics size: " + mGenericsDestList.size());
+        Logger.d(IVrBridgeConstant.TAG, "multipleDest normal size: " , mNormalDestList.size() , ", generics size: " , mGenericsDestList.size());
         dealNextMultipleDest(null);
         Logger.i(IVrBridgeConstant.TAG, "multiple return success response");
         final CallResponse response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.PROCESSING_MULTI_DEST);
@@ -752,7 +752,7 @@ public final class VoiceSearchManager {
         }
 
         if (genericsPoi) {
-            Logger.d(IVrBridgeConstant.TAG, "multiple dest get generics " + mKeyword + " search result");
+            Logger.d(IVrBridgeConstant.TAG, "multiple dest get generics " , mKeyword , " search result");
             responseSearchWithResult();
         } else {
             dealNextMultipleDest(mSearchResultList.get(0));
@@ -775,10 +775,10 @@ public final class VoiceSearchManager {
             mShouldPlayRouteMsg = false;
             //继续澄清下一个泛型
             mProcessDestIndex = mGenericsDestList.keyAt(0);
-            Logger.d(IVrBridgeConstant.TAG, "genericsDestIndex: " + mProcessDestIndex);
+            Logger.d(IVrBridgeConstant.TAG, "genericsDestIndex: " , mProcessDestIndex);
             final SingleDestInfo genericsDest = mGenericsDestList.get(mProcessDestIndex);
             mKeyword = genericsDest.getDestName();
-            Logger.d(IVrBridgeConstant.TAG, "genericsDestName: " + mKeyword);
+            Logger.d(IVrBridgeConstant.TAG, "genericsDestName: " , mKeyword);
             mGenericsDestList.remove(mProcessDestIndex);
             final Bundle bundle = new Bundle();
             bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
@@ -787,9 +787,9 @@ public final class VoiceSearchManager {
         } else if (null != mNormalDestList && mNormalDestList.size() > 0) {
             //静默搜索普通poi
             mProcessDestIndex = mNormalDestList.keyAt(0);
-            Logger.d(IVrBridgeConstant.TAG, "normalDestIndex: " + mProcessDestIndex);
+            Logger.d(IVrBridgeConstant.TAG, "normalDestIndex: " , mProcessDestIndex);
             final SingleDestInfo normalDest = mNormalDestList.get(mProcessDestIndex);
-            Logger.d(IVrBridgeConstant.TAG, "normalDestTYPE: " + normalDest.getDestType());
+            Logger.d(IVrBridgeConstant.TAG, "normalDestTYPE: " , normalDest.getDestType());
             mNormalDestList.remove(mProcessDestIndex);
             if (IVrBridgeConstant.DestType.HOME.equals(normalDest.getDestType())) {
                 dealNextMultipleDest(getHomeCompanyPoiInfo(1));
@@ -797,24 +797,24 @@ public final class VoiceSearchManager {
                 dealNextMultipleDest(getHomeCompanyPoiInfo(2));
             } else {
                 mKeyword = normalDest.getDestName();
-                Logger.d(IVrBridgeConstant.TAG, "normalDestName: " + mKeyword);
+                Logger.d(IVrBridgeConstant.TAG, "normalDestName: " , mKeyword);
                 mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, mKeyword);
             }
         } else if (null != mMultiplePoiArray && mMultiplePoiArray.size() > 0) {
             //全部获取完毕，开始路线规划
             int size = mMultiplePoiArray.size();
-            Logger.d(IVrBridgeConstant.TAG, "totalMultiple poi size: " + size);
+            Logger.d(IVrBridgeConstant.TAG, "totalMultiple poi size: " , size);
             final PoiInfoEntity endPoi = mMultiplePoiArray.valueAt(size - 1);
-            Logger.d(IVrBridgeConstant.TAG, "poiName: " + endPoi.getName() + ", address: " + endPoi.getAddress() + ", pid: " + endPoi.getPid());
+            Logger.d(IVrBridgeConstant.TAG, "poiName: " , endPoi.getName() , ", address: " , endPoi.getAddress() , ", pid: " , endPoi.getPid());
             mMultiplePoiArray.removeAt(size - 1);
 
             size = mMultiplePoiArray.size();
-            Logger.d(IVrBridgeConstant.TAG, "afterRemoveEnd size: " + size);
+            Logger.d(IVrBridgeConstant.TAG, "afterRemoveEnd size: " , size);
             final List<PoiInfoEntity> viaList = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 viaList.add(mMultiplePoiArray.valueAt(i));
             }
-            Logger.d(IVrBridgeConstant.TAG, "multipleDest viaSize:" + size);
+            Logger.d(IVrBridgeConstant.TAG, "multipleDest viaSize:" , size);
             //规划路线
             planRoute(endPoi, viaList);
         }
@@ -828,7 +828,7 @@ public final class VoiceSearchManager {
      * @param respCallback RespCallback，语音响应回调.
      */
     public void handlePoiSelectIndex(final String sessionId, final int index, final RespCallback respCallback) {
-        Logger.d(IVrBridgeConstant.TAG, "selectPoiIndex: " + index);
+        Logger.d(IVrBridgeConstant.TAG, "selectPoiIndex: " , index);
         if (null == mSearchResultList || mSearchResultList.isEmpty()) {
             responsePreviousSearchEmpty(respCallback);
             return;
@@ -884,7 +884,7 @@ public final class VoiceSearchManager {
      * @param respCallback 语音传入的结果回调接口.
      */
     public void handlePoiSelectRule(final String sessionId, final int rule, final RespCallback respCallback) {
-        Logger.d(IVrBridgeConstant.TAG, "selectPoi with rule: " + rule);
+        Logger.d(IVrBridgeConstant.TAG, "selectPoi with rule: " , rule);
         if (null == mSearchResultList || mSearchResultList.isEmpty()) {
             responsePreviousSearchEmpty(respCallback);
             return;
@@ -1108,7 +1108,7 @@ public final class VoiceSearchManager {
         mSortValue = null;
         mSearchCondition = new VoiceSearchConditions();
         mSearchCondition.parseConditionMap(conditionMap);
-        Logger.d(IVrBridgeConstant.TAG, "afterParse, conditions: " + mSearchCondition);
+        Logger.d(IVrBridgeConstant.TAG, "afterParse, conditions: " , mSearchCondition);
         //等级，类似5A/4A/3A/2A/1A/5星/4星/3星/2星/1星，如果存在，和dest一起拼接成keyword
         final String level = mSearchCondition.getLevel();
         if (!TextUtils.isEmpty(level)) {
@@ -1248,11 +1248,11 @@ public final class VoiceSearchManager {
             if (mAlongToAround) {
                 //已经触发沿途搜转周边
                 mAlongToAround = false;
-                Logger.d(IVrBridgeConstant.TAG, "AlongSearch turnAround: " + mKeyword + ", result is empty");
+                Logger.d(IVrBridgeConstant.TAG, "AlongSearch turnAround: " , mKeyword , ", result is empty");
                 responseSearchEmpty();
             } else {
                 mAlongToAround = true;
-                Logger.d(IVrBridgeConstant.TAG, "AlongSearch " + mKeyword + "result is empty, turnAroundSearch");
+                Logger.d(IVrBridgeConstant.TAG, "AlongSearch " , mKeyword , "result is empty, turnAroundSearch");
                 final LocInfoBean locInfo = PositionPackage.getInstance().getLastCarLocation();
                 if (null != locInfo) {
                     final GeoPoint geoPoint = new GeoPoint(locInfo.getLongitude(), locInfo.getLatitude());
@@ -1538,7 +1538,7 @@ public final class VoiceSearchManager {
      */
     private void addCommonFavorite(final PoiInfoEntity poiInfo, final boolean geoSearch) {
         if (null != poiInfo) {
-            Logger.d(IVrBridgeConstant.TAG, "current name: " + poiInfo.getName()
+            Logger.d(IVrBridgeConstant.TAG, "current name: " , poiInfo.getName()
                     + ", address: " + poiInfo.getAddress()
                     + ",lon: " + poiInfo.getPoint().getLon()
                     + ", lat: " + poiInfo.getPoint().getLat());
@@ -1663,7 +1663,7 @@ public final class VoiceSearchManager {
                 }
                 response.append(distance).append("，大约需要").append(time);
                 final String homeCompanyEta = response.toString();
-                Logger.d(IVrBridgeConstant.TAG, "homeCompanyEta: " + homeCompanyEta);
+                Logger.d(IVrBridgeConstant.TAG, "homeCompanyEta: " , homeCompanyEta);
                 if (null != mRespCallback) {
                     final CallResponse homeCompanyEtaResponse = CallResponse.createSuccessResponse(homeCompanyEta);
                     homeCompanyEtaResponse.setNeedPlayMessage(true);
@@ -1738,7 +1738,7 @@ public final class VoiceSearchManager {
                 response.append("到").append(mEtaNameList.get(1)).append("有")
                         .append(pair.first).append("，大约需要").append(pair.second);
                 final String twoPointEta = response.toString();
-                Logger.d(IVrBridgeConstant.TAG, "twoPoiEtaInfo: " + twoPointEta);
+                Logger.d(IVrBridgeConstant.TAG, "twoPoiEtaInfo: " , twoPointEta);
                 if (null != mRespCallback) {
                     final CallResponse etaResponse = CallResponse.createSuccessResponse(twoPointEta);
                     etaResponse.setNeedPlayMessage(true);
@@ -1764,7 +1764,7 @@ public final class VoiceSearchManager {
      * @param respCallback RespCallback，执行结果回调.
      */
     public void sortPoi(final String sessionId, final String type, final String rule, final RespCallback respCallback) {
-        Logger.d(IVrBridgeConstant.TAG, "poiSort rule: " + rule);
+        Logger.d(IVrBridgeConstant.TAG, "poiSort rule: " , rule);
         if (null == mSearchResultList || mSearchResultList.isEmpty()) {
             responsePreviousSearchEmpty(respCallback);
             Logger.d(IVrBridgeConstant.TAG, "poiSort searchResult is empty");
@@ -1825,7 +1825,7 @@ public final class VoiceSearchManager {
      */
     private void dealSortResult() {
         if (null == mSearchResultList || mSearchResultList.isEmpty()) {
-            Logger.d(IVrBridgeConstant.TAG, "poiSort type: " + mSortValue + " search result empty");
+            Logger.d(IVrBridgeConstant.TAG, "poiSort type: " , mSortValue , " search result empty");
             if (null != mRespCallback) {
                 final CallResponse sortResponse = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.SORT_RESULT_EMPTY);
                 sortResponse.setNeedPlayMessage(true);
@@ -1860,7 +1860,7 @@ public final class VoiceSearchManager {
                         .append("，确定去这里吗");
                 break;
             default:
-                Logger.i(IVrBridgeConstant.TAG, "unSupport sortValue: " + mSortValue);
+                Logger.i(IVrBridgeConstant.TAG, "unSupport sortValue: " , mSortValue);
                 break;
         }
 

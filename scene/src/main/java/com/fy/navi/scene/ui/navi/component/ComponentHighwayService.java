@@ -54,7 +54,7 @@ public class ComponentHighwayService extends SkinConstraintLayout {
      */
     public void updateHighwayServiceData(final SapaInfoEntity.SAPAItem sapaItem,
                                          final boolean isFirst) {
-        Logger.i(TAG, "ComponentHighwayService：" + sapaItem.toString() + ",isFirst：" + isFirst);
+        Logger.i(TAG, "ComponentHighwayService：" , sapaItem.toString() , ",isFirst：" , isFirst);
         mBinding.stvName.setText(sapaItem.getName());
         mBinding.stvDistance.setText(TimeUtils.getInstance().getDistanceString(sapaItem.getRemainTime()));
     }
