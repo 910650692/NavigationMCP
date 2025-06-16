@@ -1316,6 +1316,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         } else if (searchType == AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH) {
             mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_PARK
                     , index);
+            mMapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 2);
         } else {
             if (getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
                 mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_CHARGE_STATION
