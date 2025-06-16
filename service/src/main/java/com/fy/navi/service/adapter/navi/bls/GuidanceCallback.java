@@ -66,7 +66,7 @@ import java.util.concurrent.ScheduledFuture;
  * @version $Revision.*$
  */
 public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
-    private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_CALLBACK;
     private Hashtable<String, GuidanceObserver> mGuidanceObservers;
     private NaviApiImplHelper mHelper;
     private ScheduledFuture mScheduledFuture;
@@ -95,7 +95,6 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     }
 
     public void startNavi() {
-        Logger.i(TAG, "onNaviStar 导航开启");
         if (ConvertUtils.isEmpty(mGuidanceObservers)) return;
         for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
             if (guidanceObserver != null) {
@@ -111,7 +110,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
      */
     @Override
     public void onUpdateNaviInfo(final ArrayList<NaviInfo> naviInfoList) {
-        Logger.i(TAG, "onUpdateNaviInfo naviInfoList size:" +
+        Logger.i(TAG, "onUpdateNaviInfo naviInfoList size:",
                 (ConvertUtils.isEmpty(naviInfoList) ? 0 : naviInfoList.size()));
         mHelper.mNaviInfo = ConvertUtils.isEmpty(naviInfoList) ? null : naviInfoList.get(0);
         NaviAdapter.getInstance().setNaviInfoList(NaviDataFormatHelper.
@@ -173,7 +172,8 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onShowCrossImage(final CrossImageInfo info) {
         final CrossImageEntity naviImageInfo = NaviDataFormatHelper.forMatImageInfo(info);
-        Logger.i(TAG, "onShowCrossImage naviImageInfo:" + (naviImageInfo == null ? "null" : naviImageInfo.getDistance()));
+        Logger.i(TAG, "onShowCrossImage naviImageInfo:",
+                (naviImageInfo == null ? "null" : naviImageInfo.getDistance()));
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -185,7 +185,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onHideCrossImage(final int type) {
-        Logger.i(TAG, "onHideCrossImage type:" + type);
+        Logger.i(TAG, "onHideCrossImage type:", type);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -423,7 +423,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onCurrentRoadSpeed(final int speed) {
-        Logger.i(TAG, "GuidanceCallback onCurrentRoadSpeed speed：" + speed);
+        Logger.i(TAG, "GuidanceCallback onCurrentRoadSpeed speed：", speed);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -435,7 +435,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onPlayTTS(final SoundInfo info) {
-        Logger.d(TAG, "onPlayTTS : " + (info == null ? "null" : info.text));
+        Logger.d(TAG, "onPlayTTS : ", (info == null ? "null" : info.text));
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -447,7 +447,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onPlayRing(final int type) {
-        Logger.i(TAG, "TTS play type : " + type);
+        Logger.i(TAG, "TTS play type : ", type);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -491,13 +491,15 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onUpdateElecVehicleETAInfo(ArrayList<ElecVehicleETAInfo> elecVehicleETAInfo) {
         INaviObserver.super.onUpdateElecVehicleETAInfo(elecVehicleETAInfo);
-        Logger.i(TAG, "onUpdateElecVehicleETAInfo:" + ((ConvertUtils.isEmpty(elecVehicleETAInfo)) ? "无效信息" : elecVehicleETAInfo.size()));
+        Logger.i(TAG, "onUpdateElecVehicleETAInfo:",
+                ((ConvertUtils.isEmpty(elecVehicleETAInfo)) ? "无效信息" : elecVehicleETAInfo.size()));
         // 透出电动车ETA信息。透出电动车ETA信息，仅在线支持。一分钟回调一次
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
                     final List<FyElecVehicleETAInfo> desObj = GsonUtils.fromJson2List(elecVehicleETAInfo, FyElecVehicleETAInfo.class);
-                    Logger.i(TAG, "onUpdateElectVehicleETAInfo:" + ((desObj == null) ? "desObj is null" : "size_" + desObj.size()));
+                    Logger.i(TAG, "onUpdateElectVehicleETAInfo:",
+                            ((desObj == null) ? "desObj is null" : "size_" + desObj.size()));
                     guidanceObserver.onUpdateElectVehicleETAInfo(desObj);
                 }
             }
@@ -539,7 +541,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         if (ConvertUtils.isEmpty(list)) {
             return;
         }
-        Logger.i(TAG, "MixForkInfo : " + list.size());
+        Logger.i(TAG, "MixForkInfo : ", list.size());
         final List<NaviMixForkInfo> formaterMixForkList = NaviDataFormatHelper.formaterMixForkList(list);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
@@ -595,7 +597,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onDeletePath(final ArrayList<Long> pathIDList) {
-        Logger.i(TAG, "onDeletePath: " + "经过分歧点");
+        Logger.i(TAG, "onDeletePath: ", "经过分歧点");
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -608,7 +610,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onChangeNaviPath(final long oldPathId, final long pathID) {
-        Logger.i(TAG, "onChangeNaviPath: " + "切换路线");
+        Logger.i(TAG, "onChangeNaviPath: ", "切换路线");
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -622,8 +624,8 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     public void onSuggestChangePath(long newPathID, long oldPathID,
                                     SuggestChangePathReason reason) {
         long saveTime = reason == null ? 0 : reason.saveTime;
-        Logger.i(TAG, "onSuggestChangePath: " + "建议切换路线 newPathId = " + newPathID +
-                " oldPathId = " + oldPathID + " saveTime = " + saveTime);
+        Logger.i(TAG, "onSuggestChangePath: ", "建议切换路线 newPathId = ", newPathID,
+                " oldPathId = ", oldPathID, " saveTime = ", saveTime);
         SuggestChangePathReasonEntity suggestChangePathReasonEntity =
                 new SuggestChangePathReasonEntity();
         suggestChangePathReasonEntity.setSaveTime(saveTime);
@@ -640,7 +642,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onUpdateTREvent(ArrayList<PathTrafficEventInfo> pathsTrafficEventInfo,
                                 long pathCount) {
-        Logger.i(TAG, "onUpdateTREvent: " + "更新路线交通事件");
+        Logger.i(TAG, "onUpdateTREvent: ", "更新路线交通事件");
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -653,11 +655,11 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onShowNaviFacility(ArrayList<NaviRoadFacility> list) {
-        Logger.i(TAG, "onShowNaviFacility: " + "引导道路设施回调");
+        Logger.i(TAG, "onShowNaviFacility: ", "引导道路设施回调");
         ArrayList<NaviRoadFacilityEntity> naviRoadFacilityEntities = NaviDataFormatHelper.
                 formatRoadFacilityList(list);
         if (ConvertUtils.isEmpty(naviRoadFacilityEntities)) {
-            Logger.i(TAG, "onShowNaviFacility: " + "道路设施列表为空");
+            Logger.i(TAG, "onShowNaviFacility: ", "道路设施列表为空");
             return;
         }
         for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {

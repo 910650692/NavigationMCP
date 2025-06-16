@@ -12,6 +12,7 @@ import com.fy.navi.scene.ui.navi.SceneNaviContinueView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
@@ -25,7 +26,7 @@ import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView> {
 
-    public static final String TAG = "SceneNaviContinueImpl";
+    public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CONTINUE_IMPL;
 
     private ImersiveStatus mImersiveStatus = ImersiveStatus.IMERSIVE;
     private LayerPackage mLayerPackage;
@@ -45,7 +46,8 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
     }
 
     public void notifySceneStateChange(final boolean isVisible) {
-        Logger.i(TAG, "notifySceneStateChange", isVisible + " mScreenView.isVisible()：" + mScreenView.isVisible());
+        Logger.i(TAG, "notifySceneStateChange", isVisible, " mScreenView.isVisible()：",
+                mScreenView.isVisible());
         if (mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                         INaviSceneEvent.SceneStateChangeType.SceneShowState :
@@ -57,8 +59,6 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
      * @param currentImersiveStatus 沉浸态触摸态回调
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
-        Logger.i(TAG, "onImmersiveStatusChange-currentImersiveStatus：" + currentImersiveStatus + " mImersiveStatus:" + mImersiveStatus
-                + " mIsFixedOverView:" + NaviPackage.getInstance().getFixedOverViewStatus());
         if (mImersiveStatus != currentImersiveStatus) {
             mImersiveStatus = currentImersiveStatus;
         } else {
@@ -102,8 +102,8 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
             boolean currentIsNavi = mCallBack.getCurrentFragmentIsNavi();
             // 如果有需要全览的列表正在显示不直接进入导航态
             boolean isNeedPreViewShowList = mCallBack.isNeedPreViewShowList();
-            Logger.i(TAG, "initTimer currentIsNavi：" + currentIsNavi +
-                    " isNeedPreViewShowList = " + isNeedPreViewShowList);
+            Logger.i(TAG, "initTimer currentIsNavi：", currentIsNavi,
+                    " isNeedPreViewShowList = ", isNeedPreViewShowList);
             if (!currentIsNavi || isNeedPreViewShowList) {
                 initTimer();
             } else {
@@ -130,9 +130,9 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
 
 
     public void naviContinue() {
-        Logger.i(TAG, "naviContinue");
         // 加入防抖
         if (TimerHelper.isCanDo()) {
+            Logger.i(TAG, "naviContinue");
             if (mCallBack != null) {
                 mCallBack.cancelClusterOverViewTimer();
             }

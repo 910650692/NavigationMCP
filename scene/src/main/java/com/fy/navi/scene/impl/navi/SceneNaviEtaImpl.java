@@ -27,7 +27,7 @@ import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import java.util.Objects;
 
 public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_ETA_IMPL;
     // 转向图标信息
     private NaviManeuverInfo mManeuverInfo;
     // 是否离线请求本地导航转向图片信息
@@ -153,7 +153,8 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
                 }
             });
         }
-        Logger.i(TAG, " onObtainManeuverIconData: requestConfig.width:" + maneuverIconResponseData.getRequestConfig().getWidth());
+        Logger.i(TAG, " onObtainManeuverIconData: requestConfig.width:",
+                maneuverIconResponseData.getRequestConfig().getWidth());
     }
 
     /**
@@ -163,7 +164,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
         setVisibleNaviNext(true);
         final int resId = NaviUiUtil.getOfflineManeuverIconId(mCurNaviInfo.nextCrossInfo.get(0).
                 maneuverID, mCurNaviInfo.nextCrossInfo.get(0).outCnt);
-        Logger.i(TAG, " showOfflineNextTurnIcon resId:" + resId);
+        Logger.i(TAG, " showOfflineNextTurnIcon resId:", resId);
         mScreenView.setBackgroundNaviOfflineNextTurnIcon(SceneCommonStruct.TbtExitIconAction.get(resId));
     }
 
@@ -176,7 +177,8 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
     public void updateNextThumTurnIcon(final byte[] bytes,
                                        final NaviManeuverInfo.NaviManeuverConfig config,
                                        final int aroundNum) {
-        Logger.i(TAG, " updateNextThumTurnIcon maneuverID:" + config.getManeuverID() + " aroundNum:" + aroundNum + " pathID:" + config.getPathID());
+        Logger.i(TAG, " updateNextThumTurnIcon maneuverID:", config.getManeuverID(),
+                " aroundNum:", aroundNum, " pathID:", config.getPathID());
         final int size = NaviConstant.NEXT_TURN_ICON_SIZE;
         mNextThumDirectionCache = NaviUiUtil.getRoadSignBitmap(bytes, size, size, (int) config.getManeuverID(),
                 aroundNum, NaviConstant.HUD_RES_PREFIX, NaviConstant.ICON_RES_NAME, NaviConstant.NIGHT);
@@ -224,7 +226,8 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
      * @param isNeedUpdateDirection isNeedUpdateDirection
      */
     public void updateNaviInfoAndDirection(final boolean isNeedUpdateDirection) {
-        Logger.i(TAG, " updateNaviInfoAndDirection isNeedUpdateDirection: " + isNeedUpdateDirection);
+        Logger.i(TAG, " updateNaviInfoAndDirection isNeedUpdateDirection: ",
+                isNeedUpdateDirection);
         innerUpdateNaviInfo();
         // 三维实景的转向图标是黑夜模式，所以进入三维场景时需要重新请求图标，故不需要在此处更新转向图标
         if (isNeedUpdateDirection) {
@@ -256,7 +259,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
      */
     public void updataNextThumInfo(final NaviEtaInfo naviInfo) {
         final boolean isNextThumTip = isNeedNextThumTip(naviInfo);
-        Logger.i(TAG, " updataNextThumInfo isNextThumTip:" + isNextThumTip);
+        Logger.i(TAG, " updataNextThumInfo isNextThumTip:", isNextThumTip);
         //清空进阶动作信息
         setVisibleNaviNext(isNextThumTip);
         String txtNextThumText = mScreenView.getContext().getString(R.string.navi_normal_tip);
@@ -375,7 +378,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
      */
     //设置近接动作可见
     private void setVisibleNaviNext(final boolean isVisible) {
-        Logger.d(TAG, "setVisibleNaviNext：isVisible：" + isVisible);
+        Logger.d(TAG, "setVisibleNaviNext：isVisible：", isVisible);
         mIsNextManeuverShow = isVisible;
         if (null != mCallBack) {
             mCallBack.updateNextStatus(isVisible, mOfflineManeuverIcon);

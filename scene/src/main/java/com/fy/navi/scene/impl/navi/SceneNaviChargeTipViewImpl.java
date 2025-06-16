@@ -6,12 +6,14 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.ui.navi.SceneNaviChargeTipView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviChargeTipViewImpl extends BaseSceneModel<SceneNaviChargeTipView> {
-    public static final String TAG = "SceneNaviChargeTipViewImpl";
+
+    public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CHARGE_TIP_IMPL;
     private ScheduledFuture scheduledFuture;
     private int times = NumberUtils.NUM_8;
     public SceneNaviChargeTipViewImpl(SceneNaviChargeTipView screenView) {
@@ -41,7 +43,8 @@ public class SceneNaviChargeTipViewImpl extends BaseSceneModel<SceneNaviChargeTi
     }
 
     private void updateSceneVisible(boolean isVisible) {
-        Logger.i(TAG, "updateSceneVisible", "isVisible:" + isVisible, "currentIsVis:" + mScreenView.isVisible());
+        Logger.i(TAG, "updateSceneVisible", "isVisible:", isVisible, "currentIsVis:",
+                mScreenView.isVisible());
         if(mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :

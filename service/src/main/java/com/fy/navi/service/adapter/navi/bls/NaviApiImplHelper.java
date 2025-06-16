@@ -210,15 +210,11 @@ public class NaviApiImplHelper {
     public void setElectInfoConfig() {
         // 判断是否是电车需要设置能耗参数
         if (CalibrationPackage.getInstance().powerType() == 1) {
-            Logger.i(TAG, "引导模式下：纯电车设置能耗模型！");
             mGuideService.setElecInfoConfig(getElecInfoConfig());
-        } else {
-            Logger.i(TAG, "不是纯电动汽车，无需设置能耗模型！");
         }
     }
 
     public void startNavi(boolean startNaviStatus) {
-        Logger.i(TAG, "onNaviStar 导航开启 : " + startNaviStatus);
         if (startNaviStatus) mNaviObserver.startNavi();
     }
 
@@ -331,7 +327,8 @@ public class NaviApiImplHelper {
         if (ConvertUtils.isEmpty(chargeStationInfos) || ConvertUtils.isEmpty(remainList)) {
             return new ArrayList<>();
         }
-        Logger.i(TAG, "getAllViaPoints:" + chargeStationInfos.size(), "remainSize:" + remainList.size());
+        Logger.i(TAG, "getAllViaPoints:", chargeStationInfos.size(), "remainSize:",
+                remainList.size());
         final int size = Math.min(chargeStationInfos.size(), remainList.size());
         for (int i = 0; i < size; i++) {
             final ChargeStationInfo stationInfo = chargeStationInfos.get(i);
@@ -358,12 +355,12 @@ public class NaviApiImplHelper {
     }
 
     public boolean pauseNavi(long naviId) {
-        Logger.d(TAG, "pauseNavi: ");
+        Logger.d(TAG, "pauseNavi");
         return mGuideService != null && mGuideService.pauseNavi(naviId);
     }
 
     public boolean resumeNavi(long naviId) {
-        Logger.d(TAG, "resumeNavi: ");
+        Logger.d(TAG, "resumeNavi");
         return mGuideService != null && mGuideService.resumeNavi(naviId);
     }
 

@@ -33,8 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailView> implements SearchResultCallback {
-    public static final String TAG = SceneNaviSapaDetailImpl.class.getSimpleName();
+public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailView> implements
+        SearchResultCallback {
+    public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_SAPA_DETAIL_IMPL;
 
     //0:显示服务区详情页，1：显示收费站详情页
     public ObservableField<Integer> mViewType;
@@ -169,7 +170,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
      */
     private void updateSceneVisible(final boolean isVisible) {
         if (mScreenView.isVisible() == isVisible) return;
-        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviSapaDetailImpl", isVisible);
+        Logger.i(TAG, "SceneNaviSapaDetailImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange(
                 (isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
                         INaviSceneEvent.SceneStateChangeType.SceneCloseState),
@@ -183,8 +184,8 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
      * @param sapaInfoEntity 实体类
      */
     public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
-        Logger.i(TAG, "skipNaviSapaDetailScene" + ", type = " + type +
-                ", sapaInfoEntity = " + sapaInfoEntity);
+        Logger.i(TAG, "skipNaviSapaDetailScene" + ", type = ", type,
+                ", sapaInfoEntity = ", sapaInfoEntity);
         if (sapaInfoEntity == null) {
             Logger.e(TAG, "sapaInfoEntity is null");
             return;
@@ -256,11 +257,11 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                 mGasStationSearchId = SearchPackage.getInstance().doLineDeepInfoSearch(
                         ResourceUtils.Companion.getInstance().
                                 getString(R.string.navi_via), poiIds);
-                Logger.i(TAG, "加油站详情搜索 taskId = " + mGasStationSearchId);
+                Logger.i(TAG, "加油站详情搜索 taskId = ", mGasStationSearchId);
             }
             // 进行PoiId搜索 为了途经点添加功能
             mSapaSearchId = SearchPackage.getInstance().poiIdSearch(poiId);
-            Logger.i(TAG, "doServiceSearch  mSapaSearchId = " + mSapaSearchId);
+            Logger.i(TAG, "doServiceSearch  mSapaSearchId = ", mSapaSearchId);
         } else {
             Logger.e(TAG, "sapaItem is null");
         }
@@ -348,7 +349,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                     mScreenView.updateServiceChargeUi(leftCharge);
                 });
             }).exceptionally(error -> {
-                Logger.e(TAG, "updateServiceDetailInfo getTravelTimeFuture error:" + error);
+                Logger.e(TAG, "updateServiceDetailInfo getTravelTimeFuture error:", error);
                 return null;
             });
         }
@@ -379,7 +380,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                     mScreenView.updateTollChargeUi(leftCharge);
                 });
             }).exceptionally(error -> {
-                Logger.e(TAG, "updateTollDetailInfo getTravelTimeFuture error:" + error);
+                Logger.e(TAG, "updateTollDetailInfo getTravelTimeFuture error:", error);
                 return null;
             });
         }
@@ -457,7 +458,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                 route_service_details_add_via));
         //服务区状态:0 非建设中（默认值），1 建设中，2 未调查 3 装修中 4 暂停营业
         final int buildingStatus = sapItem.getBuildingStatus();
-        Logger.i(TAG, "tagUpdate buildingStatus = " + buildingStatus);
+        Logger.i(TAG, "tagUpdate buildingStatus = ", buildingStatus);
         switch (buildingStatus) {
             case 0:
                 tag.set(SceneNaviSapaImpl.UN_BUILDING);
@@ -510,7 +511,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             return;
         }
         for (Integer integer : laneTypes) {
-            Logger.i(TAG, "updateTollDetail laneTypes = " + integer);
+            Logger.i(TAG, "updateTollDetail laneTypes = ", integer);
             // TollLaneTypeETC等于2可以显示etc标识
             if (integer == 2) {
                 etc.set(true);
@@ -601,13 +602,13 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message,
                                final SearchResultEntity searchResultEntity) {
-        Logger.i(TAG, "onSearchResult taskId = " + taskId +
-                ", errorCode = " + errorCode + ", message = " + message);
+        Logger.i(TAG, "onSearchResult taskId = ", taskId,
+                ", errorCode = ", errorCode, ", message = ", message);
         if (searchResultEntity == null) {
             Logger.i(TAG, "onSearchResult searchResultEntity is null");
             return;
         }
-        Logger.i(TAG, "onSearchResult searchResultEntity = " +
+        Logger.i(TAG, "onSearchResult searchResultEntity = ",
                 searchResultEntity.toString());
         // 如果当前的搜索id与回调的taskId相同，表示是当前的搜索结果
         if (mGasStationSearchId == taskId) {
@@ -638,8 +639,8 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         }
         mCurrentPoiInfoEntity = searchResultEntity.getPoiList().get(0);
         mCurrentPoiType = searchResultEntity.getPoiType();
-        Logger.i(TAG, "refreshViaData mCurrentPoiInfoEntity = " +
-                mCurrentPoiInfoEntity.toString() + ", mCurrentPoiType = " + mCurrentPoiType);
+        Logger.i(TAG, "refreshViaData mCurrentPoiInfoEntity = ",
+                mCurrentPoiInfoEntity.toString(), ", mCurrentPoiType = ", mCurrentPoiType);
     }
 
     /**
@@ -650,7 +651,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             Logger.i(TAG, "onAddRemoveViaClick mCurrentPoiInfoEntity or mCurrentPoiType is null");
             return;
         }
-        Logger.i(TAG, "onAddRemoveViaClick mIsVia = " + mIsVia);
+        Logger.i(TAG, "onAddRemoveViaClick mIsVia = ", mIsVia);
         if (!mIsVia) {
             RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                     mCurrentPoiInfoEntity);

@@ -29,7 +29,7 @@ import com.fy.navi.service.logicpaket.navi.NaviPackage;
  * @version $Revision.*$
  */
 public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMoreViewBinding, SceneNaviControlMoreImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CONTROL_MORE;
     private ImersiveStatus mImersiveStatus;
 
     public SceneNaviControlMoreView(@NonNull final Context context) {
@@ -90,7 +90,7 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
      */
     public void refreshView() {
         final boolean isFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
-        Logger.i(TAG, "isFixedOverView:" + isFixedOverView);
+        Logger.i(TAG, "isFixedOverView:", isFixedOverView);
         mViewBinding.svCarHead.setAlpha(isFixedOverView ? 0.5f : 1.0f);
         mViewBinding.svCarHead.setIsClickChangeColor(!isFixedOverView);
         if (mScreenViewModel != null) {
@@ -225,7 +225,7 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
      * @param isConnected isConnected
      */
     public void onNetStatusChange(boolean isConnected) {
-        Logger.i(TAG, "onNetStatusChange isConnected:" + isConnected);
+        Logger.i(TAG, "onNetStatusChange isConnected:", isConnected);
         mScreenViewModel.refreshRouteCauseNet();
     }
 

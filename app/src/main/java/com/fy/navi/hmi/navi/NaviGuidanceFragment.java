@@ -31,6 +31,7 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -54,7 +55,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBinding, NaviGuidanceViewModel> {
-    private static final String TAG = "NaviGuidanceFragment";
+    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_VIEW;
 
     @Override
     public int onLayoutId() {
@@ -76,8 +77,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * 保存场景状态
      */
     private void saveSceneStatus() {
-        Logger.i(TAG, "mViewModel = " + mViewModel);
         if (mViewModel == null) {
+            Logger.e(TAG, "saveSceneStatus mViewModel is null");
             return;
         }
         HashMap<NaviSceneId, Integer> map = mViewModel.getSceneStatus();
@@ -150,13 +151,13 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * 不手动恢复，黑白模式切换后页面碰撞会有问题
      */
     private void restoreSceneStatus() {
-        Logger.i(TAG, "mViewModel = " + mViewModel);
         if (null == mViewModel) {
+            Logger.e(TAG, "restoreSceneStatus mViewModel is null");
             return;
         }
         HashMap<NaviSceneId, Integer> map = mViewModel.getSceneStatus();
         if (ConvertUtils.isEmpty(map)) {
-            Logger.i(TAG, "restoreSceneStatus list is null");
+            Logger.e(TAG, "restoreSceneStatus list is null");
             return;
         }
         restoreNaviSceneStatus(mBinding.sklRoot, map);
@@ -247,11 +248,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
         boolean isNavi = StackManager.getInstance().
                 getCurrentFragment(mScreenId) instanceof NaviGuidanceFragment;
-        Logger.i("crossImageDebug", "isShowImage:" + isShowImage +
-                " isNaviGuidanceGragment = " + isNavi);
         final boolean isRealNeedShow = isShowImage && isNavi;
-        Logger.i("crossImageDebug",
-                "isRealNeedShow:" + isRealNeedShow);
+        Logger.i(TAG,
+                "isRealNeedShow:", isRealNeedShow);
         // 如果途经点列表/底部控制栏更多/路线偏好/sapa详情页页面显示，不能执行路口大图的显示逻辑
         boolean isCanShowCrossImage = mBinding.sceneNaviViaList.getVisibility() != VISIBLE &&
                 mBinding.sceneNaviControlMore.getVisibility() != VISIBLE &&
@@ -280,7 +279,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param routeRemainDist 路口大图进度
      */
     public void updateCrossProgress(final long routeRemainDist) {
-        Logger.i(TAG, "updateCrossProgress", "routeRemainDist:" + routeRemainDist);
+        Logger.i(TAG, "updateCrossProgress", "routeRemainDist:", routeRemainDist);
         /*if (routeRemainDist <= 0) {
             mBinding.sceneNaviCrossImage.onCrossImageInfo(false, null);
             mBinding.sceneNaviTbt.onCrossImageInfo(false, null);
@@ -567,7 +566,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     protected void onNewIntent(final Bundle bundle) {
         super.onNewIntent(bundle);
         final int isNaviControl = bundle.getInt(NaviConstant.NAVI_CONTROL, 0);
-        Logger.i(TAG, "onNewIntent isNaviControl:" + isNaviControl);
+        Logger.i(TAG, "onNewIntent isNaviControl:", isNaviControl);
         if (isNaviControl == 1) {
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override

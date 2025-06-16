@@ -3,14 +3,13 @@ package com.fy.navi.scene.impl.navi;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.SceneNaviViaArriveView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
 
 public class SceneNaviViaArriveViewImpl extends BaseSceneModel<SceneNaviViaArriveView> {
-    public static final String TAG = "SceneNaviViaArriveViewImpl";
+    public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_ARRIVE_IMPL;
     public SceneNaviViaArriveViewImpl(final SceneNaviViaArriveView screenView) {
         super(screenView);
     }
@@ -29,7 +28,7 @@ public class SceneNaviViaArriveViewImpl extends BaseSceneModel<SceneNaviViaArriv
      */
     public void updateSceneVisible(final boolean isVisible) {
         if(mScreenView.isVisible() == isVisible) return;
-        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviViaArriveViewImpl", isVisible);
+        Logger.i(TAG, "SceneNaviViaArriveViewImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState),

@@ -39,7 +39,7 @@ import com.fy.navi.service.define.utils.NumberUtils;
  * @version $Revision.*$
  */
 public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, SceneNaviTbtImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_TBT;
     private int mGpsStrength;
     private boolean mIsCrossImageShow;
     private long mCrossDistance = NumberUtils.NUM_ERROR;
@@ -129,7 +129,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      * @param drawableValue drawable
      */
     public void setBackgroundNaviExitTurnIcon(final AutoUIDrawable drawableValue) {
-        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviExitTurnIcon：");
+        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviExitTurnIcon");
         // 《出口信息》图标 ui未体现
         mViewBinding.sivHudSou33.setBackground(new BitmapDrawable(getResources(), drawableValue.getBitmap()));
     }
@@ -140,7 +140,8 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      * @param textContent 文本内容
      */
     public void setTextNaviExit(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviExit：" + textContent.getString(getContext()));
+        Logger.d(TAG, "GuidanceTbtView setTextNaviExit：",
+                textContent.getString(getContext()));
         // 《出口信息》出口编号 ui未体现
         mViewBinding.stvExitNum.setText(textContent.getString(getContext()));
     }
@@ -151,7 +152,8 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      * @param textContent 文本内容
      */
     public void setTextNaviInfoDistanceNextRoad(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviInfoDistanceNextRoad：" + textContent.getString(getContext()));
+        Logger.d(TAG, "GuidanceTbtView setTextNaviInfoDistanceNextRoad：",
+                textContent.getString(getContext()));
         mViewBinding.stvDivDistance.setText(textContent.getString(getContext()));
     }
 
@@ -159,7 +161,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      * @param textContent 文本内容
      */
     public void setTextNaviInfoDistanceNextRoadName(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviInfoDistanceNextRoadName：" +
+        Logger.d(TAG, "GuidanceTbtView setTextNaviInfoDistanceNextRoadName：",
                 textContent.getString(getContext()));
         mViewBinding.stvDivAddress.setText(textContent.getString(getContext()));
     }
@@ -170,7 +172,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      * @param drawableValue drawable
      */
     public void setBackgroundNaviCommonTurnIcon(final AutoUIDrawable drawableValue) {
-        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviCommonTurnIcon：");
+        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviCommonTurnIcon");
         mViewBinding.sivHudSou3.setBackground(new BitmapDrawable(getResources(), drawableValue.getBitmap()));
     }
 
@@ -181,7 +183,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      */
     @SuppressLint("SetTextI18n")
     public void setTextNaviInfoDistanceNextRoadUnit(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviInfoDistanceNextRoadUnit：" +
+        Logger.d(TAG, "GuidanceTbtView setTextNaviInfoDistanceNextRoadUnit：",
                 textContent.getString(getContext()));
         mViewBinding.stvDivUnit.setText(textContent.getString(getContext()));
     }
@@ -193,7 +195,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      */
     public void setBackgroundNaviOfflineCommonTurnIcon(
             final SceneCommonStruct.TbtExitIconAction iconAction) {
-        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviOfflineCommonTurnIcon：" +
+        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviOfflineCommonTurnIcon：",
                 iconAction.name());
         mViewBinding.sivHudSou3.setBackgroundResource(SceneEnumRes.getDrawableEnumName(iconAction).
                 getDayDrawableId());
@@ -206,7 +208,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      */
     public void setBackgroundNaviOfflineExitTurnIcon(
             final SceneCommonStruct.TbtExitIconAction iconAction) {
-        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviOfflineExitTurnIcon：" +
+        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviOfflineExitTurnIcon：",
                 iconAction.name());
         // 《出口信息》图标 ui未体现
         mViewBinding.sivHudSou33.setBackgroundResource(SceneEnumRes.getDrawableEnumName(iconAction).
@@ -237,7 +239,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
     }
 
     public void updateCrossProgress(long routeRemainDist) {
-        Logger.i(TAG, "updateCrossProgress routeRemainDist:" + routeRemainDist);
+        Logger.i(TAG, "updateCrossProgress routeRemainDist:", routeRemainDist);
         if (mIsCrossImageShow) {
             int width = calculateProgressBarLength(mCrossDistance, routeRemainDist);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
@@ -254,8 +256,9 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
     }
 
     public void onCrossImageInfo(boolean isRealNeedShow, CrossImageEntity naviImageInfo) {
-        Logger.i(TAG, "onCrossImageInfo isRealNeedShow:" + isRealNeedShow +
-                " mCrossDistance:" + mCrossDistance + " naviImageInfo:" + (naviImageInfo == null ? 0 : naviImageInfo.getDistance()));
+        Logger.i(TAG, "onCrossImageInfo isRealNeedShow:", isRealNeedShow,
+                " mCrossDistance:", mCrossDistance, " naviImageInfo:",
+                (naviImageInfo == null ? 0 : naviImageInfo.getDistance()));
         mIsCrossImageShow = isRealNeedShow;
         if (!mIsCrossImageShow) {
             resetProgress();

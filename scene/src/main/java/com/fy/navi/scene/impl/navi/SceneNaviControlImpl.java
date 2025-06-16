@@ -35,7 +35,7 @@ import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> implements
         ISceneNaviControl, SignalCallback {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CONTROL_IMPL;
     private final NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
     private RoutePackage mRoutePackage;
@@ -83,7 +83,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     private void init() {
         // 初始化静音状态
         int muteStatus = SettingPackage.getInstance().getConfigKeyMute();
-        Logger.i(TAG, "init muteStatus:" + muteStatus);
+        Logger.i(TAG, "init muteStatus:", muteStatus);
         mNaviPackage.setCurrentNaviVolume(getNaviVolume());
         mIsMute = muteStatus == 1;
         mNaviPackage.setMuteByHmi(mIsMute);
@@ -120,7 +120,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
 
     @Override
     public void naviContinue() {
-        Logger.i(TAG, "naviContinue", "showPreview status : " + mNaviPackage.getFixedOverViewStatus());
+        Logger.i(TAG, "naviContinue", "showPreview status : ", mNaviPackage.getFixedOverViewStatus());
     }
 
     @Override
@@ -140,7 +140,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
      * @param type 0:退出全览 1:切换全览
      */
     public void naviPreviewSwitch(final int type) {
-        Logger.i(TAG, "naviPreviewSwitch type:" + type);
+        Logger.i(TAG, "naviPreviewSwitch type:", type);
         if (type == 0) {
             exitPreview();
             if (mNaviPackage.getFixedOverViewStatus()) {
@@ -154,8 +154,9 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     @Override
     public void switchOverview() {
         initTimer();
-        Logger.i(TAG, "switchOverview isFixedOverview：" + mNaviPackage.getFixedOverViewStatus() +
-                ",isPreViewShowing：" + mNaviPackage.getPreviewStatus());
+        Logger.i(TAG, "switchOverview isFixedOverview：",
+                mNaviPackage.getFixedOverViewStatus(),
+                ",isPreViewShowing：", mNaviPackage.getPreviewStatus());
         // 固定全览状态下退出全览
         if (mNaviPackage.getFixedOverViewStatus()) {
             //退出固定全览
@@ -184,7 +185,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     @Override
     public void onVariation() {
         initTimer();
-        Logger.i(TAG, "onVariation isPreViewShowing：" + mNaviPackage.getPreviewStatus());
+        Logger.i(TAG, "onVariation isPreViewShowing：", mNaviPackage.getPreviewStatus());
         if (mNaviPackage.getPreviewStatus() && !mNaviPackage.getFixedOverViewStatus()) {//固定全览
             onFixedOverView();
         } else {
@@ -301,7 +302,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
      * @param currentImersiveStatus ImmersiveStatus
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
-        Logger.i(TAG, "onImmersiveStatusChange currentImersiveStatus：" +
+        Logger.i(TAG, "onImmersiveStatusChange currentImersiveStatus：",
                 currentImersiveStatus);
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
         } else {
@@ -336,11 +337,11 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
                     NaviConstant.OverviewType.OVERVIEW_FIXED :
                     NaviConstant.OverviewType.OVERVIEW_DEFAULT);
             updateVariationVoice();
-            Logger.i(TAG, " initControlState isFixedOverview：" +
-                    mNaviPackage.getFixedOverViewStatus() + ",isPreViewShowing：" +
+            Logger.i(TAG, " initControlState isFixedOverview：",
+                    mNaviPackage.getFixedOverViewStatus(), ",isPreViewShowing：",
                     mNaviPackage.getPreviewStatus());
         } catch (Exception e) {
-            Logger.e(TAG, "showMain error:" + e.getMessage());
+            Logger.e(TAG, "showMain error:", e.getMessage());
         }
     }
 
@@ -360,7 +361,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
      */
     private void updateVariationVoice() {
         mIsMute = mNaviPackage.isMute();
-        Logger.d(TAG, "updateVariationVoice mIsMute：" + mIsMute);
+        Logger.d(TAG, "updateVariationVoice mIsMute：", mIsMute);
         mScreenView.updateVariation((mIsMute ? NaviConstant.VariationType.VARIATION_MUTE :
                 NaviConstant.VariationType.VARIATION_BROADCAST));
     }
@@ -413,8 +414,8 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     private void updateSystemNaviVolume(boolean isMute) {
         int currentSystemVolume = getNaviVolume();
         int lastSystemVolume = mNaviPackage.getCurrentNaviVolume();
-        Logger.i(TAG, "updateSystemNaviVolume isMute:" + isMute + " currentSystemVolume:" +
-                currentSystemVolume + " lastSystemNaviVolume:" + lastSystemVolume);
+        Logger.i(TAG, "updateSystemNaviVolume isMute:", isMute, " currentSystemVolume:",
+                currentSystemVolume, " lastSystemNaviVolume:", lastSystemVolume);
         // 当前静音并且系统不是静音状态，进行静音操作
         if (isMute && currentSystemVolume > NumberUtils.NUM_0) {
             setNaviVolume(NumberUtils.NUM_0);
@@ -432,8 +433,8 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     @Override
     public void onNaviVolumeChanged(int volume) {
         mIsMute = mNaviPackage.isMute();
-        Logger.i(TAG, "onNaviVolumeChanged volume:" + volume + " mIsMute:" + mIsMute +
-                " mLastSystemNaviVolume:" + mNaviPackage.getCurrentNaviVolume());
+        Logger.i(TAG, "onNaviVolumeChanged volume:", volume, " mIsMute:", mIsMute,
+                " mLastSystemNaviVolume:", mNaviPackage.getCurrentNaviVolume());
         // 导航音量为0时，导航音量静音
         if (volume == NumberUtils.NUM_0) {
             if (!mIsMute) {

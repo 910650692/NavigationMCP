@@ -30,6 +30,7 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
@@ -48,7 +49,7 @@ import java.util.List;
  * @version $Revision.*$
  */
 public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBinding, SceneNaviViaListImpl> {
-    private static final String TAG = "SceneNaviViaListView";
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_LIST;
     private NaviViaListAdapter mNaviViaListAdapter;
 
     List<FyElecVehicleETAInfo> mElectVehicleETAInfoList;
@@ -152,7 +153,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         mNaviViaListAdapter.setOnItemClickListener(new INaviViaItemClickListener() {
             @Override
             public void onItemClick(final int position, final NaviViaEntity entity) {
-                Logger.i(TAG, "onItemClick:" + position);
+                Logger.i(TAG, "onItemClick:", position);
                 if (mNaviViaListAdapter.getData().size() <= 1) {
                     return;
                 }
@@ -176,9 +177,11 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
 
             @Override
             public void onDelClick(final int position, final NaviViaEntity entity) {
-                Logger.i(TAG, "onDelClick", "position:" + position, "callBack is null :" + (mISceneCallback == null));
+                Logger.i(TAG, "onDelClick", "position:", position, "callBack is null :",
+                        (mISceneCallback == null));
                 if (mISceneCallback != null) {
-                    Logger.i(TAG, "entity:" + (entity == null? "null":entity.getPid()+":"+entity.getName()));
+                    Logger.i(TAG, "entity:", (entity == null? "null" : entity.getPid() +
+                            ":" + entity.getName()));
                     mISceneCallback.deleteViaPoint(entity);
                     resetTimer();
                 }
@@ -212,9 +215,9 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
      * 展示途径点集合
      */
     public void showNaviViaList(final boolean isVisible) {
-        Logger.i(TAG, "showNaviViaList:" + isVisible);
+        Logger.i(TAG, "showNaviViaList:", isVisible);
         if (mScreenViewModel == null) {
-            Logger.e(TAG, "mScreenViewModel == null：");
+            Logger.e(TAG, "mScreenViewModel == null");
             return;
         }
         mScreenViewModel.updateSceneVisible(isVisible);
@@ -241,10 +244,11 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
      */
     public void notifyDeleteViaPointResult(final boolean result, final NaviViaEntity entity) {
         if(entity == null){
-            Logger.i(TAG, "result:" + result +" entity == null");
+            Logger.i(TAG, "result:", result, " entity == null");
             return;
         }
-        Logger.i(TAG, "result:" + result +" pid:" + entity.getPid() +" name:" + entity.getName() + " address:" + entity.getAddress());
+        Logger.i(TAG, "result:", result, " pid:", entity.getPid(), " name:",
+                entity.getName(), " address:", entity.getAddress());
         if (result) {
             mNaviViaListAdapter.removeData(entity);
         }

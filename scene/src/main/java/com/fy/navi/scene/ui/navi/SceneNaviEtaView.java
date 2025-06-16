@@ -31,7 +31,7 @@ import com.fy.navi.service.define.navi.NaviManeuverInfo;
  * @version $Revision.*$
  */
 public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, SceneNaviEtaImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_ETA;
 
     public SceneNaviEtaView(@NonNull final Context context) {
         super(context);
@@ -99,7 +99,8 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
      * @param textContent content
      */
     public void setTextNaviEtaRouteRemainDefault(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviEtaRouteRemainDefault：" + textContent.getString(getContext()));
+        Logger.d(TAG, "GuidanceTbtView setTextNaviEtaRouteRemainDefault：",
+                textContent.getString(getContext()));
         mViewBinding.stvRemainingDistanceTime.setText(textContent.getString(getContext()));
     }
 
@@ -109,7 +110,7 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
      */
     @SuppressLint("SetTextI18n")
     public void setTextNaviEtaRouteArrivalDefault(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviEtaRouteArrivalDefault：" +
+        Logger.d(TAG, "GuidanceTbtView setTextNaviEtaRouteArrivalDefault：",
                 textContent.getString(getContext()));
         mViewBinding.stvArriveTime.setText(textContent.getString(getContext()));
     }
@@ -119,7 +120,8 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
      * @param textContent context
      */
     public void setTextNaviEtaArrivalDay(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviEtaArrivalDay：" + textContent.getString(getContext()));
+        Logger.d(TAG, "GuidanceTbtView setTextNaviEtaArrivalDay：",
+                textContent.getString(getContext()));
         mViewBinding.stvArrivalDay.setText(textContent.getString(getContext()));
     }
 
@@ -128,7 +130,7 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
      */
     //设置近接动作
     public void setTextNaviNextTurn(final AutoUIString textContent) {
-        Logger.d(TAG, "GuidanceTbtView setTextNaviNextTurn：" +
+        Logger.d(TAG, "GuidanceTbtView setTextNaviNextTurn：",
                 textContent.getString(getContext()));
         String text = textContent.getString(getContext());
         mViewBinding.stvTextNext.setText(text);
@@ -141,7 +143,7 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
      * @param drawableValue drawable
      */
     public void setBackgroundNaviNextTurnIcon(final AutoUIDrawable drawableValue) {
-        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviNextTurnIcon：");
+        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviNextTurnIcon");
         BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
                 drawableValue.getBitmap());
         mViewBinding.sivHudSou31.setBackground(bitmapDrawable);
@@ -156,7 +158,8 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
      */
     public void setBackgroundNaviOfflineNextTurnIcon(
             final SceneCommonStruct.TbtExitIconAction iconAction) {
-        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviOfflineNextTurnIcon：" + iconAction.name());
+        Logger.d(TAG, "GuidanceTbtView setBackgroundNaviOfflineNextTurnIcon：",
+                iconAction.name());
         int resource = SceneEnumRes.getDrawableEnumName(iconAction).getDayDrawableId();
         mViewBinding.sivHudSou31.setBackgroundResource(resource);
         if (null != mISceneCallback) {
@@ -165,7 +168,7 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
     }
 
     public void onCrossImageShow(boolean isRealNeedShow) {
-        Logger.i(TAG, "GuidanceTbtView onCrossImageInfo：" + isRealNeedShow);
+        Logger.i(TAG, "GuidanceTbtView onCrossImageInfo：", isRealNeedShow);
         if (null != mScreenViewModel) {
             mScreenViewModel.onCrossImageShow(isRealNeedShow);
         }

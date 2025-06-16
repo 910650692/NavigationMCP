@@ -15,6 +15,7 @@ import com.fy.navi.scene.impl.navi.SceneNaviSapaImpl;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.ui.view.SkinConstraintLayout;
 
@@ -24,7 +25,7 @@ import com.fy.navi.ui.view.SkinConstraintLayout;
  * @version $Revision.*$
  */
 public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, SceneNaviSapaImpl> {
-    private static final String TAG = "SceneNaviSapaView";
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_SAPA;
 
     public SceneNaviSapaView(final Context context) {
         super(context);

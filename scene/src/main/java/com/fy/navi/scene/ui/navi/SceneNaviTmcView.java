@@ -37,7 +37,7 @@ import java.util.List;
  * @version $Revision.*$
  */
 public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, SceneNaviTmcImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_TMC;
     private List<NaviTmcInfo.NaviTmcInfoData> mTmcBarItemsNew;
     // 途径点信息
     private ArrayList<NaviEtaInfo.NaviTimeAndDist> mViaRemain;
@@ -148,7 +148,6 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
      */
     public void updateTmcContainerNew(final List<NaviTmcInfo.NaviTmcInfoData> tbitem,
                                       final long distanceHasPassed, final long totalDistance) {
-//        Logger.d(TAG, "updateTmcContainerNew");
         setTmcContainerDataNew(tbitem, distanceHasPassed, totalDistance);
         invalidate();
     }
@@ -168,7 +167,6 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     @Override
     protected void dispatchDraw(final Canvas canvas) {
         super.dispatchDraw(canvas);
-//        Logger.d(TAG, "dispatchDraw");
         drawTmcContainer(canvas);
     }
 
@@ -212,8 +210,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         } else {
             carPosition = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed) * rateDistanceToView);
         }
-        Logger.d(TAG, "mTotalDistance:" + mTotalDistance + " hasPassedDistance:" + hasPassedDistance + " mDistanceHasPassed :" + mDistanceHasPassed
-                + " width:" + width + " rateDistanceToView:" + rateDistanceToView + " carPosition :" + carPosition);
+        Logger.d(TAG, "mTotalDistance:", mTotalDistance, " hasPassedDistance:",
+                hasPassedDistance, " mDistanceHasPassed :", mDistanceHasPassed, " width:",
+                width, " rateDistanceToView:", rateDistanceToView, " carPosition :", carPosition);
         // 移动车标的Y坐标
         NaviUiUtil.setTranslation(mViewBinding.sivCar, carPosition, mIsHorizontal);
         ArrayList<Integer> chargeShowList = new ArrayList<>();
@@ -252,7 +251,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 }
                 logBuilder.append(".show:").append(isShow);
             }
-            Logger.d(TAG, "mViaShowIndex:" + mViaShowIndex + logBuilder);
+            Logger.d(TAG, "mViaShowIndex:", mViaShowIndex, logBuilder);
         } else {
             // 不显示充电站
             final int offsetIndex = mLastViaRemain == null ? 0 : mLastViaRemain.size();
@@ -308,7 +307,8 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 }
                 logBuilder.append(".show:").append(isShow);
             }
-            Logger.d(TAG, "ViaRemain mViaShowIndex:" + mViaShowIndex + " size:" + mViaRemain.size() + logBuilder);
+            Logger.d(TAG, "ViaRemain mViaShowIndex:", mViaShowIndex, " size:",
+                    mViaRemain.size(), logBuilder);
         } else {
             // 不显示途经点
             for (int i = 0; i < mLastViaRemain.size() && i < MAX_VIA_NUM; i++) {
@@ -432,8 +432,8 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     private void showViaIcon(final int index,
                              final SceneCommonStruct.TmcViaPointType tmcViaPointType,
                              final int viaY) {
-        Logger.d(TAG, "showViaIcon size:" + mViaRemain.size() + ",index :" + index + ",tmcViaPointType：" + tmcViaPointType
-                + ",viaY：" + viaY);
+        Logger.d(TAG, "showViaIcon size:", mViaRemain.size(), ",index :", index,
+                ",tmcViaPointType：", tmcViaPointType, ",viaY：", viaY);
         switch (index) {
             case NaviConstant.TMCViaIndex.VIA_0:
                 showViaIcon(mViewBinding.siv1, tmcViaPointType, viaY);
@@ -506,7 +506,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
      * @param index index
      */
     private void hideViaIcon(final int index) {
-        Logger.d(TAG, "hideViaIcon index :" + index);
+        Logger.d(TAG, "hideViaIcon index :", index);
         switch (index) {
             case NaviConstant.TMCViaIndex.VIA_0:
                 NaviUiUtil.hideView(mViewBinding.siv1);

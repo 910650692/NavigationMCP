@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implements NetWorkUtils.NetworkObserver {
-    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_TMC;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_TMC_IMPL;
     private boolean mNetworkConnected = true;
     /**
      * 途径点信息
@@ -289,7 +289,7 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
      */
     private void updateSceneVisible(final boolean isVisible){
         if(mScreenView.isVisible() == isVisible) return;
-        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviTmcImpl", isVisible);
+        Logger.i(TAG, "SceneNaviTmcImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_TMC);

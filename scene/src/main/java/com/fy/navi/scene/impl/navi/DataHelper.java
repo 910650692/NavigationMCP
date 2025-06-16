@@ -60,7 +60,7 @@ public final class DataHelper {
      * @return 第n位的值
      */
     public static int getNthBit(final long number, final int n) {
-        Logger.i(TAG, "getNthBit number:" + number + " n:" + n);
+        Logger.i(TAG, "getNthBit number:", number + " n:", n);
         // 使用位运算右移n位，然后与1进行与运算，得到第n位的值
         return (int) ((number >> n) & 1);
     }

@@ -23,7 +23,6 @@ import com.fy.navi.service.MapDefaultFinalTag;
  * @version $Revision.*$
  */
 public class SceneNaviServiceArea extends NaviSceneBase<NaviSceneServiceAreaBinding, SceneNaviDetailImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
 
     public SceneNaviServiceArea(@NonNull final Context context) {
         super(context);

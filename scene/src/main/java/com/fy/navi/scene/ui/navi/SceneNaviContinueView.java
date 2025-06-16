@@ -14,11 +14,12 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.SceneNaviContinueImpl;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.MapDefaultFinalTag;
 
 public class SceneNaviContinueView extends NaviSceneBase<SceneNaviContinueViewBinding,
         SceneNaviContinueImpl> {
 
-    public static final String TAG = "SceneNaviContinueView";
+    public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CONTINUE;
 
     public SceneNaviContinueView(@NonNull Context context) {
         super(context);

@@ -23,7 +23,7 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
  */
 public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         SceneNaviSpeedImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_SPEED;
 
     private int mCurrentRoadLimitSpeed;
 
@@ -84,9 +84,9 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     public void updateOverallInfo(final int speedLimit, final int averageSpeed,
                                   final int currentSpeed, final int remain) {
-        Logger.i(TAG, "updateOverallInfo speedLimit:" + speedLimit +
-                " averageSpeed:" + averageSpeed + " currentSpeed:" +
-                currentSpeed + " remain:" + remain);
+        Logger.i(TAG, "updateOverallInfo speedLimit:", speedLimit,
+                " averageSpeed:", averageSpeed, " currentSpeed:",
+                currentSpeed, " remain:", remain);
         mViewBinding.stvSpeedLimit.setText(String.valueOf(speedLimit));
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_overall));
         // 超速时更换背景
@@ -121,8 +121,8 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
      */
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     public void updateGreenWaveInfo(final SpeedOverallEntity entity, int currentSpeed) {
-        Logger.i(TAG, "updateGreenWaveInfo mCurrentRoadLimitSpeed:" +
-                mCurrentRoadLimitSpeed + " currentSpeed:" + currentSpeed);
+        Logger.i(TAG, "updateGreenWaveInfo mCurrentRoadLimitSpeed:",
+                mCurrentRoadLimitSpeed, " currentSpeed:", currentSpeed);
         mViewBinding.svCurrentSpeed.setBackground(
                 getContext().getDrawable(currentSpeed > mCurrentRoadLimitSpeed ?
                         R.drawable.guide_car_speed_stroke : R.drawable.guide_car_speed));
@@ -142,7 +142,7 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     }
 
     public void onCurrentRoadSpeed(int speed) {
-        Logger.i(TAG, "onCurrentRoadSpeed speed:" + speed);
+        Logger.i(TAG, "onCurrentRoadSpeed speed:", speed);
         mCurrentRoadLimitSpeed = speed;
     }
 }

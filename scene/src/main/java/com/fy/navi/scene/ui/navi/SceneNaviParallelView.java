@@ -25,7 +25,6 @@ import com.fy.navi.service.MapDefaultFinalTag;
  * @version $Revision.*$
  */
 public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBinding, SceneNaviParallelImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
 
     public SceneNaviParallelView(@NonNull final Context context) {
         super(context);

@@ -163,9 +163,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         }
         final boolean result = mNaviAdapter.startNavigation(isSimulate ?
                 NaviStartType.NAVI_TYPE_SIMULATION : NaviStartType.NAVI_TYPE_GPS);
-        final String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();
-        Logger.i(TAG, "startNavigation", "result:" + result, "isSimulate:" +
-                isSimulate, "currentNaviStatus:" + currentNaviStatus);
         if (result) {
             if (isSimulate) {
                 mCurrentNaviType = NumberUtils.NUM_1;
@@ -189,7 +186,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * @return 是否停止导航成功
      */
     public boolean stopNavigation() {
-        Logger.i(TAG, "stopNavigation");
         if (mNaviAdapter == null) {
             Logger.e(TAG, "stopNavigation", "mNaviAdapter == null");
             return false;
@@ -200,8 +196,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
             sendBuryPointForCloseNavi();
-        } else {
-            Logger.w(TAG, "stopNavigation failed!");
         }
         return result;
     }

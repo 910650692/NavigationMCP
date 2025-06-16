@@ -39,7 +39,7 @@ import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import java.util.List;
 
 public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implements IPositionPackageCallback {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_TBT_IMPL;
     private final NaviPackage mNaviPackage;
     private final MapDataPackage mMapDataPackage;
     private final BehaviorPackage mBehaviorPackage;
@@ -211,7 +211,8 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
                 }
             });
         }
-        Logger.i(TAG, "SceneNaviTbtImpl onObtainManeuverIconData: requestConfig.width:" + maneuverIconResponseData.getRequestConfig().getWidth());
+        Logger.i(TAG, "SceneNaviTbtImpl onObtainManeuverIconData: requestConfig.width:",
+                maneuverIconResponseData.getRequestConfig().getWidth());
     }
 
     /**
@@ -317,11 +318,11 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
             final int resId = NaviUiUtil.getOfflineManeuverIconId(
                     mCurNaviInfo.NaviInfoData.get(mCurNaviInfo.NaviInfoFlag).maneuverID,
                     mCurNaviInfo.getRingOutCnt());
-            Logger.i(TAG, "SceneNaviTbtImpl showOfflineTurnIcon resId:" + resId);
+            Logger.i(TAG, "SceneNaviTbtImpl showOfflineTurnIcon resId:", resId);
             mScreenView.setBackgroundNaviOfflineCommonTurnIcon(SceneCommonStruct.TbtExitIconAction.get(resId));
             mScreenView.setBackgroundNaviOfflineExitTurnIcon(SceneCommonStruct.TbtExitIconAction.get(resId));
         } else {
-            Logger.i(TAG, "showOfflineTurnIcon mCurNaviInfo/NaviInfoData null:");
+            Logger.i(TAG, "showOfflineTurnIcon mCurNaviInfo/NaviInfoData null");
         }
     }
 
@@ -388,7 +389,8 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
      * @param isNeedUpdateDirection isNeedUpdateDirection
      */
     public void updateNaviInfoAndDirection(final boolean isNeedUpdateDirection) {
-        Logger.i(TAG, "SceneNaviTbtImpl updateNaviInfoAndDirection isNeedUpdateDirection: " + isNeedUpdateDirection);
+        Logger.i(TAG, "SceneNaviTbtImpl updateNaviInfoAndDirection isNeedUpdateDirection: ",
+                isNeedUpdateDirection);
         innerUpdateNaviInfo();
         updateExitDirectionInfo(mExitDirectionInfo);
         // 三维实景的转向图标是黑夜模式，所以进入三维场景时需要重新请求图标，故不需要在此处更新转向图标
@@ -416,7 +418,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
         // 二、三级道路名称
         final AreaExtraInfoBean areaExtraInfo = mMapDataPackage.getAreaExtraInfo(adminCode);
         final PoiInfoEntity home = mBehaviorPackage.getHomeFavoriteInfo();
-        Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo home.getPoint().getLon()=" + home);
+        Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo home.getPoint().getLon()=", home);
         String extraRoadName = "";
         int adCode = -1;
         // 异地城市加上行政区域名称（和家所在城市对比）
@@ -425,7 +427,8 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
             adCode = mMapDataPackage.getAdCodeByLonLat(homeCoord.getLon(), homeCoord.getLat());
         }
         if (areaExtraInfo != null && adCode > 0 && areaExtraInfo.getStAdCode() != null && areaExtraInfo.getStAdCode().getnCityAdCode() != adCode) {
-            Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo cityName= " + areaExtraInfo.getCityName() + ",townName=" + areaExtraInfo.getTownName());
+            Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo cityName= ",
+                    areaExtraInfo.getCityName(), ",townName=", areaExtraInfo.getTownName());
             if (!TextUtils.isEmpty(areaExtraInfo.getCityName())) {
                 final String tempCityName = areaExtraInfo.getCityName().endsWith(mScreenView.getContext().getString(R.string.navi_city_name_postfix))
                         ? areaExtraInfo.getCityName().substring(0, areaExtraInfo.getCityName().length() - 1) : areaExtraInfo.getCityName();
@@ -504,13 +507,13 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
         mDistanceStrArray = ConvertUtils.formatDistanceArray(mScreenView.getContext(), mDistanceNextRoad);
         // 距路口小于10，显示现在
         if (mDistanceNextRoad <= 10) {
-            Logger.d(TAG, "sceneNowNextRoad：" + mDistanceNextRoad);
+            Logger.d(TAG, "sceneNowNextRoad：", mDistanceNextRoad);
             //mGroupDivVisible.set(false);
             mScreenView.setTextNaviInfoDistanceNextRoad(new AutoUIString(mScreenView.getContext().getString(com.android.utils.R.string.now)));
             mScreenView.setTextNaviInfoDistanceNextRoadUnit(new AutoUIString(""));
         } else {
             // 显示距离路口实际距离和单位
-            Logger.d(TAG, "sceneDistanceNextRoad：" + mDistanceNextRoad);
+            Logger.d(TAG, "sceneDistanceNextRoad：", mDistanceNextRoad);
             mGroupDivVisible.set(true);
             mScreenView.setTextNaviInfoDistanceNextRoad(new AutoUIString(mDistanceStrArray[0] + ""));
             mScreenView.setTextNaviInfoDistanceNextRoadUnit(new AutoUIString(mDistanceStrArray[1] + ""));
@@ -522,7 +525,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
      */
     private void updateSceneVisible(final boolean isVisible) {
         if (mScreenView.isVisible() == isVisible) return;
-        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviTbtImpl", isVisible);
+        Logger.i(TAG, "SceneNaviTbtImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_TBT);

@@ -13,6 +13,7 @@ import com.fy.navi.scene.impl.navi.inter.RectChangeListener;
 import com.fy.navi.scene.ui.navi.SceneNaviCrossImageView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageView> {
-    private static final String TAG = "SceneNaviCrossImageView";
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CROSS_IMAGE_IMPL;
     private final NaviPackage mNaviPackage;
     private final LayerPackage mLayerPackage;
 
@@ -55,16 +56,18 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      * 初始化
      */
     private void init() {
-        Logger.i(TAG, "init()");
+        Logger.i(TAG, "init");
         mScreenView.setRectChange2DRoadCross(new RectChangeListener() {
             @Override
             public void onRectChange(final View view, final AutoUIViewRect newRect,
                                      final AutoUIViewRect oldRect) {
                 if (newRect == null || ConvertUtils.isNull(mRoadCrossInfo)) {
-                    Logger.e(TAG, "newRect is null:" + (newRect == null), "mRoadCrossInfo is null:" + (mRoadCrossInfo == null));
+                    Logger.e(TAG, "newRect is null:", (newRect == null),
+                            "mRoadCrossInfo is null:", (mRoadCrossInfo == null));
                     return;
                 }
-                Logger.i(TAG, "newRect " + newRect + ",mIsShowCrossImage：" + mIsShowCrossImage, "is2D:" + (mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D));
+                Logger.i(TAG, "newRect ", newRect, ",mIsShowCrossImage：", mIsShowCrossImage,
+                        "is2D:", (mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D));
                 // 当UI区域首次显示时，需要主动触发BL显示路口大图（2D矢量路口大图第一次显示的时候默认隐藏）
                 if (mIsShowCrossImage && mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D) {
                     mNaviPackage.setRoadCrossRect(mMapTypeId, newRect.getLocationOnScreen());
@@ -89,7 +92,6 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      * 注销观察者
      */
     public void unregisterObserver() {
-        Logger.i(TAG, "unregisterObserver()");
         // 确保路口大图期间退出导航时及时隐藏
         if (mRoadCrossInfo != null) {
             onCrossImageInfo(false, mRoadCrossInfo);
@@ -113,7 +115,8 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      * @param routeRemainDist 剩余长度
      */
     public void updateCrossProgress(final long routeRemainDist) {
-        Logger.i(TAG, "2D routeRemainDist :" + routeRemainDist, "mIsShowCrossImage:" + mIsShowCrossImage);
+        Logger.i(TAG, "2D routeRemainDist :", routeRemainDist, "mIsShowCrossImage:",
+                mIsShowCrossImage);
         // 当显示路口大图时刷新进度条
         if (mIsShowCrossImage) {
             for (CrossProgressInfo progressInfo : mCrossProgressInfos) {
@@ -138,7 +141,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
                 return;
             }
             // 样板间不显示3D路口大图，避免效果与车道级冲突
-            Logger.e(TAG, "mIsShowCrossImage= " + mIsShowCrossImage + ", info.type= " +
+            Logger.e(TAG, "mIsShowCrossImage= ", mIsShowCrossImage, ", info.type= ",
                     naviImageInfo.getType());
             if (mIsShowCrossImage) {
                 return;
@@ -149,7 +152,8 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             // 显示路口大图
             setRoadCrossVisible(true);
         } else {
-            Logger.d(TAG, "SceneNaviCrossImageImpl onHideCrossImage: type = " + (naviImageInfo == null? "null" : naviImageInfo.getType()));
+            Logger.d(TAG, "SceneNaviCrossImageImpl onHideCrossImage: type = ",
+                    (naviImageInfo == null? "null" : naviImageInfo.getType()));
             mIsShowCrossImage = false;
             notifySceneStateChange(false);
             hideCross();
@@ -162,7 +166,6 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      * 导航停止时，隐藏路口大图
      */
     public void onNaviStop() {
-        Logger.e(TAG, "SceneNaviCrossImageImpl onNaviStop: id={?}, naviType={?}");
         if (mRoadCrossInfo != null) {
             onCrossImageInfo(false, mRoadCrossInfo);
         }
@@ -178,7 +181,8 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         if (mRoadCrossInfo == null) {
             return false;
         }
-        Logger.i(TAG, "mRoadCrossInfo.getType()= " + mRoadCrossInfo.getType() + ",visible= " + visible);
+        Logger.i(TAG, "mRoadCrossInfo.getType()= ", mRoadCrossInfo.getType(), ",visible= ",
+                visible);
         mIsShowCrossImage = visible;
         if (visible) {
             if (mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D) {
@@ -197,7 +201,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      * 显示图层中的路口大图
      */
     public void showLayerCross() {
-        Logger.i(TAG, "mRoadCrossInfo:"+mRoadCrossInfo + " mMapTypeId:"+mMapTypeId);
+        Logger.i(TAG, "mRoadCrossInfo:", mRoadCrossInfo, " mMapTypeId:", mMapTypeId);
         LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
         layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
         if (!mLayerPackage.showCross(mMapTypeId, layerItemCrossEntity)) {
@@ -210,7 +214,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
                 if (nextManeuverEntity == null) {
                     return;
                 }
-                Logger.i(TAG, "下一个转向信息：" + nextManeuverEntity.toString());
+                Logger.i(TAG, "下一个转向信息：", nextManeuverEntity.toString());
                 if (nextManeuverEntity.isNextManeuverVisible()) {
                     if (nextManeuverEntity.isNextManeuverOffLine() &&
                             nextManeuverEntity.getNextIconResource() != -1) {

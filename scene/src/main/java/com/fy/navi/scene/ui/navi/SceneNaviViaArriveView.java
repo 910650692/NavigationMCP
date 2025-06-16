@@ -19,6 +19,7 @@ import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -26,7 +27,7 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import java.util.List;
 
 public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveViewBinding, SceneNaviViaArriveViewImpl> {
-    public static final String TAG = "SceneNaviViaArriveView";
+    public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_ARRIVE;
 
     public SceneNaviViaArriveView(@NonNull final Context context) {
         super(context);
@@ -89,7 +90,7 @@ public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveView
      * @param viaIndex 途经点index
      */
     public void onUpdateViaPass(final long viaIndex) {
-        Logger.i(TAG, "onUpdateViaPass viaIndex = " + viaIndex);
+        Logger.i(TAG, "onUpdateViaPass viaIndex = ", viaIndex);
     }
 
     /**

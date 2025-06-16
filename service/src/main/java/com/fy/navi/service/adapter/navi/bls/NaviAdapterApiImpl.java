@@ -28,7 +28,7 @@ import java.util.List;
  * @version $Revision.*$
  */
 public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INaviApi {
-    private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_API_IMPL;
     private final NaviApiImplHelper mNaviApiImplHelper;
     //引导id,唯一标识
     private long mNaviId;
@@ -41,7 +41,7 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     @Override
     public void initNaviService() {
         mNaviApiImplHelper.initNaviService();
-        Logger.d(TAG, "NaviAdapterApiImpl initNaviService: ");
+        Logger.d(TAG, "NaviAdapterApiImpl initNaviService-----");
     }
 
     @Override
@@ -60,7 +60,8 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
                 mNaviId = NaviConstant.NAVI_SIM_ID;
                 startNaviSuccess = getGuideService().startNavi(mNaviId, NaviType.NaviTypeSimulation);
             }
-            Logger.i(TAG, "NaviAdapterApiImpl startNavi: " + startNaviSuccess + ",mNaviId：" + mNaviId);
+            Logger.i(TAG, "NaviAdapterApiImpl startNavi: ", startNaviSuccess, ",mNaviId：",
+                    mNaviId);
 
         Logger.i(TAG, "onNaviStar 导航开启");
         mNaviApiImplHelper.startNavi(startNaviSuccess);
@@ -76,7 +77,7 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     @Override
     public boolean stopNavigation() {
         final boolean b = getGuideService().stopNavi(mNaviId);
-        Logger.i(TAG, "NaviAdapterApiImpl stopNavigation: " + mNaviId + ",stopNavi：" + b);
+        Logger.i(TAG, "NaviAdapterApiImpl stopNavi: ", b, ",mNaviId：", mNaviId);
         return b;
     }
 
@@ -113,7 +114,7 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
 
     @Override
     public void playTRManualExt(final int requestId) {
-        Logger.i(TAG, "playTRManualExt: ");
+        Logger.i(TAG, "playTRManualExt");
         mNaviApiImplHelper.playTRManualExt(requestId);
     }
 
@@ -138,7 +139,7 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
         elecVehicleCharge.vehicleCharge = currentVehicleCharge;
         param.elecVehicle = elecVehicleCharge;
         final boolean isSuccess = getGuideService().setParam(param);
-        Logger.i(TAG, "updateBatteryInfo:" + isSuccess, "currentVehicleCharge:" +
+        Logger.i(TAG, "updateBatteryInfo:", isSuccess, "currentVehicleCharge:",
                 currentVehicleCharge);
     }
 

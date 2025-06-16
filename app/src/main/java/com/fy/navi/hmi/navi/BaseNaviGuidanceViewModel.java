@@ -54,7 +54,7 @@ import java.util.Objects;
 public class BaseNaviGuidanceViewModel extends
         BaseViewModel<NaviGuidanceFragment, NaviGuidanceModel> implements
         ISceneRoutePreferenceCallBack, NaviGuidanceModel.OnNetStatusChangeListener {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_VIEW_MODEL;
     public ObservableField<Boolean> mNaviLanesVisibility;//车道线
     public ObservableField<Boolean> mNaviViaListVisibility;//途径点列表
     public ObservableField<Boolean> mNaviControlVisibilityMore;//control more
@@ -162,7 +162,6 @@ public class BaseNaviGuidanceViewModel extends
      */
     public void onSwitchViaList() {
         if (Objects.equals(mNaviCrossImageVisibility.get(), Boolean.TRUE)) {
-            Logger.i(TAG, "路口大图已经在展示中");
             return;
         }
         final Boolean b = mNaviViaListVisibility.get();
@@ -181,11 +180,10 @@ public class BaseNaviGuidanceViewModel extends
      * @param isVisible is visible
      */
     public void updateSceneVisible(final NaviSceneId sceneType, final boolean isVisible) {
-        Logger.i(TAG, "sceneType:" + sceneType + ",isVisible:" + isVisible);
+        Logger.i(TAG, "sceneType:", sceneType, ",isVisible:", isVisible);
         switch (sceneType) {
             case NAVI_SCENE_3D_CROSS:
             case NAVI_SCENE_2D_CROSS:
-                Logger.i(TAG, "路口大图展示状态：" + isVisible);
                 mView.onCrossImageInfo(isVisible);
                 mNaviCrossImageVisibility.set(isVisible);
                 mView.updateViewRadius();
@@ -198,11 +196,7 @@ public class BaseNaviGuidanceViewModel extends
                 mNaviLanesVisibility.set(isVisible);
                 mView.updateViewRadius();
                 break;
-            case NAVI_SCENE_TBT:
-                Logger.i(TAG, "TBT面板不会被隐藏");
-                break;
             case NAVI_SCENE_VIA_POINT_LIST:
-                Logger.i(TAG, "途径点面板展示状态：" + isVisible);
                 mNaviViaListVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_SERVICE_AREA:
@@ -227,7 +221,6 @@ public class BaseNaviGuidanceViewModel extends
                 mNaviSpeedVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_TMC:
-                Logger.i(TAG, "NAVI_SCENE_TMC isVisible:" + isVisible + " isNetConnected:" + mModel.isNetConnected());
                 mNaviTmcVisibility.set(isVisible && mModel.isNetConnected());
                 mView.updateViewRadius();
                 break;
@@ -248,7 +241,6 @@ public class BaseNaviGuidanceViewModel extends
                 mNaviChargeTipVisibility.set(isVisible);
                 break;
             case NAVI_CONTINUE:
-                Logger.i(TAG, "NAVI_CONTINUE固定全览：" + NaviPackage.getInstance().getFixedOverViewStatus() + " isVisible:" + isVisible);
                 mNaviContinueVisibility.set(isVisible);
                 break;
             case NAVI_SUSPEND_CARD:
@@ -397,9 +389,12 @@ public class BaseNaviGuidanceViewModel extends
      * @param currentImersiveStatus current immersive status
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
-        Logger.i(TAG, "onImmersiveStatusChange固定全览：" + NaviPackage.getInstance().getFixedOverViewStatus() + " currentImersiveStatus:" + currentImersiveStatus);
+        Logger.i(TAG, "onImmersiveStatusChange固定全览：",
+                NaviPackage.getInstance().getFixedOverViewStatus(),
+                " currentImersiveStatus:", currentImersiveStatus);
         // 1036921 继续导航显示的时候不显示当前道路名称
-        mNaviRouteNameVisibility.set((currentImersiveStatus == ImersiveStatus.IMERSIVE) && Boolean.FALSE.equals(mNaviContinueVisibility.get()));
+        mNaviRouteNameVisibility.set((currentImersiveStatus == ImersiveStatus.IMERSIVE) &&
+                Boolean.FALSE.equals(mNaviContinueVisibility.get()));
         mView.onImmersiveStatusChange(currentImersiveStatus);
     }
 
@@ -447,7 +442,7 @@ public class BaseNaviGuidanceViewModel extends
      */
     @Override
     public void onRoutePreferenceChange(final String text, final boolean isFirstChange) {
-        Logger.d(TAG, "text：" + text + ",isFirstChange：" + isFirstChange);
+        Logger.d(TAG, "text：", text, ",isFirstChange：", isFirstChange);
         if (!isFirstChange) {
             mNaviPreferenceVisibility.set(false);
             mModel.onRoutePreferenceChange();
@@ -606,12 +601,12 @@ public class BaseNaviGuidanceViewModel extends
      * 设置改变请求重新请求算路
      */
     public void isRequestRouteForPlateNumberAndAvoidLimitChange() {
-        Logger.i(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange");
+        Logger.d(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange");
         if (mCurrentPlateNumber.equals(mModel.getPlateNumber()) &&
                 mCurrentavoidLimit.equals(mModel.getAvoidLimit()) &&
                 mCurrentEnergy.equals(mModel.getEnergy()) &&
                 mCurrentPreferences.equals(mModel.getPreferences())) {
-            Logger.i(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange 没有改变");
+            Logger.d(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange 没有改变");
             return;
         }
         ThreadManager.getInstance().postUi(new Runnable() {
@@ -632,7 +627,7 @@ public class BaseNaviGuidanceViewModel extends
      * 保存车牌和限行的数据
      */
     public void setDefultPlateNumberAndAvoidLimitSave() {
-        Logger.i(TAG, "setDefultPlateNumberAndAvoidLimitSave");
+        Logger.d(TAG, "setDefultPlateNumberAndAvoidLimitSave");
         mCurrentPlateNumber = mModel.getPlateNumber();
         mCurrentavoidLimit = mModel.getAvoidLimit();
         mCurrentPreferences = mModel.getPreferences();
@@ -671,15 +666,15 @@ public class BaseNaviGuidanceViewModel extends
     public void saveOverViewStatus() {
         mIsFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
         mIsOverView = NaviPackage.getInstance().getPreviewStatus();
-        Logger.i(TAG, "saveOverViewStatus mIsFixedOverView:" + mIsFixedOverView +
-                " mIsOverView:" + mIsOverView);
+        Logger.i(TAG, "saveOverViewStatus mIsFixedOverView:", mIsFixedOverView,
+                " mIsOverView:", mIsOverView);
     }
 
     public void restoreOverViewStatus() {
         NaviPackage.getInstance().setFixedOverViewStatus(mIsFixedOverView);
         NaviPackage.getInstance().setPreviewStatus(mIsOverView);
-        Logger.i(TAG, "restoreOverViewStatus mIsFixedOverView:" + mIsFixedOverView +
-                " mIsOverView:" + mIsOverView);
+        Logger.i(TAG, "restoreOverViewStatus mIsFixedOverView:", mIsFixedOverView,
+                " mIsOverView:", mIsOverView);
     }
 
     /**
@@ -765,6 +760,7 @@ public class BaseNaviGuidanceViewModel extends
     }
 
     public void onPassByClick() {
+        Logger.i(TAG, "onPassByClick");
         if (mView != null) {
             mView.onPassByClick();
         }

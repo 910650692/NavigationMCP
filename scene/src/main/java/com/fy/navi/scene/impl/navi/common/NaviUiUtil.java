@@ -182,7 +182,7 @@ public final class NaviUiUtil {
             f = com.fy.navi.scene.R.drawable.class.getDeclaredField(path + id);
             drawableId = f.getInt(com.fy.navi.scene.R.drawable.class);
         } catch (Exception e) {
-            Logger.e(TAG, "getDrawableID error = " + e.getMessage());
+            Logger.e(TAG, "getDrawableID error = ", e.getMessage());
         }
         return drawableId;
     }
@@ -380,7 +380,7 @@ public final class NaviUiUtil {
                             .getResources().getDisplayMetrics());
             return (int) pixelFloat;
         } catch (Exception e) {
-            Logger.e(TAG, "dipToPixel error " + e.getMessage());
+            Logger.e(TAG, "dipToPixel error ", e.getMessage());
         }
         return dipValue;
     }

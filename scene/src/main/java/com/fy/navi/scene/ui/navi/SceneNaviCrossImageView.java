@@ -17,6 +17,7 @@ import com.fy.navi.scene.impl.navi.common.ViewRectChangeWatcher;
 import com.fy.navi.scene.impl.navi.inter.RectChangeListener;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 
 /**
@@ -26,7 +27,7 @@ import com.fy.navi.service.define.navi.CrossImageEntity;
  * @version $Revision.*$
  */
 public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageViewBinding, SceneNaviCrossImageImpl> {
-    private static final String TAG = "SceneNaviCrossImageView";
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CROSS_IMAGE;
     private ViewRectChangeWatcher mViewRectChangeWatcher;
 
     public SceneNaviCrossImageView(@NonNull final Context context) {
@@ -113,7 +114,7 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
         if (mScreenViewModel != null) {
             mScreenViewModel.updateCrossProgress(routeRemainDist);
         } else {
-            Logger.e(TAG, "mScreenViewModel == null routeRemainDist:"+routeRemainDist);
+            Logger.e(TAG, "mScreenViewModel == null routeRemainDist:", routeRemainDist);
         }
     }
 
@@ -132,7 +133,7 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
      */
     public void onCrossImageInfo(final boolean isShowImage,
                                  final CrossImageEntity naviImageInfo) {
-        Logger.i(TAG, "onCrossImageInfo", "isShowImage:" + isShowImage);
+        Logger.i(TAG, "onCrossImageInfo", "isShowImage:", isShowImage);
         if (mScreenViewModel != null) {
             mScreenViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
         }
@@ -170,7 +171,7 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
      * @param progress 进度
      */
     public void setProgress2DRoadCross(final int progress) {
-        Logger.i(TAG, "SceneNaviCrossImageView progress：" + progress);
+        Logger.i(TAG, "SceneNaviCrossImageView progress：", progress);
     }
 
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {

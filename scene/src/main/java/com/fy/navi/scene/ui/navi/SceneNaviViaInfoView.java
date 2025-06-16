@@ -26,7 +26,7 @@ import com.fy.navi.service.define.navi.NaviEtaInfo;
  * @version $Revision.*$
  */
 public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBinding, SceneNaviViaInfoImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_INFO;
 
     public SceneNaviViaInfoView(@NonNull final Context context) {
         super(context);
@@ -91,7 +91,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
      * @param listSize 0
      */
     public void onArriveVia(final String str, final int listSize) {
-        Logger.i(TAG, "onArriveVia: " + str);
+        Logger.i(TAG, "onArriveVia: ", str);
         mViewBinding.stvWay.setText(str);
         mViewBinding.stvWayArrive.setVisibility(VISIBLE);
         mViewBinding.stvViaCount.setVisibility(GONE);
@@ -103,7 +103,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
      * @param totalSize 途经点总数量
      */
     public void updateViaInfo(final String viaName, final int totalSize) {
-        Logger.i(TAG, "updateViaInfo: " + viaName);
+        Logger.i(TAG, "updateViaInfo: ", viaName);
         mViewBinding.stvWayArrive.setVisibility(GONE);
         mViewBinding.stvWay.setText(viaName);
         if (totalSize > 1) {

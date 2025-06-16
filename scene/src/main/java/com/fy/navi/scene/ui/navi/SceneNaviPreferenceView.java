@@ -19,6 +19,7 @@ import com.fy.navi.scene.databinding.SceneNaviPreferenceViewBinding;
 import com.fy.navi.scene.impl.preference.SceneRoutePreferenceImpl;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 
 import java.util.Hashtable;
@@ -32,7 +33,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase
         <SceneNaviPreferenceViewBinding, SceneRoutePreferenceImpl> implements
         SceneRoutePreferenceImpl.IRoutePreferenceChangeListener {
 
-    public static final String TAG = SceneNaviPreferenceView.class.getSimpleName();
+    public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_PREFERENCE;
 
     private Hashtable<String, ISceneRoutePreferenceCallBack> mSceneRoutePreferenceCallBackMap;
 
@@ -82,7 +83,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase
         mViewBinding.setScene(mScreenViewModel);
         boolean isNetAvailable = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().
                 checkNetwork());
-        Logger.i(TAG, "setInitVariable isNetAvailable = " + isNetAvailable);
+        Logger.i(TAG, "setInitVariable isNetAvailable = ", isNetAvailable);
         disAbleButton(isNetAvailable);
     }
 
@@ -155,7 +156,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase
     @Override
     public void onPreferenceChange(final RoutePreferenceID routePreference,
                                    final boolean isFirstChange) {
-        Logger.i(TAG, "onPreferenceChange = " + routePreference);
+        Logger.i(TAG, "onPreferenceChange = ", routePreference);
         // 第一个选择的路线偏好
         String firstCommendText = "";
         // 第二个选择的路线偏好
@@ -264,7 +265,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase
     }
 
     private void disAbleButton(boolean isConnected) {
-        Logger.i(TAG, "disAbleButton isConnected:" + isConnected);
+        Logger.i(TAG, "disAbleButton isConnected:", isConnected);
         mViewBinding.preferenceAvoidCongestion.setAlpha(isConnected ? 1.0f : 0.5f);
         mViewBinding.preferenceFirstMainRoad.setAlpha(isConnected ? 1.0f : 0.5f);
         mViewBinding.preferenceFastestSpeed.setAlpha(isConnected ? 1.0f : 0.5f);

@@ -43,7 +43,7 @@ import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMoreView> implements
         ISceneNaviControl, SwipeView.DownSwipeListener {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CONTROL_MORE_IMPL;
     private final NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
     private RoutePackage mRoutePackage;
@@ -73,7 +73,7 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
             if (!ConvertUtils.isEmpty(map)) {
                 if (map.containsKey(NaviSceneId.NAVI_SCENE_CONTROL_MORE)) {
                     Integer status = map.get(NaviSceneId.NAVI_SCENE_CONTROL_MORE);
-                    Logger.i(TAG, "SceneNaviControlMoreImpl onCreate" + " visible = " +
+                    Logger.i(TAG, "SceneNaviControlMoreImpl onCreate", " visible = ",
                             status);
                     if (status != null && status == NumberUtils.NUM_1) {
                         initTimer();
@@ -180,7 +180,7 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
         mSettingPackage.setConfigKeyBroadcastMode(broadcastMode);
         broadcastModeSwitchTts(broadcastMode);
         mScreenView.updateBroadcast(broadcastMode);
-        Logger.i(TAG, "updateBroadcast：" + broadcastMode);
+        Logger.i(TAG, "updateBroadcast：", broadcastMode);
 
         //For Bury Point
         sendBroadcastModeTts(broadcastMode);
@@ -255,7 +255,7 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
 
     @Override
     public void alongSearch(final int index) {
-        Logger.i(TAG, "alongSearch index:" + index + " mVehicleType:" + mVehicleType);
+        Logger.i(TAG, "alongSearch index:", index, " mVehicleType:", mVehicleType);
         setImmersiveStatus(ImersiveStatus.TOUCH);
         OpenApiHelper.enterPreview(mMapTypeId);
         switch (index) {
@@ -322,7 +322,7 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
      * @param currentImersiveStatus ImmersiveStatus
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
-        Logger.i(TAG, "onImmersiveStatusChange currentImersiveStatus：" + currentImersiveStatus);
+        Logger.i(TAG, "onImmersiveStatusChange currentImersiveStatus：", currentImersiveStatus);
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
         } else {
             notifySceneStateChange(false);

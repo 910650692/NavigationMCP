@@ -171,7 +171,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
         String poiId = endRouteParam.getPoiID();
         mEndSearchId = mSearchPackage.poiIdSearch(poiId, true);
-        Logger.i(TAG, "mEndSearchId = " + mEndSearchId + " poiId = " + poiId);
+        Logger.i(TAG, "mEndSearchId = ", mEndSearchId, " poiId = ", poiId);
     }
 
     public boolean getIsShowAutoAdd() {
@@ -221,8 +221,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             public void run() {
                 try {
                     boolean overViewFix = mNaviPackage.getFixedOverViewStatus();
-                    Logger.i(TAG, " overViewFix = " +
-                            overViewFix);
+                    Logger.i(TAG, " overViewFix = ", overViewFix);
                     if (!overViewFix) {
                         if (mViewModel != null) {
                             mViewModel.naviPreviewSwitch(NumberUtils.NUM_0);
@@ -282,7 +281,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         } else {
             isNaviSuccess = mNaviPackage.startNavigation(false);
         }
-        Logger.i(TAG, "startNavigation isNaviSuccess = " + isNaviSuccess);
         if (isNaviSuccess) {
             mIsNaviClosed = false;
             final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
@@ -294,11 +292,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             // 开始三分钟查询一次终点POI信息
             ThreadManager.getInstance().removeHandleTask(mEndPoiSearchRunnable);
             ThreadManager.getInstance().postUi(mEndPoiSearchRunnable);
-            Logger.i(TAG, "startNaviSuccess");
             String isOpen = SettingPackage.getInstance().getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
-            Logger.i(TAG, "isOpen:" + isOpen);
+            Logger.i(TAG, "isOpen:", isOpen);
             if (isOpen != null && isOpen.equals("true")) {
-                Logger.i(TAG, "开始打点");
+                Logger.d(TAG, "开始打点");
                 @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
                         AppCache.getInstance().getMContext().getContentResolver(),
                         Settings.Secure.ANDROID_ID
@@ -324,7 +321,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      */
     private boolean openClusterOverView() {
         boolean isClusterMapOpen = mClusterMapOpenCloseManager.isClusterOpen();
-        Logger.i(TAG, "openClusterOverView isClusterMapOpen = " + isClusterMapOpen);
+        Logger.i(TAG, "openClusterOverView isClusterMapOpen = ", isClusterMapOpen);
         if (isClusterMapOpen) {
             cancelClusterOverViewTimer();
             if (mViewModel != null) {
@@ -473,7 +470,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
-        Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo = " + naviTmcInfo.toString());
+        Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo = ", naviTmcInfo.toString());
         mNaviPackage.setTmcData(naviTmcInfo);
         mViewModel.onUpdateTMCLightBar(naviTmcInfo, mIsShowAutoAdd);
     }
@@ -527,7 +524,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             if (null != mViewModel) {
                 mViewModel.updateViaListImm();
             }
-            Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = " + isDeleteSuccess);
+            Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = ", isDeleteSuccess);
         }
         mViewModel.onUpdateViaPass(viaIndex);
     }
@@ -535,7 +532,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_NEWROUTE)
     public void onSelectMainPathStatus(final long pathID, final int result) {
-        Logger.i(TAG, "onSelectMainPathStatus pathID = " + pathID + " result = " + result);
+        Logger.i(TAG, "onSelectMainPathStatus pathID = ", pathID, " result = ", result);
         if (result == NaviConstant.ChangeNaviPathResult.CHANGE_NAVI_PATH_RESULT_SUCCESS) {
             mNaviPackage.onlyShowCurrentPath();
         }
@@ -560,7 +557,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onDriveReport(final NaviDriveReportEntity naviDriveReportEntity) {
-        Logger.i(TAG, "onDriveReport " + naviDriveReportEntity.toString());
+        Logger.i(TAG, "onDriveReport ", naviDriveReportEntity.toString());
         mViewModel.onDriveReport(naviDriveReportEntity);
     }
 
@@ -592,11 +589,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onImmersiveStatusChange(final MapType mapTypeId,
                                         final ImersiveStatus currentImersiveStatus) {
-        Logger.i(TAG, "NaviGuidanceModel currentImersiveStatus：" + currentImersiveStatus +
-                "，mCurrentStatus：" + mCurrentStatus);
         if (!NaviStatus.NaviStatusType.NAVING.equals(mNaviSatusPackage.
                 getCurrentNaviStatus())) {
-            Logger.i(TAG, "Not in navigation, return");
             return;
         }
         if (MapType.MAIN_SCREEN_MAIN_MAP.equals(mapTypeId)) {
@@ -715,20 +709,21 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mViaList.clear();
         mIsNeedUpdateViaList = false;
         if (null == mNaviEtaInfo) {
+            Logger.e(TAG, "getViaList mNaviEtaInfo is null");
             return null;
         }
         final List<NaviViaEntity> tmpList = new ArrayList<>();
         //[0]代表起点 [size-1]代表终点
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(
                 MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
-        Logger.i(TAG, "allPoiParamList allPoiParamList:" + allPoiParamList.size());
+        Logger.i(TAG, "allPoiParamList allPoiParamList:", allPoiParamList.size());
         for (int i = 1; i < allPoiParamList.size() - 1; i++) {
             final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
             final RouteParam routeParam = allPoiParamList.get(i);
-            Logger.i(TAG, "allPoiParamList viaRemain:" + viaRemain.size());
             if (!ConvertUtils.isEmpty(viaRemain)) {
                 final int index = i - 1;
-                Logger.i(TAG, "allPoiParamList index:" + index);
+                Logger.i(TAG, "allPoiParamList viaRemain:", viaRemain.size());
+                Logger.i(TAG, "allPoiParamList index:", index);
                 if (viaRemain.size() > index) {
                     tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, viaRemain.get(index)));
                 } else {
@@ -750,7 +745,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (!ConvertUtils.isEmpty(allPoiParamList)) {
             mViaList.add(NaviDataFormatHelper.getNaviViaEntity(allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo));
         }
-        Logger.i(TAG, "mViaList-Size:" + mViaList.size(), "tmSize:" + tmpList.size());
+        Logger.i(TAG, "mViaList-Size:", mViaList.size(), "tmSize:", tmpList.size());
         if (!ConvertUtils.isEmpty(mViaList)) {
             NaviViaEntity naviViaEntity = mViaList.get(0);
             updateNewestViaPoint(naviViaEntity);
@@ -783,7 +778,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      */
     @Override
     public void onVoiceOverview(final MapType mapTypeId, final boolean open) {
-        Logger.i(TAG, "onVoiceOverview open:" + open);
+        Logger.i(TAG, "onVoiceOverview open:", open);
         if (open) {
             if (mViewModel != null) {
                 mViewModel.naviPreviewSwitch(ENTER_PREVIEW);
@@ -804,7 +799,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      */
     @Override
     public void onVoiceParallelOption(final MapType mapTypeId, final String parallelOption) {
-        Logger.i(TAG, "onVoiceParallelOption parallelOption:" + parallelOption);
+        Logger.i(TAG, "onVoiceParallelOption parallelOption:", parallelOption);
         if (MAIN_ROAD.equals(parallelOption) || SIDE_ROAD.equals(parallelOption)) {
             mViewModel.naviParallelSwitch(ROAD_SWITCH);
         } else {
@@ -825,7 +820,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
-        Logger.i(TAG, "skipNaviSapaDetailScene type:" + type + " sapaInfoEntity:" +
+        Logger.i(TAG, "skipNaviSapaDetailScene type:", type, " sapaInfoEntity:",
                 sapaInfoEntity.toString());
         mViewModel.skipNaviSapaDetailScene(type, sapaInfoEntity);
     }
@@ -855,7 +850,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public boolean getNetStatus() {
         // 检查网络状态
         Boolean isNetConnected = mNetWorkUtils.checkNetwork();
-        Logger.i(TAG, "getNetStatus isNetConnected:" + isNetConnected);
+        Logger.i(TAG, "getNetStatus isNetConnected:", isNetConnected);
         return Boolean.TRUE.equals(isNetConnected);
     }
 
@@ -867,7 +862,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onSilentSearchResult(int taskId, int errorCode, String message,
                                      SearchResultEntity searchResultEntity) {
-        Logger.i(TAG, "onSilentSearchResult taskId = " + taskId);
+        Logger.i(TAG, "onSilentSearchResult taskId = ", taskId);
         if (mEndSearchId == taskId) {
             if (null != searchResultEntity &&
                     !ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
@@ -878,7 +873,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onClusterMapOpenOrClose(boolean isOpen) {
-        Logger.i(TAG, "onClusterMapOpenOrClose isOpen:" + isOpen);
+        Logger.i(TAG, "onClusterMapOpenOrClose isOpen:", isOpen);
         mIsClusterOpen = isOpen;
         ThreadManager.getInstance().postUi(mOnClusterMapOpenOrClose);
     }
@@ -894,7 +889,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * @param listener OnNetStatusChangeListener
      */
     public void addOnNetStatusChangeListener(final OnNetStatusChangeListener listener) {
-        Logger.i(TAG, "addOnNetStatusChangeListener listener = " + listener);
+        Logger.i(TAG, "addOnNetStatusChangeListener listener = ", listener);
         if (listener != null && !mNetStatusChangeListeners.contains(listener)) {
             mNetStatusChangeListeners.add(listener);
         }
@@ -904,7 +899,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * @param listener OnNetStatusChangeListener
      */
     public void removeOnNetStatusChangeListener(final OnNetStatusChangeListener listener) {
-        Logger.i(TAG, "removeOnNetStatusChangeListener listener = " + listener);
+        Logger.i(TAG, "removeOnNetStatusChangeListener listener = ", listener);
         mNetStatusChangeListeners.remove(listener);
     }
 
@@ -916,7 +911,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             @Override
             public void run() {
                 Boolean isNetConnected = mNetWorkUtils.checkNetwork();
-                Logger.i(TAG, "onNetStatusChange isNetConnected:" + isNetConnected);
+                Logger.i(TAG, "onNetStatusChange isNetConnected:", isNetConnected);
                 if (!ConvertUtils.isEmpty(mNetStatusChangeListeners)) {
                     if (isNetConnected != mCurrentNetStatus) {
                         mCurrentNetStatus = isNetConnected;
@@ -935,6 +930,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * @return
      */
     public boolean isNetConnected() {
+        Logger.i(TAG, "isNetConnected mCurrentNetStatus = ", mCurrentNetStatus);
         return mCurrentNetStatus;
     }
 
@@ -1072,7 +1068,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
-        Logger.i(TAG, "onRouteItemClick result = " + result.toString() + " type = " + type);
+        Logger.i(TAG, "onRouteItemClick result = ", result.toString(), " type = ", type);
         if (type == LayerPointItemType.ROUTE_PATH) {
             int currentNaviType = mNaviPackage.getCurrentNaviType();
             if (currentNaviType != 0) {
@@ -1184,7 +1180,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void closeNavi() {
-        Logger.i(TAG, "closeNavi mIsNaviClosed = " + mIsNaviClosed);
+        Logger.i(TAG, "closeNavi mIsNaviClosed = ", mIsNaviClosed);
         if (mIsNaviClosed) {
             return;
         }

@@ -12,6 +12,7 @@ import com.fy.navi.scene.ui.navi.hangingcard.OnCardChangeListener;
 import com.fy.navi.scene.util.HandCardType;
 import com.fy.navi.scene.util.PowerMonitorService;
 import com.fy.navi.service.AppCache;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -33,7 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Description: [在这里描述文件功能]
  */
 public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCard> implements OnPowerChangeListener, IGuidanceObserver, SearchResultCallback, OnCardChangeListener {
-    private static final String TAG = "SceneNaviHangingCardImpl";
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_HANDING_CARD_IMPL;
     private final String KEY_NAME = TAG + "_KEY";
     public final String KEY_WORD_CHARGE_STATION = "充电桩";
     public final String KEY_WORD_GAS_STATION = "加油站";
@@ -103,7 +104,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     @Override
     public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
         SearchResultCallback.super.onSilentSearchResult(taskId, errorCode, message, searchResultEntity);
-        Logger.d(TAG, "onSilentSearchResult:" + taskId);
+        Logger.d(TAG, "onSilentSearchResult:", taskId);
         if (taskId == mChargeSearchId) {
             assembleChargeList(searchResultEntity);
         } else if (taskId == mGasSearchId) {
@@ -118,7 +119,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     }
 
     private void assembleParkEnd(SearchResultEntity searchResultEntity) {
-        Logger.d(TAG, "assembleParkEnd:" + isGetParkEndRequesting);
+        Logger.d(TAG, "assembleParkEnd:", isGetParkEndRequesting);
         isGetParkEndRequesting = false;
         if (!ConvertUtils.isNull(searchResultEntity) && !ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
             mEndPoiInfoEntity = searchResultEntity.getPoiList().get(0);
@@ -154,7 +155,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
      */
     private void getChargeStationList() {
         mChargeSearchId = mSearchPackage.enRouteKeywordSearch(KEY_WORD_CHARGE_STATION, true);
-        Logger.d(TAG, "mChargeSearchId:" + mChargeSearchId);
+        Logger.d(TAG, "mChargeSearchId:", mChargeSearchId);
     }
 
     /***
@@ -203,7 +204,8 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     }
 
     private void showParkList() {
-        Logger.d(TAG, "showParkList", "size:" + mParkList.size(), "parkTipFinished:" + parkTipFinished);
+        Logger.d(TAG, "showParkList", "size:", mParkList.size(), "parkTipFinished:",
+                parkTipFinished);
         if (!CardManager.getInstance().isEligible(mNaviEtaInfo.getRemainDist(), 2000)) {
             return;
         }
@@ -211,17 +213,19 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     }
 
     private void showGasList() {
-        Logger.d(TAG, "showGasList", "size:" + mGasList.size(), "gasTipFinished:" + gasTipFinished);
+        Logger.d(TAG, "showGasList", "size:", mGasList.size(), "gasTipFinished:",
+                gasTipFinished);
         updateUi(HandCardType.GAS, mGasList, mGasStatus);
     }
 
     private void showChargeList() {
-        Logger.d(TAG, "showChargeList-Success!:" + mChargeList.size(), "chargeTipFinished:" + chargeTipFinished);
+        Logger.d(TAG, "showChargeList-Success!:", mChargeList.size(), "chargeTipFinished:",
+                chargeTipFinished);
         updateUi(HandCardType.CHARGE, mChargeList, mChargeStatus);
     }
 
     public synchronized void updateUi(HandCardType type, List<PoiInfoEntity> data, CardStatus cardStatus) {
-        Logger.d(TAG, "updateUi", "type:" + type.name(), "cardStatus:" + cardStatus.name());
+        Logger.d(TAG, "updateUi", "type:", type.name(), "cardStatus:", cardStatus.name());
         if (!ConvertUtils.isEmpty(data) && cardStatus != CardStatus.ON_SHOWING) {
             uiList.add(type);
             switch (type) {

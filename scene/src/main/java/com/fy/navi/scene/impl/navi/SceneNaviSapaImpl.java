@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -14,8 +13,6 @@ import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.SceneNaviSapaView;
-import com.fy.navi.scene.ui.navi.component.ComponentHighwayService;
-import com.fy.navi.scene.ui.navi.component.ComponentTollStation;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -37,7 +34,7 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> implements SearchResultCallback {
-    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_SAP;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_SAPA_IMPL;
 
     private String mCurrentServicePoiId = "";
     private int mTaskId;
@@ -276,7 +273,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
      * @param sapaInfoEntity SAPA信息
      */
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
-        Logger.i(TAG, "SceneNaviSAPAImpl onNaviSAPAInfo type: " + sapaInfoEntity.toString());
+        Logger.i(TAG, "SceneNaviSAPAImpl onNaviSAPAInfo type: ", sapaInfoEntity.toString());
         mSapaInfoEntity = sapaInfoEntity;
         switch (sapaInfoEntity.getType()) {
             // 服务区/收费站为0
@@ -307,8 +304,8 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
                 if (!ConvertUtils.isEmpty(sapaInfoEntity.getList())) {
                     final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(0);
                     int distance = sapaItem.getRemainDist();
-                    Logger.i(TAG, "SceneNaviSAPAImpl TOLL_STATION_AND_SPAS " +
-                            "onNaviSAPAInfo distance: " + distance);
+                    Logger.i(TAG, "SceneNaviSAPAImpl TOLL_STATION_AND_SPAS ",
+                            "onNaviSAPAInfo distance: ", distance);
                     // 设置临近态判断，如果距离小于5公里，则显示临近态
                     boolean showNearly = distance <= NEARLY_DISTANCE;
                     if (sapaItem.getType() == NaviConstant.SapaItemsType.SPAS_LIST) {//第一个是服务区，第二个是收费站
@@ -343,13 +340,13 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
     }
 
     private void servicePoiIdSearch(String poiId) {
-        Logger.i(TAG, "currentServicePoiId = " + mCurrentServicePoiId + " poiId = " + poiId);
+        Logger.i(TAG, "currentServicePoiId = ", mCurrentServicePoiId, " poiId = ", poiId);
         int powerType = OpenApiHelper.powerType();
         // 电车和插混的才搜索显示充电桩的信息
         if (powerType == 1 || powerType == 2) {
             if (!mCurrentServicePoiId.equals(poiId)) {
                 mTaskId = OpenApiHelper.poiIdSearch(poiId);
-                Logger.i(TAG, "search servicePoiID taskId = " + mTaskId);
+                Logger.i(TAG, "search servicePoiID taskId = ", mTaskId);
                 mCurrentServicePoiId = poiId;
             }
         }
@@ -383,7 +380,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
      */
     private void updateSceneVisible(final boolean isVisible){
         if(mScreenView.isVisible() == isVisible) return;
-        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviSAPAImpl", isVisible);
+        Logger.i(TAG, "SceneNaviSAPAImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState),
@@ -546,7 +543,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
                                       final ObservableField<Boolean> chargeStation) {
         // 服务区详情
         final long sapaDetail = sapItem.getSapaDetail();
-        Logger.i(TAG, "updateServiceDetails: sapaDetail = " + sapaDetail);
+        Logger.i(TAG, "updateServiceDetails: sapaDetail = ", sapaDetail);
         int totalDetails = 0;
         int powerType = OpenApiHelper.powerType();
         for (int i = 0; i <= 6; i++) {
@@ -646,7 +643,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
      * @param type type
      */
     public void onClick(final int type) {
-        Logger.d(TAG, "onClick: type = " + type);
+        Logger.d(TAG, "onClick: type = ", type);
         if (mSapaInfoEntity == null) {
             Logger.e(TAG, "onClick: mSapaInfoEntity is null");
             return;
@@ -663,8 +660,8 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message,
                                final SearchResultEntity searchResultEntity) {
-        Logger.i(TAG, "onSearchResult: taskId = " + taskId + ", errorCode = " + errorCode +
-                ", message = " + message);
+        Logger.i(TAG, "onSearchResult: taskId = ", taskId, ", errorCode = ", errorCode,
+                ", message = ", message);
         if (mTaskId == taskId) {
             if (null != searchResultEntity) {
                 List<PoiInfoEntity> poiInfoEntityList = searchResultEntity.getPoiList();

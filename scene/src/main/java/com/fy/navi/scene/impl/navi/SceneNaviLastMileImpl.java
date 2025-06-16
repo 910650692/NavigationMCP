@@ -31,7 +31,7 @@ import java.util.List;
 
 
 public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView> implements ISceneNaviLastMile {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_LAST_MILE_IMPL;
     private MsgPushPackage mMsgPushPackage;
     private RoutePackage mRoutePackage;
     private boolean mIsDisplayedLastMile = false;
@@ -82,7 +82,8 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
             if (resultCode == 1) {
                 ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(R.string.navi_send_to_phone));
             }
-            Logger.d(TAG, "SceneNaviSendPhoneImpl send result：" + resultCode + ",address：" + routeParam.getAddress());
+            Logger.d(TAG, "SceneNaviSendPhoneImpl send result：", resultCode, ",address：",
+                    routeParam.getAddress());
         } else {
             Logger.e(TAG, "allPoiParamList is null");
         }
@@ -133,7 +134,7 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
      */
     private void updateSceneVisible(final boolean isVisible) {
         if (mScreenView.isVisible() == isVisible) return;
-        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviLastMileImpl", isVisible);
+        Logger.i(TAG, "SceneNaviLastMileImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_LAST_MILE);

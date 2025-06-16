@@ -22,7 +22,6 @@ import com.fy.navi.service.define.navi.NaviEtaInfo;
  * @version $Revision.*$
  */
 public class SceneNaviLastMileView extends NaviSceneBase<SceneNaviLastMileViewBinding, SceneNaviLastMileImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
 
     public SceneNaviLastMileView(final Context context) {
         super(context);

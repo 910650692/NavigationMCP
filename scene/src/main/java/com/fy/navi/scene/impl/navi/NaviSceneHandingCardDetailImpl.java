@@ -14,6 +14,7 @@ import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.scene.util.HandCardType;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.map.MapType;
@@ -42,7 +43,7 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
     private LayerPackage mLayerPackage;
     private MapPackage mapPackage;
     private long requestId;
-    private final String TAG = "NaviSceneHandingCardDetailImpl";
+    private final String TAG = MapDefaultFinalTag.NAVI_SCENE_HANDING_CARD_DETAIL_IMPL;
 
     public NaviSceneHandingCardDetailImpl(NaviSceneHandingCardDetail screenView) {
         super(screenView);
@@ -87,7 +88,7 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
     }
 
     public void updateUi(List<PoiInfoEntity> list, HandCardType type) {
-        Logger.i(TAG, "isMain:" + (Looper.myLooper() == Looper.getMainLooper()));
+        Logger.i(TAG, "isMain:", (Looper.myLooper() == Looper.getMainLooper()));
         this.mList.clear();
         this.mList.addAll(list);
         this.mType = type;
@@ -100,11 +101,11 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
      */
     public void showPreview(final int select) {
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.TOUCH);
-        Logger.i(TAG, "showPreview:" + select);
+        Logger.i(TAG, "showPreview:", select);
         try {
             ThreadManager.getInstance().execute(() -> mSearchPackage.createPoiMarker(mList, select));
         } catch (Exception e) {
-            Logger.e(TAG, "showPreview e:" + e.getMessage());
+            Logger.e(TAG, "showPreview e:", e.getMessage());
         }
         mLayerPackage.setFollowMode(mMapTypeId, false);
         mLayerPackage.setDynamicLevelLock(mMapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);

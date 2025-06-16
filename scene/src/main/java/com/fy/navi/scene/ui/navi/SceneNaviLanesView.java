@@ -26,7 +26,7 @@ import com.fy.navi.service.define.navi.SapaInfoEntity;
  * @version $Revision.*$
  */
 public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding, SceneNaviLanesImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_LANES;
     private boolean mIsShowLane = false;
 
     public SceneNaviLanesView(@NonNull final Context context) {
@@ -55,7 +55,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     @Override
     public void show() {
-        Logger.d(TAG, "mIsShowLane：" + mIsShowLane);
+        Logger.d(TAG, "mIsShowLane：", mIsShowLane);
         if (mIsShowLane) {
             super.show();
         } else {
@@ -105,7 +105,8 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
      * @param isVisible 是否显示
      */
     public void setVisibleLaneDefault(final int index, final boolean isVisible) {
-        Logger.d(TAG, "SceneNaviLanesView setVisibleLaneDefault index：" + index + ",isVisible：" + isVisible);
+        Logger.d(TAG, "SceneNaviLanesView setVisibleLaneDefault index：", index,
+                ",isVisible：", isVisible);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.setVisibility(isVisible ? VISIBLE : GONE);
@@ -145,7 +146,8 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
     public void setBackgroundLanesDriveRecommendTimeArrow(final int index,
                                                           final SceneCommonStruct.LaneAction
                                                                   laneAction) {
-        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveRecommendTimeArrow index：" + index);
+        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveRecommendTimeArrow index：",
+                index);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.setBackgroundLanesDriveRecommendTimeArrow(laneAction);
@@ -185,7 +187,8 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
     public void setBackgroundLanesDriveRecommendArrow(final int index,
                                                       final SceneCommonStruct.LaneAction
                                                               laneAction) {
-        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveRecommendArrow index：" + index);
+        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveRecommendArrow index：",
+                index);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.setBackgroundLanesDriveRecommendArrow(laneAction);
@@ -224,7 +227,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
      */
     public void setBackgroundLanesDriveTimeArrow(final int index,
                                                  final SceneCommonStruct.LaneAction laneAction) {
-        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveTimeArrow index：" + index);
+        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveTimeArrow index：", index);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.setBackgroundLanesDriveTimeArrow(laneAction);
@@ -263,7 +266,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
      */
     public void setBackgroundLanesDriveDefaultArrow(final int index,
                                                     final SceneCommonStruct.LaneAction laneAction) {
-        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveDefaultArrow index：" + index);
+        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveDefaultArrow index：", index);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.setBackgroundLanesDriveDefaultArrow(laneAction);
@@ -300,7 +303,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
      * @param index index
      */
     public void sceneBottom(final int index) {
-        Logger.d(TAG, "SceneNaviLanesView sceneBottom index：" + index);
+        Logger.d(TAG, "SceneNaviLanesView sceneBottom index：", index);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.sceneBottom();
@@ -340,7 +343,8 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
     public void setBackgroundLanesDriveRecommendBottom(final int index,
                                                        final SceneCommonStruct.TimeLaneBottomAction
                                                                timeLaneBottomAction) {
-        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveRecommendBottom index：" + index);
+        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveRecommendBottom index：",
+                index);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.setBackgroundLanesDriveRecommendBottom(timeLaneBottomAction);
@@ -378,8 +382,8 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
      * @param isVisible 是否可见
      */
     public void setVisibleHighlight(final int index, final boolean isVisible) {
-        Logger.d(TAG, "SceneNaviLanesView setVisibleHighlight index：" + index +
-                ",isVisible：" + isVisible);
+        Logger.d(TAG, "SceneNaviLanesView setVisibleHighlight index：", index,
+                ",isVisible：", isVisible);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.setVisibleHighlight(isVisible);
@@ -419,7 +423,8 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
     public void setBackgroundLanesDriveDefaultBottom(final int index,
                                                      final SceneCommonStruct.TimeLaneBottomAction
                                                              timeLaneBottomAction) {
-        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveDefaultBottom index：" + index);
+        Logger.d(TAG, "SceneNaviLanesView setBackgroundLanesDriveDefaultBottom index：",
+                index);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.setBackgroundLanesDriveDefaultBottom(timeLaneBottomAction);
@@ -456,7 +461,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
      * @param index index
      */
     public void sceneCommonArrow(final int index) {
-        Logger.d(TAG, "SceneNaviLanesView sceneCommonArrow index：" + index);
+        Logger.d(TAG, "SceneNaviLanesView sceneCommonArrow index：", index);
         switch (index) {
             case 0:
                 mViewBinding.tlrResources161.sceneCommonArrow();
@@ -491,7 +496,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
      * 显示默认的车道线
      */
     public void sceneLaneInfoDefault() {
-        Logger.d(TAG, "SceneNaviLanesView sceneLaneInfoDefault：");
+        Logger.d(TAG, "SceneNaviLanesView sceneLaneInfoDefault");
 //        setVisibility(VISIBLE);
         NaviUiUtil.hideView(mViewBinding.tlrResources161, mViewBinding.tlrResources16, mViewBinding.tlrResources17,
                 mViewBinding.tlrResources18, mViewBinding.tlrResources19, mViewBinding.tlrResources110,

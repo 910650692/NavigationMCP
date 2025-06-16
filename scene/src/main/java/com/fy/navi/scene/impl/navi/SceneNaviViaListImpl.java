@@ -8,12 +8,13 @@ import com.fy.navi.scene.api.navi.ISceneNaviViaList;
 import com.fy.navi.scene.ui.navi.SceneNaviViaListView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> implements ISceneNaviViaList {
-    private static final String TAG = "SceneNaviViaListImpl";
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_LIST_IMPL;
     private ScheduledFuture mScheduledFuture;
     private int mTimes = NumberUtils.NUM_8;
 
@@ -71,7 +72,8 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
      * @param isVisible visible
      */
     public void updateSceneVisible(final boolean isVisible) {
-        Logger.i(TAG, "SceneNaviViaListImpl", "isVisible:"+ isVisible, "currentVis:" + mScreenView.isVisible());
+        Logger.i(TAG, "SceneNaviViaListImpl", "isVisible:", isVisible, "currentVis:",
+                mScreenView.isVisible());
         if(mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :

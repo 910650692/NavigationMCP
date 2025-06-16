@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> implements
         SignalCallback {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_SPEED_IMPL;
     /**
      * 区间测速
      */
@@ -59,7 +59,7 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
      * @param speedCameraInfo 限速信息
      */
     public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
-        Logger.i(TAG, "onNaviSpeedCameraInfo speedCameraInfo = " +
+        Logger.i(TAG, "onNaviSpeedCameraInfo speedCameraInfo = ",
                 speedCameraInfo.toString());
         if (mCallBack == null) {
             return;
@@ -70,7 +70,7 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
             return;
         }
         final int speedType = speedCameraInfo.getSpeedType();
-        Logger.i(TAG, "speedType " + speedType);
+        Logger.i(TAG, "speedType ", speedType);
         // 限速类型为区间测速
         if (speedType == NaviConstant.SpeedType.SPEED_OVERALL) {
             getLimitSpeed(speedCameraInfo.getLimitSpeedList());
@@ -83,8 +83,8 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
             if (mAverageSpeed != speedCameraInfo.getAverageSpeed()) {
                 mAverageSpeed = speedCameraInfo.getAverageSpeed();
             }
-            Logger.i(TAG, "SceneNaviSpeedImpl: limit：" + mLimitSpeed + ",average：" +
-                    mAverageSpeed + ",distance：" + mRemainDistance);
+            Logger.i(TAG, "SceneNaviSpeedImpl: limit：", mLimitSpeed, ",average：",
+                    mAverageSpeed, ",distance：", mRemainDistance);
             if (mLimitSpeed == 0 || mAverageSpeed == 0) {
                 Logger.i(TAG, "区间测速 限速不显示");
                 updateSceneVisible(false);
@@ -156,7 +156,7 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
      */
     @Override
     public void onSpeedChanged(float speed) {
-        Logger.i(TAG, "onSpeedChanged:" + speed);
+        Logger.i(TAG, "onSpeedChanged:", speed);
         ThreadManager.getInstance().postUi(new Runnable() {
             @Override
             public void run() {

@@ -14,7 +14,6 @@ import com.fy.navi.ui.view.SkinRelativeLayout;
 
 
 public class GuidanceSimulationView extends SkinRelativeLayout implements View.OnClickListener {
-    private static final String TAG = "GuidanceSimulationView";
     private NavGuidanceSimulationViewBinding mBinding;
     private boolean startSim = true;
 

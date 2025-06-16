@@ -18,6 +18,7 @@ import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.MapDefaultFinalTag;
 
 /**
  * @author : QiuYaWei
@@ -25,7 +26,7 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
  * Description: [充电站相关提示展示]
  */
 public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipViewBinding, SceneNaviChargeTipViewImpl> {
-    private static final String TAG = "SceneNaviChargeTipView";
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CHARGE_TIP;
     private ChargeTipEntity mEntity;
 
     public SceneNaviChargeTipView(@NonNull final Context context) {
@@ -82,7 +83,7 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
     @Override
     public void show() {
         super.show();
-        Logger.i(TAG, "show!", "callBack is null:" + (mISceneCallback == null));
+        Logger.i(TAG, "show!", "callBack is null:", (mISceneCallback == null));
         mScreenViewModel.initTimer();
     }
 

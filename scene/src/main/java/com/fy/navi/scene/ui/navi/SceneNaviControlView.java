@@ -29,7 +29,7 @@ import com.fy.navi.service.adapter.navi.NaviConstant;
  * @version $Revision.*$
  */
 public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBinding, SceneNaviControlImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CONTROL;
     private ImersiveStatus mImersiveStatus;
 
     public SceneNaviControlView(@NonNull final Context context) {
@@ -142,8 +142,8 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      * @param isShowMoreSet 是否显示更多设置
      */
     public void changeOverViewControlLength(final boolean isShowMoreSet) {
-        Logger.i(TAG, "changeOverViewControlLength", "isShowMoreSet:" + isShowMoreSet +
-                "vis:" + (mScreenViewModel != null &&
+        Logger.i(TAG, "changeOverViewControlLength", "isShowMoreSet:", isShowMoreSet,
+                "vis:", (mScreenViewModel != null &&
                 Boolean.TRUE.equals(mScreenViewModel.getGroupMoreSetupField().get())));
         final Context context = getContext();
         final int dpPixels;
@@ -153,13 +153,13 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
         }
         final ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
                 mViewBinding.sclSettings.getLayoutParams();
-        Logger.i(TAG, "originWidth:" + params.width);
+        Logger.i(TAG, "originWidth:", params.width);
         if (isShowMoreSet) {
             dpPixels = context.getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.control_view_normal_width);
         } else {
             dpPixels = context.getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.control_view_short_width);
         }
-        Logger.i(TAG, "dpPixels:" + dpPixels);
+        Logger.i(TAG, "dpPixels:", dpPixels);
         params.width = dpPixels;
         mViewBinding.sclSettings.setLayoutParams(params);
         invalidate();

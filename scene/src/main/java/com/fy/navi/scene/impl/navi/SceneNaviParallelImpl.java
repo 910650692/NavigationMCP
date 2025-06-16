@@ -24,7 +24,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_PARALLEL_IMPL;
     private final PositionPackage mPositionPackage;
     private LocParallelInfoEntity mCurrentParallelRoadInfo;
     private LocParallelInfoEntity mPreviousParallelRoadInfo;
@@ -204,7 +204,8 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
     private IPositionPackageCallback mIPositionPackageCallback = new IPositionPackageCallback() {
         @Override
         public void onSwitchParallelRoadFinished() {
-            Logger.i(TAG, "onSwitchParallelRoadFinished 平行路切换结束 mCurrentParallelRoadInfo:" + (mCurrentParallelRoadInfo != null));
+            Logger.i(TAG, "onSwitchParallelRoadFinished 平行路切换结束 mCurrentParallelRoadInfo:",
+                    (mCurrentParallelRoadInfo != null));
             if (mCurrentParallelRoadInfo != null) {
                 LocInfoBean locInfoBean = mPositionPackage.getLastCarLocation();
                 final ArrayList<LocalParallelRoadEntity> list = mCurrentParallelRoadInfo.getLocalParallelRoadArrayList();
@@ -237,7 +238,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
          */
         @Override
         public void onParallelRoadUpdate(final LocParallelInfoEntity entity) {
-            Logger.i(TAG, "onParallelRoadUpdate平行路切换 " + entity.toString());
+            Logger.i(TAG, "onParallelRoadUpdate平行路切换 ", entity.toString());
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override
                 public void run() {
@@ -275,7 +276,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         if (mCallBack == null) {
             return;
         }
-        Logger.i(TAG, "平行路切换mCurrentParallelRoadInfo：" + mCurrentParallelRoadInfo.toString());
+        Logger.i(TAG, "平行路切换mCurrentParallelRoadInfo：", mCurrentParallelRoadInfo.toString());
         // 平行路切换功能隐藏
         if (mCurrentParallelRoadInfo == null) {
             mRoadMainAuxiliaryVisible.set(false);
@@ -285,7 +286,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         }
 
         if (mPreviousParallelRoadInfo != null) {
-            Logger.i(TAG, "平行路切换mPreviousParallelRoadInfo：" +
+            Logger.i(TAG, "平行路切换mPreviousParallelRoadInfo：",
                     mPreviousParallelRoadInfo.toString());
             // 如果主辅路和桥上下没有变化，直接返回
             if (mPreviousParallelRoadInfo.getFlag() == mCurrentParallelRoadInfo.getFlag() &&
@@ -353,7 +354,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
      * @param type 平行路切换类型 0:主辅路切换 1:桥上下切换
      */
     public void naviParallelSwitch(final int type) {
-        Logger.i(TAG, "naviParallelSwitch type:" + type);
+        Logger.i(TAG, "naviParallelSwitch type:", type);
         if (type == 0) {
             mSwitchActionType = mSwitchRoadType;
             requestSwitchParallelRoad();

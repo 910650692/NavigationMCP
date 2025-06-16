@@ -16,6 +16,7 @@ import com.fy.navi.scene.ui.navi.SceneNaviViaDetailView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.GasStationInfo;
@@ -31,7 +32,7 @@ import java.util.List;
 
 public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailView> implements SearchResultCallback {
 
-    public static final String TAG = "SceneNaviViaDetailImpl";
+    public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_DETAIL_IMPL;
     private String mCurrentPoiId = null;
     private int mSearchId;
 
@@ -114,7 +115,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         boolean isCanShow = (mCurrentPoiType == AutoMapConstant.PointTypeCode.GAS_STATION ||
                 mCurrentPoiType == AutoMapConstant.PointTypeCode.CHARGING_STATION ||
                 mCurrentPoiType == AutoMapConstant.PointTypeCode.PARKING_LOT);
-        Logger.i(TAG, "setShowViaDetail", "isCanShow:" + isCanShow + " isNeedShow = " +
+        Logger.i(TAG, "setShowViaDetail", "isCanShow:", isCanShow, " isNeedShow = ",
                 mIsNeedShow);
         updateSceneVisible(b && isCanShow);
     }
@@ -133,7 +134,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
      * @param isVisible visible
      */
     public void updateSceneVisible(final boolean isVisible) {
-        Logger.i(TAG, "SceneNaviViaListImpl", "isVisible:"+ isVisible, "currentVis:" +
+        Logger.i(TAG, "SceneNaviViaListImpl", "isVisible:", isVisible, "currentVis:",
                 mScreenView.isVisible());
         if(mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
@@ -150,8 +151,8 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
     @Override
     public void onSilentSearchResult(int taskId, int errorCode, String message,
                                      SearchResultEntity searchResultEntity) {
-        Logger.i(TAG, "onSilentSearchResult", "taskId:" + taskId, "errorCode:" +
-                errorCode, "message:" + message);
+        Logger.i(TAG, "onSilentSearchResult", "taskId:", taskId, "errorCode:",
+                errorCode, "message:", message);
         if (mSearchId == taskId) {
             Logger.i(TAG, "搜索结果");
             if (!ConvertUtils.isEmpty(searchResultEntity)) {
@@ -165,7 +166,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
     }
 
     private void updateUi(PoiInfoEntity poiInfo) {
-        Logger.i(TAG, "poiInfo:" + poiInfo);
+        Logger.i(TAG, "poiInfo:", poiInfo);
         if (poiInfo == null) {
             return;
         }
@@ -175,7 +176,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         String poiTypeCode = poiInfo.getPointTypeCode();
         int poiType = SearchPackage.getInstance().getPointTypeCode(poiTypeCode);
         mCurrentPoiType = poiType;
-        Logger.i(TAG, "poiType:" + poiType);
+        Logger.i(TAG, "poiType:", poiType);
         // 加油站
         if (poiType == AutoMapConstant.PointTypeCode.GAS_STATION) {
             List<GasStationInfo> gasStationInfos = poiInfo.getStationList();
@@ -210,7 +211,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         boolean isGas98 = false;
         for (GasStationInfo gasStationInfo : gasStationInfos) {
             String gasType = gasStationInfo.getType();
-            Logger.i(TAG, "showGasStationDetail: " + gasType);
+            Logger.i(TAG, "showGasStationDetail: ", gasType);
             if ("92#".equals(gasType)) {
                 isGas92 = true;
             } else if ("95#".equals(gasType)) {
@@ -228,7 +229,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         } else {
             mContentShow.set(NumberUtils.NUM_0);
         }
-        Logger.i(TAG, "showGasStationDetail = " + mViaContent.get());
+        Logger.i(TAG, "showGasStationDetail = ", mViaContent.get());
     }
 
     private void showParkingDetail(ParkingInfo parkingInfo) {
@@ -251,8 +252,8 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         } else {
             mContentShow.set(NumberUtils.NUM_1);
         }
-        Logger.i(TAG, "showParkingDetail = " + mViaContent.get() +
-                " spaceFree = " + spaceFree + " spaceTotal = " + spaceTotal);
+        Logger.i(TAG, "showParkingDetail = ", mViaContent.get(),
+                " spaceFree = ", spaceFree, " spaceTotal = ", spaceTotal);
     }
 
     private void showChargeStationDetail(ChargeInfo chargeInfo) {
@@ -294,9 +295,9 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         } else {
             mFastChargeShow.set(NumberUtils.NUM_0);
         }
-        Logger.i(TAG, "showChargeStationDetail = " + mViaContent.get() +
-                " slowSpaceFree = " + slowSpaceFree + " slowSpaceTotal = " + slowSpaceTotal +
-                " fastSpaceFree = " + fastSpaceFree + " fastSpaceTotal = " + fastSpaceTotal);
+        Logger.i(TAG, "showChargeStationDetail = ", mViaContent.get(),
+                " slowSpaceFree = ", slowSpaceFree, " slowSpaceTotal = ", slowSpaceTotal,
+                " fastSpaceFree = ", fastSpaceFree, " fastSpaceTotal = ", fastSpaceTotal);
         mSlowChargeTotal.set(slowSpaceTotal + "");
         mFastChargeTotal.set(fastSpaceTotal + "");
         mSlowChargeFree.set(slowSpaceFree + "");
