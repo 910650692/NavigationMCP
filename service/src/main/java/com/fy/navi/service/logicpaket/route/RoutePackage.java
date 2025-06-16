@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -14,6 +15,7 @@ import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.aos.BlAosAdapter;
 import com.fy.navi.service.adapter.aos.QueryRestrictedObserver;
 import com.fy.navi.service.adapter.calibration.CalibrationAdapter;
@@ -1253,8 +1255,15 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
             return;
         }
-        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
-        mMapPackage.showPreview(mapTypeId, true, 1350, 210, 600, 200, mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList()));
+        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.
+                get(mapTypeId).getMLineLayerParam();
+        int screenLeft = ResourceUtils.Companion.getInstance().
+                getDimensionPixelSize(R.dimen.margin_screen_left);
+        int screenRight = ResourceUtils.Companion.getInstance().
+                getDimensionPixelSize(R.dimen.margin_screen_right);
+        mMapPackage.showPreview(mapTypeId, true, screenLeft, 210, screenRight,
+                200, mLayerAdapter.getPathResultBound(mapTypeId,
+                        routeLineLayerParam.getMPathInfoList()));
     }
 
     /**
