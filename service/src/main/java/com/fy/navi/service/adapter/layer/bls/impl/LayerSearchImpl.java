@@ -47,10 +47,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
+public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> implements MarkerDispatchManager.MarkerDispatchCallback {
 
     private static final String LINE_TYPE_ROAD = "Road";
     private static final String LINE_TYPE_PARK = "Park";
+    private ArrayList<Integer> mAlongWayPointsIndexList = new ArrayList<>();
+    private LayerItemSearchResult mSearchResult;
 
     public LayerSearchImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
@@ -110,9 +112,26 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                     Logger.d(TAG, "setSelect-BizSearchTypeChargeStation:" + result);
                 }
                 case SEARCH_POI_ALONG_ROUTE -> {
-                    int result = getLayerSearchControl().setFocus(
-                            BizSearchType.BizSearchTypePoiAlongRoute, String.valueOf(index), true);
-                    Logger.d(TAG, "setSelect-BizSearchTypePoiAlongRoute:" + result);
+                    if (!ConvertUtils.isEmpty(mAlongWayPointsIndexList)) {
+                        if (mAlongWayPointsIndexList.contains(index)) {
+                            int result = getLayerSearchControl().setFocus(
+                                    BizSearchType.BizSearchTypePoiAlongRoute, String.valueOf(index), true);
+                            Logger.d(TAG, "setSelect-BizSearchTypePoiAlongRoute:" + result);
+                        } else {
+                            if (!ConvertUtils.isEmpty(mSearchResult)) {
+                                ArrayList<PoiInfoEntity> searchResultPoints = mSearchResult.getSearchResultPoints();
+                                if (index >= 0 && index < searchResultPoints.size()) {
+                                    PoiInfoEntity poiInfoEntity = searchResultPoints.get(index);
+                                    LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
+                                    ArrayList<PoiInfoEntity> list = new ArrayList<>();
+                                    list.add(poiInfoEntity);
+                                    layerItemSearchResult.setSearchResultPoints(list);
+                                    updateSearchChargeStation(layerItemSearchResult, true, index);
+                                    Logger.d(TAG, "沿途搜-搜索充电扎标 index " + index);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -427,6 +446,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "updateSearchAlongRoutePoi parentPoints == null");
             return result;
         }
+        mSearchResult = searchResult;
 
         Logger.d(TAG, "updateSearchAlongRoutePoi  parentPoints size " + parentPoints.size());
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoute, true);
@@ -462,18 +482,22 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             alongWayPoints.add(viaPoint);
         }
 
-        MarkerDispatchManager.get().initDispatch(alongWayPoints, new MarkerDispatchManager.MarkerDispatchCallback() {
-            @Override
-            public void onMarkerDispatchCallback(ArrayList<BizSearchAlongWayPoint> wayPoints) {
-                Logger.e(TAG, "updateSearchAlongRoutePoi alongWayPoints " + wayPoints.size());
-                getLayerSearchControl().updateSearchAlongRoutePoi(wayPoints);
-            }
-
-            @Override
-            public void onMarkerDispatchCallback(BizSearchAlongWayPoint wayPoints) {
-            }
-        });
+        MarkerDispatchManager.get().initDispatch(alongWayPoints, this);
         return true;
+    }
+
+    @Override
+    public void onMarkerDispatchCallback(List<MarkerDispatchManager.IndexedData<BizSearchAlongWayPoint>> alongWayPoints) {
+        Logger.e(TAG, "updateSearchAlongRoutePoi alongWayPoints " + alongWayPoints.size());
+        ArrayList<BizSearchAlongWayPoint> points = new ArrayList<>();
+        mAlongWayPointsIndexList.clear();
+        for (MarkerDispatchManager.IndexedData<BizSearchAlongWayPoint> indexedPoint : alongWayPoints) {
+            int originalIndex = indexedPoint.getOriginalIndex();
+            BizSearchAlongWayPoint point = indexedPoint.getData();
+            points.add(point);
+            mAlongWayPointsIndexList.add(originalIndex);
+        }
+        getLayerSearchControl().updateSearchAlongRoutePoi(points);
     }
 
     /**
@@ -652,6 +676,45 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         return result;
     }
 
+    /* 沿途搜充电桩扎标图层业务 */
+    private synchronized boolean updateSearchChargeStation(LayerItemSearchResult searchResult, boolean isFromAlongWaySearch, int index) {
+        boolean result = false;
+        if (ConvertUtils.isEmpty(searchResult)) {
+            Logger.e(TAG, "updateSearchChargeStation searchResult == null");
+            return result;
+        }
+        List<PoiInfoEntity> chargeList = searchResult.getSearchResultPoints();
+        if (ConvertUtils.isEmpty(chargeList)) {
+            Logger.e(TAG, "updateSearchChargeStation parkingInfoList == null");
+            return result;
+        }
+        getLayerSearchControl().setVisible(BizSearchType.BizSearchTypeChargeStation, true);
+        //画充电桩
+        ArrayList<BizSearchChargeStationInfo> chargeStationInfos = new ArrayList<>();
+        for (PoiInfoEntity poiInfoEntity : chargeList) {
+            BizSearchChargeStationInfo chargeStation = new BizSearchChargeStationInfo();
+            chargeStation.mPos3D.lat = poiInfoEntity.getMPoint().getLat();
+            chargeStation.mPos3D.lon = poiInfoEntity.getMPoint().getLon();
+            List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
+            for (ChargeInfo chargeInfo : chargeInfoList) {
+                chargeStation.chargeStationInfo.fastTotal = chargeInfo.getMFastTotal();
+                chargeStation.chargeStationInfo.fastFree = chargeInfo.getMFastFree();
+                chargeStation.chargeStationInfo.slowTotal = chargeInfo.getMSlowTotal();
+                chargeStation.chargeStationInfo.slowFree = chargeInfo.getMSlowFree();
+                chargeStation.chargeStationInfo.brandDesc = chargeInfo.getMBrand();
+            }
+            chargeStationInfos.add(chargeStation);
+        }
+        getStyleAdapter().updateSearchResult(searchResult.getSearchResultPoints());
+        Logger.e(TAG, "updateSearchChargeStation chargeStationInfos " + chargeStationInfos.size());
+        result = getLayerSearchControl().updateSearchChargeStation(chargeStationInfos);
+
+        if (isFromAlongWaySearch) {
+            setSelect(LayerPointItemType.SEARCH_PARENT_CHARGE_STATION, index);
+        }
+        return result;
+    }
+
     /* 更新列表可视扎标数据 */
     public void updateSearchResult(LayerPointItemType type, LayerItemSearchResult result) {
         if (ConvertUtils.isEmpty(result)) {
@@ -667,6 +730,8 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         Logger.d(TAG, "LayerSearch -> clearAllItems");
         getLayerSearchControl().clearAllItems();
         getLayerSearchControl().setVisible(false);
+        mAlongWayPointsIndexList.clear();;
+        mSearchResult = null;
     }
 
     /**
@@ -714,6 +779,9 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypePoiAlongRoutePop);
                 getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoute, false);
                 getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoutePop, false);
+                clearSearchItemByType(LayerPointItemType.SEARCH_PARENT_CHARGE_STATION);
+                mAlongWayPointsIndexList.clear();;
+                mSearchResult = null;
             }
             case SEARCH_POI_LABEL -> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypePoiLabel);
