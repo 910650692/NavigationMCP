@@ -123,6 +123,11 @@ public class MapAdapter {
         return isOpenTraffic;
     }
 
+    public boolean setTrafficStatesWithoutNetwork(MapType mapTypeId, boolean isOpen) {
+        boolean isOpenTraffic =  mIMapApi.setTrafficStates(mapTypeId, isOpen);
+        return isOpenTraffic;
+    }
+
     public void setCustomLabelTypeVisible(MapType mapTypeId, ArrayList<Integer> typeList, boolean visible) {
         mIMapApi.setCustomLabelTypeVisible(mapTypeId, typeList, visible);
     }

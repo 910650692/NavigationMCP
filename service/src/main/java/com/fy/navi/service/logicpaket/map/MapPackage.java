@@ -501,6 +501,10 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         return mMapAdapter.setTrafficStates(mapTypeId, isOpen);
     }
 
+    public boolean setTrafficStatesWithoutNetwork(MapType mapTypeId, boolean isOpen) {
+        return mMapAdapter.setTrafficStatesWithoutNetwork(mapTypeId, isOpen);
+    }
+
     /**
      * 地图POI分类控制显隐
      *

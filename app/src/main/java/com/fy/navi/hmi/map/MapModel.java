@@ -151,7 +151,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ImmersiveStatusScene.IImmersiveStatusCallBack, IAosRestrictedObserver, IPositionPackageCallback,
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack
-        , ForecastCallBack, SearchResultCallback, SplitScreenManager.OnScreenModeChangedListener {
+        , ForecastCallBack, SearchResultCallback, SplitScreenManager.OnScreenModeChangedListener, NetWorkUtils.NetworkObserver {
     private final MapPackage mapPackage;
     private final LayerPackage layerPackage;
     private final PositionPackage positionPackage;
@@ -169,6 +169,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private boolean mAvoidLimit = false;
     private String mFilename = "";
     private ScheduledFuture mSelfParkingTimer;//回车位倒计时
+    private ScheduledFuture mCloseTmcTimer;//离线关闭TMC倒计时
     private SettingManager settingManager;
     private CruisePackage cruisePackage;
     private SignalPackage signalPackage;
@@ -231,6 +232,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mAccountPackage = AccountPackage.getInstance();
         mNaviStatusPackage = NaviStatusPackage.getInstance();
         mapVisibleAreaDataManager = MapVisibleAreaDataManager.getInstance();
+        NetWorkUtils.Companion.getInstance().registerNetworkObserver(this);
 
         layerPackage.initCarLogoByFlavor(MapType.MAIN_SCREEN_MAIN_MAP, BuildConfig.FLAVOR);
         addGestureListening();//添加收拾监听
@@ -257,6 +259,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapModelHelp.unInit();
         cruisePackage.unregisterObserver(mViewModel.mScreenId);
         SplitScreenManager.getInstance().unRegisterListener(this, TAG);
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(this);
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
@@ -1637,5 +1640,62 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (null != mViewModel) {
             mViewModel.processPageIntent(intentPage);
         }
+    }
+
+    private void startCloseTmcTimerWithoutNetwork() {
+        cancelCloseTmcTimerWithoutNetwork();
+        mCloseTmcTimer = ThreadManager.getInstance().asyncDelayWithResult(() -> {
+            cancelCloseTmcTimerWithoutNetwork();
+            Logger.d("onFinish-startCloseTmcTimerWithoutNetwork-true");
+            mapPackage.setTrafficStatesWithoutNetwork(MapType.MAIN_SCREEN_MAIN_MAP, false);
+            Logger.d("onFinish-startCloseTmcTimerWithoutNetwork");
+        }, 300);
+    }
+
+    private void cancelCloseTmcTimerWithoutNetwork(){
+        if (!ConvertUtils.isEmpty(mCloseTmcTimer)) {
+            ThreadManager.getInstance().cancelDelayRun(mCloseTmcTimer);
+            mCloseTmcTimer = null;
+        }
+    }
+
+    @Override
+    public void onNetConnectSuccess() {
+        Logger.i(TAG, "onNetConnectSuccess");
+        //停止计时
+        cancelCloseTmcTimerWithoutNetwork();
+        //根据数据库保存的去设置
+        mapPackage.setTrafficStatesWithoutNetwork(MapType.MAIN_SCREEN_MAIN_MAP, Boolean.parseBoolean(settingManager.getValueByKey(SettingController.KEY_SETTING_ROAD_CONDITION)));
+    }
+
+    @Override
+    public void onNetUnavailable() {
+        Logger.i(TAG, "onNetUnavailable");
+
+    }
+
+    @Override
+    public void onNetBlockedStatusChanged() {
+        Logger.i(TAG, "onNetBlockedStatusChanged");
+
+    }
+
+    @Override
+    public void onNetLosing() {
+        Logger.i(TAG, "onNetLosing");
+
+    }
+
+    @Override
+    public void onNetLinkPropertiesChanged() {
+        Logger.i(TAG, "onNetLinkPropertiesChanged");
+
+    }
+
+    @Override
+    public void onNetDisConnect() {
+        Logger.i(TAG, "onNetDisConnect");
+        //开始计时，5分钟后关闭路况
+        startCloseTmcTimerWithoutNetwork();
     }
 }
