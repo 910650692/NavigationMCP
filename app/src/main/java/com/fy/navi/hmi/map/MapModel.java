@@ -1575,6 +1575,51 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onScreenModeChanged(ScreenType screenType, String jsonPath) {
         mapVisibleAreaDataManager.loadData(jsonPath);
+        mViewModel.onScreenModeChanged(screenType);
+        // TODO 改变FragmentContainer size, 车标位置，蚯蚓线位置
+        updateCarLogoPosition(screenType);
+        updateNaviPathPositionIfNeed(screenType);
+        mapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 1);
+    }
+
+    /***
+     * 更新车标的视图锚点
+     * @param screenType
+     */
+    private void updateCarLogoPosition(ScreenType screenType) {
+        Logger.i(TAG, "updateCarLogoPosition:" + screenType.name());
+        switch (screenType) {
+            case SCREEN_1_3 -> {
+                // TODO
+            }
+
+            case SCREEN_2_3 -> {
+                // TODO
+            }
+            case SCREEN_FULL -> {
+                // TODO
+            }
+        }
+    }
+
+    /***
+     * 更新蚯蚓线显示位置--如果需要的话
+     * @param screenType
+     */
+    private void updateNaviPathPositionIfNeed(ScreenType screenType) {
+        Logger.i(TAG, "updateNaviPathPositionIfNeed:" + screenType.name());
+        switch (screenType) {
+            case SCREEN_1_3 -> {
+                // TODO
+            }
+
+            case SCREEN_2_3 -> {
+                // TODO
+            }
+            case SCREEN_FULL -> {
+                // TODO
+            }
+        }
     }
 
     /**

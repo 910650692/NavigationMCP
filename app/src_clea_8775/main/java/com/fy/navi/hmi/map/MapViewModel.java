@@ -5,7 +5,10 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
+import com.fy.navi.hmi.utils.ScreenTypeUtils;
 import com.fy.navi.service.BuildConfig;
+import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.define.screen.ScreenType;
 import com.fy.navi.ui.action.Action;
 
 /**
@@ -15,6 +18,7 @@ import com.fy.navi.ui.action.Action;
  */
 public class MapViewModel extends BaseMapViewModel {
     private static final String TAG = "NDLB---MapViewModel";
+
     public MapViewModel(@NonNull Application application) {
         super(application);
     }
@@ -32,6 +36,15 @@ public class MapViewModel extends BaseMapViewModel {
     }
 
     public Action switchSr = () -> {
-        SplitScreenManager.getInstance().switchSR();
+        if (ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_2_3) {
+            SplitScreenManager.getInstance().switchSRToFullScreen();
+        } else {
+            SplitScreenManager.getInstance().switchSRToOneThirdScreen();
+        }
     };
+
+    @Override
+    public boolean isSupportSplitScreen() {
+        return super.isSupportSplitScreen();
+    }
 }

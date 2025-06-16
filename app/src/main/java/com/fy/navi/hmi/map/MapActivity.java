@@ -66,6 +66,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
             }
         });
+        mBinding.main.post(() -> {
+            SplitScreenManager.getInstance().onConfigurationChanged();
+        });
     }
 
     @Override
@@ -119,13 +122,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
-    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
-        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
-        //监听分屏模式
-        SplitScreenManager.getInstance().onMultiWindowModeChanged(isInMultiWindowMode, newConfig.screenWidthDp);
-    }
-
-    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (!ConvertUtils.isEmpty(outState)) {
@@ -146,7 +142,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onResume() {
         super.onResume();
         mViewModel.getCurrentCityLimit();
-        SplitScreenManager.getInstance().setIsInMultiWindowMode(isInMultiWindowMode(), getResources().getConfiguration().screenWidthDp);
     }
 
     @Override
@@ -206,7 +201,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
         recreate();
-        SplitScreenManager.getInstance().onConfigurationChanged(newConfig);
     }
 
     // 更新当前的比例尺数值

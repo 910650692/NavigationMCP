@@ -10,6 +10,8 @@ import androidx.databinding.ObservableField;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.hmi.splitscreen.SplitFragment;
+import com.fy.navi.hmi.utils.ScreenTypeUtils;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
@@ -30,6 +32,7 @@ import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.route.RouteRequestParam;
+import com.fy.navi.service.define.screen.ScreenType;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -320,6 +323,9 @@ public class BaseNaviGuidanceViewModel extends
     public void onNaviStop() {
         mView.onNaviStop();
         closeAllFragment();
+        if (ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_1_3) {
+            addFragment(new SplitFragment(), null);
+        }
     }
 
     /**

@@ -62,72 +62,18 @@ public class SplitScreenManager {
     public void registerListener(final OnScreenModeChangedListener listener, String tag) {
         if (!ConvertUtils.isNull(mListeners) && !mListeners.contains(listener)) {
             mListeners.add(listener);
-            Logger.i(TAG, "tag:" + tag, "registerListener success!");
+            Logger.i(TAG, tag, "registerListener success!");
         } else {
-            Logger.i(TAG, "tag:" + tag, "registerListener failed!");
+            Logger.i(TAG, tag, "registerListener failed!");
         }
     }
 
     public void unRegisterListener(final OnScreenModeChangedListener listener, String tag) {
-        Logger.i(TAG, "unRegisterListener", "tag:" + tag);
+        Logger.i(TAG, "unRegisterListener",  tag);
         if (!ConvertUtils.isNull(mListeners)) {
             boolean result = mListeners.remove(listener);
-            Logger.i(TAG, "unRegisterListener", "tag:" + tag, "result:" + result);
+            Logger.i(TAG, "unRegisterListener", tag, "result:" + result);
         }
-    }
-
-    /***
-     * 屏幕改变触发分屏操作
-     */
-    public void ndChangeScreen() {
-        enterSplitScreen(
-                PatacSESConstants.SPLIT_SCREEN_SR,
-                PatacSESConstants.SPLIT_POSITION_LEFT,
-                PatacSESConstants.SPLIT_SIZE_1,
-                PatacSESConstants.SPLIT_SCREEN_NAVI,
-                ""
-        );
-        /*final Context context = AppContext.getInstance().getMContext();
-        final String[] splitScreenStatus = getSplitScreenStatus();
-        final BaseActivity currentActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        Logger.i(TAG, "ndChangeScreen", "currentActivity:" + currentActivity == null ? "un_known_cls" : currentActivity.getClass().getSimpleName());
-        switch (ScreenTypeUtils.getScreenType()) {
-            case SCREEN_1_3 -> {
-                enterSplitScreen(
-                        PatacSESConstants.SPLIT_SCREEN_SR,
-                        PatacSESConstants.SPLIT_POSITION_LEFT,
-                        PatacSESConstants.SPLIT_SIZE_1,
-                        PatacSESConstants.SPLIT_SCREEN_NAVI,
-                        ""
-                );
-                *//*if (!(currentActivity instanceof OneThirdScreenMapActivity)) {
-                    final Intent intent = new Intent(context, OneThirdScreenMapActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                }*//*
-            }
-            case SCREEN_2_3 -> {
-                enterSplitScreen(
-                        PatacSESConstants.SPLIT_SCREEN_SR,
-                        PatacSESConstants.SPLIT_POSITION_LEFT,
-                        PatacSESConstants.SPLIT_SIZE_1,
-                        PatacSESConstants.SPLIT_SCREEN_NAVI,
-                        ""
-                );
-                if (currentActivity instanceof OneThirdScreenMapActivity) {
-                    currentActivity.finish();
-                }
-            }
-            case SCREEN_FULL -> {
-                exitSplitScreen(0, "");
-                if (currentActivity instanceof OneThirdScreenMapActivity) {
-                    currentActivity.finish();
-                }
-            }
-            default -> {
-                Logger.w(TAG, "this type not support!");
-            }
-        }*/
     }
 
     /***
@@ -141,48 +87,52 @@ public class SplitScreenManager {
      * 分屏回调
      * @param isInMultiWindowMode
      */
-    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, int appCanUseWidth) {
-        Logger.i(TAG, "onMultiWindowModeChanged", "isInMultiWindowMode:" + isInMultiWindowMode, "mIsInMultiWindowMode:" + mIsInMultiWindowMode);
-        this.mScreenDp = appCanUseWidth;
-        if (mIsInMultiWindowMode != isInMultiWindowMode) {
-            notifyOnScreenSizeChanged();
-        }
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
+        Logger.i(TAG, "onMultiWindowModeChanged", isInMultiWindowMode, mIsInMultiWindowMode);
         this.mIsInMultiWindowMode = isInMultiWindowMode;
     }
 
-    public void onConfigurationChanged(Configuration newConfig) {
-        if (newConfig.screenWidthDp != mScreenDp) {
+    public void onConfigurationChanged() {
+        Logger.i(TAG, "onConfigurationChanged");
+        final Configuration configuration = AppCache.getInstance().getMContext().getResources().getConfiguration();
+        Logger.i(TAG, "onConfigurationChanged-delay", configuration.screenWidthDp);
+        if (mScreenDp != configuration.screenWidthDp) {
+            mScreenDp = configuration.screenWidthDp;
+            ScreenTypeUtils.setScreenType(getScreeTypeByUseDp());
             notifyOnScreenSizeChanged();
+        } else {
+            Logger.w(TAG, "onConfigurationChanged, but not need update!");
         }
-        mScreenDp = newConfig.screenWidthDp;
     }
 
     /***
-     * 导航App内部点击切换SR
-     * 1.导航全屏，把SR切换到1/3屏
-     * 2.导航2/3屏，把SR切换到全屏
-     * 3.导航1/3屏，点击搜索，家，公司，充电/加油，把SR切换到1/3屏
-     * TODO
+     * 当前导航全屏，SR未显示
+     * .导航全屏，把SR切换到1/3屏
      */
-    public void switchSR() {
-        final ScreenType screenType = ScreenTypeUtils.getScreenType();
-        switch (screenType) {
-            case SCREEN_FULL, SCREEN_1_3 -> {
-                enterSplitScreen(
-                        PatacSESConstants.SPLIT_SCREEN_SR,
-                        PatacSESConstants.SPLIT_POSITION_LEFT,
-                        PatacSESConstants.SPLIT_SIZE_1,
-                        PatacSESConstants.SPLIT_SCREEN_NAVI,
-                        ""
-                );
-            }
-            case SCREEN_2_3 -> {
-                exitSplitScreen(1, "");
-            }
-            default -> {
-                Logger.e(TAG, "not support,please implementation it!");
-            }
-        }
+    public void switchSRToOneThirdScreen() {
+        enterSplitScreen(
+                PatacSESConstants.SPLIT_SCREEN_NAVI,
+                PatacSESConstants.SPLIT_POSITION_RIGHT,
+                PatacSESConstants.SPLIT_SIZE_2,
+                PatacSESConstants.SPLIT_SCREEN_SR,
+                ""
+        );
+    }
+
+    /***
+     * 导航1/3屏，点击切换智能驾驶App到全屏
+     */
+    public void switchSRToFullScreen() {
+        exitSplitScreen(1, "");
+    }
+
+    /***
+     * 当前位置：SR处于2/3右侧，导航左侧1/3
+     * 切换SR到屏幕左侧1/3，导航到右侧2/3
+     */
+    public void switchSRToOneThirdScreenAndPositionLeft() {
+        Logger.i(TAG, "switchSRToOneThirdScreenAndPositionLeft");
+        switchSplitScreen(2, "");
     }
 
     private static final class InstanceHolder {
@@ -202,31 +152,31 @@ public class SplitScreenManager {
     private final ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Logger.i(TAG, "onServiceConnected", "name:" + name.getPackageName());
+            Logger.i(TAG, "onServiceConnected", name.getPackageName());
             mBinder = ISystemExtendServiceProxy.Stub.asInterface(service);
             isServiceConnect = !ConvertUtils.isNull(mBinder);
             try {
                 service.linkToDeath(mDeathRecipient, 0);
             } catch (RemoteException exception) {
-                Logger.e(TAG, "error:" + exception.getMessage());
+                Logger.e(TAG, exception.getMessage());
             }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Logger.i(TAG, "onServiceDisconnected", "name:" + name.getPackageName());
+            Logger.i(TAG, "onServiceDisconnected", name.getPackageName());
             isServiceConnect = false;
         }
     };
 
     private void bindService() {
-        Logger.i(TAG, "bindService", "isServiceConnect:" + isServiceConnect);
+        Logger.i(TAG, "bindService", isServiceConnect);
         try {
             if (!isServiceConnect) {
                 final Intent intent = new Intent();
                 intent.setClassName(PACKAGE_NAME, CLS_NAME);
                 isServiceConnect = AppCache.getInstance().getMContext().bindService(intent, connection, Context.BIND_AUTO_CREATE);
-                Logger.i(TAG, "bindService-result:" + isServiceConnect);
+                Logger.i(TAG, isServiceConnect);
             }
         } catch (SecurityException exception) {
             Logger.i(TAG, "bind service failed:" + exception.getMessage());
@@ -249,13 +199,15 @@ public class SplitScreenManager {
      * @param extra 预留字段，传空字符串即可
      */
     public void enterSplitScreen(String pkg, int position, int size, String secondPkg, String extra) {
-        Logger.i(TAG, "enterSplitScreen");
-        if (!ConvertUtils.isNull(mBinder)) {
+        Logger.i(TAG, "enterSplitScreen", pkg, position, size, secondPkg, secondPkg);
+        if (isServiceConnect && !ConvertUtils.isNull(mBinder)) {
             try {
                 mBinder.enterISplitScreen(pkg, position, size, secondPkg, extra);
             } catch (RemoteException e) {
-                Logger.e(TAG, "enterISplitScreen failed:" + e.getMessage());
+                Logger.e(TAG, e.getMessage());
             }
+        } else {
+            Logger.e(TAG, "service disconnect or mBinder is null!");
         }
     }
 
@@ -266,13 +218,15 @@ public class SplitScreenManager {
      * @param extra
      */
     public void exitSplitScreen(int type, String extra) {
-        Logger.i(TAG, "exitSplitScreen");
-        if (!ConvertUtils.isNull(mBinder)) {
+        Logger.e(TAG, "exitSplitScreen", type, extra);
+        if (isServiceConnect && !ConvertUtils.isNull(mBinder)) {
             try {
                 mBinder.exitISplitScreen(type, extra);
             } catch (RemoteException e) {
-                Logger.e(TAG, "exitSplitScreen failed:" + e.getMessage());
+                Logger.e(TAG, "exitSplitScreen failed" , e.getMessage());
             }
+        } else {
+            Logger.e(TAG, "exitSplitScreen failed: service not connect or mBinder is null!");
         }
     }
 
@@ -286,14 +240,16 @@ public class SplitScreenManager {
      * @param type
      * @param extra
      */
-    public void switchISplitScreen(int type, String extra) {
-        Logger.i(TAG, "switchISplitScreen");
+    public void switchSplitScreen(int type, String extra) {
+        Logger.i(TAG, "switchISplitScreen" , type, "extra" , extra);
         if (!ConvertUtils.isNull(mBinder)) {
             try {
                 mBinder.switchISplitScreen(type, extra);
             } catch (RemoteException e) {
                 Logger.e(TAG, "switchISplitScreen");
             }
+        } else {
+            Logger.e(TAG, "switchSplitScreen failed: service not connect or mBinder is null!");
         }
     }
 
@@ -307,21 +263,27 @@ public class SplitScreenManager {
         if (!ConvertUtils.isNull(mBinder)) {
             try {
                 final String[] status = mBinder.getISplitScreenStatus();
-                Logger.i(TAG, "leftInfo:" + (status.length >= 1 ? status[0] : ""), "rightInfo:" + ((status.length > 1) ? status[1] : ""));
                 return status;
             } catch (RemoteException e) {
-                Logger.e(TAG, "getSplitScreenStatus failed:" + e.getMessage());
+                Logger.e(TAG, "getSplitScreenStatus failed" , e.getMessage());
                 return null;
             }
         }
         return null;
     }
 
-    public void setIsInMultiWindowMode(boolean isIn, int screenDp) {
-        Logger.i(TAG, "setIsInMultiWindowMode:" + isIn, "canUseScreenWidth:" + screenDp);
-        this.mIsInMultiWindowMode = isIn;
-        this.mScreenDp = screenDp;
-        notifyOnScreenSizeChanged();
+    private ScreenType getScreeTypeByUseDp() {
+        Logger.d(TAG, "getScreeTypeByUseDp", mScreenDp, ONE_THIRD_WIDTH, TWO_THIRD_WIDTH);
+        ScreenType screenType;
+        if (0 < mScreenDp && mScreenDp <= ONE_THIRD_WIDTH + OFFSET) {
+            screenType = ScreenType.SCREEN_1_3;
+        } else if (mScreenDp > ONE_THIRD_WIDTH && mScreenDp < TWO_THIRD_WIDTH + OFFSET) {
+            screenType = ScreenType.SCREEN_2_3;
+        } else {
+            screenType = ScreenType.SCREEN_FULL;
+        }
+        Logger.d(TAG, "getScreeTypeByUseDp", screenType.name());
+        return screenType;
     }
 
     public interface OnScreenModeChangedListener {
@@ -329,32 +291,17 @@ public class SplitScreenManager {
     }
 
     private void notifyOnScreenSizeChanged() {
-        ScreenType screenType;
-        if (isOneThirdScreen()) {
-            screenType = ScreenType.SCREEN_1_3;
+        Logger.i(TAG, "notifyOnScreenSizeChanged", mListeners.size());
+        if (ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_1_3) {
             currentJsonPath = ONE_THIRD_JSON_PATH;
-        } else if (isTwoThirdScreen()) {
-            screenType = ScreenType.SCREEN_2_3;
+        } else if (ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_2_3) {
             currentJsonPath = TWO_THIRD_JSON_PATH;
         } else {
-            screenType = ScreenType.SCREEN_FULL;
             currentJsonPath = FULL_SCREEN_JSON_PATH;
         }
-        ScreenType finalScreenType = screenType;
-        if (finalScreenType != ScreenTypeUtils.getScreenType()) {
-            mListeners.forEach(listener -> {
-                listener.onScreenModeChanged(finalScreenType, currentJsonPath);
-            });
-            ScreenTypeUtils.setScreenType(screenType);
-        }
-    }
-
-    private boolean isOneThirdScreen() {
-        return Math.abs(mScreenDp - ONE_THIRD_WIDTH) <= OFFSET;
-    }
-
-    private boolean isTwoThirdScreen() {
-        return Math.abs(mScreenDp - TWO_THIRD_WIDTH) <= OFFSET;
+        mListeners.forEach(listener -> {
+            listener.onScreenModeChanged(ScreenTypeUtils.getScreenType(), currentJsonPath);
+        });
     }
 
     /***

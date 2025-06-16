@@ -28,10 +28,10 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected StackManager mStackManager;
     protected String mScreenId;
     private String mLastClosedFragmentName;
-
+    private final String LIFE_CYCLE_TAG = "activity_life_cycle";
     public BaseActivity() {
         super();
-        Logger.i(getClass().getSimpleName(), "onCreate before");
+        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onCreate before");
         mStackManager = StackManager.getInstance();
         onCreateBefore();
         mStackManager.push(mScreenId, this);
@@ -40,51 +40,52 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     protected void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.i(getClass().getSimpleName(), "onCreate start");
+        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onCreate start");
         setImmersiveStatusBar();
         createViewModel();
         onInitView();
         onInitObserver();
         onInitData();
-        Logger.i(getClass().getSimpleName(), "onCreate end");
+        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onCreate end");
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("onConfigurationChanged",true);
-        Logger.i("song---");
+        Logger.i(LIFE_CYCLE_TAG,"onSaveInstanceState");
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         boolean onConfigurationChanged = savedInstanceState.getBoolean("onConfigurationChanged");
-        Logger.i("song---", onConfigurationChanged);
+        Logger.i(LIFE_CYCLE_TAG, "onRestoreInstanceState", onConfigurationChanged);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Logger.i(getClass().getSimpleName(), "onResume");
+        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onResume");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Logger.i(getClass().getSimpleName(), "onStart");
+        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onStart");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Logger.i(getClass().getSimpleName(), "onStop");
+        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Logger.i(getClass().getSimpleName(), "onDestroy");
+        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onDestroy");
+        mStackManager.removeBaseView(mScreenId, this);
     }
 
     @Override

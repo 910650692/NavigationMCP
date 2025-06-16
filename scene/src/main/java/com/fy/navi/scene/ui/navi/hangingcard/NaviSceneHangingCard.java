@@ -109,6 +109,7 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
     }
 
     private void pauseTimer() {
+        if (ConvertUtils.isNull(mViewBinding)) return;
         if (mViewBinding.llFirst.getChildCount() > 0) {
             CardView cardView = (CardView) mViewBinding.llFirst.getChildAt(0);
             if (!ConvertUtils.isNull(cardView)) {
@@ -130,6 +131,7 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
     }
 
     private void resumeTimer() {
+        if (ConvertUtils.isNull(mViewBinding)) return;
         if (mViewBinding.llFirst.getChildCount() > 0) {
             CardView cardView = (CardView) mViewBinding.llFirst.getChildAt(0);
             if (!ConvertUtils.isNull(cardView)) {

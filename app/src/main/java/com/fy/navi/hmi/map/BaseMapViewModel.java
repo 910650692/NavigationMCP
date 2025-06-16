@@ -41,7 +41,9 @@ import com.fy.navi.hmi.route.RouteFragment;
 import com.fy.navi.hmi.search.mainsearch.MainSearchFragment;
 import com.fy.navi.hmi.search.searchresult.SearchResultFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
+import com.fy.navi.hmi.splitscreen.SplitFragment;
 import com.fy.navi.hmi.traffic.TrafficEventFragment;
+import com.fy.navi.hmi.utils.ScreenTypeUtils;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -64,6 +66,7 @@ import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
 import com.fy.navi.service.define.route.RouteTMCParam;
+import com.fy.navi.service.define.screen.ScreenType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.fy.navi.service.define.utils.NumberUtils;
@@ -122,18 +125,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> mPopGuideLoginShow;
     public ObservableField<Boolean> mGoHomeVisible;
     public ObservableField<Boolean> sRVisible;
-
+    public ObservableField<Boolean> mIsFullScreen;
 
     private ScheduledFuture mScheduledFuture;
     private ScheduledFuture goHomeTimer;
     private final int mTimer = 300;
 
-
     public BaseMapViewModel(@NonNull Application application) {
         super(application);
         backToCcPVisibility = new ObservableBoolean(false);
         mainBTNVisibility = new ObservableBoolean(true);
-        mScaleViewVisibility = new ObservableBoolean(true);
+        mScaleViewVisibility = new ObservableBoolean(ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3);
         naviHomeVisibility = new ObservableField<>(false);
         limitDriverVisibility = new ObservableField<>(false);
         limitEndNumVisibility = new ObservableField<>(false);
@@ -161,7 +163,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mPopGuideLoginShow = new ObservableField<>(false);
         cruiseLanesVisibility = new ObservableField<>(false);
         mGoHomeVisible = new ObservableField<>(false);
-        sRVisible = new ObservableField<>(false);
+        sRVisible = new ObservableField<>(isSupportSplitScreen());
+        mIsFullScreen = new ObservableField<>(ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3);
     }
 
     @Override
@@ -453,10 +456,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.setMapCenterInScreen();
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
-        mScaleViewVisibility.set(type != -1 || searchKey == AutoMapConstant.SearchType.MAIN_SEARCH_ICON
+        mScaleViewVisibility.set((type != -1 || searchKey == AutoMapConstant.SearchType.MAIN_SEARCH_ICON
                 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
-                NaviStatus.NaviStatusType.NAVING.equals(state));
+                NaviStatus.NaviStatusType.NAVING.equals(state)) && (ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3));
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -468,7 +471,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void resetMapCenterInScreen() {
         mView.setMapFocusable(true);
         mModel.resetMapCenterInScreen();
-        mScaleViewVisibility.set(true);
+        mScaleViewVisibility.set(true && ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3);
         mainBTNVisibility.set(true);
         bottomNaviVisibility.set(true);
         if (mModel.checkPopGuideLogin()) {
@@ -1032,6 +1035,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             Logger.i(TAG, "startNaviForRouteOver addNaviFragment");
             Bundle bundle = new Bundle();
             bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, AutoMapConstant.NaviType.NAVI_GPS);
+            closeAllFragment();
             addFragment(new NaviGuidanceFragment(), bundle);
         }
     }
@@ -1215,4 +1219,39 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 break;
         }
     }
+
+    /***
+     *
+     * @return 如果需要分屏重写此方法返回 true 即可
+     */
+    public boolean isSupportSplitScreen() {
+        return false;
+    }
+
+    public void onScreenModeChanged(ScreenType screenType) {
+        Logger.d(TAG, "onScreenModeChanged", screenType.name());
+        if (!isSupportSplitScreen()) {
+            Logger.w(TAG, "不支持分屏！");
+            return;
+        }
+        mScaleViewVisibility.set(screenType != ScreenType.SCREEN_1_3);
+        sRVisible.set(screenType != ScreenType.SCREEN_1_3);
+        mIsFullScreen.set(screenType == ScreenType.SCREEN_FULL);
+        final BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(mScreenId);
+        switch (screenType) {
+            case SCREEN_1_3 -> {
+                if (!(baseFragment instanceof SplitFragment)) {
+                    addFragment(new SplitFragment(), null);
+                }
+            }
+            default -> {
+                if ((baseFragment instanceof SplitFragment)) {
+                    closeFragment(true);
+                }
+            }
+        }
+    }
+
+    public Action switchSr = () -> {
+    };
 }

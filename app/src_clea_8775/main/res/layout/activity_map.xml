@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".startup.StartupActivity">
+
         <com.fy.navi.service.define.map.MainScreenMapView
             android:id="@+id/main_mapview"
             android:layout_width="match_parent"
@@ -292,27 +293,24 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_34"
             android:layout_marginBottom="@dimen/dp_30"
-            app:layout_goneMarginBottom="@dimen/dp_130"
             android:visibility="@{ViewModel.mScaleViewVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@id/tv_split_info"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_goneMarginBottom="@dimen/dp_130" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_split_info"
+            clickCommand="@{ViewModel.switchSr}"
             android:layout_width="@dimen/dp_196"
             android:layout_height="@dimen/dp_196"
             android:layout_marginEnd="@dimen/dp_34"
             android:layout_marginBottom="@dimen/dp_147"
-            app:layout_goneMarginBottom="@dimen/dp_0"
+            android:background="@{ViewModel.mIsFullScreen ? @drawable/map_switch_sr : @drawable/map_sr}"
             android:gravity="center"
-            android:text="分屏测试-功能开发中"
-            android:textSize="@dimen/sp_30"
-            android:textColor="@color/white_always"
-            android:background="@color/common_green"
-            clickCommand="@{ViewModel.switchSr}"
             android:visibility="@{ViewModel.sRVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_goneMarginBottom="@dimen/dp_0" />
 
         <com.fy.navi.ui.view.SkinFrameLayout
             android:id="@+id/layout_fragment"
