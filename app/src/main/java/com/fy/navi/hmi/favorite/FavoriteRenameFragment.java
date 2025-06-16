@@ -16,6 +16,7 @@ import com.fy.navi.ui.base.BaseFragment;
 
 public class FavoriteRenameFragment extends BaseFragment<FragmentFavoriteRenameBinding, FavoriteRenameViewModel> {
 
+    private String mName = "";
     @Override
     public int onLayoutId() {
         return R.layout.fragment_favorite_rename;
@@ -44,6 +45,7 @@ public class FavoriteRenameFragment extends BaseFragment<FragmentFavoriteRenameB
                 String customName = "";
                 if (poiInfoEntity.getFavoriteInfo() != null) {
                     customName = poiInfoEntity.getFavoriteInfo().getCustom_name();
+                    mName = poiInfoEntity.getName();
                 }
                 setEditTextContent(TextUtils.isEmpty(customName) ? poiInfoEntity.getName() : customName);
             }
@@ -72,7 +74,7 @@ public class FavoriteRenameFragment extends BaseFragment<FragmentFavoriteRenameB
      */
     public void renameFinished() {
         String newName = mBinding.settingFavoriteRename.getText().toString().trim();
-        SettingUpdateObservable.getInstance().onUpdateRename(newName);
+        SettingUpdateObservable.getInstance().onUpdateRename(TextUtils.isEmpty(newName) ? mName : newName);
     }
 
     /**
