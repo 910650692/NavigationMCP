@@ -116,12 +116,12 @@
                     <View
                         android:id="@+id/sub_line_view"
                         android:layout_width="@dimen/dp_1"
-                        android:layout_height="@dimen/dp_40"
+                        android:layout_height="@dimen/dp_19"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/dp_10"
                         android:layout_marginEnd="@dimen/dp_10"
-                        android:visibility="@{poiBean.getMEndPoiName().empty ? View.GONE : View.VISIBLE}"
-                        android:background="@color/search_quick_tab_view_color" />
+                        android:background="@color/search_quick_tab_view_color"
+                        android:visibility="@{poiBean.getMEndPoiName().empty ? View.GONE : View.VISIBLE}" />
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/poi_address"
