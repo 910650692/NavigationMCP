@@ -237,7 +237,7 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
         }
         // TODO 临时修复进度条方案，后续重新优化tmc, 存在TMC上的途经点icon频繁闪烁且位置频繁变更问题
         mScreenView.updateTmcContainerNew(items, 0, mLightBarDetail == null ? 0 : mLightBarDetail.getTotalDistance());
-        mScreenView.updateTmcAreaNew(items, 0, mLightBarDetail == null ? 0 : mLightBarDetail.getTotalDistance());
+        //mScreenView.updateTmcAreaNew(items, 0, mLightBarDetail == null ? 0 : mLightBarDetail.getTotalDistance());
 //        setNightMode(NightModeGlobal.isNightMode());
     }
 

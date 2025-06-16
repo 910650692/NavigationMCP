@@ -299,8 +299,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param naviTmcInfo navi tmc info
      */
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo, boolean isShowAutoAdd) {
-        mBinding.sceneNaviTmc.setIsShowAutoAdd(isShowAutoAdd);
-        mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
+        if (mBinding.sceneNaviTmc.getVisibility() == VISIBLE) {
+            mBinding.sceneNaviTmc.setIsShowAutoAdd(isShowAutoAdd);
+            mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
+        }
     }
 
     /**

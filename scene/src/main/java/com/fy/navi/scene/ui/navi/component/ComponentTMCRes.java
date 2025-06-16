@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviTmcViewBinding;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -23,6 +22,9 @@ import java.util.List;
 public class ComponentTMCRes extends SkinConstraintLayout {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private Context mContext;
+    private final int[] mColors = new int[9];
+    private int mHeight;
+    private int mWidth;
 
     public ComponentTMCRes(@NonNull final Context context) {
         super(context);
@@ -71,6 +73,15 @@ public class ComponentTMCRes extends SkinConstraintLayout {
                                  final SceneNaviTmcViewBinding naviTmcBinding) {
         mNaviTmcBinding = naviTmcBinding;
         setOffline(offline);
+        mColors[0] = getDefaultColor(R.color.auto_color_0a80fb);
+        mColors[1] = getDefaultColor(R.color.auto_color_ca6d);
+        mColors[2] = getDefaultColor(R.color.auto_color_bfa92e);
+        mColors[3] = getDefaultColor(R.color.auto_color_f4cf4b);
+        mColors[4] = getDefaultColor(R.color.auto_color_bf714d);
+        mColors[5] = getDefaultColor(R.color.auto_color_e85466);
+        mColors[6] = getDefaultColor(R.color.auto_color_81132b);
+        mColors[7] = getDefaultColor(R.color.auto_color_c04361);
+        mColors[8] = getDefaultColor(R.color.auto_color_379e4f);
     }
 
     /**
@@ -113,13 +124,17 @@ public class ComponentTMCRes extends SkinConstraintLayout {
      */
     private void drawTmcArea(final Canvas canvas) {
 //        int routeTotalLength = 0;
-        final int width = getWidth();
-        int height = getHeight();
+        if (mHeight == 0) {
+            mHeight = getHeight();
+        }
+        if (mWidth == 0) {
+            mWidth = getWidth();
+        }
         if (mIsHorizontal) {
             // TODO
         } else {
             if (mNaviTmcBinding != null) {
-                height -= mNaviTmcBinding.sivCar.getHeight() / 5;
+                mHeight -= mNaviTmcBinding.sivCar.getHeight() / 5;
             }
         }
 //        Logger.d(TAG, "paintTmcBar left:" + this.getLeft() + " top:" + this.getTop()
@@ -128,7 +143,7 @@ public class ComponentTMCRes extends SkinConstraintLayout {
 
         if (mTmcAreaItemsNew == null) {
             // 默认颜色
-            canvas.drawRect(0, 0, width, height, getPaintInColor(getColor(NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_OPEN)));
+            canvas.drawRect(0, 0, mWidth, mHeight, getPaintInColor(getColor(NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_OPEN)));
             return;
         }
         //计算矩形内的填充高度
@@ -152,9 +167,9 @@ public class ComponentTMCRes extends SkinConstraintLayout {
         // 距离和View高度的比率,用于在view高度和实际距离之间进行转换,单位:像素/米
         final float rateDistanceToView;
         if (mIsHorizontal) {
-            rateDistanceToView = (width * 1.0f) / (mTotalDistance * 1.0f);
+            rateDistanceToView = (mWidth * 1.0f) / (mTotalDistance * 1.0f);
         } else {
-            rateDistanceToView = (height * 1.0f) / (mTotalDistance * 1.0f);
+            rateDistanceToView = (mHeight * 1.0f) / (mTotalDistance * 1.0f);
         }
         // 车标位置
         final int carPosition;
@@ -180,10 +195,10 @@ public class ComponentTMCRes extends SkinConstraintLayout {
 
 //                    UILog.d(TAG, "i:" + i + "--pixelDistanceSum:" + pixelDistanceSum + "--itemWidth:" + itemWidth + "--status:" + item.status);
                 if (pixelDistanceSum - itemWidth >= carPosition) {
-                    canvas.drawRect(pixelDistanceSum - itemWidth, 0, pixelDistanceSum, height,
+                    canvas.drawRect(pixelDistanceSum - itemWidth, 0, pixelDistanceSum, mHeight,
                             getPaintInColor(getColor(item.getStatus())));
                 } else if (pixelDistanceSum - itemWidth < carPosition && carPosition < pixelDistanceSum) {
-                    canvas.drawRect(carPosition, 0, pixelDistanceSum, height,
+                    canvas.drawRect(carPosition, 0, pixelDistanceSum, mHeight,
                             getPaintInColor(getColor(item.getStatus())));
                 }
             }
@@ -202,14 +217,14 @@ public class ComponentTMCRes extends SkinConstraintLayout {
                 if (pixelDistanceSum < carPosition) {
 //                    Logger.d(TAG, "1 drawRect left ："  + " top:" + (pixelDistanceSum - itemHeight)
 //                            + " width:" + width + " bottom:" + pixelDistanceSum);
-                    canvas.drawRect(0, pixelDistanceSum - itemHeight, width, pixelDistanceSum,
+                    canvas.drawRect(0, pixelDistanceSum - itemHeight, mWidth, pixelDistanceSum,
                             // 画矩形
                             getPaintInColor(getColor(item.getStatus())));
                 } else if ((pixelDistanceSum - itemHeight) < carPosition) {
                     // 位置和车标重叠
 //                    Logger.d(TAG, "2 drawRect left"  + " top:" + (pixelDistanceSum - itemHeight)
 //                            + " width:" + width + " bottom:" + carPosition);
-                    canvas.drawRect(0, pixelDistanceSum - itemHeight, width, carPosition,
+                    canvas.drawRect(0, pixelDistanceSum - itemHeight, mWidth, carPosition,
                             // 画矩形
                             getPaintInColor(getColor(item.getStatus())));
                 }
@@ -219,14 +234,14 @@ public class ComponentTMCRes extends SkinConstraintLayout {
 
         // 走过的路使用灰色
         if (mIsHorizontal) {
-            canvas.drawRect(0, 0, carPosition, height,
+            canvas.drawRect(0, 0, carPosition, mHeight,
                     getPaintInColor(getDefaultColor(R.color.navi_color_313336_94)));
-            if (pixelDistanceSum < width) {
-                canvas.drawRect(pixelDistanceSum, 0, width, height,
+            if (pixelDistanceSum < mWidth) {
+                canvas.drawRect(pixelDistanceSum, 0, mWidth, mHeight,
                         getPaintInColor(getColor(-1)));
             }
         } else {
-            if (height > carPosition) {
+            if (mHeight > carPosition) {
 //                Logger.d(TAG, "3 drawRect left:"  + " top:" + carPosition + " width:" + width + " bottom:" + height);
 //                canvas.drawRect(0, carPosition, width, height, getPaintInColor(getColor(TrafficStatus.AUTO_UNKNOWN_ERROR)));// 画矩形
             }
@@ -274,30 +289,27 @@ public class ComponentTMCRes extends SkinConstraintLayout {
      * @return 颜色值
      */
     private int getColor(final int status) {
-        Logger.d(TAG, "getColor:" + " status:" + status);
+        //Logger.d(TAG, "getColor:" + " status:" + status);
         // 网络未连接，并且不是等于已经走过的路
         if (mOffline && status != NaviConstant.TMCTrafficStatus.AUTO_UNKNOWN_ERROR) {
-            return getDefaultColor(R.color.auto_color_0a80fb);
+            return mColors[0];
         }
-        switch (status) {
+        return switch (status) {
             // 畅通：绿色
-            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_OPEN:
-                return getDefaultColor(R.color.auto_color_ca6d);
+            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_OPEN -> mColors[1];
             // 缓行：黄色
-            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_SLOW:
-                return mIsNightMode ? getDefaultColor(R.color.auto_color_bfa92e) : getDefaultColor(R.color.auto_color_f4cf4b);
+            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_SLOW ->
+                    mIsNightMode ? mColors[2] : mColors[3];
             // 拥堵：红色
-            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_JAM:
-                return mIsNightMode ? getDefaultColor(R.color.auto_color_bf714d) : getDefaultColor(R.color.auto_color_e85466);
+            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_JAM ->
+                    mIsNightMode ? mColors[4] : mColors[5];
             // 严重拥堵：深红
-            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_CONGESTED:
-                return mIsNightMode ? getDefaultColor(R.color.auto_color_81132b) : getDefaultColor(R.color.auto_color_c04361);
+            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_CONGESTED ->
+                    mIsNightMode ? mColors[6] : mColors[7];
             // 极度畅通：深绿色
-            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_EXTREMELY_OPEN:
-                return getDefaultColor(R.color.auto_color_379e4f);
-            default:
-                return mIsNightMode ? getDefaultColor(R.color.auto_color_ca6d) : getDefaultColor(R.color.auto_color_ca6d);
-        }
+            case NaviConstant.TMCTrafficStatus.TRAFFIC_STATUS_EXTREMELY_OPEN -> mColors[8];
+            default -> mColors[1];
+        };
     }
 
     /**
