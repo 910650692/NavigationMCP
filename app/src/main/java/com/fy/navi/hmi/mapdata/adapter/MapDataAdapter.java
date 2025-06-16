@@ -280,15 +280,23 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
             // 全部开始下载
             allDownload.setOnClickListener(view -> {
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+                if (parent == null) {
+                    Logger.d("parent: parent is null");
+                    return;
+                }
+                Logger.d("parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
                 final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
-                for (CityDataInfo info : cityDataInfos) {
-                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
-                            info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
-                            info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_ERR ||
-                            info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX  ) {
-                        cityAdCodes.add(info.getAdcode());
+                if (cityDataInfos != null && cityDataInfos.size() != 0) {
+                    for (CityDataInfo info : cityDataInfos) {
+                        if (info != null && info.getDownLoadInfo() != null) {
+                            if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
+                                    info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
+                                    info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_ERR ||
+                                    info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX) {
+                                cityAdCodes.add(info.getAdcode());
+                            }
+                        }
                     }
                 }
                 if (onChildClickListener != null) {
