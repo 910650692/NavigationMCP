@@ -90,7 +90,7 @@ public class CardManager {
      * 判断终点是否充电站
      * @return true 代表终点是充电站
      */
-    public boolean judgeDestinationIsChargeStation(final PoiInfoEntity poiInfo) {
+    public boolean judgePoiIsChargeStation(final PoiInfoEntity poiInfo) {
         if (!ConvertUtils.isNull(poiInfo)) {
             if(!ConvertUtils.isEmpty(poiInfo.getPoiTag()) &&
                     poiInfo.getPoiTag().contains(AppCache.getInstance().getMContext().getString(R.string.st_quick_search_charge))){

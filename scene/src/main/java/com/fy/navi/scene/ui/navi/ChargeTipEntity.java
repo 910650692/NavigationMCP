@@ -1,5 +1,9 @@
 package com.fy.navi.scene.ui.navi;
 
+import androidx.annotation.NonNull;
+
+import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
+
 public class ChargeTipEntity {
     private String mTitle;
     private String mSubTitle;
@@ -7,6 +11,7 @@ public class ChargeTipEntity {
     @SceneNaviChargeBtnType.Type
     private int mType;
     private String mTtsContent;
+    private RouteAlterChargeStationInfo mRouteAlterChargeStationInfo;
 
     public String getTitle() {
         return mTitle;
@@ -46,5 +51,26 @@ public class ChargeTipEntity {
 
     public void setTtsContent(final String ttsContent) {
         this.mTtsContent = ttsContent;
+    }
+
+    public RouteAlterChargeStationInfo getRouteAlterChargeStationInfo() {
+        return mRouteAlterChargeStationInfo;
+    }
+
+    public void setRouteAlterChargeStationInfo(RouteAlterChargeStationInfo routeAlterChargeStationInfo) {
+        this.mRouteAlterChargeStationInfo = routeAlterChargeStationInfo;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "ChargeTipEntity{" +
+                "mTitle='" + mTitle + '\'' +
+                ", mSubTitle='" + mSubTitle + '\'' +
+                ", mAction='" + mAction + '\'' +
+                ", mType=" + mType +
+                ", mTtsContent='" + mTtsContent + '\'' +
+                ", mRouteAlterChargeStationInfo='" + mRouteAlterChargeStationInfo + '\'' +
+                '}';
     }
 }

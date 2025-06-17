@@ -75,7 +75,7 @@ public class ChargeCardView extends CardView<NaviSceneNearProvideStationChargeBi
             mBinding.tvSubTitle.setVisibility(GONE);
             mBinding.tvSubTitleUnexpand.setVisibility(GONE);
         }
-        if(CardManager.getInstance().judgeDestinationIsChargeStation(poiInfo)){
+        if(CardManager.getInstance().judgePoiIsChargeStation(poiInfo)){
             mBinding.layoutChargeDesc.tvAddress.setVisibility(VISIBLE);
             mBinding.layoutChargeDesc.tvAddress.setText(poiInfo.getAddress());
         } else {

@@ -13,11 +13,23 @@ public interface INaviSceneEvent {
         SceneCloseState
     }
 
+    enum SceneInfo {
+        Invalid,      //无效数据
+        TipUnlock     //消息卡片打开地锁
+    }
+
     /**
      * @param type type
      * @param cardId cardId
      */
     void notifySceneStateChange(SceneStateChangeType type, NaviSceneId cardId);
+
+    /**
+     * @param type type
+     * @param cardId cardId
+     * @param info info
+     */
+    void notifySceneStateChange(SceneStateChangeType type, NaviSceneId cardId, SceneInfo info);
 
     /**
      * 将隐藏的scene展示

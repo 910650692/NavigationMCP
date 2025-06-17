@@ -26,6 +26,9 @@ import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.databinding.SceneReservationDetailViewBinding;
 import com.fy.navi.scene.impl.poi.ScenePoiChargingStationReservationViewImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
+import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -246,6 +249,9 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
             @Override
             public void onCommitClick() {
                 mScreenViewModel.unGroundLock(mEquipmentInfo.getmConnectorInfoItem().get(0),mPoiInfoEntity,mParams);
+                //TODO 放在开锁成功回调的地方
+                /*NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.SceneShowState,
+                        NaviSceneId.NAVI_CHARGE_TIP, INaviSceneEvent.SceneInfo.TipUnlock);*/
             }
         })
         .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.sure_unlock))

@@ -68,14 +68,14 @@ public class NaviSceneManager implements INaviSceneEvent {
         hideScene(sceneBase);
     }
 
-    private void onShowScene(NaviSceneId cardId) {
+    private void onShowScene(NaviSceneId cardId, SceneInfo info) {
         ThreadManager.getInstance().postUi(() -> {
             NaviSceneBase newSceneBase = getSceneById(cardId);
             if (!ConvertUtils.isEmpty(newSceneBase)) { // 先判断集合中是否已经包含该场景
                 if (ConvertUtils.isEmpty(showSceneList)) { // 如果showSceneList为空则直接展示
                     Logger.i(TAG, "没有任何卡片在显示，直接展示新卡片",
                             "newSceneBase -> " + newSceneBase.getSceneName());
-                    showScene(newSceneBase);
+                    showScene(newSceneBase, info);
                 } else {
                     if (NaviSceneBase.SCENE_STATE_SHOW == newSceneBase.getSceneState()) { // 正在展示中不进行任何操作
                         Logger.i(TAG, "current " , newSceneBase.getSceneName() + " is show");
@@ -113,7 +113,7 @@ public class NaviSceneManager implements INaviSceneEvent {
                                         logShowAndShow.append("双卡同时显示 旧卡:");
                                     }
                                     logShowAndShow.append("id>").append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName()).append(" ");
-                                    showScene(newSceneBase);
+                                    showScene(newSceneBase, info);
                                 }
                                 case NaviSceneRule.SCENE_SHOW_AND_CLOSE -> {
                                     //Logger.i(TAG, "旧卡继续显示，新卡不展示", "oldSceneView:" + oldSceneView.getSceneName() + " oldId:" + oldSceneView.getSceneId().ordinal());
@@ -143,7 +143,7 @@ public class NaviSceneManager implements INaviSceneEvent {
                                         logHideAndShow.append("旧卡隐藏，开始显示新卡，新卡显示结束继续显示旧卡 旧卡:");
                                     }
                                     logHideAndShow.append("id>").append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName()).append(" ");
-                                    showScene(newSceneBase);
+                                    showScene(newSceneBase, info);
                                     hideScene(oldSceneView);
                                 }
                                 case NaviSceneRule.SCENE_CLOSE_AND_SHOW -> {
@@ -154,7 +154,7 @@ public class NaviSceneManager implements INaviSceneEvent {
                                     }
                                     logCloseAndShow.append("id>").append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName())
                                             .append(">state:").append(oldSceneView.getSceneState()).append(" ");
-                                    showScene(newSceneBase);
+                                    showScene(newSceneBase, info);
                                     closeScene(oldSceneView);
                                 }
                                 default -> {
@@ -215,7 +215,7 @@ public class NaviSceneManager implements INaviSceneEvent {
         }
     }
 
-    private void showScene(@Nullable NaviSceneBase sceneView) {
+    private void showScene(@Nullable NaviSceneBase sceneView, SceneInfo info) {
         if (sceneView == null) {
             Logger.e(TAG, "sceneView==null");
             return;
@@ -227,7 +227,11 @@ public class NaviSceneManager implements INaviSceneEvent {
         } else {
             Logger.i(TAG, "showSceneList 已存在！：" , sceneView.getSceneId().name());
         }
-        sceneView.show();
+        if(info != SceneInfo.Invalid){
+            sceneView.show(info);
+        } else {
+            sceneView.show();
+        }
         if (ConvertUtils.isContain(hideSceneList, sceneView)) {
             ConvertUtils.remove(hideSceneList, sceneView);
         }
@@ -258,7 +262,7 @@ public class NaviSceneManager implements INaviSceneEvent {
         NaviSceneBase newSceneBase = getSceneById(cardId);
         if (!ConvertUtils.isEmpty(newSceneBase)) {
             Logger.d(TAG, "getSceneName -> " , newSceneBase.getSceneName(), "getSceneState:" , newSceneBase.getSceneState());
-            showScene(newSceneBase);
+            showScene(newSceneBase, SceneInfo.Invalid);
         } else {
             Logger.e(TAG, "newSceneBase==null");
         }
@@ -308,7 +312,20 @@ public class NaviSceneManager implements INaviSceneEvent {
             checkSceneReset(cardId);
             onCloseScene(cardId);
         } else if (type == SceneStateChangeType.SceneShowState) {//显示Scene
-            onShowScene(cardId);
+            onShowScene(cardId, SceneInfo.Invalid);
+        } else if (type == SceneStateChangeType.SceneHideState) {//隐藏Scene
+            onHideScene(cardId);
+        }
+    }
+
+    @Override
+    public void notifySceneStateChange(SceneStateChangeType type, NaviSceneId cardId, SceneInfo info) {
+        Logger.i("notifySceneStateChange", "type:" + type + " cardId:" + cardId + " info:" + info);
+        if (type == SceneStateChangeType.SceneCloseState) {//关闭Scene
+            checkSceneReset(cardId);
+            onCloseScene(cardId);
+        } else if (type == SceneStateChangeType.SceneShowState) {//显示Scene
+            onShowScene(cardId, info);
         } else if (type == SceneStateChangeType.SceneHideState) {//隐藏Scene
             onHideScene(cardId);
         }
@@ -351,12 +368,12 @@ public class NaviSceneManager implements INaviSceneEvent {
             }
             if(ThreadManager.getInstance().isMainThread()){
                 for (NaviSceneBase newScene : hideSceneList) {
-                    onShowScene(newScene.getSceneId());
+                    onShowScene(newScene.getSceneId(), SceneInfo.Invalid);
                 }
             } else {
                 ThreadManager.getInstance().postUi(() -> {
                     for (NaviSceneBase newScene : hideSceneList) {
-                        onShowScene(newScene.getSceneId());
+                        onShowScene(newScene.getSceneId(), SceneInfo.Invalid);
                     }
                 });
             }

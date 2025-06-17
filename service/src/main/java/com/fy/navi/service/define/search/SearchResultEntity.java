@@ -308,4 +308,25 @@ public class SearchResultEntity implements Parcelable {
         dest.writeStringList(mQueryTypeList);
         dest.writeBoolean(mIsNetData);
     }
+
+    @Override
+    public String toString() {
+        return "SearchResultEntity{" +
+                "mSearchType=" + mSearchType +
+                ", mKeyword='" + mKeyword + '\'' +
+                ", maxPageNum=" + maxPageNum +
+                ", mPageNum=" + mPageNum +
+                ", mCode=" + mCode +
+                ", message='" + message + '\'' +
+                ", mPoiList=" + mPoiList +
+                ", mZoomLeve=" + mZoomLeve +
+                ", mRetain='" + mRetain + '\'' +
+                ", mLocalInfoList=" + mLocalInfoList +
+                ", mLevel2LocalInfoList=" + mLevel2LocalInfoList +
+                ", mTotal=" + mTotal +
+                ", mPoiType=" + mPoiType +
+                ", mQueryTypeList=" + mQueryTypeList +
+                ", mIsNetData=" + mIsNetData +
+                '}';
+    }
 }

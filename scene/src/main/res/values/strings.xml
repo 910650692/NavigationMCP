@@ -138,6 +138,31 @@
     <string name="navi_car_head_switch_while_overview">路线概览时保持正北朝上</string>
     <string name="navi_unknown_address">未知地址</string>
     <string name="navi_none">--</string>
+    <string name="msg_action_know">我知道了</string>
+    <string name="msg_action_search_new">查找新站</string>
+    <string name="msg_action_go_charging">去充电</string>
+    <string name="msg_action_update">刷新</string>
+    <string name="msg_action_open">打开</string>
+    <string name="tip_msg_1">续航里程不足50km</string>
+    <string name="tip_msg_2">%s电站目前拥挤</string>
+    <string name="tip_msg_2_tts">%s充电站目前拥挤，是否为您查找沿途充电站？</string>
+    <string name="tip_msg_2_tts2">%s充电站目前拥挤，是否为您刷新补能规划？</string>
+    <string name="tip_msg_3">已为您刷新了补能规划</string>
+    <string name="tip_msg_5">电量无法抵达%s充电站</string>
+    <string name="tip_msg_5_tts">电量无法抵达%s充电站，是否为您查找沿途充电站？</string>
+    <string name="tip_msg_5_tts2">电量无法抵达%s充电站，已为您刷新了补能规划</string>
+    <string name="tip_msg_6">剩余里程内充电站较少</string>
+    <string name="tip_msg_7">预约充电站%s分钟后超时</string>
+    <string name="tip_msg_8">预约充电桩地锁已打开</string>
+    <string name="tip_msg_9">%s充电站即将停止营业</string>
+    <string name="tip_msg_10">%s目前未营业</string>
+    <string name="tip_msg_10_tts">%s目前未营业，是否为您查找沿途充电站</string>
+    <string name="tip_msg_10_tts2">%s目前未营业，已为您刷新了补能规划</string>
+    <string name="tip_msg_11">您错过了%s</string>
+    <string name="tip_msg_11_tts">您错过了%s充电站，是否为您查找沿途充电站</string>
+    <string name="tip_msg_11_tts2">您错过了%s充电站，已为您刷新了补能规划</string>
+    <string name="tip_msg_12">抵达终点后剩余电量低</string>
+    <string name="tip_msg_12_sub_title">是否打开补能规划？</string>
 
     <!--算路相关-->
     <string name="route_search_loading">路线规划中…</string>

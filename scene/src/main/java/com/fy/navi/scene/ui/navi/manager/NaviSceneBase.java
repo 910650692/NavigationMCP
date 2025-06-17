@@ -139,6 +139,22 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
         }
     }
 
+    /**
+     * 显示卡片，倒计时开始
+     */
+    public void show(INaviSceneEvent.SceneInfo info) {
+        Logger.d(TAG, "show:" , getClass().getSimpleName(), "callBack :" , (mISceneCallback == null));
+        // 新卡片显示需要重置倒计时，隐藏卡片显示使用选线剩余倒计时
+        if (mSceneState != SCENE_STATE_HIDE) {
+            resetCountdown();
+        }
+        if (!ConvertUtils.isNull(mISceneCallback)) {
+            mISceneCallback.updateSceneVisible(getSceneId(), true);
+            mSceneState = SCENE_STATE_SHOW;
+            startCountdown();
+        }
+    }
+
     /***
      * 是否主动开启倒计时
      * @return false 不处理，如果需要处理重写返回true即可

@@ -2,6 +2,7 @@ package com.fy.navi.hmi.navi;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -32,6 +33,8 @@ import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
@@ -54,6 +57,8 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RequestRouteResult;
+import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
+import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.route.RoutePriorityType;
@@ -62,8 +67,8 @@ import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
@@ -77,9 +82,9 @@ import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
-import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.ui.base.BaseModel;
 import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.utils.ClusterMapOpenCloseListener;
@@ -658,6 +663,27 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         Logger.i(TAG, "开启补能规划，重新算路！");
     }
 
+    /**
+     * 添加途径点
+     *
+     * @param info 替换充电站信息
+     */
+    @Override
+    public void addViaList(final RouteAlterChargeStationInfo info) {
+        if (ConvertUtils.isEmpty(info)) {
+            Logger.i(TAG, "info == null");
+            return;
+        }
+        final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        final GeoPoint geoPoint = new GeoPoint(info.getMPos().getLon(), info.getMPos().getLat(), info.getMPos().getZ());
+        poiInfoEntity.setPid(info.getMPoiId());
+        poiInfoEntity.setName(info.getMName());
+        poiInfoEntity.setTypeCode("011100");
+        poiInfoEntity.setPoint(geoPoint);
+        //TODO 回调
+        mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+    }
+
     @Override
     public void searchNewChargeStation() {
         ISceneCallback.super.searchNewChargeStation();
@@ -730,6 +756,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onSuggestChangePath(long newPathID, long oldPathID,
                                     SuggestChangePathReasonEntity reason) {
         mNaviPackage.showMainAndSuggestPath(newPathID);
+    }
+
+    @Override
+    public Activity getActivity() {
+        return mViewModel.getActivity();
     }
 
     /**
@@ -890,14 +921,30 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
-    public void onSilentSearchResult(int taskId, int errorCode, String message,
-                                     SearchResultEntity searchResultEntity) {
+    public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
         Logger.i(TAG, "onSilentSearchResult taskId = ", taskId);
         if (mEndSearchId == taskId) {
             if (null != searchResultEntity &&
                     !ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
                 drawEndPoint(searchResultEntity.getPoiList().get(0));
             }
+        }
+        if (mTipManager != null) {
+            mTipManager.onSilentSearchResult(taskId, errorCode, message, searchResultEntity);
+        }
+    }
+
+    @Override
+    public void onNetSearchResult(int taskId, String searchKey, BaseRep result) {
+        if (mTipManager != null) {
+            mTipManager.onNetSearchResult(taskId, searchKey, result);
+        }
+    }
+
+    @Override
+    public void onRouteAlterChargeStationInfo(RouteAlterChargeStationParam routeAlterChargeStationParam) {
+        if (mTipManager != null) {
+            mTipManager.onRouteAlterChargeStationInfo(routeAlterChargeStationParam);
         }
     }
 
@@ -1022,10 +1069,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onUpdateChargeStationPass(long viaIndex) {
-        IGuidanceObserver.super.onUpdateChargeStationPass(viaIndex);
-        // 将要通过的充电桩回调
         if (mTipManager != null) {
-            mTipManager.onUpdateChargeStationPass();
+            mTipManager.onUpdateChargeStationPass(viaIndex);
+        }
+    }
+
+    public void updateViaListState(List<NaviViaEntity> list) {
+        if (mTipManager != null) {
+            mTipManager.updateViaList(list);
         }
     }
 

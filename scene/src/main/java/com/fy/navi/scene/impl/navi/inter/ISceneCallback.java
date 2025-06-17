@@ -1,6 +1,7 @@
 package com.fy.navi.scene.impl.navi.inter;
 
 
+import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
@@ -9,6 +10,7 @@ import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.NextManeuverEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
+import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 
@@ -92,6 +94,15 @@ public interface ISceneCallback {
      * 打开补能规划
      */
     default void openSupplyPlan() {
+
+    }
+
+    /**
+     * 添加途径点
+     *
+     * @param info 替换充电站信息
+     */
+    default void addViaList(final RouteAlterChargeStationInfo info) {
 
     }
 
@@ -242,4 +253,7 @@ public interface ISceneCallback {
 
     default void cancelClusterOverViewTimer() {}
 
+    default Activity getActivity() {
+        return null;
+    }
 }

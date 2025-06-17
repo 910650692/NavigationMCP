@@ -15,10 +15,20 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_root"
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_130"
-        android:background="@drawable/bg_scene_charge_tip"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/dp_188"
+        android:paddingHorizontal="@dimen/dp_29"
+        android:paddingVertical="@dimen/dp_29"
+        android:background="@drawable/bg_shadow_navi_buick">
+
+        <View
+            android:layout_width="@dimen/dp_640"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_scene_charge_tip"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
@@ -55,7 +65,7 @@
             android:id="@+id/tv_action"
             android:layout_width="@dimen/dp_156"
             android:layout_height="@dimen/dp_76"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_20"
             android:background="@drawable/bg_navi_go_charge"
             android:gravity="center"
             android:textColor="@android:color/white"

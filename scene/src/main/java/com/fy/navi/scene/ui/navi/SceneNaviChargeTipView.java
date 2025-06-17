@@ -14,7 +14,6 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.databinding.SceneNaviChargeTipViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviChargeTipViewImpl;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
@@ -71,6 +70,11 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
                 }
                 case SceneNaviChargeBtnType.I_KNOW -> {
                 }
+                case SceneNaviChargeBtnType.UPDATE_SUPPLY -> {
+                    if (mISceneCallback != null) {
+                        mISceneCallback.addViaList(mEntity.getRouteAlterChargeStationInfo());
+                    }
+                }
                 default -> {
                     Logger.i(TAG, "此类型不支持，请检查代码！");
                 }
@@ -85,6 +89,16 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
         super.show();
         Logger.i(TAG, "show!", "callBack is null:", (mISceneCallback == null));
         mScreenViewModel.initTimer();
+    }
+
+    @Override
+    public void show(INaviSceneEvent.SceneInfo info) {
+        super.show(info);
+        Logger.i(TAG, "show!", "callBack is null:", (mISceneCallback == null));
+        mScreenViewModel.initTimer();
+        if (info == INaviSceneEvent.SceneInfo.TipUnlock) {
+            mScreenViewModel.chargeStationUnlock();
+        }
     }
 
     @Override
@@ -112,9 +126,12 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
      * @param entity
      */
     public void updateUi(final ChargeTipEntity entity) {
-        Logger.i(TAG, "updateUi");
+        Logger.i(TAG, "entity:", entity, " mViewBinding:", mViewBinding);
         this.mEntity = entity;
         if (entity == null) {
+            return;
+        }
+        if (mViewBinding == null) {
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
@@ -123,6 +140,7 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
             mViewBinding.tvAction.setText(entity.getAction());
             mViewBinding.tvDesc.setVisibility(TextUtils.isEmpty(entity.getSubTitle()) ? View.GONE : View.VISIBLE);
             mViewBinding.tvDesc.setText(entity.getSubTitle());
+            Logger.i(TAG, "notifySceneStateChange SceneShowState:", getSceneId());
             getNaviSceneEvent().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.SceneShowState, getSceneId());
         });
     }

@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.navi;
 
+import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -173,6 +174,7 @@ public class BaseNaviGuidanceViewModel extends
         mView.showNaviViaList(visible);
         if (!ConvertUtils.isEmpty(viaList)) {
             mView.updateViaListState(viaList);
+            mModel.updateViaListState(viaList);
         }
     }
 
@@ -516,6 +518,10 @@ public class BaseNaviGuidanceViewModel extends
         mView.naviParallelSwitch(type);
     }
 
+    public Activity getActivity(){
+        return mView.getActivity();
+    }
+
     /**
      * @param type 0:退出全览 1:切换全览
      */
@@ -560,6 +566,7 @@ public class BaseNaviGuidanceViewModel extends
                 final List<NaviViaEntity> viaList = mModel.getViaList();
                 if (!ConvertUtils.isEmpty(viaList)) {
                     mView.updateViaListState(viaList);
+                    mModel.updateViaListState(viaList);
                 }
             }
         }, NumberUtils.NUM_500);
@@ -572,6 +579,7 @@ public class BaseNaviGuidanceViewModel extends
         final List<NaviViaEntity> viaList = mModel.getViaList();
         if (!ConvertUtils.isEmpty(viaList)) {
             mView.updateViaListState(viaList);
+            mModel.updateViaListState(viaList);
         }
     }
 
@@ -590,6 +598,7 @@ public class BaseNaviGuidanceViewModel extends
         final List<NaviViaEntity> viaList = mModel.getViaList();
         if (!ConvertUtils.isEmpty(viaList)) {
             mView.updateViaListState(viaList);
+            mModel.updateViaListState(viaList);
         }
         mView.onUpdateTMCLightBarAutoAdd(isShow);
     }

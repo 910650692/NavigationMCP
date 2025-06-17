@@ -281,7 +281,7 @@
                 android:id="@+id/scene_navi_charge_tip"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_m_48"
                 android:visibility="@{ViewModel.mNaviChargeTipVisibility ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="@id/scl_top_container"
                 app:layout_constraintStart_toStartOf="@id/scl_top_container"

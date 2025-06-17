@@ -34,6 +34,8 @@ public final class SettingPackage implements SettingAdapterCallback {
     private final Hashtable<String, SettingChangeCallback> mChangeCallbackList;
     private final LayerAdapter mLayerAdapter;
     private final FavoriteManager mFavoriteManager;
+    //是否当前上电内关闭的补能开关
+    private boolean mIsCurCloseChargingPlan;
 
     public static SettingPackage getInstance() {
         return SInstanceHolder.INSTANCE;
@@ -382,6 +384,7 @@ public final class SettingPackage implements SettingAdapterCallback {
      * @param isChargingPlan true 打开 false 关闭
      */
     public void setChargingPlan(final boolean isChargingPlan) {
+        mIsCurCloseChargingPlan = !isChargingPlan;
         mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN, String.valueOf(isChargingPlan));
         for (SettingChangeCallback callback : mChangeCallbackList.values()) {
             callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN, String.valueOf(isChargingPlan));
@@ -400,6 +403,15 @@ public final class SettingPackage implements SettingAdapterCallback {
             setChargingPlan(true);
         }
         return Boolean.parseBoolean(value);
+    }
+
+    /**
+     * 是否当前上电内关闭的补能开关
+     *
+     * @return
+     */
+    public boolean getCurCloseChargingPlan() {
+        return mIsCurCloseChargingPlan;
     }
 
     /**

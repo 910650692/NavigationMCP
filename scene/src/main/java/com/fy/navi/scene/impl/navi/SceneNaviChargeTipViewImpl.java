@@ -4,8 +4,12 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
+import com.fy.navi.scene.R;
+import com.fy.navi.scene.ui.navi.ChargeTipEntity;
+import com.fy.navi.scene.ui.navi.SceneNaviChargeBtnType;
 import com.fy.navi.scene.ui.navi.SceneNaviChargeTipView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.utils.NumberUtils;
 
@@ -49,5 +53,17 @@ public class SceneNaviChargeTipViewImpl extends BaseSceneModel<SceneNaviChargeTi
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), mScreenView.getSceneId());
+    }
+
+
+    /**
+     * 预约充电桩地锁已打开
+     */
+    public void chargeStationUnlock() {
+        final ChargeTipEntity entity = new ChargeTipEntity();
+        entity.setTitle(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_8));
+        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_know));
+        entity.setType(SceneNaviChargeBtnType.I_KNOW);
+        mScreenView.updateUi(entity);
     }
 }

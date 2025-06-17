@@ -110,4 +110,14 @@ public class ETAInfo implements Parcelable {
         parcel.writeInt(mLeftCharge);
         parcel.writeLong(mTime);
     }
+
+    @Override
+    public String toString() {
+        return "ETAInfo{" +
+                "mDistance=" + mDistance +
+                ", mTravelTime='" + mTravelTime + '\'' +
+                ", mTime=" + mTime +
+                ", mLeftCharge=" + mLeftCharge +
+                '}';
+    }
 }

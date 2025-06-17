@@ -19,6 +19,7 @@ public class EvRangeOnRouteInfo {
                 "canArrived=" + mCanArrived +
                 ", pos=" + mPos +
                 ", remainRangeDistance=" + mRemainRangeDistance +
+                ", mRemainCapacity=" + mRemainCapacity +
                 '}';
     }
 }
