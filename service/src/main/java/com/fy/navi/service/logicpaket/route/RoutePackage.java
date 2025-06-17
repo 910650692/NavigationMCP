@@ -47,6 +47,7 @@ import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
 import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.define.route.RouteLineInfo;
+import com.fy.navi.service.define.route.RouteLineSegmentInfo;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePoiType;
@@ -575,6 +576,16 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
     }
 
+    @Override
+    public void onRouteDetails(List<RouteLineSegmentInfo> routeLineDetail) {
+        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+            if (ConvertUtils.isEmpty(routeResultObserver)) {
+                continue;
+            }
+            routeResultObserver.onRouteDetails(routeLineDetail);
+        }
+    }
+
     /**
      * 路线上充电站数据回调    、
      *
@@ -979,13 +990,17 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 || ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId).getMRouteRestrictionParam()) || mSelectRouteIndex == null) {
             return -1;
         }
+        Integer index = mSelectRouteIndex.get(mapTypeId);
+        if (index == null) {
+            return -1;
+        }
         final List<String> ruleIDs = mRequestRouteResults.get(mapTypeId).getMRouteRestrictionParam().getMRuleIds();
-        if (mSelectRouteIndex.get(mapTypeId) != -1 && ruleIDs.size() > mSelectRouteIndex.get(mapTypeId)
-                && !ConvertUtils.isEmpty(ruleIDs.get(mSelectRouteIndex.get(mapTypeId)))) {
+        if (index != -1 && ruleIDs.size() > index
+                && !ConvertUtils.isEmpty(ruleIDs.get(index))) {
             final RestrictedParam restrictedParam = new RestrictedParam();
             restrictedParam.setRestrict_type(9);
             restrictedParam.setPlate(SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER));
-            restrictedParam.setRuleids(ruleIDs.get(mSelectRouteIndex.get(mapTypeId)));
+            restrictedParam.setRuleids(ruleIDs.get(index));
             return mBlAosAdapter.queryRestrictedInfo(restrictedParam);
         }
         return -1;
@@ -1819,6 +1834,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     public Map<MapType, Long> getRequestIds() {
         return mRequestId;
+    }
+
+    public void requestRouteDetails(int index) {
+        mRouteAdapter.requestRouteDetails(index);
+    }
+
+    public void requestRouteRestArea(int index) {
+        mRouteAdapter.requestRouteRestArea(index);
     }
 
     private static final class Helper {

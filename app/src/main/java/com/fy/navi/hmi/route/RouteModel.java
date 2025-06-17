@@ -188,17 +188,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRoutePackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
-    /**
-     * 获取路线导航段数据
-     * @param index 列表索引
-     * @return 导航段数据
-     * */
-    public List<RouteLineSegmentInfo> getDetailsResult(final int index) {
-        if (ConvertUtils.isEmpty(mRouteLineInfos) || mRouteLineInfos.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return mRouteLineInfos.get(index).getMRouteLineSegmentInfos();
-    }
 
     /**
      * 请求天气数据
@@ -234,14 +223,20 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showSearchProgressUI();
         }
+        ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteRestArea(getCurrentIndex()));
+
+    }
+
+    /**
+     * 获取服务区列表
+     * */
+    public void setSearchListAndShow() {
+        mListSearchType = 3;
+        clearSearchLabel();
         if (ConvertUtils.isEmpty(mRouteRestAreaInfos)) {
             return;
         }
-        if (getCurrentIndex() == -1 || getCurrentIndex() >= mRouteRestAreaInfos.size()) {
-            Logger.d(TAG, "Index out of bounds ");
-            return;
-        }
-        final RouteRestAreaInfo routeRestAreaInfo = mRouteRestAreaInfos.get(getCurrentIndex());
+        final RouteRestAreaInfo routeRestAreaInfo = mRouteRestAreaInfos.get(0);
         if (ConvertUtils.isEmpty(routeRestAreaInfo)) {
             return;
         }
@@ -255,17 +250,20 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 info.setMRemainDist(remain);
             }
         }
-        if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.showRouteSearchListUI(routeRestAreaDetailsInfos);
-        }
-        showRestArea();
-        if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.hideSearchProgressUI();
-        }
-        if (ConvertUtils.isEmpty(routeRestAreaDetailsInfos)) {
-            ToastUtils.Companion.getInstance().showCustomToastView(
-                    ResourceUtils.Companion.getInstance().getString(R.string.route_error_no_service_data));
-        }
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mViewModel)) {
+                mViewModel.showRouteSearchListUI(routeRestAreaDetailsInfos);
+            }
+            showRestArea();
+            if (!ConvertUtils.isEmpty(mViewModel)) {
+                mViewModel.hideSearchProgressUI();
+            }
+            if (ConvertUtils.isEmpty(routeRestAreaDetailsInfos)) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.route_error_no_service_data));
+            }
+        });
+
     }
 
     /**
@@ -823,19 +821,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             return;
         }
         mRouteRestAreaInfos = routeRestAreaParam.getMRouteRestAreaInfos();
-        final boolean hasService = !ConvertUtils.isEmpty(mRouteRestAreaInfos)
-                && mRouteRestAreaInfos.size() > getCurrentIndex()
-                && getCurrentIndex() != -1
-                && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(getCurrentIndex()).getMRouteRestAreaDetailsInfos());
-        final boolean atLeastDistance = !ConvertUtils.isEmpty(mRouteLineInfos)
-                && mRouteLineInfos.size() > getCurrentIndex()
-                && getCurrentIndex() != -1
-                && !ConvertUtils.isEmpty(mRouteLineInfos.get(getCurrentIndex()))
-                && mRouteLineInfos.get(getCurrentIndex()).getMDistance() >= 50 * 1000;
-        BevPowerCarUtils.getInstance().isLongRoute = hasService || atLeastDistance;
-        if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.showHideTab(BevPowerCarUtils.getInstance().isLongRoute);
-        }
+        setSearchListAndShow();
     }
 
     @Override
@@ -862,7 +848,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRouteRestrictionInfo = routeRestrictionParam.getMRouteRestrictionInfo();
         if (ConvertUtils.isEmpty(mRouteRestrictionInfo)
                 || getCurrentIndex() == -1
-                || mRouteLineInfos.size() < getCurrentIndex()
+                || mRouteRestrictionInfo.size() < getCurrentIndex()
                 || ConvertUtils.isEmpty(mRouteRestrictionInfo.get(getCurrentIndex()))) {
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.updateRestrictionTextUI(RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEINVALID);
@@ -978,6 +964,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     @Override
+    public void onRouteDetails(List<RouteLineSegmentInfo> routeLineDetail) {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            Logger.i(TAG, "展示路线详情");
+            mViewModel.showRouteDetails(routeLineDetail);
+        }
+    }
+
+    @Override
     public void onReRouteError() {
         if (!ConvertUtils.isEmpty(mViewModel)) {
             Logger.i(TAG, "静默算路失败");
@@ -1011,8 +1005,13 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                         mViewModel.showTripDialog(ResourceUtils.Companion.getInstance().getString(R.string.route_trip_title)
                                 , ResourceUtils.Companion.getInstance().getString(R.string.route_trip_elec_small));
                     }
-                    final boolean isLongRoute = BevPowerCarUtils.getInstance().isLongRoute;
-                    mViewModel.showHideTab(isLongRoute);
+                    final boolean atLeastDistance = !ConvertUtils.isEmpty(mRouteLineInfos)
+                            && mRouteLineInfos.size() > routeIndex
+                            && !ConvertUtils.isEmpty(mRouteLineInfos.get(routeIndex))
+                            && mRouteLineInfos.get(routeIndex).getMDistance() >= 50 * 1000;
+                    if (!ConvertUtils.isEmpty(mViewModel)) {
+                        mViewModel.showHideTab(atLeastDistance);
+                    }
                     if (powerType() == 1) {
                         mViewModel.showHideElicCheckBox(mRouteLineInfos.get(routeIndex).getMRemainPercent() < 20
                                 || mRouteLineInfos.get(routeIndex).isMChargingStation());
@@ -1321,9 +1320,13 @@ public void setPoint() {
         if (!ConvertUtils.isEmpty(mRequestRouteResults)) {
             onRouteResult(mRequestRouteResults);
 //            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex());
-            if (!ConvertUtils.isEmpty(mRequestRouteResults.getMRouteRestAreaParam())) {
-                onRouteRestAreaInfo(mRequestRouteResults.getMRouteRestAreaParam());
-            }
+//            if (!ConvertUtils.isEmpty(mRequestRouteResults.getMRouteRestAreaParam())) {
+//                onRouteRestAreaInfo(mRequestRouteResults.getMRouteRestAreaParam());
+//            }
         }
+    }
+
+    public void requestRouteDetails(int index) {
+        ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteDetails(index));
     }
 }

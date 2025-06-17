@@ -333,6 +333,16 @@ public class RouteAdapterImpl implements IRouteApi {
         mAdapterImplHelper.sendL2SData(routeCurrentPathParam);
     }
 
+    @Override
+    public void requestRouteDetails(int index) {
+        mAdapterImplHelper.requestRouteDetails(index);
+    }
+
+    @Override
+    public void requestRouteRestArea(int index) {
+        mAdapterImplHelper.requestRouteRestArea(index);
+    }
+
     /**
      * 平行路切换完成重算路
      * @param switchRoadType 切换类型

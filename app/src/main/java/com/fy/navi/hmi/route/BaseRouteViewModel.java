@@ -44,6 +44,7 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
 import com.fy.navi.service.define.route.RouteLineInfo;
+import com.fy.navi.service.define.route.RouteLineSegmentInfo;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePriorityType;
@@ -1798,10 +1799,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mView.clearSceneGasTabUI(false);
         if (isTheSameIndex) {
             mCurrentPageHistory.add("1");
+            mView.showSearchProgressUI();
+            mModel.requestRouteDetails(index);
+        } else {
+            mModel.onRouteSelect(index);
         }
         mIncludePageVisibility.set(getCurrentPageUI());
-        mView.setDetailsResult(mModel.getDetailsResult(index));
-        mModel.onRouteSelect(index);
     }
 
     @Override
@@ -1948,5 +1951,15 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         if (mSecondaryPoiInfo != null) {
             mView.setRouteSecondaryPoiUI(mSecondaryPoiInfo.getMChildType(), mSecondaryPoiInfo);
         }
+    }
+
+    public void showRouteDetails(List<RouteLineSegmentInfo> routeLineDetail) {
+        ThreadManager.getInstance().postUi(() -> {
+            mView.hideSearchProgressUI();
+            if (!ConvertUtils.isEmpty(routeLineDetail)) {
+                mView.setDetailsResult(routeLineDetail);
+            }
+        });
+
     }
 }

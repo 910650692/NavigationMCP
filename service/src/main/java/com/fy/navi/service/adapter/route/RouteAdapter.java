@@ -238,6 +238,14 @@ final public class RouteAdapter {
         }
     }
 
+    public void requestRouteDetails(int index) {
+        mRouteApi.requestRouteDetails(index);
+    }
+
+    public void requestRouteRestArea(int index) {
+        mRouteApi.requestRouteRestArea(index);
+    }
+
     private static final class Helper {
         private static final RouteAdapter RA = new RouteAdapter();
     }

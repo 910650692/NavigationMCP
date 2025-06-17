@@ -133,6 +133,7 @@ public class RouteAdapterImplHelper {
     private int mRouteConstrainCode;
     private UserAvoidInfo mUserAvoidInfo;
     private PoiInfoEntity mPoiInfoEntityEnd;
+    private RequestRouteResult mRequestRouteResult;
 
     protected RouteAdapterImplHelper(final RouteService routeService, final BLAosService blAosService) {
         mRouteResultObserverHashtable = new Hashtable<>();
@@ -630,6 +631,7 @@ public class RouteAdapterImplHelper {
         return avoidRoadList;
     }
 
+    private ArrayList<PathInfo> mPathInfoList;
     private final IRouteResultObserver mRouteResultObserver = new IRouteResultObserver() {
         @Override
         public void onNewRoute(final PathResultData pathResultData, final ArrayList<PathInfo> pathInfoList, final RouteLimitInfo routeLimitInfo) {
@@ -655,20 +657,20 @@ public class RouteAdapterImplHelper {
                 return;
             }
             mRequsetId = requestId;
+            mPathInfoList = pathInfoList;
+            mRequestRouteResult = requestRouteResult;
+            boolean mFastNavi = requestRouteResult.isMFastNavi();
             handResultSuccess(getMsgs(requestRouteResult.getMRouteWay(), false));
-            handlerRouteResult(requestRouteResult, pathInfoList);
+            if (!mFastNavi) {
+                handlerRouteResult(requestRouteResult, pathInfoList);
+            }
             handlerChargingStation(requestRouteResult.getMRouteChargeStationParam(), pathInfoList,
                     requestId, requestRouteResult.getMMapTypeId());
             handlerDrawLine(requestRouteResult.getMLineLayerParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
-            handlerRouteDetailsResult(requestRouteResult, pathInfoList);
-            handlerRestArea(requestRouteResult.getMRouteRestAreaParam(), pathInfoList, requestId,
-                    requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
             handlerRestriction(requestRouteResult.getMRouteRestrictionParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
             handlerRange(pathInfoList, requestRouteResult.isMIsOnlineRoute());
-            handlerCityAdCode(requestRouteResult.getMRouteAlongCityParam(), pathInfoList, requestId,
-                    requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
         }
 
         @Override
@@ -791,15 +793,18 @@ public class RouteAdapterImplHelper {
     /**
      * 封装给HMI的路段聚合信息及路线详情
      *
-     * @param requestRouteResult 路线结果类
      * @param pathInfoList       路线信息
      */
-    private void handlerRouteDetailsResult(final RequestRouteResult requestRouteResult, final ArrayList<PathInfo> pathInfoList) {
-        List<RouteLineInfo> mRouteLineInfos = requestRouteResult.getMRouteLineInfos();
-        if (!ConvertUtils.isEmpty(mRouteLineInfos) && !ConvertUtils.isEmpty(mRouteLineInfos) && pathInfoList.size() == mRouteLineInfos.size()) {
-            for (int t = 0; t < pathInfoList.size(); t++) {
-                mRouteLineInfos.get(t).setMRouteLineSegmentInfos(getRouteLineDetail(pathInfoList.get(t)));
+    private void handlerRouteDetailsResult(final ArrayList<PathInfo> pathInfoList, int index) {
+        if (ConvertUtils.isEmpty(pathInfoList) || index < 0 || pathInfoList.size() <= index) {
+            Logger.e(TAG, "error");
+            return;
+        }
+        for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
+            if (resultObserver == null) {
+                continue;
             }
+            resultObserver.onRouteDetails(getRouteLineDetail(pathInfoList.get(index)));
         }
     }
 
@@ -832,30 +837,33 @@ public class RouteAdapterImplHelper {
     /**
      * 路线上服务区数据回调
      *
-     * @param routeRestAreaParam 服务区数据
+     * @param routeRestAreaParam       路线信息
      * @param pathInfoList       路线信息
      * @param requestId          请求Id
      * @param mapTypeId          视图Id
      * @param onlineRoute        是否在线算路
+     * @param index        是否在线算路
      */
     private void handlerRestArea(final RouteRestAreaParam routeRestAreaParam, final ArrayList<PathInfo> pathInfoList,
-                                 final long requestId, final MapType mapTypeId, final boolean onlineRoute) {
+                                 final long requestId, final MapType mapTypeId, final boolean onlineRoute, final int index) {
+        if (ConvertUtils.isEmpty(pathInfoList) || index < 0 || pathInfoList.size() <= index) {
+            Logger.e(TAG, "error");
+            return;
+        }
         routeRestAreaParam.setMRequestId(requestId);
         routeRestAreaParam.setMMapTypeId(mapTypeId);
         routeRestAreaParam.setMIsOnlineRoute(onlineRoute);
         routeRestAreaParam.setMPathInfoList(pathInfoList);
         final ArrayList<RouteRestAreaInfo> routeRestAreaInfos = new ArrayList<>();
-        for (PathInfo pathInfo : pathInfoList) {
-            final RouteRestAreaInfo routeRestAreaInfo = new RouteRestAreaInfo();
-            final ArrayList<RestAreaInfo> restAreas = pathInfo.getRestAreas(0, 100);
-            final List<RouteRestAreaDetailsInfo> routeRestAreaDetailsInfos = new ArrayList<>();
-            for (RestAreaInfo info : restAreas) {
-                final RouteRestAreaDetailsInfo routeRestAreaDetailsInfo = getRouteRestAreaDetailsInfo(info);
-                routeRestAreaDetailsInfos.add(routeRestAreaDetailsInfo);
-            }
-            routeRestAreaInfo.setMRouteRestAreaDetailsInfos(routeRestAreaDetailsInfos);
-            routeRestAreaInfos.add(routeRestAreaInfo);
+        final RouteRestAreaInfo routeRestAreaInfo = new RouteRestAreaInfo();
+        final ArrayList<RestAreaInfo> restAreas = pathInfoList.get(index).getRestAreas(0, 100);
+        final List<RouteRestAreaDetailsInfo> routeRestAreaDetailsInfos = new ArrayList<>();
+        for (RestAreaInfo info : restAreas) {
+            final RouteRestAreaDetailsInfo routeRestAreaDetailsInfo = getRouteRestAreaDetailsInfo(info);
+            routeRestAreaDetailsInfos.add(routeRestAreaDetailsInfo);
         }
+        routeRestAreaInfo.setMRouteRestAreaDetailsInfos(routeRestAreaDetailsInfos);
+        routeRestAreaInfos.add(routeRestAreaInfo);
         routeRestAreaParam.setMRouteRestAreaInfos(routeRestAreaInfos);
         for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
             if (resultObserver == null) {
@@ -1230,8 +1238,8 @@ public class RouteAdapterImplHelper {
     private void handlerRestriction(final RouteRestrictionParam routeRestrictionParam,
                                     final ArrayList<PathInfo> pathInfoList, final long requestId,
                                     final MapType mapTypeId, final boolean onlineRoute) {
-        if (pathInfoList.size() <= NumberUtils.NUM_0 ||
-                pathInfoList.get(NumberUtils.NUM_0).getRestrictionInfo().title.length() == NumberUtils.NUM_0) {
+        if (pathInfoList.isEmpty() ||
+                pathInfoList.get(NumberUtils.NUM_0).getRestrictionInfo().title.isEmpty()) {
             return;
         }
         routeRestrictionParam.setMRequestId(requestId);
@@ -2005,5 +2013,14 @@ public class RouteAdapterImplHelper {
      */
     public void sendEndEntity(final PoiInfoEntity poiInfoEntity) {
         mPoiInfoEntityEnd = poiInfoEntity;
+    }
+
+    public void requestRouteDetails(int index) {
+        handlerRouteDetailsResult(mPathInfoList, index);
+    }
+
+    public void requestRouteRestArea(int index) {
+        handlerRestArea(mRequestRouteResult.getMRouteRestAreaParam(),mPathInfoList, mRequestRouteResult.getMRequestId()
+                , mRequestRouteResult.getMMapTypeId(), mRequestRouteResult.isMIsOnlineRoute(),index);
     }
 }

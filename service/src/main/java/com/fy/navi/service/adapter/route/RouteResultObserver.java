@@ -7,6 +7,7 @@ import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
 import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteL2Data;
+import com.fy.navi.service.define.route.RouteLineSegmentInfo;
 import com.fy.navi.service.define.route.RouteRestAreaParam;
 import com.fy.navi.service.define.route.RouteRestTollGateParam;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
@@ -15,6 +16,7 @@ import com.fy.navi.service.define.route.RouteTrafficIncidentParam;
 import com.fy.navi.service.define.route.RouteWeatherParam;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lvww
@@ -121,4 +123,6 @@ public interface RouteResultObserver {
      * 静默算路消息
      */
     void onReRoute();
+
+    void onRouteDetails(List<RouteLineSegmentInfo> routeLineDetail);
 }

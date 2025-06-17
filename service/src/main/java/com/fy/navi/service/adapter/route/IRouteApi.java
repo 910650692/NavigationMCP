@@ -142,4 +142,7 @@ public interface IRouteApi {
      */
     void sendL2Data(RouteCurrentPathParam routeCurrentPathParam);
 
+    void requestRouteDetails(int index);
+
+    void requestRouteRestArea(int index);
 }
