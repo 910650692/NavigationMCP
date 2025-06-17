@@ -42,6 +42,7 @@ public final class GmcL2ppManager {
     private boolean mInitialized = false;
     private ArrayList<LayerItemRouteOdd> mLayerItemRouteOdds;
     private long mPathId = -1;
+    private int[] mProperties = new int[]{Properties.ADASWarnings};
 
     //region INSTANCE
     public static GmcL2ppManager getInstance() {
@@ -76,6 +77,7 @@ public final class GmcL2ppManager {
         // 注册ODD回调
         mAdasManager.setDataCallback(mDataCallback);
         NavistatusAdapter.getInstance().registerCallback(mINaviStatusCallback);
+        mAdasManager.updateADUObserverList(mProperties);
         // 注册TTS回调
         mAdasManager.registerADUPropertyCallback(mPropertyCallback);
         SignalPackage.getInstance().registerObserver(TAG, mSignalCallback);
