@@ -29,6 +29,7 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
+import com.fy.navi.scene.ui.navi.SceneNaviViaDetailView;
 import com.fy.navi.scene.ui.navi.SceneNaviViaListView;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
@@ -63,6 +64,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_VIEW;
     
     private SceneNaviViaListView mSceneNaviViaListView;
+    private SceneNaviViaDetailView mSceneNaviViaDetailView;
 
     private ISceneCallback mSceneCallback;
 
@@ -114,6 +116,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     private void saveLazySceneStatus(HashMap<NaviSceneId, Integer> map) {
         saveLazySceneStatus(mSceneNaviViaListView, map);
+        saveLazySceneStatus(mSceneNaviViaDetailView, map);
     }
 
     private void saveLazySceneStatus(NaviSceneBase naviSceneBase,
@@ -164,6 +167,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         } else {
             // 恢复导航页面数据
             mViewModel.restoreNavigationByRebuild();
+            initLazyView();
         }
         mViewModel.setDefultPlateNumberAndAvoidLimitSave();
         mViewModel.initShowScene(NAVI_SCENE_CONTROL, NAVI_SCENE_TBT, NAVI_SCENE_ETA, NAVI_SCENE_TMC);
@@ -183,6 +187,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         initLazyView();
         HashMap<NaviSceneId, Integer> map = mViewModel.getSceneStatus();
         restoreLazySceneStatus(mSceneNaviViaListView, map);
+        restoreLazySceneStatus(mSceneNaviViaDetailView, map);
     }
 
     private void restoreLazySceneStatus(NaviSceneBase naviSceneBase,
@@ -427,27 +432,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviContinue.addSceneCallback(sceneCallback);
         mBinding.sceneHandingCard.addSceneCallback(sceneCallback);
         mBinding.sceneNaviCardDetail.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviViaDetail.addSceneCallback(sceneCallback);
-        // 经纬度添加途经点失败的测试广播
-//        ContextCompat.registerReceiver(getContext(), new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                SapaInfoEntity.SAPAItem item = new SapaInfoEntity.SAPAItem();
-//                item.setRemainDist(8307);
-//                item.setType(1);
-//                item.setName("G1503沪嘉收费站");
-//                item.setPos(new GeoPoint(121.26777111111112, 31.3634025));
-//                item.setSapaDetail(0);
-//                item.setRemainTime(384);
-//                item.setServicePOIID("");
-//                item.setBuildingStatus(0);
-//                SapaInfoEntity sapaInfoEntity = new SapaInfoEntity();
-//                ArrayList<SapaInfoEntity.SAPAItem> list = new ArrayList<>();
-//                list.add(item);
-//                sapaInfoEntity.setList(list);
-//                skipNaviSapaDetailScene(1, sapaInfoEntity);
-//            }
-//        }, new IntentFilter("shi.song"), ContextCompat.RECEIVER_EXPORTED);
     }
 
     /**
@@ -728,14 +712,14 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     public void showViaDetail(boolean b) {
-        if (null != mBinding.sceneNaviViaDetail) {
-            mBinding.sceneNaviViaDetail.showViaDetail(b);
+        if (null != mSceneNaviViaDetailView) {
+            mSceneNaviViaDetailView.showViaDetail(b);
         }
     }
 
     public void updateNewestViaPoint(NaviViaEntity naviViaEntity) {
-        if (null != mBinding.sceneNaviViaDetail) {
-            mBinding.sceneNaviViaDetail.updateNewestViaPoint(naviViaEntity);
+        if (null != mSceneNaviViaDetailView) {
+            mSceneNaviViaDetailView.updateNewestViaPoint(naviViaEntity);
         }
     }
 
@@ -756,6 +740,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                     getViewStub().inflate();
             initLazyView(mSceneNaviViaListView);
         }
+        if (!mBinding.sceneNaviViaDetail.isInflated()) {
+            assert mBinding.sceneNaviViaDetail.getViewStub() != null;
+            mSceneNaviViaDetailView = (SceneNaviViaDetailView) mBinding.sceneNaviViaDetail.
+                    getViewStub().inflate();
+            initLazyView(mSceneNaviViaDetailView);
+        }
     }
 
     private void initLazyView(NaviSceneBase naviSceneBase) {
@@ -775,6 +765,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void setViaListVisibility(boolean isVisible) {
         if (mSceneNaviViaListView != null) {
             mSceneNaviViaListView.setVisibility(isVisible ? VISIBLE : GONE);
+        }
+    }
+
+    public void setViaDetailVisibility(boolean isVisible) {
+        if (mSceneNaviViaDetailView != null) {
+            mSceneNaviViaDetailView.setVisibility(isVisible ? VISIBLE : GONE);
         }
     }
 }

@@ -259,7 +259,7 @@ public class BaseNaviGuidanceViewModel extends
                 mHandingCardDetailVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_VIA_DETAIL:
-                mNaviViaDetailVisibility.set(isVisible);
+                mView.setViaDetailVisibility(isVisible);
                 break;
             default:
                 break;
@@ -745,6 +745,8 @@ public class BaseNaviGuidanceViewModel extends
         if (mView != null) {
             mView.updateViaListState(viaList);
         }
+        showViaDetail(mModelSaveEntity.isIsViaDetailShow());
+        updateNewestViaPoint(mModelSaveEntity.getNaviViaEntity());
         if (null != mView) {
             mView.updateViewRadius();
         }
@@ -760,6 +762,9 @@ public class BaseNaviGuidanceViewModel extends
      * @param b 是否达到了显示途经点详情的时机
      */
     public void showViaDetail(boolean b) {
+        if (mModelSaveEntity != null) {
+            mModelSaveEntity.setIsViaDetailShow(b);
+        }
         if (null != mView) {
             mView.showViaDetail(b);
         }
@@ -769,6 +774,9 @@ public class BaseNaviGuidanceViewModel extends
      * @param naviViaEntity 最新的途经点信息
      */
     public void updateNewestViaPoint(NaviViaEntity naviViaEntity) {
+        if (mModelSaveEntity != null) {
+            mModelSaveEntity.setNaviViaEntity(naviViaEntity);
+        }
         if (null != mView) {
             mView.updateNewestViaPoint(naviViaEntity);
         }

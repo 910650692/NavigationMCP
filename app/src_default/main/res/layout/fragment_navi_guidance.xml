@@ -111,22 +111,14 @@
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="scene_navi_tbt,scene_navi_cross_image,
-            scene_navi_eta,scene_navi_tmc,scene_navi_via_list,scene_navi_lanes,scene_navi_via_info" />
-
-            <com.fy.navi.scene.ui.navi.SceneNaviViaDetailView
+            <ViewStub
                 android:id="@+id/scene_navi_via_detail"
                 android:layout_width="@dimen/dp_698"
                 android:layout_height="@dimen/dp_162"
+                android:layout="@layout/scene_navi_via_detail_view_stub"
                 app:layout_constraintStart_toStartOf="@id/scl_top_container"
                 app:layout_constraintEnd_toEndOf="@id/scl_top_container"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container"
-                android:visibility="@{ViewModel.mNaviViaDetailVisibility?View.VISIBLE:View.GONE}"
                 android:layout_marginTop="@dimen/dp_m_48"/>
 
             <!--悬挂卡-->

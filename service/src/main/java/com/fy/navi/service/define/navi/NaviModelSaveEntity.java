@@ -12,6 +12,8 @@ public class NaviModelSaveEntity {
     private NaviManeuverInfo mNaviManeuverInfo;
     private LaneInfoEntity mLaneInfo;
     private List<NaviViaEntity> mViaList;
+    private boolean mIsViaDetailShow;
+    private NaviViaEntity mNaviViaEntity;
 
     public SpeedOverallEntity getSpeedOverallEntity() {
         return mSpeedOverallEntity;
@@ -83,5 +85,21 @@ public class NaviModelSaveEntity {
 
     public void setViaList(List<NaviViaEntity> mViaList) {
         this.mViaList = mViaList;
+    }
+
+    public NaviViaEntity getNaviViaEntity() {
+        return mNaviViaEntity;
+    }
+
+    public void setNaviViaEntity(NaviViaEntity mNaviViaEntity) {
+        this.mNaviViaEntity = mNaviViaEntity;
+    }
+
+    public boolean isIsViaDetailShow() {
+        return mIsViaDetailShow;
+    }
+
+    public void setIsViaDetailShow(boolean mIsViaDetailShow) {
+        this.mIsViaDetailShow = mIsViaDetailShow;
     }
 }

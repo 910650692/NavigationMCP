@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fy.navi.scene.ui.navi.SceneNaviViaDetailView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scene_navi_via_detail"
+    android:layout_width="@dimen/dp_613"
+    android:layout_height="@dimen/dp_157"
+    android:layout_marginTop="@dimen/dp_m_51"
+    android:visibility="gone"
+    tools:ignore="MissingId"/>

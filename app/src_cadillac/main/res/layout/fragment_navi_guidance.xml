@@ -162,12 +162,12 @@
             scene_navi_eta,scene_navi_tmc,scene_navi_lanes,scene_navi_via_info,scene_navi_scl_top,scene_navi_via_list"
                         tools:visibility="gone" />
 
-                    <com.fy.navi.scene.ui.navi.SceneNaviViaDetailView
+                    <ViewStub
                         android:id="@+id/scene_navi_via_detail"
                         android:layout_width="@dimen/dp_922"
                         android:layout_height="@dimen/dp_254"
                         android:layout_marginTop="@dimen/dp_m_82"
-                        android:visibility="@{ViewModel.mNaviViaDetailVisibility?View.VISIBLE:View.GONE}"
+                        android:layout="@layout/scene_navi_via_detail_view_stub"
                         app:layout_constraintEnd_toEndOf="@id/scl_top_container"
                         app:layout_constraintStart_toStartOf="@id/scl_top_container"
                         app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
