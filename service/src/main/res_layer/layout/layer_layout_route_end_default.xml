@@ -9,7 +9,7 @@
         android:id="@+id/route_end_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_27"
         android:layout_marginTop="@dimen/dp_5"
         android:background="@drawable/shape_search_end_bg"
         android:textColor="@color/layer_route_end_point_detail_color"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_140"
         android:layout_marginTop="@dimen/dp_60"
-        android:src="@drawable/layer_search_end_bg"
+        android:src="@drawable/layer_icon_route_end_default"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
