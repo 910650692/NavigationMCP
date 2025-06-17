@@ -10,7 +10,7 @@
             type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_122"
         android:paddingBottom="@dimen/dp_32"
@@ -19,11 +19,15 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_start_route"
-            android:layout_width="@dimen/dp_221"
+            android:layout_width="0dp"
             android:layout_height="@dimen/dp_77"
             android:layout_gravity="center_vertical"
+            android:layout_marginEnd="14dp"
             android:background="@drawable/bg_details_bottom_go_here"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/stl_go_first"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_start_route"
@@ -51,32 +55,32 @@
                 app:layout_goneMarginStart="@dimen/dp_0" />
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
-        
+
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stl_go_first"
             android:layout_width="@dimen/dp_223"
             android:layout_height="@dimen/dp_77"
-            android:text="@string/go_first"
-            android:gravity="center"
-            android:textSize="@dimen/sp_29"
             android:layout_gravity="center_vertical"
+            android:layout_marginEnd="14dp"
             android:background="@drawable/bg_cancel"
+            android:gravity="center"
+            android:text="@string/go_first"
             android:textColor="@color/search_quick_tab_view_color"
-            android:layout_marginStart="@dimen/dp_24"
-            app:layout_constraintStart_toEndOf="@+id/stl_start_route"
-            app:layout_constraintTop_toTopOf="@+id/stl_start_route"
-            app:layout_constraintBottom_toBottomOf="@+id/stl_start_route"
-            tools:visibility="visible"
+            android:textSize="@dimen/sp_29"
             android:visibility="gone"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/stl_function"
+            app:layout_constraintStart_toEndOf="@+id/stl_start_route"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_function"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_14"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/stl_go_first">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/stl_phone"
@@ -84,7 +88,8 @@
                 android:layout_height="@dimen/dp_90"
                 app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
                 app:layout_constraintHorizontal_chainStyle="spread"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                tools:visibility="visible">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_phone"
@@ -112,9 +117,9 @@
                 android:layout_width="@dimen/dp_76"
                 android:layout_height="@dimen/dp_90"
                 android:layout_marginStart="@dimen/dp_14"
-                tools:visibility="visible"
                 app:layout_constraintEnd_toStartOf="@+id/stl_poi_favorites"
-                app:layout_constraintStart_toEndOf="@+id/stl_phone">
+                app:layout_constraintStart_toEndOf="@+id/stl_phone"
+                tools:visibility="visible">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_around_search"
@@ -141,10 +146,10 @@
                 android:id="@+id/stl_poi_favorites"
                 android:layout_width="@dimen/dp_76"
                 android:layout_height="@dimen/dp_90"
-                tools:visibility="visible"
                 android:layout_marginStart="@dimen/dp_14"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/stl_around_search">
+                app:layout_constraintStart_toEndOf="@+id/stl_around_search"
+                tools:visibility="visible">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_poi_favorites"
@@ -169,5 +174,5 @@
             </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>
