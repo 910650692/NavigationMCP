@@ -17,7 +17,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/filter_child_root"
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="@dimen/dp_147"
         android:layout_height="@dimen/dp_65"
         android:background="@drawable/custom_filter_item_bg_selector_day"
         >
