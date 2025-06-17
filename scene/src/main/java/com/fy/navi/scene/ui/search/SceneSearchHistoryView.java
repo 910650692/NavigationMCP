@@ -271,7 +271,8 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                 sendBuryPointForAddFavorite(poiInfoEntity, commonName);
 //                BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
                 SettingUpdateObservable.getInstance().onUpdateSyncTime();
-                closeAllFragment();
+                closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
+                showCurrentFragment();
             }
         });
     }
