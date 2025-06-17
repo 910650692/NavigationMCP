@@ -2,6 +2,7 @@ package com.fy.navi.navisender;
 
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.StartService;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
@@ -47,6 +48,7 @@ public class NaviSender {
     private int mRoadSpeed = 0;
     private int mCameraSpeed = 0;
 
+    //region INSTANCE
     public static NaviSender getInstance() {
         return NaviSender.SingleHolder.INSTANCE;
     }
@@ -57,19 +59,57 @@ public class NaviSender {
 
     private NaviSender() {
     }
+    //endregion
 
-    public void init() {
+    //region 初始化
+    public void start() {
         if (CalibrationPackage.getInstance().architecture() != 0) {
             Logger.i(TAG, PREFIX , "init: not CLEA calibration");
             return;
         }
+        Logger.d(TAG, "start");
+        StartService.getInstance().registerSdkCallback(TAG, mISdkInitCallback);
+        final int engineInit = StartService.getInstance().getSdkActivation();
+        if (engineInit == -1) {
+            Logger.i(TAG, "engine not initialized");
+            mSdNavigationStatusGroup.setNaviStat(7);
+            SignalPackage.getInstance().setSdNavigationStatus(mSdNavigationStatusGroup);
+            return;
+        }
+        if (engineInit == 1) {
+            Logger.i(TAG, "engine initialization");
+            return;
+        }
+        // 地图引擎已初始化
+        init();
+    }
+
+    private void init() {
         NaviPackage.getInstance().registerObserver(TAG, mIGuidanceObserver);
         RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
         NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
         PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
         CruisePackage.getInstance().registerObserver(TAG, mICruiseObserver);
+
+        String naviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        setNaviState(naviStatus);
+        SignalPackage.getInstance().setSdNavigationStatus(mSdNavigationStatusGroup);
         Logger.i(TAG, PREFIX , "init success");
     }
+
+    private final StartService.ISdkInitCallback mISdkInitCallback = new StartService.ISdkInitCallback() {
+        @Override
+        public void onSdkInitSuccess() {
+            init();
+        }
+
+        @Override
+        public void onSdkInitFail(int initSdkResult, String msg) {
+            mSdNavigationStatusGroup.setNaviStat(7);
+            SignalPackage.getInstance().setSdNavigationStatus(mSdNavigationStatusGroup);
+        }
+    };
+    //endregion
 
     private final ICruiseObserver mICruiseObserver = new ICruiseObserver() {
         @Override
@@ -109,6 +149,18 @@ public class NaviSender {
             }
             int onGuideRoad = locationInfo.getOnGuideRoad();
             mSdNavigationStatusGroup.setNaviStatCrntRdMpConf(onGuideRoad);
+            int curRoadClass = switch (locationInfo.getRoadClass()) {
+                case -1 -> 15;
+                case 0 -> 0;
+                case 1 -> 2;
+                case 2 -> 3;
+                case 3 -> 4;
+                case 4 -> 5;
+                case 6 -> 1;
+                default -> 6;
+            };
+            mSdNavigationStatusGroup.setNaviStatCrntRdLvl_Inv(1);
+            mSdNavigationStatusGroup.setNaviStatCrntRdLvl(curRoadClass);
             SignalPackage.getInstance().setSdNavigationStatus(mSdNavigationStatusGroup);
         }
     };
@@ -121,19 +173,6 @@ public class NaviSender {
                 return;
             }
             ArrayList<String> logs = new ArrayList<>();
-            logs.add("roadClass= " + naviETAInfo.getCurRoadClass());
-            int curRoadClass = switch (naviETAInfo.getCurRoadClass()) {
-                case -1 -> 15;
-                case 0 -> 0;
-                case 1 -> 2;
-                case 2 -> 3;
-                case 3 -> 4;
-                case 4 -> 5;
-                case 6 -> 1;
-                default -> 6;
-            };
-            mSdNavigationStatusGroup.setNaviStatCrntRdLvl(curRoadClass);
-            mSdNavigationStatusGroup.setNaviStatCrntRdLvl_Inv(1);
             mSdNavigationStatusGroup.setNaviStatRmnDist(naviETAInfo.getRemainDist() / 5);
             logs.add("remainDist= " + naviETAInfo.getRemainDist());
             mSdNavigationStatusGroup.setNaviStatRmnDist_Inv(1);
@@ -369,23 +408,7 @@ public class NaviSender {
         public void onNaviStatusChange(String naviStatus) {
             ArrayList<String> logs = new ArrayList<>();
             logs.add("naviStatus= " + naviStatus);
-            /**
-             * 1-路径规划中；2-导航中；3-巡航；4-偏航；5-重新规划中；6-非导航（除1和5之外的其他状态）；7-未授权
-             */
-            switch (naviStatus) {
-                case NaviStatus.NaviStatusType.ROUTING:
-                    mSdNavigationStatusGroup.setNaviStat(1);
-                    break;
-                case NaviStatus.NaviStatusType.NAVING:
-                case NaviStatus.NaviStatusType.LIGHT_NAVING:
-                    mSdNavigationStatusGroup.setNaviStat(2);
-                    break;
-                case NaviStatus.NaviStatusType.CRUISE:
-                    mSdNavigationStatusGroup.setNaviStat(3);
-                    break;
-                default:
-                    mSdNavigationStatusGroup.setNaviStat(6);
-            }
+            setNaviState(naviStatus);
             SignalPackage.getInstance().setSdNavigationStatus(mSdNavigationStatusGroup);
 
             if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(naviStatus)) {
@@ -396,6 +419,10 @@ public class NaviSender {
                     SignalPackage.getInstance().setTotalPredictedTimeFromStartToDestinationOnNavigation(0); // 导航预计时长
                 } else {
                     Integer index = selectRouteIndex.get(MapType.MAIN_SCREEN_MAIN_MAP);
+                    if (index == null || index > mRouteLineInfos.size() -1) {
+                        Logger.e(TAG, PREFIX + "算路信息 select error: " + logs);
+                        return;
+                    }
                     RouteLineInfo routeLineInfo = mRouteLineInfos.get(index);
                     long distance = routeLineInfo.getMDistance();
                     SignalPackage.getInstance().setTotalDistanceFromStartToDestinationOnNavigation((int) distance / 1000); // 导航总距离
@@ -405,8 +432,6 @@ public class NaviSender {
                 }
                 Logger.d(TAG, PREFIX , "算路信息: " , logs);
             } else {
-                mSdNavigationStatusGroup.setNaviStatCrntRdLvl(15);
-                mSdNavigationStatusGroup.setNaviStatCrntRdLvl_Inv(0);
                 mSdNavigationStatusGroup.setNaviStatRmnDist(0);
                 mSdNavigationStatusGroup.setNaviStatRmnDist_Inv(0);
                 mSdNavigationStatusGroup.setNaviStatDistToViaPoint(0);
@@ -433,6 +458,26 @@ public class NaviSender {
             }
         }
     };
+
+    private void setNaviState(String naviStatus) {
+        /**
+         * 1-路径规划中；2-导航中；3-巡航；4-偏航；5-重新规划中；6-非导航（除1和5之外的其他状态）；7-未授权
+         */
+        switch (naviStatus) {
+            case NaviStatus.NaviStatusType.ROUTING:
+                mSdNavigationStatusGroup.setNaviStat(1);
+                break;
+            case NaviStatus.NaviStatusType.NAVING:
+            case NaviStatus.NaviStatusType.LIGHT_NAVING:
+                mSdNavigationStatusGroup.setNaviStat(2);
+                break;
+            case NaviStatus.NaviStatusType.CRUISE:
+                mSdNavigationStatusGroup.setNaviStat(3);
+                break;
+            default:
+                mSdNavigationStatusGroup.setNaviStat(6);
+        }
+    }
 
     private void sendTrafficJamRoadInvalid() {
         SignalPackage.getInstance().setDistanceToTrafficJamRoad(0);

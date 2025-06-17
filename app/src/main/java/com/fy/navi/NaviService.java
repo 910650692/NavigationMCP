@@ -122,7 +122,7 @@ public class NaviService extends Service {
             MyFsaService.getInstance().init();
             AdasClient.getInstance().init(AppCache.getInstance().getMContext());
             PatacL2ppManager.getInstance().init();
-            NaviSender.getInstance().init();
+            NaviSender.getInstance().start();
             return Result.success();
         }
     }

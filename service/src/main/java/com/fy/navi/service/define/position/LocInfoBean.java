@@ -60,6 +60,15 @@ public class LocInfoBean {
     private float mFittingCourseAcc;
     private String mRequestRouteInfo;
     private int onGuideRoad;
+    private int roadClass;
+
+    public int getRoadClass() {
+        return roadClass;
+    }
+
+    public void setRoadClass(int roadClass) {
+        this.roadClass = roadClass;
+    }
 
     public int getOnGuideRoad() {
         return onGuideRoad;
