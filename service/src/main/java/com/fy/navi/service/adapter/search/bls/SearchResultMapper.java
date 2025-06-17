@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author baipeg0904
@@ -954,11 +955,14 @@ public final class SearchResultMapper {
     public SearchResultEntity mapFromSearchEnRouteResult(final SearchRequestParameter requestParameterBuilder, final SearchEnrouteResult result) {
         final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.errorCode, result.errorMessage);
         final List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiInfos)
-                .orElse(new ArrayList<>())
-                .stream()
-                .map(this::convertToPoiInfoEntity)
-                .sorted(Comparator.comparingInt(PoiInfoEntity::getSort_distance))
-                .collect(Collectors.toList());
+                .map(list -> IntStream.range(0, list.size())
+                        .mapToObj(index -> {
+                            SearchEnroutePoiInfo searchPoi = list.get(index);
+                            return convertToPoiInfoEntity(searchPoi, index);
+                        })
+                        .sorted(Comparator.comparingInt(PoiInfoEntity::getSort_distance))
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
         searchResultEntity.setPoiList(poiList);
         searchResultEntity.setPoiType(Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork()) ? 1 : 0);//0=离线数据，1=在线数据
         return searchResultEntity;
@@ -1061,7 +1065,7 @@ public final class SearchResultMapper {
      * @param poiInfo 搜索结果
      * @return PoiInfoEntity
      */
-    private PoiInfoEntity convertToPoiInfoEntity(final SearchEnroutePoiInfo poiInfo) {
+    private PoiInfoEntity convertToPoiInfoEntity(final SearchEnroutePoiInfo poiInfo, final int index) {
         //加油站信息
         final List<GasStationInfo> gasStationInfos = new ArrayList<>();
         for (int i = 0; i < poiInfo.gasStationInfo.types.size(); i++) {
@@ -1151,6 +1155,7 @@ public final class SearchResultMapper {
                 .setMLableList(labelInfos)
                 .setPoiTag(isParking(poiInfo.basicInfo.typeCode) ? "停车场" : poiInfo.basicInfo.tag)
                 .setSort_distance(ConvertUtils.str2Int(poiInfo.basicInfo.distance))
+                .setMIndex(index)
                 .setChargeInfoList(chargeInfos);
     }
 

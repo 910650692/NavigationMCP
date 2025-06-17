@@ -129,7 +129,11 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
             if (!ConvertUtils.isEmpty(poiInfoEntity.getPoint())) {
                 mTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid(), poiInfoEntity.getPoint());
             } else {
-                mTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
+                if (poiInfoEntity.getMIndex() != -1) {
+                    mTaskId = mSearchPackage.enRoutePoiIdSearch(poiInfoEntity.getPid());
+                } else {
+                    mTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
+                }
             }
             //POI详情搜索测试代码，正式版本sdk时放开
 //            mSearchPackage.poiDetailSearch(poiInfoEntity, poiInfoEntity.getRetainParam());

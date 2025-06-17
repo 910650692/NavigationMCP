@@ -445,7 +445,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             mRouteEndPoint.setRestNum(result.getRestNum());
             mRouteEndPoint.setBusinessHours(result.getBusinessHours());
             mRouteEndPoint.setEndPointType(result.getEndPointType());
-            mRouteControl.updateStyle(BizRouteType.BizRouteTypeEndPoint);
+//            mRouteControl.updateStyle(BizRouteType.BizRouteTypeEndPoint);
         }
     }
 
@@ -456,7 +456,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     public Rect getRoadCrossRect() {
-        Logger.e(TAG, "getRoadCrossRect " + GsonUtils.toJson(mRect));
+        Logger.e(TAG, "getRoadCrossRect ", mRect);
         return mRect.get();
     }
 

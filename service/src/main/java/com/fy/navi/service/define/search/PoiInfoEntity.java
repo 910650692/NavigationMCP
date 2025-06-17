@@ -59,6 +59,8 @@ public class PoiInfoEntity implements Parcelable {
     private int mChargeChildType;
     // 是否是行政区信息
     private boolean mIsLocres;
+    // 下标
+    private int mIndex = -1;
 
     // -----------语音排序使用------------
     private int mSortDistance;     // 距离，语音使用
@@ -766,6 +768,7 @@ public class PoiInfoEntity implements Parcelable {
         mIsVisible = in.readBoolean();
         mChildType = in.readInt();
         mChargeChildType = in.readInt();
+        mIndex = in.readInt();
         mCityInfo = in.readParcelable(CityInfo.class.getClassLoader());
         mFavoriteInfo = in.readParcelable(FavoriteInfo.class.getClassLoader());
         mRetainParam = in.readParcelable(SearchRetainParamInfo.class.getClassLoader());
@@ -862,6 +865,7 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeInt(mSortPrice);
         parcel.writeBoolean(mIsVisible);
         parcel.writeInt(mChargeChildType);
+        parcel.writeInt(mIndex);
         parcel.writeParcelable(mCityInfo, i);
         parcel.writeParcelable(mFavoriteInfo, i);
         parcel.writeParcelable(mRetainParam, i);

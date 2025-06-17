@@ -16,6 +16,7 @@ public enum LayerPointItemType {
     SEARCH_POI_CENTRAL,     //搜索中心点扎标
     SEARCH_POI_BEGIN_END,   //搜索起终点途经点扎标
     SEARCH_POI_ALONG_ROUTE, //沿途搜
+    SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT, //沿途搜列表单独扎标
     SEARCH_POI_LABEL,       //POI扎标图层业务
 
     ROUTE_PATH,             //路线

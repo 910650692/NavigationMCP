@@ -68,6 +68,7 @@ public interface AutoMapConstant {
         int TERMINAL_PARK_AROUND_SEARCH = 16; // 终点停车场周边搜索
         int MAIN_SEARCH_ICON = 17; // 主图页面搜索
         int PID_LIST_SEARCH = 18; // Pid批量搜做
+        int PID_EN_ROUTE_SEARCH = 19; // Pid沿途搜
     }
 
     /*** ！！！搜索相关,数据传递key,只能添加不能删除！！！ */

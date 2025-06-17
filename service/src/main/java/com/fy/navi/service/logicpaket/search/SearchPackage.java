@@ -555,6 +555,34 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param poiId POI id
      * @return taskId
      */
+    public int enRoutePoiIdSearch(final String poiId) {
+        if (poiId == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute poiIdSearch: searchRequestParameterBuilder is null.");
+            return -1;
+        }
+
+        final GeoPoint userLoc = new GeoPoint();
+        userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
+                + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .poiId(poiId)
+                .queryType(AutoMapConstant.SearchQueryType.ID)
+                .searchType(AutoMapConstant.SearchType.PID_EN_ROUTE_SEARCH)
+                .userLoc(userLoc)
+                .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
+                .build();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing poiDetailSearch search." + poiId);
+        return mSearchAdapter.poiIdSearch(requestParameterBuilder);
+    }
+
+    /**
+     * Poi Id 搜索
+     *
+     * @param poiId POI id
+     * @return taskId
+     */
     public int poiIdSearch(final String poiId, final GeoPoint geoPoint) {
         if (poiId == null) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute poiIdSearch: searchRequestParameterBuilder is null.");
@@ -1232,6 +1260,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 createLabelMarker(searchResultEntity);
                 showPreview(searchResultEntity.getPoiList());
                 break;
+            case AutoMapConstant.SearchType.PID_EN_ROUTE_SEARCH:
+                createEnRoutePoiMarker(searchResultEntity.getPoiList());
+                showPreview(searchResultEntity.getPoiList());
+                break;
             default:
                 break;
         }
@@ -1278,6 +1310,23 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 layerItemSearchResult, true);
         showPreview(poiList);
     }
+    /**
+     * 沿途搜结果列表扎标
+     * @param poiList 搜索结果列表
+     */
+    public void createEnRoutePoiMarker(final List<PoiInfoEntity> poiList) {
+        if (ConvertUtils.isEmpty(poiList)) {
+            return;
+        }
+        final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
+        layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
+        final LayerPointItemType layerPointItemType = LayerPointItemType.SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT;
+        sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
+        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
+                layerItemSearchResult, true);
+        showPreview(poiList);
+    }
+
 
     /**
      * 搜索结果列表扎标

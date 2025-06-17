@@ -65,6 +65,7 @@ public class SearchResultCallbackHelper {
                 resultList = handleSuggestionSearch(requestParameterBuilder, result);
                 break;
             case AutoMapConstant.SearchType.POI_SEARCH:
+            case AutoMapConstant.SearchType.PID_EN_ROUTE_SEARCH:
                 resultList = handlePoiSearch(requestParameterBuilder, result);
                 break;
             case AutoMapConstant.SearchType.GEO_SEARCH:

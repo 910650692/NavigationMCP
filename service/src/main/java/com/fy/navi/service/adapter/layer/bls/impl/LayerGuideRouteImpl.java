@@ -230,6 +230,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     public void updateRouteEndPoint(LayerItemRouteEndPoint endPoint) {
         Logger.d(TAG, "updateRoutePoints endPoint " + endPoint.toString());
         getStyleAdapter().updateRoutePoints(endPoint);
+        getLayerGuideRouteControl().updateStyle(BizRouteType.BizRouteTypeEndPoint);
     }
 
     /**
