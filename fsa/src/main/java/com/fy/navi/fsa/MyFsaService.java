@@ -417,7 +417,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, json);
         try {
             Logger.d(TAG, "switchClusterActivity(isOpen);");
-            switchClusterActivity(isOpen);
+            ThreadManager.getInstance().postUi(() -> {
+                switchClusterActivity(isOpen);
+            });
             //switchHudActivity(isOpen);
         } catch (Exception e) {
             Logger.e(TAG, "Failed to switch ClusterActivity state", e);
