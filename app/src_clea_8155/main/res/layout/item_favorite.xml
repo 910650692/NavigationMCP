@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/dp_25"
-                android:layout_marginStart="@dimen/dp_34"
+                android:layout_marginStart="@dimen/dp_30"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/item_favorite_img">
 
@@ -79,7 +79,7 @@
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
-                android:layout_width="@dimen/dp_580"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_34"
                 android:layout_marginTop="@dimen/dp_7"
