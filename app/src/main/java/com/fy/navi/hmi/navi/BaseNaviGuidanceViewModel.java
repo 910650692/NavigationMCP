@@ -37,6 +37,7 @@ import com.fy.navi.service.define.screen.ScreenType;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
+import com.fy.navi.service.tts.NaviMediaPlayer;
 import com.fy.navi.ui.BuildConfig;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
@@ -147,6 +148,7 @@ public class BaseNaviGuidanceViewModel extends
     public void onDestroy() {
         super.onDestroy();
         mModel.removeOnNetStatusChangeListener(this);
+        NaviMediaPlayer.getInstance().releaseMediaPlayer();
     }
 
     //显示/隐藏 添加途径点页面

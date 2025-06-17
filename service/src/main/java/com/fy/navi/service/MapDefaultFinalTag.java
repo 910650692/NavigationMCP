@@ -18,6 +18,7 @@ public interface MapDefaultFinalTag {
      String NAVI_SERVICE_TAG = DEFAULT_TAG + "_Navi" + SERVICE_TAG;
      String NAVI_SERVICE_API_IMPL = DEFAULT_TAG + "_Navi" + SERVICE_TAG + "_ApiImpl";
      String NAVI_SERVICE_CALLBACK = DEFAULT_TAG + "_Navi" + SERVICE_TAG + "_Callback";
+     String NAVI_SERVICE_MEDIA = DEFAULT_TAG + "_Navi" + SERVICE_TAG + "_MediaPlayer";
     /*** NaviApp_Cruise_Service **/
      String CRUISE_SERVICE_TAG = DEFAULT_TAG + "_Cruise" + SERVICE_TAG;
     /*** NaviApp_Position_Service **/

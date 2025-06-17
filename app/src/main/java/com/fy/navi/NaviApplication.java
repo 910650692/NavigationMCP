@@ -63,6 +63,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         ThreadManager.getInstance().execute(() -> {
             AppCache.getInstance().setMApplication(this);
             AppCache.getInstance().setMContext(getApplicationContext());
+            AppCache.getInstance().setMFlavor(BuildConfig.FLAVOR);
             registerActivityLifecycleCallbacks(NaviApplication.this);
             BaseTestCarType testCarType = new TestCarType();
             initARouter();

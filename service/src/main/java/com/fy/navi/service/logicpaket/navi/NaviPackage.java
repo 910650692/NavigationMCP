@@ -1,6 +1,7 @@
 package com.fy.navi.service.logicpaket.navi;
 
 import android.graphics.Rect;
+import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
@@ -64,7 +65,7 @@ import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
-import com.fy.navi.service.tts.NaviAudioPlayer;
+import com.fy.navi.service.tts.NaviMediaPlayer;
 import com.fy.navi.service.tts.TTSPlayHelper;
 
 import java.util.ArrayList;
@@ -594,19 +595,24 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     @Override
     public void onPlayRing(int type) {
-        Logger.i(TAG, "onPlayRing type:" + type + " mIsMute:" + mIsMute);
         // 如果处于巡航态且巡航播报关闭
         if (Objects.equals(NavistatusAdapter.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE) && !mCruiseVoiceIsOpen) {
             Logger.d(TAG, "onPlayRing 当前处于巡航态且播报关闭，故不播放声音！");
             return;
         }
         if (mIsMute) {
+            Logger.d(TAG, "onPlayRing 已静音 type:", type);
             return; // 静音开关
+        }
+        if (TextUtils.equals("cadi", AppCache.getInstance().getMFlavor())) {
+            //TODO 凯迪车型MediaPlayer导致ANR，待FW解决后放开
+            Logger.d(TAG, "onPlayRing 凯迪车型MediaPlayer导致ANR，待FW解决后放开");
+            return;
         }
         ThreadManager.getInstance().postUi(new Runnable() {
             @Override
             public void run() {
-                NaviAudioPlayer.getInstance().playNaviWarningSound(type);
+                NaviMediaPlayer.getInstance().playNaviWarningSound(type);
             }
         });
     }

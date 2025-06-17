@@ -37,6 +37,7 @@ import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.service.logicpaket.voice.VoicePackage;
 import com.fy.navi.service.tts.NaviAudioPlayer;
+import com.fy.navi.service.tts.NaviMediaPlayer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -230,6 +231,7 @@ public class StartService {
         SignalPackage.getInstance().init(AppCache.getInstance().getMContext());
         SpeechPackage.getInstance().init();
         NaviAudioPlayer.getInstance().init();
+        NaviMediaPlayer.getInstance().init();
         HotUpdatePackage.getInstance().initService();
         Logger.i(TAG, "initOtherService end");
     }
