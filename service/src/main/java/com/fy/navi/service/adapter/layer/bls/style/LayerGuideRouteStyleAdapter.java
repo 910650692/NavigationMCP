@@ -40,6 +40,8 @@ import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
 import com.fy.navi.service.define.route.RouteChargeStationInfo;
 import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteLineInfo;
+import com.fy.navi.service.define.route.RouteSupplementInfo;
+import com.fy.navi.service.define.route.RouteSupplementParams;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.utils.GasCarTipManager;
@@ -82,6 +84,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     private int mViaCount = 0;
     //路线图层总数据
     private RequestRouteResult mRouteResult = new RequestRouteResult();
+    //自动添加的补能站
+    private RouteChargeStationParam mRouteChargeStation = new RouteChargeStationParam();
 
     public LayerGuideRouteStyleAdapter(int engineID, BizRoadCrossControl bizRoadCrossControl, BizGuideRouteControl bizGuideRouteControl, BizRoadFacilityControl roadFacilityControl, BizLabelControl bizLabelControl) {
         super(engineID);
@@ -115,13 +119,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 return KEY_ROAD_ENERGY_EMPTY;
             }
             case BizRouteType.BizRouteTypeViaChargeStationPoint -> {
-                if (ConvertUtils.isEmpty(mRouteResult)) {
-                    Logger.d(TAG, "默认补能规划扎标");
-                    return super.provideLayerItemStyleJson(item);
-                }
-                RouteChargeStationParam routeChargeStationParam = mRouteResult.getMRouteChargeStationParam();
-                if (ConvertUtils.isEmpty(routeChargeStationParam)
-                        || ConvertUtils.isEmpty(routeChargeStationParam.getMRouteChargeStationInfos())) {
+                if (ConvertUtils.isEmpty(mRouteChargeStation.getMRouteSupplementParams())) {
                     Logger.d(TAG, "默认补能规划扎标");
                     return super.provideLayerItemStyleJson(item);
                 }
@@ -380,6 +378,39 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         textView.setText(string);
     }
 
+    /**
+     * 更新算路时补能点信息
+     * @param routeChargeStation
+     */
+    public void updateRouteChargeStation(RouteChargeStationParam routeChargeStation) {
+        if (ConvertUtils.isNull(routeChargeStation)) {
+            Logger.d(TAG, "routeChargeStation is null");
+            return;
+        }
+        updateChargeStationDistance(routeChargeStation);
+        mRouteChargeStation = routeChargeStation;
+    }
+
+    /**
+     * 更新间距
+     * @param routeChargeStation
+     */
+    private void updateChargeStationDistance(RouteChargeStationParam routeChargeStation) {
+        final ArrayList<RouteSupplementParams> routeSupplementParams = routeChargeStation.getMRouteSupplementParams();
+        if (!ConvertUtils.isEmpty(routeSupplementParams)) {
+            for (RouteSupplementParams mRouteSupplementParam : routeSupplementParams) {
+               final ArrayList<RouteSupplementInfo> routeSupplementInfos = mRouteSupplementParam.getMRouteSupplementInfos();
+                if (!ConvertUtils.isEmpty(routeSupplementInfos) && routeSupplementInfos.size() > NumberUtils.NUM_1) {
+                    for (int i = 0; i < routeSupplementInfos.size(); i++) {
+                        final RouteSupplementInfo currentRouteInfo = routeSupplementInfos.get(i);
+                        final RouteSupplementInfo previousRouteInfo = routeSupplementInfos.get(i - 1);
+                        currentRouteInfo.setMDistance(currentRouteInfo.getMDistance() - previousRouteInfo.getMDistance());
+                    }
+                }
+            }
+        }
+    }
+
     // 更新路线补能替换点扎标数据
     public void updateRouteReplaceChargeInfo(ArrayList<RouteAlterChargeStationInfo> chargeStationInfos, int viaCount) {
         if (ConvertUtils.isEmpty(chargeStationInfos)) {
@@ -508,31 +539,38 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         if (item instanceof ViaChargeStationLayerItem chargeStationLayerItem) {
             String id = chargeStationLayerItem.getID();
             int index = Integer.parseInt(id);
-            ArrayList<RouteChargeStationInfo> chargeStationInfos = mRouteResult.getMRouteChargeStationParam().getMRouteChargeStationInfos();
+            ArrayList<RouteSupplementParams> mRouteSupplementParams = mRouteChargeStation.getMRouteSupplementParams();
+            if (ConvertUtils.isEmpty(mRouteSupplementParams)) {
+                Logger.e(TAG, "RouteSupplement is empty");
+                return chargeInfo;
+            }
             if (ConvertUtils.isEmpty(mRouteControl)) {
                 Logger.e(TAG, "getRouteChargeInfo mRouteControl == null");
                 return chargeInfo;
             }
             int selectedPathIndex = mRouteControl.getSelectedPathIndex();
             Logger.d(TAG, "getRouteChargeInfo selectedPathIndex " + selectedPathIndex);
-            if (selectedPathIndex >= NumberUtils.NUM_0 && selectedPathIndex < chargeStationInfos.size()) {
-                RouteChargeStationInfo routeChargeStationInfo = chargeStationInfos.get(selectedPathIndex);
-                if (ConvertUtils.isEmpty(routeChargeStationInfo)) {
-                    Logger.e(TAG, "getRouteChargeInfo routeChargeStationInfo == null");
+            if (selectedPathIndex >= NumberUtils.NUM_0 && selectedPathIndex < mRouteSupplementParams.size()) {
+                RouteSupplementParams routeSupplementParams = mRouteSupplementParams.get(selectedPathIndex);
+                if (ConvertUtils.isNull(routeSupplementParams)) {
+                    Logger.e(TAG, "getRouteChargeInfo routeSupplementParams == null");
                     return chargeInfo;
                 }
-                ArrayList<RouteChargeStationDetailInfo> chargeStationDetailInfoArrayList = routeChargeStationInfo.getMRouteChargeStationDetailInfo();
-                if (ConvertUtils.isEmpty(chargeStationDetailInfoArrayList)) {
-                    Logger.e(TAG, "getRouteChargeInfo chargeStationDetailInfoArrayList is Empty");
+                ArrayList<RouteSupplementInfo> mRouteSupplementInfos = routeSupplementParams.getMRouteSupplementInfos();
+                if (ConvertUtils.isEmpty(mRouteSupplementInfos)) {
+                    Logger.e(TAG, "getRouteChargeInfo mRouteSupplementInfos is Empty");
                     return chargeInfo;
                 }
-                if (index >= NumberUtils.NUM_0 && index < chargeStationDetailInfoArrayList.size()) {
-                    RouteChargeStationDetailInfo routeChargeStationDetailInfo = chargeStationDetailInfoArrayList.get(index);
-                    if (ConvertUtils.isEmpty(routeChargeStationDetailInfo)) {
-                        Logger.e(TAG, "getRouteChargeInfo routeChargeStationDetailInfo == null");
+                if (index >= NumberUtils.NUM_0 && index < mRouteSupplementInfos.size()) {
+                    final RouteSupplementInfo routeSupplementInfo = mRouteSupplementInfos.get(index);
+                    if (ConvertUtils.isEmpty(routeSupplementInfo)) {
+                        Logger.e(TAG, "getRouteChargeInfo routeSupplementInfo == null");
                         return chargeInfo;
                     }
                     chargeInfo.setIndex(index);
+                    final RouteChargeStationDetailInfo routeChargeStationDetailInfo = new RouteChargeStationDetailInfo();
+                    routeChargeStationDetailInfo.setMChargeTime(routeSupplementInfo.getMChargeTime());
+                    routeChargeStationDetailInfo.setMInterval(routeSupplementInfo.getMDistance());
                     chargeInfo.setMRouteChargeStationInfo(routeChargeStationDetailInfo);
                 }
             } else {

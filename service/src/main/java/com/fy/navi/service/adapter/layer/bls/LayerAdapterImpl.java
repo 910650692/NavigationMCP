@@ -25,6 +25,7 @@ import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
+import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 
@@ -166,6 +167,11 @@ public class LayerAdapterImpl implements ILayerApi {
     /* 更新终点扎标数据 */
     public void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().updateRouteEndPoint(endPoint);
+    }
+
+    /*自动添加的补能站数据*/
+    public void updateRouteChargeStation(MapType mapTypeId, RouteChargeStationParam routeChargeStation) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().updateRouteChargeStation(routeChargeStation);
     }
 
     /* 更新Odd信息 */

@@ -61,6 +61,7 @@ import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
+import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteLinePoints;
 
 import java.util.ArrayList;
@@ -309,6 +310,12 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, "updateRouteReplaceChargePoints points " + points + " chargeStationInfoList.size " + chargeStationInfoList.size());
         getStyleAdapter().updateRouteReplaceChargeInfo(chargeStationInfoList, viaCount);
         getLayerGuideRouteControl().updatePaths();
+    }
+
+    /*自动添加的补能站数据*/
+    public void updateRouteChargeStation(RouteChargeStationParam routeChargeStation) {
+        getStyleAdapter().updateRouteChargeStation(routeChargeStation);
+        getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaChargeStationPoint).updateStyle();
     }
 
     //转换替换补能扎标数据

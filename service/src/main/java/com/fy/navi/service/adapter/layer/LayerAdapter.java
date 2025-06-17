@@ -19,6 +19,7 @@ import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
+import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -122,6 +123,11 @@ public class LayerAdapter {
     /*更新终点扎标数据*/
     public void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
         mLayerApi.updateRouteEndPoint(mapTypeId, endPoint);
+    }
+
+    /*自动添加的补能站数据*/
+    public void updateRouteChargeStation(MapType mapTypeId, RouteChargeStationParam routeChargeStation) {
+        mLayerApi.updateRouteChargeStation(mapTypeId, routeChargeStation);
     }
 
     /*清除指定路线类型扎标*/

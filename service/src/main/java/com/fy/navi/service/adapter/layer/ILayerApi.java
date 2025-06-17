@@ -19,6 +19,7 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
+import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -52,6 +53,9 @@ public interface ILayerApi {
 
     /*更新终点扎标数据*/
     void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint);
+
+    /*自动添加的补能站数据*/
+    void updateRouteChargeStation(MapType mapTypeId, RouteChargeStationParam routeChargeStation);
 
     /* 更新Odd信息 */
     void updateOddInfo(MapType mapTypeId, ArrayList<LayerItemRouteOdd> oddInfoList, long pathId);
