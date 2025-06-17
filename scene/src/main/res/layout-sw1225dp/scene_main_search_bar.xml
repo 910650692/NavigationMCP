@@ -173,6 +173,7 @@
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(2)}"
                 android:layout_width="@dimen/dp_101"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_constraintLeft_toRightOf="@+id/scl_pull_up"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
@@ -202,7 +203,6 @@
                 android:id="@+id/scl_car_washing"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(3)}"
                 android:layout_width="@dimen/dp_101"
-                android:visibility="gone"
                 android:layout_height="wrap_content"
                 app:layout_constraintLeft_toRightOf="@+id/scl_gourmet"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
