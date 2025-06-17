@@ -389,7 +389,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
             mIsFilterViewShow = false;
             mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
-            mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), false);
+            if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), false, mPoiInfoEntity);
+            } else {
+                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), false);
+            }
         });
         mViewBinding.searchFilterView.searchFilterCancel.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click reset: ");
@@ -397,7 +401,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
             mIsFilterViewShow = false;
             mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
-            mScreenViewModel.keywordSearch(mPageNum, mSearchText);
+            if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                mScreenViewModel.aroundSearch(mPageNum, mSearchText, mPoiInfoEntity, String.valueOf(mRange), false);
+            } else {
+                mScreenViewModel.keywordSearch(mPageNum, mSearchText);
+            }
         });
         mViewBinding.searchTextBarView.csFilter.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click filter: ");
@@ -466,7 +474,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mCurrentSelectedIndex1 = position;
                 refreshLocalInfoListCheckedState(0, mCurrentSelectedIndex1);
                 mFilterOneChildAdapter.setCategoryList(null);
-                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+                if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                    mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+                } else {
+                    mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+                }
             }
 
             @Override
@@ -482,7 +494,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mCurrentSelectedIndex2 = position;
                 refreshLocalInfoListCheckedState(1, mCurrentSelectedIndex2);
                 mFilterTwoChildAdapter.setCategoryList(null);
-                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+                if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                    mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+                } else {
+                    mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+                }
             }
 
             @Override
@@ -498,7 +514,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mCurrentSelectedIndex3 = position;
                 refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
                 mFilterThreeChildAdapter.setCategoryList(null);
-                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+                if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                    mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+                } else {
+                    mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+                }
             }
 
             @Override
@@ -547,19 +567,31 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mFilterOneChildAdapter.setFilterItemClickListener(position -> {
             refreshLocalInfoListCheckedState(0, mCurrentSelectedIndex1);
             mFilterOneAdapter.notifyDataSetChanged();
-            mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+            if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+            } else {
+                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+            }
         });
 
         mFilterTwoChildAdapter.setFilterItemClickListener(position -> {
             refreshLocalInfoListCheckedState(1, mCurrentSelectedIndex2);
             mFilterOneAdapter.notifyDataSetChanged();
-            mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+            if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+            } else {
+                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+            }
         });
 
         mFilterThreeChildAdapter.setFilterItemClickListener(position -> {
             refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
             mFilterOneAdapter.notifyDataSetChanged();
-            mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+            if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+            } else {
+                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+            }
         });
     }
 
@@ -835,8 +867,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
         }
         mResultEntity = searchResultEntity;
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySearchResult name: " + searchResultEntity.getKeyword()
-                + " Object: " + this.toString());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySearchResult name: " + searchResultEntity.getKeyword());
         mSearchType = searchResultEntity.getSearchType();
         if (!ConvertUtils.isEmpty(searchResultEntity.getPoiList()) && searchResultEntity.getPoiList().size() == 1) {
             //只有一个搜索结果时，直接跳转结果界面
@@ -853,12 +884,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mSearchResultEntity = searchResultEntity;
             }
             mAdapter.notifyList(searchResultEntity);
-            //poi批量搜测试代码
-//            List<String> pidList = new ArrayList<>();
-//            for (PoiInfoEntity poiInfo : searchResultEntity.getMPoiList()) {
-//                pidList.add(poiInfo.getPid());
-//            }
-//            mScreenViewModel.poiListSearch(pidList, 2);
             updatePoiMarkerVisibleState();
             mViewBinding.recyclerSearchResult.scrollToPosition(0);
         }

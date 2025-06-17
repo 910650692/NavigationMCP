@@ -314,6 +314,12 @@ public final class SearchRequestParamV2 {
         paramV2.offlineParam.resultMaxCount = 10;
         paramV2.range = ConvertUtils.isEmpty(searchRequestInfo.getRange()) ?
                 "5000" : searchRequestInfo.getRange();
+        paramV2.offlineParam.adcode = searchRequestInfo.getAdCode();
+        paramV2.customParam.classifyParam.retainState = searchRequestInfo.getRetainState();
+        paramV2.customParam.classifyParam.checkedLevel = searchRequestInfo.getCheckedLevel();
+        paramV2.customParam.classifyParam.classifyV2Data = searchRequestInfo.getClassifyV2Data();
+        paramV2.customParam.classifyParam.classifyV2Level2Data = searchRequestInfo.getClassifyV2Level2Data();
+        paramV2.customParam.classifyParam.claissfyV2Level3Data = searchRequestInfo.getClassifyV2Level3Data();
         return paramV2;
     }
 

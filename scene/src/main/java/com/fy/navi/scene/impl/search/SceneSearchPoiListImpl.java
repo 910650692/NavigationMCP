@@ -186,6 +186,30 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     }
 
     /**
+     * 周边筛选搜索2.0
+     *
+     * @param keyword      关键字
+     * @param pageNum      搜索页数
+     * @param retain       筛选回传参数，使用搜索结果中的SearchClassifyInfo.retainState值原样回传
+     * @param classifyData 一筛参数
+     * @param isSilentSearch 是否静默搜索
+     */
+    public void aroundSearch(final int pageNum, final String keyword, final String retain,
+                             final String classifyData, final boolean isSilentSearch, final PoiInfoEntity poiInfoEntity) {
+        logSearch("keywordSearch classifyData: ", classifyData);
+        if (poiInfoEntity == null || poiInfoEntity.getPoint() == null) {
+            final GeoPoint userLoc = new GeoPoint();
+            userLoc.setLon(PositionPackage.getInstance().getLastCarLocation().getLongitude());
+            userLoc.setLat(PositionPackage.getInstance().getLastCarLocation().getLatitude());
+            mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, retain, classifyData, isSilentSearch, userLoc);
+            return;
+        }
+        final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
+        mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, retain, classifyData, isSilentSearch, geoPoint);
+
+    }
+
+    /**
      * 周边搜索
      * @param pageNum 搜索页数
      * @param keyword   关键字
