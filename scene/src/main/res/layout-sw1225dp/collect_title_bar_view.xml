@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
             android:text="@string/st_collect"
-            android:textColor="@color/search_color_ffffff_50"
+            android:textColor="@color/black"
             android:textSize="@dimen/sp_29"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_search"
