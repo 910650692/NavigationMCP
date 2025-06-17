@@ -1,25 +1,25 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="96dp"
-    android:height="96dp"
-    android:viewportWidth="96"
-    android:viewportHeight="96">
+    android:width="@dimen/dp_64"
+    android:height="@dimen/dp_64"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
   <path
-      android:pathData="M23.675,45.88C23.547,46.574 23.481,47.282 23.481,48C23.481,57.251 34.458,64.75 48,64.75C61.542,64.75 72.519,57.251 72.519,48C72.519,38.749 61.542,31.25 48,31.25C41.629,31.25 35.826,32.91 31.467,35.631"
-      android:strokeWidth="5"
+      android:pathData="M11.458,30.213C11.35,30.798 11.294,31.395 11.294,32C11.294,39.797 20.564,46.118 32,46.118C43.436,46.118 52.706,39.797 52.706,32C52.706,24.203 43.436,17.882 32,17.882C26.62,17.882 21.72,19.281 18.038,21.575"
+      android:strokeWidth="3.76470588"
       android:fillColor="#00000000"
-      android:strokeColor="@color/icon_map_car_model_2d_head"
+      android:strokeColor="@color/icon_map_home_button"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
-      android:pathData="M24.895,41.748a2.201,2.632 50,1 0,4.032 -3.383a2.201,2.632 50,1 0,-4.032 3.383z"
+      android:pathData="M12.49,26.732a1.856,2.221 50,1 0,3.402 -2.855a1.856,2.221 50,1 0,-3.402 2.855z"
       android:strokeWidth="1"
-      android:fillColor="@color/icon_map_car_model_2d_head"
+      android:fillColor="@color/icon_map_home_button"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
   <path
-      android:pathData="M47.152,40.088L39.304,52.645C39.011,53.113 39.154,53.73 39.622,54.023C39.851,54.166 40.128,54.21 40.39,54.146L47.762,52.341C47.918,52.303 48.082,52.303 48.238,52.341L55.61,54.146C56.147,54.277 56.688,53.949 56.819,53.412C56.884,53.15 56.839,52.873 56.696,52.645L48.848,40.088C48.555,39.619 47.938,39.477 47.47,39.77C47.341,39.85 47.232,39.959 47.152,40.088Z"
+      android:pathData="M31.284,25.33L24.659,35.911C24.411,36.306 24.531,36.828 24.926,37.075C25.119,37.196 25.353,37.234 25.575,37.18L31.8,35.659C31.931,35.627 32.069,35.627 32.2,35.659L38.425,37.18C38.878,37.29 39.335,37.013 39.446,36.56C39.5,36.338 39.462,36.104 39.341,35.911L32.716,25.33C32.468,24.935 31.947,24.815 31.552,25.063C31.444,25.131 31.352,25.222 31.284,25.33Z"
       android:strokeWidth="1"
-      android:fillColor="@color/icon_map_car_model_2d_head"
+      android:fillColor="@color/icon_map_home_button"
       android:fillType="nonZero"
       android:strokeColor="#00000000"/>
 </vector>
