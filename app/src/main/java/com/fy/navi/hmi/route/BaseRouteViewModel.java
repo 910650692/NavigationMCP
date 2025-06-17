@@ -1003,7 +1003,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, isSimNavi
                 ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
         Logger.i(TAG, "mStartNaviClick addNaviFragment");
-        closeAllFragment();
         addFragment(new NaviGuidanceFragment(), bundle);
         mModel.setPoint();
     }
