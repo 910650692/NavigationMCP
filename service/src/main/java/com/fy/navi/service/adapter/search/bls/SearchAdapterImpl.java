@@ -863,7 +863,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     public int queryReservation(SearchRequestParameter searchRequestParameter){
         mTaskId.incrementAndGet();
         StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
-                .setStatus(searchRequestParameter.getType())
+                .setStatus(ConvertUtils.isNull(searchRequestParameter.getType()) ? null : searchRequestParameter.getType())
+                .setPreNum(ConvertUtils.isNull(searchRequestParameter.getPreNum()) ? null : searchRequestParameter.getPreNum())
                 .setBrandId(searchRequestParameter.getVehicleBrand());
         req.setAccessToken(searchRequestParameter.getAccessToken());
         final Observable<String> observable = SearchRepository.getInstance().queryReservation(req);

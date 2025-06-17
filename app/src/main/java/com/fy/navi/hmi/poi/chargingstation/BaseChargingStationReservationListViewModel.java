@@ -37,7 +37,13 @@ public class BaseChargingStationReservationListViewModel extends BaseViewModel<C
     public void onCreateReservationResult(int taskId,BaseRep result){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getResultCode"+result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
-            mView.notifyCreateReservationSuccess(taskId);
+            try {
+                JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
+                String preNum = jsonObject.getString("preNum");
+                mView.notifyCreateReservationSuccess(taskId,preNum);
+            } catch (JSONException e) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e);
+            }
         }else{
             ToastUtils.Companion.getInstance().showCustomToastView(result.getMessage());
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getError"+result.getMessage());

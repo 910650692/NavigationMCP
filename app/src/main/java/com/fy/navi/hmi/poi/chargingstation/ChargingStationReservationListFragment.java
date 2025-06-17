@@ -72,8 +72,8 @@ public class ChargingStationReservationListFragment extends BaseFragment<Fragmen
         mBinding.sceneChargeReservationList.notifyEquipmentInfo(type,poiInfoEntity);
     }
 
-    public void notifyCreateReservationSuccess(int taskId){
-        mBinding.sceneChargeReservationList.notifyCreateReservationSuccess(taskId);
+    public void notifyCreateReservationSuccess(int taskId,String preNum){
+        mBinding.sceneChargeReservationList.notifyCreateReservationSuccess(taskId,preNum);
     }
 
     public void onSearchError(int taskId,String message){

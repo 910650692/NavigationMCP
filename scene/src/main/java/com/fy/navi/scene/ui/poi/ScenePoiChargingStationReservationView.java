@@ -136,6 +136,8 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
             return;
         }
+        // 取消预约清空预约单单号
+        mScreenViewModel.setReservationPreNum("");
         mScreenViewModel.queryEquipmentInfo(mReservationInfo);
     }
 

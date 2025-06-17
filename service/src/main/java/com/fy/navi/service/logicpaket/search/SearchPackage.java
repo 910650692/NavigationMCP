@@ -95,6 +95,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     @Getter
     private boolean mIsShow;
     private ScheduledFuture mScheduledFuture;
+    private String mReservationPreNum = "";
 
     private SearchPackage() {
         mManager = HistoryManager.getInstance();
@@ -1986,6 +1987,24 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * 根据预约单号查询当前用户的预约单列表
+     * @param preNum 预约单号
+     * @param brandId 1.凯迪 2.别克 3.雪佛兰 4.奥特能
+     * @param idpUserId 用户id
+     * @param accessToken token
+     * @return taskId
+     */
+    public int queryReservationByPreNum(String preNum,String brandId,String idpUserId,String accessToken){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .vehicleBrand(brandId)
+                .preNum(preNum)
+                .idpUserId(idpUserId)
+                .accessToken(accessToken)
+                .build();
+        return mSearchAdapter.queryReservation(requestParameterBuilder);
+    }
+
+    /**
      * 取消预约
      * @param preNum 预约单号
      * @param idpUserId 用户id
@@ -2076,5 +2095,25 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
             mScheduledFuture = null;
         }
+    }
+
+    /**
+     * 设置预约单号
+     * @param preNum 预约单号
+     */
+    public void setReservationPreNum(String preNum){
+        mReservationPreNum = preNum;
+    }
+
+    /**
+     * 获取预约单号，可以根据预约单号进行预约单信息查询
+     * @return
+     */
+    public String getReservationPreNum(){
+        if(ConvertUtils.isNull(mReservationPreNum)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"get mReservationInfo is null");
+            return "";
+        }
+        return mReservationPreNum;
     }
 }

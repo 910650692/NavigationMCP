@@ -182,7 +182,7 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
         closeCurrentFragment();
     }
 
-    public void notifyCreateReservationSuccess(int taskId){
+    public void notifyCreateReservationSuccess(int taskId,String preNum){
         if(ConvertUtils.isNull(mScreenViewModel)){
             return;
         }
@@ -192,6 +192,8 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
             return;
         }
         mScreenViewModel.queryEquipmentInfo(mCurrentEquipmentInfo,mPoiInfoEntity);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"preNum: ",preNum);
+        mScreenViewModel.setReservationPreNum(preNum);
         // 开启预约倒计时
         GeoPoint point = new GeoPoint();
         point.setLon(mPoiInfoEntity.getPoint().getLon());
@@ -252,6 +254,8 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
             return;
         }
+        // 取消预约清空预约单单号
+        mScreenViewModel.setReservationPreNum("");
         mScreenViewModel.queryEquipmentInfo(mCurrentEquipmentInfo,mPoiInfoEntity);
     }
 

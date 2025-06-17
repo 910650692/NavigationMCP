@@ -86,4 +86,8 @@ public class ScenePoiChargingStationReservationViewImpl extends BaseSceneModel<S
             mTaskId = mSearchPackage.cancelReservation(reservationInfo.getmPreNum(),idpUserId,accessToken);
         });
     }
+
+    public void setReservationPreNum(String preNum){
+        mSearchPackage.setReservationPreNum(preNum);
+    }
 }

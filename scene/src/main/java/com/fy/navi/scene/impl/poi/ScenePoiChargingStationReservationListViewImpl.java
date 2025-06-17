@@ -125,4 +125,8 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
     public void createTimeTick(GeoPoint destPoint){
         mSearchPackage.createTimeTick(destPoint);
     }
+
+    public void setReservationPreNum(String preNum){
+        mSearchPackage.setReservationPreNum(preNum);
+    }
 }
