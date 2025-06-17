@@ -186,9 +186,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/crl_poi_des">
 
-            <include
-                android:id="@+id/scene_poi_item_gas_view"
-                layout="@layout/scene_poi_item_gas_view"
+            <ViewStub
+                android:id="@+id/scene_poi_item_gas_view_stub"
+                android:layout="@layout/scene_poi_item_gas_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -196,9 +196,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <include
-                android:id="@+id/scene_poi_item_charge_view"
-                layout="@layout/scene_poi_item_charge_view"
+            <ViewStub
+                android:id="@+id/scene_poi_item_charge_view_stub"
+                android:layout="@layout/scene_poi_item_charge_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -206,9 +206,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <include
-                android:id="@+id/scene_poi_item_car_wash_view"
-                layout="@layout/scene_poi_item_car_wash_view"
+            <ViewStub
+                android:id="@+id/scene_poi_item_car_wash_view_stub"
+                android:layout="@layout/scene_poi_item_car_wash_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -216,9 +216,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <include
-                android:id="@+id/scene_poi_item_catering_view"
-                layout="@layout/scene_poi_item_catering_view"
+            <ViewStub
+                android:id="@+id/scene_poi_item_catering_view_stub"
+                android:layout="@layout/scene_poi_item_catering_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -227,9 +227,9 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!--服务区和停车场共用一个view-->
-            <include
-                android:id="@+id/scene_poi_item_parking_service_view"
-                layout="@layout/scene_poi_item_parking_view"
+            <ViewStub
+                android:id="@+id/scene_poi_item_parking_service_view_stub"
+                android:layout="@layout/scene_poi_item_parking_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -237,9 +237,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <include
-                android:id="@+id/scene_poi_item_scenic_spot_view"
-                layout="@layout/scene_poi_item_scenic_spot_view"
+            <ViewStub
+                android:id="@+id/scene_poi_item_scenic_spot_view_stub"
+                android:layout="@layout/scene_poi_item_scenic_spot_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"

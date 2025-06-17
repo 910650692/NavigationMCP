@@ -34,7 +34,6 @@ public class HomeCompanyModel extends BaseModel<HomeCompanyViewModel> implements
 
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchResult=> searchResultEntity: ", searchResultEntity);
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "homeCompany Ignoring callback for ID: " + mSearchPackage.getCurrentCallbackId()
             + " getCallbackId: " + getCallbackId());
         if (getCallbackId().equals(mSearchPackage.getCurrentCallbackId())) {

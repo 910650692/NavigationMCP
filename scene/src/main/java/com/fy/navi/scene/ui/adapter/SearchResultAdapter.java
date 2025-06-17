@@ -12,6 +12,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -30,6 +31,11 @@ import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.adapter.GasStationAdapter;
 import com.fy.navi.scene.adapter.GridSpacingItemDecoration;
+import com.fy.navi.scene.databinding.ScenePoiItemCateringViewBinding;
+import com.fy.navi.scene.databinding.ScenePoiItemChargeViewBinding;
+import com.fy.navi.scene.databinding.ScenePoiItemGasViewBinding;
+import com.fy.navi.scene.databinding.ScenePoiItemParkingViewBinding;
+import com.fy.navi.scene.databinding.ScenePoiItemScenicSpotViewBinding;
 import com.fy.navi.scene.databinding.SearchResultItemBinding;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
@@ -46,6 +52,7 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -146,15 +153,15 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         final SearchResultItemBinding adapterSearchResultItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.search_result_item, parent, false);
-        return new ResultHolder(adapterSearchResultItemBinding);
+        return new ResultHolder(adapterSearchResultItemBinding, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ResultHolder holder, final int position) {
         holder.mResultItemBinding.setPoiBean(mPoiEntities.get(position));
         mPoiInfoEntity = mPoiEntities.get(position);
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder searchType1: "
-                + mSearchResultEntity.getSearchType() + "----mHomeCompanyType: "+mHomeCompanyType);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder searchType: "
+                + mSearchResultEntity.getSearchType() + " ,mHomeCompanyType: " + mHomeCompanyType);
         if (mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.AROUND_SEARCH
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
@@ -257,7 +264,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     break;
             }
         }
-        setOnClickListener(holder, position);
         if (mPoiInfoEntity != null) {
             if ("0米".equals(mPoiInfoEntity.getDistance())) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mPoiInfoEntity.getDistance() is: " + mSearchPackage.calcStraightDistance(mPoiInfoEntity.getPoint()));
@@ -297,45 +303,11 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         }
     }
 
-    /**
-     * 设置点击事件
-     * @param holder holder
-     * @param position 下标
-     */
-    private void setOnClickListener(@NonNull final ResultHolder holder, final int position) {
-        holder.mResultItemBinding.getRoot().setOnClickListener(v -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情");
-            sendBuryPointForSearchResult(position);
-            if (mOnItemClickListener != null) {
-                if (!ConvertUtils.isEmpty(mPoiEntities) && position < mPoiEntities.size()) {
-                    if (mParentSelectIndex == position && mChildSelectIndex != -1) {
-                        mOnItemClickListener.onChildItemClick(position, mPoiEntities.get(position), mChildSelectIndex);
-                    } else {
-                        mOnItemClickListener.onItemClick(position, mPoiEntities.get(position));
-                    }
-                }
-            }
-        });
-
-        holder.mResultItemBinding.poiToNavi.setOnClickListener(v -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 算路|添加途经点");
-            if (mOnItemClickListener != null) {
-                if (mParentSelectIndex == position && mChildSelectIndex != -1 && mChildSelectInfo != null) {
-                    mOnItemClickListener.onNaviClick(position, mChildSelectInfo);
-                } else {
-                    if (!ConvertUtils.isEmpty(mPoiEntities) && position < mPoiEntities.size()) {
-                        mOnItemClickListener.onNaviClick(position, mPoiEntities.get(position));
-                    }
-                }
-            }
-        });
-    }
-
     @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_LIST_SELECT)
-    private void sendBuryPointForSearchResult(int position) {
+    private static void sendBuryPointForSearchResult(int position, String name) {
         BuryProperty buryProperty = new BuryProperty.Builder()
                 .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, Integer.toString(position + 1))
-                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, mPoiEntities.get(position).getName())
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, name)
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }
@@ -355,90 +327,101 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshScenicSpotView(final ResultHolder resultHolder) {
         final int pointTypeCode = mSearchPackage.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
-        if (pointTypeCode == AutoMapConstant.PointTypeCode.OTHERS) {
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(GONE);
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(GONE);
-            if (ConvertUtils.isEmpty(mPoiInfoEntity) || ConvertUtils.isEmpty(mPoiInfoEntity.getChildInfoList())) {
-                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
+        View scenicSpotView = resultHolder.itemView.findViewById(R.id.scene_poi_item_scenic_spot_view);
+        ScenePoiItemScenicSpotViewBinding binding = null;
+        if (scenicSpotView == null) {
+            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_scenic_spot_view_stub);
+            if (stub != null) {
+                scenicSpotView = stub.inflate(); // 加载 GasStationView
+                binding = DataBindingUtil.bind(scenicSpotView);
             }
-        } else {
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(VISIBLE);
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(VISIBLE);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
         }
-        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(VISIBLE);
-        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(GONE);
-        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setAdapter(null);
-        if (mPoiInfoEntity.getAverageCost() == -1 || mPoiInfoEntity.getAverageCost() == 0) {
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(GONE);
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(GONE);
-        } else {
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setText(String.valueOf(mPoiInfoEntity.getAverageCost()));
-        }
+        if (binding != null) {
+            if (pointTypeCode == AutoMapConstant.PointTypeCode.OTHERS) {
+                binding.poiScenicSpotPrice.setVisibility(GONE);
+                binding.poiScenicSpotPriceIcon.setVisibility(GONE);
+                if (ConvertUtils.isEmpty(mPoiInfoEntity) || ConvertUtils.isEmpty(mPoiInfoEntity.getChildInfoList())) {
+                    resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
+                }
+            } else {
+                binding.poiScenicSpotPrice.setVisibility(VISIBLE);
+                binding.poiScenicSpotPriceIcon.setVisibility(VISIBLE);
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
+            }
+            binding.getRoot().setVisibility(VISIBLE);
+            binding.poiScenicSpotChildList.setVisibility(GONE);
+            binding.poiScenicSpotChildList.setAdapter(null);
+            if (mPoiInfoEntity.getAverageCost() == -1 || mPoiInfoEntity.getAverageCost() == 0) {
+                binding.poiScenicSpotPrice.setVisibility(GONE);
+                binding.poiScenicSpotPriceIcon.setVisibility(GONE);
+            } else {
+                binding.poiScenicSpotPrice.setText(String.valueOf(mPoiInfoEntity.getAverageCost()));
+            }
 
-        final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
-        final PoiListDetailsScenicChildAdapter scenicChildAdapter = new PoiListDetailsScenicChildAdapter();
-        if (childInfoList != null && !childInfoList.isEmpty()) {
-            for (ChildInfo childInfo : childInfoList) {
-                SearchPackage.getInstance().setGrandChildInfoList(childInfo)
-                        .thenAccept(childInfoNew -> {
-                            if (!ConvertUtils.isEmpty(childInfoNew.getMGrandChildInfoList())) {
-                                mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
-                            }
-                            childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
-                        })
-                        .exceptionally(error -> {
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setGrandChildInfoList error:" + error);
-                            return null;
-                        });
-            }
-            scenicChildAdapter.setChildInfoList(childInfoList);
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(VISIBLE);
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setLayoutManager(
-                    new GridLayoutManager(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount));
-            if (resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.getItemDecorationCount() == 0) {
-                resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.addItemDecoration(
-                        new GridSpacingItemDecoration(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount, mSpacing, mSpacing, false));
-            }
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setAdapter(scenicChildAdapter);
-            scenicChildAdapter.setItemClickListener((index, isSelectIndex) -> {
-                mChildSelectIndex = index;
-                if (isFirstRefresh) {
-                    mLastParentSelectIndex = resultHolder.getAdapterPosition();
-                    isFirstRefresh = false;
+            final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
+            final PoiListDetailsScenicChildAdapter scenicChildAdapter = new PoiListDetailsScenicChildAdapter();
+            if (childInfoList != null && !childInfoList.isEmpty()) {
+                for (ChildInfo childInfo : childInfoList) {
+                    SearchPackage.getInstance().setGrandChildInfoList(childInfo)
+                            .thenAccept(childInfoNew -> {
+                                if (!ConvertUtils.isEmpty(childInfoNew.getMGrandChildInfoList())) {
+                                    mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
+                                }
+                                childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
+                                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
+                            })
+                            .exceptionally(error -> {
+                                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setGrandChildInfoList error:" + error);
+                                return null;
+                            });
                 }
-                mParentSelectIndex = resultHolder.getAdapterPosition();
-                if (mLastParentSelectIndex != mParentSelectIndex) {
-                    if (!ConvertUtils.isEmpty(mPoiEntities) && mLastParentSelectIndex < mPoiEntities.size()) {
-                        final PoiInfoEntity poiInfoEntity = mPoiEntities.get(mLastParentSelectIndex);
-                        if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(poiInfoEntity.getChildInfoList())) {
-                            for (ChildInfo childInfo : poiInfoEntity.getChildInfoList()) {
-                                childInfo.setChecked(0);
+                scenicChildAdapter.setChildInfoList(childInfoList);
+                binding.poiScenicSpotChildList.setVisibility(VISIBLE);
+                binding.poiScenicSpotChildList.setLayoutManager(
+                        new GridLayoutManager(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount));
+                if (binding.poiScenicSpotChildList.getItemDecorationCount() == 0) {
+                    binding.poiScenicSpotChildList.addItemDecoration(
+                            new GridSpacingItemDecoration(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount, mSpacing, mSpacing, false));
+                }
+                binding.poiScenicSpotChildList.setAdapter(scenicChildAdapter);
+                scenicChildAdapter.setItemClickListener((index, isSelectIndex) -> {
+                    mChildSelectIndex = index;
+                    if (isFirstRefresh) {
+                        mLastParentSelectIndex = resultHolder.getAdapterPosition();
+                        isFirstRefresh = false;
+                    }
+                    mParentSelectIndex = resultHolder.getAdapterPosition();
+                    if (mLastParentSelectIndex != mParentSelectIndex) {
+                        if (!ConvertUtils.isEmpty(mPoiEntities) && mLastParentSelectIndex < mPoiEntities.size()) {
+                            final PoiInfoEntity poiInfoEntity = mPoiEntities.get(mLastParentSelectIndex);
+                            if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(poiInfoEntity.getChildInfoList())) {
+                                for (ChildInfo childInfo : poiInfoEntity.getChildInfoList()) {
+                                    childInfo.setChecked(0);
+                                }
                             }
+                            notifyItemChanged(mLastParentSelectIndex);
                         }
-                        notifyItemChanged(mLastParentSelectIndex);
                     }
-                }
-                if (isSelectIndex) {
-                    final ChildInfo childInfo = childInfoList.get(index);
-                    mChildSelectInfo = new PoiInfoEntity()
-                            .setName(childInfo.getName())
-                            .setAddress(childInfo.getAddress())
-                            .setPid(childInfo.getPoiId())
-                            .setPoint(childInfo.getLocation());
-                    if (ConvertUtils.isEmpty(childInfo.getMGrandChildInfoList())) {
-                        mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_NO_GRAND);
+                    if (isSelectIndex) {
+                        final ChildInfo childInfo = childInfoList.get(index);
+                        mChildSelectInfo = new PoiInfoEntity()
+                                .setName(childInfo.getName())
+                                .setAddress(childInfo.getAddress())
+                                .setPid(childInfo.getPoiId())
+                                .setPoint(childInfo.getLocation());
+                        if (ConvertUtils.isEmpty(childInfo.getMGrandChildInfoList())) {
+                            mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_NO_GRAND);
+                        } else {
+                            mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
+                        }
                     } else {
-                        mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
+                        mChildSelectInfo = null;
                     }
-                } else {
-                    mChildSelectInfo = null;
-                }
-                mLastParentSelectIndex = resultHolder.getAdapterPosition();
-            });
+                    mLastParentSelectIndex = resultHolder.getAdapterPosition();
+                });
+            }
+            binding.getRoot().setVisibility(VISIBLE);
         }
-        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(VISIBLE);
     }
 
     /**
@@ -494,26 +477,37 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         if (mPoiInfoEntity == null || mPoiInfoEntity.getParkingInfoList() == null || mPoiInfoEntity.getParkingInfoList().isEmpty()) {
             return;
         }
-        resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.poiParkingFreeTotal.setText("");
-        resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(VISIBLE);
-        final ParkingInfo parkingInfo = mPoiInfoEntity.getParkingInfoList().get(0);
-        String parkString = "";
-        final int spaceFree = parkingInfo.getSpaceFree();
-        final int spaceTotal = parkingInfo.getSpaceTotal();
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "spaceFree :" + spaceFree + " spaceTotal :" + spaceTotal);
-        if (spaceFree == -1 && spaceTotal == -1) {
-            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(GONE);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
-        } else if (spaceFree == -1) {
-            parkString = resultHolder.mResultItemBinding.getRoot().getContext().getString(R.string.parking_lot_total, spaceTotal);
-            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(VISIBLE);
-            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.poiParkingFreeTotal.setText(parkString);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
-        } else {
-            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(VISIBLE);
-            parkString = resultHolder.mResultItemBinding.getRoot().getContext().getString(R.string.parking_lot_status, spaceFree, spaceTotal);
-            resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.poiParkingFreeTotal.setText(parkString);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
+        View parkView = resultHolder.itemView.findViewById(R.id.scene_poi_item_parking_service_view);
+        ScenePoiItemParkingViewBinding binding = null;
+        if (parkView == null) {
+            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_parking_service_view_stub);
+            if (stub != null) {
+                parkView = stub.inflate(); // 加载 GasStationView
+                binding = DataBindingUtil.bind(parkView);
+            }
+        }
+        if (binding != null) {
+            binding.poiParkingFreeTotal.setText("");
+            binding.getRoot().setVisibility(VISIBLE);
+            final ParkingInfo parkingInfo = mPoiInfoEntity.getParkingInfoList().get(0);
+            String parkString = "";
+            final int spaceFree = parkingInfo.getSpaceFree();
+            final int spaceTotal = parkingInfo.getSpaceTotal();
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "spaceFree :" + spaceFree + " spaceTotal :" + spaceTotal);
+            if (spaceFree == -1 && spaceTotal == -1) {
+                binding.getRoot().setVisibility(GONE);
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
+            } else if (spaceFree == -1) {
+                parkString = resultHolder.mResultItemBinding.getRoot().getContext().getString(R.string.parking_lot_total, spaceTotal);
+                binding.getRoot().setVisibility(VISIBLE);
+                binding.poiParkingFreeTotal.setText(parkString);
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
+            } else {
+                binding.getRoot().setVisibility(VISIBLE);
+                parkString = resultHolder.mResultItemBinding.getRoot().getContext().getString(R.string.parking_lot_status, spaceFree, spaceTotal);
+                binding.poiParkingFreeTotal.setText(parkString);
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -523,15 +517,26 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshCateringView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshCateringView" + mPoiInfoEntity.getAverageCost());
-        resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(VISIBLE);
-        resultHolder.mResultItemBinding.scenePoiItemCateringView.poiCateringPrice.setText("");
-        if (mPoiInfoEntity.getAverageCost() == -1) {
-            resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(GONE);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
-        } else {
-            resultHolder.mResultItemBinding.scenePoiItemCateringView.poiCateringPrice.setText(String.valueOf(mPoiInfoEntity.getAverageCost()));
-            resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(VISIBLE);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
+        View cateringView = resultHolder.itemView.findViewById(R.id.scene_poi_item_catering_view);
+        ScenePoiItemCateringViewBinding binding = null;
+        if (cateringView == null) {
+            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_catering_view_stub);
+            if (stub != null) {
+                cateringView = stub.inflate(); // 加载 GasStationView
+                binding = DataBindingUtil.bind(cateringView);
+            }
+        }
+        if (binding != null) {
+            binding.getRoot().setVisibility(VISIBLE);
+            binding.poiCateringPrice.setText("");
+            if (mPoiInfoEntity.getAverageCost() == -1) {
+                binding.getRoot().setVisibility(GONE);
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
+            } else {
+                binding.poiCateringPrice.setText(String.valueOf(mPoiInfoEntity.getAverageCost()));
+                binding.getRoot().setVisibility(VISIBLE);
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -549,72 +554,82 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      * @param resultHolder holder
      */
     private void refreshChargeStationView(final ResultHolder resultHolder) {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshChargeStationView");
-        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
-        // 重置includeview中视图状态避免数据重用导致数据异常加载
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastRoot.setVisibility(VISIBLE);
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowRoot.setVisibility(VISIBLE);
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setText("");
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setText("");
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setVisibility(VISIBLE);
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setText("");
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setText("");
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(VISIBLE);
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mLabelName: "+mLabelName);
-        if(!ConvertUtils.isEmpty(mLabelName)){
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeLabel.setVisibility(VISIBLE);
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeLabel.setText(mLabelName);
-        }else{
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeLabel.setVisibility(GONE);
+        // 检查是否已经 inflate 过了
+        View chargeView = resultHolder.itemView.findViewById(R.id.scene_poi_item_gas_view);
+        ScenePoiItemChargeViewBinding binding = null;
+        if (chargeView == null) {
+            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_charge_view_stub);
+            if (stub != null) {
+                chargeView = stub.inflate(); // 加载 GasStationView
+                binding = DataBindingUtil.bind(chargeView);
+            }
         }
-
-        final List<ChargeInfo> chargeInfos = mPoiInfoEntity.getChargeInfoList();
-        if (ConvertUtils.isEmpty(chargeInfos)) {
+        if (binding != null) {
             resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
-            return;
-        } else {
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
-        }
-        final ChargeInfo chargeInfo = chargeInfos.get(0);
-        final String fastFree = chargeInfo.getFast_free() == 0 ? "" : chargeInfo.getFast_free() + "";
-        String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "/" + chargeInfo.getFast_total();
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setText(fastFree);
-        if (ConvertUtils.isEmpty(fastFree) && ConvertUtils.isEmpty(fastTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastRoot.setVisibility(GONE);
-        } else if (ConvertUtils.isEmpty(fastFree)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setVisibility(GONE);
-        } else if (ConvertUtils.isEmpty(fastTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setVisibility(GONE);
-        }
-        if (!ConvertUtils.isEmpty(fastTotal)) {
-            if (ConvertUtils.isEmpty(fastFree)) {
-                fastTotal = chargeInfo.getFast_total() + "";
+            // 重置includeview中视图状态避免数据重用导致数据异常加载
+            binding.poiChargeFastRoot.setVisibility(VISIBLE);
+            binding.poiChargeSlowRoot.setVisibility(VISIBLE);
+            binding.poiChargeFastFree.setText("");
+            binding.poiChargeFastTotal.setText("");
+            binding.poiChargeFastTotal.setVisibility(VISIBLE);
+            binding.poiChargeSlowFree.setText("");
+            binding.poiChargeSlowTotal.setText("");
+            binding.poiChargeSlowTotal.setVisibility(VISIBLE);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mLabelName: "+mLabelName);
+            if(!ConvertUtils.isEmpty(mLabelName)){
+                binding.poiChargeLabel.setVisibility(VISIBLE);
+                binding.poiChargeLabel.setText(mLabelName);
+            }else{
+                binding.poiChargeLabel.setVisibility(GONE);
             }
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setText(fastTotal);
-        }
 
-        final String slowFree = chargeInfo.getSlow_free() == 0 ? "" : chargeInfo.getSlow_free() + "";
-        String slowTotal = chargeInfo.getSlow_total() == 0 ? "" : "/" + chargeInfo.getSlow_total();
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setText(slowFree);
-        if (ConvertUtils.isEmpty(slowFree) && ConvertUtils.isEmpty(slowTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowRoot.setVisibility(GONE);
-        } else if (ConvertUtils.isEmpty(slowFree)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setVisibility(GONE);
-        } else if (ConvertUtils.isEmpty(slowTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(GONE);
-        }
-        if (!ConvertUtils.isEmpty(slowTotal)) {
-            if (ConvertUtils.isEmpty(slowFree)) {
-                slowTotal = chargeInfo.getSlow_total() + "";
+            final List<ChargeInfo> chargeInfos = mPoiInfoEntity.getChargeInfoList();
+            if (ConvertUtils.isEmpty(chargeInfos)) {
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
+                return;
+            } else {
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
             }
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setText(slowTotal);
+            final ChargeInfo chargeInfo = chargeInfos.get(0);
+            final String fastFree = chargeInfo.getFast_free() == 0 ? "" : chargeInfo.getFast_free() + "";
+            String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "/" + chargeInfo.getFast_total();
+            binding.poiChargeFastFree.setText(fastFree);
+            if (ConvertUtils.isEmpty(fastFree) && ConvertUtils.isEmpty(fastTotal)) {
+                binding.poiChargeFastRoot.setVisibility(GONE);
+            } else if (ConvertUtils.isEmpty(fastFree)) {
+                binding.poiChargeFastFree.setVisibility(GONE);
+            } else if (ConvertUtils.isEmpty(fastTotal)) {
+                binding.poiChargeFastTotal.setVisibility(GONE);
+            }
+            if (!ConvertUtils.isEmpty(fastTotal)) {
+                if (ConvertUtils.isEmpty(fastFree)) {
+                    fastTotal = chargeInfo.getFast_total() + "";
+                }
+                binding.poiChargeFastTotal.setText(fastTotal);
+            }
+
+            final String slowFree = chargeInfo.getSlow_free() == 0 ? "" : chargeInfo.getSlow_free() + "";
+            String slowTotal = chargeInfo.getSlow_total() == 0 ? "" : "/" + chargeInfo.getSlow_total();
+            binding.poiChargeSlowFree.setText(slowFree);
+            if (ConvertUtils.isEmpty(slowFree) && ConvertUtils.isEmpty(slowTotal)) {
+                binding.poiChargeSlowRoot.setVisibility(GONE);
+            } else if (ConvertUtils.isEmpty(slowFree)) {
+                binding.poiChargeSlowFree.setVisibility(GONE);
+            } else if (ConvertUtils.isEmpty(slowTotal)) {
+                binding.poiChargeSlowTotal.setVisibility(GONE);
+            }
+            if (!ConvertUtils.isEmpty(slowTotal)) {
+                if (ConvertUtils.isEmpty(slowFree)) {
+                    slowTotal = chargeInfo.getSlow_total() + "";
+                }
+                binding.poiChargeSlowTotal.setText(slowTotal);
+            }
+
+            binding.poiChargePrice.setText(
+                    resultHolder.mResultItemBinding.getRoot().getContext().getString(
+                            R.string.charge_price_simple, chargeInfo.getCurrentElePrice()));
+            binding.getRoot().setVisibility(VISIBLE);
         }
-
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargePrice.setText(
-                resultHolder.mResultItemBinding.getRoot().getContext().getString(
-                R.string.charge_price_simple, chargeInfo.getCurrentElePrice()));
-        resultHolder.mResultItemBinding.scenePoiItemChargeView.getRoot().setVisibility(VISIBLE);
-
     }
 
     /**
@@ -622,34 +637,46 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      * @param resultHolder holder
      */
     private void refreshGasStationView(final ResultHolder resultHolder) {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshGasStationView");
-        final List<GasStationInfo> gasStationInfos = mPoiInfoEntity.getStationList();
-        for (GasStationInfo gasStationInfo : gasStationInfos) {
-            if (!gasStationInfo.getPrice().contains("升")) {
-                gasStationInfo.setPrice(resultHolder.mResultItemBinding.getRoot().getContext().
-                        getString(R.string.oil_price, gasStationInfo.getPrice()));
+        // 检查是否已经 inflate 过了
+        View gasView = resultHolder.itemView.findViewById(R.id.scene_poi_item_gas_view);
+        ScenePoiItemGasViewBinding binding = null;
+        if (gasView == null) {
+            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_gas_view_stub);
+            if (stub != null) {
+                gasView = stub.inflate(); // 加载 GasStationView
+                binding = DataBindingUtil.bind(gasView);
             }
         }
-        final GasStationAdapter gasStationAdapter = new GasStationAdapter();
-        //根据UE只显示前两个油品种类
-        if (!ConvertUtils.isEmpty(gasStationInfos) && gasStationInfos.size() > 2) {
-            // 截取前两个元素
-            final List<GasStationInfo> subList = gasStationInfos.subList(0, 2);
-            // 使用ArrayList构造函数创建新的列表
-            final ArrayList<GasStationInfo> newList = new ArrayList<>(subList);
-            gasStationAdapter.setGasStationList(newList);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
-        } else if (!ConvertUtils.isEmpty(gasStationInfos) && gasStationInfos.size() <= 2) {
-            gasStationAdapter.setGasStationList(gasStationInfos);
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
-        } else {
-            resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
-        }
-        resultHolder.mResultItemBinding.scenePoiItemGasView.getRoot().setVisibility(VISIBLE);
-        resultHolder.mResultItemBinding.scenePoiItemGasView.poiGasOilList.setLayoutManager(
-                new GridLayoutManager(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount));
-        resultHolder.mResultItemBinding.scenePoiItemGasView.poiGasOilList.setAdapter(gasStationAdapter);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshGasStationView");
+        if (gasView != null && binding != null) {
+            gasView.setVisibility(VISIBLE);
 
+            final List<GasStationInfo> gasStationInfos = mPoiInfoEntity.getStationList();
+            for (GasStationInfo gasStationInfo : gasStationInfos) {
+                if (!gasStationInfo.getPrice().contains("升")) {
+                    gasStationInfo.setPrice(resultHolder.mResultItemBinding.getRoot().getContext().
+                            getString(R.string.oil_price, gasStationInfo.getPrice()));
+                }
+            }
+            final GasStationAdapter gasStationAdapter = new GasStationAdapter();
+            //根据UE只显示前两个油品种类
+            if (!ConvertUtils.isEmpty(gasStationInfos) && gasStationInfos.size() > 2) {
+                // 截取前两个元素
+                final List<GasStationInfo> subList = gasStationInfos.subList(0, 2);
+                // 使用ArrayList构造函数创建新的列表
+                final ArrayList<GasStationInfo> newList = new ArrayList<>(subList);
+                gasStationAdapter.setGasStationList(newList);
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
+            } else if (!ConvertUtils.isEmpty(gasStationInfos) && gasStationInfos.size() <= 2) {
+                gasStationAdapter.setGasStationList(gasStationInfos);
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
+            } else {
+                resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
+            }
+            binding.poiGasOilList.setLayoutManager(new GridLayoutManager(gasView.getContext(), mSpanCount));
+            binding.poiGasOilList.setAdapter(gasStationAdapter);
+
+        }
     }
 
 
@@ -667,12 +694,56 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     }
 
     public static class ResultHolder extends RecyclerView.ViewHolder {
-         private final SearchResultItemBinding mResultItemBinding;
+        private final SearchResultItemBinding mResultItemBinding;
+        private final WeakReference<SearchResultAdapter> mAdapterReference;
 
-        public ResultHolder(final SearchResultItemBinding resultItemBinding) {
+        public ResultHolder(final SearchResultItemBinding resultItemBinding,
+                            final SearchResultAdapter adapter) {
             super(resultItemBinding.getRoot());
             this.mResultItemBinding = resultItemBinding;
             this.mResultItemBinding.setHolder(this);
+            this.mAdapterReference = new WeakReference<>(adapter);
+
+
+            resultItemBinding.getRoot().setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) {
+                    return;
+                }
+
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情");
+                SearchResultAdapter adapterRef = mAdapterReference.get();
+                if (adapterRef != null && adapterRef.mOnItemClickListener != null) {
+                    PoiInfoEntity entity = adapterRef.mPoiEntities.get(position);
+                    if (entity != null) {
+                        sendBuryPointForSearchResult(position, entity.getName());
+                        if (adapterRef.mParentSelectIndex == position && adapterRef.mChildSelectIndex != -1) {
+                            adapterRef.mOnItemClickListener.onChildItemClick(position, entity, adapterRef.mChildSelectIndex);
+                        } else {
+                            adapterRef.mOnItemClickListener.onItemClick(position, entity);
+                        }
+                    }
+                }
+            });
+
+            resultItemBinding.poiToNavi.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) {
+                    return;
+                }
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 算路|添加途经点");
+                SearchResultAdapter adapterRef = mAdapterReference.get();
+                if (adapterRef != null && adapterRef.mOnItemClickListener != null) {
+                    if (adapterRef.mParentSelectIndex == position && adapterRef.mChildSelectIndex != -1 && adapterRef.mChildSelectInfo != null) {
+                        adapterRef.mOnItemClickListener.onNaviClick(position, adapterRef.mChildSelectInfo);
+                    } else {
+                        PoiInfoEntity entity = adapterRef.mPoiEntities.get(position);
+                        if (entity != null) {
+                            adapterRef.mOnItemClickListener.onNaviClick(position, entity);
+                        }
+                    }
+                }
+            });
         }
     }
 

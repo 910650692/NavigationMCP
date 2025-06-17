@@ -53,7 +53,7 @@ public class SearchResultCallbackHelper {
         SearchResultEntity resultList = null;
 
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "notifySearchSuccess: SearchType:"
-                + requestParameterBuilder.getSearchType() + "  ;;taskId:" + taskId);
+                + requestParameterBuilder.getSearchType() + " ,taskId:" + taskId);
 
         switch (requestParameterBuilder.getSearchType()) {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:

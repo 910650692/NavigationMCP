@@ -424,10 +424,6 @@ public final class SearchResultMapper {
                     + " ,total: " + searchPoiInfo.parkingInfo.dynamicParking.spaceTotal);
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "free1 is: " + searchPoiInfo.parkingInfo.space
                 + " ,total1: " + searchPoiInfo.parkingInfo.spaceFree);
-        for (ChildChargingStationInfo chargingStationInfo : searchPoiInfo.parkingInfo.chargingStationList) {
-            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "free2 is: " + chargingStationInfo.numSlow
-                    + " ,total2: " + chargingStationInfo.numFast + " name: " + chargingStationInfo.name);
-        }
         final ParkingInfo parkingInfo = new ParkingInfo()
                 .setSpaceTotal(searchPoiInfo.parkingInfo.dynamicParking.spaceTotal)
                 .setSpaceFree(searchPoiInfo.parkingInfo.dynamicParking.spaceFree)
@@ -1090,6 +1086,7 @@ public final class SearchResultMapper {
                 .setSlow_total(slowTotal)
                 .setFast_free(fastFree)
                 .setFast_total(fastTotal)
+                .setMBrand(poiInfo.chargingStationInfo.brand_desc)
                 .setCurrentElePrice(poiInfo.chargingStationInfo.current_ele_price)
                 .setCurrentServicePrice(poiInfo.chargingStationInfo.parkPrice);
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "slow free: " + poiInfo.chargingStationInfo.slow_free
@@ -1107,11 +1104,6 @@ public final class SearchResultMapper {
                 chargeInfo.setFastVolt(chargingPlugInfo.fastVoltage)
                         .setFastPower(chargingPlugInfo.fastPower);
             }
-            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "fast volt: " + chargeInfo.getFastVolt()
-                    + " fast power: " + chargeInfo.getFastPower()
-                    + " slow volt: " + chargeInfo.getSlowVolt()
-                    + " slow power: " + chargeInfo.getSlowPower()
-                    + " plugType: " + chargingPlugInfo.plugType);
         }
         chargeInfos.add(chargeInfo);
 
@@ -1121,8 +1113,7 @@ public final class SearchResultMapper {
                 .setSpaceTotal(0)
                 .setSpaceFree(0);
         parkingInfoList.add(parkingInfo);
-        Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "typeCode is: " + poiInfo.basicInfo.typeCode
-                + " ;name is: " + poiInfo.basicInfo.name
+        Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, " ;name is: " + poiInfo.basicInfo.name
                 + "  ;searchPoiInfo.basicInfo.distance:" + poiInfo.basicInfo.distance
                 + " ;searchPoiInfo.basicInfo.tag:" + poiInfo.basicInfo.tag);
         //标签信息

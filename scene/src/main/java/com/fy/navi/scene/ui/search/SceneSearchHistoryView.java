@@ -325,7 +325,7 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
         if (!historyList.isEmpty()) {
             mSearchHistoryAdapter.notifyList(historyList);
             mSearchHistoryAdapter.setMIsShowIndex(true);
-            mViewBinding.sclDeleteRecordAlong.setVisibility(VISIBLE);
+            mViewBinding.sclDeleteRecordAlong.setVisibility(GONE);
             mViewBinding.rcyRecordAlong.setVisibility(VISIBLE);
             mViewBinding.tvRecordNullAlong.setVisibility(GONE);
         } else {

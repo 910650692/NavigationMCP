@@ -119,8 +119,6 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         mBinding.scenePoiList.setHomeCompanyState(mHomeCompany);
         mBinding.scenePoiList.setMIsEnd(mIsEnd);
         mBinding.scenePoiList.notifySearchResult(mTaskId, mSearchResultEntity);
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySearchResult " + mSearchResultEntity);
-
     }
 
     @Override
