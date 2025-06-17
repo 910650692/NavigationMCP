@@ -8,6 +8,9 @@ import com.fy.navi.service.StartService;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.map.IMapAdapterCallback;
 import com.fy.navi.service.adapter.map.MapAdapter;
+import com.fy.navi.service.adapter.navi.GuidanceObserver;
+import com.fy.navi.service.adapter.navi.NaviAdapter;
+import com.fy.navi.service.adapter.route.RouteAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
@@ -16,6 +19,7 @@ import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
+import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
@@ -23,6 +27,7 @@ import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 
 /**
@@ -30,14 +35,25 @@ import java.util.Hashtable;
  * @Author lww
  * @date 2025/6/2
  */
-public class HudPackage {
+public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCallback, IRouteResultObserver, IGuidanceObserver {
     private static final String TAG = MapDefaultFinalTag.HUD_SERVICE_TAG;
-    private static IBaseScreenMapView mMapSurfaceView = null;
-    private static Hashtable<String, IHudCallback> hudCallbackMap = null;
+    private IBaseScreenMapView mMapSurfaceView = null;
+    private HashMap<String, IHudCallback> hudCallbackMap = new HashMap<>();
+
+    private static final class Helper {
+        private static final HudPackage hudPackage = new HudPackage();
+    }
 
     private HudPackage() {
-        hudCallbackMap = new Hashtable<>();
-        StartService.getInstance().registerSdkCallback(TAG, sdkInitCallback);
+        StartService.getInstance().registerSdkCallback(TAG, this);
+        MapAdapter.getInstance().registerCallback(MapType.HUD_MAP, this);
+        NaviPackage.getInstance().registerObserver(TAG, this);
+        RoutePackage.getInstance().registerRouteObserver(TAG, this);
+    }
+
+    public void registerHudCallback(String key, IHudCallback hudCallback) {
+        ConvertUtils.push(hudCallbackMap, key, hudCallback);
+        Logger.d(TAG, "registerHudCallback hudCallbackMap： " + hudCallbackMap.size());
     }
 
     public void initHudService() {
@@ -46,15 +62,11 @@ public class HudPackage {
         initHudService(null);
     }
 
-    public void registerHudCallback(String key, IHudCallback hudCallback) {
-        ConvertUtils.push(hudCallbackMap, key, hudCallback);
-        Logger.d(TAG, "registerHudCallback hudCallbackMap： " + hudCallbackMap.size());
-    }
-
     public void initHudService(IBaseScreenMapView mapSurfaceView) {
         Logger.d(TAG, "init Hud Service");
-        if (null == mapSurfaceView)
+        if (null == mapSurfaceView) {
             mapSurfaceView = new HUDMapView(AppCache.getInstance().getMContext());
+        }
         mMapSurfaceView = mapSurfaceView;
         boolean sdkStatus = StartService.getInstance().checkSdkIsNeedInit();
         Logger.i(TAG, "校验Sdk是否需要初始化sdkStatus：" + sdkStatus);
@@ -62,38 +74,13 @@ public class HudPackage {
         Logger.d(TAG, "HUDMapView地图创建中......");
     }
 
-    private static void initMapView(){
-        Logger.d(TAG, "引擎初始化完成 创建HudMapView地图中......");
-        MapAdapter.getInstance().bindMapView(mMapSurfaceView);
-        Logger.d(TAG, "HUDMap地图创建完成");
-        MapAdapter.getInstance().registerCallback(MapType.HUD_MAP, mapPackageCallback);
-        RoutePackage.getInstance().registerRouteObserver(TAG, routeResultObserver);
-        NaviPackage.getInstance().registerObserver(TAG, guidanceObserver);
-    }
-
-    private static void initLayer(){
-        LayerAdapter.getInstance().initLayerService(MapType.HUD_MAP);
-//        LayerAdapter.getInstance().setPassGray(MapType.HUD_MAP, true);
-        LayerPackage.getInstance().setCarPosition(MapType.HUD_MAP, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
-                PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
-                PositionPackage.getInstance().getLastCarLocation().getCourse()));
-        MapPackage.getInstance().goToCarPosition(MapType.HUD_MAP);
-        MapPackage.getInstance().setMapCenter(MapType.HUD_MAP, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
-                PositionPackage.getInstance().getLastCarLocation().getLatitude()));
-        LayerPackage.getInstance().setCarMode(MapType.HUD_MAP, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
-        LayerPackage.getInstance().setFollowMode(MapType.HUD_MAP, true);
-        MapPackage.getInstance().switchMapMode(MapType.HUD_MAP, MapMode.UP_2D, false);
-        MapPackage.getInstance().setZoomLevel(MapType.HUD_MAP, 15);
-        LayerPackage.getInstance().setDynamicLevelLock(MapType.HUD_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
-    }
-
     public void unInitHudService() {
         if (ConvertUtils.isEmpty(mMapSurfaceView)) return;
-        LayerPackage.getInstance().removeLayerService(MapType.HUD_MAP);
-        MapAdapter.getInstance().unregisterCallback(MapType.HUD_MAP, mapPackageCallback);
-        MapAdapter.getInstance().unBindMapView(mMapSurfaceView);
         RoutePackage.getInstance().unRegisterRouteObserver(TAG);
         NaviPackage.getInstance().unregisterObserver(TAG);
+        LayerPackage.getInstance().unInitLayer(MapType.HUD_MAP);
+        MapAdapter.getInstance().unregisterCallback(MapType.HUD_MAP, this);
+        MapAdapter.getInstance().unBindMapView(mMapSurfaceView);
         MapAdapter.getInstance().destroyMapView(MapType.HUD_MAP);
         Logger.d(TAG, "HUDMapView地图已销毁");
         ConvertUtils.clear(hudCallbackMap);
@@ -104,59 +91,57 @@ public class HudPackage {
         return Helper.hudPackage;
     }
 
-    private static final class Helper {
-        private static final HudPackage hudPackage = new HudPackage();
+
+    @Override
+    public void onSdkInitSuccess() {
+        MapPackage.getInstance().createMapView(MapType.HUD_MAP);
     }
 
-    private static final StartService.ISdkInitCallback sdkInitCallback = new StartService.ISdkInitCallback() {
-        @Override
-        public void onSdkInitSuccess() {
-            if(ConvertUtils.isEmpty(mMapSurfaceView)) return;
-            initMapView();
+    @Override
+    public void onSdkInitFail(int initSdkResult, String msg) {
+        Logger.d(TAG, "引擎初始化失败重试重......");
+    }
+
+
+    @Override
+    public void onMapLoadSuccess(MapType mapTypeId) {
+        if (mapTypeId == MapType.HUD_MAP){
             initLayer();
         }
+    }
 
-        @Override
-        public void onSdkInitFail(int initSdkResult, String msg) {
-            Logger.d(TAG, "引擎初始化失败重试重......");
+    private void initLayer() {
+        MapPackage.getInstance().bindMapView(mMapSurfaceView);
+        LayerAdapter.getInstance().initLayer(MapType.HUD_MAP);
+        LayerAdapter.getInstance().setCarPosition(MapType.HUD_MAP, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
+                PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
+                PositionPackage.getInstance().getLastCarLocation().getCourse()));
+        MapPackage.getInstance().goToCarPosition(MapType.HUD_MAP);
+        MapPackage.getInstance().setMapCenter(MapType.HUD_MAP, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
+                PositionPackage.getInstance().getLastCarLocation().getLatitude()));
+        LayerAdapter.getInstance().setCarMode(MapType.HUD_MAP, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
+        LayerAdapter.getInstance().setFollowMode(MapType.HUD_MAP, true);
+        MapPackage.getInstance().switchMapMode(MapType.HUD_MAP, MapMode.UP_2D, false);
+        MapPackage.getInstance().setZoomLevel(MapType.HUD_MAP, 15);
+        LayerAdapter.getInstance().setDynamicLevelLock(MapType.HUD_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+    }
+
+    @Override
+    public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
+        Logger.d(TAG, "HUDMap截图数据长度：" + bytes.length, "hudCallbackMap size : " + hudCallbackMap.size());
+        for (IHudCallback hudCallback : hudCallbackMap.values()) {
+            hudCallback.onEGLScreenshot(mapTypeId, bytes);
         }
-    };
+    }
 
-    private static final IMapAdapterCallback mapPackageCallback = new IMapAdapterCallback() {
-        @Override
-        public void onMapLoadSuccess(MapType mapTypeId) {
-            Logger.d(TAG, "HUDMap地图加载完成");
-        }
+    @Override
+    public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
+        RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
+    }
 
-        @Override
-        public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
-            Logger.d(TAG, "HUDMap截图数据长度：" + bytes.length, "hudCallbackMap size : " + hudCallbackMap.size());
-            for (IHudCallback hudCallback : hudCallbackMap.values()) {
-                hudCallback.onEGLScreenshot(mapTypeId, bytes);
-            }
-        }
-    };
-
-    private static final IRouteResultObserver routeResultObserver = new IRouteResultObserver() {
-        @Override
-        public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
-            Logger.i(TAG, "onRouteDrawLine:" + routeLineLayerParam.getMMapTypeId());
-            RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
-        }
-    };
-
-    private static final IGuidanceObserver guidanceObserver = new IGuidanceObserver() {
-
-        @Override
-        public void onNaviStart() {
-            Logger.d(TAG, "onNaviStart");
-        }
-
-        @Override
-        public void onNaviStop() {
-            Logger.d(TAG, "onNaviStop");
-            if(ConvertUtils.isEmpty(mMapSurfaceView)) return;
-            RoutePackage.getInstance().clearRouteLine(MapType.HUD_MAP);
-        }
-    };
+    @Override
+    public void onNaviStop() {
+        //TODO
+        RoutePackage.getInstance().clearRouteLine(MapType.HUD_MAP);
+    }
 }

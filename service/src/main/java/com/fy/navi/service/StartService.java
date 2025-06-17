@@ -174,11 +174,8 @@ public class StartService {
     private void initSdkService() {
         Logger.i(TAG, "initSdkService");
         initPositionService();
-        initMapView();
-        if (!initLayerService()) {
-            conformFailCallback(40001, "图层服务初始化失败");
-            return;
-        }
+        initMapService();
+        initLayerService();
         initOtherService();
         conformSuccessCallback();
     }
@@ -195,19 +192,12 @@ public class StartService {
         }
     }
 
-    private void initMapView() {
+    private void initMapService() {
         MapPackage.getInstance().initMapService();
     }
 
-    private boolean initLayerService() {
-        Logger.d(TAG, "initLayerService");
-        boolean initLayerResult = LayerPackage.getInstance().initLayerService();
-        if (initLayerResult) {
-            Logger.i(TAG, "Layer service init success");
-        } else {
-            Logger.i(TAG, "Layer service init fail");
-        }
-        return initLayerResult;
+    private void initLayerService() {
+        LayerPackage.getInstance().initLayerService();
     }
 
     private void initOtherService() {

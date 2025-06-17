@@ -12,6 +12,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AppCache;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
@@ -39,7 +40,7 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
 
     public BaseClusterViewModel(@NonNull Application application) {
         super(application);
-        Logger.d(TAG, "BaseClusterViewModel initialized");
+        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "BaseClusterViewModel initialized");
         ActivityCloseManager.getInstance().addOnCloseListener(this);
         arriveTimeField = new ObservableField<>();
         arrivalDayField = new ObservableField<>();
@@ -60,13 +61,13 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
         super.onDestroy();
         Logger.d(TAG, "onDestroy called");
         ActivityCloseManager.getInstance().removeOnCloseListener(this);
-        LayerPackage.getInstance().removeLayerService(mView.getMapView().provideMapTypeId());
+        LayerPackage.getInstance().unInitLayer(mView.getMapView().provideMapTypeId());
         MapPackage.getInstance().unBindMapView(mView.getMapView());
         MapPackage.getInstance().destroyMapView(mView.getMapView().provideMapTypeId());
     }
 
     public void loadMapView(){
-        MapPackage.getInstance().loadMapView(mView.getMapView());
+        MapPackage.getInstance().bindMapView(mView.getMapView());
     }
 
     public void updateEta(NaviEtaInfo naviEtaInfo) {

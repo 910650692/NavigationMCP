@@ -134,7 +134,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 if (pathId == LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
                     //途经点点击-自定义替换补能点扎标
                     type = LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE;
-                } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal()){
+                } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal()) {
                     //途经点点击-充电站扎标
                     type = LayerPointItemType.ROUTE_POINT_VIA_CHARGE;
                 } else {
@@ -171,8 +171,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             }
         }
         Logger.d(TAG, "dispatchItemClick type = " + type + " ; result = " + result);
-        for (ILayerAdapterCallBack callback : getCallBacks()) {
-            callback.onRouteItemClick(getMapType(), type, result);
+        if (getCallBack() != null) {
+            getCallBack().onRouteItemClick(getMapType(), type, result);
         }
     }
 
@@ -269,7 +269,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      */
     private void setPathPoints(RequestRouteResult routeResult) {
         if (ConvertUtils.isEmpty(routeResult.getMLineLayerParam()) ||
-            ConvertUtils.isEmpty(routeResult.getMLineLayerParam().getMRouteLinePoints())) {
+                ConvertUtils.isEmpty(routeResult.getMLineLayerParam().getMRouteLinePoints())) {
             Logger.e(TAG, "setPathPoints getMRouteLinePoints is Empty");
             return;
         }
@@ -689,7 +689,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     // 更新路线数据
     private void setPathInfoByRouteResult(RequestRouteResult routeResult) {
         if (ConvertUtils.isEmpty(routeResult.getMLineLayerParam()) ||
-            ConvertUtils.isEmpty(routeResult.getMLineLayerParam().getMPathInfoList())) {
+                ConvertUtils.isEmpty(routeResult.getMLineLayerParam().getMPathInfoList())) {
             Logger.e(TAG, "setPathInfoByRouteResult getMPathInfoList is Empty");
             return;
         }
@@ -850,8 +850,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             return false;
         }
         Logger.d(TAG, "the type is  " + crossInfo.getType()
-            + ", DataBuf is empty : " + ConvertUtils.isEmpty(crossInfo.getDataBuf())
-            + ", ArrowDataBuf is empty: " + ConvertUtils.isEmpty(crossInfo.getArrowDataBuf()));
+                + ", DataBuf is empty : " + ConvertUtils.isEmpty(crossInfo.getDataBuf())
+                + ", ArrowDataBuf is empty: " + ConvertUtils.isEmpty(crossInfo.getArrowDataBuf()));
         boolean ret = false;
         if (crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_VECTOR || crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_3_D) {
             //矢量图或者三维图

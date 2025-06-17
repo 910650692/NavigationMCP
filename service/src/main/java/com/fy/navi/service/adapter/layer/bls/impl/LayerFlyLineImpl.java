@@ -52,17 +52,10 @@ public class LayerFlyLineImpl extends BaseLayerImpl<LayerFlyLineStyleAdapter> im
     @Override
     public boolean onMapMoveEnd() {
         OperatorPosture operatorPosture = getMapView().getOperatorPosture();
-        if (null != operatorPosture) {
+        if (null != operatorPosture && getCallBack() != null) {
             Coord3DDouble coord3DDouble = operatorPosture.getMapCenter();
             GeoPoint descPoint = new GeoPoint(coord3DDouble.lon, coord3DDouble.lat);
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    for (ILayerAdapterCallBack callBack : getCallBacks()) {
-                        callBack.onFlyLineMoveEnd(getMapType(), descPoint);
-                    }
-                }
-            });
+            getCallBack().onFlyLineMoveEnd(getMapType(), descPoint);
         }
         return getLayerFlyLineControl().getVisible(BizFlyLineType.BizFlyLineTypePoint);
     }

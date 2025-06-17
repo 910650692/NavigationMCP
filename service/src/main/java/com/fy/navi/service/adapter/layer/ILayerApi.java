@@ -31,9 +31,11 @@ import java.util.ArrayList;
 public interface ILayerApi {
 
     /* 初始化业务图层优先级配置及内聚功能配置 */
-    boolean initLayerService(MapType mapTypeId);
+    boolean initLayerService();
 
-    void removeLayerService(MapType mapType);
+    boolean initLayer(MapType mapType);
+
+    boolean unInitLayer(MapType mapType);
 
     void unInitLayerService();
 
@@ -86,8 +88,9 @@ public interface ILayerApi {
 
     /**
      * 设置路线样式风格
-     * @param isStartNavi 是否开始导航
-     * @param isOffLine 是否离线
+     *
+     * @param isStartNavi    是否开始导航
+     * @param isOffLine      是否离线
      * @param isMultipleMode 是否多备选模式
      */
     void setPathStyle(MapType mapTypeId, boolean isStartNavi, boolean isOffLine, boolean isMultipleMode);
@@ -95,19 +98,20 @@ public interface ILayerApi {
     /**
      * 隐藏分歧备选路线
      *
-     * @param index 隐藏路线下标 -> list下标 默认0开始
+     * @param index     隐藏路线下标 -> list下标 默认0开始
      * @param isVisible 路线是否显示 -> 隐藏需传入false
      */
     boolean setPathVisible(MapType mapTypeId, int index, boolean isVisible);
 
     /**
      * 更新引导路线数据
+     *
      * @param pathInfoList 路线数据
-     * @param selectIndex 选中下标
+     * @param selectIndex  选中下标
      */
     boolean updatePathInfo(MapType mapTypeId, ArrayList<?> pathInfoList, int selectIndex);
 
-     /* 删除途经点 */
+    /* 删除途经点 */
     void removeViaPoint(MapType mapTypeId, String pid);
 
     /* 设置起点扎标是否显示 */
@@ -231,15 +235,14 @@ public interface ILayerApi {
     /**
      * 查看单个或者多个收藏点
      *
-     * @param mapTypeId           mapTypeId
-     * @param favorites           favorites
+     * @param mapTypeId mapTypeId
+     * @param favorites favorites
      */
     void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites);
 
 
     /**
      * 删除单个收藏点
-     *
      */
     void removeFavoriteMain(MapType mapTypeId, PoiInfoEntity poiInfoEntity);
 
@@ -247,8 +250,8 @@ public interface ILayerApi {
     /**
      * 显示隐藏收藏点
      *
-     * @param mapTypeId           mapTypeId
-     * @param visible visible
+     * @param mapTypeId mapTypeId
+     * @param visible   visible
      */
     void setFavoriteVisible(MapType mapTypeId, boolean visible);
 

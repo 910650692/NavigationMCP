@@ -45,12 +45,9 @@ public class LayerLabelImpl extends BaseLayerImpl<LayerLabelStyleAdapter> {
     }
 
     private void dispatchRoutePointEndPark() {
-        getCallBacks().forEach(new Consumer<ILayerAdapterCallBack>() {
-            @Override
-            public void accept(ILayerAdapterCallBack callback) {
-                callback.onRouteItemClick(getMapType(), LayerPointItemType.ROUTE_POINT_END_PARK, new LayerItemRoutePointClickResult());
-            }
-        });
+        if (getCallBack() != null) {
+            getCallBack().onRouteItemClick(getMapType(), LayerPointItemType.ROUTE_POINT_END_PARK, new LayerItemRoutePointClickResult());
+        }
     }
 
 

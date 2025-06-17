@@ -168,8 +168,8 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> impl
             }
         }
         Logger.d(TAG, "dispatchItemClickEvent type = " + type + " ; index = " + index);
-        for (ILayerAdapterCallBack callback : getCallBacks()) {
-            callback.onSearchItemClick(getMapType(), type, index);
+        if (getCallBack() != null) {
+            getCallBack().onSearchItemClick(getMapType(), type, index);
         }
     }
 
@@ -780,7 +780,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> impl
                 getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoute, false);
                 getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoutePop, false);
                 clearSearchItemByType(LayerPointItemType.SEARCH_PARENT_CHARGE_STATION);
-                mAlongWayPointsIndexList.clear();;
+                mAlongWayPointsIndexList.clear();
                 mSearchResult = null;
             }
             case SEARCH_POI_LABEL -> {

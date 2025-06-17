@@ -420,12 +420,12 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
 
     /* 动态更新路口大图显示区域 */
     public void updateRoadCrossRect(Rect rect) {
-        Logger.d(TAG, "updateRoadCrossRect");
+        Logger.e(TAG, "updateRoadCrossRect");
         mRect.set(rect);
     }
 
     public Rect getRoadCrossRect() {
-        Logger.d(TAG, "getRoadCrossRect " + GsonUtils.toJson(mRect));
+        Logger.e(TAG, "getRoadCrossRect " + GsonUtils.toJson(mRect));
         return mRect.get();
     }
 

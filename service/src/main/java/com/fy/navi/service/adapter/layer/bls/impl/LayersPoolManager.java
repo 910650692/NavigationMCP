@@ -1,42 +1,36 @@
 package com.fy.navi.service.adapter.layer.bls.impl;
 
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizControlService;
-import com.autonavi.gbl.map.MapService;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.engine.EngineAdapter;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.map.bls.MapViewPoolManager;
+import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-public class LayersPoolManager {
+public final class LayersPoolManager implements ILayerAdapterCallBack {
 
     private String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
 
     private final HashMap<MapType, LayersPool> layersPools = new HashMap<>();
-    
-    private BizControlService bizControlService;
-    private MapService mapService;
 
-    public void addLayerClickCallback(MapType mapTypeId, ILayerAdapterCallBack observer) {
-        get(mapTypeId).addLayerClickCallback(observer);
-    }
+    private final HashMap<MapType, List<ILayerAdapterCallBack>> callbacks = new HashMap<>();
 
-    public void removeClickCallback(MapType mapTypeId, ILayerAdapterCallBack observer) {
-        get(mapTypeId).removeClickCallback(observer);
-    }
+    private AtomicReference<BizControlService> bizControlService = new AtomicReference<>();
 
     private static final class Holder {
         private static final LayersPoolManager INSTANCE = new LayersPoolManager();
@@ -50,52 +44,144 @@ public class LayersPoolManager {
         return LayersPoolManager.Holder.INSTANCE;
     }
 
-    public BizControlService getBizControlService() {
-        if (bizControlService == null) {
-            bizControlService = (BizControlService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.BizControlSingleServiceID);
-        }
-        return bizControlService;
-    }
-
-    public boolean initLayerService(MapType mapTypeId) {
-        if (!layersPools.containsKey(mapTypeId)) {
-            Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "初始化图层服务");
-            createLayerPool(mapTypeId);
+    public boolean initLayerService() {
+        if (bizControlService.get() == null) {
+            bizControlService.set((BizControlService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.BizControlSingleServiceID));
         }
         return true;
     }
 
-    public void removeLayerService(MapType mapTypeId) {
-        if (ConvertUtils.isEmpty(layersPools)) return;
-        ConvertUtils.remove(layersPools, mapTypeId);
+    public boolean initLayer(MapType mapType) {
+        if (!layersPools.containsKey(mapType)) {
+            createLayerPool(mapType);
+        }
+        return layersPools.containsKey(mapType);
     }
+
+    public boolean unInitLayer(MapType mapType) {
+        layersPools.get(mapType).removeClickCallback();
+        layersPools.remove(mapType);
+        return false;
+    }
+
 
     public void unInitLayerService() {
-        bizControlService.unInit();
         layersPools.clear();
+        bizControlService.get().unInit();
     }
 
-    public LayersPool get(MapType mapTypeId) {
+    public BizControlService getBizControlService() {
+        if (bizControlService.get() == null) {
+            initLayerService();
+        }
+        return bizControlService.get();
+    }
+
+    public void addLayerClickCallback(MapType mapTypeId, ILayerAdapterCallBack observer) {
+        if (!callbacks.containsKey(mapTypeId)) {
+            callbacks.put(mapTypeId, new ArrayList<>());
+        }
+        if (!callbacks.get(mapTypeId).contains(observer)) {
+            Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId + " 注册回调 ：" + observer.getClass().getSimpleName() + ";size =" + callbacks.get(mapTypeId).size());
+            callbacks.get(mapTypeId).add(observer);
+        }
+    }
+
+    public void removeClickCallback(MapType mapTypeId, ILayerAdapterCallBack observer) {
+        if (callbacks.get(mapTypeId).contains(observer)) {
+            Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId + " 移除回调 ：" + observer.getClass().getSimpleName() + ";size =" + callbacks.get(mapTypeId).size());
+            callbacks.get(mapTypeId).remove(observer);
+        }
+    }
+
+
+    public LayersPool getLayersPool(MapType mapTypeId) {
         if (!layersPools.containsKey(mapTypeId)) {
-            Logger.d(TAG, "获取图层失败 创建图层 ");
+            Logger.e(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId, "获取图层失败 创建图层 ");
             createLayerPool(mapTypeId);
         }
         return layersPools.get(mapTypeId);
     }
 
     private void createLayerPool(MapType mapTypeId) {
-        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId + " 创建图层池");
-        MapView mapView = MapViewPoolManager.getInstance().get(mapTypeId).getMapview();
-        //TODO 优化获取底图的方案
-//        MapView mapView = getMapview(mapTypeId);
-        LayersPool layersPool = new LayersPool(getBizControlService(), mapView, AppCache.getInstance().getMContext(), mapTypeId);
-        layersPools.put(mapTypeId, layersPool);
+        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId, " 创建图层池");
+        MapView mapView = MapViewPoolManager.getInstance().getMapViewImpl(mapTypeId).getMapview();
+        if (mapView != null) {
+            LayersPool layersPool = new LayersPool(getBizControlService(), mapView, AppCache.getInstance().getMContext(), mapTypeId);
+            layersPools.put(mapTypeId, layersPool);
+            layersPool.addLayerClickCallback(this);
+        } else {
+            Logger.e(MapDefaultFinalTag.INIT_SERVICE_TAG, "创建图层池失败 底图还没初始化  ", mapTypeId);
+        }
     }
 
-    private MapView getMapview(MapType mapTypeId) {
-        if (mapService == null) {
-            mapService = (MapService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.MapSingleServiceID);
+    @Override
+    public void onSearchItemClick(MapType mapTypeId, LayerPointItemType type, int index) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<ILayerAdapterCallBack>() {
+                @Override
+                public void accept(ILayerAdapterCallBack callBack) {
+                    Logger.e(TAG, "onSearchItemClick");
+                    callBack.onSearchItemClick(mapTypeId, type, index);
+                }
+            });
         }
-        return mapService.getMapView(EngineAdapter.getInstance().engineID(mapTypeId));
+    }
+
+    @Override
+    public void onRouteItemClick(MapType mapType, LayerPointItemType type, LayerItemRoutePointClickResult result) {
+        if (callbacks.containsKey(mapType)) {
+            callbacks.get(mapType).forEach(new Consumer<ILayerAdapterCallBack>() {
+                @Override
+                public void accept(ILayerAdapterCallBack callBack) {
+                    Logger.e(TAG, "onRouteItemClick");
+                    callBack.onRouteItemClick(mapType, type, result);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onFavoriteClick(MapType mapType, PoiInfoEntity poiInfo) {
+        if (callbacks.containsKey(mapType)) {
+            callbacks.get(mapType).forEach(new Consumer<ILayerAdapterCallBack>() {
+                @Override
+                public void accept(ILayerAdapterCallBack callBack) {
+                    Logger.e(TAG, "onFavoriteClick");
+                    callBack.onFavoriteClick(mapType, poiInfo);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onFlyLineMoveEnd(MapType mapType, GeoPoint descPoint) {
+        if (callbacks.containsKey(mapType)) {
+            callbacks.get(mapType).forEach(new Consumer<ILayerAdapterCallBack>() {
+                @Override
+                public void accept(ILayerAdapterCallBack callBack) {
+                    Logger.e(TAG, "onFlyLineMoveEnd");
+                    callBack.onFlyLineMoveEnd(mapType, descPoint);
+                }
+            });
+        }
+    }
+
+    /**
+     * 点击自车位
+     *
+     * @param mapType
+     * @param geoPoint
+     */
+    public void onCarClick(MapType mapType, GeoPoint geoPoint) {
+        if (callbacks.containsKey(mapType)) {
+            callbacks.get(mapType).forEach(new Consumer<ILayerAdapterCallBack>() {
+                @Override
+                public void accept(ILayerAdapterCallBack callBack) {
+                    Logger.e(TAG, "onCarClick");
+                    callBack.onCarClick(mapType, geoPoint);
+                }
+            });
+        }
     }
 }

@@ -103,7 +103,7 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
 
     public void loadMapView() {
         Logger.i(TAG, "loadMapView:" + isMapLoadSuccess);
-        mMapPackage.loadMapView(mViewModel.getMapView());
+        mMapPackage.bindMapView(mViewModel.getMapView());
         mMapPackage.registerCallback(MAP_TYPE, this);
     }
 

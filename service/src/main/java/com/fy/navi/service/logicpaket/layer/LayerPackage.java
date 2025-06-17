@@ -1,6 +1,5 @@
 package com.fy.navi.service.logicpaket.layer;
 
-import android.car.Car;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -15,13 +14,12 @@ import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 /**
  * @Description TODO
@@ -51,21 +49,25 @@ public class LayerPackage implements ILayerAdapterCallBack {
     }
 
     public boolean initLayerService() {
-//        return initLayerService(MapType.MAIN_SCREEN_MAIN_MAP);
-        return true;
+        return mLayerAdapter.initLayerService();
     }
 
-    public boolean initLayerService(MapType mapTypeId) {
-        return mLayerAdapter.initLayerService(mapTypeId);
+    public boolean initLayer(MapType mapTypeId) {
+        return mLayerAdapter.initLayer(mapTypeId);
     }
 
-    public void removeLayerService(MapType mapType) {
-        mLayerAdapter.removeLayerService(mapType);
+    public void unInitLayer(MapType mapType) {
+        mLayerAdapter.unInitLayer(mapType);
     }
+
+    public void unInitLayerService() {
+        mLayerAdapter.unInitLayerService();
+    }
+
 
     public void registerCallBack(MapType mapTypeId, ILayerPackageCallBack callback) {
         if (!callbacks.containsKey(mapTypeId)) {
-            callbacks.put(mapTypeId, new CopyOnWriteArrayList<>());
+            callbacks.put(mapTypeId, new ArrayList<>());
             mLayerAdapter.registerLayerClickObserver(mapTypeId, this);
         }
         if (!callbacks.get(mapTypeId).contains(callback)) {
@@ -87,9 +89,11 @@ public class LayerPackage implements ILayerAdapterCallBack {
     public void setDefaultCarMode(MapType mapTypeId) {
         mLayerAdapter.setDefaultCarMode(mapTypeId);
     }
-    public void setCarPosition(MapType mapTypeId,GeoPoint geoPoint) {
-        mLayerAdapter.setCarPosition(mapTypeId,geoPoint);
+
+    public void setCarPosition(MapType mapTypeId, GeoPoint geoPoint) {
+        mLayerAdapter.setCarPosition(mapTypeId, geoPoint);
     }
+
     public void setCarMode(MapType mapTypeId, CarModeType carMode) {
         mLayerAdapter.setCarMode(mapTypeId, carMode);
     }
@@ -102,16 +106,12 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.setPreviewMode(mapTypeId, bPreview);
     }
 
-    public void initCarLogoByFlavor(MapType mapTypeId, String flavor){
+    public void initCarLogoByFlavor(MapType mapTypeId, String flavor) {
         mLayerAdapter.initCarLogoByFlavor(mapTypeId, flavor);
     }
 
     public int setFollowMode(MapType mapTypeId, boolean bFollow) {
         return mLayerAdapter.setFollowMode(mapTypeId, bFollow);
-    }
-
-    public void unInitLayerService() {
-        mLayerAdapter.unInitLayerService();
     }
 
     public void setVisibleGuideSignalLight(MapType mapTypeId, boolean isVisible) {
@@ -140,15 +140,17 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     /**
      * 搜索图层Item点击回调
-     *
      */
     @Override
     public void onSearchItemClick(MapType mapTypeId, LayerPointItemType type, int index) {
-        callbacks.forEach((key, packageCallBacks) -> {
-            packageCallBacks.forEach(packageCallBack -> {
-                packageCallBack.onSearchItemClick(mapTypeId, type, index);
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
+                @Override
+                public void accept(ILayerPackageCallBack callBack) {
+                    callBack.onSearchItemClick(mapTypeId, type, index);
+                }
             });
-        });
+        }
     }
 
     /**
@@ -156,41 +158,51 @@ public class LayerPackage implements ILayerAdapterCallBack {
      */
     @Override
     public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
-        callbacks.forEach((key, packageCallBacks) -> {
-            packageCallBacks.forEach(packageCallBack -> {
-                Logger.d(TAG, "onRouteItemClick");
-                packageCallBack.onRouteItemClick(mapTypeId, type, result);
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
+                @Override
+                public void accept(ILayerPackageCallBack callBack) {
+                    callBack.onRouteItemClick(mapTypeId, type, result);
+                }
             });
-        });
+        }
     }
 
     @Override
-    public void onFavoriteClick(MapType mapTypeId,PoiInfoEntity poiInfo) {
-        callbacks.forEach((key, packageCallBacks) -> {
-            packageCallBacks.forEach(packageCallBack -> {
-                packageCallBack.onFavoriteClick(mapTypeId,poiInfo);
+    public void onFavoriteClick(MapType mapTypeId, PoiInfoEntity poiInfo) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
+                @Override
+                public void accept(ILayerPackageCallBack callBack) {
+                    callBack.onFavoriteClick(mapTypeId, poiInfo);
+                }
             });
-        });
+        }
     }
 
     @Override
     public void onFlyLineMoveEnd(MapType mapTypeId, GeoPoint descPoint) {
-        callbacks.forEach((key, packageCallBacks) -> {
-            packageCallBacks.forEach(packageCallBack -> {
-                Logger.e(TAG, "onMapMoveEnd-LayerPackage:");
-                packageCallBack.onFlyLineMoveEnd(mapTypeId, descPoint);
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
+                @Override
+                public void accept(ILayerPackageCallBack callBack) {
+                    callBack.onFlyLineMoveEnd(mapTypeId, descPoint);
+                }
             });
-        });
+        }
     }
 
     @Override
-    public void onCarClick(MapType mapType, GeoPoint geoPoint) {
-        callbacks.forEach((key, packageCallBacks) -> {
-            packageCallBacks.forEach(packageCallBack -> {
-                Logger.e(TAG, "onCarClick :");
-                packageCallBack.onCarClick(mapType, geoPoint);
+    public void onCarClick(MapType mapTypeId, GeoPoint geoPoint) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
+                @Override
+                public void accept(ILayerPackageCallBack callBack) {
+                    Logger.e(TAG, "onCarClick :");
+                    callBack.onCarClick(mapTypeId, geoPoint);
+                }
             });
-        });
+        }
     }
 
     /**
@@ -225,11 +237,11 @@ public class LayerPackage implements ILayerAdapterCallBack {
     }
 
     public void removeFavoriteMain(MapType mapTypeId, PoiInfoEntity poiInfoEntity) {
-        mLayerAdapter.removeFavoriteMain(mapTypeId,poiInfoEntity);
+        mLayerAdapter.removeFavoriteMain(mapTypeId, poiInfoEntity);
     }
 
     public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
-        mLayerAdapter.setFavoriteVisible(mapTypeId,visible);
+        mLayerAdapter.setFavoriteVisible(mapTypeId, visible);
     }
 
 

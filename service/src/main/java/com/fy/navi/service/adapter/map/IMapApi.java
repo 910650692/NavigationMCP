@@ -39,8 +39,6 @@ public interface IMapApi {
      */
     void bindMapView(IBaseScreenMapView mapView);
 
-    void changeMapView(IBaseScreenMapView mapView);
-
     /**
      * 解绑一个map
      *
@@ -92,6 +90,7 @@ public interface IMapApi {
 
     /*** 设置地图中线点在屏幕中的位置 **/
     void setMapCenterInScreen(MapType mapTypeId, int x, int y);
+
     /**
      * 设置Hud地图中线点在屏幕中的位置
      */
@@ -125,7 +124,7 @@ public interface IMapApi {
 
     GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY);
 
-    PointDataInfo lonLatToScreen(MapType mapTypeId,double lon, double lat, double z);
+    PointDataInfo lonLatToScreen(MapType mapTypeId, double lon, double lat, double z);
 
     MapViewParams getMapSurfaceParam(MapType mapTypeId);
 
@@ -143,15 +142,19 @@ public interface IMapApi {
     /*设置是否开启3D建筑*/
     void set3DBuilding(MapType mapTypeId, boolean isOpen);
 
-    /**
-     * @return 是否进入全览的状态
-     */
-    boolean getIsEnterPreview(MapType mapTypeId);
-
-    void setMapLabelClickable(MapType mapTypeId,boolean enable);
+    void setMapLabelClickable(MapType mapTypeId, boolean enable);
 
     /**
      * 刷帧
      */
     void resetTickCount(MapType mapTypeId, int tickCount);
+
+    /**
+     * 计算两点距离
+     *
+     * @param startPoint
+     * @param endPoint
+     * @return
+     */
+    double calcStraightDistance(GeoPoint startPoint, GeoPoint endPoint);
 }

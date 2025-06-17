@@ -50,32 +50,22 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
     }
 
     @Override
-    public void onCarClick(CarLoc carLoc) {
-        ThreadManager.getInstance().postUi(new Runnable() {
-            @Override
-            public void run() {
-                getCallBacks().forEach(new Consumer<ILayerAdapterCallBack>() {
-                    @Override
-                    public void accept(ILayerAdapterCallBack callBack) {
-                        if (callBack != null) {
-                            GeoPoint geoPoint = new GeoPoint();
-                            if (!carLoc.vecPathMatchInfo.isEmpty()) {
-                                PathMatchInfo pathMatchInfo = carLoc.vecPathMatchInfo.get(0);
-                                geoPoint.setLat(pathMatchInfo.latitude);
-                                geoPoint.setLon(pathMatchInfo.longitude);
-                            }
-                            Logger.d(TAG, getMapType() + " onCarClick =" + geoPoint.toString());
-                            callBack.onCarClick(getMapType(), geoPoint);
-                        }
-                    }
-                });
+    protected void dispatchCarClick(CarLoc carLoc) {
+        if (getCallBack() != null) {
+            GeoPoint geoPoint = new GeoPoint();
+            if (!carLoc.vecPathMatchInfo.isEmpty()) {
+                PathMatchInfo pathMatchInfo = carLoc.vecPathMatchInfo.get(0);
+                geoPoint.setLat(pathMatchInfo.latitude);
+                geoPoint.setLon(pathMatchInfo.longitude);
             }
-        });
+            Logger.d(TAG, getMapType() + " onCarClick =" + geoPoint.toString());
+            getCallBack().onCarClick(getMapType(), geoPoint);
+        }
     }
 
-    public void initCarLogoByFlavor(String flavor){
+    public void initCarLogoByFlavor(String flavor) {
         Logger.d(TAG, "flavor is" + flavor);
-        String carModel = switch (flavor){
+        String carModel = switch (flavor) {
             case "cadi" -> "Cadi";
             default -> "Buick";
         };

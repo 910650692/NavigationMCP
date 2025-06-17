@@ -38,7 +38,7 @@ public class BaseHudViewModel extends BaseViewModel<HudActivity, HudModel> {
 
     public void loadMapView(){
         Logger.d(TAG, "Loading map view");
-        MapPackage.getInstance().loadMapView(mView.getMapView());
+        MapPackage.getInstance().bindMapView(mView.getMapView());
     }
 
     public IBaseScreenMapView getMapView() {

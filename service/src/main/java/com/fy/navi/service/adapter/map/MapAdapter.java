@@ -41,6 +41,7 @@ public class MapAdapter {
     }
 
     public void initMapService() {
+        mIMapApi.initMapService();
         mSettingAdapter = SettingAdapter.getInstance();
     }
 
@@ -50,10 +51,6 @@ public class MapAdapter {
 
     public boolean createMapView(MapType mapTypeId) {
        return mIMapApi.createMapView(mapTypeId);
-    }
-
-    public void changeMapView(IBaseScreenMapView mapSurfaceView) {
-        mIMapApi.changeMapView(mapSurfaceView);
     }
 
     public void bindMapView(IBaseScreenMapView mapSurfaceView) {
@@ -75,7 +72,9 @@ public class MapAdapter {
     public void unregisterCallback(MapType mapTypeId, IMapAdapterCallback callback) {
         mIMapApi.unRegisterCallback(mapTypeId, callback);
     }
-
+    public double calcStraightDistance(GeoPoint startPoint, GeoPoint endPoint) {
+        return mIMapApi.calcStraightDistance(startPoint, endPoint);
+    }
     public void reduceLevel(MapType mapTypeId) {
         mIMapApi.setZoomLevel(mapTypeId, mIMapApi.getCurrentZoomLevel(mapTypeId) - AutoMapConstant.MAP_ZOOM_LEVEL_CHANGE_FLAG);
     }

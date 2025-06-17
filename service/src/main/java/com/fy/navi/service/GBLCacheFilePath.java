@@ -22,6 +22,8 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     public static final String BLS_ASSETS_PATH = "/android_assets/blRes/";
     /*** 配置引擎样式文件MapAssert的绝对地址 **/
     public static final String MAP_ASSET_DIR = BLS_ASSETS_PATH + "MapAsset/";
+    /*** 配置引擎样式文件MapAssert的绝对地址 **/
+    public static final String MAP_SKY_BOX_ASSET_DIR = "blRes/MapAsset/";
     /*** AutoSDK图层默认资源文件目录 **/
     public static final String BLS_ASSETS_LAYER_PATH = BLS_ASSETS_PATH + "LayerAsset/";
 

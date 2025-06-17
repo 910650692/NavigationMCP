@@ -3,36 +3,32 @@ package com.fy.navi.service.adapter.map.bls;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
+import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.process.ProcessManager;
+import com.android.utils.thread.LooperType;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.model.Coord3DDouble;
+import com.autonavi.gbl.common.model.RectDouble;
 import com.autonavi.gbl.map.MapDevice;
 import com.autonavi.gbl.map.MapService;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.OperatorPosture;
-import com.autonavi.gbl.map.OperatorStyle;
 import com.autonavi.gbl.map.adapter.MapHelper;
 import com.autonavi.gbl.map.adapter.MapSurfaceView;
 import com.autonavi.gbl.map.layer.model.OpenLayerID;
-import com.autonavi.gbl.map.model.AnmCallbackParam;
 import com.autonavi.gbl.map.model.DeviceAttribute;
 import com.autonavi.gbl.map.model.EGLDeviceWorkMode;
 import com.autonavi.gbl.map.model.EGLSurfaceAttr;
-import com.autonavi.gbl.map.model.InitMapParam;
 import com.autonavi.gbl.map.model.MapBusinessDataType;
 import com.autonavi.gbl.map.model.MapControllerStatesType;
-import com.autonavi.gbl.map.model.MapFontInfo;
 import com.autonavi.gbl.map.model.MapLabelItem;
 import com.autonavi.gbl.map.model.MapLabelType;
 import com.autonavi.gbl.map.model.MapModelDtoConstants;
@@ -41,6 +37,7 @@ import com.autonavi.gbl.map.model.MapPoiCustomOperateType;
 import com.autonavi.gbl.map.model.MapPositionParam;
 import com.autonavi.gbl.map.model.MapRenderVendor;
 import com.autonavi.gbl.map.model.MapResourceParam;
+import com.autonavi.gbl.map.model.MapSkyboxParam;
 import com.autonavi.gbl.map.model.MapStyleMode;
 import com.autonavi.gbl.map.model.MapStyleParam;
 import com.autonavi.gbl.map.model.MapStyleTime;
@@ -55,8 +52,6 @@ import com.autonavi.gbl.map.model.PreviewParam;
 import com.autonavi.gbl.map.model.ScreenShotCallbackMethod;
 import com.autonavi.gbl.map.model.ScreenShotDataInfo;
 import com.autonavi.gbl.map.model.ScreenShotMode;
-import com.autonavi.gbl.map.observer.IAnimationObserver;
-import com.autonavi.gbl.map.observer.IBLMapBusinessDataObserver;
 import com.autonavi.gbl.map.observer.IBLMapEngineObserver;
 import com.autonavi.gbl.map.observer.IBLMapViewProxy;
 import com.autonavi.gbl.map.observer.IDeviceObserver;
@@ -65,7 +60,7 @@ import com.autonavi.gbl.map.observer.IMapGestureObserver;
 import com.autonavi.gbl.map.observer.IMapviewObserver;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.errorcode.common.Service;
-import com.autonavi.gbl.util.model.SingleServiceID;
+import com.autonavi.gbl.util.model.BinaryStream;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
@@ -84,12 +79,9 @@ import com.fy.navi.service.define.map.PointDataInfo;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
 
@@ -99,12 +91,12 @@ import lombok.Getter;
  * @date 2024/12/3
  */
 public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMapGestureObserver, IDeviceObserver,
-        IBLMapViewProxy, IBLMapEngineObserver, IAnimationObserver, IBLMapBusinessDataObserver, IEGLScreenshotObserver {
+        IBLMapViewProxy, IEGLScreenshotObserver, IBLMapEngineObserver {
+
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
+
     @Getter
     private MapView mapview;
-
-    private MapDevice mMapDevice;
 
     @Getter
     private MapViewParams mapViewParams;
@@ -112,139 +104,70 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     private MapType mapType;
 
     // 记录当前全览状态 true：进入 false：退出
-    @Getter
     private boolean isPreview = false;
 
     private static int ROUTERDRAWLABELTIME = 15;
 
-    @Getter
     private int isZoomIn = -1;
 
-    @Getter
-    private List<IMapAdapterCallback> callbacks = new CopyOnWriteArrayList<>();
+    private IMapAdapterCallback callback;
 
-    public MapViewImpl(Context context) {
+    public MapViewImpl(Context context, MapType mapType, MapService mapService) {
         this(context, null);
+        this.mapType = mapType;
+        this.mapViewParams = new MapViewParams();
+        setMapService(mapService);
+        setDefaultDevice(createMapDevice());
+        setDefaultMapView(createMapView());
+//        getDefaultDevice().setRenderFpsByMode(MapRenderMode.MapRenderModeNormal,15);
+//        getDefaultDevice().setRenderFpsByMode(MapRenderMode.MapRenderModeNavi,15);
+//        getDefaultDevice().setRenderFpsByMode(MapRenderMode.MapRenderModeGestureAction,50);
+//        getDefaultDevice().setMaxFps(50);
+        initOperatorPosture();
+        initOperatorBusiness();
+        initOperatorGesture();
+        initRouterDrawLabel();
+        initTheme(ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
+        initSkyBox(ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
     }
 
     public MapViewImpl(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void initMapView(MapType mapType, MapViewParams mapViewParams) {
-        this.mapType = mapType;
-        this.mapViewParams = mapViewParams;
-        Logger.i(TAG, "当前视图是否还需要截屏：" , mapViewParams.isOpenScreen());
-        createMapService();
-        createMapDevice();
-        createMapView();
-        initTheme();
-        initRouterDrawLabel();
-        initOperatorPosture();
-        initOperatorBusiness();
-        initOperatorGesture();
-        initSkyBox();
-    }
 
-    private void createMapService() {
-        MapService mapService = (MapService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.MapSingleServiceID);
-        InitMapParam initMapParam = new InitMapParam();
-        /*** 地图数据路径绝对地址 **/
-        initMapParam.dataPath = GBLCacheFilePath.MAP_DATA_DIR;
-        /*** 基本数据路径地址URL **/
-        initMapParam.basePath = GBLCacheFilePath.MAP_BASE_PATH;
-        /*** 配置引擎样式文件MapAssert的绝对地址 **/
-        initMapParam.assetPath = GBLCacheFilePath.MAP_ASSET_DIR;
-        //设置字体font_cn路径
-        MapFontInfo mapFontInfo = new MapFontInfo();
-        mapFontInfo.fontName = "font_cn";
-        mapFontInfo.fontPath = GBLCacheFilePath.COPY_ASSETS_DIR + "font/font_cn.ttf";
-        initMapParam.fontParam.overlayFontInfoList.add(mapFontInfo);
-        //设置AmapNumber-Bold路径
-        MapFontInfo mapFontInfo2 = new MapFontInfo();
-        mapFontInfo2.fontName = "AmapNumber-Bold";
-        mapFontInfo2.fontPath = GBLCacheFilePath.COPY_ASSETS_DIR + "font/AmapNumber-Bold.ttf";
-        initMapParam.fontParam.overlayFontInfoList.add(mapFontInfo2);
-        //设置Oswald-Regular路径
-        MapFontInfo mapFontInfo3 = new MapFontInfo();
-        mapFontInfo3.fontName = "Oswald-Regular";
-        mapFontInfo3.fontPath = GBLCacheFilePath.COPY_ASSETS_DIR + "font/Oswald-Regular.ttf";
-        initMapParam.fontParam.overlayFontInfoList.add(mapFontInfo3);
-        //设置Roboto-Bold路径
-        MapFontInfo mapFontInfo4 = new MapFontInfo();
-        mapFontInfo4.fontName = "Roboto-Bold";
-        mapFontInfo4.fontPath = GBLCacheFilePath.COPY_ASSETS_DIR + "font/Roboto-Bold.ttf";
-        initMapParam.fontParam.overlayFontInfoList.add(mapFontInfo4);
-        if (!ConvertUtils.isNull(mapService)) {
-            setMapService(mapService);
-            mapService.initMap(initMapParam);
-        } else {
-            Logger.e(TAG, "mapService is null");
-        }
-    }
-
-    private void createMapDevice() {
-        ServiceMgr.getServiceMgrInstance().setUiLooper(0, Looper.getMainLooper());
+    private MapDevice createMapDevice() {
         DeviceAttribute devAttribute = new DeviceAttribute();
-        devAttribute.renderVendorType = MapRenderVendor.OpenGL2;
+        devAttribute.renderVendorType = MapRenderVendor.OpenGL3;
         devAttribute.uiTaskDeviceId = EngineAdapter.getInstance().mapDeviceID(mapType);
         devAttribute.deviceWorkMode = EGLDeviceWorkMode.EGLDeviceWorkMode_WithThreadWithEGLContextDrawIn;
-        if (!ConvertUtils.isNull(getMapService())) {
-            mMapDevice = getMapService().createDevice(EngineAdapter.getInstance().mapDeviceID(mapType),
-                    devAttribute, this);
-            setDefaultDevice(mMapDevice);
-        } else {
-            Logger.e(TAG, "mapService is null");
-        }
+        devAttribute.isNeedAntialias = false;//是否开启全屏抗锯齿
+        devAttribute.samples = 2;//全屏抗锯齿倍数
+        ServiceMgr.getServiceMgrInstance().setUiLooper(devAttribute.uiTaskDeviceId, ThreadManager.getInstance().getLooper(LooperType.MAP));
+        return ConvertUtils.isNullRequire(getMapService().createDevice(EngineAdapter.getInstance().mapDeviceID(mapType), devAttribute, this),
+                "获取对应的 MapService 失败 : " + mapType);
     }
 
-    private void createMapView() {
-        Logger.i(TAG, "createMapView--mapViewParams.isOpenScreen: " , mapViewParams.isOpenScreen() );
-        createMapViewInternal(
-                mapViewParams.getX(),
-                mapViewParams.getY(),
-                mapViewParams.getWidth(),
-                mapViewParams.getHeight(),
-                mapViewParams.getScreenWidth(),
-                mapViewParams.getScreenHeight()
-        );
-        Logger.i(TAG, "createMapView--mapViewParams.isOpenScreen: " , mapViewParams.isOpenScreen() );
-
-    }
-
-    private void createMapViewInternal(long x, long y, long width, long height, long screenWidth, long screenHeight) {
+    private MapView createMapView() {
         MapViewParam mapViewParam = new MapViewParam();
-        if (!ConvertUtils.isNull(getDefaultDevice())) {
-            mapViewParam.deviceId = getDefaultDevice().getDeviceId();
-        }
-        Logger.i(TAG, "mapViewParam.deviceId -> " , mapViewParam.deviceId);
-        mapViewParam.engineId = EnginePackage.getInstance().getEngineID(mapType);
-        Logger.i(TAG, "mapViewParam.engineId -> " , mapViewParam.engineId);
+        mapViewParam.x = 0;
+        mapViewParam.y = 0;
+        mapViewParam.width = mapViewParams.getWidth();
+        mapViewParam.height = mapViewParams.getHeight();
+        mapViewParam.screenWidth = mapViewParams.getScreenWidth();
+        mapViewParam.screenHeight = mapViewParams.getScreenHeight();
 
-        mapViewParam.x = x;
-        Logger.i(TAG, "mapViewParam.x -> " , x);
-        mapViewParam.y = y;
-        Logger.i(TAG, "mapViewParam.y -> " , y);
-        mapViewParam.width = width;
-        Logger.i(TAG, "mapViewParam.width -> " , width);
-        mapViewParam.height = height;
-        Logger.i(TAG, "mapViewParam.height -> " , height);
-        mapViewParam.screenWidth = screenWidth;
-        Logger.i(TAG, "mapViewParam.screenWidth -> " , screenWidth);
-        mapViewParam.screenHeight = screenHeight;
-        Logger.i(TAG, "mapViewParam.screenHeight -> " , screenHeight);
+        mapViewParam.engineId = EngineAdapter.getInstance().engineID(mapType);
+        mapViewParam.deviceId = getDefaultDevice().getDeviceId();
+        mapViewParam.cacheCountFactor = 2;
+        //引擎配置文件 高(mapprofile_fa1 3D超远视角+天空盒)/中(mapprofile_fa2 3D常规视角+天空盒)/低(mapprofile_fa3 3D无天空盒子视角 )
+        mapViewParam.mapProfileName = "mapprofile_fa2";
+        mapViewParam.zoomScaleMode = MapZoomScaleMode.DefaultMode;
 
-        mapViewParam.cacheCountFactor = 2.0F;
-        mapViewParam.zoomScaleMode = MapZoomScaleMode.PhysicalAdaptiveMode;
-        mapViewParam.mapProfileName = "mapprofile_fa1"; // 星河效果指定性能模式
-        if (!ConvertUtils.isNull(getMapService())) {
-            setDefaultMapView(getMapService().createMapView(mapViewParam, this, this, this, this));
-            boolean openScreen = mapViewParams.isOpenScreen();
-            Logger.i(TAG, "当前视图是否需要截屏：" , openScreen);
-            if (openScreen) initScreenshotParams(mMapDevice);
-        } else {
-            Logger.e(TAG, "mapService is null");
-        }
+        mapViewParam.asyncTaskThreadCount = 4;// TODO 优化
+
+        return ConvertUtils.isNullRequire(getMapService().createMapView(mapViewParam, this, this, null, null),
+                "获取对应的 MapView 失败 : " + mapType);
     }
 
     /**
@@ -306,19 +229,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     /***
      * 初始化默认主题
      */
-    public void initTheme() {
-        if(getMapview() != null){
-            OperatorStyle operatorStyle = getMapview().getOperatorStyle();
-            if (operatorStyle != null){
-                final MapStyleParam styleParam = operatorStyle.getMapStyle();
-                styleParam.time = ThemeUtils.INSTANCE.isNightModeEnabled(getContext()) ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
-                operatorStyle.setMapStyle(styleParam, false);
-            } else {
-                Logger.e(TAG, "operatorStyle is null");
-            }
-        } else {
-            Logger.e(TAG, "getMapView() is null");
-        }
+    private void initTheme(boolean isNight) {
+        final MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
+        styleParam.time = isNight ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
+        getMapview().getOperatorStyle().setMapStyle(styleParam, false);
     }
 
     private void initRouterDrawLabel() {
@@ -326,18 +240,27 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().setMapNeedForceDrawLabel(ROUTERDRAWLABELTIME);
     }
 
-    private void initSkyBox() {
-        SkyBoxManager.getInstance().initSkyBox(getMapview(), ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
-    }
-
-    public void registerCallback(IMapAdapterCallback callback) {
-        if (!callbacks.contains(callback)) {
-            callbacks.add(callback);
+    private void initSkyBox(boolean isNight) {
+        String skyBoxPath = isNight ? GBLCacheFilePath.MAP_SKY_BOX_ASSET_DIR + "skybox_night.data" : GBLCacheFilePath.MAP_SKY_BOX_ASSET_DIR + "skybox_day.data";
+        byte[] buffer = FileUtils.getInstance().getAssetFileContent(skyBoxPath);
+        if (!ConvertUtils.isNull(buffer)) {
+            BinaryStream binaryStream = new BinaryStream(buffer);
+            //设置天空盒子
+            MapSkyboxParam mapSkyboxParam = new MapSkyboxParam();
+            mapSkyboxParam.isOn = true; // 是否开启skybox，默认为true，非必须设置
+            mapSkyboxParam.is3DRes = false; // 是否使用3D资源，*.data资源为2D天空卷轴，传false
+            mapSkyboxParam.DataBuff = binaryStream;
+//            mapSkyboxParam.frogColor = 0xFFDC143C; //雾气颜色，ARGB，默认为0xEFF4FFFF，非必须设置
+            getMapview().getOperatorBusiness().setMapSkyboxParam(mapSkyboxParam);
         }
     }
 
-    public void unRegisterCallback(IMapAdapterCallback callback) {
-        callbacks.remove(callback);
+    public void setCallbacks(IMapAdapterCallback callback) {
+        this.callback = callback;
+    }
+
+    public void unRegisterCallback() {
+        this.callback = null;
     }
 
     public void setZoomLevel(float level) {
@@ -345,10 +268,14 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     }
 
     public String getMapBound() {
-        return getMapview().getOperatorPosture().getMapBound().left
-                + "|" + getMapview().getOperatorPosture().getMapBound().top
-                + "|" + getMapview().getOperatorPosture().getMapBound().right
-                + "|" + getMapview().getOperatorPosture().getMapBound().bottom;
+        RectDouble rectDouble = getMapview().getOperatorPosture().getMapBound();
+        return new StringBuffer(String.valueOf(rectDouble.left))
+                .append("|")
+                .append(String.valueOf(rectDouble.top))
+                .append("|")
+                .append(String.valueOf(rectDouble.right))
+                .append("|")
+                .append(String.valueOf(rectDouble.bottom)).toString();
     }
 
     public void setMapCenterInScreen(int x, int y) {
@@ -371,23 +298,21 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         return mapCenter;
     }
 
-    public void resetTickCount(int tickCount){
-        getMapview().resetTickCount(tickCount);
+    public void resetTickCount(int tickCount) {
+//        getMapview().resetTickCount(tickCount);
     }
 
     public boolean setTrafficStates(boolean isOpen) {
         int status = isOpen ? 1 : 0;
         boolean result = getMapview().setControllerStatesOperator(MapControllerStatesType.MAP_CONTROLLER_ONOFF_TRAFFIC_STATE, status, true);
         if (result) {
-            getMapview().resetTickCount(2);
+//            getMapview().resetTickCount(2);
         }
         return result;
     }
 
     public void setCustomLabelTypeVisable(ArrayList<Integer> typeList, boolean visible) {
         if (visible) {
-            //getMapview().getOperatorBusiness().setCustomLabelTypeVisable(typeList, MapPoiCustomOperateType.CUSTOM_POI_OPERATE_ONLY_LIST_SHOW);
-            //MapPoiCustomType
             //清除style  注意会清除addCustomStyle的style
             getMapview().getOperatorBusiness().clearCustomStyle();
         } else {
@@ -397,7 +322,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     public void setMapViewTextSize(float f) {
         getMapview().getOperatorBusiness().setMapTextScale(f);
-        getMapview().resetTickCount(1);
+//        getMapview().resetTickCount(1);
     }
 
     public float getCurrentZoomLevel() {
@@ -448,10 +373,9 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 mapviewModeParam.mapZoomLevel = AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT;
                 break;
         }
-        int mapModel = getMapview().setMapMode(mapviewModeParam, true);
-        boolean resultOk = Service.ErrorCodeOK == mapModel;
-        getMapview().resetTickCount(1);
-        return resultOk;
+        int resultOk = getMapview().setMapMode(mapviewModeParam, true);
+        Logger.d(TAG, mapType, "setMapMode ", mapMode);
+        return resultOk == Service.ErrorCodeOK;
     }
 
     public void goToCarPosition(boolean bAnimation, boolean changeLevel) {
@@ -468,9 +392,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         } else {
             pos.maplevel = getCurrentZoomLevel();
         }
-        Logger.e(TAG, "goToCarPosition " + changeLevel);
+        Logger.d(TAG, mapType, "goToCarPosition ", changeLevel);
         getMapview().goToPosition(pos, bAnimation);
-        getMapview().resetTickCount(1);
     }
 
     /**
@@ -504,11 +427,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     /**
      * 地图初始化时的默认风格
      */
-    protected void setMapStyle(MapStateStyle mapStateStyle) {
+    public void setMapStyle(MapStateStyle mapStateStyle) {
         MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         styleParam.mode = MapStyleMode.MapModeDefault;
         boolean isNightMode = ThemeUtils.INSTANCE.isNightModeEnabled(getContext());
-        Logger.i(TAG, "setMapStyle:" , isNightMode);
         styleParam.time = isNightMode ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
         switch (mapStateStyle) {
             case MAP_NAVI:
@@ -526,36 +448,41 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 break;
         }
         styleParam.forceUpdate = true;
-        Logger.e(TAG, "setMapStyle ");
+
+        Logger.d(TAG, mapType, "setMapStyle ", isNightMode);
         getMapview().getOperatorStyle().setMapStyle(styleParam, false);
-        getMapview().resetTickCount(1);
+        initSkyBox(isNightMode);
     }
 
     public void update3DBuildingSwitch(boolean visible) {
         if (getMapview() != null) {
             getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_BUILD_MODEL_ON, visible);
             // 设置渲染持续帧数 持续帧数完成后，进入降帧处理。实际绘制帧率为：持续帧数 + 降帧帧数
-            getMapview().resetTickCount(2);
-            Logger.i(TAG, "update3DBuildingSwitch:" , visible, "success!");
+//            getMapview().resetTickCount(2);
+            Logger.d(TAG, mapType, "update3DBuildingSwitch ", visible);
         }
     }
 
     public void updateUiStyle(ThemeType uiMode) {
         final MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         final int preTime = styleParam.time;
-
         final int expectTime = uiMode == ThemeType.NIGHT ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
         Logger.d(TAG, "preTime:" , preTime, "expectTime:" , expectTime);
         if (preTime != expectTime) {
             styleParam.time = expectTime;
-            getMapview().getOperatorStyle().setMapStyle(styleParam, false);
-            SkyBoxManager.getInstance().updateSkyBox(getMapview(), uiMode == ThemeType.NIGHT);
+            initTheme(uiMode == ThemeType.NIGHT);
+            initSkyBox(uiMode == ThemeType.NIGHT);
         }
     }
 
     private void onMapClickPoi(MapType mapType, PoiInfoEntity poiInfo) {
-        for (IMapAdapterCallback callback : callbacks) {
-            callback.onMapClickPoi(mapType, poiInfo);
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onMapClickPoi(mapType, poiInfo);
+                }
+            });
         }
     }
 
@@ -589,7 +516,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     public void changeMapViewParams(MapViewParams mapViewParams) {
         this.mapViewParams = mapViewParams;
-        Logger.i(TAG, "当前视图是否还需要截屏：" , mapViewParams.isOpenScreen());
         updateMapPortParams(
                 mapViewParams.getX(),
                 mapViewParams.getY(),
@@ -598,6 +524,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 mapViewParams.getScreenWidth(),
                 mapViewParams.getScreenHeight()
         );
+        if (mapViewParams.isOpenScreen()) {
+            initScreenshotParams();
+            startScreenshot();
+        }
     }
 
     private void updateMapPortParams(long x, long y, long width, long height, long screenWidth, long screenHeight) {
@@ -605,45 +535,36 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().setMapviewPort(mapViewPortParam);
     }
 
-    public void destroyMapView(){
-        ConvertUtils.clear(callbacks);
-        mMapDevice.detachSurfaceFromDevice();
+    public void destroyMapView() {
+        getDefaultDevice().detachSurfaceFromDevice();
         mapview.removeGestureObserver(this);
         mapview.removeMapviewObserver(this);
         getMapService().destroyMapView(mapview);
         mapview = null;
-        mMapDevice.attachSurfaceToDevice(null);
-        mMapDevice.removeDeviceObserver(this);
-        getMapService().destroyDevice(mMapDevice);
-        mMapDevice = null;
+        getDefaultDevice().attachSurfaceToDevice(null);
+        getDefaultDevice().removeDeviceObserver(this);
+        getMapService().destroyDevice(getDefaultDevice());
     }
 
     /**
      * 初始化截图参数
-     *
-     * @param mapDevice 地图设备对象
      */
-    public void initScreenshotParams(MapDevice mapDevice) {
-        Logger.d(TAG, "MapType: " , mapType, "需要支持截屏，开启Device渲染线程");
-        if (mapDevice == null) {
-            return;
-        }
-        Logger.d(TAG, "设置Device渲染线程开启参数");
+    public void initScreenshotParams() {
+        Logger.d(TAG, "MapType: " + mapType, "需要支持截屏，开启Device渲染线程 截图尺寸 width =", +mapViewParams.getWidth(),
+                "height =", mapViewParams.getHeight());
         EGLSurfaceAttr eglSurfaceAttr = new EGLSurfaceAttr();
         eglSurfaceAttr.nativeWindow = -1;
         eglSurfaceAttr.isOnlyCreatePBSurface = true;
         eglSurfaceAttr.width = (int) mapViewParams.getWidth();
         eglSurfaceAttr.height = (int) mapViewParams.getHeight();
-        Logger.d(TAG, "设置Device的设备尺寸", "width" , mapViewParams.getWidth(), "height" , mapViewParams.getHeight());
-        mapDevice.attachSurfaceToDevice(eglSurfaceAttr);
+        getDefaultDevice().attachSurfaceToDevice(eglSurfaceAttr);
     }
 
-    public void startScreenshot(MapDevice mapDevice) {
-        Logger.d(TAG, "startScreenshot size", "width" , mapViewParams.getWidth(), "height" , mapViewParams.getHeight());
-        mapDevice.setScreenshotRect(0, 0, (int) mapViewParams.getWidth(), (int) mapViewParams.getHeight());
-//        mapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeFront, this);
-        mapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, this);
-        mapDevice.setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
+    public void startScreenshot() {
+        Logger.d(TAG, "startScreenshot size", "width" + mapViewParams.getWidth(), +mapViewParams.getHeight());
+        getDefaultDevice().setScreenshotRect(0, 0, (int) mapViewParams.getWidth(), (int) mapViewParams.getHeight());
+        getDefaultDevice().setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, this);
+        getDefaultDevice().setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
     }
 
     @HookMethod
@@ -664,8 +585,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     @Override
     public void setDefaultMapView(MapView mapview) {
-        super.setDefaultMapView(mapview);
         this.mapview = mapview;
+        super.setDefaultMapView(mapview);
     }
 
     @Override
@@ -678,7 +599,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Logger.i(TAG, "MapSurfaceView:" , mapType, "已解绑窗口");
         if (ConvertUtils.isEmpty(getMapview())) return;
         getMapview().removeMapviewObserver(this);
         getMapview().removeGestureObserver(this);
@@ -687,8 +607,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         super.surfaceCreated(holder);
-        Logger.i(TAG, "surfaceCreated", "MapView加载完成", "callBacks size:" + callbacks.size());
-        for (IMapAdapterCallback callback : callbacks) {
+        if (callback != null) {
             callback.onMapLoadSuccess(mapType);
         }
     }
@@ -696,8 +615,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     @Override
     public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
         boolean openScreen = mapViewParams.isOpenScreen();
-        Logger.d(TAG, "onSurfaceChanged -> deviceId:" , deviceId, "openScreen:" , openScreen);
-        if (openScreen) startScreenshot(mMapDevice);
+        if (openScreen) startScreenshot();
     }
 
     @Override
@@ -707,36 +625,38 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     @Override
     public void onMapModeChanged(long engineId, int mapMode) {
-        for (IMapAdapterCallback callback : callbacks) {
-            switch (mapMode) {
-                case MapviewMode.MapviewMode3D -> {
-                    callback.onMapModeChange(mapType, MapMode.UP_3D);
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    switch (mapMode) {
+                        case MapviewMode.MapviewMode3D -> {
+                            callback.onMapModeChange(mapType, MapMode.UP_3D);
+                        }
+                        case MapviewMode.MapviewModeCar -> {
+                            callback.onMapModeChange(mapType, MapMode.UP_2D);
+                        }
+                        default -> {
+                            callback.onMapModeChange(mapType, MapMode.NORTH_2D);
+                        }
+                    }
                 }
-                case MapviewMode.MapviewModeCar -> {
-                    callback.onMapModeChange(mapType, MapMode.UP_2D);
-                }
-                default -> {
-                    callback.onMapModeChange(mapType, MapMode.NORTH_2D);
-                }
-            }
+            });
         }
     }
 
     @Override
     public boolean onDoublePress(long engineId, long px, long py) {
-        Logger.d(TAG, "onDoublePress px = " , px , " ,py = " , py);
         return true;
     }
 
     @Override
     public boolean onSinglePress(long engineId, long px, long py, boolean clickElement) {
-        Logger.d(TAG, "onSinglePress px = " , px , " ,py = " , py , ",clickElement = " , clickElement);
         return true;
     }
 
     @Override
     public void onLongPress(long engineId, long px, long py) {
-        Logger.d(TAG, "onLongPress px = " , px , " ,py = " , py);
         PoiInfoEntity poiInfo = new PoiInfoEntity();
         poiInfo.setPoiType(AutoMapConstant.SearchType.GEO_SEARCH);
         poiInfo.setPoint(getGeoPointFromScreenPosition(px, py));
@@ -750,35 +670,33 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     @Override
     public void onClickLabel(long engineId, ArrayList<MapLabelItem> pLabels) {
-        Logger.d(TAG, "onClickLabel MapLabelItem = " + pLabels.size());
-        if (!ConvertUtils.isEmpty(pLabels)) {
-            Logger.d(TAG, "onClickLabel type = " , pLabels.get(0).type);
+        if (ConvertUtils.isEmpty(pLabels)) {
+            return;
         }
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isEmpty(pLabels)) {
-                MapLabelItem item = pLabels.get(0);
-                PoiInfoEntity poiInfo = new PoiInfoEntity();
-                Coord2DDouble coord2DDouble = OperatorPosture.mapToLonLat(item.pixel20X, item.pixel20Y);
-                GeoPoint point = new GeoPoint();
-                point.setLon(coord2DDouble.lon);
-                point.setLat(coord2DDouble.lat);
-                poiInfo.setPoint(point);
-                poiInfo.setName(item.name);
-                poiInfo.setPid(item.poiid);
-                switch (item.type) {
-                    case MapLabelType.LABEL_Type_OPENLAYER:
-                        for (IMapAdapterCallback callback : callbacks) {
+        if (callback != null) {
+            MapLabelItem item = pLabels.get(0);
+            PoiInfoEntity poiInfo = new PoiInfoEntity();
+            Coord2DDouble coord2DDouble = OperatorPosture.mapToLonLat(item.pixel20X, item.pixel20Y);
+            GeoPoint point = new GeoPoint();
+            point.setLon(coord2DDouble.lon);
+            point.setLat(coord2DDouble.lat);
+            poiInfo.setPoint(point);
+            poiInfo.setName(item.name);
+            poiInfo.setPid(item.poiid);
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    switch (item.type) {
+                        case MapLabelType.LABEL_Type_OPENLAYER:
                             callback.onOpenLayer(mapType, poiInfo);
-                        }
-                        break;
-                    default:
-                        for (IMapAdapterCallback callback : callbacks) {
+                            break;
+                        default:
                             callback.onMapClickPoi(mapType, poiInfo);
-                        }
-                        break;
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -790,7 +708,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     @Override
     public void onScaleRotateEnd(long engineId, long focusX, long focusY) {
-        Logger.d(TAG, "onScaleRotateEnd focusX = " , focusX , " ,focusY = " , focusY);
         if (NaviStatusPackage.getInstance().isGuidanceActive() && isZoomIn != -1) {
             sendBuryPointForZoomWithTwoFingers(false);
         }
@@ -798,45 +715,62 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     @Override
     public void onMoveBegin(long engineId, long px, long py) {
-        for (IMapAdapterCallback callback : callbacks) {
-            callback.onMapMove(mapType, px, py, false);
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onMapMove(mapType, px, py, false);
+                }
+            });
         }
     }
 
     @Override
     public void onMoveEnd(long engineId, long px, long py) {
-        for (IMapAdapterCallback callback : callbacks) {
-            callback.onMapMove(mapType, px, py, true);
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onMapMove(mapType, px, py, true);
+                }
+            });
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        for (IMapAdapterCallback callback : callbacks) {
-            callback.onMapTouchEvent(mapType, event);
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onMapTouchEvent(mapType, event);
+                }
+            });
         }
         return super.onTouchEvent(event);
     }
 
     @Override
     public void onMapLevelChanged(long engineId, boolean bZoomIn) {
-        Logger.d(TAG, "onMapLevelChanged bZoomIn = " , bZoomIn);
         isZoomIn = bZoomIn ? 0 : 1;
-        ThreadManager.getInstance().postUi(() -> {
-            for (IMapAdapterCallback callback : callbacks) {
-                Logger.d(TAG, "onMapLevelChanged scale = " , getCurrentZoomLevel());
-                Logger.d(TAG, "onMapLevelChanged scale = " , getCurrentScale());
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(() -> {
                 callback.onMapLevelChanged(mapType, getCurrentZoomLevel());
                 callback.onMapScaleChanged(mapType, getCurrentScale());
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onMapCenterChanged(long engineId, double lon, double lat) {
-        for (IMapAdapterCallback callback : callbacks) {
-            callback.onMapCenterChanged(mapType, lon, lat);
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onMapCenterChanged(mapType, lon, lat);
+                }
+            });
         }
     }
 
@@ -847,10 +781,14 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
      */
     @Override
     public void onMapPreviewEnter(long engineId) {
-        Logger.i(TAG, "onMapPreviewEnter");
         isPreview = true;
-        for (IMapAdapterCallback callback : callbacks) {
-            callback.isEnterPreview(isPreview);
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.isEnterPreview(mapType, isPreview);
+                }
+            });
         }
     }
 
@@ -861,21 +799,15 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
      */
     @Override
     public void onMapPreviewExit(long engineId) {
-        Logger.i(TAG, "onMapPreviewExit");
         isPreview = false;
-        for (IMapAdapterCallback callback : callbacks) {
-            callback.isEnterPreview(isPreview);
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.isEnterPreview(mapType, isPreview);
+                }
+            });
         }
-    }
-
-    @Override
-    public void processMapAnimationFinished(long l, AnmCallbackParam anmCallbackParam) {
-
-    }
-
-    @Override
-    public boolean onBusinessDataObserver(int i, long l, long l1) {
-        return false;
     }
 
     /**
@@ -887,12 +819,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     @Override
     public void onEGLScreenshot(int i, byte[] pBitmapBuffer, ScreenShotDataInfo screenShotDataInfo, int i1, long l) {
-        if (pBitmapBuffer == null) {
-            Logger.d(TAG, "pBitmapBuffer==null");
-            return;
-        }
-        Logger.d(TAG, "onEGLScreenshot size : " , pBitmapBuffer.length, "MapType" , mapType);
-        for (IMapAdapterCallback callback : callbacks) {
+        if (callback != null) {
             callback.onEGLScreenshot(mapType, pBitmapBuffer);
         }
     }

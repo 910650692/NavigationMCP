@@ -14,7 +14,7 @@ import com.fy.navi.service.define.map.MapType;
 
 import java.util.HashMap;
 
-public class LayersPool {
+public final class LayersPool {
 
     private final static String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
 
@@ -36,16 +36,18 @@ public class LayersPool {
 
         String styleBlPath = EngineAdapter.getInstance().styleBlPath(mapTypeId);
         int engineId = EngineAdapter.getInstance().engineID(mapTypeId);
-        int eagleEyeEngineId = EngineAdapter.getInstance().eagleEyeEngineID(mapTypeId);
-        Logger.d(TAG, "初始化 styleBlPath :" + styleBlPath);
+//        int eagleEyeEngineId = EngineAdapter.getInstance().eagleEyeEngineID(mapTypeId);
+
+        Logger.d(TAG, "初始化 styleBlPath :", styleBlPath);
         boolean result = bizControlService.init(engineId, styleBlPath);
-        Logger.d(TAG, "初始化 engineId :" + engineId + " ;result :" + result);
-        result = bizControlService.init(eagleEyeEngineId, styleBlPath);
-        Logger.d(TAG, "初始化 eagleEyeEngineId :" + eagleEyeEngineId + " ;result :" + result);
+        Logger.d(TAG, "初始化 engineId :", engineId, " ;result :" + result);
+//        result = bizControlService.init(eagleEyeEngineId, styleBlPath);
+//        Logger.d(TAG, "初始化 eagleEyeEngineId :" + eagleEyeEngineId + " ;result :" + result);
+
         result = bizControlService.initCollisionConfig(mapView, styleBlPath);
-        Logger.d(TAG, "初始化 initCollisionConfig result :" + result);
+        Logger.d(TAG, "初始化 initCollisionConfig result :", result);
         result = bizControlService.isInit() == ServiceInitStatus.ServiceInitDone;
-        Logger.d(TAG, "初始化 initLayerServiceResult :" + result);
+        Logger.d(TAG, "初始化 initLayerServiceResult :", result);
 
         allLayers.put(LayerType.LAYER_AREA, new LayerAreaImpl(bizControlService, mapView, context, mapTypeId));
         allLayers.put(LayerType.LAYER_CAR, new LayerCarImpl(bizControlService, mapView, context, mapTypeId));
@@ -112,13 +114,13 @@ public class LayersPool {
 
     public void addLayerClickCallback(ILayerAdapterCallBack observer) {
         for (BaseLayerImpl layer : allLayers.values()) {
-            layer.addLayerClickCallback(observer);
+            layer.setCallBack(observer);
         }
     }
 
-    public void removeClickCallback(ILayerAdapterCallBack observer) {
+    public void removeClickCallback() {
         for (BaseLayerImpl layer : allLayers.values()) {
-            layer.removeClickCallback(observer);
+            layer.removeCallback();
         }
     }
 }

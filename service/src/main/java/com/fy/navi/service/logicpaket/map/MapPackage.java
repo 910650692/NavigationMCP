@@ -11,8 +11,6 @@ import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.map.IMapAdapterCallback;
 import com.fy.navi.service.adapter.map.MapAdapter;
-import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
-import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.position.PositionAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
@@ -21,11 +19,6 @@ import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.map.MapViewParams;
-import com.fy.navi.service.define.map.MapVisibleAreaDataManager;
-import com.fy.navi.service.define.map.MapVisibleAreaInfo;
-import com.fy.navi.service.define.map.MapVisibleAreaType;
-import com.fy.navi.service.define.map.PointDataInfo;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.position.LocInfoBean;
@@ -33,22 +26,19 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 /**
  * @Description TODO
  * @Author lvww
  * @date 2024/11/24
  */
-public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILayerAdapterCallBack {
+public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
     private MapAdapter mMapAdapter;
-    private LayerAdapter layerAdapter;
-    private PositionAdapter mPositionAdapter;
-    private NavistatusAdapter mNavistatusAdapter;
-    private final Hashtable<MapType, List<IMapPackageCallback>> callbackTables = new Hashtable<>();
+    private final HashMap<MapType, List<IMapPackageCallback>> callbacks = new HashMap<>();
 
     private static final class Helper {
         private static final MapPackage ep = new MapPackage();
@@ -60,28 +50,21 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     private MapPackage() {
         mMapAdapter = MapAdapter.getInstance();
-        mNavistatusAdapter = NavistatusAdapter.getInstance();
-        mNavistatusAdapter.registerCallback(this);
     }
 
     public void initMapService() {
-        mPositionAdapter = PositionAdapter.getInstance();
-        layerAdapter = LayerAdapter.getInstance();
         mMapAdapter.initMapService();
+        mMapAdapter.registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
     }
 
     public boolean createMapView(MapType mapTypeId) {
-        boolean createMapViewResult = mMapAdapter.createMapView(mapTypeId);
-        mMapAdapter.registerCallback(mapTypeId, this);
-        return createMapViewResult;
+
+        return mMapAdapter.createMapView(mapTypeId);
     }
 
-    public void changeMapView(IBaseScreenMapView mapSurfaceView) {
-        mMapAdapter.changeMapView(mapSurfaceView);
-    }
-
-    public void loadMapView(IBaseScreenMapView mapSurfaceView) {
+    public void bindMapView(IBaseScreenMapView mapSurfaceView) {
         mMapAdapter.bindMapView(mapSurfaceView);
+        mMapAdapter.registerCallback(mapSurfaceView.provideMapTypeId(), this);
     }
 
     public void unBindMapView(IBaseScreenMapView mapSurfaceView) {
@@ -93,23 +76,23 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         mMapAdapter.destroyMapView(mapType);
     }
 
-    public void registerCallback(MapType mapTypeId, IMapPackageCallback callback) {
-        if (!callbackTables.containsKey(mapTypeId) || callbackTables.get(mapTypeId) == null) {
-            callbackTables.put(mapTypeId, new CopyOnWriteArrayList<>());
-        }
-        if (!callbackTables.get(mapTypeId).contains(callback)) {
-            callbackTables.get(mapTypeId).add(callback);
-        }
-    }
-
-    public void unRegisterCallback(MapType mapTypeId, IMapPackageCallback observer) {
-        if (callbackTables.get(mapTypeId) != null) {
-            callbackTables.get(mapTypeId).remove(observer);
-        }
-    }
-
     public void unInitMapService() {
         mMapAdapter.unInitMapService();
+    }
+
+    public void registerCallback(MapType mapTypeId, IMapPackageCallback callback) {
+        if (!callbacks.containsKey(mapTypeId)) {
+            callbacks.put(mapTypeId, new ArrayList<>());
+        }
+        if (!callbacks.get(mapTypeId).contains(callback)) {
+            callbacks.get(mapTypeId).add(callback);
+        }
+    }
+
+    public void unRegisterCallback(MapType mapTypeId, IMapPackageCallback callback) {
+        if (callbacks.get(mapTypeId) != null) {
+            callbacks.get(mapTypeId).remove(callback);
+        }
     }
 
     public void reduceLevel(MapType mapTypeId) {
@@ -136,21 +119,6 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     public void setMapCenterInScreen(MapType mapTypeId, int x, int y) {
         mMapAdapter.setMapCenterInScreen(mapTypeId, x, y);
     }
-    /**
-     * 设置Hud地图中线点在屏幕中的位置
-     */
-    public void setHudMapCenterInScreen(MapType mapTypeId, int x, int y) {
-        mMapAdapter.setHudMapCenterInScreen(mapTypeId, x, y);
-    }
-
-
-    public void changMapCenterInScreen(MapType mapTypeId, MapVisibleAreaType mapVisibleAreaType) {
-        MapVisibleAreaInfo mapVisibleAreaInfo = MapVisibleAreaDataManager.getInstance().getDataByKey(mapVisibleAreaType);
-        Logger.d("MapViewModelonCreate4"+  mapVisibleAreaInfo.getMleftscreenoffer()+"--"+mapVisibleAreaInfo.getMtopscreenoffer());
-        if (!ConvertUtils.isEmpty(mapVisibleAreaInfo)) {
-            mMapAdapter.setMapCenterInScreen(mapTypeId, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
-        }
-    }
 
     public void setMapCenter(MapType mapTypeId, GeoPoint geoPoint) {
         mMapAdapter.setMapCenter(mapTypeId, geoPoint);
@@ -162,10 +130,10 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     public boolean isCarLocation(MapType mapTypeId, double maxDistance) {
         GeoPoint mapCenter = getMapCenter(mapTypeId);
-        LocInfoBean locInfoBean = mPositionAdapter.getLastCarLocation();
+        LocInfoBean locInfoBean = PositionAdapter.getInstance().getLastCarLocation();
         if (!ConvertUtils.isEmpty(mapCenter) && !ConvertUtils.isEmpty(locInfoBean)) {
             GeoPoint carLocInfo = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude());
-            double distance = layerAdapter.calcStraightDistance(mapCenter, carLocInfo);
+            double distance = mMapAdapter.calcStraightDistance(mapCenter, carLocInfo);
             BigDecimal num1 = new BigDecimal(distance);
             BigDecimal num2 = new BigDecimal(maxDistance);
             //判断num1是否大于num2
@@ -205,8 +173,9 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     public void mfcMoveMap(MapType mapTypeId, MfcController mfcController, int moveDistance) {
         mMapAdapter.mfcMoveMap(mapTypeId, mfcController, moveDistance);
-        if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-            List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
+        //TODO ？
+        if (callbacks.containsKey(mapTypeId) && callbacks.get(mapTypeId) != null) {
+            List<IMapPackageCallback> callbacks = this.callbacks.get(mapTypeId);
             if (ConvertUtils.isEmpty(callbacks)) return;
             for (IMapPackageCallback callback : callbacks) {
                 callback.onMapTouchEvent(mapTypeId, null);
@@ -214,24 +183,13 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         }
     }
 
-    public void setMapLabelClickable(MapType mapTypeId,boolean enable){
-        mMapAdapter.setMapLabelClickable(mapTypeId,enable);
+    public void setMapLabelClickable(MapType mapTypeId, boolean enable) {
+        mMapAdapter.setMapLabelClickable(mapTypeId, enable);
     }
 
-    public void resetTickCount(MapType mapTypeId, int tickCount){
-        mMapAdapter.resetTickCount(mapTypeId,tickCount);
-    }
-
-    public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {
-        return mMapAdapter.mapToLonLat(mapTypeId, mapX, mapY);
-    }
-
-    public PointDataInfo lonLatToScreen(MapType mapTypeId, double lon, double lat, double z) {
-        return mMapAdapter.lonLatToScreen(mapTypeId, lon, lat,z);
-    }
-
-    public MapViewParams getMapSurfaceParam(MapType mapTypeId) {
-        return mMapAdapter.getMapSurfaceParam(mapTypeId);
+    //TODO ？
+    public void resetTickCount(MapType mapTypeId, int tickCount) {
+        mMapAdapter.resetTickCount(mapTypeId, tickCount);
     }
 
     public String getMapBound(MapType mapTypeId) {
@@ -239,15 +197,15 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     }
 
     public void showPreview(MapType mapTypeId, PreviewParams previewParams) {
-        layerAdapter.setPreviewMode(mapTypeId, true);
         mMapAdapter.showPreview(mapTypeId, previewParams);
+        LayerAdapter.getInstance().setPreviewMode(mapTypeId, true);
     }
 
     /**
      * 显示预览
      *
      * @param mapTypeId
-     * @param isRouteLine 不知道传什么，可以传默认值true
+     * @param isRouteLine  不知道传什么，可以传默认值true
      * @param screenLeft
      * @param screenTop
      * @param screenRight
@@ -264,7 +222,7 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         previewParams.setScreenRight(screenRight);
         previewParams.setScreenBottom(screenBottom);
         showPreview(mapTypeId, previewParams);
-        if (mapBound != null){
+        if (mapBound != null) {
             Logger.i(TAG, "mapBound: " + mapBound.toString());
         } else {
             Logger.i(TAG, "mapBound: null");
@@ -284,13 +242,13 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         Logger.d(TAG, "points size " + points.size());
     }
 
-    public void showPreview(MapType mapTypeId, boolean isRouteLine, PreviewParams.RectDouble mapBound){
+    public void showPreview(MapType mapTypeId, boolean isRouteLine, PreviewParams.RectDouble mapBound) {
         PreviewParams previewParams = new PreviewParams();
         previewParams.setMapBound(mapBound);
         previewParams.setbUseRect(true);
         previewParams.setRouteLine(isRouteLine);
         showPreview(mapTypeId, previewParams);
-        if (mapBound != null){
+        if (mapBound != null) {
             Logger.i(TAG, "mapBound: " + mapBound.toString());
         } else {
             Logger.i(TAG, "mapBound: null");
@@ -298,192 +256,169 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     }
 
     public void exitPreview(MapType mapTypeId) {
-        layerAdapter.setPreviewMode(mapTypeId, false);
+        LayerAdapter.getInstance().setPreviewMode(mapTypeId, false);
         mMapAdapter.exitPreview(mapTypeId);
     }
 
 
     @Override
     public void onMapCenterChanged(MapType mapTypeId, double lon, double lat) {
-        if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-            List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-            if (ConvertUtils.isEmpty(callbacks)) return;
-            for (IMapPackageCallback callback : callbacks) {
-                callback.onMapCenterChanged(mapTypeId, lon, lat);
-            }
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onMapCenterChanged(mapTypeId, lon, lat);
+                }
+            });
         }
     }
 
     @Override
     public void onMapLevelChanged(MapType mapTypeId, float mapLevel) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-                List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-                if (ConvertUtils.isEmpty(callbacks)) return;
-                for (IMapPackageCallback callback : callbacks) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
                     callback.onMapLevelChanged(mapTypeId, mapLevel);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onMapClickBlank(MapType mapTypeId, float px, float py) {
-        if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-            List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-            if (ConvertUtils.isEmpty(callbacks)) return;
-            for (IMapPackageCallback callback : callbacks) {
-                callback.onMapClickBlank(mapTypeId, px, py);
-            }
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onMapClickBlank(mapTypeId, px, py);
+                }
+            });
         }
     }
 
     @Override
     public void onMapClickLabel(MapType mapTypeId, ArrayList<MapLabelItemBean> pLabels) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-                List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-                if (ConvertUtils.isEmpty(callbacks)) return;
-                for (IMapPackageCallback callback : callbacks) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
                     callback.onMapClickLabel(mapTypeId, pLabels);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onMapMove(MapType mapTypeId, long px, long py, boolean moveEnd) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-                List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-                if (ConvertUtils.isEmpty(callbacks)) return;
-                for (IMapPackageCallback callback : callbacks) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
                     callback.onMapMove(mapTypeId, px, py, moveEnd);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onMapScaleChanged(MapType mapTypeId, int currentScale) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-                List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-                if (ConvertUtils.isEmpty(callbacks)) return;
-                for (IMapPackageCallback callback : callbacks) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
                     callback.onMapScaleChanged(mapTypeId, currentScale);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
-        Logger.i(TAG, "lvww", "底图渲染成功", "mapTypeId:" + mapTypeId.name());
-        if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-            List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-            if (ConvertUtils.isEmpty(callbacks)) return;
-            for (IMapPackageCallback callback : callbacks) {
-                callback.onMapLoadSuccess(mapTypeId);
-            }
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onMapLoadSuccess(mapTypeId);
+                }
+            });
         }
     }
 
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
-        if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-            List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-            if (ConvertUtils.isEmpty(callbacks)) return;
-            for (IMapPackageCallback callback : callbacks) {
-                callback.onMapTouchEvent(mapTypeId, touchEvent);
-            }
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onMapTouchEvent(mapTypeId, touchEvent);
+                }
+            });
         }
     }
 
     @Override
     public void onMapClickPoi(MapType mapTypeId, PoiInfoEntity poiInfo) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-                List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-                if (ConvertUtils.isEmpty(callbacks)) return;
-                for (IMapPackageCallback callback : callbacks) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
                     callback.onMapClickPoi(mapTypeId, poiInfo);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onOpenLayer(MapType mapTypeId, PoiInfoEntity poiInfo) {
-        Logger.i(TAG, "onOpenLayer");
-        ThreadManager.getInstance().postUi(() -> {
-            if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-                List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-                if (ConvertUtils.isEmpty(callbacks)) return;
-                for (IMapPackageCallback callback : callbacks) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
                     callback.onQueryTrafficEvent(mapTypeId, poiInfo);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onReversePoiClick(MapType mapTypeId, PoiInfoEntity poiInfo) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-                List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-                if (ConvertUtils.isEmpty(callbacks)) return;
-                for (IMapPackageCallback callback : callbacks) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
                     callback.onReversePoiClick(mapTypeId, poiInfo);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onMapModeChange(MapType mapTypeId, MapMode mapMode) {
-        List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-        if (ConvertUtils.isEmpty(callbacks)) return;
-        for (IMapPackageCallback callback : callbacks) {
-            callback.onMapModeChange(mapTypeId, mapMode);
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onMapModeChange(mapTypeId, mapMode);
+                }
+            });
         }
-    }
-
-    @Override
-    public void isEnterPreview(boolean isEnterPreview) {
-
     }
 
     @Override
     public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
-        List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-        if (ConvertUtils.isEmpty(callbacks)) return;
-        callbacks.forEach(iEglScreenshotCallBack -> {
-            iEglScreenshotCallBack.onEGLScreenshot(mapTypeId, bytes);
-        });
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onEGLScreenshot(mapTypeId, bytes);
+                }
+            });
+        }
     }
 
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {
         mMapAdapter.updateUiStyle(mapTypeId, type);
-    }
-
-    public void saveLastLocationInfo() {
-        if (mPositionAdapter != null) {
-            mPositionAdapter.saveLocStorage();
-        }
-    }
-
-    public void set3DBuilding(MapType mapTypeId, boolean isShow) {
-        mMapAdapter.set3DBuilding(mapTypeId, isShow);
-    }
-
-    public String getNaviStatus() {
-        return mNavistatusAdapter.getCurrentNaviStatus();
-    }
-
-    // 获取当前缩放比例尺
-    public float getCurrentZoomLevel(MapType mapTypeId) {
-        return mMapAdapter.getCurrentZoomLevel(mapTypeId);
     }
 
     // 返回当前比例尺所表示的地理长度（单位：米）
@@ -524,8 +459,8 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
      */
     public void voiceOpenHmiPage(MapType mapTypeId, Bundle bundle) {
         ThreadManager.getInstance().postUi(() -> {
-            if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-                List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
+            if (callbacks.containsKey(mapTypeId) && callbacks.get(mapTypeId) != null) {
+                List<IMapPackageCallback> callbacks = this.callbacks.get(mapTypeId);
                 if (ConvertUtils.isEmpty(callbacks)) return;
                 for (IMapPackageCallback callback : callbacks) {
                     if (null != callback) {
@@ -534,14 +469,5 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
                 }
             }
         });
-    }
-
-    @Override
-    public void onNaviStatusChange(String naviStatus) {
-        MapType mapTypeId = MapType.MAIN_SCREEN_MAIN_MAP;
-        List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-        for (IMapPackageCallback iMapPackageCallback : callbacks) {
-            iMapPackageCallback.onNaviStatusChange(naviStatus);
-        }
     }
 }

@@ -108,11 +108,6 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
     }
 
     @Override
-    public void onMapTouchEvent(final MapType mapTypeId, final MotionEvent touchEvent) {
-
-    }
-
-    @Override
     public void onMapClickPoi(final MapType mapTypeId, final PoiInfoEntity poiInfo) {
         Logger.d(TAG, "onMapClickPoi");
         if (mapTypeId == getMapId()) {
@@ -130,7 +125,6 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
 
     @Override
     public void onNaviStatusChange(final String naviStatus) {
-        IMapPackageCallback.super.onNaviStatusChange(naviStatus);
         mViewModel.onNaviStatusChanged(naviStatus);
     }
 
@@ -219,7 +213,7 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
             mCruisePackage = CruisePackage.getInstance();
             mCruisePackage.registerObserver(getMapId().name(), this);
         }
-        mapPackage.loadMapView(mViewModel.getMapView());
+        mapPackage.bindMapView(mViewModel.getMapView());
     }
 
     private MapType getMapId() {

@@ -1,6 +1,8 @@
 package com.android.utils.thread;
 
 public enum LooperType {
+    //底图专用线程
+    MAP("map"),
     //nmea报文解析,定位专用线程
     GNSS("GNSS_HandlerThread"),
     GSV("GSV_HandlerThread"),

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.layer.BizAreaControl;
 import com.autonavi.gbl.layer.BizCarControl;
 import com.autonavi.gbl.layer.BizControlService;
@@ -41,7 +42,6 @@ import com.fy.navi.service.adapter.layer.bls.texture.TextureStylePoolManager;
 import com.fy.navi.service.define.map.MapType;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
 
@@ -54,8 +54,9 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Getter
     private MapView mapView;
+
     @Getter
-    private List<ILayerAdapterCallBack> callBacks = new CopyOnWriteArrayList<>();
+    private ILayerAdapterCallBack callBack;
 
     @Getter
     private Context context;
@@ -130,16 +131,12 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         return getBizService().getBizLabelControl(getMapView());
     }
 
-    public void addLayerClickCallback(ILayerAdapterCallBack callBack) {
-        if (!callBacks.contains(callBack)) {
-            callBacks.add(callBack);
-        }
+    public void setCallBack(ILayerAdapterCallBack callBack) {
+        this.callBack = callBack;
     }
 
-    public void removeClickCallback(ILayerAdapterCallBack callBack) {
-        if (callBacks.contains(callBack)) {
-            callBacks.remove(callBack);
-        }
+    public void removeCallback() {
+        this.callBack = null;
     }
 
     @Override
@@ -148,7 +145,12 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public void onNotifyClick(BaseLayer layer, LayerItem item, ClickViewIdInfo clickViewIds) {
-        dispatchItemClickEvent(item);
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                dispatchItemClickEvent(item);
+            }
+        });
     }
 
     @Override
@@ -158,10 +160,20 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public void onCarClick(CarLoc carLoc) {
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                dispatchCarClick(carLoc);
+            }
+        });
     }
 
     @Override
     public void onCarLocChange(CarLoc carLoc) {
+    }
+
+    protected void dispatchCarClick(CarLoc carLoc) {
+
     }
 
     protected void dispatchItemClickEvent(LayerItem item) {

@@ -46,19 +46,28 @@ public class LayerAdapter {
         mLayerApi = (ILayerApi) AdapterConfig.getObject(LAYER_PKG_NAME, LAYER_CLS_NAME);
     }
 
-    public boolean initLayerService(MapType mapTypeId) {
-        return mLayerApi.initLayerService(mapTypeId);
+    public boolean initLayerService() {
+        return mLayerApi.initLayerService();
     }
 
-    public void removeLayerService(MapType mapType) {
-        mLayerApi.removeLayerService(mapType);
+    public boolean initLayer(MapType mapType) {
+        return mLayerApi.initLayer(mapType);
+    }
+
+    public boolean unInitLayer(MapType mapType) {
+        return mLayerApi.unInitLayer(mapType);
+    }
+
+    public void unInitLayerService() {
+        mLayerApi.unInitLayerService();
     }
 
     public void setDefaultCarMode(MapType mapTypeId) {
         mLayerApi.setDefaultCarMode(mapTypeId);
     }
-    public void setCarPosition(MapType mapTypeId,GeoPoint geoPoint) {
-        mLayerApi.setCarPosition(mapTypeId,geoPoint);
+
+    public void setCarPosition(MapType mapTypeId, GeoPoint geoPoint) {
+        mLayerApi.setCarPosition(mapTypeId, geoPoint);
     }
 
     public void setCarMode(MapType mapTypeId, CarModeType carMode) {
@@ -147,8 +156,9 @@ public class LayerAdapter {
 
     /**
      * 设置路线样式风格
-     * @param isStartNavi 是否开始导航
-     * @param isOffLine 是否离线
+     *
+     * @param isStartNavi    是否开始导航
+     * @param isOffLine      是否离线
      * @param isMultipleMode 是否多备选模式
      */
     public void setPathStyle(MapType mapTypeId, boolean isStartNavi, boolean isOffLine, boolean isMultipleMode) {
@@ -158,14 +168,14 @@ public class LayerAdapter {
     /**
      * 隐藏分歧备选路线
      *
-     * @param index 隐藏路线下标 -> list下标 默认0开始
+     * @param index     隐藏路线下标 -> list下标 默认0开始
      * @param isVisible 路线是否显示 -> 隐藏需传入false
      */
     public boolean setPathVisible(MapType mapTypeId, int index, boolean isVisible) {
         return mLayerApi.setPathVisible(mapTypeId, index, isVisible);
     }
 
-     /*删除途经点*/
+    /*删除途经点*/
     public void removeViaPoint(MapType mapTypeId, String pid) {
         mLayerApi.removeViaPoint(mapTypeId, pid);
     }
@@ -177,32 +187,12 @@ public class LayerAdapter {
 
     /**
      * 更新引导路线数据
+     *
      * @param pathInfoList 路线数据
-     * @param selectIndex 选中下标
+     * @param selectIndex  选中下标
      */
     public boolean updatePathInfo(MapType mapTypeId, ArrayList<?> pathInfoList, int selectIndex) {
         return mLayerApi.updatePathInfo(mapTypeId, pathInfoList, selectIndex);
-    }
-
-    /*设置行前拥堵气泡是否显示*/
-    public boolean setRouteJamBubblesVisible(MapType mapTypeId, boolean isShow) {
-        return mLayerApi.setRouteJamBubblesVisible(mapTypeId, isShow);
-    }
-
-    public boolean switchSelectedPath(MapType mapTypeId, int index) {
-        return mLayerApi.switchSelectedPath(mapTypeId, index);
-    }
-
-    public void updatePathArrow(MapType mapTypeId) {
-        mLayerApi.updatePathArrow(mapTypeId);
-    }
-
-    public void setPathArrowSegment(MapType mapTypeId, ArrayList<Long> segmentsIndexs) {
-        mLayerApi.setPathArrowSegment(mapTypeId, segmentsIndexs);
-    }
-
-    public void unInitLayerService() {
-        mLayerApi.unInitLayerService();
     }
 
 
@@ -338,19 +328,19 @@ public class LayerAdapter {
     /**
      * sendtocar
      *
-     * @param mapTypeId           mapTypeId
-     * @param favorites           favorites
+     * @param mapTypeId mapTypeId
+     * @param favorites favorites
      */
     public void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites) {
         mLayerApi.addLayerItemOfFavorite(mapTypeId, favorites);
     }
 
     public void removeFavoriteMain(MapType mapTypeId, PoiInfoEntity poiInfoEntity) {
-        mLayerApi.removeFavoriteMain(mapTypeId,poiInfoEntity);
+        mLayerApi.removeFavoriteMain(mapTypeId, poiInfoEntity);
     }
 
     public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
-        mLayerApi.setFavoriteVisible(mapTypeId,visible);
+        mLayerApi.setFavoriteVisible(mapTypeId, visible);
     }
 
     public void openFlyLine(MapType mapTypeId, boolean visible) {
