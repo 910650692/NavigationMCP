@@ -12,7 +12,6 @@
             type="com.fy.navi.hmi.route.RouteViewModel" />
     </data>
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:id="@+id/route_detail_info_root"
         android:layout_width="@dimen/dp_613"
         android:layout_height="wrap_content"
         android:clickable="true">
@@ -21,11 +20,11 @@
             android:id="@+id/route_detail_info_bg_title"
             android:layout_width="@dimen/dp_613"
             android:layout_height="@dimen/dp_163"
-            android:paddingVertical="@dimen/dp_34"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:paddingHorizontal="@dimen/dp_34"
-            android:background="@drawable/bg_shadow_navi_buick"
+            android:paddingVertical="@dimen/dp_34"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/route_detail_info_img_close"
@@ -33,7 +32,7 @@
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
                 android:layout_marginStart="@dimen/dp_18"
-                android:src="@drawable/img_route_back"
+                android:src="@drawable/img_route_back_sw1225"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -95,9 +94,9 @@
             android:layout_width="@dimen/dp_613"
             android:layout_height="@dimen/dp_631"
             android:layout_marginTop="@dimen/dp_m_48"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:paddingHorizontal="@dimen/dp_34"
             android:paddingVertical="@dimen/dp_34"
-            android:background="@drawable/bg_shadow_navi_ndlc_8155"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/route_detail_info_bg_title" />
 
