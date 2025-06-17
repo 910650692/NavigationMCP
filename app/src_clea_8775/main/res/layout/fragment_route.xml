@@ -139,7 +139,7 @@
             android:clickable="true"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 1 ? View.VISIBLE : View.GONE}"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
 
         <include
             android:id="@+id/route_service_list_info_root"

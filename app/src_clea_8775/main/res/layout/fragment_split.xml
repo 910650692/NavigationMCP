@@ -19,7 +19,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_434"
             android:layout_height="@dimen/dp_155"
-            android:layout_marginTop="@dimen/dp_17"
+            android:layout_marginTop="@dimen/dp_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
             android:visibility="@{ViewModel.mTopNaviBarVisibility ? View.VISIBLE : View.GONE}"

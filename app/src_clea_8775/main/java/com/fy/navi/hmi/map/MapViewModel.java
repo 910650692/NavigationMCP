@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
 import com.fy.navi.hmi.utils.ScreenTypeUtils;
-import com.fy.navi.service.BuildConfig;
-import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.screen.ScreenType;
 import com.fy.navi.ui.action.Action;
 
@@ -17,8 +15,7 @@ import com.fy.navi.ui.action.Action;
  * @date 2024/11/26
  */
 public class MapViewModel extends BaseMapViewModel {
-    private static final String TAG = "NDLB---MapViewModel";
-
+    private static final String TAG = "NDLB---MapViewModel--8775";
     public MapViewModel(@NonNull Application application) {
         super(application);
     }

@@ -14,15 +14,16 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_shadow_navi_buick"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:clickable="true"
         android:paddingHorizontal="@dimen/dp_29"
-        android:paddingVertical="@dimen/dp_29"
-        android:clickable="true">
+        android:paddingVertical="@dimen/dp_29">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/sk_poi_status"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_46"
+            android:layout_marginStart="@dimen/dp_30"
             android:layout_marginTop="@dimen/dp_44"
             android:background="@drawable/bg_route_search_details_status"
             android:paddingStart="@dimen/dp_15"
@@ -33,7 +34,6 @@
             android:visibility="@{ViewModel.getRouteSearchStatusVisibility() ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="@dimen/dp_30"
             tools:text="建设中"
             tools:visibility="visible" />
 
@@ -41,12 +41,12 @@
             android:id="@+id/sk_poi_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
             android:layout_marginTop="@dimen/dp_35"
             android:ellipsize="end"
             android:maxWidth="@dimen/dp_360"
-            android:paddingBottom="@dimen/dp_30"
-            android:layout_marginStart="@dimen/dp_30"
             android:maxLines="1"
+            android:paddingBottom="@dimen/dp_30"
             android:text="@{ViewModel.getRouteSearchName()}"
             android:textColor="@color/text_route_detail_title"
             android:textSize="@dimen/sp_38"
@@ -194,10 +194,10 @@
                 android:text="@{ViewModel.getRouteSearchDeailsAddRemoveVia()}"
                 android:textColor="@color/route_white"
                 android:textSize="@dimen/sp_34"
-                tools:text="添加途经点"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/stl_function"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                tools:text="添加途经点" />
 
 
             <com.fy.navi.ui.view.SkinConstraintLayout
