@@ -44,6 +44,7 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -230,8 +231,20 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.mResultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_addq_58);
             switch (mHomeCompanyType) {
                 case 0:
+                    if (!BehaviorPackage.getInstance().isFavorite(mPoiInfoEntity).isEmpty()) {
+                        holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                        holder.mResultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_route_search_added);
+                    }else{
+                        holder.mResultItemBinding.textNavi.setText(R.string.st_collect_add);
+                    }
+                    break;
                 case 3:
-                    holder.mResultItemBinding.textNavi.setText(R.string.st_collect_add);
+                    if(BehaviorPackage.getInstance().isFrequentAddress(mPoiInfoEntity)){
+                        holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                        holder.mResultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_route_search_added);
+                    }else{
+                        holder.mResultItemBinding.textNavi.setText(R.string.st_collect_add);
+                    }
                     break;
                 case 1:
                     holder.mResultItemBinding.textNavi.setText(R.string.st_home);
