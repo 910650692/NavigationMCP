@@ -118,7 +118,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.offlineMap15Day();
         mViewModel.offlineMap45Day();
         mViewModel.checkPopGuideLogin();
-
+        mViewModel.openGuideFragment();
     }
 
     @Override

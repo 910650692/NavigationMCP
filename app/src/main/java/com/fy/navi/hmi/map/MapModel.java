@@ -33,6 +33,7 @@ import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.exportservice.ExportIntentParam;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.launcher.FloatViewManager;
+import com.fy.navi.hmi.navi.NaviGuidanceFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
 import com.fy.navi.mapservice.bean.INaviConstant;
@@ -139,6 +140,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
 
@@ -1696,5 +1698,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         Logger.i(TAG, "onNetDisConnect");
         //开始计时，5分钟后关闭路况
         startCloseTmcTimerWithoutNetwork();
+    }
+
+    public void openGuideFragment(){
+        if(Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)){
+            if(!mViewModel.isFragmentStackNull()){
+                if (!mViewModel.getTopFragment(NaviGuidanceFragment.class)){
+                    addFragment(new NaviGuidanceFragment(), null);
+                }
+            }
+        }
     }
 }

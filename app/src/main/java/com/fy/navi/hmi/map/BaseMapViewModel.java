@@ -1292,4 +1292,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+    public void openGuideFragment(){
+        mModel.openGuideFragment();
+    }
 }
