@@ -234,10 +234,16 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 allPause.setVisibility(View.GONE);
                 //下载按钮状态
                 mDownloadBtnView.parseDownloadStatusInfo(child.getDownLoadInfo());
-                final boolean isShowDownloadProgress = child.getDownLoadInfo().getTaskState()  == UserDataCode.TASK_STATUS_CODE_DOING
-                        || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE
-                        || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
-                        || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
+                boolean isShowDownloadProgress = false;
+                if (child.getDownLoadInfo() != null) {
+                    isShowDownloadProgress = child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING
+                            || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE
+                            || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
+                            || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
+                } else {
+                    Logger.d("child.getDownLoadInfo() == null: " + GsonUtils.toJson(parent));
+                    Logger.d("child.getDownLoadInfo() == null: " + GsonUtils.toJson(child));
+                }
                 if (isShowDownloadProgress) {
                     downloadProgress.setProgress((int) Math.floor(child.getDownLoadInfo().getPercent()));
                     downloadProgress.setVisibility(View.VISIBLE);
@@ -251,7 +257,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 cityAdCodes.add(downloadItem.getAdcode());
-                if (onChildClickListener != null) {
+                if (onChildClickListener != null && downloadItem != null) {
                     switch (downloadItem.getTaskState()) {
                         case UserDataCode.TASK_STATUS_CODE_DOING:  // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
                         case UserDataCode.TASK_STATUS_CODE_DONE:   // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
@@ -296,6 +302,8 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX) {
                                 cityAdCodes.add(info.getAdcode());
                             }
+                        } else {
+                            Logger.d("info == null: " + GsonUtils.toJson(info));
                         }
                     }
                 }
@@ -308,11 +316,17 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
                 final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
-                for (CityDataInfo info : cityDataInfos) {
-                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
-                            info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE ||
-                            info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING) {
-                        cityAdCodes.add(info.getAdcode());
+                if (cityDataInfos != null && cityDataInfos.size() != 0) {
+                    for (CityDataInfo info : cityDataInfos) {
+                        if (info != null && info.getDownLoadInfo() != null) {
+                            if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
+                                    info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE ||
+                                    info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING) {
+                                cityAdCodes.add(info.getAdcode());
+                            }
+                        } else {
+                            Logger.d("info == null: " + GsonUtils.toJson(info));
+                        }
                     }
                 }
                 if (onChildClickListener != null) {

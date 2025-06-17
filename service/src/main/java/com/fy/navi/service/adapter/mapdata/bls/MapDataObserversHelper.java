@@ -362,6 +362,8 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 // 客户端根据 downloadItem.bIsDataUsed 和 downloadItem.taskState 字段转换为前端需要显示的文案
                 cityDownLoadBean.setStatusTip(switchTaskStatusCodeToString(downloadItem.bUpdate,
                         downloadItem.taskState, downloadItem.IsCompltelyHighVer));
+            } else {
+                Logger.d(TAG, "getCityDownLoadInfo: cityInfo == null" + adCode);
             }
             return cityDownLoadBean;
         }
@@ -391,6 +393,8 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 cityInfo.setCityX(info.cityX);
                 cityInfo.setCityY(info.cityY);
                 cityInfo.setDownLoadInfo(getCityDownLoadInfo(adCode));
+            } else {
+                Logger.e(TAG, "getCityInfo: info == null" + adCode);
             }
             Logger.d(TAG, "getCityInfo: cityInfo = " + GsonUtils.toJson(cityInfo));
             return cityInfo;
@@ -465,10 +469,10 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         }
         // 1，获取下载中、更新中状态下的所有城市adCode列表
         final ArrayList<Integer> downLoadAdcodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
-        Logger.d(TAG, "getWorkingList: downLoadAdcodeList" + GsonUtils.toJson(downLoadAdcodeList));
+        Logger.d(TAG, "getWorkingList: downLoadingAdcodeList = " + GsonUtils.toJson(downLoadAdcodeList));
         // 2，根据adCode获取整理后的省份+城市列表
         final ArrayList<ProvDataInfo> provinceBeanList = getWorkDataList(downLoadAdcodeList);
-        Logger.d(TAG, "getWorkingList: provinceBeanList = " + GsonUtils.toJson(provinceBeanList));
+        Logger.d(TAG, "getWorkingList: downLoadingList = " + GsonUtils.toJson(provinceBeanList));
         return provinceBeanList;
     }
 
@@ -482,7 +486,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         }
         // 1，获取本地已存在数据的adcode列表信息
         final ArrayList<Integer> downLoadAdcodeList = mMapDataService.getDownLoadAdcodeList();
-        Logger.d(TAG, "getWorkedList: downLoadAdcodeList" + GsonUtils.toJson(downLoadAdcodeList));
+        Logger.d(TAG, "getWorkedList: downLoadedAdcodeList = " + GsonUtils.toJson(downLoadAdcodeList));
         // 2，根据adCode获取整理后的省份+城市列表
         final ArrayList<ProvDataInfo> provinceBeanList = getWorkDataList(downLoadAdcodeList);
         Logger.d(TAG, "getWorkedList: downloadedList = " + GsonUtils.toJson(provinceBeanList));

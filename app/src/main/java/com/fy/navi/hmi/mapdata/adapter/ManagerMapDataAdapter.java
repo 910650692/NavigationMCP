@@ -168,6 +168,9 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         void bind(ProvDataInfo parent, CityDataInfo child) {
             final CityDownLoadInfo downloadItem = child.getDownLoadInfo();
+            if (downloadItem == null) {
+                return;
+            }
             // 非已下载状态，禁止侧滑删除
             if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
                 swipeMenuLayout.setSwipeEnabled(true);
@@ -189,10 +192,13 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             cityData.setText(sizeString);
             // 下载按钮状态
             mDownloadBtnView.parseDownloadStatusInfo(child.getDownLoadInfo());
-            final boolean isShowDownloadProgress = child.getDownLoadInfo().getTaskState()  == UserDataCode.TASK_STATUS_CODE_DOING
-                    || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE
-                    || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
-                    || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
+            boolean isShowDownloadProgress = false;
+            if (child.getDownLoadInfo() != null) {
+                isShowDownloadProgress = child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING
+                        || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE
+                        || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
+                        || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
+            }
             if (isShowDownloadProgress) {
                 mDownloadProgress.setProgress((int) Math.floor(child.getDownLoadInfo().getPercent()));
                 mDownloadProgress.setVisibility(View.VISIBLE);
@@ -205,7 +211,7 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 cityAdCodes.add(downloadItem.getAdcode());
-                if (onChildClickListener != null) {
+                if (onChildClickListener != null && downloadItem != null) {
                     switch (downloadItem.getTaskState()) {
                         case UserDataCode.TASK_STATUS_CODE_DOING:  // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
                         case UserDataCode.TASK_STATUS_CODE_DONE:   // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
