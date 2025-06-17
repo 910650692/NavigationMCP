@@ -797,7 +797,9 @@ public class StringUtils {
                 wd = "六";
                 break;
             default:
-                Logger.i(TAG, " singleNumberForWeek number:" , number);
+                if(Logger.openLog) {
+                    Logger.i(TAG, " singleNumberForWeek number:", number);
+                }
                 break;
         }
 

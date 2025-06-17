@@ -206,7 +206,9 @@ final public class AMapStateUtils {
         map.put("lat", doubles[0]);
         map.put("lon", doubles[1]);
         try {
-            Logger.d(IVrBridgeConstant.TAG, "update voice LocationInfo");
+            if(Logger.openLog) {
+                Logger.d(IVrBridgeConstant.TAG, "update voice LocationInfo");
+            }
             BridgeSdk.getInstance().getRemote(IStateManager.class).updateNaviLocation(map);
         } catch (ClassCastException | NullPointerException exception) {
             Logger.e(IVrBridgeConstant.TAG, "updateNaviLocation error:" + exception.getMessage());

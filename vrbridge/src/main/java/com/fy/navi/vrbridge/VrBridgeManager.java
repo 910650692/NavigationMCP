@@ -39,7 +39,9 @@ public class VrBridgeManager {
         BridgeSdk.getInstance().connect(context.getApplicationContext(), new OnConnectedListener() {
             @Override
             public void onConnected() {
-                Logger.d(IVrBridgeConstant.TAG, "BridgeSdk connected");
+                if(Logger.openLog) {
+                    Logger.d(IVrBridgeConstant.TAG, "BridgeSdk connected");
+                }
                 mBridgeInit = true;
                 BridgeSdk.getInstance().addCapability(NaviCommandListener.class, new NaviCommandImpl());
                 mControlCommandImpl = new NaviControlCommandImpl();
@@ -49,7 +51,9 @@ public class VrBridgeManager {
 
             @Override
             public void onDisconnected() {
-                Logger.d(IVrBridgeConstant.TAG, "BridgeSdk disconnected");
+                if(Logger.openLog) {
+                    Logger.d(IVrBridgeConstant.TAG, "BridgeSdk disconnected");
+                }
                 mBridgeInit = false;
                 mControlCommandImpl = null;
                 BridgeSdk.getInstance().removeCapability(NaviCommandListener.class);

@@ -84,7 +84,9 @@ public class PullToRefreshLayout extends SkinFrameLayout {
     private void init() {
         cal();
         final int count = getChildCount();
-        Logger.d("SEARCH_HMI_TAG", "count:" , count);
+        if(Logger.openLog) {
+            Logger.d("SEARCH_HMI_TAG", "count:", count);
+        }
     }
 
     @Override
@@ -158,7 +160,9 @@ public class PullToRefreshLayout extends SkinFrameLayout {
                 }
                 break;
             default:
-                Logger.d("SEARCH_HMI_TAG", "onInterceptTouchEvent");
+                if(Logger.openLog) {
+                    Logger.d("SEARCH_HMI_TAG", "onInterceptTouchEvent");
+                }
                 break;
         }
         return super.onInterceptTouchEvent(ev);

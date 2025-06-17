@@ -31,7 +31,9 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     private final String LIFE_CYCLE_TAG = "activity_life_cycle";
     public BaseActivity() {
         super();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onCreate before");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate before");
+        }
         mStackManager = StackManager.getInstance();
         onCreateBefore();
         mStackManager.push(mScreenId, this);
@@ -40,51 +42,67 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     protected void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onCreate start");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate start");
+        }
         setImmersiveStatusBar();
         createViewModel();
         onInitView();
         onInitObserver();
         onInitData();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onCreate end");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate end");
+        }
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("onConfigurationChanged",true);
-        Logger.i(LIFE_CYCLE_TAG,"onSaveInstanceState");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, "onSaveInstanceState");
+        }
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         boolean onConfigurationChanged = savedInstanceState.getBoolean("onConfigurationChanged");
-        Logger.i(LIFE_CYCLE_TAG, "onRestoreInstanceState", onConfigurationChanged);
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, "onRestoreInstanceState", onConfigurationChanged);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onResume");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onResume");
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onStart");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStart");
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onStop");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStop");
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onDestroy");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDestroy");
+        }
         mStackManager.removeBaseView(mScreenId, this);
     }
 
@@ -96,7 +114,9 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void onBackPressed() {
-        Logger.i(getClass().getSimpleName(), "阻止返回键");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "阻止返回键");
+        }
     }
 
     @Override

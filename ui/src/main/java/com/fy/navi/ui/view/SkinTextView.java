@@ -104,7 +104,9 @@ public class SkinTextView extends AppCompatTextView {
      * 开启跑马灯效果
      */
     public void startTextViewMarquee() {
-        Logger.d("lvww", "开启跑马灯效果");
+        if(Logger.openLog) {
+            Logger.d("lvww", "开启跑马灯效果");
+        }
         setSelected(true);
         setSingleLine();
         setHorizontallyScrolling(true);

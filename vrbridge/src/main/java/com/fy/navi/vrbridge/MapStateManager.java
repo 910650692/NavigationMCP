@@ -74,7 +74,9 @@ public final class MapStateManager {
      */
     public void init() {
         final boolean foregroundStatus = ProcessManager.isAppInForeground();
-        Logger.d(IVrBridgeConstant.TAG, "MapStateInit, foreground: " , foregroundStatus);
+        if(Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "MapStateInit, foreground: ", foregroundStatus);
+        }
         updateForegroundStatus(foregroundStatus);
         mBuilder.setHasPrivacyPermission(true);
         mBuilder.setMaxZoomLevel(19);
@@ -94,7 +96,9 @@ public final class MapStateManager {
         updateNaviStatus(mCurNaviStatus);
 
         final int muteMode = SettingPackage.getInstance().getConfigKeyMute();
-        Logger.d(IVrBridgeConstant.TAG, "init muteMode: " , muteMode);
+        if(Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "init muteMode: ", muteMode);
+        }
         if (muteMode == 1) {
             mBuilder.setMute(true);
             mBuilder.setBroadcastMode(2);
@@ -141,7 +145,9 @@ public final class MapStateManager {
 
         @Override
         public void onMapLevelChanged(final MapType mapTypeId, final float mapLevel) {
-            Logger.d(TAG, "onMapLevelChanged: " , mapLevel);
+            if(Logger.openLog) {
+                Logger.d(TAG, "onMapLevelChanged: ", mapLevel);
+            }
             mBuilder.setCurrZoomLevel((int) mapLevel);
             AMapStateUtils.saveMapState(mBuilder.build());
         }
@@ -154,7 +160,9 @@ public final class MapStateManager {
 
         @Override
         public void onMapLoadSuccess(final MapType mapTypeId) {
-            Logger.d(IVrBridgeConstant.TAG, "onMapLoad: " , mapTypeId.name());
+            if(Logger.openLog) {
+                Logger.d(IVrBridgeConstant.TAG, "onMapLoad: ", mapTypeId.name());
+            }
             if (MapType.MAIN_SCREEN_MAIN_MAP == mapTypeId) {
                 VrBridgeManager.getInstance().processCommandWhenLoaded();
             }
@@ -323,7 +331,9 @@ public final class MapStateManager {
     private final ProcessManager.ProcessForegroundStatus mForeGroundCallback = new ProcessManager.ProcessForegroundStatus() {
         @Override
         public void isAppInForeground(final boolean appInForegroundStatus) {
-            Logger.i(IVrBridgeConstant.TAG, "appInForeground:" , appInForegroundStatus);
+            if(Logger.openLog) {
+                Logger.i(IVrBridgeConstant.TAG, "appInForeground:", appInForegroundStatus);
+            }
             updateForegroundStatus(appInForegroundStatus);
             AMapStateUtils.saveMapState(mBuilder.build());
         }
@@ -625,7 +635,9 @@ public final class MapStateManager {
         mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         final boolean isNavi = NaviStatus.NaviStatusType.NAVING.equals(mCurNaviStatus)
                 || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(mCurNaviStatus);
-        Logger.d(IVrBridgeConstant.TAG, "naviStatus: " , isNavi);
+        if(Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "naviStatus: ", isNavi);
+        }
         return isNavi;
     }
 

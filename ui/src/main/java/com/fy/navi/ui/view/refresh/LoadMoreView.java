@@ -62,7 +62,9 @@ public class LoadMoreView extends SkinFrameLayout implements FooterView {
         if (progress >= all - 10) {
             if (mCanLoadMore) {
                 if (mTips.contains("没有下一页了")) {
-                    Logger.d("已经没有下一页了");
+                    if(Logger.openLog) {
+                        Logger.d("已经没有下一页了");
+                    }
                 } else {
                     mSkinTextView.setText("加载更多");
                 }

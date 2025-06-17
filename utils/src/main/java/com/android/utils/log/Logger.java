@@ -8,6 +8,7 @@ package com.android.utils.log;
  */
 public class Logger {
 
+    public static boolean openLog = true;
     public static void v(Object args) {
         LogUtils.verbose(args);
     }

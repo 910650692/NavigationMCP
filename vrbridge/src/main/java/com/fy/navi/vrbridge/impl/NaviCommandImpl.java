@@ -45,7 +45,9 @@ public class NaviCommandImpl implements NaviCommandListener {
      */
     @Override
     public CallResponse onRouteNavi(final String sessionId, final ArrivalBean dest, final PoiCallback poiCallback) {
-        Logger.d(IVrBridgeConstant.TAG, "onRouteNavi: sessionId = " , sessionId , ", dest = " , dest);
+        if(Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "onRouteNavi: sessionId = ", sessionId, ", dest = ", dest);
+        }
         final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
         if (saveCommand) {
             VrBridgeManager.getInstance().saveNaviCommand(sessionId, dest, poiCallback);
@@ -66,7 +68,9 @@ public class NaviCommandImpl implements NaviCommandListener {
      */
     @Override
     public CallResponse onPassbySearch(final String sessionId, final String passBy, final String poiType, final PoiCallback poiCallback) {
-        Logger.d(IVrBridgeConstant.TAG, "onPassBySearch: sessionId = " , sessionId , ", passBy = " , passBy , ", poiType = " , poiType);
+        if(Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "onPassBySearch: sessionId = ", sessionId, ", passBy = ", passBy, ", poiType = ", poiType);
+        }
         MapStateManager.getInstance().openMapWhenBackground();
 
         if (TextUtils.isEmpty(sessionId) || TextUtils.isEmpty(passBy)) {

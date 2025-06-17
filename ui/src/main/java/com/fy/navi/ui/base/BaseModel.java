@@ -8,33 +8,45 @@ public abstract class BaseModel<VM extends IBaseViewModel> implements IBaseModel
     protected VM mViewModel;
 
     public BaseModel() {
-        Logger.i(getClass().getSimpleName(), "Constructor");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "Constructor");
+        }
     }
 
     @Override
     public void onAttachViewModel(final VM baseViewModel) {
-        Logger.i(getClass().getSimpleName(), "onAttachViewModel");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onAttachViewModel");
+        }
         mViewModel = baseViewModel;
     }
 
     @Override
     public void onCreate() {
-        Logger.i(getClass().getSimpleName(), "onCreate");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onCreate");
+        }
     }
 
     @Override
     public void onStart() {
-        Logger.i(getClass().getSimpleName(), "onStart");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onStart");
+        }
     }
 
     @Override
     public void onStop() {
-        Logger.i(getClass().getSimpleName(), "onStop");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onStop");
+        }
     }
 
     @Override
     public void onDestroy() {
-        Logger.i(getClass().getSimpleName(), "onDestroy");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onDestroy");
+        }
     }
 
     /**

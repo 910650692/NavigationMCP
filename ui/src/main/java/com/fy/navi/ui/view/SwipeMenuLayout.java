@@ -137,7 +137,9 @@ public class SwipeMenuLayout extends ViewGroup {
                 mExpandFromOutSide = false;
                 break;
             default:
-                Logger.d("onInterceptTouchEvent");
+                if(Logger.openLog) {
+                    Logger.d("onInterceptTouchEvent");
+                }
                 break;
         }
         return super.onInterceptTouchEvent(ev);
@@ -173,7 +175,9 @@ public class SwipeMenuLayout extends ViewGroup {
                 releaseVelocity();
                 break;
             default:
-                Logger.d("onTouchEvent");
+                if(Logger.openLog) {
+                    Logger.d("onTouchEvent");
+                }
                 break;
         }
         return super.onTouchEvent(ev);

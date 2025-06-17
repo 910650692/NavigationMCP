@@ -74,7 +74,9 @@ public class DeviceUtils {
             TelephonyManager tm = (TelephonyManager) mApplication.getSystemService(Context.TELEPHONY_SERVICE);
             return tm.getDeviceId();
         } catch (Exception e) {
-            Logger.i("DeviceUtils", e.toString());
+            if(Logger.openLog) {
+                Logger.i("DeviceUtils", e.toString());
+            }
         }
         return "";
     }
@@ -88,7 +90,9 @@ public class DeviceUtils {
         try {
             return Settings.Secure.getString(mApplication.getContentResolver(), Settings.Secure.ANDROID_ID);
         } catch (Exception e) {
-            Logger.i("DeviceUtils", e.toString());
+            if(Logger.openLog) {
+                Logger.i("DeviceUtils", e.toString());
+            }
         }
         return "";
     }
@@ -102,7 +106,9 @@ public class DeviceUtils {
         try {
             return Build.SERIAL;
         } catch (Exception e) {
-            Logger.i("DeviceUtils", e.toString());
+            if(Logger.openLog) {
+                Logger.i("DeviceUtils", e.toString());
+            }
         }
         return "";
     }
@@ -126,7 +132,9 @@ public class DeviceUtils {
                     Build.SERIAL.length() % 10;
             return new UUID(dev.hashCode(), Build.SERIAL.hashCode()).toString();
         } catch (Exception e) {
-            Logger.i("DeviceUtils", e.toString());
+            if(Logger.openLog) {
+                Logger.i("DeviceUtils", e.toString());
+            }
         }
         return UUID.randomUUID().toString();
     }
@@ -159,7 +167,9 @@ public class DeviceUtils {
         UiModeManager manager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
         if (manager == null) return deviceType;
         deviceType = manager.getCurrentModeType();
-        Logger.i("A_MAP", "getDeviceType deviceType =" + deviceType);
+        if(Logger.openLog) {
+            Logger.i("A_MAP", "getDeviceType deviceType =" + deviceType);
+        }
         return deviceType;
     }
 

@@ -53,7 +53,9 @@ class OkHttpUtils private constructor() {
                     override fun onResponse(call: Call, response: Response) {
                         if (response.isSuccessful) {
                             response.body?.string()?.let { result ->
-                                Logger.i("返回结果：$result")
+                                if(Logger.openLog) {
+                                    Logger.i("返回结果：$result")
+                                }
                                 successCallBack(result as T, callback)
                             }
                         } else {
@@ -92,7 +94,9 @@ class OkHttpUtils private constructor() {
                     override fun onResponse(call: Call, response: Response) {
                         if (response.isSuccessful) {
                             response.body?.string()?.let { result ->
-                                Logger.i("返回结果：$result")
+                                if(Logger.openLog) {
+                                    Logger.i("返回结果：$result")
+                                }
                                 successCallBack(result as T, callback)
                             }
                         } else {

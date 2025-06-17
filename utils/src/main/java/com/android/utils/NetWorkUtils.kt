@@ -59,13 +59,19 @@ class NetWorkUtils private constructor() {
         val networkCapabilities =
             connectivityManager?.getNetworkCapabilities(connectivityManager!!.activeNetwork)
         return if (networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true) {
-            Logger.d(tag, "current network type is WIFI")
+            if(Logger.openLog) {
+                Logger.d(tag, "current network type is WIFI")
+            }
             NetworkCapabilities.TRANSPORT_WIFI
         } else if (networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true) {
-            Logger.d(tag, "current network type is 数据流量")
+            if(Logger.openLog) {
+                Logger.d(tag, "current network type is 数据流量")
+            }
             NetworkCapabilities.TRANSPORT_CELLULAR
         } else if (networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) == true) {
-            Logger.d(tag, "current network type is 以太网")
+            if(Logger.openLog) {
+                Logger.d(tag, "current network type is 以太网")
+            }
             NetworkCapabilities.TRANSPORT_CELLULAR
         } else if (networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) == true) {
             NetworkCapabilities.TRANSPORT_BLUETOOTH
@@ -78,7 +84,9 @@ class NetWorkUtils private constructor() {
         } else if (networkCapabilities?.hasTransport(NetworkCapabilities.TRANSPORT_USB) == true) {
             NetworkCapabilities.TRANSPORT_USB
         } else {
-            Logger.d(tag, "current network type is 其他网络")
+            if(Logger.openLog) {
+                Logger.d(tag, "current network type is 其他网络")
+            }
             7
         }
     }
@@ -129,7 +137,9 @@ class NetWorkUtils private constructor() {
 
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
-            Logger.i(tag, "网络连接成功,可以使用的时候调用")
+            if(Logger.openLog) {
+                Logger.i(tag, "网络连接成功,可以使用的时候调用")
+            }
             for (code in netObservers!!){
                 code.onNetConnectSuccess()
             }
@@ -137,22 +147,30 @@ class NetWorkUtils private constructor() {
 
         override fun onUnavailable() {
             super.onUnavailable()
-            Logger.i(tag, "当网络连接超时或网络请求达不到可用要求时调用")
+            if(Logger.openLog) {
+                Logger.i(tag, "当网络连接超时或网络请求达不到可用要求时调用")
+            }
         }
 
         override fun onBlockedStatusChanged(network: Network, blocked: Boolean) {
             super.onBlockedStatusChanged(network, blocked)
-            Logger.i(tag, "当访问指定的网络被阻止或解除阻塞时调用")
+            if(Logger.openLog) {
+                Logger.i(tag, "当访问指定的网络被阻止或解除阻塞时调用")
+            }
         }
 
         override fun onLosing(network: Network, maxMsToLive: Int) {
             super.onLosing(network, maxMsToLive)
-            Logger.i(tag, "当网络正在断开连接时调用")
+            if(Logger.openLog) {
+                Logger.i(tag, "当网络正在断开连接时调用")
+            }
         }
 
         override fun onLost(network: Network) {
             super.onLost(network)
-            Logger.i(tag, "当网络已断开连接时调用")
+            if(Logger.openLog) {
+                Logger.i(tag, "当网络已断开连接时调用")
+            }
             for (code in netObservers!!){
                 code.onNetDisConnect()
             }
@@ -160,7 +178,9 @@ class NetWorkUtils private constructor() {
 
         override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
             super.onLinkPropertiesChanged(network, linkProperties)
-            Logger.i(tag, "当网络连接的属性被修改时调用")
+            if(Logger.openLog) {
+                Logger.i(tag, "当网络连接的属性被修改时调用")
+            }
         }
     }
 

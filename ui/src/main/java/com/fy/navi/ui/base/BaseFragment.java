@@ -31,7 +31,9 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
     private final String LIFE_CYCLE_TAG = "fragment_life_cycle";
     public BaseFragment() {
-        Logger.i(getClass().getSimpleName(), "onCreate before");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onCreate before");
+        }
         onCreateBefore();
     }
 
@@ -45,27 +47,37 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.i(getClass().getSimpleName(), "onCreate start");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onCreate start");
+        }
         createViewModel();
-        Logger.i(getClass().getSimpleName(), "onCreate end");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onCreate end");
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container, final @Nullable Bundle savedInstanceState) {
-        Logger.i(getClass().getSimpleName(), "onCreateView start");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onCreateView start");
+        }
         mBinding = DataBindingUtil.inflate(inflater, onLayoutId(), container, false);
         bindViewModel();
         onInitView();
         final View rootView = mBinding.getRoot();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onCreateView end");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreateView end");
+        }
         return rootView;
     }
 
     @Override
     public void onViewCreated(final @NonNull View view, final @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Logger.i(getClass().getSimpleName(), "onViewCreated start");
+        if(Logger.openLog) {
+            Logger.i(getClass().getSimpleName(), "onViewCreated start");
+        }
         onInitObserver();
         onInitData();
         if (ConvertUtils.isEmpty(savedInstanceState)
@@ -76,7 +88,9 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
             //todo 请在此方法里面使用保存数据刷新UI
             onReStoreFragment();
         }
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onViewCreated end");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onViewCreated end");
+        }
     }
 
     @Override
@@ -88,19 +102,25 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onStart() {
         super.onStart();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onStart");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStart");
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onResume");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onResume");
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onPause");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onPause");
+        }
     }
 
     @Override
@@ -109,25 +129,33 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         if (mActivity != null) {
             mActivity.setMLastClosedFragmentName(getClass().getSimpleName());
         }
-        Logger.i("NaviApp_Search", "onStop" , getClass().getSimpleName());
+        if(Logger.openLog) {
+            Logger.i("NaviApp_Search", "onStop", getClass().getSimpleName());
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onDestroyView");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDestroyView");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onDetach");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDetach");
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.i(LIFE_CYCLE_TAG,getClass().getSimpleName(), "onDestroy");
+        if(Logger.openLog) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDestroy");
+        }
     }
 
     @Override

@@ -54,7 +54,9 @@ public class FragmentIntent {
         }
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         if (STACKMANAGER.isFragmentStackNull(screenId)) {
-            Logger.i(TAG, "current fragment stack is null");
+            if(Logger.openLog) {
+                Logger.i(TAG, "current fragment stack is null");
+            }
             toFragment.setArguments(bundle);
             transaction.add(containerId, toFragment);
             transaction.show(toFragment);
@@ -64,12 +66,16 @@ public class FragmentIntent {
         }
         final BaseFragment currentFragment = STACKMANAGER.getCurrentFragment(screenId);
         if (ConvertUtils.equals(currentFragment, toFragment)) {
-            Logger.i(TAG, "current fragment == toFragment");
+            if(Logger.openLog) {
+                Logger.i(TAG, "current fragment == toFragment");
+            }
             toFragment.onNewIntent(bundle);
             return;
         }
         if (STACKMANAGER.isContain(screenId, toFragment)) {
-            Logger.i(TAG, "fragment stack 包含");
+            if(Logger.openLog) {
+                Logger.i(TAG, "fragment stack 包含");
+            }
             STACKMANAGER.removeBaseView(screenId, toFragment);
             STACKMANAGER.push(screenId, toFragment);
             if (isHideCurFragment) {
@@ -80,7 +86,9 @@ public class FragmentIntent {
             transaction.show(toFragment);
             toFragment.onNewIntent(bundle);
         } else {
-            Logger.i(TAG, "fragment stack 不包含");
+            if(Logger.openLog) {
+                Logger.i(TAG, "fragment stack 不包含");
+            }
             toFragment.setArguments(bundle);
             if (isHideCurFragment) {
                 if(currentFragment.isAdded() && currentFragment.getParentFragmentManager() == fragmentManager) {
@@ -119,7 +127,9 @@ public class FragmentIntent {
             }
             // 如果已存在相同类型的 Fragment，则移除
             if (existingFragment != null) {
-                Logger.i(TAG, toFragment.getClass().getSimpleName() , " 已存在，先移除");
+                if(Logger.openLog) {
+                    Logger.i(TAG, toFragment.getClass().getSimpleName(), " 已存在，先移除");
+                }
                 transaction.remove(existingFragment);
                 STACKMANAGER.removeBaseView(screenId, (IBaseView) existingFragment);
             }
@@ -129,7 +139,9 @@ public class FragmentIntent {
                 transaction.hide(currentFragment);
             }
 
-            Logger.i(TAG, "添加新的 " , toFragment.getClass().getSimpleName());
+            if(Logger.openLog) {
+                Logger.i(TAG, "添加新的 ", toFragment.getClass().getSimpleName());
+            }
             toFragment.setArguments(bundle);
             transaction.add(containerId, toFragment);
             transaction.show(toFragment);
@@ -157,11 +169,15 @@ public class FragmentIntent {
         if (!ConvertUtils.isEmpty(currentFragment)) {
             transaction.remove(currentFragment);
         } else {
-            Logger.i(TAG, "对象为空无法移除", currentFragment);
+            if(Logger.openLog) {
+                Logger.i(TAG, "对象为空无法移除", currentFragment);
+            }
         }
         if (nextShow) {
             final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
-            Logger.i(TAG, "移除上一个。显示下一个" , toFragment);
+            if(Logger.openLog) {
+                Logger.i(TAG, "移除上一个。显示下一个", toFragment);
+            }
             if (!ConvertUtils.isEmpty(toFragment)) {
                 if (toFragment.getClass().getName().contains("NaviGuidanceFragment")) {
                     Bundle bundle = new Bundle();
@@ -185,10 +201,14 @@ public class FragmentIntent {
         if (!ConvertUtils.isEmpty(currentFragment)) {
             transaction.remove(currentFragment);
         } else {
-            Logger.i(TAG, "对象为空无法移除", currentFragment);
+            if(Logger.openLog) {
+                Logger.i(TAG, "对象为空无法移除", currentFragment);
+            }
         }
         final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
-        Logger.i(TAG, "移除上一个。显示下一个" , toFragment);
+        if(Logger.openLog) {
+            Logger.i(TAG, "移除上一个。显示下一个", toFragment);
+        }
         if (!ConvertUtils.isEmpty(toFragment)) {
             currentFragment = toFragment;
             toFragment.onNewIntent(bundle);
@@ -207,16 +227,22 @@ public class FragmentIntent {
     public static void showCurrentFragment(final String screenId, final FragmentManager fragmentManager) {
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
-        Logger.i(TAG, "showCurrentFragment" , toFragment);
+        if(Logger.openLog) {
+            Logger.i(TAG, "showCurrentFragment", toFragment);
+        }
         if (!ConvertUtils.isEmpty(toFragment)) {
-            Logger.i(TAG, "showCurrentFragment" , toFragment.isAdded() , " , " , toFragment.isHidden());
+            if(Logger.openLog) {
+                Logger.i(TAG, "showCurrentFragment", toFragment.isAdded(), " , ", toFragment.isHidden());
+            }
             transaction.show(toFragment);
         }
         final List<Fragment> fragments = fragmentManager.getFragments();
         if (!fragments.isEmpty()) {
             for (int t = 0; t < fragments.size(); t++) {
-                Logger.i(TAG, "showCurrentFragment" , fragments.get(t));
-                Logger.i(TAG, "showCurrentFragment" , fragments.get(t).isHidden());
+                if(Logger.openLog) {
+                    Logger.i(TAG, "showCurrentFragment", fragments.get(t));
+                    Logger.i(TAG, "showCurrentFragment", fragments.get(t).isHidden());
+                }
             }
         }
         transaction.commit();
@@ -237,13 +263,19 @@ public class FragmentIntent {
                 if (fragments.get(t).getClass().getName().contains("RouteFragment")
                         || fragments.get(t).getClass().getName().contains("NaviGuidanceFragment")) {
                     index = t;
-                    Logger.i(TAG, "remove top index: " , t);
+                    if(Logger.openLog) {
+                        Logger.i(TAG, "remove top index: ", t);
+                    }
                 }
                 if (index < t && index != -1) {
-                    Logger.i(TAG, "transaction remove top fragment: " , fragments.get(t).getClass().getName());
+                    if(Logger.openLog) {
+                        Logger.i(TAG, "transaction remove top fragment: ", fragments.get(t).getClass().getName());
+                    }
                     transaction.remove(fragments.get(t));
                     if (!fragments.get(t).getClass().getName().contains("SupportRequestManagerFragment")) {
-                        Logger.i(TAG, "mStackManager remove top fragment: " , fragments.get(t).getClass().getName());
+                        if(Logger.openLog) {
+                            Logger.i(TAG, "mStackManager remove top fragment: ", fragments.get(t).getClass().getName());
+                        }
                         STACKMANAGER.removeBaseView(screenId, (IBaseView) fragments.get(t));
                     }
                 }
@@ -278,16 +310,22 @@ public class FragmentIntent {
             for (int t = 0; t < fragments.size(); t++) {
                 if (fragments.get(t).getClass().getName().contains("NaviGuidanceFragment")) {
                     index = t;
-                    Logger.i(TAG, "remove top index: " , t);
+                    if(Logger.openLog) {
+                        Logger.i(TAG, "remove top index: ", t);
+                    }
                 }
                 if (index < t && index != -1) {
-                    Logger.i(TAG, "transaction remove top fragment: " ,
-                            fragments.get(t).getClass().getName());
+                    if(Logger.openLog) {
+                        Logger.i(TAG, "transaction remove top fragment: ",
+                                fragments.get(t).getClass().getName());
+                    }
                     transaction.remove(fragments.get(t));
                     if (!fragments.get(t).getClass().getName().
                             contains("SupportRequestManagerFragment")) {
-                        Logger.i(TAG, "mStackManager remove top fragment: " ,
-                                fragments.get(t).getClass().getName());
+                        if(Logger.openLog) {
+                            Logger.i(TAG, "mStackManager remove top fragment: ",
+                                    fragments.get(t).getClass().getName());
+                        }
                         STACKMANAGER.removeBaseView(screenId, (IBaseView) fragments.get(t));
                     }
                 }
@@ -313,7 +351,9 @@ public class FragmentIntent {
     public static void closeAllFragmentsUntilTargetFragment(final String screenId,
                                                             final FragmentManager fragmentManager,
                                                             final String className) {
-        Logger.i(TAG, "closeAllFragmentsUntilTargetFragment className: " , className);
+        if(Logger.openLog) {
+            Logger.i(TAG, "closeAllFragmentsUntilTargetFragment className: ", className);
+        }
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         final List<Fragment> fragments = fragmentManager.getFragments();
         int index = -1;
@@ -321,10 +361,14 @@ public class FragmentIntent {
             for (int t = 0; t < fragments.size(); t++) {
                 if (fragments.get(t).getClass().getName().contains(className)) {
                     index = t;
-                    Logger.i(TAG, "remove top index: " , t);
+                    if(Logger.openLog) {
+                        Logger.i(TAG, "remove top index: ", t);
+                    }
                 }
                 if (index <= t && index != -1) {
-                    Logger.i(TAG, "remove top fragment: " , fragments.get(t).getClass().getName());
+                    if(Logger.openLog) {
+                        Logger.i(TAG, "remove top fragment: ", fragments.get(t).getClass().getName());
+                    }
                     transaction.remove(fragments.get(t));
                     STACKMANAGER.removeBaseView(screenId, (IBaseView) fragments.get(t));
                 }
@@ -373,6 +417,8 @@ public class FragmentIntent {
                 }
             }
         }
-        Logger.d(TAG, "同步后的默认栈：" , STACKMANAGER.getBaseFragmentStack(screenId));
+        if(Logger.openLog) {
+            Logger.d(TAG, "同步后的默认栈：", STACKMANAGER.getBaseFragmentStack(screenId));
+        }
     }
 }

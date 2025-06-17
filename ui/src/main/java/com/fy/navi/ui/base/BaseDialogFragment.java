@@ -28,7 +28,9 @@ public abstract class BaseDialogFragment<V extends ViewDataBinding, VM extends B
     protected String mScreenId;
 
     public BaseDialogFragment() {
-        Logger.i(TAG, "onCreate before");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onCreate before");
+        }
         onCreateBefore();
     }
 
@@ -42,72 +44,98 @@ public abstract class BaseDialogFragment<V extends ViewDataBinding, VM extends B
     @Override
     public void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.i(TAG, "onCreate start");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onCreate start");
+        }
         createViewModel();
-        Logger.i(TAG, "onCreate end");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onCreate end");
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container, final @Nullable Bundle savedInstanceState) {
-        Logger.i(TAG, "onCreateView start");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onCreateView start");
+        }
         mBinding = DataBindingUtil.inflate(inflater, onLayoutId(), container, false);
         bindViewModel();
         onInitView();
         final View rootView = mBinding.getRoot();
-        Logger.i(TAG, "onCreateView end");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onCreateView end");
+        }
         return rootView;
     }
 
     @Override
     public void onViewCreated(final @NonNull View view, final @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Logger.i(TAG, "onViewCreated start");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onViewCreated start");
+        }
         onInitObserver();
         onInitData();
-        Logger.i(TAG, "onViewCreated end");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onViewCreated end");
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Logger.i(TAG, "onStart");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onStart");
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Logger.i(TAG, "onResume");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onResume");
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Logger.i(TAG, "onPause");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onPause");
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Logger.i(TAG, "onStop");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onStop");
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Logger.i(TAG, "onDestroyView");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onDestroyView");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Logger.i(TAG, "onDetach");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onDetach");
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.i(TAG, "onDestroy");
+        if(Logger.openLog) {
+            Logger.i(TAG, "onDestroy");
+        }
         mActivity = null;
     }
 

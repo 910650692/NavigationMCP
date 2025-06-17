@@ -164,7 +164,9 @@ public class SwipeDeleteLayout extends LinearLayout {
             }
             mDeleteChildView.setLayoutParams(layoutParams);
         } else {
-            Logger.d(TAG, "请设置合理的布局！");
+            if(Logger.openLog) {
+                Logger.d(TAG, "请设置合理的布局！");
+            }
         }
     }
 
