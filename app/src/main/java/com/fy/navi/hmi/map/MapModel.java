@@ -525,6 +525,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
             } else if (currentImersiveStatus == ImersiveStatus.IMERSIVE) {
                 mViewModel.showOrHideSelfParkingView(false);
+                if (getTopFragment(PoiDetailsFragment.class)) {
+                    closeFragment(true);
+                }
                 goToCarPosition();
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
                 Logger.i(TAG, "---" + "goToCarPosition");
