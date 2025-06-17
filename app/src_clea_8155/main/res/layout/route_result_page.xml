@@ -13,7 +13,7 @@
     </data>
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:clickable="false">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
@@ -286,6 +286,7 @@
             android:id="@+id/route_line_info_prefer_root"
             android:layout_width="@dimen/dp_613"
             android:layout_height="0dp"
+            app:layout_constraintVertical_bias="0"
             android:layout_marginTop="@dimen/dp_m_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:clickable="true"

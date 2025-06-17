@@ -123,13 +123,13 @@
             layout="@layout/route_result_page"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dp_417"
+            android:layout_marginBottom="@dimen/dp_237"
             android:clickable="false"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <include
             android:id="@+id/route_detail_info_root"

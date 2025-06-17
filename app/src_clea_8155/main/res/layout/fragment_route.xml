@@ -85,7 +85,7 @@
             android:visibility="@{ViewModel.getTabVisibility() == 3 ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/route_right_tab_list_gas_station"
@@ -123,13 +123,13 @@
             layout="@layout/route_result_page"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dp_417"
+            android:layout_marginBottom="@dimen/dp_237"
             android:clickable="false"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <include
             android:id="@+id/route_detail_info_root"
@@ -139,7 +139,7 @@
             android:clickable="true"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 1 ? View.VISIBLE : View.GONE}"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
 
         <include
             android:id="@+id/route_service_list_info_root"
