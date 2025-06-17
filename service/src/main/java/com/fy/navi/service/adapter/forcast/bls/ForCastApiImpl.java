@@ -41,7 +41,7 @@ public class ForCastApiImpl implements IForCastApi, IForcastServiceObserver {
         if (ConvertUtils.equals(0, result)) return ListenableWorker.Result.success();
         Data data = new Data.Builder()
                 .putInt("errorCode", 10001)
-                .putString("errorMsg", CodeManager.getForCastMsg(10001))
+                .putString("errorMsg", CodeManager.getInstance().getForCastMsg(10001))
                 .build();
         return ListenableWorker.Result.failure(data);
     }

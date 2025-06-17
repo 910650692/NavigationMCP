@@ -301,7 +301,7 @@ public class EngineAdapterImpl implements IEngineApi {
             } else if(ConvertUtils.equals(10005, code)){
                 observer.onInitBaseLibSuccess();
             }else {
-                observer.onInitEngineFail(code, CodeManager.getEngineMsg(code));
+                observer.onInitEngineFail(code, CodeManager.getInstance().getEngineMsg(code));
             }
         }
         return code;

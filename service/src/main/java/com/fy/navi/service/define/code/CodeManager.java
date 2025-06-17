@@ -39,7 +39,7 @@ public class CodeManager {
      * @param code 错误码
      * @return msg
      */
-    public static String getErrorMsg(int code) {
+    public String getErrorMsg(int code) {
         return getMsg(CODE_TYPE_ENGINE, code);
     }
 
@@ -49,7 +49,7 @@ public class CodeManager {
      * @param errorMsg 错误信息
      * @return errorCode
      */
-    public static int getErrorCode(String errorMsg) {
+    public int getErrorCode(String errorMsg) {
         return getCode(CODE_TYPE_ENGINE, errorMsg);
     }
 
@@ -60,7 +60,7 @@ public class CodeManager {
      * @param msg  错误信息
      * @return 错误码
      */
-    public static int putErrorCode(int code, String msg) {
+    public int putErrorCode(int code, String msg) {
         return putErrorCode(CODE_TYPE_ENGINE, code, msg);
     }
 
@@ -70,7 +70,7 @@ public class CodeManager {
      * @param code 错误码
      * @return msg
      */
-    public static String getEngineMsg(int code) {
+    public String getEngineMsg(int code) {
         return getMsg(CODE_TYPE_ENGINE, code);
     }
 
@@ -80,7 +80,7 @@ public class CodeManager {
      * @param code 错误码
      * @return msg
      */
-    public static String getActivateMsg(final int code) {
+    public String getActivateMsg(final int code) {
         return getMsg(CODE_TYPE_ACTIVATE, code);
     }
 
@@ -90,7 +90,7 @@ public class CodeManager {
      * @param errorMsg 错误信息
      * @return errorCode
      */
-    public static int getEngineCode(String errorMsg) {
+    public int getEngineCode(String errorMsg) {
         return getCode(CODE_TYPE_ENGINE, errorMsg);
     }
 
@@ -101,7 +101,7 @@ public class CodeManager {
      * @param msg  错误信息
      * @return 错误码
      */
-    public static int putEngineErrorCode(int code, String msg) {
+    public int putEngineErrorCode(int code, String msg) {
         return putErrorCode(CODE_TYPE_ENGINE, code, msg);
     }
 
@@ -111,7 +111,7 @@ public class CodeManager {
      * @param code 错误码
      * @return msg
      */
-    public static String getLayerMsg(int code) {
+    public String getLayerMsg(int code) {
         return getMsg(CODE_TYPE_ENGINE, code);
     }
 
@@ -121,7 +121,7 @@ public class CodeManager {
      * @param errorMsg 错误信息
      * @return errorCode
      */
-    public static int getLayerCode(String errorMsg) {
+    public int getLayerCode(String errorMsg) {
         return getCode(CODE_TYPE_ENGINE, errorMsg);
     }
 
@@ -132,7 +132,7 @@ public class CodeManager {
      * @param msg  错误信息
      * @return 错误码
      */
-    public static int putLayerErrorCode(int code, String msg) {
+    public int putLayerErrorCode(int code, String msg) {
         return putErrorCode(CODE_TYPE_ENGINE, code, msg);
     }
 
@@ -142,7 +142,7 @@ public class CodeManager {
      * @param code 错误码
      * @return msg
      */
-    public static String getMapMsg(int code) {
+    public String getMapMsg(int code) {
         return getMsg(CODE_TYPE_MAP, code);
     }
 
@@ -152,7 +152,7 @@ public class CodeManager {
      * @param errorMsg 错误信息
      * @return errorCode
      */
-    public static int getMapCode(String errorMsg) {
+    public int getMapCode(String errorMsg) {
         return getCode(CODE_TYPE_MAP, errorMsg);
     }
 
@@ -163,7 +163,7 @@ public class CodeManager {
      * @param msg  错误信息
      * @return 错误码
      */
-    public static int putMapErrorCode(int code, String msg) {
+    public int putMapErrorCode(int code, String msg) {
         return putErrorCode(CODE_TYPE_MAP, code, msg);
     }
 
@@ -173,7 +173,7 @@ public class CodeManager {
      * @param code 错误码
      * @return msg
      */
-    public static String getSearchCodeMsg(int code) {
+    public String getSearchCodeMsg(int code) {
         return getMsg(CODE_TYPE_SEARCH, code);
     }
 
@@ -183,7 +183,7 @@ public class CodeManager {
      * @param errorMsg 错误信息
      * @return errorCode
      */
-    public static int getSearchCode(String errorMsg) {
+    public int getSearchCode(String errorMsg) {
         return getCode(CODE_TYPE_SEARCH, errorMsg);
     }
 
@@ -194,7 +194,7 @@ public class CodeManager {
      * @param msg  错误信息
      * @return 错误码
      */
-    public static int putSearchErrorCode(int code, String msg) {
+    public int putSearchErrorCode(int code, String msg) {
         return putErrorCode(CODE_TYPE_SEARCH, code, msg);
     }
 
@@ -205,7 +205,7 @@ public class CodeManager {
      * @param code 错误码
      * @return msg
      */
-    public static String getForCastMsg(int code) {
+    public String getForCastMsg(int code) {
         return getMsg(CODE_TYPE_FOR_CAST, code);
     }
 
@@ -215,7 +215,7 @@ public class CodeManager {
      * @param errorMsg 错误信息
      * @return errorCode
      */
-    public static int getForCastMsg(String errorMsg) {
+    public int getForCastMsg(String errorMsg) {
         return getCode(CODE_TYPE_FOR_CAST, errorMsg);
     }
 
@@ -226,24 +226,24 @@ public class CodeManager {
      * @param msg  错误信息
      * @return 错误码
      */
-    public static int putForCastError(int code, String msg) {
+    public int putForCastError(int code, String msg) {
         return putErrorCode(CODE_TYPE_FOR_CAST, code, msg);
     }
 
-    public static String getPositionMsg(int code){
+    public String getPositionMsg(int code){
         return getMsg(CODE_TYPE_POSITION, code);
     }
 
-    public static int getPositionCode(String msg){
+    public int getPositionCode(String msg){
         return getCode(CODE_TYPE_POSITION, msg);
     }
 
-    public static int putPositionError(int code, String msg){
+    public int putPositionError(int code, String msg){
         return putErrorCode(CODE_TYPE_FOR_CAST, code, msg);
     }
 
 
-    private static int putErrorCode(String type, int code, String msg) {
+    private int putErrorCode(String type, int code, String msg) {
         switch (type) {
             case CODE_TYPE_MAP -> ConvertUtils.push(mErrorCode.getMapCode(), code, msg);
             case CODE_TYPE_SEARCH -> ConvertUtils.push(mErrorCode.getSearchCode(), code, msg);
@@ -259,7 +259,7 @@ public class CodeManager {
         return code;
     }
 
-    private static String getMsg(String type, int code) {
+    private String getMsg(String type, int code) {
         return switch (type) {
             case CODE_TYPE_ENGINE -> ConvertUtils.containToValue(mErrorCode.getEngineCode(), code);
             case CODE_TYPE_ACTIVATE -> ConvertUtils.containToValue(mErrorCode.getActivateCode(), code);
@@ -277,7 +277,7 @@ public class CodeManager {
         };
     }
 
-    private static int getCode(String type, String errorMsg) {
+    private int getCode(String type, String errorMsg) {
         return switch (type) {
             case CODE_TYPE_ENGINE -> convertCode(mErrorCode.getEngineCode(), errorMsg);
             case CODE_TYPE_LAYER -> convertCode(mErrorCode.getLayerCode(), errorMsg);

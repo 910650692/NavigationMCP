@@ -20,17 +20,19 @@ public class ActivateAdapterImpl implements IActivateApi {
 
     private final List<ActivateObserver> mActObserverList;
     private final ActivationManager.IActivateHelper manualActivateListener;
+    private final CodeManager codeManager;
     private static final String ERR_MSG = "Error Massage : ";
 
     public ActivateAdapterImpl() {
         mActObserverList = new ArrayList<>();
+        codeManager = CodeManager.getInstance();
         manualActivateListener = new ActivationManager.IActivateHelper() {
             @Override
             public void onUUIDGet(final String uuid) {
                 Logger.d(TAG, "uuid获取成功 : " + uuid);
                 if (ConvertUtils.isEmpty(uuid)) {
                     logResult(20005);
-                    onActivatedError(20005, CodeManager.getActivateMsg(20005));
+                    onActivatedError(20005, codeManager.getActivateMsg(20005));
                     return;
                 }
                 beginInitActivateService(uuid);
@@ -40,7 +42,7 @@ public class ActivateAdapterImpl implements IActivateApi {
             public void onManualActivated(final boolean isSuccess) {
                 if (!isSuccess) {
                     Logger.e(TAG, "手动激活失败");
-                    onActivatedError(20009,  CodeManager.getActivateMsg(20009));
+                    onActivatedError(20009,  codeManager.getActivateMsg(20009));
                     return;
                 }
                 Logger.d(TAG, "手动激活成功，开始BL初始化");
@@ -62,7 +64,7 @@ public class ActivateAdapterImpl implements IActivateApi {
                         ActivationManager.getInstance().createCloudOrder();
                     } else {
                         logResult(20006);
-                        onActivatedError(20006, CodeManager.getActivateMsg(20006));
+                        onActivatedError(20006, codeManager.getActivateMsg(20006));
                     }
                     return;
                 }
@@ -71,7 +73,7 @@ public class ActivateAdapterImpl implements IActivateApi {
 
             @Override
             public void onNetFailed() {
-                onActivatedError(20008, CodeManager.getActivateMsg(20008));
+                onActivatedError(20008, codeManager.getActivateMsg(20008));
             }
         };
         ActivationManager.getInstance().addManualActivateListener(manualActivateListener);
@@ -130,7 +132,7 @@ public class ActivateAdapterImpl implements IActivateApi {
         Logger.d(TAG, "uuid = " + uuid);
         if (!ActivationManager.getInstance().initActivationService(uuid)) {
             logResult(20003);
-            onActivatedError(20003, CodeManager.getActivateMsg(20003));
+            onActivatedError(20003, codeManager.getActivateMsg(20003));
             return;
         }
         //查询激活状态
@@ -217,6 +219,6 @@ public class ActivateAdapterImpl implements IActivateApi {
      * @param code 错误码
      */
     private void logResult(final int code) {
-        Logger.d(TAG, ERR_MSG + "  " + code + " :" + CodeManager.getActivateMsg(code));
+        Logger.d(TAG, ERR_MSG + "  " + code + " :" + codeManager.getActivateMsg(code));
     }
 }
