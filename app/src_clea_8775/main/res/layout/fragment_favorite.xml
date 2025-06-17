@@ -271,11 +271,12 @@
 
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:id="@+id/tv_favorite_switch"
-                    android:layout_width="@dimen/dp_579"
-                    android:layout_height="@dimen/dp_90"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_77"
                     android:gravity="center_horizontal"
                     android:layout_marginTop="@dimen/dp_34"
                     android:orientation="horizontal"
+                    android:layout_marginEnd="@dimen/dp_34"
                     android:visibility="@{ViewModel.mIsEVCar ? View.VISIBLE : View.GONE}"
                     android:background="@drawable/bg_setting_checkbox"
                     app:layout_constraintStart_toStartOf="parent"
