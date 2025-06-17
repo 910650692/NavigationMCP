@@ -1240,8 +1240,19 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
                 return;
             }
-            final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
-            mMapPackage.showPreview(mapTypeId, true, 1350, 210, 600, 140, mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList()));
+            final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId)
+                    .getMLineLayerParam();
+            int routeScreenLeft = ResourceUtils.Companion.getInstance().
+                    getDimensionPixelSize(R.dimen.route_margin_screen_left);
+            int routeScreenRight = ResourceUtils.Companion.getInstance().
+                    getDimensionPixelSize(R.dimen.route_margin_screen_right);
+            int routeScreenTop = ResourceUtils.Companion.getInstance().
+                    getDimensionPixelSize(R.dimen.route_margin_screen_top);
+            int routeScreenBottom = ResourceUtils.Companion.getInstance().
+                    getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
+            mMapPackage.showPreview(mapTypeId, true, routeScreenLeft, routeScreenTop,
+                    routeScreenRight, routeScreenBottom, mLayerAdapter.getPathResultBound(mapTypeId,
+                            routeLineLayerParam.getMPathInfoList()));
         });
     }
 
@@ -1261,8 +1272,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 getDimensionPixelSize(R.dimen.margin_screen_left);
         int screenRight = ResourceUtils.Companion.getInstance().
                 getDimensionPixelSize(R.dimen.margin_screen_right);
-        mMapPackage.showPreview(mapTypeId, true, screenLeft, 210, screenRight,
-                200, mLayerAdapter.getPathResultBound(mapTypeId,
+        int screenTop = ResourceUtils.Companion.getInstance().
+                getDimensionPixelSize(R.dimen.margin_screen_top);
+        int screenBottom = ResourceUtils.Companion.getInstance().
+                getDimensionPixelSize(R.dimen.margin_screen_bottom);
+        mMapPackage.showPreview(mapTypeId, true, screenLeft, screenTop, screenRight,
+                screenBottom, mLayerAdapter.getPathResultBound(mapTypeId,
                         routeLineLayerParam.getMPathInfoList()));
     }
 

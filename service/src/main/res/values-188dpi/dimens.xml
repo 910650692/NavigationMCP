@@ -2,7 +2,15 @@
 <resources>
 
     <!--引导全览的时候距离屏幕两边的距离-->
-    <dimen name="margin_screen_left">@dimen/dp_1246</dimen>
-    <dimen name="margin_screen_right">@dimen/dp_668</dimen>
+    <dimen name="margin_screen_left">@dimen/dp_681</dimen>
+    <dimen name="margin_screen_right">@dimen/dp_204</dimen>
+    <dimen name="margin_screen_top">@dimen/dp_140</dimen>
+    <dimen name="margin_screen_bottom">@dimen/dp_140</dimen>
+
+    <!--算路全览的时候距离屏幕两边的距离-->
+    <dimen name="route_margin_screen_left">@dimen/dp_681</dimen>
+    <dimen name="route_screen_right">@dimen/dp_204</dimen>
+    <dimen name="route_margin_screen_top">@dimen/dp_140</dimen>
+    <dimen name="route_margin_screen_bottom">@dimen/dp_140</dimen>
 
 </resources>
