@@ -9,5 +9,6 @@ public class MapVisibleAreaPoint {
 
     private MapVisibleAreaInfo map_main_car;
     private MapVisibleAreaInfo map_main_naving;
+    private MapVisibleAreaInfo map_main_setting;
 
 }

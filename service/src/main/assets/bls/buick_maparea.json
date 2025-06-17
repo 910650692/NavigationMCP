@@ -4,7 +4,11 @@
     "mtopscreenoffer": 622
   },
   "map_main_naving": {
-    "mleftscreenoffer": 2112,
+    "mleftscreenoffer": 1836,
+    "mtopscreenoffer": 622
+  },
+  "map_main_setting": {
+    "mleftscreenoffer": 2128,
     "mtopscreenoffer": 622
   }
 }

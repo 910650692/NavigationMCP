@@ -385,9 +385,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         MapVisibleAreaInfo mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
         if(!mViewModel.isFragmentStackNull()){
             if (mViewModel.getTopFragment(SettingFragment.class)){
-                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_SETTING);
             } else {
-                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
+                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
             }
         }
         MapMode mapModel = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);

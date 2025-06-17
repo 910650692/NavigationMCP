@@ -24,6 +24,7 @@ public class MapVisibleAreaDataManager {
         MapVisibleAreaPoint point = GsonUtils.fromJson(json, MapVisibleAreaPoint.class);
         dataMap.put(MapVisibleAreaType.MAIN_AREA_CAR,point.getMap_main_car());
         dataMap.put(MapVisibleAreaType.MAIN_AREA_NAVING,point.getMap_main_naving());
+        dataMap.put(MapVisibleAreaType.MAIN_AREA_SETTING,point.getMap_main_setting());
     }
 
 
@@ -33,6 +34,7 @@ public class MapVisibleAreaDataManager {
         MapVisibleAreaPoint point = GsonUtils.fromJson(json, MapVisibleAreaPoint.class);
         dataMap.put(MapVisibleAreaType.MAIN_AREA_CAR,point.getMap_main_car());
         dataMap.put(MapVisibleAreaType.MAIN_AREA_NAVING,point.getMap_main_naving());
+        dataMap.put(MapVisibleAreaType.MAIN_AREA_SETTING,point.getMap_main_setting());
     }
 
     public static MapVisibleAreaDataManager getInstance() {
