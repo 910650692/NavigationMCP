@@ -35,7 +35,7 @@ import lombok.Setter;
 public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseSceneModel> extends BaseSceneView<VB, VM> {
     private static final String TAG = "NaviCardBase";
     protected static final int SCENE_STATE_INIT = 0x00;
-    protected static final int SCENE_STATE_SHOW = 0x01;
+    public static final int SCENE_STATE_SHOW = 0x01;
     protected static final int SCENE_STATE_HIDE = 0x02;
     protected static final int SCENE_STATE_CLOSE = 0x03;
 
@@ -106,6 +106,10 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
 
     @CallSuper
     protected void init() {
+        addNaviScene();
+    }
+
+    public void addNaviScene() {
         NaviSceneManager.getInstance().addNaviScene(getSceneId(), this);
     }
 

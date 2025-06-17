@@ -1,5 +1,7 @@
 package com.fy.navi.service.define.navi;
 
+import java.util.List;
+
 public class NaviModelSaveEntity {
     private SpeedOverallEntity mSpeedOverallEntity;
     private SapaInfoEntity mSapaInfoEntity;
@@ -9,6 +11,7 @@ public class NaviModelSaveEntity {
     private NaviTmcInfo mNaviTmcInfo;
     private NaviManeuverInfo mNaviManeuverInfo;
     private LaneInfoEntity mLaneInfo;
+    private List<NaviViaEntity> mViaList;
 
     public SpeedOverallEntity getSpeedOverallEntity() {
         return mSpeedOverallEntity;
@@ -72,5 +75,13 @@ public class NaviModelSaveEntity {
 
     public void setLaneInfo(LaneInfoEntity laneInfo) {
         this.mLaneInfo = laneInfo;
+    }
+
+    public List<NaviViaEntity> getViaList() {
+        return mViaList;
+    }
+
+    public void setViaList(List<NaviViaEntity> mViaList) {
+        this.mViaList = mViaList;
     }
 }

@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.navi;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_CONTROL;
@@ -27,6 +28,7 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
+import com.fy.navi.scene.ui.navi.SceneNaviViaListView;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
@@ -58,6 +60,10 @@ import java.util.Objects;
 
 public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBinding, NaviGuidanceViewModel> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_VIEW;
+    
+    private SceneNaviViaListView mSceneNaviViaListView;
+
+    private ISceneCallback mSceneCallback;
 
     @Override
     public int onLayoutId() {
@@ -88,6 +94,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         saveNaviSceneStatus(mBinding.sklRoot, map);
         saveNaviSceneStatus(mBinding.naviSceneContainer, map);
         saveNaviSceneStatus(mBinding.sclTopContainer, map);
+        saveLazySceneStatus(map);
         mViewModel.saveOverViewStatus();
     }
 
@@ -101,6 +108,17 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                 map.put(((NaviSceneBase<?, ?>) childView).mSceneId,
                         ((NaviSceneBase<?, ?>) childView).getSceneState());
             }
+        }
+    }
+
+    private void saveLazySceneStatus(HashMap<NaviSceneId, Integer> map) {
+        saveLazySceneStatus(mSceneNaviViaListView, map);
+    }
+
+    private void saveLazySceneStatus(NaviSceneBase naviSceneBase,
+                                     HashMap<NaviSceneId, Integer> map) {
+        if (naviSceneBase != null) {
+            map.put(naviSceneBase.mSceneId, naviSceneBase.getSceneState());
         }
     }
 
@@ -154,8 +172,27 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void onReStoreFragment() {
         Logger.i(TAG, "onReStoreFragment");
         if (null != mViewModel) {
+            restoreLazySceneStatus();
             mViewModel.restoreNavigation();
             restoreSceneStatus();
+        }
+    }
+
+    private void restoreLazySceneStatus() {
+        initLazyView();
+        HashMap<NaviSceneId, Integer> map = mViewModel.getSceneStatus();
+        restoreLazySceneStatus(mSceneNaviViaListView, map);
+    }
+
+    private void restoreLazySceneStatus(NaviSceneBase naviSceneBase,
+                                        HashMap<NaviSceneId, Integer> map) {
+        if (naviSceneBase != null && map.containsKey(naviSceneBase.getMSceneId())) {
+            Integer sceneState = map.get(naviSceneBase.getMSceneId());
+            if (sceneState != null) {
+                naviSceneBase.setSceneState(sceneState);
+                View view = (View) naviSceneBase;
+                view.setVisibility(sceneState == NaviSceneBase.SCENE_STATE_SHOW ? VISIBLE : GONE);
+            }
         }
     }
 
@@ -265,7 +302,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         Logger.i(TAG,
                 "isRealNeedShow:", isRealNeedShow);
         // 如果途经点列表/底部控制栏更多/路线偏好/sapa详情页页面显示，不能执行路口大图的显示逻辑
-        boolean isCanShowCrossImage = mBinding.sceneNaviViaList.getVisibility() != VISIBLE &&
+        boolean isViaListShow = mSceneNaviViaListView != null &&
+                mSceneNaviViaListView.getVisibility() == VISIBLE;
+        boolean isCanShowCrossImage = !isViaListShow &&
                 mBinding.sceneNaviControlMore.getVisibility() != VISIBLE &&
                 mBinding.sceneNaviPreference.getVisibility() != VISIBLE &&
                 mBinding.sceneNaviSapaDetail.getVisibility() != VISIBLE;
@@ -366,9 +405,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param sceneCallback scene callback
      */
     public void addSceneCallback(final ISceneCallback sceneCallback) {
+        mSceneCallback = sceneCallback;
         mBinding.sceneNaviControl.addSceneCallback(sceneCallback);
         mBinding.sceneNaviControlMore.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviViaList.addSceneCallback(sceneCallback);
         mBinding.sceneNaviLastMile.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaInfo.addSceneCallback(sceneCallback);
         mBinding.sceneNaviParallel.addSceneCallback(sceneCallback);
@@ -416,7 +455,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param isVisible 是否展示途径点列表
      */
     public void showNaviViaList(final boolean isVisible) {
-        mBinding.sceneNaviViaList.showNaviViaList(isVisible);
+        if (mSceneNaviViaListView != null) {
+            mSceneNaviViaListView.showNaviViaList(isVisible);
+        }
     }
 
     /**
@@ -425,7 +466,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param list 途径点列表
      */
     public void updateViaListState(List<NaviViaEntity> list) {
-        mBinding.sceneNaviViaList.updateViaListState(list);
+        if (mViewModel != null) {
+            mViewModel.saveViaList(list);
+        }
+        if (mSceneNaviViaListView != null) {
+            mSceneNaviViaListView.updateViaListState(list);
+        }
     }
 
     /**
@@ -453,7 +499,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param entity entity
      */
     public void notifyDeleteViaPointResult(final boolean result, final NaviViaEntity entity) {
-        mBinding.sceneNaviViaList.notifyDeleteViaPointResult(result, entity);
+        if (mSceneNaviViaListView != null) {
+            mSceneNaviViaListView.notifyDeleteViaPointResult(result, entity);
+        }
     }
 
     /**
@@ -547,7 +595,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     public void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
-        mBinding.sceneNaviViaList.updateElectVehicleETAInfo(infos);
+        if (mSceneNaviViaListView != null) {
+            mSceneNaviViaListView.updateElectVehicleETAInfo(infos);
+        }
     }
 
     public void showNaviContent() {
@@ -695,6 +745,35 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void onPassByClick() {
         if (mBinding.sceneNaviControlMore != null) {
             mBinding.sceneNaviControlMore.onPassByClick();
+        }
+    }
+
+    public void initLazyView() {
+        if (!mBinding.sceneNaviViaList.isInflated()) {
+            assert mBinding.sceneNaviViaList.getViewStub() != null;
+            mSceneNaviViaListView = (SceneNaviViaListView) mBinding.sceneNaviViaList.
+                    getViewStub().inflate();
+            initLazyView(mSceneNaviViaListView);
+        }
+    }
+
+    private void initLazyView(NaviSceneBase naviSceneBase) {
+        if (naviSceneBase != null) {
+            naviSceneBase.setCategory(NumberUtils.NUM_1);
+            naviSceneBase.addNaviScene();
+            naviSceneBase.addSceneCallback(mSceneCallback);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSceneCallback = null;
+    }
+
+    public void setViaListVisibility(boolean isVisible) {
+        if (mSceneNaviViaListView != null) {
+            mSceneNaviViaListView.setVisibility(isVisible ? VISIBLE : GONE);
         }
     }
 }

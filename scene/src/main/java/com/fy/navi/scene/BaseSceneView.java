@@ -42,6 +42,10 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
 
     public BaseSceneView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void init(Context context) {
         mStackManager = StackManager.getInstance();
         mViewBinding = createViewBinding(LayoutInflater.from(context), this);
         mScreenViewModel = initSceneImpl();

@@ -110,6 +110,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private Runnable mEndPoiSearchRunnable;
     private Runnable mCloseClusterOverView;
     private Runnable mOnClusterMapOpenOrClose;
+    private Runnable mInitLazyView;
     private volatile boolean mIsClusterOpen;
     private int mEndSearchId;
 
@@ -251,12 +252,21 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 }
             }
         };
+        mInitLazyView = new Runnable() {
+            @Override
+            public void run() {
+                if (mViewModel != null) {
+                    mViewModel.initLazyView();
+                }
+            }
+        };
     }
 
     private void releaseRunnable() {
         ThreadManager.getInstance().removeHandleTask(mEndPoiSearchRunnable);
         ThreadManager.getInstance().removeHandleTask(mCloseClusterOverView);
         ThreadManager.getInstance().removeHandleTask(mOnClusterMapOpenOrClose);
+        ThreadManager.getInstance().removeHandleTask(mInitLazyView);
     }
 
     @Override
@@ -1222,6 +1232,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
         // 清楚搜索图层的扎标
         mSearchPackage.clearLabelMark();
+    }
+
+    @Override
+    public void onNaviStart() {
+        ThreadManager.getInstance().postUi(mInitLazyView);
     }
 
     @Override

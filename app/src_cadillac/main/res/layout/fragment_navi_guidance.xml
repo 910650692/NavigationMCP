@@ -137,16 +137,16 @@
                             app:layout_constraintTop_toTopOf="@id/scene_navi_tbt" />
 
                         <!--添加途径点列表-->
-                        <com.fy.navi.scene.ui.navi.SceneNaviViaListView
+                        <ViewStub
                             android:id="@+id/scene_navi_via_list"
                             android:layout_width="@dimen/dp_820"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_navi_tbt_bottom"
                             android:focusable="false"
                             android:paddingTop="@dimen/dp_40"
-                            android:visibility="@{ViewModel.mNaviViaListVisibility?View.VISIBLE:View.GONE}"
+                            android:layout="@layout/scene_navi_via_list_view_stub"
                             app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                            app:layout_constraintTop_toBottomOf="@id/scene_navi_scl_top"
+                            app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt"
                             tools:visibility="gone" />
 
                     </com.fy.navi.ui.view.SkinConstraintLayout>

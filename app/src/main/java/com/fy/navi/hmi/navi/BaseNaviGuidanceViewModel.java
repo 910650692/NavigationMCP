@@ -184,6 +184,10 @@ public class BaseNaviGuidanceViewModel extends
      */
     public void updateSceneVisible(final NaviSceneId sceneType, final boolean isVisible) {
         Logger.i(TAG, "sceneType:", sceneType, ",isVisible:", isVisible);
+        if (mView == null) {
+            Logger.w(TAG, "updateSceneVisible mView is null");
+            return;
+        }
         switch (sceneType) {
             case NAVI_SCENE_3D_CROSS:
             case NAVI_SCENE_2D_CROSS:
@@ -200,7 +204,7 @@ public class BaseNaviGuidanceViewModel extends
                 mView.updateViewRadius();
                 break;
             case NAVI_SCENE_VIA_POINT_LIST:
-                mNaviViaListVisibility.set(isVisible);
+                mView.setViaListVisibility(isVisible);
                 break;
             case NAVI_SCENE_SERVICE_AREA:
                 mNaviSapaVisibility.set(isVisible);
@@ -728,6 +732,10 @@ public class BaseNaviGuidanceViewModel extends
         if (isNeedRestoreLaneInfo) {
             onLaneInfo(mIsShowLane, laneInfo);
         }
+        List<NaviViaEntity> viaList = mModelSaveEntity.getViaList();
+        if (mView != null) {
+            mView.updateViaListState(viaList);
+        }
         if (null != mView) {
             mView.updateViewRadius();
         }
@@ -772,6 +780,18 @@ public class BaseNaviGuidanceViewModel extends
     public void restoreNavigationByRebuild() {
         if (mModel != null) {
             mModel.restoreNavigationByRebuild();
+        }
+    }
+
+    public void initLazyView() {
+        if (mView != null) {
+            mView.initLazyView();
+        }
+    }
+
+    public void saveViaList(List<NaviViaEntity> mViaList) {
+        if (mModelSaveEntity != null) {
+            mModelSaveEntity.setViaList(mViaList);
         }
     }
 }
