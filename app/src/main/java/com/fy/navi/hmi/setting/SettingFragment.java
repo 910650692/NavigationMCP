@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.setting;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +24,8 @@ import com.fy.navi.ui.view.SkinLinearLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.lang.ref.WeakReference;
+
 public class SettingFragment extends BaseFragment<FragmentSettingBinding, SettingViewModel> {
 
     private static SettingBroadcastFragment mSettingBroadcastFragment;
@@ -41,12 +44,14 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
     }
 
     private ViewPagerAdapter mViewPagerAdapter;
+    private WeakReference<SettingFragment> contextRef;
     @Override
     public void onInitView() {
 
         // 禁用滑动
         mBinding.viewPager.setUserInputEnabled(false);
-        mViewPagerAdapter = new ViewPagerAdapter(this);
+        contextRef = new WeakReference<>(this);
+        mViewPagerAdapter = new ViewPagerAdapter(contextRef.get());
         mBinding.viewPager.setAdapter(mViewPagerAdapter);
         initView();
         initListener();
