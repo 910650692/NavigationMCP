@@ -44,15 +44,21 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     private static float MAP_ZOOM_LEVEL_DEFAULT = 17F;
 
     public ClusterModel() {
-        StartService.getInstance().registerSdkCallback(TAG, this);
+
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.d(TAG, "start navi Service");
-        Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
-        ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
+        Logger.d(TAG, "StartService.getInstance().getSdkActivation()==",StartService.getInstance().getSdkActivation());
+        if (StartService.getInstance().getSdkActivation() == 0){
+            initClusterMapAndObservers("ClusterModel onCreate");
+        }else {
+            Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
+            ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
+            StartService.getInstance().registerSdkCallback(TAG, this);
+        }
     }
 
     @Override
@@ -74,16 +80,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     @Override
     public void onSdkInitSuccess() {
         Logger.d(TAG, "Sdk init success");
-        MapPackage.getInstance().createMapView(getMapId());
-        Logger.d(TAG, "仪表底图创建完成");
-        MapPackage.getInstance().registerCallback(getMapId(), this);
-        RoutePackage.getInstance().registerRouteObserver(mViewModel.mScreenId, this);
-        NaviPackage.getInstance().registerObserver(mViewModel.mScreenId, this);
-        CruisePackage.getInstance().registerObserver(mViewModel.mScreenId, this);
-        NavistatusAdapter.getInstance().registerCallback(this);
-        //监听设置包变化
-        SettingPackage.getInstance().setSettingChangeCallback(getMapId().name(), this);
-        mViewModel.loadMapView();
+        initClusterMapAndObservers("ClusterModel onSdkInitSuccess");
     }
 
     @Override
@@ -214,4 +211,28 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         LayerPackage.getInstance().setCarMode(MapType.CLUSTER_MAP, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
         LayerPackage.getInstance().initCarLogoByFlavor(MapType.CLUSTER_MAP,  BuildConfig.FLAVOR);
     }
+
+
+
+    /**
+     * 初始化 Cluster 地图及相关观察者回调
+     */
+    private void initClusterMapAndObservers(String from) {
+        Logger.d(TAG, "sdk 成功",from);
+        boolean mapViewInitResult = MapPackage.getInstance().createMapView(MapType.CLUSTER_MAP);
+        Logger.d(TAG, "mapViewInitResult: ==" , mapViewInitResult);
+        if (!mapViewInitResult) return;
+
+        MapPackage.getInstance().registerCallback(getMapId(), this);
+        RoutePackage.getInstance().registerRouteObserver(mViewModel.mScreenId, this);
+        NaviPackage.getInstance().registerObserver(mViewModel.mScreenId, this);
+        CruisePackage.getInstance().registerObserver(mViewModel.mScreenId, this);
+        NavistatusAdapter.getInstance().registerCallback(this);
+
+        // 监听设置包变化
+        SettingPackage.getInstance().setSettingChangeCallback(getMapId().name(), this);
+
+        mViewModel.loadMapView();
+    }
+
 }
