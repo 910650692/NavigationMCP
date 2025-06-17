@@ -22,6 +22,7 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentNaviGuidanceBinding;
+import com.fy.navi.hmi.splitscreen.SRFloatWindowService;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;

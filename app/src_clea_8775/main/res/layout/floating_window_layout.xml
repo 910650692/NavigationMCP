@@ -9,15 +9,15 @@
 
         <com.fy.navi.ui.view.SkinCardView
             android:id="@+id/card_navi_view"
-            android:layout_width="@dimen/dp_600"
-            android:layout_height="@dimen/dp_152"
+            android:layout_width="@dimen/dp_365"
+            android:layout_height="@dimen/dp_96"
             android:outlineSpotShadowColor="@color/common_bg_shadow_color"
             app:cardBackgroundColor="@color/common_bg_color"
             app:cardCornerRadius="@dimen/dp_18"
             app:cardElevation="@dimen/dp_30"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
@@ -25,8 +25,8 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_home"
-                    android:layout_width="@dimen/dp_92"
-                    android:layout_height="@dimen/dp_92"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
                     android:src="@drawable/img_basic_ic_home"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_bus"
@@ -36,8 +36,8 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_bus"
-                    android:layout_width="@dimen/dp_92"
-                    android:layout_height="@dimen/dp_92"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
                     android:src="@drawable/img_basic_ic_bus"
                     app:layout_constraintBottom_toBottomOf="@id/sk_iv_basic_home"
                     app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_search"
@@ -46,8 +46,8 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_search"
-                    android:layout_width="@dimen/dp_92"
-                    android:layout_height="@dimen/dp_92"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
                     android:src="@drawable/img_basic_ic_search"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
@@ -67,7 +67,7 @@
             app:cardElevation="@dimen/dp_30"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_top_container"
