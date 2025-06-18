@@ -11,9 +11,10 @@
             name="ViewModel"
             type="com.fy.navi.hmi.route.RouteViewModel" />
     </data>
+
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:clickable="false">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
@@ -254,11 +255,11 @@
         <com.fy.navi.scene.ui.route.SceneRouteSupplementPointsView
             android:id="@+id/route_Route_Supplement_Points"
             clickCommand="@{ViewModel.getSupplementClick()}"
-            android:layout_marginStart="@dimen/dp_660"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_660"
             android:visibility="@{ViewModel.getSecondaryPoiVisibility() == 2 ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <com.fy.navi.scene.ui.route.SceneRouteDescendantsView
@@ -285,15 +286,16 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/route_line_info_prefer_root"
             android:layout_width="@dimen/dp_613"
-            android:layout_height="0dp"
-            app:layout_constraintVertical_bias="0"
+            android:layout_height="@dimen/dp_0"
             android:layout_marginTop="@dimen/dp_m_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:clickable="true"
             android:paddingHorizontal="@dimen/dp_34"
             android:paddingVertical="@dimen/dp_34"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/route_result_line">
+            app:layout_constraintHeight_max="@dimen/dp_646"
+            app:layout_constraintTop_toBottomOf="@+id/route_result_line"
+            app:layout_constraintVertical_bias="0">
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/route_line_info_bg_prefer"
