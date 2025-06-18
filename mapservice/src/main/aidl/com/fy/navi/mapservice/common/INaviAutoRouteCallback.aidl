@@ -5,4 +5,6 @@ interface INaviAutoRouteCallback {
     void onRoutePlanFailed(int code, String errorMsg);
 
     void onRoutePlanResult(String routeResult);
+
+    void onDestChanged(String destInfo);
 }

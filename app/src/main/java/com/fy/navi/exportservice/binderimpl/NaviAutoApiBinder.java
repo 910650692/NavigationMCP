@@ -15,12 +15,17 @@ import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.exportservice.ExportIntentParam;
+import com.fy.navi.fsa.FsaConstant;
+import com.fy.navi.fsa.MyFsaService;
+import com.fy.navi.fsa.bean.PoiInfoForExport;
 import com.fy.navi.hmi.splitscreen.SRFloatWindowService;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.mapservice.bean.common.BaseCityInfo;
+import com.fy.navi.mapservice.bean.common.BaseDestInfo;
 import com.fy.navi.mapservice.bean.common.BaseDistrictInfo;
 import com.fy.navi.mapservice.bean.common.BaseGeoPoint;
 import com.fy.navi.mapservice.bean.common.BaseLocationInfo;
+import com.fy.navi.mapservice.bean.common.BaseFsaPoiInfo;
 import com.fy.navi.mapservice.bean.common.BaseRouteLine;
 import com.fy.navi.mapservice.bean.common.BaseRouteResult;
 import com.fy.navi.mapservice.bean.common.BaseSearchPoi;
@@ -30,6 +35,7 @@ import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
 import com.fy.navi.mapservice.common.INaviAutoCountDownLightCallback;
 import com.fy.navi.mapservice.common.INaviAutoLocationCallback;
+import com.fy.navi.mapservice.common.INaviAutoPoiCallBack;
 import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
 import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
 import com.fy.navi.mapservice.common.INaviAutoSpeedCallBack;
@@ -47,6 +53,7 @@ import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocStatus;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteLineInfo;
+import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.CityInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -65,9 +72,11 @@ import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.vrbridge.IVrBridgeConstant;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 
@@ -83,6 +92,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     private final RemoteCallbackList<INaviAutoSearchCallback> mSearchCallbackList = new RemoteCallbackList<>();
     private final RemoteCallbackList<INaviAutoStatusCallback> mStatusCallbackList = new RemoteCallbackList<>();
     private final RemoteCallbackList<INaviAutoSpeedCallBack> mSpeedCallbackList = new RemoteCallbackList<>();
+    private final RemoteCallbackList<INaviAutoPoiCallBack> mPoiCallbackList = new RemoteCallbackList<>();
     private final RemoteCallbackList<INaviAutoCountDownLightCallback> mCountDownLightCallbackList = new RemoteCallbackList<>();
 
     /*--------------------------------各个Package对应的回调-----------------------------------------*/
@@ -95,6 +105,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
 
     private boolean mInCallback;
+    private boolean mInRouteCallBack;
     private BaseTurnInfo mBaseTurnInfo = null;
 
     //收到定位改变后发起逆地理搜索获取DistrictInfo
@@ -120,6 +131,10 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     //当前引导面板状态
     private int mGuidePanelStatus;
 
+    private final MyFsaService.ExportEventCallBack mEventCallBack =
+            (eventId, eventStr) -> handleExportEvent(eventId, transformBeanDefine(eventStr));
+
+
     public NaviAutoApiBinder() {
         initPositionCallback();
         initSearchCallback();
@@ -133,6 +148,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         RoutePackage.getInstance().registerRouteObserver(TAG, mRouteResultObserver);
         NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);
         SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
+        MyFsaService.getInstance().registerExportEventCallBack(mEventCallBack);
         mGuidePanelStatus = getGuidePanelStatus(TAG);
     }
 
@@ -520,6 +536,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(naviStatus)) {
                 Logger.d(TAG, "获取到进入导航状态");
                 mGuideStatusHolder = ThreadManager.getInstance().asyncDelayWithResult(this::dispatchNaviStartDelay, 300);
+                sendDestinationInfo();
                 guidePanelStatus = INaviConstant.GuidePanelStatus.COMMON_NAVIGATION;
             }
             boolean guidePanelChanged = false;
@@ -552,6 +569,39 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     }
 
     /**
+     * 进入导航后分发一次目的地信息
+     */
+    private void sendDestinationInfo() {
+        if (mInRouteCallBack) {
+            Logger.e(TAG, "already in route callback broadcast, can't process tbt ");
+            return;
+        }
+
+        try {
+            mInRouteCallBack = true;
+            Logger.d(TAG, "sendDestinationInfo inCallback");
+            final int count = mRouteCallbackList.beginBroadcast();
+            for (int i = 0; i < count; i++) {
+                final INaviAutoRouteCallback routeCallback = mRouteCallbackList.getRegisteredCallbackItem(i);
+                if (null != routeCallback) {
+                    try {
+                        final BaseDestInfo destInfo = getBaseDestInfo();
+                        if (destInfo != null) {
+                            routeCallback.onDestChanged(GsonUtils.toJson(destInfo));
+                        }
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch destInfo error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException statusException) {
+            Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+        } finally {
+            closeRouteException();
+        }
+    }
+
+    /**
      * 关闭mStatusCallbackList.
      */
     private void closeNaviStatusCallback() {
@@ -569,7 +619,12 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         mRouteResultObserver = new IRouteResultObserver() {
             @Override
             public void onRouteResult(final RequestRouteResult requestRouteResult) {
+                if (mInRouteCallBack) {
+                    Logger.e(TAG, "already in route callback broadcast, can't process tbt");
+                    return;
+                }
                 try {
+                    mInRouteCallBack = true;
                     Logger.d(TAG, "onRouteResult inCallback");
                     final BaseRouteResult baseRouteResult = convertToBaseResult(requestRouteResult);
                     if (null == baseRouteResult) {
@@ -582,6 +637,10 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                         if (null != routeCallback) {
                             try {
                                 routeCallback.onRoutePlanResult(routeResultStr);
+                                final BaseDestInfo destInfo = getBaseDestInfo();
+                                if (destInfo != null) {
+                                    routeCallback.onDestChanged(GsonUtils.toJson(destInfo));
+                                }
                             } catch (RemoteException exception) {
                                 Logger.e(TAG, "dispatch routeResult error: " + exception.getMessage());
                             }
@@ -596,7 +655,12 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
             @Override
             public void onRouteFail(final MapType mapTypeId, final String errorMsg) {
+                if (mInRouteCallBack) {
+                    Logger.e(TAG, "already in route callback broadcast, can't process tbt");
+                    return;
+                }
                 try {
+                    mInRouteCallBack = true;
                     Logger.d(TAG, "onRouteFail inCallback");
                     final int count = mRouteCallbackList.beginBroadcast();
                     for (int i = 0; i < count; i++) {
@@ -619,13 +683,104 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     }
 
     /**
+     * 获取更新后的目的地信息
+     *
+     * @return BaseDestInfo
+     */
+    private BaseDestInfo getBaseDestInfo() {
+        final RouteParam routeParam = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (null != routeParam) {
+            final BaseDestInfo destInfo = new BaseDestInfo();
+            destInfo.setName(routeParam.getName());
+            destInfo.setAddress(routeParam.getAddress());
+            if (null != routeParam.getRealPos()) {
+                final BaseGeoPoint location = new BaseGeoPoint(routeParam.getRealPos().getLon(), routeParam.getRealPos().getLat());
+                destInfo.setLocation(location);
+            }
+            Logger.i(TAG, "getDestInfo");
+            return destInfo;
+        } else {
+            Logger.i(TAG, "EndPoint is null");
+            return null;
+        }
+    }
+
+    /**
      * 关闭路线规划结果回调.
      */
     private void closeRouteException() {
         try {
             mRouteCallbackList.finishBroadcast();
+            mInRouteCallBack = false;
         } catch (IllegalStateException exception) {
             Logger.e(TAG, "finishRouteBroadcast error: " + exception.getMessage());
+        }
+    }
+
+
+    private String transformBeanDefine(final String orig) {
+        if (ConvertUtils.isEmpty(orig)) {
+            return null;
+        }
+        final List<PoiInfoForExport> poiList = GsonUtils.fromJson2List(orig,new TypeToken<List<PoiInfoForExport>>(){}.getType());
+        final List<BaseFsaPoiInfo> poiExportList = new ArrayList<>();
+        for (int i = 0; i < poiList.size(); ++i) {
+            final BaseFsaPoiInfo temp = new BaseFsaPoiInfo();
+            temp.setName(poiList.get(i).getName());
+            temp.setLocation(new BaseGeoPoint(
+                    poiList.get(i).getLocation().getLng(),
+                    poiList.get(i).getLocation().getLat())
+            );
+            poiExportList.add(temp);
+        }
+        Logger.d(TAG, "Export POI size : ", poiExportList.size());
+        return GsonUtils.toJson(poiExportList);
+    }
+
+    private void handleExportEvent(final int eventId, final String eventStr) {
+        try {
+            Logger.d(TAG, "onPoiInform in broadcast = ", eventId);
+            final int count = mPoiCallbackList.beginBroadcast();
+            for (int i = 0; i < count; i++) {
+                final INaviAutoPoiCallBack poiCallback = mPoiCallbackList.getRegisteredCallbackItem(i);
+                if (null != poiCallback) {
+                    try {
+                        switch (eventId) {
+                            case FsaConstant.FsaFunction.ID_CHARGING_STATIONS_POI:
+                                poiCallback.onChargingStationInform(eventStr);
+                                break;
+                            case FsaConstant.FsaFunction.ID_PARKING_LOT_POI:
+                                poiCallback.onParkingLotInform(eventStr);
+                                break;
+                            case FsaConstant.FsaFunction.ID_SERVICE_POI:
+                                poiCallback.onSAPAInform(eventStr);
+                                break;
+                            case FsaConstant.FsaFunction.ID_GAS_STATION_POI:
+                                poiCallback.onGasStationInform(eventStr);
+                                break;
+                            default:
+                                Logger.e(TAG, "unKnown eventId");
+                                break;
+                        }
+                    } catch (RemoteException exception) {
+                        Logger.e(TAG, "dispatch poi inform error: " + exception.getMessage());
+                    }
+                }
+            }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } finally {
+            closePoiInformCallback();
+        }
+    }
+
+    private void closePoiInformCallback() {
+        if (null != mPoiCallbackList) {
+            try {
+                mPoiCallbackList.finishBroadcast();
+            } catch (IllegalStateException illegalStateException) {
+                Logger.e(TAG, "finishPoiBroadcast error: " + illegalStateException.getMessage());
+            }
         }
     }
 
@@ -686,8 +841,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     Logger.e(TAG, "NaviETAInfo is null, can't process tbt");
                     return;
                 }
-
                 mBaseTurnInfo = GsonUtils.convertToT(naviETAInfo, BaseTurnInfo.class);
+                mBaseTurnInfo.setSRManeuverID(convertTurnIDType(naviETAInfo.getCurManeuverID()));
                 formatEtaInfo();
                 dispatchTurnInfo();
             }
@@ -771,7 +926,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             mBaseTurnInfo.setDriveDist(mTmcFinishDistance);
         }
         mBaseTurnInfo.setTotalDist(mTmcTotalDistance);
-        long totalTime = TimeUtils.getInstance().getCurrentSecondS() + mBaseTurnInfo.getRemainTime();
+        final long totalTime = TimeUtils.getInstance().getCurrentSecondS() + mBaseTurnInfo.getRemainTime();
         mBaseTurnInfo.setArriveTime(totalTime);
 
         final int remainTime = mBaseTurnInfo.getRemainTime();
@@ -1165,6 +1320,20 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     }
 
     @Override
+    public void addNaviAutoPoiCallBack(String pkgName, INaviAutoPoiCallBack naviAutoPoiCallBack) {
+        if (null != naviAutoPoiCallBack) {
+            mPoiCallbackList.register(naviAutoPoiCallBack);
+        }
+    }
+
+    @Override
+    public void removeNaviAutoPoiCallBack(String pkgName, INaviAutoPoiCallBack naviAutoPoiCallBack) {
+        if (null != naviAutoPoiCallBack) {
+            mPoiCallbackList.unregister(naviAutoPoiCallBack);
+        }
+    }
+
+    @Override
     public void addNaviAutoCountDownLightCallback(final String pkgName, final INaviAutoCountDownLightCallback countDownLightCallback) {
         if (null != countDownLightCallback) {
             mCountDownLightCallbackList.register(countDownLightCallback, pkgName);
@@ -1523,5 +1692,37 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         Logger.d(TAG, "open PassBy search");
         openMap(INNER_CLIENT);
         NaviPackage.getInstance().exportOpenPassBy(MapType.MAIN_SCREEN_MAIN_MAP);
+    }
+
+    /**
+     * 转向箭头id转换.
+     *
+     * @param type TBT类型.
+     * @return hudTBT类型.
+     */
+    private static int convertTurnIDType(final int type) {
+        return switch (type) {
+            case 0x2 -> 7;
+            case 0x3 -> 3;
+            case 0x4 -> 8;
+            case 0x5 -> 2;
+            case 0x6 -> 6;
+            case 0x7 -> 4;
+            case 0x8 -> 5;
+            case 0x9 -> 1;
+            case 0xA -> 25;
+            case 0xB -> 9;
+            case 0xC -> 10;
+            case 0xD -> 0;// 服务区
+            case 0xE -> 31;
+            case 0xF -> 24;
+            case 0x15 -> 75;
+            case 0x16 -> 71;
+            case 0x17 -> 69;
+            case 0x18 -> 73;
+            case 0x41 -> 11;
+            case 0x42 -> 12;
+            default -> 0;
+        };
     }
 }

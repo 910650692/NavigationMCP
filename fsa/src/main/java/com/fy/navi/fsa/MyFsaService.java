@@ -11,6 +11,7 @@ import android.view.Display;
 
 import androidx.annotation.WorkerThread;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -116,6 +117,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final Object mLock = new Object();
     private static final int IS_GB = 1;
     private static final int IS_CLEA = 0;
+
+    private ExportEventCallBack mEventCallBack;
 
     private final Map<Integer, Set<String>> mSubscriberMap = new HashMap<>();
 
@@ -259,6 +262,23 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             mServiceInitSuccess = false;
         }
         StartService.getInstance().unregisterSdkCallback(mEngineObserver);
+    }
+
+    /**
+     * 注册发送给MapService事件回调
+     *
+     * @param callBack ExportEventCallBack
+     */
+    public void registerExportEventCallBack(final ExportEventCallBack callBack) {
+        if (mEventCallBack == null) {
+            mEventCallBack = callBack;
+        }
+    }
+
+    public void unregisterExportEventCallBack(final ExportEventCallBack callBack) {
+        if (mEventCallBack == callBack) {
+            mEventCallBack = null;
+        }
     }
 
     /**
@@ -563,6 +583,16 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      * @param info       使用payload装在的信息，json格式.
      */
     public void sendEvent(final int functionId, final String info, final boolean isSave) {
+        if (functionId == FsaConstant.FsaFunction.ID_CHARGING_STATIONS_POI
+                || functionId == FsaConstant.FsaFunction.ID_PARKING_LOT_POI
+                || functionId == FsaConstant.FsaFunction.ID_SERVICE_POI
+                || functionId == FsaConstant.FsaFunction.ID_GAS_STATION_POI) {
+            if (!ConvertUtils.isEmpty(mEventCallBack)) {
+                Logger.d(FsaConstant.FSA_TAG, "send event to mapService");
+                mEventCallBack.onEventInform(functionId, info);
+            }
+        }
+
         final FsaServiceEvent event = (FsaServiceEvent) mService.eventHandler.getEventById(functionId);
         event.setOutputPayload(info.getBytes(StandardCharsets.UTF_8));
         JsonLog.saveJsonToCache(info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
@@ -1272,4 +1302,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             processMapCrossPicture(bytes);
         }
     };
+
+    public interface ExportEventCallBack {
+        void onEventInform(final int eventId, final String eventStr);
+    }
 }

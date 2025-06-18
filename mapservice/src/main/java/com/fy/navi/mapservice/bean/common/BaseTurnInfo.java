@@ -29,6 +29,9 @@ public class BaseTurnInfo implements Parcelable {
     private int mDriveDist; //已经行驶的距离，单位米
     private int mTotalDist; //导航总距离，单位米
 
+    //sr分屏
+    private int mSRManeuverID = -1; //sr分屏所需的转向id
+
     public BaseTurnInfo() {
 
     }
@@ -246,6 +249,13 @@ public class BaseTurnInfo implements Parcelable {
 
     public void setArriveTime(long mArriveTime) {
         this.mArriveTime = mArriveTime;
+    }
+    public int getSRManeuverID() {
+        return mSRManeuverID;
+    }
+
+    public void setSRManeuverID(int SRManeuverID) {
+        this.mSRManeuverID = SRManeuverID;
     }
 
 }

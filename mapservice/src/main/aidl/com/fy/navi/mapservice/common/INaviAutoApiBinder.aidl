@@ -7,6 +7,7 @@ import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
 import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
 import com.fy.navi.mapservice.common.INaviAutoStatusCallback;
 import com.fy.navi.mapservice.common.INaviAutoSpeedCallBack;
+import com.fy.navi.mapservice.common.INaviAutoPoiCallBack;
 import com.fy.navi.mapservice.bean.common.BaseGeoPoint;
 import com.fy.navi.mapservice.bean.common.BaseSearchPoi;
 import com.fy.navi.mapservice.bean.common.BaseTurnInfo;
@@ -40,6 +41,10 @@ interface INaviAutoApiBinder {
     void addNaviAutoSpeedCallBack(String pkgName, INaviAutoSpeedCallBack naviAutoSpeedCallBack);
 
     void removeNaviAutoSpeedCallBack(String pkgName, INaviAutoSpeedCallBack naviAutoSpeedCallBack);
+
+    void addNaviAutoPoiCallBack(String pkgName, INaviAutoPoiCallBack naviAutoPoiCallBack);
+
+    void removeNaviAutoPoiCallBack(String pkgName, INaviAutoPoiCallBack naviAutoPoiCallBack);
 
     void openMap(String pkgName);
 

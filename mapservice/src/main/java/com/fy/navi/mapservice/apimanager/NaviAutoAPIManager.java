@@ -10,12 +10,14 @@ import com.fy.navi.mapservice.base.MapSdk;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.mapservice.bean.common.BaseSearchPoi;
 import com.fy.navi.mapservice.bean.common.BaseGeoPoint;
+import com.fy.navi.mapservice.callback.OnDestChangeListener;
 import com.fy.navi.mapservice.callback.OnDistrictInfoChangeListener;
 import com.fy.navi.mapservice.callback.OnGuidePanelDataListener;
 import com.fy.navi.mapservice.callback.OnInitStateChangeListener;
 import com.fy.navi.mapservice.callback.OnLocationChangeListener;
 import com.fy.navi.mapservice.callback.OnNaviBroadcastStateListener;
 import com.fy.navi.mapservice.callback.OnNaviStatusChangeListener;
+import com.fy.navi.mapservice.callback.OnPoiInformListener;
 import com.fy.navi.mapservice.callback.OnRoutePlanResultListener;
 import com.fy.navi.mapservice.callback.OnSearchResultListener;
 import com.fy.navi.mapservice.callback.OnSpeedLimitChangeListener;
@@ -25,6 +27,7 @@ import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
 import com.fy.navi.mapservice.common.INaviAutoCountDownLightCallback;
 import com.fy.navi.mapservice.common.INaviAutoLocationCallback;
+import com.fy.navi.mapservice.common.INaviAutoPoiCallBack;
 import com.fy.navi.mapservice.common.INaviAutoRouteCallback;
 import com.fy.navi.mapservice.common.INaviAutoSearchCallback;
 import com.fy.navi.mapservice.common.INaviAutoSpeedCallBack;
@@ -52,6 +55,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     private final List<OnTurnInfoChangeListener> mTurnInfoListenerList = new ArrayList<>();
     private final List<OnSrNaviInfoChangeListener> mSrNaviInfoListenerList = new ArrayList<>();
     private final List<OnNaviBroadcastStateListener> mNaviBroadcastListenerList = new ArrayList<>();
+    private final List<OnDestChangeListener> mDestChangeListenerList = new ArrayList<>();
+    private final List<OnPoiInformListener> mPoiInfoListenerList = new ArrayList<>();
 
     public static NaviAutoAPIManager getInstance() {
         return SingleHolder.INSTANCE;
@@ -141,6 +146,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 mBinder.addNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
                 mBinder.addNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
                 mBinder.addNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
+                mBinder.addNaviAutoPoiCallBack(mPkgName, mNaviAutoPoiCallBack);
                 mBinder.addNaviAutoCountDownLightCallback(mPkgName, mCountDownLightCallback);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "registerNaviAutoApiCallback error: " + exception.getMessage());
@@ -158,6 +164,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 mBinder.removeNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
                 mBinder.removeNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
                 mBinder.removeNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
+                mBinder.removeNaviAutoPoiCallBack(mPkgName, mNaviAutoPoiCallBack);
                 mBinder.removeNaviAutoCountDownLightCallback(mPkgName, mCountDownLightCallback);
             } catch (RemoteException exception) {
                 Logger.e(TAG, "unRegisterNaviAutoApiCallback error: " + exception.getMessage());
@@ -233,7 +240,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 if (null != naviBroadcastStateListener) {
                     try {
                         naviBroadcastStateListener.onNaviBroadcastStateChanged(open);
-                    } catch (NullPointerException | IllegalArgumentException | IllegalStateException exception) {
+                    } catch (NullPointerException | IllegalArgumentException |
+                             IllegalStateException exception) {
                         Logger.e(TAG, "dispatch naviBroadcastState: " + exception.getMessage());
                     }
                 }
@@ -353,6 +361,21 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 }
             }
         }
+
+        @Override
+        public void onDestChanged(final String destInfo) {
+            Logger.d(TAG, mPkgName + "-->  onDestChanged: " + destInfo);
+            for (OnDestChangeListener listener : mDestChangeListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onDestChangeListener(destInfo);
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch destInfo error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
     };
 
     private final INaviAutoSpeedCallBack mNaviAutoSpeedCallBack = new INaviAutoSpeedCallBack.Stub() {
@@ -366,6 +389,68 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                     } catch (NullPointerException | IllegalArgumentException | ClassCastException
                              | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch speedLimitChange error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+    };
+
+    private final INaviAutoPoiCallBack mNaviAutoPoiCallBack = new INaviAutoPoiCallBack.Stub() {
+        @Override
+        public void onChargingStationInform(final String chargingStationInfo) {
+            Logger.d(TAG, mPkgName + "-->  onChargingStationInform");
+            for (OnPoiInformListener listener : mPoiInfoListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onChargingStationInform(chargingStationInfo);
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch chargingStationInfo error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onParkingLotInform(final String parkingLotInfo) {
+            Logger.d(TAG, mPkgName + "-->  onParkingLotInform");
+            for (OnPoiInformListener listener : mPoiInfoListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onParkingLotInform(parkingLotInfo);
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch parkingLotInfo error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onSAPAInform(final String serviceInfo) {
+            Logger.d(TAG, mPkgName + "-->  onSAPAInform");
+            for (OnPoiInformListener listener : mPoiInfoListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onSAPAInform(serviceInfo);
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch serviceInfo error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onGasStationInform(final String gasStationInfo) {
+            Logger.d(TAG, mPkgName + "-->  onGasStationInform");
+            for (OnPoiInformListener listener : mPoiInfoListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onGasStationInform(gasStationInfo);
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch gasStationInfo error: " + exception.getMessage());
                     }
                 }
             }
@@ -716,6 +801,50 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void removeNaviBroadcastChangeListener(final OnNaviBroadcastStateListener naviBroadcastStateListener) {
         if (mInitStatus && null != naviBroadcastStateListener) {
             mNaviBroadcastListenerList.remove(naviBroadcastStateListener);
+        }
+    }
+
+    /**
+     * 添加目的地变更监听
+     *
+     * @param listener OnDestChangeListener.
+     */
+    public void addDestChangeListener(final OnDestChangeListener listener) {
+        if (mInitStatus && null != listener && !mDestChangeListenerList.contains(listener)) {
+            mDestChangeListenerList.add(listener);
+        }
+    }
+
+    /**
+     * 移除目的地变更监听
+     *
+     * @param listener OnDestChangeListener.
+     */
+    public void removeDestChangeListener(final OnDestChangeListener listener) {
+        if (mInitStatus && null != listener) {
+            mDestChangeListenerList.remove(listener);
+        }
+    }
+
+    /**
+     * 添加POI通知监听
+     *
+     * @param listener OnPoiInformListener.
+     */
+    public void addPoiInformListener(final OnPoiInformListener listener) {
+        if (mInitStatus && null != listener && !mPoiInfoListenerList.contains(listener)) {
+            mPoiInfoListenerList.add(listener);
+        }
+    }
+
+    /**
+     * 移除POI通知监听
+     *
+     * @param listener OnPoiInformListener.
+     */
+    public void removePoiInformListener(final OnPoiInformListener listener) {
+        if (mInitStatus && null != listener) {
+            mPoiInfoListenerList.remove(listener);
         }
     }
 
@@ -1072,7 +1201,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     /**
      * Launcher widget接口，打开/关闭引导播报.
      *
-     * @param open  true-打开  false-关闭.
+     * @param open true-打开  false-关闭.
      */
     public void toggleNaviBroadcast(final boolean open) {
         if (mInitStatus && checkBinder()) {
