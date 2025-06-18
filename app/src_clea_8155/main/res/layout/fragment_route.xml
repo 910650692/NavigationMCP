@@ -171,7 +171,7 @@
             android:id="@+id/route_poi_details"
             layout="@layout/route_poi_details_page"
             android:layout_width="@dimen/dp_698"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:clickable="true"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 5 ? View.VISIBLE : View.GONE}"
             tools:visibility="gone"/>

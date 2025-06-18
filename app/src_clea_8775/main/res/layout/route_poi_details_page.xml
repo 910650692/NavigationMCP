@@ -13,7 +13,7 @@
     </data>
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_698"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:clickable="true"
         android:paddingHorizontal="@dimen/dp_29"
@@ -180,6 +180,7 @@
             android:layout_marginStart="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_38"
+            app:layout_constraintTop_toBottomOf="@id/poi_base_layout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 

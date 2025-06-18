@@ -56,10 +56,11 @@
         
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stl_go_first"
-            android:layout_width="@dimen/dp_223"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_90"
             android:text="@string/go_first"
             android:gravity="center"
+            android:layout_weight="1"
             android:textSize="@dimen/sp_34"
             android:layout_gravity="center_vertical"
             android:background="@drawable/bg_cancel"
@@ -69,16 +70,13 @@
             app:layout_constraintTop_toTopOf="@+id/stl_start_route"
             app:layout_constraintBottom_toBottomOf="@+id/stl_start_route"
             tools:visibility="visible"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_function"
-            android:layout_width="wrap_content"
-
+            android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_16"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/stl_go_first">
 
@@ -86,7 +84,6 @@
                 android:id="@+id/stl_phone"
                 android:layout_width="@dimen/dp_90"
                 android:layout_height="match_parent"
-
                 app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="parent">
@@ -116,7 +113,6 @@
                 android:id="@+id/stl_around_search"
                 android:layout_width="@dimen/dp_90"
                 android:layout_height="match_parent"
-
                 android:layout_marginStart="@dimen/dp_16"
                 tools:visibility="visible"
                 app:layout_constraintEnd_toStartOf="@+id/stl_poi_favorites"
@@ -147,7 +143,6 @@
                 android:id="@+id/stl_poi_favorites"
                 android:layout_width="@dimen/dp_90"
                 android:layout_height="match_parent"
-
                 tools:visibility="visible"
                 android:layout_marginStart="@dimen/dp_16"
                 app:layout_constraintEnd_toEndOf="parent"

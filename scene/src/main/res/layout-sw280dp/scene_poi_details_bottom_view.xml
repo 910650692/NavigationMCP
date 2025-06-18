@@ -22,6 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_120"
             android:focusable="true"
+            app:layout_constraintHorizontal_weight="1"
             android:minWidth="@dimen/dp_285"
             android:maxWidth="@dimen/dp_716"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -62,10 +63,11 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stl_go_first"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_120"
             android:layout_marginStart="@dimen/dp_24"
             android:focusable="true"
+            app:layout_constraintHorizontal_weight="1"
             android:minWidth="@dimen/dp_285"
             android:background="@drawable/bg_cancel"
             android:gravity="center"
@@ -82,7 +84,7 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_function"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
             app:layout_constraintEnd_toEndOf="parent"
