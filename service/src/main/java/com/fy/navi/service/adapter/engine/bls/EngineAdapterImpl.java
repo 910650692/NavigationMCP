@@ -202,24 +202,30 @@ public class EngineAdapterImpl implements IEngineApi {
         final BaseInitParam baseInitParam = new BaseInitParam();
         baseInitParam.logFileName = "amap.android.";
         baseInitParam.logPath = GBLCacheFilePath.BLS_LOG;
+        Logger.d(TAG, "logPath ", baseInitParam.logPath);
         baseInitParam.logLevel = ALCLogLevel.LogLevelDebug;
         /* 日志掩码 */
         baseInitParam.groupMask = ALCGroup.GROUP_MASK_ALL;
         /* 日志输出的方式是同步还是异步，默认异步 */
         baseInitParam.async = false;
         /* AutoSDK底层JNI层的日志是否打印到logcat一同输出 */
-        baseInitParam.bLogcat = false;
+        baseInitParam.bLogcat = true;
         /* 后台服务器类型，默认用正式发布环境类型（千万不要轻易切换类型）*/
         baseInitParam.serverType = ServiceManagerEnum.AosProductionEnv;
         /* 访问后台服务的cookie存放路径 */
         baseInitParam.aosDBPath = GBLCacheFilePath.BLS_COOKIES_PATH;
+        Logger.d(TAG, "aosDBPath ", baseInitParam.aosDBPath);
         //BL_SDK资源文件的原始目录，如 /android_assets/blRes/
         baseInitParam.assetPath = GBLCacheFilePath.BLS_ASSETS_PATH;
+        Logger.d(TAG, "assetPath ", baseInitParam.assetPath);
         //缓存目录，存放asset导出文件或日志文件等
         baseInitParam.cachePath = GBLCacheFilePath.COPY_ASSETS_DIR;
+        Logger.d(TAG, "cachePath ", baseInitParam.cachePath);
         //用户数据目录，保存用户生成数据
         baseInitParam.userDataPath = GBLCacheFilePath.USER_CACHE_PATH;
+        Logger.d(TAG, "userDataPath ", baseInitParam.userDataPath);
         baseInitParam.channelName = mChanelName;
+        Logger.d(TAG, "channelName ", baseInitParam.channelName);
         baseInitParam.setIPlatformInterface(PLAT_FORM_INTERFACE);
         if (FileUtils.getInstance().checkFileDir(GBLCacheFilePath.GM_LOG_ROOT_PATH) &&
                 FileUtils.getInstance().setFullPermissions(GBLCacheFilePath.GM_LOG_ROOT_PATH)) {
@@ -228,6 +234,7 @@ public class EngineAdapterImpl implements IEngineApi {
             baseInitParam.logPath = GBLCacheFilePath.BLS_LOG;
             FileUtils.getInstance().setFullPermissions(GBLCacheFilePath.GBL_MAP);
         }
+        Logger.d(TAG, "logPath ", baseInitParam.logPath);
         boolean dir = FileUtils.getInstance().createDir(baseInitParam.logPath);
         Logger.i(TAG, "create log file path", baseInitParam.logPath + ",dir：" + dir);
         final int result = ServiceMgr.getServiceMgrInstance().initBaseLibs(baseInitParam, AppCache.getInstance().getMApplication());
