@@ -53,8 +53,8 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
         switch (item.getBusinessType()) {
             case BizSearchType.BizSearchTypePoiParentPoint -> {
                 int index = getIndexOfLayerItem(item);
-                if (index <= 11 && (mPoiInfoList.get().size() > index)) {
-                    PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
+                if (index <= 11 && (mPoiInfoList.get().size() > (index -1))) {
+                    PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index - 1);
                     if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
                         Logger.d(TAG, "搜索列表可见数字扎标-index =" + index);
                         return KEY_SEARCH_LIST_INDEX + "_" + index;
@@ -67,8 +67,8 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             }
             case BizSearchType.BizSearchTypeChargeStation -> {
                 int index = getIndexOfLayerItem(item);
-                if (index <= 11 && (mPoiInfoList.get().size() > index)) {
-                    PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
+                if (index <= 11 && (mPoiInfoList.get().size() > (index - 1))) {
+                    PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index - 1);
                     if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
                         Logger.d(TAG, "搜索充电桩 列表可见数字扎标-index =" + index);
                         return KEY_SEARCH_LIST_CHARGE_INDEX + "_" + index;
