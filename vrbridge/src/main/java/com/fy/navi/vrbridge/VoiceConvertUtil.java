@@ -8,6 +8,7 @@ import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.greendao.favorite.Favorite;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,8 @@ import java.util.List;
 public final class VoiceConvertUtil {
 
     private static final String INTEGER_MATCH = "-?\\d+";
+    //较远POI点高德返回的距离
+    private static final String ZERO_DIST = "0米";
 
     private VoiceConvertUtil() {
 
@@ -44,7 +47,17 @@ public final class VoiceConvertUtil {
             final PoiBean poiBean = new PoiBean();
             poiBean.setName(poiInfo.getName());
             poiBean.setAddress(poiInfo.getAddress());
-            poiBean.setDistance(poiInfo.getDistance());
+            poiBean.setUid(poiInfo.getPid());
+            final GeoPoint geoPoint = poiInfo.getPoint();
+            if (null != geoPoint) {
+                poiBean.setLongitude(geoPoint.getLon());
+                poiBean.setLatitude(geoPoint.getLat());
+            }
+            if (ZERO_DIST.equals(poiBean.getDistance()) && null != geoPoint) {
+                poiBean.setDistance(SearchPackage.getInstance().calcStraightDistance(geoPoint));
+            } else {
+                poiBean.setDistance(poiBean.getDistance());
+            }
             poiBeanList.add(poiBean);
         }
 
