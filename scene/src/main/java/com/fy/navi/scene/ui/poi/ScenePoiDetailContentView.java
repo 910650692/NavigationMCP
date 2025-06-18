@@ -728,7 +728,15 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private void initNormalView() {
         if (mViewBinding != null && mPoiInfoEntity != null) {
             mViewBinding.skPoiName.setText(mPoiInfoEntity.getName());
-            mViewBinding.poiSecondAddress.setText(mPoiInfoEntity.getAddress());
+            if (ConvertUtils.isEmpty(mPoiInfoEntity.getAddress())) {
+                //地址为空时，显示地区名称
+                CityDataInfo cityDataInfo = mScreenViewModel.getCityInfo(mPoiInfoEntity.getAdCode());
+                if (!ConvertUtils.isEmpty(cityDataInfo)) {
+                    mViewBinding.poiSecondAddress.setText(cityDataInfo.getName());
+                }
+            } else {
+                mViewBinding.poiSecondAddress.setText(mPoiInfoEntity.getAddress());
+            }
             if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
                 mViewBinding.scenePoiDetailsNormalView.poiBusinessHoursLayout.setVisibility(View.GONE);
             } else {
