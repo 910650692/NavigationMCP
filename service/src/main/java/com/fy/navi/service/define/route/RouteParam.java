@@ -15,6 +15,7 @@ import lombok.Setter;
 @Setter
 public class RouteParam implements Parcelable {
     private @RoutePoiType.RoutePoiTypeId int mPoiType; // poi点位类型(必选)
+    private int mAddressType; // 地点类型: 0默认 , 1 替换补能点, 2 充电站（非补能规划）
     private GeoPoint mRealPos; // 实际位置坐标(必选)
     private GeoPoint mNaviPos; // 导航位置坐标
     private int mType;// 行程点类型: 0默认 当前gps位置, 1 手动选择, 2 poi方式(必选) 如果是POI搜索结果，这里一定要填2

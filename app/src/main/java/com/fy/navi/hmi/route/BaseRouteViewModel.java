@@ -465,17 +465,26 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private int mSeartype;
     private int mSearchListType = 0;
     private List<RouteParam> mGasChargeAlongList;
+    //由于buick cadi缺少CR UI，临时参数
+    public boolean isNDCar() {
+        return false;
+    }
+
+
     private Runnable mHideSecondaryPoi = new Runnable() {
         @Override
         public void run() {
             if (mSecondaryPoiVisibility != null) {
                 //TODO CR
-//                if (mShowSupplement) {
-//                    mSecondaryPoiVisibility.set(2);
-//                } else {
-//                    mSecondaryPoiVisibility.set(0);
-//                }
-                mSecondaryPoiVisibility.set(0);
+                if (isNDCar()) {
+                    if (mShowSupplement) {
+                        mSecondaryPoiVisibility.set(2);
+                    } else {
+                        mSecondaryPoiVisibility.set(0);
+                    }
+                } else {
+                    mSecondaryPoiVisibility.set(0);
+                }
             }
         }
     };

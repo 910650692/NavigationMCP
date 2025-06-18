@@ -209,6 +209,12 @@
     <string name="route_supplement_plan">充电规划</string>
     <string name="route_replace">替换</string>
     <string name="route_invalid">-</string>
+    <string name="route_supplement_achieve">%s%%到达，%s分钟冲到%s%%</string>
+    <string name="route_replace_supplement_achieve">-%到达，-分钟冲到-%</string>
+    <string name="route_off_highway">需下高速</string>
+    <string name="route_no_replace_supplement">无可用备选站,请实时关注续航</string>
+    <string name="route_has_replace_supplement">有%d个备选站</string>
+    <string name="route_alternative">备选%d</string>
     <string name="confirm">是的</string>
     <string name="cancel">取消</string>
     <string name="is_arrived">是否已抵达%s？</string>

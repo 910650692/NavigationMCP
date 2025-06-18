@@ -23,6 +23,8 @@ public class RouteAlterChargeStationInfo implements Serializable {
     private RouteChargeStationNumberInfo mSlowPlugInfo;
     private RouteAlterChargePriceInfo mPriceInfo;
     private RouteAlternativeChargeDetourInfo mDetourInfo;
+    //替换补能界面-距离参数
+    private int mDistance;
 
     public RouteAlterChargeStationInfo() {
         this.mPoiId = "";

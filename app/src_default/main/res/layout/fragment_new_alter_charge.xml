@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="@{viewModel.showAlterCharge ?  View.VISIBLE : View.GONE}">
-        
+
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_153"
@@ -48,24 +48,27 @@
 
             </com.fy.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_956"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_287"
+                android:maxHeight="@dimen/dp_956"
                 android:layout_marginTop="@dimen/dp_113"
                 android:background="@drawable/bg_shadow_navi_ndlc_8155"
                 android:orientation="horizontal"
                 android:paddingVertical="@dimen/dp_29"
                 android:paddingHorizontal="@dimen/dp_29"
                 app:layout_constraintTop_toTopOf="parent">
-                
+
                 <com.fy.navi.ui.view.SkinRecyclerView
                     android:id="@+id/rv_supplement"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/dp_0"
                     android:paddingTop="@dimen/dp_5"
-                    android:paddingBottom="@dimen/dp_34"/>
+                    android:paddingBottom="@dimen/dp_34"
+                    app:layout_constraintHeight_max="@dimen/dp_922"/>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 

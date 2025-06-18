@@ -17,6 +17,7 @@ import com.autonavi.gbl.common.path.model.TrafficIncident;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.route.model.BLRerouteRequestInfo;
 import com.autonavi.gbl.route.observer.INaviRerouteObserver;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.route.Coord3DDouble;
 import com.fy.navi.service.define.route.RouteAlterChargePriceInfo;
 import com.fy.navi.service.define.route.RouteAlternativeChargeDetourInfo;
@@ -109,8 +110,10 @@ import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * RouteService辅助类.
@@ -666,10 +669,9 @@ public class RouteAdapterImplHelper {
 //                handlerRouteResult(requestRouteResult, pathInfoList);
 //            }
             handlerRouteResult(requestRouteResult, pathInfoList);
-            handlerChargingStation(requestRouteResult.getMRouteChargeStationParam(), pathInfoList,
-                    requestId, requestRouteResult.getMMapTypeId());
             handlerDrawLine(requestRouteResult.getMLineLayerParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
+            handlerChargingStation(requestRouteResult, pathInfoList, requestId, requestRouteResult.getMMapTypeId());
             handlerRestriction(requestRouteResult.getMRouteRestrictionParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
             handlerRange(pathInfoList, requestRouteResult.isMIsOnlineRoute());
@@ -942,56 +944,106 @@ public class RouteAdapterImplHelper {
     /**
      * 路线上充电站数据
      *
-     * @param routeChargeStationParam 充电站信息
+     * @param requestRouteResult      算路结果
      * @param pathInfoList            路线信息
      * @param requestId               请求Id
      * @param mapTypeId               视图Id
      */
-    private void handlerChargingStation(final RouteChargeStationParam routeChargeStationParam,
+    private void handlerChargingStation(final RequestRouteResult requestRouteResult,
                                         final ArrayList<PathInfo> pathInfoList, final long requestId, final MapType mapTypeId) {
-        //TODO CR
+        List<RouteParam> chargeParams = new ArrayList<>();
+        List<RouteParam> routeParams = requestRouteResult.getMRouteParams();
+        for (RouteParam routeParam : routeParams) {
+            if (routeParam.getMAddressType() == AutoMapConstant.ParamPoiType.SUPPLEMENT_POINT) {
+                chargeParams.add(routeParam);
+            }
+        }
+        RouteChargeStationParam routeChargeStationParam = requestRouteResult.getMRouteChargeStationParam();
         routeChargeStationParam.setMRequestId(requestId);
         routeChargeStationParam.setMMapTypeId(mapTypeId);
         final ArrayList<RouteChargeStationInfo> chargeStationInfos = new ArrayList<>();
-//        final ArrayList<RouteSupplementParams> mRouteSupplementParams = new ArrayList<>();
+        final ArrayList<RouteSupplementParams> mRouteSupplementParams = new ArrayList<>();
         routeChargeStationParam.setMPathInfoList(pathInfoList);
         for (PathInfo pathInfo : pathInfoList) {
+            List<RouteParam> chargeParamList = new ArrayList<>(chargeParams);
             final RouteChargeStationInfo routeChargeStationInfo = new RouteChargeStationInfo();
-//            final RouteSupplementParams routeSupplementInfo = new RouteSupplementParams();
+            final RouteSupplementParams routeSupplementInfo = new RouteSupplementParams();
             final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfos = new ArrayList<>();
-//            final ArrayList<RouteSupplementInfo> routeSupplementInfos = new ArrayList<>();
+            final ArrayList<RouteSupplementInfo> routeSupplementInfos = new ArrayList<>();
             if (pathInfo.getChargeStationInfo() == null || pathInfo.getChargeStationInfo().isEmpty()) {
                 Logger.d("handlerChargingStation null");
                 routeChargeStationInfo.setMRouteChargeStationDetailInfo(routeChargeStationDetailInfos);
-//                routeSupplementInfo.setMRouteSupplementInfos(routeSupplementInfos);
+                routeSupplementInfo.setMRouteSupplementInfos(routeSupplementInfos);
                 chargeStationInfos.add(routeChargeStationInfo);
-//                mRouteSupplementParams.add(routeSupplementInfo);
+                mRouteSupplementParams.add(routeSupplementInfo);
                 continue;
             }
-            Logger.d("handlerChargingStation " + GsonUtils.toJson(pathInfo.getChargeStationInfo()));
+            Logger.d("handlerChargingStation " + pathInfo.getChargeStationInfo().size());
             for (ChargeStationInfo chargeStationInfo : pathInfo.getChargeStationInfo()) {
                 final RouteChargeStationDetailInfo routeChargeStationDetailInfo = getRouteChargeStationDetailInfo(chargeStationInfo);
-//                final RouteSupplementInfo routeSupplementParam = getRouteSupplementParam(chargeStationInfo);
-//                routeSupplementParam.setMRouteChargeStationDetailInfo(routeChargeStationDetailInfo);
+                final RouteSupplementInfo routeSupplementParam = getRouteSupplementParam(chargeStationInfo);
+                removeRouteParam(chargeParamList, routeSupplementParam);
+                routeSupplementParam.setMRouteChargeStationDetailInfo(routeChargeStationDetailInfo);
                 routeChargeStationDetailInfos.add(routeChargeStationDetailInfo);
-//                routeSupplementInfos.add(routeSupplementParam);
+                routeSupplementInfos.add(routeSupplementParam);
+            }
+            if (!chargeParamList.isEmpty()) {
+                for (RouteParam chargeParam : chargeParamList) {
+                    final RouteSupplementInfo routeSupplementParam = getRouteSupplementParam(chargeParam.getMPoiInfoEntity());
+                    routeSupplementInfos.add(routeSupplementParam);
+                }
             }
             routeChargeStationInfo.setMRouteChargeStationDetailInfo(routeChargeStationDetailInfos);
-//            routeSupplementInfo.setMRouteSupplementInfos(routeSupplementInfos);
-//            routeSupplementInfo.setMTotalDistance(pathInfo.getLength());
+            routeSupplementInfo.setMRouteSupplementInfos(routeSupplementInfos);
+            routeSupplementInfo.setMTotalDistance(pathInfo.getLength());
 
-            // TODO 途径点列表转化
             chargeStationInfos.add(routeChargeStationInfo);
-//            mRouteSupplementParams.add(routeSupplementInfo);
+            mRouteSupplementParams.add(routeSupplementInfo);
         }
         routeChargeStationParam.setMRouteChargeStationInfos(chargeStationInfos);
-//        routeChargeStationParam.setMRouteSupplementParams(mRouteSupplementParams);
+        routeChargeStationParam.setMRouteSupplementParams(mRouteSupplementParams);
         for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
             if (resultObserver == null) {
                 continue;
             }
             resultObserver.onRouteChargeStationInfo(routeChargeStationParam);
         }
+    }
+
+    /**
+     * 删除相同的点
+     *
+     * @param routeParams   点集合
+     * @param routeSupplementParam 补能点信息
+     */
+    public void removeRouteParam(final List<RouteParam> routeParams,final RouteSupplementInfo routeSupplementParam) {
+        if (ConvertUtils.isEmpty(routeSupplementParam) || routeParams == null || routeParams.isEmpty()) {
+            return;
+        }
+        for (RouteParam routeParam : routeParams) {
+            if (isTheSamePoi(routeParam, routeSupplementParam)) {
+                routeParams.remove(routeParam);
+                return;
+            }
+        }
+    }
+
+    /**
+     * 是否是同一个点
+     *
+     * @param routeParam    点信息
+     * @param routeSupplementParam 点信息
+     * @return 返回是否是起点&终点
+     */
+    public boolean isTheSamePoi(final RouteParam routeParam, final RouteSupplementInfo routeSupplementParam) {
+        if (ConvertUtils.isEmpty(routeParam) || ConvertUtils.isEmpty(routeSupplementParam)
+                || ConvertUtils.isEmpty(routeParam.getRealPos())
+                || ConvertUtils.isEmpty(routeSupplementParam.getMShow())) {
+            return false;
+        }
+        return (!ConvertUtils.isEmpty(routeParam.getPoiID()) && Objects.equals(routeParam.getPoiID(), routeSupplementParam.getMPoiID()))
+                || (routeParam.getRealPos().getLat() == routeSupplementParam.getMShow().getLat()
+                && routeParam.getRealPos().getLon() == routeSupplementParam.getMShow().getLon());
     }
 
     /**
@@ -1028,11 +1080,34 @@ public class RouteAdapterImplHelper {
      */
     private RouteSupplementInfo getRouteSupplementParam(final ChargeStationInfo info) {
         final RouteSupplementInfo param = new RouteSupplementInfo();
+        param.setMType(AutoMapConstant.SupplementType.SUPPLEMENT_POINT);
         param.setMName(info.name);
         param.setMChargeTime(info.chargeTime);
         param.setMPoiID(info.poiID);
         param.setMShow(new com.fy.navi.service.define.route
                 .Coord2DDouble(ConvertUtils.transProjectionLatAndLon(info.show.lon), ConvertUtils.transProjectionLatAndLon(info.show.lat)));
+        return param;
+    }
+
+    /**
+     * 转化补能点信息
+     *
+     * @param poiInfoEntity 充电站信息
+     * @return 充电站信息
+     */
+    private RouteSupplementInfo getRouteSupplementParam(final PoiInfoEntity poiInfoEntity) {
+        if (poiInfoEntity == null) {
+            return null;
+        }
+        final RouteSupplementInfo param = new RouteSupplementInfo();
+        param.setMType(AutoMapConstant.SupplementType.REPLACE_SUPPLEMENT_POINT);
+        param.setMName(poiInfoEntity.getMName());
+        //自选补能点高德sdk无预计补能时间
+        param.setMChargeTime(-1);
+        param.setMPoiID(poiInfoEntity.getPid());
+        param.setMShow(new com.fy.navi.service.define.route
+                .Coord2DDouble(poiInfoEntity.getMPoint().getLon(), poiInfoEntity.getMPoint().getLat()));
+        param.setMPoiInfoEntity(poiInfoEntity);
         return param;
     }
 

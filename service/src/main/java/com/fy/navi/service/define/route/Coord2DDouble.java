@@ -1,6 +1,8 @@
 package com.fy.navi.service.define.route;
 
-public class Coord2DDouble {
+import java.io.Serializable;
+
+public class Coord2DDouble implements Serializable {
     public double getLon() {
         return mLon;
     }

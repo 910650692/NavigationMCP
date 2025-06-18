@@ -761,8 +761,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
-        //todo 后续不跟路线一起绘制
-        routeDrawLine();
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
         mParkSearchId = mSearchPackage.aroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
@@ -770,51 +768,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
     }
 
-    /**
-     * 配置补能点数据
-     */
-    public void routeDrawLine() {
-        final RouteChargeStationParam routeChargeStationParam = mRequestRouteResults.getMRouteChargeStationParam();
-        if (routeChargeStationParam == null) {
-            return;
-        }
-        final ArrayList<RouteChargeStationInfo> routeChargeStationInfos = routeChargeStationParam.getMRouteChargeStationInfos();
-        if (routeChargeStationInfos == null || routeChargeStationInfos.isEmpty()) {
-            return;
-        }
-        for (int i = 0;i < routeChargeStationInfos.size(); i++) {
-            final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfo = routeChargeStationInfos.get(i)
-                    .getMRouteChargeStationDetailInfo();
-            if (routeChargeStationDetailInfo != null && !routeChargeStationDetailInfo.isEmpty()) {
-                for (int j =0; j<routeChargeStationDetailInfo.size(); j++) {
-                    final int currentIndex = j;
-                    if (currentIndex == 0){
-                        getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeChargeStationDetailInfo.get(currentIndex).getMShow().getLon(),
-                                routeChargeStationDetailInfo.get(currentIndex).getMShow().getLat()))
-                                .thenAccept(etaInfo -> {
-                                    routeChargeStationDetailInfo.get(currentIndex).setMInterval(etaInfo.getDistance());
-                                })
-                                .exceptionally(error -> {
-                                    Logger.d(TAG, "showChargeStationDetail error:" + error);
-                                    return null;
-                                });
-                    } else {
-                        getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeChargeStationDetailInfo.get(currentIndex -1).getMShow().getLon(),
-                                        routeChargeStationDetailInfo.get(currentIndex-1).getMShow().getLat()),
-                                new GeoPoint(routeChargeStationDetailInfo.get(currentIndex).getMShow().getLon(),
-                                routeChargeStationDetailInfo.get(currentIndex).getMShow().getLat()))
-                                .thenAccept(etaInfo -> {
-                                    routeChargeStationDetailInfo.get(currentIndex).setMInterval(etaInfo.getDistance());
-                                })
-                                .exceptionally(error -> {
-                                    Logger.d(TAG, "showChargeStationDetail error:" + error);
-                                    return null;
-                                });
-                    }
-                }
-            }
-        }
-    }
 
     @Override
     public void onRouteRestAreaInfo(final RouteRestAreaParam routeRestAreaParam) {
@@ -952,6 +905,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mChargeStationReady = false;
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showProgressUI();
+            mViewModel.withoutSupplementPointsView();
             mViewModel.showNomalRouteUI(false);
         }
     }
@@ -1023,37 +977,43 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             }
 
             //TODO CR
-//            if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
-//                    && mRouteChargeStationParam.getMRouteSupplementParams() != null
-//                    && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
-//                    && routeIndex < mRouteChargeStationParam.getMRouteSupplementParams().size()
-//                    && mChargeStationReady) {
-//                final RouteSupplementParams routeSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams().get(routeIndex);
-//                mViewModel.updateSupplementPointsView(routeSupplementParams.getMRouteSupplementInfos()
-//                        , routeSupplementParams.getMTotalDistance());
-//            }
+            if (mViewModel != null && mViewModel.isNDCar()) {
+                if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
+                        && mRouteChargeStationParam.getMRouteSupplementParams() != null
+                        && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
+                        && routeIndex < mRouteChargeStationParam.getMRouteSupplementParams().size()
+                        && mChargeStationReady) {
+                    final RouteSupplementParams routeSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams().get(routeIndex);
+                    mViewModel.updateSupplementPointsView(routeSupplementParams.getMRouteSupplementInfos()
+                            , routeSupplementParams.getMTotalDistance());
+                }
+            }
         }
     }
 
     @Override
     public void onRouteChargeStationInfo(final RouteChargeStationParam routeChargeStationParam) {
         mRouteChargeStationParam = routeChargeStationParam;
-
-        //TODO CR
-//        if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
-//                && mRouteChargeStationParam.getMRouteSupplementParams() != null
-//                && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
-//                && getCurrentIndex() < mRouteChargeStationParam.getMRouteSupplementParams().size()) {
-//            mChargeStationReady = true;
-//            final RouteSupplementParams routeSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams().get(getCurrentIndex());
-//            mViewModel.updateSupplementPointsView(routeSupplementParams.getMRouteSupplementInfos()
-//                    , routeSupplementParams.getMTotalDistance());
-//        } else {
-//            if (!ConvertUtils.isEmpty(mViewModel)) {
-//                mViewModel.withoutSupplementPointsView();
-//            }
+//        if (routeChargeStationParam != null) {
+//             mRoutePackage.updateRouteChargeStation(MapType.MAIN_SCREEN_MAIN_MAP, routeChargeStationParam);
 //        }
 
+        //TODO CR
+        if (mViewModel != null && mViewModel.isNDCar()) {
+            if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
+                    && mRouteChargeStationParam.getMRouteSupplementParams() != null
+                    && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
+                    && getCurrentIndex() < mRouteChargeStationParam.getMRouteSupplementParams().size()) {
+                mChargeStationReady = true;
+                final RouteSupplementParams routeSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams().get(getCurrentIndex());
+                mViewModel.updateSupplementPointsView(routeSupplementParams.getMRouteSupplementInfos()
+                        , routeSupplementParams.getMTotalDistance());
+            } else {
+                if (!ConvertUtils.isEmpty(mViewModel)) {
+                    mViewModel.withoutSupplementPointsView();
+                }
+            }
+        }
     }
 
     @Override
@@ -1113,33 +1073,40 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 }
                 break;
             case ROUTE_POINT_VIA_CHARGE_STATION:
+                int index = getCurrentIndex();
                 if (mRouteChargeStationParam == null) {
                     return;
                 }
                 final ArrayList<RouteChargeStationInfo> routeChargeStationInfos = mRouteChargeStationParam.getMRouteChargeStationInfos();
-                if (routeChargeStationInfos == null || getCurrentIndex() == -1 || routeChargeStationInfos.isEmpty()
-                || getCurrentIndex() >= routeChargeStationInfos.size()) {
+                if (routeChargeStationInfos == null || index == -1 || routeChargeStationInfos.isEmpty()
+                || index >= routeChargeStationInfos.size()) {
                     return;
                 }
-                final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfo = routeChargeStationInfos.get(getCurrentIndex())
+                final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfo = routeChargeStationInfos.get(index)
                         .getMRouteChargeStationDetailInfo();
                 if (routeChargeStationDetailInfo == null || routeChargeStationDetailInfo.size() <= item.getIndex() || item.getIndex() == -1) {
                     return;
                 }
-                final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ALTER_CHARGE_FRAGMENT).navigation();
-                final Bundle chargeBundle = new Bundle();
-                chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
-                        routeChargeStationDetailInfo.get((int) item.getIndex()));
-                closeAllFragmentsUntilTargetFragment("AlterChargeFragment");
-                addFragment((BaseFragment) chargeFragment, chargeBundle);
 
                 //TODO CR
-//                final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT).navigation();
-//                final Bundle chargeBundle = new Bundle();
-//                chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
-//                        routeChargeStationDetailInfo.get((int) item.getIndex()));
-//                closeAllFragmentsUntilTargetFragment("AlterChargeFragment");
-//                addFragment((BaseFragment) chargeFragment, chargeBundle);
+                if (mViewModel != null && mViewModel.isNDCar()) {
+                    final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT).navigation();
+                    final Bundle chargeBundle = new Bundle();
+                    chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
+                            routeChargeStationDetailInfo.get((int) item.getIndex()));
+                    chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT,
+                            mRouteChargeStationParam.getMRouteSupplementParams().get(index));
+                    closeAllFragmentsUntilTargetFragment("NewAlterChargeFragment");
+                    addFragment((BaseFragment) chargeFragment, chargeBundle);
+                } else {
+                    final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ALTER_CHARGE_FRAGMENT).navigation();
+                    final Bundle chargeBundle = new Bundle();
+                    chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
+                        routeChargeStationDetailInfo.get((int) item.getIndex()));
+                    closeAllFragmentsUntilTargetFragment("AlterChargeFragment");
+                    addFragment((BaseFragment) chargeFragment, chargeBundle);
+                }
+
                 break;
             case ROUTE_POINT_END_PARK:
                 clearEndParkPoint();
@@ -1320,6 +1287,16 @@ public void setPoint() {
     public void onReStoreFragment() {
         if (!ConvertUtils.isEmpty(mRequestRouteResults)) {
             onRouteResult(mRequestRouteResults);
+
+            if (mRouteChargeStationParam != null) {
+                int routeIndex = getCurrentIndex();
+                ArrayList<RouteSupplementParams> routeSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams();
+                if (routeIndex != -1 && routeIndex < routeSupplementParams.size()) {
+                    final RouteSupplementParams routeSupplementParam = routeSupplementParams.get(routeIndex);
+                    mViewModel.updateSupplementPointsView(routeSupplementParam.getMRouteSupplementInfos()
+                            , routeSupplementParam.getMTotalDistance());
+                }
+            }
 //            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex());
 //            if (!ConvertUtils.isEmpty(mRequestRouteResults.getMRouteRestAreaParam())) {
 //                onRouteRestAreaInfo(mRequestRouteResults.getMRouteRestAreaParam());

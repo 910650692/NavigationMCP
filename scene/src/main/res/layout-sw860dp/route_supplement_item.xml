@@ -103,7 +103,7 @@
             android:id="@+id/tv_supplement_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="@dimen/dp_368"
+            android:maxWidth="@dimen/dp_340"
             android:gravity="center"
             android:singleLine="true"
             android:ellipsize="end"
@@ -114,80 +114,88 @@
             app:layout_constraintStart_toEndOf="@+id/view_supplement_line"
             tool:text="世纪大道123号(近陆家嘴近陆" />
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/tv_supplement_fast_title"
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/ly_supplement_charge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/route_cricle_dot_gerrn_color"
-            android:textSize="@dimen/sp_26"
-            android:text="@string/charge_title_fast"
             android:layout_marginTop="@dimen/dp_14"
             app:layout_constraintStart_toStartOf="@+id/tv_supplement_distance"
-            app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance"/>
+            app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance">
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/tv_supplement_fast_current"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/text_color_route_item_select"
-            android:textSize="@dimen/sp_26"
-            android:layout_marginStart="@dimen/dp_7"
-            app:layout_constraintStart_toEndOf="@+id/tv_supplement_fast_title"
-            app:layout_constraintTop_toTopOf="@+id/tv_supplement_fast_title"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_fast_title"
-            tool:text="66"/>
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_supplement_fast_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/route_cricle_dot_gerrn_color"
+                android:textSize="@dimen/sp_26"
+                android:text="@string/charge_title_fast" />
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/tv_supplement_fast_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/text_color_route_item_no_select"
-            android:textSize="@dimen/sp_26"
-            app:layout_constraintStart_toEndOf="@+id/tv_supplement_fast_current"
-            app:layout_constraintTop_toTopOf="@+id/tv_supplement_fast_title"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_fast_title"
-            tool:text="/88"/>
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_supplement_fast_current"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/text_color_route_item_select"
+                android:textSize="@dimen/sp_26"
+                android:layout_marginStart="@dimen/dp_7"
+                app:layout_constraintStart_toEndOf="@+id/tv_supplement_fast_title"
+                app:layout_constraintTop_toTopOf="@+id/tv_supplement_fast_title"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_fast_title"
+                tool:text="66"/>
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/tv_supplement_slow_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/route_charge_orange_color"
-            android:textSize="@dimen/sp_26"
-            android:text="@string/charge_title_slow"
-            android:layout_marginStart="@dimen/dp_14"
-            app:layout_constraintStart_toEndOf="@+id/tv_supplement_fast_total"
-            app:layout_constraintTop_toTopOf="@+id/tv_supplement_fast_title"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_fast_title"/>
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_supplement_fast_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/text_color_route_item_no_select"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintStart_toEndOf="@+id/tv_supplement_fast_current"
+                app:layout_constraintTop_toTopOf="@+id/tv_supplement_fast_title"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_fast_title"
+                app:layout_goneMarginStart="@dimen/dp_7"
+                tool:text="/88"/>
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/tv_supplement_slow_current"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/text_color_route_item_select"
-            android:textSize="@dimen/sp_26"
-            android:layout_marginStart="@dimen/dp_7"
-            app:layout_constraintStart_toEndOf="@+id/tv_supplement_slow_title"
-            app:layout_constraintTop_toTopOf="@+id/tv_supplement_slow_title"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_slow_title"
-            tool:text="66"/>
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_supplement_slow_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/route_charge_orange_color"
+                android:textSize="@dimen/sp_26"
+                android:text="@string/charge_title_slow"
+                android:layout_marginStart="@dimen/dp_14"
+                app:layout_constraintStart_toEndOf="@+id/tv_supplement_fast_total"
+                app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance" />
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/tv_supplement_slow_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/text_color_route_item_no_select"
-            android:textSize="@dimen/sp_26"
-            app:layout_constraintStart_toEndOf="@+id/tv_supplement_slow_current"
-            app:layout_constraintTop_toTopOf="@+id/tv_supplement_slow_title"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_slow_title"
-            tool:text="/88"/>
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_supplement_slow_current"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/text_color_route_item_select"
+                android:textSize="@dimen/sp_26"
+                android:layout_marginStart="@dimen/dp_7"
+                app:layout_constraintStart_toEndOf="@+id/tv_supplement_slow_title"
+                app:layout_constraintTop_toTopOf="@+id/tv_supplement_slow_title"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_slow_title"
+                tool:text="66"/>
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_supplement_slow_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/text_color_route_item_no_select"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintStart_toEndOf="@+id/tv_supplement_slow_current"
+                app:layout_constraintTop_toTopOf="@+id/tv_supplement_slow_title"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_slow_title"
+                app:layout_goneMarginStart="@dimen/dp_7"
+                tool:text="/88"/>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/tv_supplement_spend_image"
@@ -195,9 +203,10 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_14"
-            app:layout_constraintStart_toEndOf="@+id/tv_supplement_slow_total"
-            app:layout_constraintTop_toTopOf="@+id/tv_supplement_slow_title"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_slow_title"/>
+            android:layout_marginTop="@dimen/dp_22"
+            app:layout_constraintStart_toEndOf="@+id/ly_supplement_charge"
+            app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance"
+            app:layout_goneMarginStart="@dimen/dp_61"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_spend"
@@ -206,9 +215,9 @@
             android:gravity="center"
             android:textColor="@color/text_color_route_item_select"
             android:textSize="@dimen/sp_26"
+            android:layout_marginTop="@dimen/dp_14"
             app:layout_constraintStart_toEndOf="@+id/tv_supplement_spend_image"
-            app:layout_constraintTop_toTopOf="@+id/tv_supplement_slow_title"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_slow_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance"
             tool:text="1.76/度"/>
 
         <com.fy.navi.ui.view.SkinTextView
@@ -229,7 +238,7 @@
             android:background="@drawable/img_electricity_low_42"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
-            android:layout_marginTop="@dimen/dp_98"
+            android:layout_marginTop="@dimen/dp_102"
             android:layout_marginStart="@dimen/dp_54"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_supplement_name" />
@@ -271,7 +280,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_replace_title"/>
 
         <com.fy.navi.ui.view.SkinRecyclerView
-            android:id="@+id/tv_supplement_replace_image"
+            android:id="@+id/tv_supplement_replace_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_42"

@@ -1,5 +1,7 @@
 package com.fy.navi.service.define.route;
 
+import com.fy.navi.service.define.search.PoiInfoEntity;
+
 import java.io.Serializable;
 
 import lombok.Getter;
@@ -25,5 +27,5 @@ public class RouteSupplementInfo implements Serializable {
     //补能点信息
     private RouteChargeStationDetailInfo mRouteChargeStationDetailInfo;
     //替换补能点信息
-    private RouteAlterChargeStationInfo mRouteAlterChargeStationInfo;
+    private PoiInfoEntity mPoiInfoEntity;
 }

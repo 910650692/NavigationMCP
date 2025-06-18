@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.route.newAlterCharge;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -16,16 +17,21 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentNewAlterChargeBinding;
 import com.fy.navi.hmi.route.NewAlterChargeViewModel;
 import com.fy.navi.scene.RoutePath;
+import com.fy.navi.scene.ui.adapter.RouteReplaceSupplementAdapter;
 import com.fy.navi.scene.ui.adapter.RouteSupplementAdapter;
+import com.fy.navi.scene.ui.search.RouteSearchLoadingDialog;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
 import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
+import com.fy.navi.service.define.route.RouteSupplementInfo;
 import com.fy.navi.service.define.route.RouteSupplementParams;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.action.ViewAdapterKt;
 import com.fy.navi.ui.base.BaseFragment;
 
+import java.util.ArrayList;
 
 /**
  * @author  LiuChang
@@ -38,6 +44,9 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
     private static final String TAG = "NewAlterChargeFragment";
     private PoiInfoEntity mDetailPoiInfoEntity;
     private RouteSupplementAdapter mAdapter;
+    private RouteReplaceSupplementAdapter mCurrentAlterAdapter;
+    private ArrayList<RouteSupplementInfo> mRouteSupplementInfos;
+    private RouteSearchLoadingDialog mSearchLoadingDialog;
 
 
     @Override
@@ -55,6 +64,26 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         mAdapter = new RouteSupplementAdapter();
         mBinding.rvSupplement.setLayoutManager(new LinearLayoutManager(requireContext()));
         mBinding.rvSupplement.setAdapter(mAdapter);
+        mAdapter.setItemClickListener(new RouteSupplementAdapter.OnItemClickListener() {
+            @Override
+            public void onExpandClick(RouteReplaceSupplementAdapter routeReplaceSupplementAdapter,
+                                      ArrayList<RouteAlterChargeStationInfo> routeAlterChargeStationInfos) {
+                if (routeAlterChargeStationInfos != null || !routeAlterChargeStationInfos.isEmpty()) {
+                    ArrayList<String> pidList = new ArrayList<>();
+                    for (RouteAlterChargeStationInfo routeAlterChargeStationInfo : routeAlterChargeStationInfos) {
+                        pidList.add(routeAlterChargeStationInfo.getMPoiId());
+                    }
+                    showSearchProgressUI();
+                    mViewModel.getAlterPoiListSearch(pidList);
+                }
+                mCurrentAlterAdapter = routeReplaceSupplementAdapter;
+            }
+
+            @Override
+            public void onItemClick(PoiInfoEntity newPoiInfoEntity, PoiInfoEntity oldPoiInfoEntity) {
+                mViewModel.replaceSupplement(newPoiInfoEntity, oldPoiInfoEntity);
+            }
+        });
     }
 
     @Override
@@ -69,18 +98,18 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
             return;
         }
 
-        final RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
-                bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
-        if (routeChargeStationDetailInfo != null) {
-            showSupplementDetails(routeChargeStationDetailInfo);
-            return;
-        }
-
         final RouteSupplementParams routeSupplementParams = (RouteSupplementParams)
                 bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT);
-        if (routeSupplementParams != null) {
-            showSupplementList(routeSupplementParams);
-            return;
+        final RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
+                bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
+        if (routeChargeStationDetailInfo != null && routeSupplementParams != null) {
+            mViewModel.setCurrentRouteSupplementParams(routeSupplementParams);
+            showSupplementDetails(routeChargeStationDetailInfo);
+            getSupplementList(routeSupplementParams);
+        }else if (routeSupplementParams != null) {
+            mViewModel.setCurrentRouteSupplementParams(routeSupplementParams);
+            mViewModel.getShowAlterCharge().set(true);
+            getSupplementList(routeSupplementParams);
         }
 
     }
@@ -99,6 +128,15 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
+            mSearchLoadingDialog.dismiss();
+            mSearchLoadingDialog = null;
+        }
+    }
+
     /**
      * 设置补能点详情数据
      * @param routeChargeStationDetailInfo 参数
@@ -112,21 +150,35 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         mViewModel.getShowAlterCharge().set(false);
         mViewModel.getRouteCurrentName().set(routeChargeStationDetailInfo.getMName());
         mViewModel.getCurrentDetails(routeChargeStationDetailInfo.getMPoiID());
-        mViewModel.requestAlterChargeStation(routeChargeStationDetailInfo.getMPoiID());
     }
 
     /**
      * 设置补能点详情数据
      * @param routeSupplementParams 参数
      */
-    private void showSupplementList(final RouteSupplementParams routeSupplementParams) {
+    public void getSupplementList(final RouteSupplementParams routeSupplementParams) {
         if (routeSupplementParams == null) {
             Logger.d(TAG, "routeChargeStationDetailInfo is null");
             return;
         }
+        final ArrayList<RouteSupplementInfo> routeSupplementInfos = routeSupplementParams.getMRouteSupplementInfos();
+        if (routeSupplementInfos == null || routeSupplementInfos.isEmpty()) {
+            return;
+        }
+        final ArrayList<String> pidList = new ArrayList<>();
+        for (RouteSupplementInfo routeSupplementInfo : routeSupplementInfos) {
+            pidList.add(routeSupplementInfo.getMPoiID());
+        }
 
-        mViewModel.getShowAlterCharge().set(true);
-        mAdapter.setRouteSupplementInfos(routeSupplementParams.getMRouteSupplementInfos());
+        if (!pidList.isEmpty()) {
+            mViewModel.clearAlterChargeStation();
+            for (int i = 0 ; i < pidList.size(); i++) {
+                mViewModel.requestAlterChargeStation(pidList.get(i), i);
+            }
+            mViewModel.getPoiListSearch(pidList);
+            mRouteSupplementInfos = routeSupplementParams.getMRouteSupplementInfos();
+        }
+
     }
     /**
      * 点击事件初始话
@@ -135,9 +187,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         mBinding.stlAlter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                if (mDetailPoiInfoEntity != null) {
-                    mViewModel.addViaList(mDetailPoiInfoEntity);
-                }
+                mViewModel.getCloseDetail().call();
             }
         });
     }
@@ -145,10 +195,12 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
     /**
      * 显示充电站列表信息
      * @param routeAlterChargeStationParam 替换充电站搜索信息
+     * @param index index
      */
-    public void showAlterChargeStationInfo(final RouteAlterChargeStationParam routeAlterChargeStationParam) {
-
-
+    public void showAlterChargeStationInfo(final RouteAlterChargeStationParam routeAlterChargeStationParam, final int index) {
+        if (mAdapter != null) {
+            mAdapter.setAlterChargeStation(routeAlterChargeStationParam, index);
+        }
     }
 
     /**
@@ -269,6 +321,55 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                 mBinding.poiArrivalCapacity.setTextColor(
                         ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.search_color_delete_bg));
             }
+        }
+    }
+
+    public void setSilentSearchResult(final ArrayList<PoiInfoEntity> poiInfoEntities) {
+        if (poiInfoEntities == null || poiInfoEntities.isEmpty()) {
+            return;
+        }
+
+        if (mRouteSupplementInfos == null || mRouteSupplementInfos.isEmpty()) {
+            return;
+        }
+        mAdapter.setRouteSupplementInfos(mRouteSupplementInfos, poiInfoEntities);
+    }
+
+    public void setAlterSilentSearchResult(final ArrayList<PoiInfoEntity> poiInfoEntities) {
+        hideSearchProgressUI();
+        if (poiInfoEntities == null || poiInfoEntities.isEmpty() || mCurrentAlterAdapter == null) {
+            return;
+        }
+        mCurrentAlterAdapter.setPoiInfoEntities(poiInfoEntities);
+    }
+
+    /***
+     * 搜索请求弹框开启
+     */
+    public void showSearchProgressUI() {
+        if (!ConvertUtils.isEmpty(mSearchLoadingDialog) && mSearchLoadingDialog.isShowing()) {
+            Logger.d("mSearchLoadingDialog is showing");
+            return;
+        }
+        final Context context = this.getContext();
+        if (context == null) {
+            return;
+        }
+        if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
+            mSearchLoadingDialog = new RouteSearchLoadingDialog(context);
+            if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
+                mSearchLoadingDialog.show();
+            }
+        }
+    }
+
+    /***
+     * 搜索请求弹框关闭
+     */
+    public void hideSearchProgressUI() {
+        if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
+            mSearchLoadingDialog.dismiss();
+            mSearchLoadingDialog = null;
         }
     }
 }

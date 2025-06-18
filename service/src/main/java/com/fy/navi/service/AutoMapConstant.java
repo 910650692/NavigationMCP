@@ -387,6 +387,12 @@ public interface AutoMapConstant {
         int REPLACE_SUPPLEMENT_POINT = 1;
     }
 
+    @interface ParamPoiType {
+        int DEFAULT = 0;
+        int SUPPLEMENT_POINT = 1;
+        int CHARGING_STATION_POINT = 2;
+    }
+
     @interface PosLastLocation {
         String LAST_LAT = "last_lat";
         String LAST_LNG = "last_lng";

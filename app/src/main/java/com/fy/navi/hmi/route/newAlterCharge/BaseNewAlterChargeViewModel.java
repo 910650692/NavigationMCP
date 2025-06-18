@@ -19,6 +19,7 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
+import com.fy.navi.service.define.route.RouteSupplementParams;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.action.Action;
@@ -97,6 +98,11 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     }
 
     private PoiInfoEntity mDetailsEntry;
+    private RouteSupplementParams mCurrentRouteSupplementParams;
+
+    public void setCurrentRouteSupplementParams(RouteSupplementParams mCurrentRouteSupplementParams) {
+        this.mCurrentRouteSupplementParams = mCurrentRouteSupplementParams;
+    }
 
     public BaseNewAlterChargeViewModel(final @NonNull Application application) {
         super(application);
@@ -121,48 +127,36 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
      * 请求替换充电站信息
      * @param poiId poiId
      */
-    public void requestAlterChargeStation(final String poiId) {
-        mModel.requestAlterChargeStation(poiId);
+    public void requestAlterChargeStation(final String poiId,final int index) {
+        mModel.requestAlterChargeStation(poiId, index);
+    }
+
+    /**
+     * 重置替换充电站信息
+     */
+    public void clearAlterChargeStation() {
+        mModel.clearAlterChargeStation();
     }
 
     /**
      * 显示充电站列表信息
      * @param routeAlterChargeStationParam 替换充电站搜索信息
+     * @param index index
      */
-    public void showAlterChargeStationInfo(final RouteAlterChargeStationParam routeAlterChargeStationParam) {
+    public void showAlterChargeStationInfo(final RouteAlterChargeStationParam routeAlterChargeStationParam,final int index) {
         mRouteAlterChargeStationParam = routeAlterChargeStationParam;
-        mView.showAlterChargeStationInfo(routeAlterChargeStationParam);
+        mView.showAlterChargeStationInfo(routeAlterChargeStationParam, index);
     }
 
     /**
      * 恢复充电站列表信息
      */
     public void reStoreFragment() {
-        if (mRouteAlterChargeStationParam != null) {
-            mView.showAlterChargeStationInfo(mRouteAlterChargeStationParam);
-        }
         if (mDetailsEntry != null && Boolean.FALSE.equals(getShowAlterCharge().get())) {
             showChargeStationDetail(mDetailsEntry);
         }
-    }
-
-    /**
-     * 请求充电站详情信息
-     * @param poiId poiID
-     */
-    public void getSearchDetailsMode(final String poiId) {
-        mModel.getSearchDetailsMode(poiId);
-    }
-
-    /**
-     * 图层请求充电站详情信息
-     * @param index index
-     */
-    public void getSearchDetailsMode(final int index) {
-        if (mRouteAlterChargeStationParam != null && index < mRouteAlterChargeStationParam.getMRouteAlterChargeStationInfos().size()) {
-            mModel.getSearchDetailsMode(mRouteAlterChargeStationParam.getMRouteAlterChargeStationInfos().get(index).getMPoiId());
-        } else {
-            Logger.d(TAG, "index error:");
+        if (mCurrentRouteSupplementParams != null) {
+            mView.getSupplementList(mCurrentRouteSupplementParams);
         }
     }
 
@@ -175,19 +169,44 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     }
 
     /**
-     * 添加途径点
-     * @param info 替换充电站信息
+     * 批量搜索详情信息
+     * @param pidList poiID列表
      */
-    public void addViaList(final RouteAlterChargeStationInfo info) {
-        mModel.addViaList(info);
+    public void getPoiListSearch(final List<String> pidList) {
+        mModel.getPoiListSearch(pidList);
     }
 
     /**
-     * 添加途径点
-     * @param poiInfoEntities 点信息
+     * 批量搜索替换详情信息
+     * @param pidList poiID列表
      */
-    public void addViaList(final PoiInfoEntity poiInfoEntities) {
-        mModel.addViaList(poiInfoEntities);
+    public void getAlterPoiListSearch(final List<String> pidList) {
+        mModel.getAlterPoiListSearch(pidList);
+    }
+
+    /**
+     * 设置批量搜的回调
+     * @param poiInfoEntities poi详情数据
+     */
+    public void setSilentSearchResult(final ArrayList<PoiInfoEntity> poiInfoEntities) {
+        mView.setSilentSearchResult(poiInfoEntities);
+    }
+
+    /**
+     * 设置替换补能点批量搜的回调
+     * @param poiInfoEntities poi详情数据
+     */
+    public void setAlterSilentSearchResult(final ArrayList<PoiInfoEntity> poiInfoEntities) {
+        mView.setAlterSilentSearchResult(poiInfoEntities);
+    }
+
+    /**
+     * 替换补能点
+     * @param newPoiInfoEntity 替换点信息
+     * @param oldPoiInfoEntity 被替换点信息
+     */
+    public void replaceSupplement(final PoiInfoEntity newPoiInfoEntity, final PoiInfoEntity oldPoiInfoEntity) {
+        mModel.replaceSupplement(newPoiInfoEntity, oldPoiInfoEntity);
     }
 
     /**

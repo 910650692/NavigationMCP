@@ -14,6 +14,7 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.aos.BlAosAdapter;
@@ -82,6 +83,7 @@ import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -349,52 +351,47 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             return;
         }
-        //TODO CR
-//        if (routeChargeStationParam == null) {
-//            return;
-//        }
-//        final ArrayList<RouteSupplementParams> routeSupplementParams = routeChargeStationParam.getMRouteSupplementParams();
-//        if (routeSupplementParams == null || routeSupplementParams.isEmpty()) {
-//            return;
-//        }
-//        final AtomicInteger infoTotal = new AtomicInteger(0);
-//        for (int i = 0; i < routeSupplementParams.size(); i++) {
-//            final ArrayList<RouteSupplementInfo> routeSupplementInfo = routeSupplementParams.get(i)
-//                    .getMRouteSupplementInfos();
-//            if (routeSupplementInfo != null && !routeSupplementInfo.isEmpty()) {
-//                final AtomicInteger paramTotal = new AtomicInteger(0);
-//                for (int j = 0; j< routeSupplementInfo.size(); j++) {
-//                    final int currentIndex = j;
-//                    getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeSupplementInfo.get(currentIndex).getMShow().getLon(),
-//                            routeSupplementInfo.get(currentIndex).getMShow().getLat()))
-//                            .thenAccept(etaInfo -> {
-//                                routeSupplementInfo.get(currentIndex).setMDistance(etaInfo.getDistance());
-//                                routeSupplementInfo.get(currentIndex).setMUnitDistance(TimeUtils.getInstance()
-//                                        .getDistanceString(etaInfo.getDistance()));
-//                                paramTotal.getAndIncrement();
-//                                if (paramTotal.get() == routeSupplementInfo.size()) {
-//                                    infoTotal.getAndIncrement();
-//                                    if (infoTotal.get() == routeSupplementParams.size()) {
-//                                        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
-//                                            if (ConvertUtils.isEmpty(routeResultObserver)) {
-//                                                continue;
-//                                            }
-//                                            routeResultObserver.onRouteChargeStationInfo(routeChargeStationParam);
-//                                        }
-//                                    }
-//                                }
-//                            })
-//                            .exceptionally(error -> {
-//                                Logger.d(TAG, "showChargeStationDetail error:" + error);
-//                                return null;
-//                            });
-//                }
-//            }
-        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
-            if (ConvertUtils.isEmpty(routeResultObserver)) {
-                continue;
+        if (routeChargeStationParam == null) {
+            return;
+        }
+        final ArrayList<RouteSupplementParams> routeSupplementParams = routeChargeStationParam.getMRouteSupplementParams();
+        if (routeSupplementParams == null || routeSupplementParams.isEmpty()) {
+            return;
+        }
+        final AtomicInteger infoTotal = new AtomicInteger(0);
+        for (int i = 0; i < routeSupplementParams.size(); i++) {
+            final ArrayList<RouteSupplementInfo> routeSupplementInfo = routeSupplementParams.get(i)
+                    .getMRouteSupplementInfos();
+            if (routeSupplementInfo != null && !routeSupplementInfo.isEmpty()) {
+                final AtomicInteger paramTotal = new AtomicInteger(0);
+                for (int j = 0; j< routeSupplementInfo.size(); j++) {
+                    final int currentIndex = j;
+                    getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeSupplementInfo.get(currentIndex).getMShow().getLon(),
+                            routeSupplementInfo.get(currentIndex).getMShow().getLat()))
+                            .thenAccept(etaInfo -> {
+                                routeSupplementInfo.get(currentIndex).setMDistance(etaInfo.getDistance());
+                                routeSupplementInfo.get(currentIndex).setMUnitDistance(TimeUtils.getInstance()
+                                        .getDistanceString(etaInfo.getDistance()));
+                                paramTotal.getAndIncrement();
+                                if (paramTotal.get() == routeSupplementInfo.size()) {
+                                    infoTotal.getAndIncrement();
+                                    if (infoTotal.get() == routeSupplementParams.size()) {
+                                        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+                                            if (ConvertUtils.isEmpty(routeResultObserver)) {
+                                                continue;
+                                            }
+                                            routeSupplementInfo.sort(Comparator.comparingInt(RouteSupplementInfo::getMDistance));
+                                            routeResultObserver.onRouteChargeStationInfo(routeChargeStationParam);
+                                        }
+                                    }
+                                }
+                            })
+                            .exceptionally(error -> {
+                                Logger.d(TAG, "showChargeStationDetail error:" + error);
+                                return null;
+                            });
+                }
             }
-            routeResultObserver.onRouteChargeStationInfo(routeChargeStationParam);
         }
     }
 
@@ -673,8 +670,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (!mNaviStatusAdapter.isGuidanceActive()) {
             mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.ROUTING);
         }
-        final long requestId = mRouteAdapter.requestRoute(param, paramList);
-        mRequestId.put(param.getMMapTypeId(), requestId);
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
@@ -683,6 +678,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 routeResultObserver.onRouteRequest();
             }
         }
+        final long requestId = mRouteAdapter.requestRoute(param, paramList);
+        mRequestId.put(param.getMMapTypeId(), requestId);
         return requestId;
     }
 
@@ -757,7 +754,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return;
         }
         final List<RouteParam> routeParams = mViaRouteParams.get(mapTypeId);
-        routeParams.add(getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY));
+        if (routeParams != null) {
+            routeParams.add(getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY));
+        }
         mViaRouteParams.put(mapTypeId, routeParams);
         final RouteRequestParam param = new RouteRequestParam();
         param.setMMapTypeId(mapTypeId);
@@ -766,6 +765,43 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
         requestRoute(param);
         sendBuryPointForAddMiddle(poiInfoEntity.getName());
+    }
+
+    /**
+     * 替换补能点事件
+     *
+     * @param mapTypeId     屏幕ID
+     * @param newPoiInfoEntity 替换补能点
+     * @param oldPoiInfoEntity 被他替换补能点
+     */
+    public void replaceSupplement(final MapType mapTypeId,
+                                  final PoiInfoEntity newPoiInfoEntity,
+                                  final PoiInfoEntity oldPoiInfoEntity) {
+        if (isBelongRouteParam(mapTypeId, newPoiInfoEntity)) {
+            callBackFailMsg(mapTypeId, "途经点添加失败：途经点已经在路线上");
+            return;
+        }
+        final List<RouteParam> routeParams = mViaRouteParams.get(mapTypeId);
+        removeRouteParam(routeParams, oldPoiInfoEntity);
+        if (routeParams != null && routeParams.size() >= 5) {
+            callBackFailMsg(mapTypeId, "途经点添加失败：最多只能添加5个途径点");
+            return;
+        }
+        RouteParam replaceParam = getRouteParamFromPoiInfoEntity(newPoiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY);
+        if (replaceParam != null) {
+            replaceParam.setMAddressType(AutoMapConstant.ParamPoiType.SUPPLEMENT_POINT);
+        }
+        if (routeParams != null) {
+            routeParams.add(replaceParam);
+        }
+        mViaRouteParams.put(mapTypeId, routeParams);
+        final RouteRequestParam param = new RouteRequestParam();
+        param.setMMapTypeId(mapTypeId);
+        param.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
+        param.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_VIA);
+        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
+        requestRoute(param);
+        sendBuryPointForAddMiddle(newPoiInfoEntity.getName());
     }
 
     /**
@@ -1064,6 +1100,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (!ConvertUtils.isEmpty(poiInfoEntity.getCityInfo())) {
             routeParam.setAdCode(poiInfoEntity.getCityInfo().getCityCode());
         }
+        if (poiInfoEntity.getPointTypeCode() != null || poiInfoEntity.getPointTypeCode().startsWith("0111")) {
+            routeParam.setMAddressType(AutoMapConstant.ParamPoiType.CHARGING_STATION_POINT);
+        }
         final GeoPoint geoPoint = new GeoPoint();
         geoPoint.setLon(poiInfoEntity.getPoint().getLon());
         geoPoint.setLat(poiInfoEntity.getPoint().getLat());
@@ -1099,6 +1138,24 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             }
         }
         return false;
+    }
+
+    /**
+     * 删除相同的点
+     *
+     * @param routeParams   点集合
+     * @param poiInfoEntity 点信息
+     */
+    public void removeRouteParam(final List<RouteParam> routeParams, final PoiInfoEntity poiInfoEntity) {
+        if (ConvertUtils.isEmpty(poiInfoEntity)) {
+            return;
+        }
+        for (RouteParam routeParam : routeParams) {
+            if (isTheSamePoi(routeParam, poiInfoEntity)) {
+                routeParams.remove(routeParam);
+                return;
+            }
+        }
     }
 
     /**
@@ -1173,6 +1230,16 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 //            if (!mNaviStatusAdapter.isGuidanceActive()) {
 //                mLayerAdapter.setCarLogoVisible(mapTypeId, false);
 //            }
+    }
+
+    /**
+     * 绘制补能点扎标
+     *
+     * @param mapTypeId 屏幕ID
+     * @param routeChargeStation 补能点参数
+     */
+    public void updateRouteChargeStation(MapType mapTypeId, RouteChargeStationParam routeChargeStation) {
+        mLayerAdapter.updateRouteChargeStation(mapTypeId, routeChargeStation);
     }
 
     /*更新终点扎标数据*/
