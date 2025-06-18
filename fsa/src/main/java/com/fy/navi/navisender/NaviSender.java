@@ -39,6 +39,7 @@ public class NaviSender {
     private static final String PREFIX = "cleacan";
 
     private final SignalPackage mSignalPackage;
+    private final RoadConditionGroupFirst mRoadConditionGroupFirst = new RoadConditionGroupFirst();
     private final RoadConditionGroupSecond mRoadConditionGroupSecond = new RoadConditionGroupSecond();
     private final SdNavigationStatusGroup mSdNavigationStatusGroup = new SdNavigationStatusGroup();
 
@@ -357,24 +358,15 @@ public class NaviSender {
                         mScheduledFuture.cancel(true);
                         return;
                     }
-                    ArrayList<String> logs = new ArrayList<>();
-                    logs.add("size= " + mRoadGroupDatas.size());
                     RoadGroupData roadGroupData = mRoadGroupDatas.get(sendIndex);
-                    RoadConditionGroupFirst roadConditionGroupFirst = new RoadConditionGroupFirst();
-                    roadConditionGroupFirst.setIndxOfDynmInftAryNavRut(sendIndex + 1); // 导航路段信息索引号
-                    logs.add("index= " + (sendIndex + 1));
-                    roadConditionGroupFirst.setEstimDistnCorpToIndxRut(roadGroupData.getRoadLength()); // 对应索引号的预估路段长度
-                    logs.add("length= " + roadGroupData.getRoadLength());
-                    roadConditionGroupFirst.setEstimTimCorpToIndxRut(roadGroupData.getRoadTime()); // 通过路段的预估时长
-                    logs.add("time= " + roadGroupData.getRoadTime());
-                    roadConditionGroupFirst.setEstimRodCndtnCorpToIndxRut(roadGroupData.getStatus()); // 对应索引号的道路状况
-                    logs.add("status= " + roadGroupData.getStatus());
-                    logs.add("remnDist= " + mRoadConditionGroupSecond.getEstimRemnDistn());
-                    logs.add("remnTime= " + mRoadConditionGroupSecond.getEstimRemnTim());
+                    mRoadConditionGroupFirst.setIndxOfDynmInftAryNavRut(sendIndex + 1); // 导航路段信息索引号
+                    mRoadConditionGroupFirst.setEstimDistnCorpToIndxRut(roadGroupData.getRoadLength()); // 对应索引号的预估路段长度
+                    mRoadConditionGroupFirst.setEstimTimCorpToIndxRut(roadGroupData.getRoadTime()); // 通过路段的预估时长
+                    mRoadConditionGroupFirst.setEstimRodCndtnCorpToIndxRut(roadGroupData.getStatus()); // 对应索引号的道路状况
+                    mSignalPackage.setRoadConditionGroupFirst(mRoadConditionGroupFirst);
                     mRoadConditionGroupSecond.setLngthDynInfmAryOfNavRut(mRoadGroupDatas.size());
                     mRoadConditionGroupSecond.setDataInv(1);
                     mSignalPackage.setRoadConditionGroupSecond(mRoadConditionGroupSecond);
-                    Logger.d(TAG, PREFIX , "拥堵信息", logs);
                     sendIndex++;
                 }
             }, 0, 250, TimeUnit.MILLISECONDS);

@@ -839,7 +839,6 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond) {
-        long start = System.currentTimeMillis();
         Logger.d(TAG, roadConditionGroupSecond);
         try {
             Integer[] integers = new Integer[]{roadConditionGroupSecond.getLngthDynInfmAryOfNavRut(),
@@ -851,7 +850,6 @@ public class SignalAdapterImpl implements SignalApi {
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
-        Logger.d(TAG, "setRoadConditionGroupSecond take: ", (System.currentTimeMillis() - start));
     }
 
     @Override
