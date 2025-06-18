@@ -781,6 +781,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     public void clearPaths() {
         Logger.d(TAG, "clearPaths");
         getLayerGuideRouteControl().clearPaths();
+        getLayerRoadFacilityControl().clearAllItems();
     }
 
     /**
