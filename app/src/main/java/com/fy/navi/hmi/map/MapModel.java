@@ -1621,11 +1621,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public void openGuideFragment(){
         if(Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)){
-            if(!mViewModel.isFragmentStackNull()){
                 if (!mViewModel.getTopFragment(NaviGuidanceFragment.class)){
                     addFragment(new NaviGuidanceFragment(), null);
                 }
-            }
         }
     }
 }

@@ -147,7 +147,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private int mMoveStartDistance;
     private NextManeuverEntity mNextManeuverEntity;
     private boolean mIsNeedUpdateViaList;
-    private boolean mIsNaviClosed = true;
     private ScheduledFuture mScheduledFuture;
     private int mTimes = NumberUtils.NUM_8;
 
@@ -297,7 +296,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             isNaviSuccess = mNaviPackage.startNavigation(false);
         }
         if (isNaviSuccess) {
-            mIsNaviClosed = false;
             final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
             if (isAutoScale) {
                 mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -1265,12 +1263,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void closeNavi() {
-        Logger.i(TAG, "closeNavi mIsNaviClosed = ", mIsNaviClosed);
-        if (mIsNaviClosed) {
-            return;
-        }
+        Logger.i(TAG, "closeNavi");
         mViewModel.onNaviStop();
-        mIsNaviClosed = true;
         UserTrackPackage.getInstance().
                 closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
         mFilename = "";

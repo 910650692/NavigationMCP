@@ -1,8 +1,12 @@
 package com.fy.navi.hmi.map;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -10,6 +14,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
@@ -34,6 +39,7 @@ import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.route.RouteTMCParam;
+import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.FragmentIntent;
 import com.fy.navi.ui.base.StackManager;
@@ -52,6 +58,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
     private MainScreenMapView mapView;
     private MsgTopDialog mMsgTopDialog;
+    private Runnable mOpenGuideRunnable;
 
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
@@ -118,7 +125,13 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.offlineMap15Day();
         mViewModel.offlineMap45Day();
         mViewModel.checkPopGuideLogin();
-        mViewModel.openGuideFragment();
+        mOpenGuideRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mViewModel.openGuideFragment();
+            }
+        };
+        ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
     }
 
     @Override
@@ -162,6 +175,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         // 退出的时候主动保存一下最后的定位信息
         mViewModel.saveLastLocationInfo();
         Logger.i(TAG, "onDestroy");
+        ThreadManager.getInstance().removeHandleTask(mOpenGuideRunnable);
         super.onDestroy();
     }
 
