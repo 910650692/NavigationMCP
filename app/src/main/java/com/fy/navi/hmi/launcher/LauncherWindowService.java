@@ -2,6 +2,8 @@ package com.fy.navi.hmi.launcher;
 
 import static android.content.Context.WINDOW_SERVICE;
 
+import static com.fy.navi.service.adapter.layer.bls.utils.CommonUtil.getResources;
+
 import android.app.ActivityOptions;
 import android.content.ComponentCallbacks;
 import android.content.Intent;
@@ -215,8 +217,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         );
 
         layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
-        layoutParams.x = 300;
-        layoutParams.y = 0;
+        int top = (int) getResources().getDimension(com.fy.navi.ui.R.dimen.launcher_position_top);
+        int left = (int) getResources().getDimension(com.fy.navi.ui.R.dimen.launcher_position_left);
+        Logger.i(TAG, "LauncherWindowPosition: " + top + "; " + left);
+        layoutParams.x = left;
+        layoutParams.y = top;
         mWindowManager.addView(mView, layoutParams);
         initClickListener();
         mBinding.cardTbtView.setVisibility(
