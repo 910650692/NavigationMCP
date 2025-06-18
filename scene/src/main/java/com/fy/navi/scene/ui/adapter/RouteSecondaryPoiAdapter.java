@@ -68,7 +68,7 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
             holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
         }
         holder.mTextView.setText(mChildInfoList.get(position).getShortName());
-        holder.mTextView.setOnClickListener(new View.OnClickListener() {
+        holder.mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 final int lastSelect = mSelected;
@@ -88,12 +88,6 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
                     return;
                 }
                 mItemClickListener.onItemClick(mChildInfoList.get(position));
-            }
-        });
-        holder.mLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                return;
             }
         });
     }
