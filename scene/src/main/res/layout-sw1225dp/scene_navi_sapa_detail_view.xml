@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
         <import type="android.view.View" />
@@ -10,16 +11,20 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_711">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <include android:id="@+id/sapa_service_detail"
+        <include
+            android:id="@+id/sapa_service_detail"
+            layout="@layout/navi_sapa_service_details"
             android:visibility="@{sapaDetail.mViewType == 0 ? View.VISIBLE : View.GONE}"
-            layout="@layout/navi_sapa_service_details" />
+            tools:visibility="gone" />
 
-        <include android:id="@+id/sapa_toll_detail"
+        <include
+            android:id="@+id/sapa_toll_detail"
+            layout="@layout/navi_sapa_toll_details"
             android:visibility="@{sapaDetail.mViewType == 1 ? View.VISIBLE : View.GONE}"
-            layout="@layout/navi_sapa_toll_details" />
+            tools:visibility="visible" />
 
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
