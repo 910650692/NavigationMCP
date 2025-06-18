@@ -25,7 +25,6 @@ public class PowerMonitorService implements SignalCallback {
     private static final String TAG = "PowerMonitorService";
     private static final long INTERVAL = 120;//间隔事件2分钟即120秒
     private static final float EDGE_DISTANCE = 50f; // 续航里程小于50KM提醒
-    private final boolean mDeviceIsCar;
     private final boolean mIsPureGasCar; // 是否是纯油车
     private final CopyOnWriteArrayList<OnPowerChangeListener> mPowerChangeListener;
     private final SignalPackage mSignalPackage;
@@ -34,25 +33,25 @@ public class PowerMonitorService implements SignalCallback {
 
     public PowerMonitorService() {
         mSignalPackage = SignalPackage.getInstance();
-        mDeviceIsCar = DeviceUtils.isCar(AppCache.getInstance().getMContext());
         mPowerChangeListener = new CopyOnWriteArrayList<>();
         mCalibrationPackage = CalibrationPackage.getInstance();
         mIsPureGasCar = mCalibrationPackage.powerType() == PowerType.E_VEHICLE_ENERGY_FUEL;
     }
 
     public void startSchedule() {
-        try {
-            if (mDeviceIsCar) {
-                stopSchedule();
+        ThreadManager.getInstance().execute(() -> {
+            try {
+                if (isOnSchedule()) {
+                    Logger.i(TAG, "任务已开始，无需重复启动！");
+                    return;
+                }
                 scheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(() -> {
                     checkRemainBattery();
-                },0, INTERVAL);
-            } else {
-                Logger.w(TAG, "不是汽车，无需执行定时器！");
+                }, 0, INTERVAL);
+            } catch (Exception e) {
+                Logger.e(TAG, "startSchedule failed:" + e.getMessage());
             }
-        } catch (Exception e) {
-            Logger.e(TAG, "startSchedule failed:" + e.getMessage());
-        }
+        });
     }
 
     public void stopSchedule() {
@@ -92,6 +91,7 @@ public class PowerMonitorService implements SignalCallback {
      * b) 续航里程小于等于50km时，LBS系统需要每行驶2分钟km检测一次周边可用充电站
      */
     private void checkRemainBattery() {
+        final long startTime = System.currentTimeMillis();
         // 剩余汽油可以跑到距离
         final float gasRemainCanRunDis = mSignalPackage.getRangeRemaining();
         // 剩余电量可以跑的距离
@@ -102,6 +102,8 @@ public class PowerMonitorService implements SignalCallback {
         } else {
             electricCarDistanceChange(totalCanRunDis);
         }
+        final double costTime = (System.currentTimeMillis() - startTime) / 1000f;
+        Logger.d(TAG, "checkRemainBattery", "costTime", costTime, "秒");
     }
 
     /***
@@ -131,6 +133,15 @@ public class PowerMonitorService implements SignalCallback {
             });
         } else {
             Logger.i(TAG, "electricCarDistanceChange, not need callBack!", "totalCanRunDis:" + totalCanRunDis + "KM");
+        }
+    }
+
+    private boolean isOnSchedule() {
+        try {
+            if (ConvertUtils.isNull(scheduledFuture)) return false;
+            return !scheduledFuture.isDone();
+        } catch (Exception e) {
+            return false;
         }
     }
 

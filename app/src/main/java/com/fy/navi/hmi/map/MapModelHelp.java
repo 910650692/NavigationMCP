@@ -173,23 +173,15 @@ public class MapModelHelp {
 
     /***
      * 更新电量
+     * 在子线程运行
      */
     public void uploadBattery() {
-        if (!DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
-            Logger.i(TAG, "uploadBattery", "不是汽车，无需上传！");
-            return;
-        }
-        if (mCalibrationPackage.powerType() != PowerType.E_VEHICLE_ENERGY_ELECTRIC) {
-            Logger.w(TAG, "不是纯电动汽车，无需上传电量！");
-            return;
-        }
-        if (mSignalPackage == null || mNaviPackage == null) {
-            return;
-        }
+        final long startTime = System.currentTimeMillis();
         final float currentBattery = mSignalPackage.getBatteryEnergy(); // 获取剩余电量
         BevPowerCarUtils.getInstance().initlialHVBattenergy = currentBattery;
-        Logger.i(TAG, "currentBattery:" , currentBattery);
         mNaviPackage.updateBatteryInfo();
+        final double costTime = (System.currentTimeMillis() - startTime) / 1000f;
+        Logger.d(TAG, "uploadBattery", "costTime", costTime, "秒");
     }
 
     /***
@@ -198,6 +190,10 @@ public class MapModelHelp {
     public void startScheduleUploadBattery() {
         if (mCalibrationPackage.powerType() != PowerType.E_VEHICLE_ENERGY_ELECTRIC) {
             Logger.w(TAG, "startScheduleUploadBattery", "不是纯电动汽车，无需上传电量！");
+            return;
+        }
+        if (mSignalPackage == null || mNaviPackage == null) {
+            Logger.e(TAG, "mSignalPackage == null || mNaviPackage == null");
             return;
         }
         if (!isOnSchedule()) {
@@ -212,12 +208,7 @@ public class MapModelHelp {
      * 如果导航结束，停止循环上传电量
      */
     public void stopScheduleUploadBattery() {
-        if (isOnSchedule()) {
-
-            Logger.w(TAG, "stop schedule uploadBattery success!");
-        } else {
-            Logger.w(TAG, "schedule not ongoing, not need cancel!");
-        }
+        stopSchedule();
     }
 
     /***
@@ -225,11 +216,13 @@ public class MapModelHelp {
      * @param naviStatus
      */
     public void onNaviStatusChange(final String naviStatus) {
-        if (TextUtils.equals(naviStatus, NaviStatus.NaviStatusType.NAVING)) {
-            startScheduleUploadBattery();
-        } else {
-            stopScheduleUploadBattery();
-        }
+        ThreadManager.getInstance().execute(() -> {
+            if (TextUtils.equals(naviStatus, NaviStatus.NaviStatusType.NAVING)) {
+                startScheduleUploadBattery();
+            } else {
+                stopScheduleUploadBattery();
+            }
+        });
     }
 
     /***
@@ -244,7 +237,7 @@ public class MapModelHelp {
         try {
             scheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
                 uploadBattery();
-            }, 0, INTERVAL_TIME, TimeUnit.MILLISECONDS);
+            }, 0, INTERVAL_TIME, TimeUnit.SECONDS);
         } catch (Exception e) {
             Logger.e(TAG, "startSchedule failed:" + e.getMessage());
         }
@@ -254,7 +247,7 @@ public class MapModelHelp {
         try {
             if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
                 boolean stopResult = scheduledFuture.cancel(true);
-                Logger.i(TAG, "stopSchedule:" , stopResult);
+                Logger.i(TAG, "stopSchedule:", stopResult);
             } else {
                 Logger.w(TAG, "stopSchedule failed, scheduledFuture is null or has completed!");
             }
