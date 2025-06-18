@@ -6,7 +6,9 @@ import com.android.utils.log.Logger;
 import com.fy.navi.service.AppCache;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.adapter.position.VehicleSpeedController;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.ISpeedCallback;
+import com.fy.navi.service.logicpaket.navi.NaviPackage;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -52,6 +54,11 @@ public class SpeedMonitor implements ISpeedCallback {
 
     // 处理车速更新的方法 speed单位 km/h
     private void updateSpeed(float speed) {
+        final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviPackage.getInstance().getCurrentNaviType());
+        if (!isReady) {
+            cancelTicket();
+            return;
+        }
         if (speed >= SPEED_THRESHOLD) {
             if (!isTiming) {
                 startSchedule();
