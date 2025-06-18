@@ -33,6 +33,18 @@
             app:layout_constraintTop_toTopOf="@+id/poi_child_list"
             app:layout_constraintStart_toEndOf="@+id/poi_child_list"/>
 
+        <View
+            android:id="@+id/view"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_26"
+            android:layout_marginBottom="@dimen/dp_26"
+            android:background="@color/setting_text_gray"
+            app:layout_constraintBottom_toTopOf="@+id/poi_business_hours_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_child_list" />
+
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_business_hours_layout"
             android:layout_width="@dimen/dp_0"

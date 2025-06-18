@@ -43,7 +43,7 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_loading"
@@ -330,7 +330,8 @@
                             android:layout_height="wrap_content"
                             android:visibility="visible"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:visibility="visible" />
 
                     </com.fy.navi.ui.view.SkinConstraintLayout>
 
