@@ -61,11 +61,11 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_554"
-            android:background="@drawable/bg_shadow_navi_ndlc_8155"
-            android:paddingVertical="@dimen/dp_34"
-            android:paddingHorizontal="@dimen/dp_34"
+            android:layout_height="@dimen/dp_464"
             android:layout_marginTop="@dimen/dp_120"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:paddingHorizontal="@dimen/dp_34"
+            android:paddingVertical="@dimen/dp_34"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinTextView
@@ -74,11 +74,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_34"
                 android:layout_marginTop="@dimen/dp_37"
+                android:text="@string/limit_selected_city"
                 android:textColor="@color/main_map_limit_current_city"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/limit_selected_city" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/select_city_name"
@@ -96,8 +96,8 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:paddingBottom="@dimen/dp_21"
                 android:paddingTop="@dimen/dp_27"
+                android:paddingBottom="@dimen/dp_21"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_current_city" />
 
