@@ -273,6 +273,13 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 refreshNormalView(holder);
                 return;
             }
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mLabelName: "+mLabelName);
+            if(!ConvertUtils.isEmpty(mLabelName)){
+                holder.mResultItemBinding.poiChargeLabel.setVisibility(VISIBLE);
+                holder.mResultItemBinding.poiChargeLabel.setText(mLabelName);
+            }else{
+                holder.mResultItemBinding.poiChargeLabel.setVisibility(GONE);
+            }
             final int pointTypeCode = mSearchPackage.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "pointTypeCode is: " + pointTypeCode);
             switch (pointTypeCode) {
@@ -575,14 +582,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             binding.poiChargeSlowFree.setText("");
             binding.poiChargeSlowTotal.setText("");
             binding.poiChargeSlowTotal.setVisibility(VISIBLE);
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mLabelName: "+mLabelName);
-            if(!ConvertUtils.isEmpty(mLabelName)){
-                binding.poiChargeLabel.setVisibility(VISIBLE);
-                binding.poiChargeLabel.setText(mLabelName);
-            }else{
-                binding.poiChargeLabel.setVisibility(GONE);
-            }
-
             final List<ChargeInfo> chargeInfos = mPoiInfoEntity.getChargeInfoList();
             if (ConvertUtils.isEmpty(chargeInfos)) {
                 resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);

@@ -42,6 +42,10 @@ public class QuickFilterListAdapter extends RecyclerView.Adapter<QuickFilterList
         holder.binding.filterText.setText(searchCategoryLocalInfo.getName());
         holder.binding.filterRoot.setSelected(searchCategoryLocalInfo.getChecked() == 1);
         holder.binding.getRoot().setOnClickListener(v -> {
+            for (int i = 0; i < mSearchCategoryLocalInfos.size(); i++) {
+                mSearchCategoryLocalInfos.get(i).setChecked(i == position ? 1 : 0);
+            }
+            notifyDataSetChanged();
             mItemClickListener.onItemClick(mSearchCategoryLocalInfos,position);
         });
     }

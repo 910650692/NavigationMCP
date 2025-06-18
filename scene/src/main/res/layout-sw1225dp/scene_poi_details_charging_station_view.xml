@@ -20,10 +20,11 @@
             android:id="@+id/latest_charge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             android:visibility="gone"
             android:textColor="@color/route_charge_param_total_color"
             android:layout_width="wrap_content"
+            tools:visibility="visible"
             android:layout_height="wrap_content"/>
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_label"
@@ -33,8 +34,10 @@
             tools:text="地上"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginBottom="@dimen/dp_10"
             android:textColor="@color/traffic_sub_title_color"
             android:gravity="center"
             android:background="@drawable/bg_poi_gas_type_bg"
@@ -44,6 +47,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/poi_charge_layout"
             android:layout_width="@dimen/dp_476"
+            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_label">

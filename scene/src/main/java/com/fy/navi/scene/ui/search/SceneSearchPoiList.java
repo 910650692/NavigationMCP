@@ -541,6 +541,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 }
                 if(mCurrentSelectedQuick == position){
                     mCurrentSelectedQuick = -1;
+                    if(!ConvertUtils.isNull(mAdapter)){
+                        mAdapter.setQuickLabel("");
+                    }
                     mScreenViewModel.keywordSearch(mPageNum,mSearchText);
                     return;
                 }
@@ -549,12 +552,16 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 if("charge".equals(info.getValue())){
                     mAdapter.clearList();
                     // 请求SGM自营站数据
-                    mScreenViewModel.queryStationNewResult(mResultEntity);
-//                    mSearchLoadingDialog.dismiss();
-//                    ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter_hint));
+//                    mScreenViewModel.queryStationNewResult(mResultEntity);
+                    mSearchLoadingDialog.dismiss();
+                    ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter_hint));
                 }else{
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"value: "+info.getValue());
-                    mScreenViewModel.keywordSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                    if(info.getValue().contains("_")){
+                        mScreenViewModel.keywordSearch(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                    }else{
+                        mScreenViewModel.keywordSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                    }
                 }
             }
         });
@@ -789,28 +796,30 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if(searchResultEntity != null
                 && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())
                 && isChargeQuery(searchResultEntity.getQueryTypeList())){
-            // todo: 功能暂时隐藏
-//            mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
-//            mChildQuickList = mapCustomLabel(searchResultEntity.getLevel2LocalInfoList(),searchResultEntity);
-//            for (int i = 0; i < mChildQuickList.size(); i++) {
-//                mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
-//            }
-//            if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1){
-//                mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
-//            }
-//            mQuickFilterListAdapter.setLabelList(mChildQuickList);
+            mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
+            mChildQuickList = mapCustomLabel(searchResultEntity.getLevel2LocalInfoList(),searchResultEntity);
+            for (int i = 0; i < mChildQuickList.size(); i++) {
+                mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
+            }
+            if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1){
+                mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
+            }else{
+                mAdapter.setQuickLabel("");
+            }
+            mQuickFilterListAdapter.setLabelList(mChildQuickList);
         // 自营站返回
         }else if(searchResultEntity != null && searchResultEntity.getIsNetData()){
-            // todo: 功能暂时隐藏
-//            mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
-//            mChildQuickList = mapCustomLabel(new ArrayList<>(),searchResultEntity);
-//            for (int i = 0; i < mChildQuickList.size(); i++) {
-//                mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
-//            }
-//            if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1){
-//                mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
-//            }
-//            mQuickFilterListAdapter.setLabelList(mChildQuickList);
+            mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
+            mChildQuickList = mapCustomLabel(new ArrayList<>(),searchResultEntity);
+            for (int i = 0; i < mChildQuickList.size(); i++) {
+                mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
+            }
+            if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1){
+                mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
+            }else{
+                mAdapter.setQuickLabel("");
+            }
+            mQuickFilterListAdapter.setLabelList(mChildQuickList);
         }else{
             mViewBinding.searchLabelFilter.setVisibility(GONE);
         }
@@ -1154,6 +1163,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "SearchCategoryLocalInfo is empty");
             return new ArrayList<>();
         }
+        List<SearchChildCategoryLocalInfo> childList = list.get(0).getCategoryLocalInfos();
+        int brand = mScreenViewModel.getBrand();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"brand: "+brand);
         boolean isPowerType = mScreenViewModel.powerType() == 1;
         boolean isOffline = searchResultEntity.getPoiType() == 0;
         // 添加自营快筛
@@ -1176,11 +1188,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     .setValue("searchlist_charging_mode_fast");
             childListByHigh.add(chargeItem);
         }
+        // 凯迪需要过滤掉二筛中的快筛标签
+        if(brand == 2 && !ConvertUtils.isEmpty(childList)){
+            childList.removeIf(value -> ResourceUtils.Companion.getInstance().getString(R.string.filter_select_fast).equals(value.getMValue()));
+        }
         // 别克：性价比车型1，凯迪：高品质车型2
-        childListByHigh.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : list.get(0).getCategoryLocalInfos());
-        childListByLow.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : list.get(0).getCategoryLocalInfos());
-        int brand = mScreenViewModel.getBrand();
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"brand: "+brand);
+        childListByHigh.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : childList);
+        childListByLow.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : childList);
         return brand == 2 ? childListByHigh : childListByLow;
     }
 }

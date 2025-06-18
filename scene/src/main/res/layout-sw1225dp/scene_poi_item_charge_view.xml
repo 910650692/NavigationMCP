@@ -12,10 +12,6 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_charge_root"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <com.fy.navi.ui.view.SkinConstraintLayout
-        android:id="@+id/poi_charge_root_top"
-        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_39"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -161,22 +157,5 @@
             app:layout_constraintTop_toTopOf="@+id/poi_car_charge_price_icon"
             app:layout_constraintBottom_toBottomOf="@+id/poi_car_charge_price_icon"
             tools:text="1.2元/度" />
-    </com.fy.navi.ui.view.SkinConstraintLayout>
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/poi_charge_label"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="地上"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:textSize="@dimen/sp_24"
-            android:visibility="gone"
-            android:textColor="@color/traffic_sub_title_color"
-            android:gravity="center"
-            android:background="@drawable/bg_poi_gas_type_bg"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/poi_charge_root_top"
-            />
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>
