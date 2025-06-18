@@ -401,7 +401,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             for (RouteSupplementParams mRouteSupplementParam : routeSupplementParams) {
                final ArrayList<RouteSupplementInfo> routeSupplementInfos = mRouteSupplementParam.getMRouteSupplementInfos();
                 if (!ConvertUtils.isEmpty(routeSupplementInfos) && routeSupplementInfos.size() > NumberUtils.NUM_1) {
-                    for (int i = 0; i < routeSupplementInfos.size(); i++) {
+                    for (int i = routeSupplementInfos.size() - 1; i > 0; i--) {
                         final RouteSupplementInfo currentRouteInfo = routeSupplementInfos.get(i);
                         final RouteSupplementInfo previousRouteInfo = routeSupplementInfos.get(i - 1);
                         currentRouteInfo.setMDistance(currentRouteInfo.getMDistance() - previousRouteInfo.getMDistance());

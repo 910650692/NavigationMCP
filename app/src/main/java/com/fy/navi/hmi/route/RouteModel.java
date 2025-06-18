@@ -994,9 +994,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     @Override
     public void onRouteChargeStationInfo(final RouteChargeStationParam routeChargeStationParam) {
         mRouteChargeStationParam = routeChargeStationParam;
-//        if (routeChargeStationParam != null) {
-//             mRoutePackage.updateRouteChargeStation(MapType.MAIN_SCREEN_MAIN_MAP, routeChargeStationParam);
-//        }
+        if (routeChargeStationParam != null) {
+             mRoutePackage.updateRouteChargeStation(MapType.MAIN_SCREEN_MAIN_MAP, routeChargeStationParam);
+        }
 
         //TODO CR
         if (mViewModel != null && mViewModel.isNDCar()) {
