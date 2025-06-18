@@ -180,13 +180,13 @@
                 app:layout_constraintStart_toEndOf="@id/scl_top_container"
                 app:layout_constraintTop_toTopOf="@id/scl_top_container" />
             <!--sapa-->
-            <com.fy.navi.scene.ui.navi.SceneNaviSapaView
+            <ViewStub
                 android:id="@+id/scene_navi_sapa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout="@layout/scene_navi_sapa_view_stub"
                 android:layout_marginTop="@dimen/dp_m_6"
                 android:layout_marginStart="@dimen/dp_29"
-                android:visibility="@{ViewModel.mNaviSapaVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
             <!--当前路名居中的基线-->

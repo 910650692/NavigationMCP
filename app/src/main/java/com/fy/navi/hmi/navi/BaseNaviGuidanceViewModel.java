@@ -206,15 +206,18 @@ public class BaseNaviGuidanceViewModel extends
                 mView.updateViewRadius();
                 break;
             case NAVI_SCENE_VIA_POINT_LIST:
+                mNaviViaListVisibility.set(isVisible);
                 mView.setViaListVisibility(isVisible);
                 break;
             case NAVI_SCENE_SERVICE_AREA:
                 mNaviSapaVisibility.set(isVisible);
+                mView.setSapaVisibility(isVisible);
                 break;
             case NAVI_SCENE_PARALLEL:
                 mNaviParallelVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_CONTROL_MORE:
+                mNaviControlVisibilityMore.set(isVisible);
                 mView.setControlMoreVisibility(isVisible);
                 break;
             case NAVI_SCENE_CONTROL:
@@ -259,6 +262,7 @@ public class BaseNaviGuidanceViewModel extends
                 mHandingCardDetailVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_VIA_DETAIL:
+                mNaviViaDetailVisibility.set(isVisible);
                 mView.setViaDetailVisibility(isVisible);
                 break;
             default:

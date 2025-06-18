@@ -30,6 +30,7 @@ import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
 import com.fy.navi.scene.ui.navi.SceneNaviControlMoreView;
+import com.fy.navi.scene.ui.navi.SceneNaviSapaView;
 import com.fy.navi.scene.ui.navi.SceneNaviViaDetailView;
 import com.fy.navi.scene.ui.navi.SceneNaviViaListView;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
@@ -66,6 +67,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private SceneNaviViaListView mSceneNaviViaListView;
     private SceneNaviViaDetailView mSceneNaviViaDetailView;
     private SceneNaviControlMoreView mSceneNaviControlMoreView;
+    private SceneNaviSapaView mSceneNaviSapaView;
 
     private ISceneCallback mSceneCallback;
 
@@ -119,6 +121,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         saveLazySceneStatus(mSceneNaviViaListView, map);
         saveLazySceneStatus(mSceneNaviViaDetailView, map);
         saveLazySceneStatus(mSceneNaviControlMoreView, map);
+        saveLazySceneStatus(mSceneNaviSapaView, map);
     }
 
     private void saveLazySceneStatus(NaviSceneBase naviSceneBase,
@@ -194,6 +197,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         restoreLazySceneStatus(mSceneNaviViaListView, map);
         restoreLazySceneStatus(mSceneNaviViaDetailView, map);
         restoreLazySceneStatus(mSceneNaviControlMoreView, map);
+        restoreLazySceneStatus(mSceneNaviSapaView, map);
     }
 
     private void restoreLazySceneStatus(NaviSceneBase naviSceneBase,
@@ -270,7 +274,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param sapaInfoEntity sapa info entity
      */
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
-        mBinding.sceneNaviSapa.onNaviSAPAInfo(sapaInfoEntity);
+        if (mSceneNaviSapaView != null) {
+            mSceneNaviSapaView.onNaviSAPAInfo(sapaInfoEntity);
+        }
         mBinding.sceneNaviLanes.onShowTollGateLane(sapaInfoEntity);
     }
 
@@ -428,7 +434,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviViaInfo.addSceneCallback(sceneCallback);
         mBinding.sceneNaviParallel.addSceneCallback(sceneCallback);
         mBinding.sceneNaviSpeed.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviSapa.addSceneCallback(sceneCallback);
         mBinding.sceneNaviCrossImage.addSceneCallback(sceneCallback);
         mBinding.sceneNaviEta.addSceneCallback(sceneCallback);
         mBinding.sceneNaviLanes.addSceneCallback(sceneCallback);
@@ -766,6 +771,11 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                     getViewStub().inflate();
             initLazyView(mSceneNaviControlMoreView);
         }
+        if (!mBinding.sceneNaviSapa.isInflated()) {
+            assert mBinding.sceneNaviSapa.getViewStub() != null;
+            mSceneNaviSapaView = (SceneNaviSapaView) mBinding.sceneNaviSapa.getViewStub().inflate();
+            initLazyView(mSceneNaviSapaView);
+        }
     }
 
     private void initLazyView(NaviSceneBase naviSceneBase) {
@@ -797,6 +807,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void setControlMoreVisibility(boolean isVisible) {
         if (mSceneNaviControlMoreView != null) {
             mSceneNaviControlMoreView.setVisibility(isVisible ? VISIBLE : GONE);
+        }
+    }
+
+    public void setSapaVisibility(boolean isVisible) {
+        if (mSceneNaviSapaView != null) {
+            mSceneNaviSapaView.setVisibility(isVisible ? VISIBLE : GONE);
         }
     }
 }

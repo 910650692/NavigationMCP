@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fy.navi.scene.ui.navi.SceneNaviSapaView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_51"
+    android:layout_marginTop="@dimen/dp_m_18"
+    android:focusable="false"
+    android:visibility="gone"
+    tools:ignore="MissingDefaultResource,MissingId">
+
+</com.fy.navi.scene.ui.navi.SceneNaviSapaView>
