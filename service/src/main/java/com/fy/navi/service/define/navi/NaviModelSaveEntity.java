@@ -14,6 +14,7 @@ public class NaviModelSaveEntity {
     private List<NaviViaEntity> mViaList;
     private boolean mIsViaDetailShow;
     private NaviViaEntity mNaviViaEntity;
+    private int mSapaDetailType;
 
     public SpeedOverallEntity getSpeedOverallEntity() {
         return mSpeedOverallEntity;
@@ -101,5 +102,13 @@ public class NaviModelSaveEntity {
 
     public void setIsViaDetailShow(boolean mIsViaDetailShow) {
         this.mIsViaDetailShow = mIsViaDetailShow;
+    }
+
+    public int getSapaDetailType() {
+        return mSapaDetailType;
+    }
+
+    public void setSapaDetailType(int mSapaDetailType) {
+        this.mSapaDetailType = mSapaDetailType;
     }
 }

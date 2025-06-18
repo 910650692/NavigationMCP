@@ -311,12 +311,12 @@
                         app:layout_constraintStart_toStartOf="parent"
                         tools:visibility="gone" />
                     <!--SAPA详情-->
-                    <com.fy.navi.scene.ui.navi.SceneNaviSapaDetailView
+                    <ViewStub
                         android:id="@+id/scene_navi_sapa_detail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout="@layout/scene_navi_sapa_detail_stub"
                         android:focusable="false"
-                        android:visibility="@{ViewModel.mNaviSapaDetailVisibility?View.VISIBLE:View.GONE}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:visibility="gone" />

@@ -22,7 +22,6 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentNaviGuidanceBinding;
-import com.fy.navi.hmi.splitscreen.SRFloatWindowService;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -30,6 +29,7 @@ import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
 import com.fy.navi.scene.ui.navi.SceneNaviControlMoreView;
+import com.fy.navi.scene.ui.navi.SceneNaviSapaDetailView;
 import com.fy.navi.scene.ui.navi.SceneNaviSapaView;
 import com.fy.navi.scene.ui.navi.SceneNaviViaDetailView;
 import com.fy.navi.scene.ui.navi.SceneNaviViaListView;
@@ -67,6 +67,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private SceneNaviViaListView mSceneNaviViaListView;
     private SceneNaviViaDetailView mSceneNaviViaDetailView;
     private SceneNaviControlMoreView mSceneNaviControlMoreView;
+    private SceneNaviSapaDetailView mSceneNaviSapaDetailView;
     private SceneNaviSapaView mSceneNaviSapaView;
 
     private ISceneCallback mSceneCallback;
@@ -122,6 +123,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         saveLazySceneStatus(mSceneNaviViaDetailView, map);
         saveLazySceneStatus(mSceneNaviControlMoreView, map);
         saveLazySceneStatus(mSceneNaviSapaView, map);
+        saveLazySceneStatus(mSceneNaviSapaDetailView, map);
     }
 
     private void saveLazySceneStatus(NaviSceneBase naviSceneBase,
@@ -198,6 +200,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         restoreLazySceneStatus(mSceneNaviViaDetailView, map);
         restoreLazySceneStatus(mSceneNaviControlMoreView, map);
         restoreLazySceneStatus(mSceneNaviSapaView, map);
+        restoreLazySceneStatus(mSceneNaviSapaDetailView, map);
     }
 
     private void restoreLazySceneStatus(NaviSceneBase naviSceneBase,
@@ -326,9 +329,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                 mSceneNaviViaListView.getVisibility() == VISIBLE;
         boolean isControlMoreShow = mSceneNaviControlMoreView != null &&
                 mSceneNaviControlMoreView.getVisibility() == VISIBLE;
+        boolean isNaviSapaDetailShow = mSceneNaviSapaDetailView != null &&
+                mSceneNaviSapaDetailView.getVisibility() == VISIBLE;
         boolean isCanShowCrossImage = !isViaListShow && !isControlMoreShow &&
-                mBinding.sceneNaviPreference.getVisibility() != VISIBLE &&
-                mBinding.sceneNaviSapaDetail.getVisibility() != VISIBLE;
+                mBinding.sceneNaviPreference.getVisibility() != VISIBLE && !isNaviSapaDetailShow;
         if (!isCanShowCrossImage) {
             return;
         }
@@ -441,7 +445,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviTbt.addSceneCallback(sceneCallback);
         mBinding.sceneNaviTmc.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaArrive.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviSapaDetail.addSceneCallback(sceneCallback);
         mBinding.sceneDriveReport.addSceneCallback(sceneCallback);
         mBinding.sceneNaviChargeTip.addSceneCallback(sceneCallback);
         mBinding.sceneNaviContinue.addSceneCallback(sceneCallback);
@@ -511,7 +514,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param sapaInfoEntity sapa info entity
      */
     public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
-        mBinding.sceneNaviSapaDetail.skipNaviSapaDetailScene(type, sapaInfoEntity);
+        if (mSceneNaviSapaDetailView != null) {
+            mSceneNaviSapaDetailView.skipNaviSapaDetailScene(type, sapaInfoEntity);
+        }
     }
 
     public void notifyBatteryWarning(ChargeTipEntity entity) {
@@ -776,6 +781,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mSceneNaviSapaView = (SceneNaviSapaView) mBinding.sceneNaviSapa.getViewStub().inflate();
             initLazyView(mSceneNaviSapaView);
         }
+        if (!mBinding.sceneNaviSapaDetail.isInflated()) {
+            assert mBinding.sceneNaviSapaDetail.getViewStub() != null;
+            mSceneNaviSapaDetailView = (SceneNaviSapaDetailView) mBinding.sceneNaviSapaDetail.
+                    getViewStub().inflate();
+            initLazyView(mSceneNaviSapaDetailView);
+        }
     }
 
     private void initLazyView(NaviSceneBase naviSceneBase) {
@@ -813,6 +824,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void setSapaVisibility(boolean isVisible) {
         if (mSceneNaviSapaView != null) {
             mSceneNaviSapaView.setVisibility(isVisible ? VISIBLE : GONE);
+        }
+    }
+
+    public void setSapaDetailVisibility(boolean isVisible) {
+        if (mSceneNaviSapaDetailView != null) {
+            mSceneNaviSapaDetailView.setVisibility(isVisible ? VISIBLE : GONE);
         }
     }
 }

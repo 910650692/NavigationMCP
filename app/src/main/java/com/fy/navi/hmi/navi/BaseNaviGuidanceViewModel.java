@@ -245,6 +245,7 @@ public class BaseNaviGuidanceViewModel extends
                 break;
             case NAVI_SAPA_DETAIL_INFO:
                 mNaviSapaDetailVisibility.set(isVisible);
+                mView.setSapaDetailVisibility(isVisible);
                 break;
             case NAVI_DRIVE_REPORT:
                 mNaviDriveReportVisibility.set(isVisible);
@@ -496,6 +497,9 @@ public class BaseNaviGuidanceViewModel extends
      * @param sapaInfoEntity sapa info entity
      */
     public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
+        if (mModelSaveEntity != null) {
+            mModelSaveEntity.setSapaDetailType(type);
+        }
         mView.skipNaviSapaDetailScene(type, sapaInfoEntity);
     }
 
@@ -711,12 +715,7 @@ public class BaseNaviGuidanceViewModel extends
         if (isNeedShowSpeedCameraInfo) {
             onNaviSpeedCameraInfo(speedOverallEntity);
         }
-        final SapaInfoEntity sapaInfoEntity = mModelSaveEntity.getSapaInfoEntity();
-        boolean isNeedRestoreSapaInfo = (Objects.equals(mNaviSapaVisibility.get(), Boolean.TRUE) ||
-                Objects.equals(mNaviLanesVisibility.get(), Boolean.TRUE)) && sapaInfoEntity != null;
-        if (isNeedRestoreSapaInfo) {
-            onNaviSAPAInfo(sapaInfoEntity);
-        }
+        onNaviSAPAInfo(mModelSaveEntity.getSapaInfoEntity());
         final NaviEtaInfo naviEtaInfo = mModelSaveEntity.getNaviEtaInfo();
         boolean isNeedRestoreEtaInfo = naviEtaInfo != null;
         if (isNeedRestoreEtaInfo) {
@@ -751,6 +750,10 @@ public class BaseNaviGuidanceViewModel extends
         }
         showViaDetail(mModelSaveEntity.isIsViaDetailShow());
         updateNewestViaPoint(mModelSaveEntity.getNaviViaEntity());
+        if (Objects.equals(mNaviSapaDetailVisibility.get(), Boolean.TRUE)) {
+            skipNaviSapaDetailScene(mModelSaveEntity.getSapaDetailType(),
+                    mModelSaveEntity.getSapaInfoEntity());
+        }
         if (null != mView) {
             mView.updateViewRadius();
         }
