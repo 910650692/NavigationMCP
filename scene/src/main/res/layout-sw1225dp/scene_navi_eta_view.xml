@@ -107,7 +107,7 @@
             android:includeFontPadding="false"
             android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_29"
-            android:translationY="@dimen/dp_26"
+            android:translationY="@dimen/dp_30"
             app:layout_constraintBottom_toTopOf="@id/stv_arrive_default"
             app:layout_constraintEnd_toStartOf="@id/stv_arrive_default"
             tools:text="+2" />
