@@ -201,10 +201,13 @@ public class ChargeTipManager {
 
     public void onUpdateChargeStationPass(long viaIndex) {
         // 将要通过的充电桩回调
-        Logger.i(TAG, "viaIndex：", viaIndex, " mNaviViaEntityList:", mNaviViaEntityList.size());
+        Logger.i(TAG, "viaIndex：", viaIndex, " mNaviViaEntityList:", mNaviViaEntityList == null ? "null" : mNaviViaEntityList.size());
         if (!ConvertUtils.isEmpty(mNaviViaEntityList) && mNaviViaEntityList.size() > viaIndex) {
             NaviViaEntity viaEntity = mNaviViaEntityList.get((int) viaIndex);
             Logger.i(TAG, "viaEntity: ", viaEntity);
+            if (viaEntity == null) {
+                return;
+            }
             ThreadManager.getInstance().asyncDelay(new Runnable() {
                 @Override
                 public void run() {
@@ -303,8 +306,10 @@ public class ChargeTipManager {
         curViaFree = 0;
         curViaTotal = 0;
         for (ChargeInfo chargeInfo : chargeInfoList) {
-            curViaFree = curViaFree + chargeInfo.getFast_free() + chargeInfo.getSlow_free();
-            curViaTotal = curViaTotal + chargeInfo.getFast_total() + chargeInfo.getSlow_total();
+            if (chargeInfo != null) {
+                curViaFree = curViaFree + chargeInfo.getFast_free() + chargeInfo.getSlow_free();
+                curViaTotal = curViaTotal + chargeInfo.getFast_total() + chargeInfo.getSlow_total();
+            }
         }
         Logger.i(TAG, "curViaFree:", curViaFree, " curViaTotal:", curViaTotal, " mIsChargingPlanOpen:", mIsChargingPlanOpen);
         if (mIsChargingPlanOpen) {
@@ -395,6 +400,9 @@ public class ChargeTipManager {
                     LocalTime createTime = LocalTime.parse(info.getmCreateTime(), formatter);
                     LocalTime now = LocalTime.now();
                     Logger.i(TAG, "createTime:", info.getmCreateTime(), " now:", formatter.format(now));
+                    if (createTime == null) {
+                        return;
+                    }
                     if (now.isAfter(createTime)) {
                         return;
                     }
@@ -416,9 +424,16 @@ public class ChargeTipManager {
                     }
                     long min = Duration.between(now, createTime).toMinutes();
                     final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
+                    if (locInfoBean == null) {
+                        return;
+                    }
                     GeoPoint startPoint = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude(), locInfoBean.getAltitude());
                     GeoPoint endPoint = new GeoPoint(lon, lat);
                     mSearchPackage.getTravelTimeFutureIncludeChargeLeft(startPoint, endPoint).thenAccept(etaInfo -> {
+                        if (etaInfo == null) {
+                            Logger.i(TAG, "etaInfo == null");
+                            return;
+                        }
                         Logger.i(TAG, "getTime():", etaInfo.getTime(), "min:", min);
                         if (min - etaInfo.getTime() / 60 < 5 * 60) {
                             chargeStationTimeOver((int) min);
@@ -458,6 +473,9 @@ public class ChargeTipManager {
      * @return
      */
     private boolean isUnreachableOrLow() {
+        if (mRoutePackage.getSelectRouteIndex() == null) {
+            return false;
+        }
         final ArrayList<EvRangeOnRouteInfo> evRangeOnRouteInfos = mRoutePackage.getEvRangeOnRouteInfos();
         Integer routeIndex = mRoutePackage.getSelectRouteIndex().get(MapType.MAIN_SCREEN_MAIN_MAP);
         Logger.i(TAG, "routeIndex:", routeIndex, " evRangeOnRouteInfos:", (evRangeOnRouteInfos == null ? "null" : evRangeOnRouteInfos.size()));
@@ -483,6 +501,9 @@ public class ChargeTipManager {
      * @return
      */
     private boolean isUnreachableOrLess20() {
+        if (mRoutePackage.getSelectRouteIndex() == null) {
+            return false;
+        }
         final ArrayList<EvRangeOnRouteInfo> evRangeOnRouteInfos = mRoutePackage.getEvRangeOnRouteInfos();
         Integer routeIndex = mRoutePackage.getSelectRouteIndex().get(MapType.MAIN_SCREEN_MAIN_MAP);
         Logger.i(TAG, "routeIndex:", routeIndex, " evRangeOnRouteInfos:", (evRangeOnRouteInfos == null ? "null" : evRangeOnRouteInfos.size()));
@@ -526,11 +547,22 @@ public class ChargeTipManager {
             return;
         }
         Coord3DDouble coord3DDouble = info.getMPos();
+        if (coord3DDouble == null) {
+            Logger.i(TAG, "coord3DDouble == null type:", type);
+            return;
+        }
         final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
+        if (locInfoBean == null) {
+            Logger.i(TAG, "locInfoBean == null type:", type);
+            return;
+        }
         GeoPoint startPoint = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude(), locInfoBean.getAltitude());
         GeoPoint endPoint = new GeoPoint(coord3DDouble.getLon(), coord3DDouble.getLat(), coord3DDouble.getZ());
         mSearchPackage.getTravelTimeFutureIncludeChargeLeft(startPoint, endPoint).thenAccept(etaInfo -> {
             Logger.i(TAG, "checkAlternativeReachable etaInfo:", etaInfo + " type:", type);
+            if (etaInfo == null) {
+                return;
+            }
             if (etaInfo.getDistance() < 5 * 1000) {
                 if (type == TipType.Congestion) {
                     chargeStationCongestionUpdate(info);
@@ -815,7 +847,9 @@ public class ChargeTipManager {
             LocalTime startTime = LocalTime.parse(startTimeStr, formatter);
             LocalTime endTime = LocalTime.parse(endTimeStr, formatter);
             LocalTime now = LocalTime.now();
-
+            if (startTime == null || endTime == null) {
+                return true;
+            }
             // 不跨天的前提：开始时间 <= 结束时间
             if (startTime.isAfter(endTime)) {
                 Logger.i(TAG, "开始时间 <= 结束时间");
@@ -837,7 +871,7 @@ public class ChargeTipManager {
      */
     public void queryReservation() {
         if (mViewModel == null || mViewModel.getActivity() == null) {
-            Logger.i(TAG, "mViewModel:", mViewModel);
+            Logger.i(TAG, "mViewModel:", mViewModel == null);
             return;
         }
         AccessTokenParam param = new AccessTokenParam(
