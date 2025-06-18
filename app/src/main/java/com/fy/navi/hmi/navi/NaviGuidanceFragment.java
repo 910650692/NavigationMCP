@@ -29,6 +29,7 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
+import com.fy.navi.scene.ui.navi.SceneNaviControlMoreView;
 import com.fy.navi.scene.ui.navi.SceneNaviViaDetailView;
 import com.fy.navi.scene.ui.navi.SceneNaviViaListView;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
@@ -62,9 +63,9 @@ import java.util.Objects;
 
 public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBinding, NaviGuidanceViewModel> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_VIEW;
-    
     private SceneNaviViaListView mSceneNaviViaListView;
     private SceneNaviViaDetailView mSceneNaviViaDetailView;
+    private SceneNaviControlMoreView mSceneNaviControlMoreView;
 
     private ISceneCallback mSceneCallback;
 
@@ -117,6 +118,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private void saveLazySceneStatus(HashMap<NaviSceneId, Integer> map) {
         saveLazySceneStatus(mSceneNaviViaListView, map);
         saveLazySceneStatus(mSceneNaviViaDetailView, map);
+        saveLazySceneStatus(mSceneNaviControlMoreView, map);
     }
 
     private void saveLazySceneStatus(NaviSceneBase naviSceneBase,
@@ -149,7 +151,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     @Override
     public void onInitData() {
-        mBinding.sceneNaviControlMore.updateBroadcast();
+        if (mSceneNaviControlMoreView != null) {
+            mSceneNaviControlMoreView.updateBroadcast();
+        }
+
     }
 
     @Override
@@ -188,6 +193,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         HashMap<NaviSceneId, Integer> map = mViewModel.getSceneStatus();
         restoreLazySceneStatus(mSceneNaviViaListView, map);
         restoreLazySceneStatus(mSceneNaviViaDetailView, map);
+        restoreLazySceneStatus(mSceneNaviControlMoreView, map);
     }
 
     private void restoreLazySceneStatus(NaviSceneBase naviSceneBase,
@@ -243,7 +249,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     private void refreshView() {
         Logger.i(TAG, "refreshView");
-        mBinding.sceneNaviControlMore.refreshView();
+        if (mSceneNaviControlMoreView != null) {
+            mSceneNaviControlMoreView.refreshView();
+        }
         mBinding.sceneNaviControl.refreshView();
     }
 
@@ -310,8 +318,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         // 如果途经点列表/底部控制栏更多/路线偏好/sapa详情页页面显示，不能执行路口大图的显示逻辑
         boolean isViaListShow = mSceneNaviViaListView != null &&
                 mSceneNaviViaListView.getVisibility() == VISIBLE;
-        boolean isCanShowCrossImage = !isViaListShow &&
-                mBinding.sceneNaviControlMore.getVisibility() != VISIBLE &&
+        boolean isControlMoreShow = mSceneNaviControlMoreView != null &&
+                mSceneNaviControlMoreView.getVisibility() == VISIBLE;
+        boolean isCanShowCrossImage = !isViaListShow && !isControlMoreShow &&
                 mBinding.sceneNaviPreference.getVisibility() != VISIBLE &&
                 mBinding.sceneNaviSapaDetail.getVisibility() != VISIBLE;
         if (!isCanShowCrossImage) {
@@ -400,7 +409,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
         mBinding.sceneNaviControl.onImmersiveStatusChange(currentImersiveStatus);
-        mBinding.sceneNaviControlMore.onImmersiveStatusChange(currentImersiveStatus);
+        if (mSceneNaviControlMoreView != null) {
+            mSceneNaviControlMoreView.onImmersiveStatusChange(currentImersiveStatus);
+        }
         mBinding.sceneNaviContinue.onImmersiveStatusChange(currentImersiveStatus);
         mBinding.sceneNaviCrossImage.onImmersiveStatusChange(currentImersiveStatus);
     }
@@ -413,7 +424,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void addSceneCallback(final ISceneCallback sceneCallback) {
         mSceneCallback = sceneCallback;
         mBinding.sceneNaviControl.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviControlMore.addSceneCallback(sceneCallback);
         mBinding.sceneNaviLastMile.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaInfo.addSceneCallback(sceneCallback);
         mBinding.sceneNaviParallel.addSceneCallback(sceneCallback);
@@ -538,7 +548,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     public void onNetStatusChange(boolean isConnected) {
         mBinding.sceneNaviPreference.onNetStatusChange(isConnected);
-        mBinding.sceneNaviControlMore.onNetStatusChange(isConnected);
+        if (mSceneNaviControlMoreView != null) {
+            mSceneNaviControlMoreView.onNetStatusChange(isConnected);
+        }
     }
 
     /**
@@ -633,7 +645,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (!hidden) {
             if (null != mViewModel) {
                 mViewModel.isRequestRouteForPlateNumberAndAvoidLimitChange();
-                mBinding.sceneNaviControlMore.updateBroadcast();
+                if (mSceneNaviControlMoreView != null) {
+                    mSceneNaviControlMoreView.updateBroadcast();
+                }
                 OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             } else {
                 Logger.i(TAG, "onHiddenChanged mViewModel is null");
@@ -728,8 +742,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     public void onPassByClick() {
-        if (mBinding.sceneNaviControlMore != null) {
-            mBinding.sceneNaviControlMore.onPassByClick();
+        if (mSceneNaviControlMoreView != null) {
+            mSceneNaviControlMoreView.onPassByClick();
         }
     }
 
@@ -745,6 +759,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mSceneNaviViaDetailView = (SceneNaviViaDetailView) mBinding.sceneNaviViaDetail.
                     getViewStub().inflate();
             initLazyView(mSceneNaviViaDetailView);
+        }
+        if (!mBinding.sceneNaviControlMore.isInflated()) {
+            assert mBinding.sceneNaviControlMore.getViewStub() != null;
+            mSceneNaviControlMoreView = (SceneNaviControlMoreView) mBinding.sceneNaviControlMore.
+                    getViewStub().inflate();
+            initLazyView(mSceneNaviControlMoreView);
         }
     }
 
@@ -771,6 +791,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void setViaDetailVisibility(boolean isVisible) {
         if (mSceneNaviViaDetailView != null) {
             mSceneNaviViaDetailView.setVisibility(isVisible ? VISIBLE : GONE);
+        }
+    }
+
+    public void setControlMoreVisibility(boolean isVisible) {
+        if (mSceneNaviControlMoreView != null) {
+            mSceneNaviControlMoreView.setVisibility(isVisible ? VISIBLE : GONE);
         }
     }
 }

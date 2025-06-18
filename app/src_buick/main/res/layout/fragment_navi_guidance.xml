@@ -153,11 +153,11 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <!--控制tools more-->
-            <com.fy.navi.scene.ui.navi.SceneNaviControlMoreView
+            <ViewStub
                 android:id="@+id/scene_navi_control_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="@{ViewModel.mNaviControlVisibilityMore?View.VISIBLE:View.GONE}"
+                android:layout="@layout/scene_navi_control_more_stub"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.fy.navi.scene.ui.navi.SceneNaviViaListView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/dp_545"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_navi_tbt_bottom"
     android:paddingTop="@dimen/dp_40"
     android:visibility="gone"
-    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-    app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt"
     tools:ignore="MissingDefaultResource,MissingId">
 
 </com.fy.navi.scene.ui.navi.SceneNaviViaListView>

@@ -215,7 +215,7 @@ public class BaseNaviGuidanceViewModel extends
                 mNaviParallelVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_CONTROL_MORE:
-                mNaviControlVisibilityMore.set(isVisible);
+                mView.setControlMoreVisibility(isVisible);
                 break;
             case NAVI_SCENE_CONTROL:
                 mNaviControlVisibility.set(isVisible);
