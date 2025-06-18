@@ -42,6 +42,7 @@
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/poi_scenic_spot_child_list"
             android:layout_width="wrap_content"
+            android:contentDescription="#MARK_NO_SCORLLABLE"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_44"
             app:layout_goneMarginTop="@dimen/dp_20"
