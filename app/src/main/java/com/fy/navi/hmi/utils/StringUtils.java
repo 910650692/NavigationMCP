@@ -4,11 +4,27 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtils {
     private static final double KB = 1024;
     private static final double MB = 1048576;
     private static final double GB = 1073741824;
+
+    /**
+     * HH:mm 格式
+     */
+    private static final Pattern TIME_PATTERN = Pattern.compile(
+            "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+    );
+
+    /**
+     * yyyy-MM-dd HH:mm:ss 格式
+     */
+    private static final Pattern DATETIME_PATTERN = Pattern.compile(
+            "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01]) (?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d$"
+    );
 
     /**
      * Convert byte value to normal data size.
@@ -76,5 +92,31 @@ public class StringUtils {
         }
     }
 
+    /**
+     * 判断时间字符串是否符合HH:mm格式
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isHHmmFormat(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        Matcher matcher = TIME_PATTERN.matcher(str);
+        return matcher.matches();
+    }
 
+    /**
+     * 判断时间字符串是否符合yyyy-MM-dd HH:mm:ss 格式
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isDatetimeByRegex(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        Matcher matcher = DATETIME_PATTERN.matcher(str);
+        return matcher.matches();
+    }
 }

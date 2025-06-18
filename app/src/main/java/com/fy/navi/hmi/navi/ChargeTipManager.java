@@ -7,6 +7,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.hmi.utils.StringUtils;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
 import com.fy.navi.scene.ui.navi.SceneNaviChargeBtnType;
@@ -386,6 +387,10 @@ public class ChargeTipManager {
                         Logger.i(TAG, "info == null || ConvertUtils.isEmpty(info.getmCreateTime())");
                         return;
                     }
+                    if (!StringUtils.isDatetimeByRegex(info.getmCreateTime())) {
+                        Logger.i(TAG, "getmCreateTime:", info.getmCreateTime());
+                        return;
+                    }
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     LocalTime createTime = LocalTime.parse(info.getmCreateTime(), formatter);
                     LocalTime now = LocalTime.now();
@@ -456,8 +461,8 @@ public class ChargeTipManager {
         final ArrayList<EvRangeOnRouteInfo> evRangeOnRouteInfos = mRoutePackage.getEvRangeOnRouteInfos();
         Integer routeIndex = mRoutePackage.getSelectRouteIndex().get(MapType.MAIN_SCREEN_MAIN_MAP);
         Logger.i(TAG, "routeIndex:", routeIndex, " evRangeOnRouteInfos:", (evRangeOnRouteInfos == null ? "null" : evRangeOnRouteInfos.size()));
-        if (!ConvertUtils.isEmpty(evRangeOnRouteInfos) && !ConvertUtils.isEmpty(routeIndex)) {
-            if (evRangeOnRouteInfos.size() > routeIndex) {
+        if (!ConvertUtils.isEmpty(evRangeOnRouteInfos) && routeIndex != null) {
+            if (evRangeOnRouteInfos.size() > routeIndex && routeIndex >= 0) {
                 EvRangeOnRouteInfo rangeOnRouteInfo = evRangeOnRouteInfos.get(routeIndex);
                 Logger.i(TAG, "rangeOnRouteInfo:", rangeOnRouteInfo);
                 if (rangeOnRouteInfo != null) {
@@ -481,8 +486,8 @@ public class ChargeTipManager {
         final ArrayList<EvRangeOnRouteInfo> evRangeOnRouteInfos = mRoutePackage.getEvRangeOnRouteInfos();
         Integer routeIndex = mRoutePackage.getSelectRouteIndex().get(MapType.MAIN_SCREEN_MAIN_MAP);
         Logger.i(TAG, "routeIndex:", routeIndex, " evRangeOnRouteInfos:", (evRangeOnRouteInfos == null ? "null" : evRangeOnRouteInfos.size()));
-        if (!ConvertUtils.isEmpty(evRangeOnRouteInfos) && !ConvertUtils.isEmpty(routeIndex)) {
-            if (evRangeOnRouteInfos.size() > routeIndex) {
+        if (!ConvertUtils.isEmpty(evRangeOnRouteInfos) && routeIndex != null) {
+            if (evRangeOnRouteInfos.size() > routeIndex && routeIndex >= 0) {
                 EvRangeOnRouteInfo rangeOnRouteInfo = evRangeOnRouteInfos.get(routeIndex);
                 Logger.i(TAG, "rangeOnRouteInfo:", rangeOnRouteInfo);
                 if (rangeOnRouteInfo != null) {
@@ -784,7 +789,7 @@ public class ChargeTipManager {
      * @throws IllegalArgumentException 时间格式错误时抛出
      */
     public boolean isCurrentTimeInRange(String time) {
-        Logger.i(TAG, "time:", time);
+        Logger.i(TAG, "isCurrentTimeInRange time:", time);
         if (ConvertUtils.isEmpty(time)) {
             return true;
         }
@@ -798,6 +803,12 @@ public class ChargeTipManager {
         }
         String startTimeStr = timesH[0];
         String endTimeStr = timesH[1];
+        if (startTimeStr == null || endTimeStr == null) {
+            return true;
+        }
+        if (!StringUtils.isHHmmFormat(startTimeStr) || !StringUtils.isHHmmFormat(endTimeStr)) {
+            return true;
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         try {
             // 解析开始和结束时间为LocalTime对象
