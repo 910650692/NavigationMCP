@@ -213,7 +213,9 @@ public class ExchangeHelper {
                 getRouteRemainLightCount() -
                 currentNaviInfoEntity.getRouteRemainLightCount());
         newRoute.setPathId(naviInfoEntity.getPathId());
-        Logger.i(TAG, "getNewRoute newRoute:" + newRoute.toString());
+        if (Logger.openLog) {
+            Logger.i(TAG, "getNewRoute newRoute:" + newRoute.toString());
+        }
         return newRoute;
     }
 
@@ -293,7 +295,9 @@ public class ExchangeHelper {
                 }
             }
         }
-        Logger.i(TAG, "getRoadSegmentIdx roadEntities:" + roadEntities.toString());
+        if (Logger.openLog) {
+            Logger.i(TAG, "getRoadSegmentIdx roadEntities:" + roadEntities.toString());
+        }
         return roadEntities;
     }
 

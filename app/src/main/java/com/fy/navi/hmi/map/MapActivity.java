@@ -216,7 +216,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Logger.i(TAG, GsonUtils.toJson(newConfig));
+        if (Logger.openLog) {
+            Logger.i(TAG, GsonUtils.toJson(newConfig));
+        }
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
         recreate();

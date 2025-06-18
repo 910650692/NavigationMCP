@@ -108,7 +108,9 @@ public class NaviAudioPlayer {
                     super.onRecordingConfigChanged(configs);
                     for (int i = 0; i < configs.size(); i++) {
                         AudioRecordingConfiguration config = configs.get(i);
-                        Logger.i(TAG, "onRecordingConfigChanged :" , config.toString());
+                        if (Logger.openLog) {
+                            Logger.i(TAG, "onRecordingConfigChanged :", config.toString());
+                        }
                         int source = config.getClientAudioSource();
                         switch (source) {
                             //录音源为麦克风

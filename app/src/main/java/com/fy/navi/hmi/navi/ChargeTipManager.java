@@ -399,7 +399,9 @@ public class ChargeTipManager {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     LocalTime createTime = LocalTime.parse(info.getmCreateTime(), formatter);
                     LocalTime now = LocalTime.now();
-                    Logger.i(TAG, "createTime:", info.getmCreateTime(), " now:", formatter.format(now));
+                    if (Logger.openLog) {
+                        Logger.i(TAG, "createTime:", info.getmCreateTime(), " now:", formatter.format(now));
+                    }
                     if (createTime == null) {
                         return;
                     }

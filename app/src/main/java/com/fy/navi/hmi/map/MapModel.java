@@ -516,7 +516,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus currentImersiveStatus) {
-        Logger.d(TAG, "onImmersiveStatusChange: " , parkingViewExist() , ", currentImersiveStatus: " , currentImersiveStatus);
+        if (Logger.openLog) {
+            Logger.d(TAG, "onImmersiveStatusChange: ", parkingViewExist(), ", currentImersiveStatus: ", currentImersiveStatus);
+        }
         //是触控态的时候显示回车位   否则隐藏
 //        if (Boolean.FALSE.equals(mViewModel.bottomNaviVisibility.get())) return;
         if (parkingViewExist()) {
@@ -609,7 +611,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void queryLimitResult(RouteRestrictionParam param) {
-        Logger.d(TAG, "queryLimitResult success!", "isMainThread:" , (Looper.getMainLooper() == Looper.myLooper()));
+        if (Logger.openLog) {
+            Logger.d(TAG, "queryLimitResult success!", "isMainThread:", (Looper.getMainLooper() == Looper.myLooper()));
+        }
         // 限行信息查询成功后更新UI
         if (limitQueryTaskId == param.getMRestrictedArea().getMRequestId()) {
             mViewModel.updateLimitInfo(param);
@@ -618,7 +622,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void queryLimitEndNumberResult(final TrafficRestrictResponseParam param) {
-        Logger.d(TAG, "queryLimitResult success!", "isMainThread:" , (Looper.getMainLooper() == Looper.myLooper()));
+        if (Logger.openLog) {
+            Logger.d(TAG, "queryLimitResult success!", "isMainThread:", (Looper.getMainLooper() == Looper.myLooper()));
+        }
         // 限行信息查询成功后更新UI
         if (limitEndNumberTaskId == param.getTaskId()) {
             mViewModel.updateLimitEndNum(param);
@@ -994,7 +1000,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            Logger.i(TAG, "notifyAimPoiPushMessage " , GsonUtils.toJson(msg));
+            if (Logger.openLog) {
+                Logger.i(TAG, "notifyAimPoiPushMessage ", GsonUtils.toJson(msg));
+            }
             final PhoneAddressDialog phoneAddressDialog = new PhoneAddressDialog(
                     StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
             phoneAddressDialog.setTitle(msg.getName());

@@ -482,8 +482,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final GeoPoint userLoc = new GeoPoint();
         userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
         userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
-                + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        if (Logger.openLog) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
+                    + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        }
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .keyword(keyword)
                 .queryType(AutoMapConstant.SearchQueryType.NORMAL)
@@ -536,8 +538,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final GeoPoint userLoc = new GeoPoint();
         userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
         userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
-                + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        if (Logger.openLog) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
+                    + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        }
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .poiId(poiId)
                 .queryType(AutoMapConstant.SearchQueryType.ID)
@@ -564,8 +568,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final GeoPoint userLoc = new GeoPoint();
         userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
         userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
-                + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        if (Logger.openLog) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
+                    + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        }
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .poiId(poiId)
                 .queryType(AutoMapConstant.SearchQueryType.ID)
@@ -592,8 +598,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final GeoPoint userLoc = new GeoPoint();
         userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
         userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
-                + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        if (Logger.openLog) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
+                    + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        }
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .poiId(poiId)
                 .queryType(AutoMapConstant.SearchQueryType.ID)
@@ -622,8 +630,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final GeoPoint userLoc = new GeoPoint();
         userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
         userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
-                + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        if (Logger.openLog) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
+                    + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        }
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .isSilentSearch(isSilent)
                 .poiId(poiId)

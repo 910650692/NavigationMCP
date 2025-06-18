@@ -241,7 +241,9 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
 
     @Override
     public void onDownLoadStatus(final CityDataInfo cityDataInfo ) {
-        Logger.d("MapDataPackage","onDownLoadStatus -> cityDataInfo: " + GsonUtils.toJson(cityDataInfo));
+        if (Logger.openLog) {
+            Logger.d("MapDataPackage", "onDownLoadStatus -> cityDataInfo: " + GsonUtils.toJson(cityDataInfo));
+        }
 
         if (null != mCallBacks) {
             for (MapDataCallBack observer : mCallBacks.values()) {

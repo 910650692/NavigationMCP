@@ -107,7 +107,9 @@ public final class ActivateHQ {
         NetQueryManager.getInstance().queryUuid(uuidRequest, new NetQueryManager.INetResultCallBack<UuidResponse>() {
             @Override
             public void onSuccess(final UuidResponse response) {
-                Logger.d(TAG, response.toString());
+                if (Logger.openLog) {
+                    Logger.d(TAG, response.toString());
+                }
                 UUID = response.getMVin();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, UUID);
                 mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
@@ -148,7 +150,9 @@ public final class ActivateHQ {
                 @Override
                 public void onSuccess(final QueryOrderResponse statusBean) {
                     Logger.d(TAG, "firstCheckOrderStatus success");
-                    Logger.d(TAG, statusBean.toString());
+                    if (Logger.openLog) {
+                        Logger.d(TAG, statusBean.toString());
+                    }
                     handleStatus(statusBean.getMOrderStatus());
                     if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
                         //首次查询没有订单后下单

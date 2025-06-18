@@ -88,7 +88,9 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
     }
 
     public void updateUi(List<PoiInfoEntity> list, HandCardType type) {
-        Logger.i(TAG, "isMain:", (Looper.myLooper() == Looper.getMainLooper()));
+        if (Logger.openLog) {
+            Logger.i(TAG, "isMain:", (Looper.myLooper() == Looper.getMainLooper()));
+        }
         this.mList.clear();
         this.mList.addAll(list);
         this.mType = type;
