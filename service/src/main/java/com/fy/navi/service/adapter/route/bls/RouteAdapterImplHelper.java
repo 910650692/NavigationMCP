@@ -18,6 +18,7 @@ import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.route.model.BLRerouteRequestInfo;
 import com.autonavi.gbl.route.observer.INaviRerouteObserver;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.Coord3DDouble;
 import com.fy.navi.service.define.route.RouteAlterChargePriceInfo;
 import com.fy.navi.service.define.route.RouteAlternativeChargeDetourInfo;
@@ -105,6 +106,7 @@ import com.fy.navi.service.define.route.RouteWeatherParam;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.define.calibration.PowerType;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
@@ -643,6 +645,7 @@ public class RouteAdapterImplHelper {
             if (ConvertUtils.isEmpty(pathResultData)) {
                 return;
             }
+
             final long requestId = pathResultData.requestId;
             Logger.i(TAG, "route plane result id " + requestId);
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, requestId);
@@ -657,6 +660,11 @@ public class RouteAdapterImplHelper {
                 handlerTMCForMap(pathInfoList, requestId, requestRouteResult.getMMapTypeId()
                         , requestRouteResult.getMRouteRequestCallBackType());
                 Logger.i(TAG, "通勤模式");
+                return;
+            }
+            //导航态sdk自动重算，回调时已退出导航
+            if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)) {
+                Logger.i(TAG, "Invalid callback");
                 return;
             }
             mRequsetId = requestId;
@@ -684,6 +692,12 @@ public class RouteAdapterImplHelper {
             if (ConvertUtils.isEmpty(mRouteResultObserverHashtable)) {
                 return;
             }
+            //导航态sdk自动重算，回调时已退出导航
+            if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)) {
+                Logger.i(TAG, "Invalid callback");
+                return;
+            }
+
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, pathResultData.requestId);
             if (!ConvertUtils.isEmpty(requestRouteResult)) {
                 //专为通勤模式添加回调
