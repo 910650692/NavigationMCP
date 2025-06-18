@@ -1100,7 +1100,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (!ConvertUtils.isEmpty(poiInfoEntity.getCityInfo())) {
             routeParam.setAdCode(poiInfoEntity.getCityInfo().getCityCode());
         }
-        if (poiInfoEntity.getPointTypeCode() != null || poiInfoEntity.getPointTypeCode().startsWith("0111")) {
+        if (poiInfoEntity.getPointTypeCode() != null && poiInfoEntity.getPointTypeCode().startsWith("0111")) {
             routeParam.setMAddressType(AutoMapConstant.ParamPoiType.CHARGING_STATION_POINT);
         }
         final GeoPoint geoPoint = new GeoPoint();
