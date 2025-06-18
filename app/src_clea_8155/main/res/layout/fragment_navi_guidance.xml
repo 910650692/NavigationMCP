@@ -261,14 +261,6 @@
                 android:layout="@layout/scene_navi_sapa_detail_stub"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-            <!--驾驶报告-->
-            <com.fy.navi.scene.ui.navi.SceneNaviDriveReportView
-                android:id="@+id/scene_drive_report"
-                android:layout_width="@dimen/dp_545"
-                android:layout_height="@dimen/dp_700"
-                android:visibility="@{ViewModel.mNaviDriveReportVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.scene.ui.navi.SceneNaviChargeTipView
                 android:id="@+id/scene_navi_charge_tip"

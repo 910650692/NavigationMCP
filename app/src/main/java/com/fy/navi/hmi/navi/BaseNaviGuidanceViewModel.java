@@ -287,6 +287,10 @@ public class BaseNaviGuidanceViewModel extends
      * @param speedCameraInfo speed camera info
      */
     public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
+        if (ConvertUtils.isEmpty(speedCameraInfo)) {
+            Logger.i(TAG, "onNaviSpeedOverallInfo speedCameraInfo is null");
+            return;
+        }
         mModelSaveEntity.setSpeedOverallEntity(speedCameraInfo);
         mView.onNaviSpeedCameraInfo(speedCameraInfo);
     }
@@ -297,6 +301,10 @@ public class BaseNaviGuidanceViewModel extends
      * @param sapaInfoEntity sapa info entity
      */
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
+        if (ConvertUtils.isEmpty(sapaInfoEntity)) {
+            Logger.i(TAG, "onNaviSAPAInfo sapaInfoEntity is null");
+            return;
+        }
         mModelSaveEntity.setSapaInfoEntity(sapaInfoEntity);
         mView.onNaviSAPAInfo(sapaInfoEntity);
     }
@@ -361,6 +369,10 @@ public class BaseNaviGuidanceViewModel extends
      * @param naviTmcInfo navi tmc info
      */
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo, final boolean isShow) {
+        if (ConvertUtils.isEmpty(naviTmcInfo)) {
+            Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo is null");
+            return;
+        }
         mModelSaveEntity.setNaviTmcInfo(naviTmcInfo);
         mView.onUpdateTMCLightBar(naviTmcInfo, isShow);
     }
@@ -371,6 +383,10 @@ public class BaseNaviGuidanceViewModel extends
      * @param info maneuver info
      */
     public void onManeuverInfo(final NaviManeuverInfo info) {
+        if (ConvertUtils.isEmpty(info)) {
+            Logger.i(TAG, "onManeuverInfo info is null");
+            return;
+        }
         mModelSaveEntity.setNaviManeuverInfo(info);
         mView.onManeuverInfo(info);
     }
@@ -501,15 +517,6 @@ public class BaseNaviGuidanceViewModel extends
             mModelSaveEntity.setSapaDetailType(type);
         }
         mView.skipNaviSapaDetailScene(type, sapaInfoEntity);
-    }
-
-    /**
-     * 行程报告回调
-     *
-     * @param entity entity
-     */
-    public void onDriveReport(final NaviDriveReportEntity entity) {
-        mView.onDriveReport(entity);
     }
 
     /**

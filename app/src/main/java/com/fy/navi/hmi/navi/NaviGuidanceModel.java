@@ -115,6 +115,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private Runnable mEndPoiSearchRunnable;
     private Runnable mCloseClusterOverView;
     private Runnable mOnClusterMapOpenOrClose;
+    private Runnable mFirstDrawEndPoint;
     private Runnable mInitLazyView;
     private volatile boolean mIsClusterOpen;
     private int mEndSearchId;
@@ -264,6 +265,12 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 }
             }
         };
+        mFirstDrawEndPoint = new Runnable() {
+            @Override
+            public void run() {
+                drawEndPoint(mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP));
+            }
+        };
     }
 
     private void releaseRunnable() {
@@ -271,6 +278,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ThreadManager.getInstance().removeHandleTask(mCloseClusterOverView);
         ThreadManager.getInstance().removeHandleTask(mOnClusterMapOpenOrClose);
         ThreadManager.getInstance().removeHandleTask(mInitLazyView);
+        ThreadManager.getInstance().removeHandleTask(mFirstDrawEndPoint);
     }
 
     @Override
@@ -301,7 +309,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
                         DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
             }
-            drawEndPoint(mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP));
+            // 延时绘制终点扎标，减少峰值消耗
+            ThreadManager.getInstance().postDelay(mFirstDrawEndPoint, NumberUtils.NUM_1000);
             // 开始三分钟查询一次终点POI信息
             ThreadManager.getInstance().removeHandleTask(mEndPoiSearchRunnable);
             ThreadManager.getInstance().postUi(mEndPoiSearchRunnable);
@@ -478,10 +487,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onManeuverInfo(final NaviManeuverInfo info) {
-        if (ConvertUtils.isEmpty(info)) {
-            Logger.i(TAG, "onManeuverInfo info is null");
-            return;
-        }
         mViewModel.onManeuverInfo(info);
     }
 
@@ -515,10 +520,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onNaviSpeedOverallInfo(final SpeedOverallEntity speedCameraInfo) {
-        if (ConvertUtils.isEmpty(speedCameraInfo)) {
-            Logger.i(TAG, "onNaviSpeedOverallInfo speedCameraInfo is null");
-            return;
-        }
         mViewModel.onNaviSpeedCameraInfo(speedCameraInfo);
     }
 
@@ -531,10 +532,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
-        if (ConvertUtils.isEmpty(sapaInfoEntity)) {
-            Logger.i(TAG, "onNaviSAPAInfo sapaInfoEntity is null");
-            return;
-        }
         mViewModel.onNaviSAPAInfo(sapaInfoEntity);
     }
 
@@ -586,12 +583,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
         Logger.i(TAG, "onRouteResult");
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
-    }
-
-    @Override
-    public void onDriveReport(final NaviDriveReportEntity naviDriveReportEntity) {
-        Logger.i(TAG, "onDriveReport ", naviDriveReportEntity.toString());
-        mViewModel.onDriveReport(naviDriveReportEntity);
     }
 
     @Override

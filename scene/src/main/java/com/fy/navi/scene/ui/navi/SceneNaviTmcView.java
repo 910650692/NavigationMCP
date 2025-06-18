@@ -162,7 +162,6 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         }
         if (mInvalidateCount == 0) {
             updateTmcAreaNew(tbitem, distanceHasPassed, totalDistance);
-            invalidate();
         }
         mInvalidateCount++;
     }

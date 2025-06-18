@@ -554,25 +554,6 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         }
     }
 
-    /**
-     * @param report 驾驶报告
-     */
-    @Override
-    public void onDriveReport(final DriveReport report) {
-        if (ConvertUtils.isEmpty(report)) {
-            return;
-        }
-        final NaviDriveReportEntity naviDriveReportEntity = NaviDataFormatHelper.
-                formaterDriveReport(report);
-        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
-            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
-                if (guidanceObserver != null) {
-                    guidanceObserver.onDriveReport(naviDriveReportEntity);
-                }
-            }
-        }
-    }
-
     @Override
     public void onShowNaviWeather(ArrayList<NaviWeatherInfo> list) {
         INaviObserver.super.onShowNaviWeather(list);

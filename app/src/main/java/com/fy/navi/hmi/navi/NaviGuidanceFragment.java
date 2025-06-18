@@ -445,7 +445,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviTbt.addSceneCallback(sceneCallback);
         mBinding.sceneNaviTmc.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaArrive.addSceneCallback(sceneCallback);
-        mBinding.sceneDriveReport.addSceneCallback(sceneCallback);
         mBinding.sceneNaviChargeTip.addSceneCallback(sceneCallback);
         mBinding.sceneNaviContinue.addSceneCallback(sceneCallback);
         mBinding.sceneHandingCard.addSceneCallback(sceneCallback);
@@ -521,15 +520,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     public void notifyBatteryWarning(ChargeTipEntity entity) {
         mBinding.sceneNaviChargeTip.updateUi(entity);
-    }
-
-    /**
-     * 行程报告回调
-     *
-     * @param entity entity
-     */
-    public void onDriveReport(final NaviDriveReportEntity entity) {
-        mBinding.sceneDriveReport.onDriveReport(entity);
     }
 
     /**

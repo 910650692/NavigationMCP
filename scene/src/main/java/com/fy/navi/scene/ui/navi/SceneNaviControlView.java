@@ -162,7 +162,6 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
         Logger.i(TAG, "dpPixels:", dpPixels);
         params.width = dpPixels;
         mViewBinding.sclSettings.setLayoutParams(params);
-        invalidate();
     }
 
     /**

@@ -843,22 +843,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
-    public void onDriveReport(final NaviDriveReportEntity report) {
-        Logger.i(TAG, "onDriveReport = " + report.toString());
-        Logger.i(TAG, "onNaviSAPAInfo");
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
-                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
-                    if (guidanceObserver != null) {
-                        // 因为没有行车报告页面需求，所以这边先注释了
-//                        guidanceObserver.onDriveReport(report);
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
     public void onDeletePath(ArrayList<Long> pathIDList) {
         if (ConvertUtils.isEmpty(pathIDList)) {
             return;
