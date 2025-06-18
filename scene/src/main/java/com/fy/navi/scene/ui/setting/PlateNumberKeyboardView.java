@@ -7,6 +7,8 @@ import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
@@ -129,17 +131,39 @@ public class PlateNumberKeyboardView extends GridLayout {
                 keyView.setAlpha(0.5f); // 设置透明度
             } else {
                 // 设置点击事件
-                keyView.setOnClickListener(v -> {
-                    if (mListener != null) {
-                        if (BUTTON_NAME.equals(key)) {
-                            mListener.onDelete();
-                        } else {
-                            mListener.onKeyPress(key);
-                        }
-                        keyView.setSelected(true);
-                        updateCheckBoxTextColor(keyView,true);
-                        keyView.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
+//                keyView.setOnClickListener(v -> {
+//                    if (mListener != null) {
+//                        if (BUTTON_NAME.equals(key)) {
+//                            mListener.onDelete();
+//                        } else {
+//                            mListener.onKeyPress(key);
+//                        }
+//                        keyView.setSelected(true);
+//                        updateCheckBoxTextColor(keyView,true);
+//                        keyView.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
+//                    }
+//                });
+                keyView.setOnTouchListener((v, event) -> {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            keyView.setSelected(true);
+                            updateCheckBoxTextColor(keyView,true);
+                            keyView.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            keyView.setSelected(false);
+                            updateCheckBoxTextColor(keyView, false);
+                            keyView.setBackgroundResource(R.drawable.bg_setting_keyboard_selector);
+                            if (mListener != null) {
+                                if (BUTTON_NAME.equals(key)) {
+                                    mListener.onDelete();
+                                } else {
+                                    mListener.onKeyPress(key);
+                                }
+                            }
+                            break;
                     }
+                    return true;
                 });
                 keyView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (isChecked && (keyView != mLastSelectedButton)) {
