@@ -666,7 +666,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         initBevCarData();
         setCarType();
         mRouteAdapter.setRequestControl(perfrenceId, platNum, "true".equals(mVoidLimit), mNaviStatusAdapter.isGuidanceActive());
-        mSelectRouteIndex.put(param.getMMapTypeId(), NumberUtils.NUM_ERROR);
+        Integer currentIndex = mSelectRouteIndex.get(param.getMMapTypeId());
+        if (currentIndex == null) {
+            mSelectRouteIndex.put(param.getMMapTypeId(), NumberUtils.NUM_ERROR);
+        } else {
+            //避免算路失败时无当前选中路线
+            mSelectRouteIndex.put(param.getMMapTypeId(), currentIndex);
+        }
+
         if (!mNaviStatusAdapter.isGuidanceActive()) {
             mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.ROUTING);
         }
@@ -928,7 +935,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         initBevCarData();
         setCarType();
         mRouteAdapter.setRequestControl(perfrenceId, platNum, "true".equals(mVoidLimit), mNaviStatusAdapter.isGuidanceActive());
-        mSelectRouteIndex.put(mapTypeId, NumberUtils.NUM_ERROR);
+        Integer currentIndex = mSelectRouteIndex.get(mapTypeId);
+        if (currentIndex == null) {
+            mSelectRouteIndex.put(mapTypeId, NumberUtils.NUM_ERROR);
+        } else {
+            mSelectRouteIndex.put(mapTypeId, currentIndex);
+        }
         if (!mNaviStatusAdapter.isGuidanceActive()) {
             mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.ROUTING);
         }

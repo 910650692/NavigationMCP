@@ -122,6 +122,7 @@ public class SceneRouteSearchChargeRefreshListView
                                  final List<RouteParam> loaclSaveEntity, final int searchType, final int type) {
         ThreadManager.getInstance().postUi(() -> {
             mAdapter.setRouteBeanList(poiInfoEntities, loaclSaveEntity, searchType, type);
+            mViewBinding.routeResult.scrollToPosition(0);
         });
         mLocalPoiInfoEntities = poiInfoEntities;
     }
@@ -131,6 +132,8 @@ public class SceneRouteSearchChargeRefreshListView
      * @param searchType 搜索方式
      */
     public void updateChargeList(final List<RouteParam> loaclSaveEntity, final int searchType) {
-        mAdapter.updateRouteBeanList(mLocalPoiInfoEntities, loaclSaveEntity, searchType);
+        ThreadManager.getInstance().postUi(() -> {
+            mAdapter.updateRouteBeanList(mLocalPoiInfoEntities, loaclSaveEntity, searchType);
+        });
     }
 }
