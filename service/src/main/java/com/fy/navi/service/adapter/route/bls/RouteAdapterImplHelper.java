@@ -661,9 +661,11 @@ public class RouteAdapterImplHelper {
             mRequestRouteResult = requestRouteResult;
             boolean mFastNavi = requestRouteResult.isMFastNavi();
             handResultSuccess(getMsgs(requestRouteResult.getMRouteWay(), false));
-            if (!mFastNavi) {
-                handlerRouteResult(requestRouteResult, pathInfoList);
-            }
+            //todo 后续待导航侧添加回调监听后处理
+//            if (!mFastNavi) {
+//                handlerRouteResult(requestRouteResult, pathInfoList);
+//            }
+            handlerRouteResult(requestRouteResult, pathInfoList);
             handlerChargingStation(requestRouteResult.getMRouteChargeStationParam(), pathInfoList,
                     requestId, requestRouteResult.getMMapTypeId());
             handlerDrawLine(requestRouteResult.getMLineLayerParam(), pathInfoList, requestId,

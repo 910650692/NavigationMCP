@@ -1118,7 +1118,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 展示搜索弹框
      */
     public void showSearchProgressUI() {
-        ThreadManager.getInstance().postUi(() -> mView.showSearchProgressUI());
+        mView.showSearchProgressUI();
     }
 
     /***
@@ -1799,8 +1799,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mView.clearSceneGasTabUI(false);
         if (isTheSameIndex) {
             mCurrentPageHistory.add("1");
-            mView.showSearchProgressUI();
             mModel.requestRouteDetails(index);
+            showSearchProgressUI();
         } else {
             mModel.onRouteSelect(index);
         }

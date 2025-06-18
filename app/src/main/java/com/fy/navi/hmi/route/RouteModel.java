@@ -193,14 +193,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * 请求天气数据
      * */
     public void getWeatherList() {
-        if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.showSearchProgressUI();
-        }
         if (getCurrentIndex() == -1) {
             Logger.e(TAG, "天气请求失败");
             return;
         }
-        mRoutePackage.requestRouteWeather(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex());
+        ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteWeather(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex()));
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.showSearchProgressUI();
+        }
     }
 
     /**
@@ -220,11 +220,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     public void getSearchListAndShow() {
         mListSearchType = 3;
         clearSearchLabel();
+        ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteRestArea(getCurrentIndex()));
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showSearchProgressUI();
         }
-        ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteRestArea(getCurrentIndex()));
-
     }
 
     /**
@@ -274,9 +273,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     public void getSearchListChargeAndShow(final String keyWord, final int searchType) {
         mListSearchType = searchType;
         clearSearchLabel();
-        if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.showSearchProgressUI();
-        }
         if (searchType == 0) {
             mLocalTaskId = mSearchPackage.enRouteKeywordSearch(keyWord);
         } else if (searchType == 1) {
@@ -284,6 +280,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             mLocalTaskId = mSearchPackage.aroundSearch(1, keyWord, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
         } else {
             mLocalTaskId = mSearchPackage.aroundSearch(1, keyWord);
+        }
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.showSearchProgressUI();
         }
     }
 
@@ -297,24 +296,26 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             Logger.d(TAG, "getSearchDetailsMode poiInfoEntity is null");
             return;
         }
+        ThreadManager.getInstance().execute(() -> {
+            final int pointType = mSearchPackage.getPointTypeCode(poiInfoEntity.getPointTypeCode());
+            if (poiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_service))
+                    || pointType == AutoMapConstant.PointTypeCode.SERVICE_AREA) {
+                final List<String> poiIds = new ArrayList<>();
+                poiIds.add(poiInfoEntity.getPid());
+                mLocalTaskId = mSearchPackage.doLineDeepInfoSearch(ResourceUtils.Companion.getInstance()
+                        .getString(R.string.route_search_keyword_service), poiIds);
+            } else if (poiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge))
+                    || pointType == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
+                mLocalTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
+            } else if (poiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_gas))
+                    || pointType == AutoMapConstant.PointTypeCode.GAS_STATION) {
+                mLocalTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
+            }
+            mTaskMap.put(mLocalTaskId, poiInfoEntity);
+        });
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showSearchProgressUI();
         }
-        final int pointType = mSearchPackage.getPointTypeCode(poiInfoEntity.getPointTypeCode());
-        if (poiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_service))
-                || pointType == AutoMapConstant.PointTypeCode.SERVICE_AREA) {
-            final List<String> poiIds = new ArrayList<>();
-            poiIds.add(poiInfoEntity.getPid());
-            mLocalTaskId = mSearchPackage.doLineDeepInfoSearch(ResourceUtils.Companion.getInstance()
-                    .getString(R.string.route_search_keyword_service), poiIds);
-        } else if (poiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge))
-                || pointType == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
-            mLocalTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
-        } else if (poiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_gas))
-                || pointType == AutoMapConstant.PointTypeCode.GAS_STATION) {
-            mLocalTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
-        }
-        mTaskMap.put(mLocalTaskId, poiInfoEntity);
     }
 
     /**

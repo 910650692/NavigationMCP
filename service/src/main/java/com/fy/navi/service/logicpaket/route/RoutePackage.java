@@ -869,14 +869,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             Logger.e(TAG, "have no push info");
             return;
         }
-        if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
-            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
-                if (ConvertUtils.isEmpty(routeResultObserver)) {
-                    continue;
-                }
-                routeResultObserver.onRouteRequest();
-            }
-        }
         final RouteParam routeParam = getRouteParamFromPoiInfoEntity(routeMsgPushInfo.getMPoiInfoEntity(), RoutePoiType.ROUTE_POI_TYPE_END);
         List<RouteParam> paramList = getParamList(mapTypeId, routeParam);
         if (routeMsgPushInfo.getMViaPoiInfoEntity() != null
@@ -905,6 +897,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.ROUTING);
         }
         mRouteAdapter.requestRouteRestoration(routeMsgPushInfo, mapTypeId);
+        if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
+            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+                if (ConvertUtils.isEmpty(routeResultObserver)) {
+                    continue;
+                }
+                routeResultObserver.onRouteRequest();
+            }
+        }
     }
 
     /**
