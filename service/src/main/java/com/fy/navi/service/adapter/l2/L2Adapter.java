@@ -11,6 +11,7 @@ import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.SegmentInfo;
 import com.autonavi.gbl.guide.model.NaviFacilityType;
+import com.fy.navi.service.BuildConfig;
 import com.fy.navi.service.adapter.cruise.CruiseAdapter;
 import com.fy.navi.service.adapter.cruise.CruiseObserver;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
@@ -21,10 +22,8 @@ import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
 import com.fy.navi.service.adapter.position.PositionAdapter;
 import com.fy.navi.service.adapter.route.RouteAdapter;
-import com.fy.navi.service.adapter.route.RouteResultObserver;
 import com.fy.navi.service.define.cruise.CruiseFacilityEntity;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
-import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.L2NaviBean;
@@ -39,31 +38,10 @@ import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
-import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
-import com.fy.navi.service.define.route.RequestRouteResult;
-import com.fy.navi.service.define.route.RouteAlongCityParam;
-import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
-import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
-import com.fy.navi.service.define.route.RouteL2Data;
-import com.fy.navi.service.define.route.RouteParam;
-import com.fy.navi.service.define.route.RouteRestAreaParam;
-import com.fy.navi.service.define.route.RouteRestTollGateParam;
-import com.fy.navi.service.define.route.RouteRestrictionParam;
-import com.fy.navi.service.define.route.RouteTMCParam;
-import com.fy.navi.service.define.route.RouteTrafficIncidentParam;
-import com.fy.navi.service.define.route.RouteWeatherParam;
-import com.fy.navi.service.define.search.ParkingInfo;
-import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.define.search.SearchParkInOutInfo;
-import com.fy.navi.service.define.search.SearchResultEntity;
-import com.fy.navi.service.logicpaket.route.RoutePackage;
-import com.fy.navi.service.logicpaket.search.SearchPackage;
-import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -75,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class L2Adapter {
     private static final String TAG = L2Adapter.class.getSimpleName();
-    private static final String PREFIX = "l2++";
+    private static final String PREFIX = "l2++性能测试";
 
     private L2DriveObserver l2DriveObserver;
     private volatile L2NaviBean l2NaviBean;
@@ -85,7 +63,20 @@ public class L2Adapter {
     private int mTaskId;
     private L2NaviBean.EndParkingInfo mEndParkingInfo = new L2NaviBean.EndParkingInfo();
 
+    //region INSTANCE
+    public static L2Adapter getInstance() {
+        return L2Adapter.SingleHolder.INSTANCE;
+    }
+
+    private final static class SingleHolder {
+        private static final L2Adapter INSTANCE = new L2Adapter();
+    }
+
     private L2Adapter() {
+    }
+    //endregion
+
+    public void init() {
         l2NaviBean = new L2NaviBean();
         l2NaviBean.setCrossInfoData(new L2NaviBean.CrossInfoDataBean()); // 组合
         l2NaviBean.setVehiclePosition(new L2NaviBean.VehiclePositionBean()); // 组合
@@ -101,14 +92,6 @@ public class L2Adapter {
         mScheduler.scheduleWithFixedDelay(mTask, 0, 1, TimeUnit.SECONDS);
     }
 
-    public static L2Adapter getInstance() {
-        return Helper.la;
-    }
-
-    private static final class Helper {
-        private static final L2Adapter la = new L2Adapter();
-    }
-
     /**
      * 向其他模块注册数据回到接口.
      */
@@ -117,7 +100,6 @@ public class L2Adapter {
         NavistatusAdapter.getInstance().registerCallback(mINaviStatusCallback);
         PositionAdapter.getInstance().registerCallback(mIPositionAdapterCallback);
         CruiseAdapter.getInstance().registerObserver(TAG, mCruiseObserver);
-        SearchPackage.getInstance().registerCallBack(TAG, mSearchResultCallback);
     }
 
     /**
@@ -129,55 +111,6 @@ public class L2Adapter {
         PositionAdapter.getInstance().unregisterCallback(mIPositionAdapterCallback);
     }
 
-    private final SearchResultCallback mSearchResultCallback = new SearchResultCallback() {
-        @Override
-        public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-        }
-
-        @Override
-        public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-            if (taskId != mTaskId) {
-                return;
-            }
-            Logger.i(TAG, "收到停车场信息");
-            if (searchResultEntity == null) {
-                return;
-            }
-            List<PoiInfoEntity> mPoiList = searchResultEntity.getMPoiList();
-            if (mPoiList == null || mPoiList.isEmpty()) {
-                return;
-            }
-            PoiInfoEntity poiInfoEntity = mPoiList.get(0);
-            if (poiInfoEntity == null) {
-                return;
-            }
-            List<ParkingInfo> parkingInfoList = poiInfoEntity.getParkingInfoList();
-            if (parkingInfoList == null || parkingInfoList.isEmpty()) {
-                return;
-            }
-            Logger.i(TAG, "收到停车场信息", parkingInfoList);
-            ParkingInfo parkingInfo = parkingInfoList.get(0);
-            if (parkingInfo == null) {
-                return;
-            }
-            List<SearchParkInOutInfo> mSearchParkInOutInfos = parkingInfo.getMSearchParkInOutInfos();
-            if (mSearchParkInOutInfos == null) {
-                return;
-            }
-            for (int i = 0; i < mSearchParkInOutInfos.size(); i++) {
-                SearchParkInOutInfo searchParkInOutInfo = mSearchParkInOutInfos.get(i);
-                if (searchParkInOutInfo == null) {
-                    continue;
-                }
-                if ("出口".equals(searchParkInOutInfo.getKeytype())) {
-                    mEndParkingInfo.setMParkingExit(searchParkInOutInfo.getX(), searchParkInOutInfo.getY());
-                } else if ("入口".equals(searchParkInOutInfo.getKeytype())) {
-                    mEndParkingInfo.setMParkingEnter(searchParkInOutInfo.getX(), searchParkInOutInfo.getY());
-                }
-            }
-        }
-    };
-
     private final GuidanceObserver mGuidanceObserver = new GuidanceObserver() {
         @Override
         public void onNaviInfo(NaviEtaInfo naviEtaInfo) {
@@ -186,22 +119,16 @@ public class L2Adapter {
                 Logger.i(TAG, PREFIX , "引导面板 null");
                 return;
             }
-            ArrayList<String> logs = new ArrayList<>();
             L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
 
             vehiclePosition.setCurPathID(naviEtaInfo.pathID); // 当前选择得路线下标
-            logs.add("pathID= " + naviEtaInfo.pathID);
             vehiclePosition.setDistToDestination(naviEtaInfo.getRemainDist()); // 当前位置到目的地距离
-            logs.add("remainDist= " + naviEtaInfo.getRemainDist());
             long locationLinkIndex = getLocationLinkIndex(naviEtaInfo.curSegIdx, naviEtaInfo.curLinkIdx);
             vehiclePosition.setLocationLinkIndex(locationLinkIndex); //自车当前位置的link索引，跟全局路线中的link索引对应
-            logs.add("locationLinkIndex= " + locationLinkIndex);
             int locationLinkOffset = getLinkLength(naviEtaInfo.curSegIdx, naviEtaInfo.curLinkIdx) - naviEtaInfo.linkRemainDist;
             vehiclePosition.setLocationLinkOffset(Math.max(locationLinkOffset, 0));
-            logs.add("locationLinkOffset= " + locationLinkOffset);
 
             int curRoadClass = naviEtaInfo.curRoadClass;
-            logs.add("roadClass= " + curRoadClass);
             if (curRoadClass == 0xFF) {
                 vehiclePosition.setRoadClass(-1); // 当前自车所在道路等级
             } else {
@@ -210,58 +137,18 @@ public class L2Adapter {
 
             L2NaviBean.GuidePointInfoBean guidePointInfo = l2NaviBean.getGuidePointInfo();
             int dist = naviEtaInfo.NaviInfoData.get(naviEtaInfo.NaviInfoFlag).segmentRemain.dist;
-            logs.add("guideDist= " + dist);
             guidePointInfo.setNextGuideDist(dist); // 到下一个引导点的剩余距离（导航：2000米以内发出）
             int maneuverId = naviEtaInfo.getNextManeuverID();
-            logs.add("roadClass= " + maneuverId);
             if (maneuverId == -1) {
                 maneuverId = 0;
             }
             guidePointInfo.setNextGuideType(maneuverId); // 引导点动作高德原始接口（导航：2000米以内发出）.
 
             L2NaviBean.TunnelInfoBean tunnelInfo = getTunnelInfo(naviEtaInfo);
-            logs.add("tunnelDist= " + tunnelInfo.getTunnelDist());
-            logs.add("tunnelLength= " + tunnelInfo.getTunnelLength());
             l2NaviBean.setMTunnelInfo(tunnelInfo);
             int rampDist = getRampDist(naviEtaInfo);
-            logs.add("rampDist= " + rampDist);
             l2NaviBean.setRampDist(rampDist);
-            Logger.i(TAG, PREFIX , "引导面板: ", logs);
-
-            if (naviEtaInfo.getRemainDist() <= 2000) {
-                RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-                if (endPoint != null) {
-                    PoiInfoEntity mPoiInfoEntity = endPoint.getMPoiInfoEntity();
-                    if (mPoiInfoEntity == null) {
-                        return;
-                    }
-                    List<ParkingInfo> parkingInfoList = mPoiInfoEntity.getParkingInfoList();
-                    if (parkingInfoList == null || parkingInfoList.isEmpty()) {
-                        return;
-                    }
-                    ParkingInfo parkingInfo = parkingInfoList.get(0);
-                    if (parkingInfo == null) {
-                        return;
-                    }
-                    List<SearchParkInOutInfo> mSearchParkInOutInfos = parkingInfo.getMSearchParkInOutInfos();
-                    if (mSearchParkInOutInfos == null) {
-                        return;
-                    }
-                    L2NaviBean.EndParkingInfo endParkingInfo = l2NaviBean.getEndParkingInfo();
-                    for (int i = 0; i < mSearchParkInOutInfos.size(); i++) {
-                        SearchParkInOutInfo searchParkInOutInfo = mSearchParkInOutInfos.get(i);
-                        if (searchParkInOutInfo == null) {
-                            continue;
-                        }
-                        if ("出口".equals(searchParkInOutInfo.getKeytype())) {
-                            endParkingInfo.setMParkingExit(searchParkInOutInfo.getX(), searchParkInOutInfo.getY());
-                        } else if ("入口".equals(searchParkInOutInfo.getKeytype())) {
-                            endParkingInfo.setMParkingEnter(searchParkInOutInfo.getX(), searchParkInOutInfo.getY());
-                        }
-                    }
-                }
-//                l2NaviBean.setEndParkingInfo(mEndParkingInfo);
-            }
+            if (BuildConfig.DEBUG) Logger.i(TAG, PREFIX , "引导面板: ", "pathID= " + naviEtaInfo.pathID, "remainDist= " + naviEtaInfo.getRemainDist(), "locationLinkIndex= " + locationLinkIndex, "locationLinkOffset= " + locationLinkOffset, "roadClass= " + curRoadClass, "guideDist= " + dist, "roadClass= " + maneuverId, "tunnelDist= " + tunnelInfo.getTunnelDist(), "tunnelLength= " + tunnelInfo.getTunnelLength(), "rampDist= " + rampDist);
         }
 
         @Override
@@ -307,7 +194,7 @@ public class L2Adapter {
                     break;
                 }
             }
-            Logger.i(TAG, PREFIX , "后续车道信息", laneInfoList);
+            if (BuildConfig.DEBUG) Logger.i(TAG, PREFIX , "后续车道信息", laneInfoList);
         }
 
         @Override

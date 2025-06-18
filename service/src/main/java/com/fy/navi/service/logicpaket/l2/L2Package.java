@@ -1,6 +1,5 @@
 package com.fy.navi.service.logicpaket.l2;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.adapter.l2.L2Adapter;
 import com.fy.navi.service.adapter.l2.L2DriveObserver;
@@ -8,9 +7,9 @@ import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.L2NaviBean;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -19,49 +18,60 @@ import java.util.concurrent.ConcurrentMap;
  * @Author lww
  * @date 2025/3/12
  */
-public class L2Package implements L2DriveObserver {
+public class L2Package {
+    private static final String TAG = L2Package.class.getSimpleName();
+
     private final ConcurrentMap<String, L2InfoCallback> l2InfoCallbackMap = new ConcurrentHashMap<>();
-    private L2Adapter mL2Adapter;
-    private LayerAdapter mLayerAdapter;
+    private final L2Adapter mL2Adapter;
+    private final LayerAdapter mLayerAdapter;
+
+    //region INSTANCE
+    public static L2Package getInstance() {
+        return SingleHolder.INSTANCE;
+    }
+
+    private final static class SingleHolder {
+        private static final L2Package INSTANCE = new L2Package();
+    }
 
     private L2Package() {
         mL2Adapter = L2Adapter.getInstance();
         mLayerAdapter = LayerAdapter.getInstance();
-        mL2Adapter.registerCallback(this);
     }
+    //endregion
 
-    public static L2Package getInstance() {
-        return Helper.l2Package;
-    }
-
-    public void registerCallback(String packageName, L2InfoCallback l2InfoCallback) {
-        Logger.i("lvww", "registerCallback");
-        Map<String, L2InfoCallback> map = ConvertUtils.push(l2InfoCallbackMap, packageName, l2InfoCallback);
-        Logger.i("lvww", "map" + l2InfoCallbackMap.size());
-    }
-
-    public void unregisterCallback(String packageName) {
-        ConvertUtils.remove(l2InfoCallbackMap, packageName);
-    }
-
-    /*public void setEndParkInfo(double enterX, double enterY, double exitX, double exitY) {
-        mL2Adapter.setEndParkInfo(enterX, enterY, exitX, exitY);
-    }
-
-    public void startPeriodicTask(){
-        mL2Adapter.startPeriodicTask();
-    }
-
-    public void stopPeriodicTask(){
-        mL2Adapter.stopPeriodicTask();
-    }*/
-
-    @Override
-    public void onSdTbtDataChange(L2NaviBean l2NaviBean) {
-        for (L2InfoCallback callback : l2InfoCallbackMap.values()) {
-            callback.onSdTbtDataChange(l2NaviBean);
+    public void init() {
+        int type = CalibrationPackage.getInstance().adasConfigurationType();
+        if (type != 9 && type != 8) {
+            Logger.i(TAG, "not L2++ configuration");
+            return;
         }
+        mL2Adapter.registerCallback(mL2DriveObserver);
+        mL2Adapter.init();
     }
+
+    private final L2DriveObserver mL2DriveObserver = new L2DriveObserver() {
+        @Override
+        public void onSdTbtDataChange(L2NaviBean l2NaviBean) {
+            for (L2InfoCallback callback : l2InfoCallbackMap.values()) {
+                callback.onSdTbtDataChange(l2NaviBean);
+            }
+        }
+    };
+
+    //region 回调管理
+    private final ConcurrentHashMap<String, L2InfoCallback> mCallbacks = new ConcurrentHashMap<>();
+
+    public void registerCallback(String key, L2InfoCallback callback) {
+        Logger.d(TAG, "addCallback", key);
+        mCallbacks.put(key, callback);
+    }
+
+    public void unregisterCallback(String key) {
+        Logger.d(TAG, "removeCallback", key);
+        mCallbacks.remove(key);
+    }
+    //endregion
 
     /* 更新Odd信息 */
     public void updateOddInfo(MapType mapTypeId, ArrayList<LayerItemRouteOdd> oddInfoList, long pathId) {
@@ -70,9 +80,5 @@ public class L2Package implements L2DriveObserver {
 
     public int getLinkDist(long curSegIdx, long curLinkIdx) {
         return mL2Adapter.getLinkDist(curSegIdx, curLinkIdx);
-    }
-
-    private static final class Helper {
-        public static final L2Package l2Package = new L2Package();
     }
 }

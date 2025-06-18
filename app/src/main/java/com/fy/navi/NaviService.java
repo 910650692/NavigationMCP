@@ -29,6 +29,7 @@ import com.fy.navi.navisender.NaviSender;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
+import com.fy.navi.service.logicpaket.l2.L2Package;
 import com.fy.navi.vrbridge.VrBridgeManager;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -120,6 +121,7 @@ public class NaviService extends Service {
         public Result doWork() {
             Logger.d(TAG, "FsaInitWorker doWork");
             MyFsaService.getInstance().init();
+            L2Package.getInstance().init();
             AdasClient.getInstance().init(AppCache.getInstance().getMContext());
             PatacL2ppManager.getInstance().init();
             NaviSender.getInstance().start();

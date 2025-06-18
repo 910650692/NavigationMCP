@@ -61,7 +61,7 @@ public final class GmcL2ppManager {
     public void init(final AdasManager adasManager) {
         // 标定配置判断
         if (CalibrationPackage.getInstance().adasConfigurationType() != 8) {
-            Logger.i(TAG, "gmc l2++ configuration");
+            Logger.i(TAG, "not GMC L2++ configuration");
             return;
         }
         // 判断是否已经初始化
