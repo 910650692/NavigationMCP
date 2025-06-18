@@ -32,7 +32,7 @@
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/line"
                 android:layout_width="@dimen/dp_1"
-                android:layout_height="@dimen/dp_62"
+                android:layout_height="@dimen/dp_52"
                 android:background="@color/dialog_msg_top_line"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/top_dialog_title"
