@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
@@ -53,7 +54,10 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
     }
 
     public ArrayList<PoiInfoEntity> getFavoriteListAsync() {
-        return BehaviorPackage.getInstance().getFavoritePoiData();
+        ArrayList<PoiInfoEntity> list = BehaviorPackage.getInstance().getFavoritePoiData();
+        // 过滤掉无详细地址的收藏info
+        list.removeIf(poiInfo -> ConvertUtils.isEmpty(poiInfo.getAddress()));
+        return list;
     }
 
     public void startSGMLogin(){

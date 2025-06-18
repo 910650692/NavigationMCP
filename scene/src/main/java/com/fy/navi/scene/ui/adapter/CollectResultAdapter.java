@@ -195,6 +195,8 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             }
             holder.mResultItemBinding.swipeMenuLayout.smoothClose();
             final List<PoiInfoEntity> poiInfoEntityList = BehaviorPackage.getInstance().getFavoritePoiData();
+            // 过滤掉无详细地址的收藏info
+            poiInfoEntityList.removeIf(poiInfo -> ConvertUtils.isEmpty(poiInfo.getAddress()));
             ThreadManager.getInstance().postUi(() -> {
                 notifyList(poiInfoEntityList);
             });
