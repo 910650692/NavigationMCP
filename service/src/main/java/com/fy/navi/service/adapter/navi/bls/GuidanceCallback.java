@@ -48,6 +48,7 @@ import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
 import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
+import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
@@ -324,9 +325,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
                                     final LightBarDetail lightBarDetail, final long passedIdx,
                                     final boolean dataStatus) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            NaviTmcInfo naviTmcInfo = NaviDataFormatHelper.forMatTMCLightBar(lightBarInfo, lightBarDetail);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onUpdateTMCLightBar(NaviDataFormatHelper.forMatTMCLightBar(lightBarInfo, lightBarDetail));
+                    guidanceObserver.onUpdateTMCLightBar(naviTmcInfo);
                 }
             }
         }
