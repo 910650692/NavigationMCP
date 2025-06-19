@@ -229,7 +229,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         }
         final SearchPackage searchPackage = SearchPackage.getInstance();
         if (null != searchPackage) {
-            Logger.d(TAG, "getDistrictInfo by point");
+            Logger.d(TAG, "getDistrictInfo by point ", geoPoint);
             mGeoSearchInterval = INaviConstant.ScheduleInterval.THREE_MINUTE;
             mDistrictSearchId = searchPackage.geoSearch(geoPoint, true);
             mDistrictIntervalFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
@@ -1394,19 +1394,21 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     //获取行政区划信息
     @Override
     public String getDistrictDetailInfo(final String clientPkg) {
+        String districtInfo = null;
         if (null != mDistrictInfo) {
-            return GsonUtils.toJson(mDistrictInfo);
-        } else {
-            Logger.e(TAG, "current DistrictInfo is empty");
+            districtInfo = GsonUtils.toJson(mDistrictInfo);
+        }
+        if (null == districtInfo || districtInfo.trim().isEmpty()) {
+            Logger.w(TAG, "current DistrictInfo is empty");
             if (null == mLocationInfo) {
                 getCurrentLocation(TAG);
-            }
-            if (null != mLocationInfo) {
+            } else {
                 final GeoPoint geoPoint = new GeoPoint(mLocationInfo.getLongitude(), mLocationInfo.getLatitude());
+                mGeoSearchInterval = 0;
                 initDistrict(geoPoint);
             }
         }
-        return "";
+        return districtInfo;
     }
 
     @Override
