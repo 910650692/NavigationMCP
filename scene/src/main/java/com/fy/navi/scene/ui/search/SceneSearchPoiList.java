@@ -940,20 +940,19 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mScreenViewModel is Null");
             return;
         }
-        if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
-            mSearchLoadingDialog.dismiss();
-        }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
                 + " currentId: " + mScreenViewModel.getMTaskId());
         if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
             return;
+        }
+        if (!ConvertUtils.isEmpty(mSearchLoadingDialog) && mSearchLoadingDialog.isShowing()) {
+            mSearchLoadingDialog.dismiss();
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList() == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             if (mViewBinding != null) {
                 mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(R.string.filter_result, mSearchText, 0));
             }
-            mSearchLoadingDialog.dismiss();
             return;
         }
         if (mIsFilterViewShow) {
