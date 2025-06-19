@@ -513,13 +513,13 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         super(application);
         mCurrentPageHistory.add("0");
         mIncludePageVisibility = new ObservableField<>(getCurrentPageUI());
-        mSecondaryPoiVisibility = new ObservableField<>(0);
+
+        //tab page
         mTabVisibility = new ObservableField<>(0);
-        mBatterCheckBoxVisibility = new ObservableField<>(false);
+
+        //路线列表page
         mAlongTabSearchVisibility = new ObservableField<>(false);
-        mSearchNoDataVisibility = new ObservableField<>(false);
         mRoutePreferenceVisibility = new ObservableField<>(false);
-        mSearchNoDataText =  new ObservableField<>("");
         mRoutePreferenceDrawableVisibility = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
         mCountDownHint = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.route_start_navi)
                 + "(" + NumberUtils.NUM_9 + "s)");
@@ -527,22 +527,30 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRestrictionBackground = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.color.text_route_restriction_error));
         mRestrictionTextColor = new ObservableField<>(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_restriction_text_error));
         mRoutePreferenceDrawableVisibility = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
-
         mRestrictionVisibility = new ObservableField<>(false);
         mRestrictionCarVisibility = new ObservableField<>(false);
         mRestrictionRightBackVisibility = new ObservableField<>(false);
         mParamDes = new ObservableField<>("");
-        mAvoidBackground = new ObservableField<>(false);
-        mAvoidTestColor = new ObservableField<>(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
-        mAvoidClickable = new ObservableField<>(false);
         mTitle = new ObservableField<>();
         mEndName = new ObservableField<>();
         mPreferText = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.route_change_preference));
-        mRouteDetailsVisibility = new ObservableField<>(true);
         mViaPoiListVisibility = new ObservableField<>(false);
         mViaPoiListAllVisibility = new ObservableField<>(false);
-        mSearchListTitle = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge));
+        mSecondaryPoiVisibility = new ObservableField<>(0);
+        mBatterCheckBoxVisibility = new ObservableField<>(false);
 
+        //路线详情
+        mAvoidBackground = new ObservableField<>(false);
+        mAvoidTestColor = new ObservableField<>(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
+        mAvoidClickable = new ObservableField<>(false);
+        mRouteDetailsVisibility = new ObservableField<>(true);
+
+        //充电&加油列表page
+        mSearchListTitle = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge));
+        mSearchNoDataVisibility = new ObservableField<>(false);
+        mSearchNoDataText =  new ObservableField<>("");
+
+        //天气数据page
         mWeatherDrawable = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_weather_clear));
         mWeatherName = new ObservableField<>("");
         mWeatherCityName = new ObservableField<>("");
@@ -550,6 +558,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mWeatherDiscription = new ObservableField<>("");
         mWeatherUpdateTime = new ObservableField<>("");
 
+        //poi详情page
         mRouteSearchStatusVisibility = new ObservableField<>(false);
         mRouteSearchStatus = new ObservableField<>("");
         mRouteSearchName = new ObservableField<>("");
@@ -1511,7 +1520,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     /***
      * 保存车牌和限行的数据
      */
-    public void setDefultPlateNumberAndAvoidLimitSave() {
+    public void setDefaultPlateNumberAndAvoidLimitSave() {
         mCurrentPlateNumber = mModel.getPlateNumber();
         mCurrentavoidLimit = mModel.getAvoidLimit();
         mCurrentPreferences = mModel.getPreferences();
@@ -1537,11 +1546,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         }
         mRestrictionVisibility.set(false);
         if (!mCurrentEnergy.equals(mModel.getEnergy())) {
-            setDefultPlateNumberAndAvoidLimitSave();
+            setDefaultPlateNumberAndAvoidLimitSave();
             mView.setEnergyChecked();
             return;
         }
-        setDefultPlateNumberAndAvoidLimitSave();
+        setDefaultPlateNumberAndAvoidLimitSave();
         final RouteRequestParam param = new RouteRequestParam();
         requestRoute(param);
     }
