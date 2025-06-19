@@ -292,6 +292,7 @@
 
     <color name="setting_dialog_confirm">#FF000000</color>
     <color name="setting_dialog_cancel">#FF000000</color>
+    <color name="text_route_button_title">#FFFFFFFF</color>
 
 
 </resources>

@@ -42,7 +42,7 @@
             clickCommand="@{naviViaList.skipAlongWayFragment}"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_90"
-            android:background="@drawable/bg_navi_btn_add_via"
+            android:background="@drawable/bg_route_start_navigation_button"
             android:gravity="center"
             android:layout_marginBottom="@dimen/dp_20"
             android:layout_marginHorizontal="@dimen/dp_30"
@@ -53,7 +53,7 @@
                 android:id="@+id/siv_add_via"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
-                android:background="@drawable/img_add_58" />
+                android:background="@drawable/img_add_58_sw1225" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_add_via"
@@ -62,7 +62,7 @@
                 android:layout_marginStart="@dimen/dp_24"
                 android:gravity="center"
                 android:text="@string/navi_add_via"
-                android:textColor="@color/common_title_color"
+                android:textColor="@color/text_route_button_title"
                 android:textSize="@dimen/sp_34" />
         </com.fy.navi.scene.ui.navi.view.ButtonLinearLayout>
 
