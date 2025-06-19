@@ -19,11 +19,13 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.patacnet.ResponseEntity;
+import com.fy.navi.service.define.search.SearchErrorCode;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -46,8 +48,8 @@ public class SearchResultCallbackHelper {
      * @param <T> GBL 搜索结构类型
      */
     public <T> void notifySearchSuccess(final int taskId, final SearchRequestParameter requestParameterBuilder, final T result) {
-        if (requestParameterBuilder == null || result == null) {
-            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Invalid parameters: requestParameterBuilder or result is null");
+        if (requestParameterBuilder == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Invalid parameters: requestParameterBuilder is null");
             return;
         }
         SearchResultEntity resultList = null;
@@ -95,6 +97,15 @@ public class SearchResultCallbackHelper {
             default:
                 Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Unknown search type: " + requestParameterBuilder.getSearchType());
                 return;
+        }
+        // 高德返回错误时，封装空态数据下发
+        if(ConvertUtils.isNull(result)){
+            resultList = new SearchResultEntity()
+                    .setSearchType(requestParameterBuilder.getSearchType())
+                    .setKeyword(requestParameterBuilder.getKeyword())
+                    .setCode(SearchErrorCode.ERROR_FAILED)
+                    .setMessage("")
+                    .setPoiList(new ArrayList<>());
         }
         notifyCallbacks(taskId, requestParameterBuilder, resultList);
     }
