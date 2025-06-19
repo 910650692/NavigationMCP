@@ -138,7 +138,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     private MapDevice createMapDevice() {
         DeviceAttribute devAttribute = new DeviceAttribute();
-        devAttribute.renderVendorType = MapRenderVendor.OpenGL3;
+        devAttribute.renderVendorType = MapRenderVendor.OpenGL2;
         devAttribute.uiTaskDeviceId = EngineAdapter.getInstance().mapDeviceID(mapType);
         devAttribute.deviceWorkMode = EGLDeviceWorkMode.EGLDeviceWorkMode_WithThreadWithEGLContextDrawIn;
         devAttribute.isNeedAntialias = false;//是否开启全屏抗锯齿
