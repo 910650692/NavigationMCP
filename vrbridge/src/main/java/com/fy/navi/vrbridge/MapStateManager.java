@@ -83,6 +83,7 @@ public final class MapStateManager {
         mBuilder.setMinZoomLevel(3);
         mBuilder.setViaPointsMaxCount(5);
         mBuilder.setListPage(false);
+        mBuilder.setCruiseEnable(false);
 
         if (MapPackage.getInstance().isMapViewExist(MapType.MAIN_SCREEN_MAIN_MAP)) {
             mBuilder.setCurrZoomLevel((int) MapPackage.getInstance().getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP));

@@ -37,6 +37,7 @@ public final class MapState {
         mIsAgreeTeamAgreement = false;
         mIsInTeam = false;
         mIsTeamLeader = false;
+        mIsCruiseEnable = false;
     }
 
     private boolean mOpenStatus; //导航app是否打开，boolean值 - true:是 - false:否（默认）
@@ -70,6 +71,7 @@ public final class MapState {
     private boolean mIsAgreeTeamAgreement; //是否已同意组队协议条款，暂不支持组队，false
     private boolean mIsInTeam;  //是否已在组队队伍，同上
     private boolean mIsTeamLeader; //是否组队队伍的队长，同上
+    private boolean mIsCruiseEnable;
 
 
     public boolean isOpenStatus() {
@@ -318,6 +320,10 @@ public final class MapState {
 
     public void setTeamLeader(final boolean teamLeader) {
         mIsTeamLeader = teamLeader;
+    }
+
+    public void setCruiseEnable(final boolean enable) {
+        mIsCruiseEnable = enable;
     }
 
     public static class Builder {
@@ -630,6 +636,11 @@ public final class MapState {
          */
         public Builder setTeamLeader(final boolean teamLeader) {
             mapState.setTeamLeader(teamLeader);
+            return this;
+        }
+
+        public Builder setCruiseEnable(final boolean enable) {
+            mapState.setCruiseEnable(enable);
             return this;
         }
 

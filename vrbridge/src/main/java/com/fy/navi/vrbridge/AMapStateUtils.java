@@ -130,6 +130,9 @@ final public class AMapStateUtils {
      * @param data data
      */
     private static void saveMapStateBoolean(final HashMap<String, Object> map, final JSONObject data) {
+        if (data.has("mIsCruiseEnable")) {
+            map.put(NaviStateCons.KEY_IN_CRUISE_ENABLE, data.optBoolean("mIsCruiseEnable"));
+        }
         if (data.has("mOpenStatus")) {
             map.put(NaviStateCons.KEY_NAVI_APP_OPENED, data.optBoolean("mOpenStatus"));
         }
