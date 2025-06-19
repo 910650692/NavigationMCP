@@ -19,7 +19,6 @@
     <style name="ClusterTheme" parent="Base.Theme.NaviApp">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Toast</item>
         <item name="windowNoTitle">true</item>
     </style>
 
