@@ -2,6 +2,7 @@ package com.fy.navi.hmi.startup;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Environment;
 import android.provider.Settings;
 import android.view.View;
@@ -167,4 +168,9 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
         mFailedDialog.show();
     }
 
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        recreate();
+    }
 }
