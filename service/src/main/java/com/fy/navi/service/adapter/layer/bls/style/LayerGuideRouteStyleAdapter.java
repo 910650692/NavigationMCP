@@ -504,8 +504,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             return;
         }
         int mCarType = CalibrationPackage.getInstance().powerType();
-        if (mCarType == 0 || mCarType == 2) {
-            if (selectPathIndex < mRouteLineInfos.size()) {
+        if (selectPathIndex < mRouteLineInfos.size()) {
+            if (mCarType == 0 || mCarType == 2) {
                 final int num = GasCarTipManager.getInstance().getRemainGasPercent(ConvertUtils
                         .convertMetersToKilometers(mRouteLineInfos.get(selectPathIndex).getMDistance()));
                 Logger.d(TAG, "getRemainGasPercent: " + num);
@@ -517,16 +517,17 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     mRouteEndPoint.setRestNum(-1);
                 }
             } else {
-                Logger.v(TAG, "selectPathIndex < mRouteLineInfos.size()");
+                if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
+                    mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
+                    mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
+                } else {
+                    mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
+                    mRouteEndPoint.setRestNum(-1);
+                }
             }
         } else {
-            if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
-                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
-                mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
-            } else {
-                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
-                mRouteEndPoint.setRestNum(-1);
-            }
+            mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
+            Logger.v(TAG, "selectPathIndex < mRouteLineInfos.size()");
         }
         Logger.d(TAG, "getRouteEndPoint type " + mRouteEndPoint.getEndPointType() + " num " +
             mRouteEndPoint.getRestNum() + " BusinessHours is " + mRouteEndPoint.getBusinessHours());
