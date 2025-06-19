@@ -191,6 +191,11 @@ public class LayerAdapter {
         mLayerApi.setStartPointVisible(mapTypeId, visible);
     }
 
+    /* 途经点扎标设置是否选中 */
+    public void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index) {
+        mLayerApi.setRouteViaPointSelectStatus(mapTypeId, isSelect, index);
+    }
+
     /**
      * 更新引导路线数据
      *
@@ -232,10 +237,6 @@ public class LayerAdapter {
 
     public void unRegisterLayerClickObserver(MapType mapTypeId, ILayerAdapterCallBack observer) {
         mLayerApi.unRegisterLayerClickObserver(mapTypeId, observer);
-    }
-
-    public void openDynamicLevel(MapType mapTypeId, boolean isOpen) {
-        mLayerApi.openDynamicLevel(mapTypeId, isOpen);
     }
 
     public void updateGuideCarStyle(MapType mapTypeId) {

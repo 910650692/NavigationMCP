@@ -121,10 +121,10 @@ public interface ILayerApi {
     /* 设置起点扎标是否显示 */
     void setStartPointVisible(MapType mapTypeId, boolean visible);
 
-    /*========================================= ROUTE LAYER START =========================================*/
+    /* 途经点扎标设置是否选中 */
+    void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index);
 
-    /*是否打开自动比例尺*/
-    void openDynamicLevel(MapType mapTypeId, boolean isOpen);
+    /*========================================= ROUTE LAYER START =========================================*/
 
     /*图层点击注册监听*/
     void registerLayerClickObserver(MapType mapTypeId, ILayerAdapterCallBack observer);

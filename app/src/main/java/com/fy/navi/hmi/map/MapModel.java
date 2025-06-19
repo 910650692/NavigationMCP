@@ -39,6 +39,7 @@ import com.fy.navi.hmi.splitscreen.SplitScreenManager;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
+import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.utils.ThreeFingerFlyingScreenManager;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.account.AccountQRCodeLoginFragment;
@@ -541,7 +542,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             boolean isOpen = !naviPackage.getFixedOverViewStatus() &&
                     !naviPackage.getClusterFixOverViewStatus() && currentImersiveStatus ==
                     ImersiveStatus.IMERSIVE && !naviPackage.getPreviewStatus();
-            layerPackage.openDynamicLevel(mapTypeId, isOpen);
+            if (isOpen) {
+                layerPackage.openDynamicLevel(mapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+            } else {
+                layerPackage.closeDynamicLevel(mapTypeId);
+            }
         }
 
         //导航中偶现 回车位出现问题

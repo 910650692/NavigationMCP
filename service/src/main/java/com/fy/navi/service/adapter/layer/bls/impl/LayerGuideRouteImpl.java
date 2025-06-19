@@ -282,6 +282,21 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, "setPathPoints points " + points);
     }
 
+    /* 途经点扎标设置是否选中 */
+    public void setRouteViaPointSelectStatus(boolean isSelect, int index) {
+        Logger.d(TAG, "isSelect ", isSelect, " index ", index);
+        LayerItem item = getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaPoint).getItem(String.valueOf(index));
+        if (ConvertUtils.isEmpty(item)) {
+            return;
+        }
+        RoutePathPointItem viaPointItem = (RoutePathPointItem) item;
+        long pathId = viaPointItem.getPathId();
+        if (pathId == 0) {
+            int result = getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaPoint).setFocus(String.valueOf(index), isSelect);
+            Logger.d(TAG, "viaPoint setFocus result ",  result, " pathId ", pathId);
+        }
+    }
+
     /* 路线替换补能扎标 */
     public void updateRouteReplaceChargePoints(ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
         Logger.d(TAG, "updateRouteReplaceChargePoints");
@@ -593,17 +608,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         int result = (int) (screenHeight * percent);
         Logger.d(TAG, "GetDynamicLevelTopOffsetValue result " + result);
         return result;
-    }
-
-    /**
-     * 是否打开自动比例尺
-     * ====此方法后续废弃====
-     */
-    public void openDynamicLevel(boolean isOpen) {
-        int openDynamicLevel = getLayerGuideRouteControl().openDynamicLevel(isOpen);
-        //设置地图中心点，不根据自动比例尺移动
-        int openedDynamicCenter = getLayerGuideRouteControl().openDynamicCenter(false);
-        Logger.d(TAG, "openDynamicLevel:" + openDynamicLevel + " openedDynamicCenter:" + openedDynamicCenter + " isOpen:" + isOpen);
     }
 
     /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */

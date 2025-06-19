@@ -154,6 +154,11 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().drawRouteLine(routeResult);
     }
 
+    /* 途经点扎标设置是否选中 */
+    public void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setRouteViaPointSelectStatus(isSelect, index);
+    }
+
     /* 设置起点扎标是否显示 */
     public void setStartPointVisible(MapType mapTypeId, boolean visible) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setStartPointVisible(visible);
@@ -319,15 +324,6 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void setPathArrowSegment(MapType mapTypeId, ArrayList<Long> segmentsIndexs) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setPathArrowSegment(segmentsIndexs);
-    }
-
-    /**
-     * 是否打开自动比例尺
-     * ====此方法后续废弃====
-     */
-    @Override
-    public void openDynamicLevel(MapType mapTypeId, boolean isOpen) {
-        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().openDynamicLevel(isOpen);
     }
 
     /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */

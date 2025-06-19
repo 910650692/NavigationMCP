@@ -118,14 +118,14 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.setVisibleGuideSignalLight(mapTypeId, isVisible);
     }
 
-    // 此接口后续废弃
-    public void openDynamicLevel(MapType mapTypeId, boolean isOpen) {
-        mLayerAdapter.openDynamicLevel(mapTypeId, isOpen);
-    }
-
     /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
     public void openDynamicLevel(MapType mapTypeId, DynamicLevelMode dynamicLevelMode) {
         mLayerAdapter.openDynamicLevel(mapTypeId, dynamicLevelMode);
+    }
+
+    /* 关闭动态比例尺 */
+    public void closeDynamicLevel(MapType mapTypeId) {
+        mLayerAdapter.closeDynamicLevel(mapTypeId);
     }
 
     /*清除扎标*/
@@ -136,6 +136,11 @@ public class LayerPackage implements ILayerAdapterCallBack {
     /* 设置起点扎标是否显示 */
     public void setStartPointVisible(MapType mapTypeId, boolean visible) {
         mLayerAdapter.setStartPointVisible(mapTypeId, visible);
+    }
+
+    /* 途经点扎标设置是否选中 */
+    public void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index) {
+        mLayerAdapter.setRouteViaPointSelectStatus(mapTypeId, isSelect, index);
     }
 
     /**
