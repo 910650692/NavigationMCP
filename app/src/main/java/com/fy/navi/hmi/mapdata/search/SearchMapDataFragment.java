@@ -154,6 +154,12 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
             }
         });
 
+        mBinding.clSearchMap.setOnTouchListener((v, event) -> {
+            Logger.d(TAG, "clSearchMap OnTouch");
+            hideInput();
+            return false;
+        });
+
     }
 
     /**
@@ -176,7 +182,7 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
      */
     public void hideInput() {
         final InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (null != imm) {
+        if (null != imm && imm.isAcceptingText()) {
             imm.hideSoftInputFromWindow(mActivity.getWindow().getDecorView().getWindowToken(), 0);
         }
     }
