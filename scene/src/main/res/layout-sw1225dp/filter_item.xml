@@ -22,7 +22,7 @@
         android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20"
         android:layout_height="@dimen/dp_65"
-        android:background="@drawable/custom_filter_item_bg_selector_day"
+        android:background="@drawable/custom_filter_item_bg_selector_day_sw1225"
         >
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/filter_text"
@@ -40,14 +40,15 @@
         
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/filter_img"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:src="@drawable/img_under_the_48"
             app:layout_constraintStart_toEndOf="@+id/filter_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>
