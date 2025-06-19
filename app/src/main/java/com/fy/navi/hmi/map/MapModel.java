@@ -1636,7 +1636,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void openGuideFragment() {
         if (Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(),
                 NaviStatus.NaviStatusType.NAVING)) {
-            if (!mViewModel.getTopFragment(NaviGuidanceFragment.class)) {
+            // Activity被意外destroy需要恢复页面的时候Fragment栈一定是空的
+            if (mViewModel.isFragmentStackNull()) {
                 addFragment(new NaviGuidanceFragment(), null);
             }
         }
