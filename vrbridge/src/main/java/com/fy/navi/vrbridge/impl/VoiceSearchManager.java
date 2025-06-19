@@ -1098,10 +1098,10 @@ public final class VoiceSearchManager {
             case IVrBridgeConstant.VoiceSearchType.ALONG_WAY:
                 //选中poi作为途径点
                 mAlongToAround = false;
-                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo);
                 if (mRespCallback != null) {
                     mRespCallback.onResponse(CallResponse.createSuccessResponse());
                 }
+                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo);
                 break;
             case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
                 addCommonFavorite(poiInfo, false);
@@ -1112,10 +1112,10 @@ public final class VoiceSearchManager {
                 break;
             default:
                 //所选poi作为目的地发起算路
-                planRoute(poiInfo, null);
                 if (mRespCallback != null) {
                     mRespCallback.onResponse(CallResponse.createSuccessResponse());
                 }
+                planRoute(poiInfo, null);
                 break;
         }
     }

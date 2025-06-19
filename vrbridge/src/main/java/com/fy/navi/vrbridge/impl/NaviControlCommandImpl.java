@@ -2215,6 +2215,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
     @Override
     public CallResponse onRouteSelectInMapView(final int index, final boolean isAutoNavi) {
+        Logger.d(IVrBridgeConstant.TAG, "onRouteSelectInMapView: index = ", index, "isAutoNavi = ", isAutoNavi);
         return NaviControlCommandListener.super.onRouteSelectInMapView(index, isAutoNavi);
     }
 
