@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentMap;
 public class L2Package {
     private static final String TAG = L2Package.class.getSimpleName();
 
-    private final ConcurrentMap<String, L2InfoCallback> l2InfoCallbackMap = new ConcurrentHashMap<>();
     private final L2Adapter mL2Adapter;
     private final LayerAdapter mLayerAdapter;
 
@@ -53,7 +52,7 @@ public class L2Package {
     private final L2DriveObserver mL2DriveObserver = new L2DriveObserver() {
         @Override
         public void onSdTbtDataChange(L2NaviBean l2NaviBean) {
-            for (L2InfoCallback callback : l2InfoCallbackMap.values()) {
+            for (L2InfoCallback callback : mCallbacks.values()) {
                 callback.onSdTbtDataChange(l2NaviBean);
             }
         }
