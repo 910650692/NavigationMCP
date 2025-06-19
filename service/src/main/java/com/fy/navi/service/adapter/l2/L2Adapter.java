@@ -452,6 +452,7 @@ public class L2Adapter {
                     vehiclePosition.setNaviStatus(0); //无效值或默认状态
                     break;
                 case NaviStatus.NaviStatusType.ROUTING:
+                case NaviStatus.NaviStatusType.SELECT_ROUTE:
                     vehiclePosition.setNaviStatus(2);
                     break;
                 case NaviStatus.NaviStatusType.NAVING:
