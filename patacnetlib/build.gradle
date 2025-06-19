@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
 }
 
+String flavorType = "type"
+
 android {
     namespace 'com.fy.navi.patacnetlib'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
@@ -27,11 +29,39 @@ android {
     packagingOptions {
         pickFirst 'META-INF/DEPENDENCIES'
     }
+
+    flavorDimensions flavorType
+
+    productFlavors {
+        defaule {
+            dimension flavorType
+        }
+        buick {
+            dimension flavorType
+        }
+        cadi {
+            dimension flavorType
+        }
+        clea_8255 {
+            dimension flavorType
+        }
+        clea_local_8155 {
+            dimension flavorType
+        }
+        clea_8775 {
+            dimension flavorType
+        }
+    }
 }
 
 dependencies {
-    implementation libs.net.basic
     implementation project(":utils")
     implementation libs.lombok
     annotationProcessor libs.lombok
+    defauleApi libs.net.basic
+    buickApi libs.net.basic
+    cadiApi libs.net.basic
+    clea_local_8155Api libs.net.basic
+    clea_8255Api libs.net.vcupro
+    clea_8775Api libs.net.vcupro
 }

@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
 }
 
+String flavorType = "type"
+
 android {
     namespace 'com.fy.navi.fsa'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
@@ -27,6 +29,29 @@ android {
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+    }
+
+    flavorDimensions flavorType
+
+    productFlavors {
+        defaule {
+            dimension flavorType
+        }
+        buick {
+            dimension flavorType
+        }
+        cadi {
+            dimension flavorType
+        }
+        clea_8255 {
+            dimension flavorType
+        }
+        clea_local_8155 {
+            dimension flavorType
+        }
+        clea_8775 {
+            dimension flavorType
+        }
     }
 
     if (IS_PAD_RUN.toBoolean()){

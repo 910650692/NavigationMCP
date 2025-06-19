@@ -22,10 +22,12 @@ import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.utils.SettingsPrivacyManager;
 
 import java.util.Hashtable;
 
 public final class SettingPackage implements SettingAdapterCallback {
+
     public static final String TAG = SettingPackage.class.getSimpleName();
 
     private final SettingAdapter mSettingAdapter;
@@ -102,8 +104,10 @@ public final class SettingPackage implements SettingAdapterCallback {
      */
     public void init() {
         mSettingAdapter.initSetting();
-        mSettingAdapter.registerCallback("SettingPackage", this);
+        mSettingAdapter.registerCallback(TAG, this);
         initAllSetting();
+
+        SettingsPrivacyManager.getInstance().init();
     }
 
     @Override
@@ -658,7 +662,7 @@ public final class SettingPackage implements SettingAdapterCallback {
     }
 
     /**
-     * 获取巡航播报开关
+     * 获取巡航播报开关.
      *
      * @return true：开启 false：关闭
      */
@@ -943,13 +947,10 @@ public final class SettingPackage implements SettingAdapterCallback {
      * 设置授权状态
      *
      * @param isOneYearPrivacy true：授权一年 false：永不授权
+     *
      */
     public void setPrivacyStatus(final boolean isOneYearPrivacy) {
-        if (isOneYearPrivacy) {
-            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_PRIVACY_STATUS, SettingController.VALUE_PRIVACY_ONE_YEAR);
-        } else {
-            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_PRIVACY_STATUS, SettingController.VALUE_PRIVACY_NEVER);
-        }
+        SettingsPrivacyManager.getInstance().setLocationPrivacyStatus(isOneYearPrivacy);
     }
 
     /**
@@ -958,11 +959,7 @@ public final class SettingPackage implements SettingAdapterCallback {
      * @return true：授权一年 false：永不授权
      */
     public boolean getPrivacyStatus() {
-        String data = getValueFromDB(SettingController.KEY_SETTING_PRIVACY_STATUS);
-        if (TextUtils.isEmpty(data)) {
-            data = SettingController.VALUE_PRIVACY_NEVER;
-        }
-        return SettingController.VALUE_PRIVACY_ONE_YEAR.equals(data);
+        return SettingsPrivacyManager.getInstance().getLocationPrivacyStatus();
     }
 
     /**
@@ -980,13 +977,13 @@ public final class SettingPackage implements SettingAdapterCallback {
      * @return 时间
      */
     public String getEndDate() {
-        String endDateTime = getValueFromDB(SettingController.KEY_SETTING_PRIVACY_END_DATE);
-        if (TextUtils.isEmpty(endDateTime)) {
-            endDateTime = "";
-        }
-        return endDateTime;
+        return SettingsPrivacyManager.getInstance().getEndDate();
     }
 
+    public void dispatchLocationPrivacyStatus(final boolean isOneYear) {
+        SettingUpdateObservable.getInstance()
+                .notifySettingChanged(SettingController.KEY_SETTING_PRIVACY_STATUS, isOneYear);
+    }
 
     /**
      * 获取是否自动记录
@@ -1021,7 +1018,6 @@ public final class SettingPackage implements SettingAdapterCallback {
         getConfigKeyRoadWarn();
         getAutoRecord();
     }
-
 
     public interface SettingChangeCallback {
         /**

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
 }
+String flavorType = "type"
 
 android {
     namespace 'com.fy.navi.scene'
@@ -33,6 +34,29 @@ android {
     buildFeatures {
         dataBinding = true
         viewBinding true
+    }
+
+    flavorDimensions flavorType
+
+    productFlavors {
+        defaule {
+            dimension flavorType
+        }
+        buick {
+            dimension flavorType
+        }
+        cadi {
+            dimension flavorType
+        }
+        clea_8255 {
+            dimension flavorType
+        }
+        clea_local_8155 {
+            dimension flavorType
+        }
+        clea_8775 {
+            dimension flavorType
+        }
     }
 
 }

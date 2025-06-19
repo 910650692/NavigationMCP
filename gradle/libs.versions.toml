@@ -46,9 +46,13 @@ loggingInterceptor = "3.8.0"
 lombok = "1.18.30"
 carUiLib = "2.6.0"
 vehicleapi = "0.0.15"
-basic = "0.3.1"
+netbasic = "0.3.3"
+netvcupro = "0.3.3"
 protobean = "0.5.20"
 leakcanary = "2.14"
+gbPatacPrivacy = "1.1.45"
+cadiPrivacy = "1.2.18"
+ndncPrivacy = "1.2.25"
 
 [libraries]
 adapter-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava", version.ref = "adapterRxjava" }
@@ -97,8 +101,12 @@ greendao = {module = "org.greenrobot:greendao", version.ref = "greendao"}
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 projectlombok-lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombokVersion" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
-net-basic = {module = "com.patac.hmi.library:net_basic", version.ref = "basic"}
+net-basic = {module = "com.patac.hmi.library:net_basic", version.ref = "netbasic"}
+net-vcupro = {module = "com.patac.hmi.library:net_basic_vcupro", version.ref = "netvcupro"}
 leak_canary = {module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary"}
+gb-privacy = {module = "com.patac.hmi.library:patac_privacy_patac_r5", version.ref = "gbPatacPrivacy"}
+cadi_privacy = {module = "com.patac.hmi.library:patac_privacy.cadillac_rebuild", version.ref = "cadiPrivacy"}
+ndnc_privacy = {module = "com.patac.hmi.library:patac_privacy.vcupro_main", version.ref = "ndncPrivacy"}
 
 
 [plugins]

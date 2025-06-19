@@ -20,7 +20,6 @@ import java.util.Objects;
 
 public class BaseSettingOthersPrivacyViewModel extends BaseViewModel<SettingOthersPrivacyFragment, SettingOthersPrivacyModel> {
 
-
     public MutableLiveData<Boolean> mIsOneYearPrivacy = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsNeverPrivacy = new MutableLiveData<>(true);
     public MutableLiveData<String> mEndDate = new MutableLiveData<>("");
@@ -36,31 +35,23 @@ public class BaseSettingOthersPrivacyViewModel extends BaseViewModel<SettingOthe
     }
 
     /**
-     * 设置隐私设置
-     * @param key 设置key
+     * 根据获取的状态更新隐私协议界面显示.
+     *
      * @param isTrue true表示一年，false永不
+     * @param endDate 到期时间.
      */
-    public void dualChoiceControl(final String key, final boolean isTrue) {
-        if (key.equals(SettingController.KEY_SETTING_PRIVACY_STATUS)) {
-            mIsNeverPrivacy.setValue(!isTrue);
-            mIsOneYearPrivacy.setValue(isTrue);
-            mView.setEndDate(mModel.getEndDate(), isTrue);
-        }
+    public void dualChoiceControl(final boolean isTrue, final String endDate) {
+        mIsNeverPrivacy.setValue(!isTrue);
+        mIsOneYearPrivacy.setValue(isTrue);
+        mView.setEndDate(isTrue);
+        mEndDate.setValue(endDate);
     }
 
     /**
-     * 初始化各设置项状态值
+     * 初始化各设置项状态值.
      */
     public void initView() {
         mModel.initView();
-    }
-
-    /**
-     * 设置隐私到期时间
-     * @param endDateTime 时间
-     */
-    public void setEndDate(final String endDateTime) {
-        mEndDate.setValue(endDateTime);
     }
 
     public Action mFinishPrivacy = () -> {
@@ -68,23 +59,19 @@ public class BaseSettingOthersPrivacyViewModel extends BaseViewModel<SettingOthe
     };
 
     public Action mOneYearPrivacy = () -> {
-        mView.setEndDate(mModel.getFormattedDate(), true);
+        if (Boolean.TRUE.equals(mIsOneYearPrivacy.getValue())) {
+            return;
+        }
         mModel.setPrivacyStatus(true);
-        mModel.setEndDate(mModel.getFormattedDate());
-        SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_PRIVACY_STATUS, true);
         sendBuryPointForSetPrivacyTime(BuryConstant.Number.ONE);
     };
 
     public Action mNeverPrivacy = () -> {
-        mView.setEndDate(mModel.getFormattedDate(), false);
-        mModel.setPrivacyStatus(false);
-        mModel.setEndDate("");
-        SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_PRIVACY_STATUS, false);
-        sendBuryPointForSetPrivacyTime(BuryConstant.Number.SECOND);
-        //非导航状态直接退出应用，导航状态则等导航结束再退出
-        if (!Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-            System.exit(0);
+        if (Boolean.TRUE.equals(mIsNeverPrivacy.getValue())) {
+            return;
         }
+        mModel.setPrivacyStatus(false);
+        sendBuryPointForSetPrivacyTime(BuryConstant.Number.SECOND);
     };
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_PRIVACY_SET)

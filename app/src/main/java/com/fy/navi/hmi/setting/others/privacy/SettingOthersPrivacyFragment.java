@@ -39,15 +39,13 @@ public class SettingOthersPrivacyFragment extends BaseFragment<FragmentSettingPr
 
     /**
      * 设置隐私状态
-     * @param endDate 隐私状态
      * @param isShow 是否显示
      */
-    public void setEndDate(final String endDate, final boolean isShow) {
-        Logger.d("SettingOthersPrivacyFragment", "setEndDate：" + endDate);
+    public void setEndDate(final boolean isShow) {
+        Logger.d("SettingOthersPrivacyFragment", "isShow：" + isShow);
         ThreadManager.getInstance().postUi(() -> {
             if (isShow) {
                 mBinding.settingOthersPrivacyEndDateLayout.setVisibility(View.VISIBLE);
-                mBinding.settingOthersPrivacyEndDate.setText(endDate);
                 mBinding.settingOthersPrivacyOneYear.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
                 mBinding.settingOthersPrivacyNever.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_black_70));
             } else {
