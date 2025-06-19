@@ -52,6 +52,7 @@ import com.fy.navi.service.define.route.RouteRestirctionID;
 import com.fy.navi.service.define.route.RouteRestrictionInfo;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
+import com.fy.navi.service.define.route.RouteSupplementInfo;
 import com.fy.navi.service.define.route.RouteSupplementParams;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
@@ -1079,14 +1080,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 if (mRouteChargeStationParam == null) {
                     return;
                 }
-                final ArrayList<RouteChargeStationInfo> routeChargeStationInfos = mRouteChargeStationParam.getMRouteChargeStationInfos();
-                if (routeChargeStationInfos == null || index == -1 || routeChargeStationInfos.isEmpty()
-                || index >= routeChargeStationInfos.size()) {
+                final ArrayList<RouteSupplementParams> RouteSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams();
+                if (RouteSupplementParams == null || index == -1 || RouteSupplementParams.isEmpty()
+                || index >= RouteSupplementParams.size()) {
                     return;
                 }
-                final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfo = routeChargeStationInfos.get(index)
-                        .getMRouteChargeStationDetailInfo();
-                if (routeChargeStationDetailInfo == null || routeChargeStationDetailInfo.size() <= item.getIndex() || item.getIndex() == -1) {
+                final ArrayList<RouteSupplementInfo> routeSupplementInfos = RouteSupplementParams.get(index)
+                        .getMRouteSupplementInfos();
+                if (routeSupplementInfos == null || routeSupplementInfos.size() <= item.getIndex() || item.getIndex() == -1) {
                     return;
                 }
 
@@ -1095,7 +1096,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT).navigation();
                     final Bundle chargeBundle = new Bundle();
                     chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
-                            routeChargeStationDetailInfo.get((int) item.getIndex()));
+                            routeSupplementInfos.get((int) item.getIndex()));
                     chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT,
                             mRouteChargeStationParam.getMRouteSupplementParams().get(index));
                     closeAllFragmentsUntilTargetFragment("NewAlterChargeFragment");
@@ -1104,7 +1105,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ALTER_CHARGE_FRAGMENT).navigation();
                     final Bundle chargeBundle = new Bundle();
                     chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
-                        routeChargeStationDetailInfo.get((int) item.getIndex()));
+                            routeSupplementInfos.get((int) item.getIndex()));
                     closeAllFragmentsUntilTargetFragment("AlterChargeFragment");
                     addFragment((BaseFragment) chargeFragment, chargeBundle);
                 }

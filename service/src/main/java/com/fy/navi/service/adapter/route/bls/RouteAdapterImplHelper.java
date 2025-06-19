@@ -395,6 +395,7 @@ public class RouteAdapterImplHelper {
                     final RoutePoint routePoint = new RoutePoint();
                     routePoint.setMPos(routeParam.getRealPos());
                     routePoint.setMType(2);
+                    routePoint.setMAddressType(routeParam.getMAddressType());
                     routeLineLayerParam.getMRouteLinePoints().getMViaPoints().add(routePoint);
                     poiForRequest.addPoint(PointType.PointTypeVia, poiInfo);
                 }

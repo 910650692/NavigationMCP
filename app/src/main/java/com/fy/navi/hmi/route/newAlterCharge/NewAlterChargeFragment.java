@@ -100,7 +100,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
 
         final RouteSupplementParams routeSupplementParams = (RouteSupplementParams)
                 bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT);
-        final RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
+        final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
                 bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         if (routeChargeStationDetailInfo != null && routeSupplementParams != null) {
             mViewModel.setCurrentRouteSupplementParams(routeSupplementParams);
@@ -122,7 +122,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
     @Override
     protected void onNewIntent(final Bundle bundle) {
         super.onNewIntent(bundle);
-        final RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
+        final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
                 bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         showSupplementDetails(routeChargeStationDetailInfo);
 
@@ -141,7 +141,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
      * 设置补能点详情数据
      * @param routeChargeStationDetailInfo 参数
      */
-    private void showSupplementDetails(final RouteChargeStationDetailInfo routeChargeStationDetailInfo) {
+    private void showSupplementDetails(final RouteSupplementInfo routeChargeStationDetailInfo) {
         if (routeChargeStationDetailInfo == null) {
             Logger.d(TAG, "routeChargeStationDetailInfo is null");
             return;

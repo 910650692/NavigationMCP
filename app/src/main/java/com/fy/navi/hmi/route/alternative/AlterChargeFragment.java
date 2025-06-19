@@ -19,6 +19,7 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
 import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
+import com.fy.navi.service.define.route.RouteSupplementInfo;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.action.ViewAdapterKt;
@@ -68,7 +69,7 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
             return;
         }
         //City selection
-        final RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
+        final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
                 bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         showAlterChargeStation(routeChargeStationDetailInfo);
     }
@@ -81,7 +82,7 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
     @Override
     protected void onNewIntent(final Bundle bundle) {
         super.onNewIntent(bundle);
-        final RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
+        final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
                 bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         showAlterChargeStation(routeChargeStationDetailInfo);
 
@@ -91,7 +92,7 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
      * 设置备选充电站数据
      * @param routeChargeStationDetailInfo 参数
      */
-    private void showAlterChargeStation(final RouteChargeStationDetailInfo routeChargeStationDetailInfo) {
+    private void showAlterChargeStation(final RouteSupplementInfo routeChargeStationDetailInfo) {
         if (routeChargeStationDetailInfo == null) {
             Logger.d(TAG, "routeChargeStationDetailInfo is null");
             return;

@@ -16,7 +16,7 @@ public class RoutePoint implements Serializable {
     public long mPathId = 0;
     public int mType;
     public GeoPoint mPos;
-
+    public int mAddressType; // 地点类型: 0默认 , 1 替换补能点, 2 充电站（非补能规划）
 
     @NonNull
     @Override
