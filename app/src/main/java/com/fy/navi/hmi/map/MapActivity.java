@@ -21,6 +21,7 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
 import com.fy.navi.hmi.launcher.FloatViewManager;
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
+import com.fy.navi.hmi.startup.StartupActivity;
 import com.fy.navi.scene.dialog.MsgTopDialog;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
@@ -73,6 +74,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.main.post(() -> {
             SplitScreenManager.getInstance().onConfigurationChanged();
         });
+    }
+
+    private void delayRemoveLauncherActivity() {
+        final StartupActivity startupActivity = (StartupActivity) StackManager.getInstance().getActivityByClsName(mScreenId, StartupActivity.class);
+        if (!ConvertUtils.isNull(startupActivity)) {
+            startupActivity.finish();
+            StackManager.getInstance().removeBaseView(mScreenId, startupActivity);
+            Logger.i(TAG, "delayRemoveLauncherActivity");
+        }
     }
 
     @Override
@@ -152,6 +162,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onResume() {
         super.onResume();
         mViewModel.getCurrentCityLimit();
+        delayRemoveLauncherActivity();
     }
 
     @Override

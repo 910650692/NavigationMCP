@@ -646,10 +646,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     private void removeTrafficEventFragment() {
         Logger.i(TAG, "removeTrafficEventFragment-start!");
-        BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        if (!ConvertUtils.isNull(baseFragment) && baseFragment instanceof TrafficEventFragment) {
-            closeFragment(true);
-            Logger.i(TAG, "removeTrafficEventFragment-Success!");
+        try {
+            BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
+            if (!ConvertUtils.isNull(baseFragment) && baseFragment instanceof TrafficEventFragment) {
+                closeFragment(true);
+                Logger.i(TAG, "removeTrafficEventFragment-Success!");
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "removeTrafficEventFragment failed:" , e.getMessage());
         }
     }
 

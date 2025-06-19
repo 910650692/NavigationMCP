@@ -1593,6 +1593,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onScreenModeChanged(ScreenType screenType, String jsonPath) {
         mapVisibleAreaDataManager.loadData(jsonPath);
+        mViewModel.onScreenModeChanged(screenType);
     }
 
     /**

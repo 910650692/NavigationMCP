@@ -106,7 +106,6 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
         AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
-        mView.finish();
     }
 
     /**

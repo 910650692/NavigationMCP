@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class StackManager {
     private Map<String, Stack<BaseActivity>> mBaseActivityStack;
@@ -159,6 +160,20 @@ public final class StackManager {
             }
         });
         return isExist.get();
+    }
+
+    public BaseActivity getActivityByClsName(String screenId, Class cls) {
+        AtomicReference<BaseActivity> baseActivity = new AtomicReference<>();
+        final Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, screenId);
+        if (ConvertUtils.isEmpty(activities)) {
+            return null;
+        }
+        activities.forEach(activity -> {
+            if (ConvertUtils.equals(activity.getClass().getSimpleName(),cls.getSimpleName())) {
+                baseActivity.set(activity);
+            }
+        });
+        return baseActivity.get();
     }
 
     /**
