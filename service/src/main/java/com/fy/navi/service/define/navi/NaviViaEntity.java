@@ -1,7 +1,5 @@
 package com.fy.navi.service.define.navi;
 
-import androidx.annotation.NonNull;
-
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.route.ChargingInfo;
 import com.fy.navi.service.define.utils.NumberUtils;
@@ -18,6 +16,7 @@ public class NaviViaEntity {
     private long mArriveTimeStamp;
     //到达剩余电量（百分比）非实时有数据，不能直接使用
     private int mArriveBatteryLeft = NumberUtils.NUM_ERROR;
+    private boolean mIsUserAdd;//是否手动添加的途经点
 
     public String getArriveDay() {
         return mArriveDay;
@@ -90,6 +89,14 @@ public class NaviViaEntity {
         this.mArriveBatteryLeft = arriveBatteryLeft;
     }
 
+    public boolean isUserAdd() {
+        return mIsUserAdd;
+    }
+
+    public void setIsUserAdd(boolean isUserAdd) {
+        this.mIsUserAdd = isUserAdd;
+    }
+
     @Override
     public String toString() {
         return "NaviViaEntity{" +
@@ -103,6 +110,7 @@ public class NaviViaEntity {
                 ", mArriveDay='" + mArriveDay + '\'' +
                 ", mArriveTimeStamp=" + mArriveTimeStamp +
                 ", mArriveBatteryLeft=" + mArriveBatteryLeft +
+                ", mIsUserAdd=" + mIsUserAdd +
                 '}';
     }
 

@@ -47,7 +47,6 @@ import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
-import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
@@ -142,6 +141,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     private final SearchPackage mSearchPackage;
     private ChargeTipManager mTipManager;
+    private ViaListManager mViaListManager;
     private String mFilename = "";
     // 路口大图是否显示
     private boolean mIsShowCrossImage;
@@ -461,6 +461,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         super.onAttachViewModel(baseViewModel);
         mViewModel.addSceneCallback(this);
         mTipManager = new ChargeTipManager(mViewModel);
+        mViaListManager = new ViaListManager(this);
     }
 
     @Override
@@ -474,6 +475,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mViewModel.onNaviInfo(naviInfoBean);
         if (mTipManager != null) {
             mTipManager.setNextViaChargeStation(naviInfoBean);
+        }
+        if (mViaListManager != null) {
+            mViaListManager.onNaviInfo(naviInfoBean);
         }
         if (mIsShowCrossImage) {
             // 获得行驶过的距离
@@ -810,14 +814,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 Logger.i(TAG, "allPoiParamList viaRemain:", viaRemain.size());
                 Logger.i(TAG, "allPoiParamList index:", index);
                 if (viaRemain.size() > index) {
-                    tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, viaRemain.get(index)));
+                    tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, viaRemain.get(index), true));
                 } else {
                     // 因为有时候是静态的 mNaviEtaInfo.viaRemain数据不会实时刷新，所以就算没有导航数据也要添加
-                    tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null));
+                    tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null, true));
                     mIsNeedUpdateViaList = true;
                 }
             } else {
-                tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null));
+                tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null, true));
                 mIsNeedUpdateViaList = true;
             }
         }
@@ -828,7 +832,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mViaList.addAll(tmpList);
         // 最后添加终点
         if (!ConvertUtils.isEmpty(allPoiParamList)) {
-            mViaList.add(NaviDataFormatHelper.getNaviViaEntity(allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo));
+            mViaList.add(NaviDataFormatHelper.getNaviViaEntity(allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo, false));
         }
         Logger.i(TAG, "mViaList-Size:", mViaList.size(), "tmSize:", tmpList.size());
         if (!ConvertUtils.isEmpty(mViaList)) {
@@ -957,6 +961,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
         if (mTipManager != null) {
             mTipManager.onSilentSearchResult(taskId, errorCode, message, searchResultEntity);
+        }
+        if (mViaListManager != null) {
+            mViaListManager.onSilentSearchResult(taskId, errorCode, message, searchResultEntity);
         }
     }
 

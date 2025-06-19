@@ -46,26 +46,26 @@ import com.fy.navi.service.AppCache;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.cruise.CruiseFacilityEntity;
+import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.cruise.CruiseIntervalvelocity;
-import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
+import com.fy.navi.service.define.navi.CrossImageEntity;
+import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.LightInfoEntity;
 import com.fy.navi.service.define.navi.NaviCongestionDetailInfoEntity;
 import com.fy.navi.service.define.navi.NaviCongestionInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
-import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.NaviInfoEntity;
+import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
-import com.fy.navi.service.define.navi.NaviViaEntity;
-import com.fy.navi.service.define.navi.NaviManeuverInfo;
-import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
+import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
-import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
+import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.ParkingInfo;
@@ -730,7 +730,7 @@ public final class NaviDataFormatHelper {
      * @param obj        obj
      * @return entity
      */
-    public static NaviViaEntity getNaviViaEntity(final RouteParam routeParam, final Object obj) {
+    public static NaviViaEntity getNaviViaEntity(final RouteParam routeParam, final Object obj, boolean isUserAdd) {
         final NaviViaEntity naviViaEntity = new NaviViaEntity();
         String name = routeParam.getName();
         Logger.i(TAG, "getNaviViaEntity: ", name);
@@ -739,6 +739,7 @@ public final class NaviDataFormatHelper {
         naviViaEntity.setRealPos(routeParam.getRealPos());
         naviViaEntity.setPid(routeParam.getPoiID());
         naviViaEntity.setChargeInfo(routeParam.getChargeInfo());
+        naviViaEntity.setIsUserAdd(isUserAdd);
         if (obj != null) {
             if (obj instanceof NaviEtaInfo) {
                 final NaviEtaInfo naviEtaInfo = (NaviEtaInfo) obj;
