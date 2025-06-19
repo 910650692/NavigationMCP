@@ -153,7 +153,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         mNaviViaListAdapter.setOnItemClickListener(new INaviViaItemClickListener() {
             @Override
             public void onItemClick(final int position, final NaviViaEntity entity) {
-                Logger.i(TAG, "onItemClick:", position);
+                Logger.i(TAG, "onItemClick:", position, " isUserAdd:", entity.isUserAdd());
                 if (mNaviViaListAdapter.getData().size() <= 1) {
                     return;
                 }
@@ -169,6 +169,9 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                                     AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
                                     AutoMapConstant.PoiType.POI_DELETE_AROUND, poiInfo);
                     bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+                    if (!entity.isUserAdd()) {//过滤非补能点
+                        bundle.putInt(NaviConstant.VIA_POSITION, position);
+                    }
                     addFragment((BaseFragment) fragment, bundle, false);
                     mISceneCallback.hideNaviContent();
                     resetTimer();

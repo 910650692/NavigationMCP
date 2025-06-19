@@ -11,6 +11,7 @@ public interface NaviConstant {
     long NAVI_CRUISE_ID = 2;//巡航ID
     String KEY_NAVI_MODEL = "NaviGuidanceModel";
     String NAVI_CONTROL = "NAVI_CONTROL";
+    String VIA_POSITION = "VIA_POSITION";
     // 导航转向图标宽度信息
     int TURN_ICON_SIZE = ScreenUtils.Companion.getInstance().dp2px(155);
     int NEXT_TURN_ICON_SIZE = ScreenUtils.Companion.getInstance().dp2px(100);
