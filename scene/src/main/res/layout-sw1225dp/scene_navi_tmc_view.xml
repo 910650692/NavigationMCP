@@ -35,7 +35,7 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_1"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources"
@@ -43,133 +43,134 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_2"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
-            app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
+            app:layout_constraintTop_toTopOf="@+id/tmrtr_resources"
+            tools:visibility="gone" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_31"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_32"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_33"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_34"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_35"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_36"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_37"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_38"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_39"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_310"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_311"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_312"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_313"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_314"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_315"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_316"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_317"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_3"
-            style="@style/style_navi_tmc_tv_com"
+            style="@style/style_navi_tmc_tv_nd"
             app:layout_constraintBottom_toBottomOf="@+id/tmrtr_resources"
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />

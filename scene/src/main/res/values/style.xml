@@ -59,6 +59,13 @@
         <item name="android:textSize">@dimen/sp_26</item>
     </style>
 
+    <style name="style_navi_tmc_tv_nd">
+        <item name="android:layout_width">@dimen/dp_17</item>
+        <item name="android:layout_height">@dimen/dp_17</item>
+        <item name="android:background">@drawable/img_tmc_via</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
     <style name="style_navi_tmc_tv_cadi">
         <item name="android:layout_width">@dimen/dp_52</item>
         <item name="android:layout_height">@dimen/dp_52</item>

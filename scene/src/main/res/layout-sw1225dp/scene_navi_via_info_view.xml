@@ -18,7 +18,7 @@
             android:id="@+id/sv_bottom_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_78"
-            android:background="@drawable/bg_navi_tbt_bottom_view" />
+            android:background="@drawable/bg_navi_tbt_bottom_view_sw1225" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_way"

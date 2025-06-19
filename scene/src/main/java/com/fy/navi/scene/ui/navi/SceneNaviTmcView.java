@@ -23,8 +23,10 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
+import com.fy.navi.service.define.calibration.CalibConst;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
@@ -459,7 +461,8 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                              final SceneCommonStruct.TmcViaPointType tmcViaPointType,
                              final int viaY) {
         if (view instanceof SkinTextView stv) {
-            if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaPointType) {
+            if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaPointType
+                    && !CalibConst.Model.NDLB.equals(CalibrationPackage.getInstance().modelName())) {
                 stv.setText(getContext().getText(R.string.navi_via_item_pass));
             } else if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaChargeType) {
                 stv.setText(getContext().getText(R.string.navi_via_item_charge));
