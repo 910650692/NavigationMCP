@@ -136,7 +136,9 @@ public class FragmentIntent {
             if (!STACKMANAGER.isFragmentStackNull(screenId)) {
                 //如果查找是否存在栈顶的其他Fragment，如果有则隐藏
                 final BaseFragment currentFragment = STACKMANAGER.getCurrentFragment(screenId);
-                transaction.hide(currentFragment);
+                if(currentFragment.isAdded() && currentFragment.getParentFragmentManager() == fragmentManager) {
+                    transaction.hide(currentFragment);
+                }
             }
 
             if(Logger.openLog) {
@@ -185,7 +187,9 @@ public class FragmentIntent {
                     toFragment.onNewIntent(bundle);
                 }
                 currentFragment = toFragment;
-                transaction.show(toFragment);
+                if(currentFragment.getParentFragmentManager() == fragmentManager){
+                    transaction.show(toFragment);
+                }
             }
         }
         transaction.commitAllowingStateLoss();
@@ -212,7 +216,9 @@ public class FragmentIntent {
         if (!ConvertUtils.isEmpty(toFragment)) {
             currentFragment = toFragment;
             toFragment.onNewIntent(bundle);
-            transaction.show(toFragment);
+            if(currentFragment.getParentFragmentManager() == fragmentManager){
+                transaction.show(toFragment);
+            }
         }
         transaction.commitAllowingStateLoss();
         return currentFragment;
