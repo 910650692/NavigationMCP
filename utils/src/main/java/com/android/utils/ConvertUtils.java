@@ -1209,6 +1209,49 @@ public class ConvertUtils {
     }
 
     /**
+     * 按照固定的策略取整距离数值，与TBT保持一致
+     * 1）100公里级别向下取整；
+     * 2）1公里级别的四舍五入；
+     * 3）1公里以下的暂不修改。
+     *
+     * @param distance 距离，单位米
+     * @return 转换后的距离【0】：距离的Value、【1】：距离的单位
+     */
+    public static String[] formatEnDistanceArray(Context context, int distance) {
+        String[] distancs = new String[2];
+        if (distance >= 100000) {
+            //10公里级
+            distance = (distance / 1000) * 1000;
+        }
+
+        if (distance >= 1000) {
+            int kiloMeter = distance / 1000;
+            int leftMeter = distance % 1000;
+            leftMeter = leftMeter / 100;
+            if (leftMeter >= 5) {
+                kiloMeter = kiloMeter + 1;
+                leftMeter = 0;
+            }
+
+            StringBuffer sb = new StringBuffer();
+
+            if (leftMeter > 0) {
+                sb.append(kiloMeter);
+                sb.append(".");
+                sb.append(leftMeter);
+            } else {
+                sb.append(kiloMeter);
+            }
+            distancs[0] = sb.toString();
+            distancs[1] = context.getString(R.string.km_en);
+        } else {
+            distancs[0] = String.valueOf(distance);
+            distancs[1] = context.getString(R.string.meter_en);
+        }
+        return distancs;
+    }
+
+    /**
      * 字符串中的数字转为粗体
      *
      * @param str 被加粗的字符

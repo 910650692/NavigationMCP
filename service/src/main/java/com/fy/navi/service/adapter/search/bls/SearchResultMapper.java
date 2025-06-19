@@ -1348,7 +1348,7 @@ public final class SearchResultMapper {
      * @return String
      */
     private String formatDistanceArrayInternal(final int distance) {
-        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppCache.getInstance().getMContext(), distance);
+        final String[] distanceArray = ConvertUtils.formatEnDistanceArray(AppCache.getInstance().getMContext(), distance);
         return distanceArray[0] + distanceArray[1];
     }
 
