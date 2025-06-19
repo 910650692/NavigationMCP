@@ -22,7 +22,6 @@ import com.fy.navi.service.adapter.aos.QueryRestrictedObserver;
 import com.fy.navi.service.adapter.calibration.CalibrationAdapter;
 import com.fy.navi.service.adapter.engine.EngineAdapter;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
-import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.adapter.navi.NaviAdapter;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.position.PositionAdapter;
@@ -31,7 +30,6 @@ import com.fy.navi.service.adapter.route.RouteResultObserver;
 import com.fy.navi.service.adapter.search.SearchAdapter;
 import com.fy.navi.service.define.aos.RestrictedParam;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
@@ -207,7 +205,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /*清除指定路线类型扎标*/
     public void clearRouteItemByType(MapType mapTypeId, LayerPointItemType type) {
-        mLayerAdapter.clearRouteItemByType(mapTypeId, type);
+        ThreadManager.getInstance().execute(() -> mLayerAdapter.clearRouteItemByType(mapTypeId, type));
     }
 
     /**
@@ -506,21 +504,24 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             callBackOfflineRouting(requestRouteResult.getMMapTypeId(), errorMsg);
             //延迟3秒等待无网络toast显示完成，自动发起离线算路
             final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-            executorService.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    final RouteRequestParam param = new RouteRequestParam();
-                    param.setMMapTypeId(requestRouteResult.getMMapTypeId());
-                    param.setMFastNavi(requestRouteResult.isMFastNavi());
-                    param.setMRouteWay(requestRouteResult.getMRouteWay());
-                    param.setMIsOnline(false);
-                    requestRoute(param);
-                }
+            executorService.schedule(() -> {
+                startOffline(requestRouteResult);
             }, 3, TimeUnit.SECONDS);
             return;
         }
         reGetParamList(requestRouteResult.getMMapTypeId());
         callBackFailMsg(requestRouteResult.getMMapTypeId(), errorMsg);
+    }
+
+    private void startOffline(RequestRouteResult requestRouteResult) {
+        ThreadManager.getInstance().execute(() -> {
+            final RouteRequestParam param = new RouteRequestParam();
+            param.setMMapTypeId(requestRouteResult.getMMapTypeId());
+            param.setMFastNavi(requestRouteResult.isMFastNavi());
+            param.setMRouteWay(requestRouteResult.getMRouteWay());
+            param.setMIsOnline(false);
+            requestRoute(param);
+        });
     }
 
     /**
@@ -718,14 +719,16 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param routeParams 途经点列表
      * @return 返回请求的taskId
      */
-    public long requestManyVia(final MapType mapTypeId, final List<RouteParam> routeParams) {
-        mViaRouteParams.put(mapTypeId, routeParams);
-        final RouteRequestParam routeRequestParam = new RouteRequestParam();
-        routeRequestParam.setMMapTypeId(mapTypeId);
-        routeRequestParam.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_ALL_VIA);
-        routeRequestParam.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
-        routeRequestParam.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
-        return requestRoute(routeRequestParam);
+    public void requestManyVia(final MapType mapTypeId, final List<RouteParam> routeParams) {
+        ThreadManager.getInstance().execute(() -> {
+            mViaRouteParams.put(mapTypeId, routeParams);
+            final RouteRequestParam routeRequestParam = new RouteRequestParam();
+            routeRequestParam.setMMapTypeId(mapTypeId);
+            routeRequestParam.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_ALL_VIA);
+            routeRequestParam.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
+            routeRequestParam.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
+            requestRoute(routeRequestParam);
+        });
     }
 
     /**
@@ -760,18 +763,20 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             callBackFailMsg(mapTypeId, "途经点添加失败：最多只能添加5个途径点");
             return;
         }
-        final List<RouteParam> routeParams = mViaRouteParams.get(mapTypeId);
-        if (routeParams != null) {
-            routeParams.add(getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY));
-        }
-        mViaRouteParams.put(mapTypeId, routeParams);
-        final RouteRequestParam param = new RouteRequestParam();
-        param.setMMapTypeId(mapTypeId);
-        param.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
-        param.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_VIA);
-        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
-        requestRoute(param);
-        sendBuryPointForAddMiddle(poiInfoEntity.getName());
+        ThreadManager.getInstance().execute(() -> {
+            final List<RouteParam> routeParams = mViaRouteParams.get(mapTypeId);
+            if (routeParams != null) {
+                routeParams.add(getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY));
+            }
+            mViaRouteParams.put(mapTypeId, routeParams);
+            final RouteRequestParam param = new RouteRequestParam();
+            param.setMMapTypeId(mapTypeId);
+            param.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
+            param.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_VIA);
+            param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
+            requestRoute(param);
+            sendBuryPointForAddMiddle(poiInfoEntity.getName());
+        });
     }
 
     /**
@@ -801,14 +806,16 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (routeParams != null) {
             routeParams.add(replaceParam);
         }
-        mViaRouteParams.put(mapTypeId, routeParams);
-        final RouteRequestParam param = new RouteRequestParam();
-        param.setMMapTypeId(mapTypeId);
-        param.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
-        param.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_VIA);
-        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
-        requestRoute(param);
-        sendBuryPointForAddMiddle(newPoiInfoEntity.getName());
+        ThreadManager.getInstance().execute(() -> {
+            mViaRouteParams.put(mapTypeId, routeParams);
+            final RouteRequestParam param = new RouteRequestParam();
+            param.setMMapTypeId(mapTypeId);
+            param.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
+            param.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_VIA);
+            param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
+            requestRoute(param);
+            sendBuryPointForAddMiddle(newPoiInfoEntity.getName());
+        });
     }
 
     /**
@@ -832,15 +839,17 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             callBackFailMsg(mapTypeId, "途经点添加失败：下标越界");
             return;
         }
-        routeParams.add(index, getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY));
-        mViaRouteParams.put(mapTypeId, routeParams);
-        final RouteRequestParam param = new RouteRequestParam();
-        param.setMMapTypeId(mapTypeId);
-        param.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
-        param.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_VIA);
-        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
-        requestRoute(param);
-        sendBuryPointForAddMiddle(poiInfoEntity.getName());
+        ThreadManager.getInstance().execute(() -> {
+            routeParams.add(index, getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY));
+            mViaRouteParams.put(mapTypeId, routeParams);
+            final RouteRequestParam param = new RouteRequestParam();
+            param.setMMapTypeId(mapTypeId);
+            param.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
+            param.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_VIA);
+            param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
+            requestRoute(param);
+            sendBuryPointForAddMiddle(poiInfoEntity.getName());
+        });
     }
 
     /**
@@ -870,12 +879,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             routeParams.remove(index);
             mViaRouteParams.put(mapTypeId, routeParams);
             if (isRequestRoute) {
-                final RouteRequestParam param = new RouteRequestParam();
-                param.setMMapTypeId(mapTypeId);
-                param.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
-                param.setMRouteWay(RouteWayID.ROUTE_WAY_DELETE_VIA);
-                param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
-                requestRoute(param);
+                ThreadManager.getInstance().execute(() -> {
+                    final RouteRequestParam param = new RouteRequestParam();
+                    param.setMMapTypeId(mapTypeId);
+                    param.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
+                    param.setMRouteWay(RouteWayID.ROUTE_WAY_DELETE_VIA);
+                    param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
+                    requestRoute(param);
+                });
             } else {
                 mRouteAdapter.saveAllPoiParamList(mapTypeId, getCurrentParamsList(mapTypeId));
             }
@@ -1287,9 +1298,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     public void clearRouteLine(final MapType mapTypeId) {
         mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
-        mLayerAdapter.clearRouteLine(mapTypeId);
-        mLayerAdapter.clearLabelItem(mapTypeId);
-        mLayerAdapter.setCarLogoVisible(mapTypeId, true);
+        ThreadManager.getInstance().execute(() -> {
+            mLayerAdapter.clearRouteLine(mapTypeId);
+            mLayerAdapter.clearLabelItem(mapTypeId);
+            mLayerAdapter.setCarLogoVisible(mapTypeId, true);
+        });
         removeAllRouteInfo(mapTypeId);
     }
 
@@ -1299,7 +1312,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void clearEndParkPoint(final MapType mapTypeId) {
-        mLayerAdapter.clearLabelItem(mapTypeId);
+        ThreadManager.getInstance().execute(() -> mLayerAdapter.clearLabelItem(mapTypeId));
     }
 
     /**
@@ -1490,10 +1503,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param index     路线
      */
     public void showRestArea(final MapType mapTypeId, final int index) {
-        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
-            return;
-        }
-        mLayerAdapter.showRestArea(mapTypeId, mRequestRouteResults.get(mapTypeId).getMRouteRestAreaParam().getMPathInfoList(), index);
+        ThreadManager.getInstance().execute(() -> {
+            if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
+                return;
+            }
+            mLayerAdapter.showRestArea(mapTypeId, mRequestRouteResults.get(mapTypeId).getMRouteRestAreaParam().getMPathInfoList(), index);
+        });
     }
 
     /**
@@ -1502,7 +1517,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void clearRestArea(final MapType mapTypeId) {
-        mLayerAdapter.showRestArea(mapTypeId, null, -1);
+        ThreadManager.getInstance().execute(() -> mLayerAdapter.showRestArea(mapTypeId, null, -1));
     }
 
     /**
@@ -1511,10 +1526,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void showWeatherView(final MapType mapTypeId) {
-        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
-            return;
-        }
-        mLayerAdapter.showWeatherView(mapTypeId, mRequestRouteResults.get(mapTypeId).getMRouteWeatherParam().getMWeatherLabelItem());
+        ThreadManager.getInstance().execute(() -> {
+            if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
+                return;
+            }
+            mLayerAdapter.showWeatherView(mapTypeId, mRequestRouteResults.get(mapTypeId).getMRouteWeatherParam().getMWeatherLabelItem());
+        });
     }
 
     /**
@@ -1523,7 +1540,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void clearWeatherView(final MapType mapTypeId) {
-        mLayerAdapter.showWeatherView(mapTypeId, null);
+        ThreadManager.getInstance().execute(() -> mLayerAdapter.showWeatherView(mapTypeId, null));
     }
 
     /**
@@ -1533,7 +1550,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param object    限行数据
      */
     public void showRestrictionView(final MapType mapTypeId, final Object object) {
-        mLayerAdapter.showRestrictionView(mapTypeId, object);
+        ThreadManager.getInstance().execute(() -> {
+            mLayerAdapter.showRestrictionView(mapTypeId, object);
+        });
     }
 
     /**
@@ -1542,7 +1561,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void clearRestrictionView(final MapType mapTypeId) {
-        mLayerAdapter.showRestrictionView(mapTypeId, null);
+        ThreadManager.getInstance().execute(() -> mLayerAdapter.showRestrictionView(mapTypeId, null));
     }
 
     /**
@@ -1789,9 +1808,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * 语音请求算路
      *
      * @param param 算路参数
-     * @return taskId
      */
-    public long requestRouteFromSpeech(final RouteSpeechRequestParam param) {
+    public void requestRouteFromSpeech(final RouteSpeechRequestParam param) {
         removeAllRouteInfo(param.getMMapTypeId());
         if (!ConvertUtils.isEmpty(param.getMStartPoiInfoEntity())) {
             final RouteParam start = getRouteParamFromPoiInfoEntity(param.getMStartPoiInfoEntity(), RoutePoiType.ROUTE_POI_TYPE_START);
@@ -1810,13 +1828,13 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             final RouteParam end = getRouteParamFromPoiInfoEntity(param.getMEndPoiInfoEntity(), RoutePoiType.ROUTE_POI_TYPE_END);
             mEndRouteParams.put(param.getMMapTypeId(), end);
         }
-
-        final RouteRequestParam routeRequestParam = new RouteRequestParam();
-        ;
-        routeRequestParam.setMMapTypeId(param.getMMapTypeId());
-        routeRequestParam.setMRouteWay(RouteWayID.ROUTE_WAY_SPEECH);
-        routeRequestParam.setMRoutePreferenceID(param.getMPreferenceID());
-        return requestRoute(routeRequestParam);
+        ThreadManager.getInstance().execute(() -> {
+            final RouteRequestParam routeRequestParam = new RouteRequestParam();
+            routeRequestParam.setMMapTypeId(param.getMMapTypeId());
+            routeRequestParam.setMRouteWay(RouteWayID.ROUTE_WAY_SPEECH);
+            routeRequestParam.setMRoutePreferenceID(param.getMPreferenceID());
+            requestRoute(routeRequestParam);
+        });
     }
 
     /**

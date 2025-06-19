@@ -640,18 +640,17 @@ public class BaseNaviGuidanceViewModel extends
             Logger.d(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange 没有改变");
             return;
         }
-        ThreadManager.getInstance().postUi(new Runnable() {
-            @Override
-            public void run() {
-                if (mView != null) {
-                    mView.updatePreference();
-                }
+        ThreadManager.getInstance().execute(() -> {
+            final RouteRequestParam param = new RouteRequestParam();
+            param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+            RoutePackage.getInstance().requestRoute(param);
+        });
+        ThreadManager.getInstance().postUi(() -> {
+            if (mView != null) {
+                mView.updatePreference();
             }
         });
         setDefultPlateNumberAndAvoidLimitSave();
-        final RouteRequestParam param = new RouteRequestParam();
-        param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
-        RoutePackage.getInstance().requestRoute(param);
     }
 
     /***

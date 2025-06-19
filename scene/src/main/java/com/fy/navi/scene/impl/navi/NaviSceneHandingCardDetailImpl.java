@@ -69,9 +69,11 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
 
     @Override
     public void onNaviNow(int position) {
-        if (!ConvertUtils.isNull(mCallBack)) {
-            requestId = mRoutePackage.requestChangeEnd(mMapTypeId, mList.get(position));
-        }
+        ThreadManager.getInstance().execute(() -> {
+            if (!ConvertUtils.isNull(mCallBack)) {
+                requestId = mRoutePackage.requestChangeEnd(mMapTypeId, mList.get(position));
+            }
+        });
     }
 
     @Override

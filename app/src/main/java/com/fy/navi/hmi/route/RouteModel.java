@@ -152,8 +152,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * @param param 请求参数
      * */
     public void requestRouteMode(final RouteRequestParam param) {
-        param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
-        mRoutePackage.requestRoute(param);
+        ThreadManager.getInstance().execute(() -> {
+            param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+            mRoutePackage.requestRoute(param);
+        });
     }
 
     /**
@@ -178,7 +180,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * @param poiInfoEntity 终点数据
      */
     public void requestChangeEnd(final PoiInfoEntity poiInfoEntity) {
-        mRoutePackage.requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+        ThreadManager.getInstance().execute(() -> mRoutePackage.requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity));
     }
 
     /**

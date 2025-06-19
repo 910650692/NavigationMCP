@@ -154,12 +154,14 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
      * 请求路线刷新
      */
     private void requestReRoute() {
-        final RouteRequestParam param = new RouteRequestParam();
-        param.setMMapTypeId(mMapTypeId);
-        param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
-        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
-        // 算路那边在线刷新失败后会自动调用离线刷新，所以这边就调用一个接口就好
-        mRoutePackage.requestRoute(param);
+        ThreadManager.getInstance().execute(() -> {
+            final RouteRequestParam param = new RouteRequestParam();
+            param.setMMapTypeId(mMapTypeId);
+            param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
+            param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
+            // 算路那边在线刷新失败后会自动调用离线刷新，所以这边就调用一个接口就好
+            mRoutePackage.requestRoute(param);
+        });
     }
 
     @Override

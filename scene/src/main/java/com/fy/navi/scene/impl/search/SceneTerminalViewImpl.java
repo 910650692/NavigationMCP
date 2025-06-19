@@ -2,6 +2,7 @@ package com.fy.navi.scene.impl.search;
 
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneTerminalParking;
 import com.fy.navi.scene.ui.search.SceneTerminalParkingListView;
@@ -69,7 +70,7 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
      * @param poiInfoEntity poi信息实体
      */
     public void startRoute(final PoiInfoEntity poiInfoEntity) {
-        mRoutePackage.requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+        ThreadManager.getInstance().execute(() -> mRoutePackage.requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity));
     }
 
     /**

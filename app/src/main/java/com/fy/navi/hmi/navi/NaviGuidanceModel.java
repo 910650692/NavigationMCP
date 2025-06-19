@@ -848,11 +848,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * 路由偏好改变回调
      */
     public void onRoutePreferenceChange() {
-        final RouteRequestParam param = new RouteRequestParam();
-        param.setMMapTypeId(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
-        param.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_PREFERENCE);
-        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE);
-        mRoutePackage.requestRoute(param);
+        ThreadManager.getInstance().execute(() -> {
+            final RouteRequestParam param = new RouteRequestParam();
+            param.setMMapTypeId(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
+            param.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_PREFERENCE);
+            param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE);
+            mRoutePackage.requestRoute(param);
+        });
     }
 
     /**

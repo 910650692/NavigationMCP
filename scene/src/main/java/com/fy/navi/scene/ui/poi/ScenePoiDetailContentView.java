@@ -198,7 +198,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " , poiInfo.getPoint().getLon()
                     + " ,lat" + poiInfo.getPoint().getLat());
             if (mIsEnd) {
-                RoutePackage.getInstance().requestChangeEnd(mMapTypeId, poiInfo);
+                ThreadManager.getInstance().execute(() -> RoutePackage.getInstance().requestChangeEnd(mMapTypeId, poiInfo));
             } else {
                 openRouteFragment(poiInfo);
             }

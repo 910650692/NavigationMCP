@@ -159,7 +159,8 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     public void startRoute(final PoiInfoEntity poiInfoEntity) {
         if (Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.SELECT_ROUTE)
             || Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-            RoutePackage.getInstance().requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+            ThreadManager.getInstance().execute(() -> RoutePackage.getInstance().requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity));
+
         } else {
             final Bundle bundle = new Bundle();
             bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);

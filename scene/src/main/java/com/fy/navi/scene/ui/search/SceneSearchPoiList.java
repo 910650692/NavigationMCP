@@ -261,7 +261,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
                     } else {
                         if (mIsEnd) {
-                            RoutePackage.getInstance().requestChangeEnd(mMapTypeId, poiInfoEntity);
+                            ThreadManager.getInstance().execute(() -> RoutePackage.getInstance().requestChangeEnd(mMapTypeId, poiInfoEntity));
                         } else {
                             SearchPackage.getInstance().clearLabelMark();
                             final Fragment fragment = (Fragment) ARouter.getInstance()

@@ -10,6 +10,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 
+import com.android.utils.thread.ThreadManager;
 import com.baidu.oneos.protocol.bean.ArrivalBean;
 import com.baidu.oneos.protocol.bean.CallResponse;
 import com.baidu.oneos.protocol.bean.TrafficAskBean;
@@ -844,14 +845,16 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             Logger.d(IVrBridgeConstant.TAG, "onRouteRefresh:");
         }
         if (MapStateManager.getInstance().isNaviStatus()) {
-            final RouteRequestParam param = new RouteRequestParam();
-            param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
-            param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
-            param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
-            RoutePackage.getInstance().requestRoute(param);
-            final CallResponse response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ALREADY_REFRESH_ROUTE);
-            response.setNeedPlayMessage(true);
-            respTts(response, respCallback);
+            ThreadManager.getInstance().execute(() -> {
+                final RouteRequestParam param = new RouteRequestParam();
+                param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+                param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
+                param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
+                RoutePackage.getInstance().requestRoute(param);
+                final CallResponse response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ALREADY_REFRESH_ROUTE);
+                response.setNeedPlayMessage(true);
+                respTts(response, respCallback);
+            });
         } else {
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.PLEASE_NAVI_FIRST);
         }
