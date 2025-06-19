@@ -1038,6 +1038,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      * @return 分类数据
      */
     private String getClassifyData() {
+        if (ConvertUtils.isEmpty(mLocalInfoList)) {
+            return "";
+        }
         final StringBuilder stringBuilder = new StringBuilder();
         for (SearchCategoryLocalInfo searchCategoryLocalInfo : mLocalInfoList) {
             for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo : searchCategoryLocalInfo.getCategoryLocalInfos()) {
