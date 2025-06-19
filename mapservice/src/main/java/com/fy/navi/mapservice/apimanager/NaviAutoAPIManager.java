@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.fy.navi.mapservice.BuildConfig;
 import com.fy.navi.mapservice.base.BaseManager;
 import com.fy.navi.mapservice.base.BinderManager;
 import com.fy.navi.mapservice.base.MapSdk;
@@ -550,7 +551,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void init(final Context context, final String pkgName, final String params) {
         synchronized (NaviAutoAPIManager.class) {
             Logger.d(TAG, "initClient: " , pkgName , ", params: " , params);
-            mPkgName = pkgName;
+            mPkgName = "MapService Version[" + BuildConfig.LIB_VERSION + "] " + pkgName;
             BinderManager.getInstance().addEngineInitCallback(mEngineStatusCallback);
             MapSdk.getInstance().startConnect(context);
         }
@@ -1116,6 +1117,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void openSrTbt(final boolean open) {
         if (mInitStatus && checkBinder()) {
+            Logger.d(TAG, mPkgName , "-->  openSrTbt: ");
             try {
                 mBinder.openSrTbt(mPkgName, open);
             } catch (RemoteException remoteException) {
@@ -1132,6 +1134,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public boolean stopNavigation() {
         boolean result = false;
         if (mInitStatus && checkBinder()) {
+            Logger.d(TAG, mPkgName , "-->  stopNavigation: ");
             try {
                 result = mBinder.stopNavi(mPkgName);
             } catch (RemoteException exception) {
@@ -1146,6 +1149,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void backHome() {
         if (mInitStatus && checkBinder()) {
+            Logger.d(TAG, mPkgName , "-->  backHome: ");
             try {
                 mBinder.backHome(mPkgName);
             } catch (RemoteException exception) {
@@ -1159,6 +1163,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void goCompany() {
         if (mInitStatus && checkBinder()) {
+            Logger.d(TAG, mPkgName , "-->  goCompany: ");
             try {
                 mBinder.goCompany(mPkgName);
             } catch (RemoteException exception) {
@@ -1172,6 +1177,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void openBasicSearch() {
         if (mInitStatus && checkBinder()) {
+            Logger.d(TAG, mPkgName , "-->  openBasicSearch: ");
             try {
                 mBinder.openBasicSearch(mPkgName);
             } catch (RemoteException exception) {
@@ -1188,6 +1194,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public boolean getNaviBroadcastStatus() {
         boolean open = false;
         if (mInitStatus && checkBinder()) {
+            Logger.d(TAG, mPkgName , "-->  getNaviBroadcastStatus: ");
             try {
                 open = mBinder.getNaviBroadcastStatus(mPkgName);
             } catch (RemoteException exception) {
@@ -1205,6 +1212,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void toggleNaviBroadcast(final boolean open) {
         if (mInitStatus && checkBinder()) {
+            Logger.d(TAG, mPkgName , "-->  toggleNaviBroadcast: ");
             try {
                 mBinder.toggleNaviBroadcast(mPkgName, open);
             } catch (RemoteException exception) {
@@ -1218,6 +1226,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void clickPassBySearch() {
         if (mInitStatus && checkBinder()) {
+            Logger.d(TAG, mPkgName , "-->  clickPassBySearch: ");
             try {
                 mBinder.clickPassBySearch(mPkgName);
             } catch (RemoteException exception) {
