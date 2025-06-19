@@ -1,15 +1,20 @@
 package com.fy.navi.scene.impl.navi;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
+import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.navi.ISceneNaviViaList;
 import com.fy.navi.scene.ui.navi.SceneNaviViaListView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.utils.NumberUtils;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.concurrent.ScheduledFuture;
 
@@ -24,6 +29,12 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
 
     @Override
     public void skipAlongWayFragment() {
+        int viaCount = RoutePackage.getInstance().getViaPointsCount(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (viaCount == 5) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.add_via_failure));
+            return;
+        }
         if (mCallBack != null) {
             mCallBack.skipAlongWayFragment();
         }
