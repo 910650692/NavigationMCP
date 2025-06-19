@@ -248,11 +248,12 @@
                 android:id="@+id/scene_navi_via_arrive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_11"
-                android:layout_marginTop="@dimen/dp_26"
+                android:layout_marginStart="@dimen/dp_490"
+                android:layout_marginTop="@dimen/dp_426"
                 android:visibility="@{ViewModel.mNaviViaArrivedPopVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintStart_toEndOf="@+id/scl_top_container"
-                app:layout_constraintTop_toTopOf="@+id/scl_top_container" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/scl_top_container"
+                tools:visibility="visible" />
             <!--SAPA详情-->
             <ViewStub
                 android:id="@+id/scene_navi_sapa_detail"
