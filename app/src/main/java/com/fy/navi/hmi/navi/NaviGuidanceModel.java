@@ -410,14 +410,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 Logger.i(TAG, "slowTotal = ", slowTotal, " slowFree = ",
                         slowFree, " fastTotal = ", fastTotal, " fastFree = ", fastFree);
                 String chargeInfoStr = getChargeInfo(fastFree, fastTotal, slowFree, slowTotal);
-                if (TextUtils.isEmpty(chargeInfoStr) && !ConvertUtils.isEmpty(businessTime)) {
+                if (TextUtils.isEmpty(chargeInfoStr) && !TextUtils.isEmpty(businessTime)) {
                     endPoint.setBusinessHours(businessTime);
                     mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
                     return;
                 }
                 endPoint.setBusinessHours(chargeInfoStr);
                 mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
-            } else if (null != businessTime) {
+            } else if (!TextUtils.isEmpty(businessTime)) {
                 endPoint.setBusinessHours(businessTime);
                 mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
             }
