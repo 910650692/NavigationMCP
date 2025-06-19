@@ -112,6 +112,10 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         mStackManager.popActivity(mScreenId);
     }
 
+    public void finishNoPop() {
+        super.finish();
+    }
+
     @Override
     public void onBackPressed() {
         if(Logger.openLog) {

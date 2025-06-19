@@ -79,7 +79,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private void delayRemoveLauncherActivity() {
         final StartupActivity startupActivity = (StartupActivity) StackManager.getInstance().getActivityByClsName(mScreenId, StartupActivity.class);
         if (!ConvertUtils.isNull(startupActivity)) {
-            startupActivity.finish();
+            startupActivity.finishNoPop();
             StackManager.getInstance().removeBaseView(mScreenId, startupActivity);
             Logger.i(TAG, "delayRemoveLauncherActivity");
         }

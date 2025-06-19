@@ -202,6 +202,13 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         }
         if (mView != null && mWindowManager != null) {
             mWindowManager.removeView(mView);
+            mBinding = null;
+            mView = null;
+            Logger.i(TAG, "remove all view!");
+        }
+        if (!mIsOnShowing) {
+            Logger.i(TAG, "不需要显示，View 暂时不创建！");
+            return;
         }
         mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(AppCache.getInstance().getMContext()), null);
         mView = mBinding.getRoot();
@@ -238,7 +245,6 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             updateTbT();
         }
         mBinding.ivCross.setVisibility(mCrossImgIsOnShowing ? View.VISIBLE : View.GONE);
-        showOrHideFloatView(mIsOnShowing);
     }
 
     private void updateTbT() {
