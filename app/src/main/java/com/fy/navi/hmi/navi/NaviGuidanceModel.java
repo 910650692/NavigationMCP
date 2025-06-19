@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
 
@@ -408,10 +409,12 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 int fastFree = chargeInfo.getMFastFree();
                 Logger.i(TAG, "slowTotal = ", slowTotal, " slowFree = ",
                         slowFree, " fastTotal = ", fastTotal, " fastFree = ", fastFree);
-                String chargeInfoStr = String.format(
-                        ResourceUtils.Companion.getInstance().
-                                getString(R.string.navi_end_charge_info),
-                        fastFree, fastTotal, slowFree, slowTotal);
+                String chargeInfoStr = getChargeInfo(fastFree, fastTotal, slowFree, slowTotal);
+                if (TextUtils.isEmpty(chargeInfoStr) && !ConvertUtils.isEmpty(businessTime)) {
+                    endPoint.setBusinessHours(businessTime);
+                    mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+                    return;
+                }
                 endPoint.setBusinessHours(chargeInfoStr);
                 mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
             } else if (null != businessTime) {
@@ -419,6 +422,38 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
             }
         }
+    }
+
+    private String getChargeInfo(int fastFree, int fastTotal, int slowFree, int slowTotal) {
+        StringBuilder sb = new StringBuilder();
+
+        boolean hasFast = fastTotal > 0;
+        boolean hasSlow = slowTotal > 0;
+
+        if (hasFast) {
+            if (fastFree > 0) {
+                sb.append(ResourceUtils.Companion.getInstance().getString(R.string.navi_quick)).
+                        append(fastFree).append(ResourceUtils.Companion.getInstance().
+                                getString(com.fy.navi.scene.R.string.slash)).append(fastTotal);
+            } else {
+                sb.append(ResourceUtils.Companion.getInstance().getString(R.string.navi_quick)).
+                        append(fastTotal);
+            }
+        }
+
+        if (hasSlow) {
+            if (sb.length() > 0) sb.append(" ");
+            if (slowFree > 0) {
+                sb.append(ResourceUtils.Companion.getInstance().getString(R.string.navi_slow)).
+                        append(slowFree).append(ResourceUtils.Companion.getInstance().
+                        getString(com.fy.navi.scene.R.string.slash)).append(slowTotal);
+            } else {
+                sb.append(ResourceUtils.Companion.getInstance().getString(R.string.navi_slow)).
+                        append(slowTotal);
+            }
+        }
+
+        return sb.length() == 0 ? "" : sb.toString();
     }
 
     @Override
