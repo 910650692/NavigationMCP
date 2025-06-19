@@ -950,6 +950,9 @@ public class L2Adapter {
     }
 
     private long getLinkIndexDist(int curSegIdx, int curLinkIdx) {
+        if (mNaviEtaInfo == null) {
+            return -1;
+        }
         if (mNaviEtaInfo.getCurSegIdx() == curSegIdx) {
             if (mNaviEtaInfo.getCurLinkIdx() == curLinkIdx) {
                 return mNaviEtaInfo.linkRemainDist;
