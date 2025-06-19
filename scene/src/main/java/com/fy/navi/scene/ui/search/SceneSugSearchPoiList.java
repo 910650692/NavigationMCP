@@ -20,6 +20,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
@@ -43,7 +44,9 @@ import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.BaseFragment;
+import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,6 +156,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                 hideInput();
             }
         });
+
     }
 
     public void setupHistoryRecycleView(){
@@ -173,6 +177,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             mViewBinding.recyclerNoHint.setVisibility(GONE);
             mSearchHistoryAdapter.notifyList(list);
             mSearchHistoryAdapter.setMIsShowIndex(false);
+            mSearchHistoryAdapter.setMIsHasFooter(true);
         }
         mViewBinding.recyclerSearchHistory.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -247,8 +252,39 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                 }
                 hideInput();
             }
+
+            @Override
+            public void onDeleteAllClick() {
+                onClickDeleteLayout();
+            }
         });
 
+    }
+
+    private void onClickDeleteLayout() {
+        new SearchConfirmDialog.Build(getContext())
+                .setDialogObserver(new IBaseDialogClickListener() {
+                    @Override
+                    public void onCommitClick() {
+                        //清空历史记录
+                        UserTrackPackage.getInstance().clearSearchHistory();
+                        UserTrackPackage.getInstance().clearHistoryRoute();
+                        mSearchHistoryAdapter.notifyList(new ArrayList<>());
+                        mViewBinding.recyclerSearchHistory.setVisibility(GONE);
+                        mViewBinding.recyclerNoHint.setVisibility(VISIBLE);
+                        ToastUtils.Companion.getInstance().showCustomToastView(
+                                ResourceUtils.Companion.getInstance().getString(R.string.ssh_cleared_history_record));
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+
+                    }
+                })
+                .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.dialog_title_tip))
+                .setContent(ResourceUtils.Companion.getInstance().getString(R.string.dialog_content_clear_record))
+                .setConfirmTitle(ResourceUtils.Companion.getInstance().getString(R.string.dsc_confirm))
+                .build().show();
     }
 
     /**
