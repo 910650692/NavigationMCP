@@ -15,6 +15,7 @@
         android:id="@+id/route_weather_details"
         android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
+        android:visibility="@{ViewModel.getIncludePageVisibility() == 4 ? View.VISIBLE : View.GONE}"
         android:paddingVertical="@dimen/dp_59"
         android:paddingHorizontal="@dimen/dp_59"
         android:background="@drawable/bg_shadow_navi_buick"

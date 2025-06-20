@@ -34,8 +34,6 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
 import com.fy.navi.service.define.route.RequestRouteResult;
-import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
-import com.fy.navi.service.define.route.RouteChargeStationInfo;
 import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RouteLineSegmentInfo;
@@ -61,7 +59,6 @@ import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.setting.SettingController;
-import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -909,7 +906,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showProgressUI();
             mViewModel.withoutSupplementPointsView();
-            mViewModel.showNomalRouteUI(false);
+            mViewModel.showNormalRouteUI(false);
         }
     }
 
@@ -946,7 +943,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             if (!isFirst) {
                 if (!ConvertUtils.isEmpty(mViewModel)) {
                     mViewModel.updateSelectRouteUI(routeIndex);
-                    mViewModel.showNomalRouteUI(true);
+                    mViewModel.showNormalRouteUI(true);
                 }
                 mSearchPackage.clearLabelMark();
                 mViewModel.cancelTimer();
@@ -1061,7 +1058,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             case ROUTE_POINT_WEATHER:
                 if (!ConvertUtils.isEmpty(mRouteWeatherInfos) && mRouteWeatherInfos.size() > item.getIndex()) {
                     if (!ConvertUtils.isEmpty(mViewModel)) {
-                        mViewModel.showWeatherDeatilsUI(mRouteWeatherInfos.get((int) (item.getIndex())));
+                        mViewModel.showWeatherDetailsUI(mRouteWeatherInfos.get((int) (item.getIndex())));
                     }
                 }
                 break;

@@ -14,6 +14,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1721"
         android:layout_height="@dimen/dp_772"
+        android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
         android:clickable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

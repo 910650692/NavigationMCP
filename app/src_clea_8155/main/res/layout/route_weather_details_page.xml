@@ -15,6 +15,7 @@
         android:layout_width="@dimen/dp_613"
         android:layout_height="@dimen/dp_532"
         android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:visibility="@{ViewModel.getIncludePageVisibility() == 4 ? View.VISIBLE : View.GONE}"
         android:clickable="true"
         android:paddingHorizontal="@dimen/dp_59"
         android:paddingVertical="@dimen/dp_59">

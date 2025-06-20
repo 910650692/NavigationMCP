@@ -15,6 +15,7 @@
         android:id="@+id/route_detail_info_root"
         android:layout_width="@dimen/dp_698"
         android:layout_height="wrap_content"
+        android:visibility="@{ViewModel.getIncludePageVisibility() == 1 ? View.VISIBLE : View.GONE}"
         android:clickable="true">
 
         <com.fy.navi.ui.view.SkinConstraintLayout

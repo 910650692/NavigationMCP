@@ -14,6 +14,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
+        android:visibility="@{ViewModel.getIncludePageVisibility() == 5 ? View.VISIBLE : View.GONE}"
         android:background="@drawable/bg_shadow_navi_buick"
         android:paddingHorizontal="@dimen/dp_29"
         android:paddingVertical="@dimen/dp_29"

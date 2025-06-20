@@ -118,62 +118,56 @@
                 app:layout_constraintStart_toStartOf="@id/route_right_tab_list_gas_station" />
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        <include
+        <ViewStub
             android:id="@+id/route_line_info_root"
-            layout="@layout/route_result_page"
+            android:layout="@layout/route_result_page"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/dp_237"
             android:clickable="false"
-            android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
-        <include
+        <ViewStub
             android:id="@+id/route_detail_info_root"
-            layout="@layout/route_result_details_page"
+            android:layout="@layout/route_result_details_page"
             android:layout_width="@dimen/dp_613"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:visibility="@{ViewModel.getIncludePageVisibility() == 1 ? View.VISIBLE : View.GONE}"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
 
-        <include
+        <ViewStub
             android:id="@+id/route_service_list_info_root"
-            layout="@layout/route_search_service_page"
+            android:layout="@layout/route_search_service_page"
             android:layout_width="@dimen/dp_613"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:visibility="@{ViewModel.getIncludePageVisibility() == 2 ? View.VISIBLE : View.GONE}"
             tools:visibility="gone"/>
 
-        <include
+        <ViewStub
             android:id="@+id/route_charge_list_info_root"
-            layout="@layout/route_search_charge_gas_page"
+            android:layout="@layout/route_search_charge_gas_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="false"
-            android:visibility="@{ViewModel.getIncludePageVisibility() == 3 ? View.VISIBLE : View.GONE}"
             tools:visibility="gone"/>
 
-        <include
+        <ViewStub
             android:id="@+id/route_weather_details"
-            layout="@layout/route_weather_details_page"
+            android:layout="@layout/route_weather_details_page"
             android:layout_width="@dimen/dp_613"
             android:layout_height="@dimen/dp_532"
             android:clickable="true"
-            android:visibility="@{ViewModel.getIncludePageVisibility() == 4 ? View.VISIBLE : View.GONE}"
             tools:visibility="gone"/>
-        <include
+        <ViewStub
             android:id="@+id/route_poi_details"
-            layout="@layout/route_poi_details_page"
+            android:layout="@layout/route_poi_details_page"
             android:layout_width="@dimen/dp_698"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:visibility="@{ViewModel.getIncludePageVisibility() == 5 ? View.VISIBLE : View.GONE}"
             tools:visibility="gone"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

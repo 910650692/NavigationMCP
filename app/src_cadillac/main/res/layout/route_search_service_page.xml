@@ -14,6 +14,7 @@
     <com.fy.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_922"
         android:layout_height="match_parent"
+        android:visibility="@{ViewModel.getIncludePageVisibility() == 2 ? View.VISIBLE : View.GONE}"
         android:orientation="vertical"
         android:clickable="true"
         android:focusable="false">

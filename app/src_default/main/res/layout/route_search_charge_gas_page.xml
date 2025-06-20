@@ -15,6 +15,7 @@
         android:id="@+id/route_charge_list_info_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="@{ViewModel.getIncludePageVisibility() == 3 ? View.VISIBLE : View.GONE}"
         android:clickable="false">
 
         <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView

@@ -15,6 +15,7 @@
         android:layout_width="@dimen/dp_922"
         android:layout_height="match_parent"
         android:background="@drawable/bg_shadow_navi_cadillac"
+        android:visibility="@{ViewModel.getIncludePageVisibility() == 4 ? View.VISIBLE : View.GONE}"
         android:clickable="true"
         android:focusable="false"
         android:paddingHorizontal="@dimen/dp_51"
