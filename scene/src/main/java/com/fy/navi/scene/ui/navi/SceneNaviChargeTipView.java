@@ -131,15 +131,15 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
         if (entity == null) {
             return;
         }
-        if (mViewBinding == null) {
-            return;
-        }
         ThreadManager.getInstance().postUi(() -> {
-            mViewBinding.tvTitle.setText(entity.getTitle());
+            if (mViewBinding == null) {
+                return;
+            }
+            mViewBinding.tvTitle.setText(TextUtils.isEmpty(entity.getTitle()) ? "" : entity.getTitle());
             mViewBinding.tvAction.setVisibility((TextUtils.isEmpty(entity.getAction()) ? View.GONE : View.VISIBLE));
-            mViewBinding.tvAction.setText(entity.getAction());
+            mViewBinding.tvAction.setText(TextUtils.isEmpty(entity.getAction()) ? "" : entity.getAction());
             mViewBinding.tvDesc.setVisibility(TextUtils.isEmpty(entity.getSubTitle()) ? View.GONE : View.VISIBLE);
-            mViewBinding.tvDesc.setText(entity.getSubTitle());
+            mViewBinding.tvDesc.setText(TextUtils.isEmpty(entity.getSubTitle()) ? "" : entity.getSubTitle());
             Logger.i(TAG, "notifySceneStateChange SceneShowState:", getSceneId());
             getNaviSceneEvent().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.SceneShowState, getSceneId());
         });
