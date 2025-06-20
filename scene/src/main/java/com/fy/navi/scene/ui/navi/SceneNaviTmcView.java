@@ -462,7 +462,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                              final int viaY) {
         if (view instanceof SkinTextView stv) {
             if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaPointType
-                    && !CalibConst.Model.NDLB.equals(CalibrationPackage.getInstance().modelName())) {
+                    && !CalibConst.Model.NDLB.equals(CalibrationPackage.getInstance().modelName())) {//todo flavor temp
                 stv.setText(getContext().getText(R.string.navi_via_item_pass));
             } else if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaChargeType) {
                 stv.setText(getContext().getText(R.string.navi_via_item_charge));
