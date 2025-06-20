@@ -30,7 +30,9 @@ import com.autonavi.gbl.guide.model.guidecontrol.EmulatorParam;
 import com.autonavi.gbl.guide.model.guidecontrol.NaviParam;
 import com.autonavi.gbl.guide.model.guidecontrol.Param;
 import com.autonavi.gbl.guide.model.guidecontrol.Type;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -57,7 +59,7 @@ import java.util.List;
  */
 public class NaviApiImplHelper {
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
-    private final GuideService mGuideService;
+    private GuideService mGuideService;
     private final GuidanceCallback mNaviObserver;
     private final Hashtable<String, GuidanceObserver> mGuidanceObservers;
     private boolean mIsSimpleNavigation = false;
@@ -72,6 +74,12 @@ public class NaviApiImplHelper {
 
     protected void initNaviService() {
         initTbtComm();
+        if (mGuideService == null) {
+            Logger.e(TAG, "GuideService is null, please check the service registration.");
+            // 如果GuideService未初始化，则从ServiceMgr获取，再获取一次
+            mGuideService = (GuideService) ServiceMgr.getServiceMgrInstance()
+                    .getBLService(SingleServiceID.GuideSingleServiceID);
+        }
         mGuideService.init();
         mGuideService.addNaviObserver(mNaviObserver);
         mGuideService.addSoundPlayObserver(mNaviObserver);
