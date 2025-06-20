@@ -1762,10 +1762,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         mViaAddType = false;
                         if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
                             mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
-                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setClickable(false);
                         } else {
                             mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(1.0f);
-                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setClickable(true);
                         }
                         mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_delete);
                     } else {
