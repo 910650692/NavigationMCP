@@ -1117,6 +1117,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (mTipManager != null) {
             mTipManager.updateViaList(list);
         }
+        if (mViaListManager != null) {
+            mViaListManager.updateViaList(list);
+        }
     }
 
     /**

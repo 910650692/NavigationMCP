@@ -30,19 +30,9 @@ public class ViaListManager {
 
     public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
         if (mViaUpdateCount == 0) {
-            List<String> mViaIdList = new ArrayList<>();
-            final List<NaviViaEntity> viaList = mGuidanceModel.getViaList();
-            if (!ConvertUtils.isEmpty(viaList)) {
-                for (int i = 0; i < viaList.size(); i++) {
-                    NaviViaEntity naviViaEntity = viaList.get(i);
-                    if (naviViaEntity != null && naviViaEntity.isUserAdd()) {
-                        Logger.d(TAG, "id:", naviViaEntity.getPid(), " name:", naviViaEntity.getName(), " charge:", naviViaEntity.getChargeInfo());
-                        mViaIdList.add(naviViaEntity.getPid());
-                    }
-                }
-            }
-            if (!ConvertUtils.isEmpty(mViaIdList)) {
-                mChargeStationTaskId = mSearchPackage.poiListSearch(mViaIdList, 4, true);
+            List<String> viaIdList = getViaIdList(mGuidanceModel.getViaList());
+            if (!ConvertUtils.isEmpty(viaIdList)) {
+                mChargeStationTaskId = mSearchPackage.poiListSearch(viaIdList, 4, true);
             }
         }
         mViaUpdateCount++;
@@ -74,4 +64,44 @@ public class ViaListManager {
         }
         mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, poiInfos);
     }
+
+    /**
+     * 途经点信息更新
+     *
+     * @param viaList
+     */
+    public void updateViaList(final List<NaviViaEntity> viaList) {
+        mViaUpdateCount = 1; // 重置更新计数
+        if (ConvertUtils.isEmpty(viaList)) {
+            return;
+        }
+        List<String> viaIdList = getViaIdList(viaList);
+        if (!ConvertUtils.isEmpty(viaIdList)) {
+            mChargeStationTaskId = mSearchPackage.poiListSearch(viaIdList, 4, true);
+        }
+    }
+
+    /**
+     * 获取用户添加的途经点ID列表
+     * @param viaList
+     * @return
+     */
+    private List<String> getViaIdList(List<NaviViaEntity> viaList) {
+        if (ConvertUtils.isEmpty(viaList)) {
+            return null;
+        }
+        List<String> viaIdList = new ArrayList<>();
+        for (int i = 0; i < viaList.size(); i++) {
+            NaviViaEntity naviViaEntity = viaList.get(i);
+            if (naviViaEntity != null && naviViaEntity.isUserAdd()) {
+                viaIdList.add(naviViaEntity.getPid());
+            }
+        }
+        if (Logger.openLog) {
+            Logger.d(TAG, viaIdList);
+        }
+        return viaIdList;
+    }
+
+
 }
