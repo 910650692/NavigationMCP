@@ -864,6 +864,7 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeInt(mSortRate);
         parcel.writeInt(mSortPrice);
         parcel.writeBoolean(mIsVisible);
+        parcel.writeInt(mChildType);
         parcel.writeInt(mChargeChildType);
         parcel.writeInt(mIndex);
         parcel.writeParcelable(mCityInfo, i);
@@ -885,7 +886,6 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeBoolean(mIsLocres);
         parcel.writeBoolean(mIsClosest);
         parcel.writeBoolean(mIsFastest);
-
         final int aoiBoundsSize = ConvertUtils.isEmpty(mPoiAoiBounds) ? 0 : mPoiAoiBounds.size();
         parcel.writeInt(aoiBoundsSize);
         if (aoiBoundsSize > 0) {
