@@ -143,7 +143,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
     private MyFsaService() {
         final InetSocketAddress[] address = new InetSocketAddress[1];
-        address[0] = new InetSocketAddress(FsaConstant.InetConfig.SERVICE_IP, FsaConstant.InetConfig.SERVICE_PORT);
+        String serviceIp = CalibrationPackage.getInstance().architecture() == IS_CLEA ? FsaConstant.InetConfig.CLEA_SERVICE_IP :FsaConstant.InetConfig.GB_SERVICE_IP;
+        address[0] = new InetSocketAddress(serviceIp, FsaConstant.InetConfig.SERVICE_PORT);
         mService = new FSAService(address, FsaConstant.InetConfig.SERVICE_ID, 1, false);
 
         mService.addMethod(new FsaServiceMethod(MyFsaService.this));

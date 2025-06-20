@@ -23,7 +23,8 @@ public interface FsaConstant {
     interface InetConfig {
         int SERVICE_PORT = 9903;
         int SERVICE_ID = 3003;
-        String SERVICE_IP = "172.16.4.100";
+        String GB_SERVICE_IP = "172.16.4.100";
+        String CLEA_SERVICE_IP = "192.168.118.1";
     }
 
     interface FsaMethod {
