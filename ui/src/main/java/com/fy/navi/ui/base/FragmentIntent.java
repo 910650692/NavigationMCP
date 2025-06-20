@@ -164,35 +164,39 @@ public class FragmentIntent {
      * @param nextShow        参数
      */
     public static BaseFragment closeFragment(final String screenId, final FragmentManager fragmentManager, final boolean nextShow) {
-        BaseFragment currentFragment;
+        BaseFragment currentFragment = null;
         //syncFragmentList(screenId, fragmentManager);
-        currentFragment = STACKMANAGER.popFragment(screenId);
-        final FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (!ConvertUtils.isEmpty(currentFragment)) {
-            transaction.remove(currentFragment);
-        } else {
-            if(Logger.openLog) {
-                Logger.i(TAG, "对象为空无法移除", currentFragment);
-            }
-        }
-        if (nextShow) {
-            final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
-            if(Logger.openLog) {
-                Logger.i(TAG, "移除上一个。显示下一个", toFragment);
-            }
-            if (!ConvertUtils.isEmpty(toFragment)) {
-                if (toFragment.getClass().getName().contains("NaviGuidanceFragment")) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("NAVI_CONTROL", 1);
-                    toFragment.onNewIntent(bundle);
-                }
-                currentFragment = toFragment;
-                if(currentFragment.getParentFragmentManager() == fragmentManager){
-                    transaction.show(toFragment);
+        try {
+            currentFragment = STACKMANAGER.popFragment(screenId);
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
+            if (!ConvertUtils.isEmpty(currentFragment)) {
+                transaction.remove(currentFragment);
+            } else {
+                if (Logger.openLog) {
+                    Logger.i(TAG, "对象为空无法移除", currentFragment);
                 }
             }
+            if (nextShow) {
+                final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
+                if (Logger.openLog) {
+                    Logger.i(TAG, "移除上一个。显示下一个", toFragment);
+                }
+                if (!ConvertUtils.isEmpty(toFragment)) {
+                    if (toFragment.getClass().getName().contains("NaviGuidanceFragment")) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("NAVI_CONTROL", 1);
+                        toFragment.onNewIntent(bundle);
+                    }
+                    currentFragment = toFragment;
+                    if (currentFragment.getParentFragmentManager() == fragmentManager) {
+                        transaction.show(toFragment);
+                    }
+                }
+            }
+            transaction.commitAllowingStateLoss();
+        } catch (Exception e) {
+            Logger.e(TAG, "Error in closeFragment: ", e.getMessage(), e);
         }
-        transaction.commitAllowingStateLoss();
         return currentFragment;
     }
 
