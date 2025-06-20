@@ -1,5 +1,7 @@
 package com.fy.navi.scene.impl.navi;
 
+import static com.fy.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+
 import android.annotation.SuppressLint;
 
 import androidx.databinding.ObservableField;
@@ -386,6 +388,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             return;
         }
         if (null != mImmersiveStatusScene) {
+            Logger.d(TAG, MAP_TOUCH, "immersiveStatus:" , immersiveStatus);
             mImmersiveStatusScene.setImmersiveStatus(mMapTypeId, immersiveStatus);
         }
     }

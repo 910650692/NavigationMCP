@@ -136,4 +136,5 @@ public interface MapDefaultFinalTag {
     String NAVI_HMI_VIEW = NAVI_HMI_TAG + "_Fragment";
     /*** NaviApp_Navi_Bury_Point **/
     String NAVI_BURY_POINT = DEFAULT_TAG + "_Navi" + "Bury_Point";
+    String MAP_TOUCH = "MAP_TOUCH";
 }

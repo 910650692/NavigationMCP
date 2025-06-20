@@ -1,5 +1,7 @@
 package com.fy.navi.service.adapter.map.bls;
 
+import static com.fy.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+
 import android.view.MotionEvent;
 
 import com.android.utils.ConvertUtils;
@@ -232,6 +234,7 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
 
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
+        Logger.d(TAG, MAP_TOUCH, " mapTypeId:" , mapTypeId, " touchEvent:", touchEvent.getActionMasked());
         if (callbacks.containsKey(mapTypeId)) {
             callbacks.get(mapTypeId).forEach(new Consumer<IMapAdapterCallback>() {
                 @Override

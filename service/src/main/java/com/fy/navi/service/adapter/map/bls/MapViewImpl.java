@@ -1,6 +1,8 @@
 
 package com.fy.navi.service.adapter.map.bls;
 
+import static com.fy.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -740,6 +742,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Logger.d(TAG, MAP_TOUCH, " event:" , event);
         if (callback != null) {
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override

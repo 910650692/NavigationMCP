@@ -1,5 +1,7 @@
 package com.fy.navi.hmi.splitscreen;
 
+import static com.fy.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
@@ -116,6 +118,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
 
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
+        Logger.d(TAG, MAP_TOUCH, "onMapTouchEvent mapTypeId:" , mapTypeId, " touchEvent:" , touchEvent);
         IMapPackageCallback.super.onMapTouchEvent(mapTypeId, touchEvent);
         openOrCloseImmersive(false);
     }
@@ -208,7 +211,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     }
 
     public void openOrCloseImmersive(boolean isOpenImmersive) {
-        Logger.i(TAG, "openOrCloseImmersive:" , isOpenImmersive, "mPreviewIsOnShowing:" , mPreviewIsOnShowing);
+        Logger.d(TAG, MAP_TOUCH, "openOrCloseImmersive:" , isOpenImmersive, " mPreviewIsOnShowing:" , mPreviewIsOnShowing);
         final ImersiveStatus status = isOpenImmersive ? ImersiveStatus.IMERSIVE : ImersiveStatus.TOUCH;
         if (ImmersiveStatusScene.getInstance().getCurrentImersiveStatus(MAP_TYPE) != status) {
             ImmersiveStatusScene.getInstance().setImmersiveStatus(MAP_TYPE, status);

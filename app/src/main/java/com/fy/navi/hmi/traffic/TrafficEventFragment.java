@@ -1,5 +1,7 @@
 package com.fy.navi.hmi.traffic;
 
+import static com.fy.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -146,6 +148,7 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
         if (isOnNavigating) {
             final MapType mapTypeId = MapTypeManager.getInstance().getMapTypeIdByName(mScreenId);
             final ImersiveStatus status = flag ? ImersiveStatus.TOUCH : ImersiveStatus.IMERSIVE;
+            Logger.d(TAG, MAP_TOUCH, "mapTypeId:" , mapTypeId, "status:" , status);
             ImmersiveStatusScene.getInstance().setImmersiveStatus(mapTypeId, status);
         }
     }

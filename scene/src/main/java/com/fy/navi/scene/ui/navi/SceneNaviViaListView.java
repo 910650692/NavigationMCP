@@ -1,5 +1,7 @@
 package com.fy.navi.scene.ui.navi;
 
+import static com.fy.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -89,6 +91,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
             mScreenViewModel.initTimer();
         }
         OpenApiHelper.enterPreview(mMapTypeId);
+        Logger.d(TAG, MAP_TOUCH);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.TOUCH);
     }
 

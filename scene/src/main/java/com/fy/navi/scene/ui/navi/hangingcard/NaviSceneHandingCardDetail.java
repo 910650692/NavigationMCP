@@ -1,5 +1,7 @@
 package com.fy.navi.scene.ui.navi.hangingcard;
 
+import static com.fy.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -86,6 +88,7 @@ public class NaviSceneHandingCardDetail extends NaviSceneBase<NaviSceneHandingCa
                         startCountdown();
                     }
                     default -> {
+                        Logger.d("NaviSceneHandingCardDetail", MAP_TOUCH);
                         cancelCountdown();
                         ImmersiveStatusScene.getInstance().setImmersiveStatus(
                                 mMapTypeId, ImersiveStatus.TOUCH);

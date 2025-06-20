@@ -1,5 +1,7 @@
 package com.fy.navi.scene.impl.navi;
 
+import static com.fy.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+
 import android.os.Looper;
 
 import com.android.utils.ConvertUtils;
@@ -104,8 +106,8 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
      * @param select select
      */
     public void showPreview(final int select) {
+        Logger.i(TAG, MAP_TOUCH, " select:", select);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.TOUCH);
-        Logger.i(TAG, "showPreview:", select);
         try {
             ThreadManager.getInstance().execute(() -> mSearchPackage.createPoiMarker(mList, select));
         } catch (Exception e) {

@@ -2,6 +2,7 @@ package com.fy.navi.hmi.map;
 
 import static com.fy.navi.hmi.utils.AiWaysGestureManager.AiwaysGestureListener;
 import static com.fy.navi.hmi.utils.AiWaysGestureManager.GestureEvent;
+import static com.fy.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -604,6 +605,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void showParkingView() {
+        Logger.d(TAG, MAP_TOUCH,"showParkingView");
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         startSelfParkingTimer();
     }
@@ -1564,6 +1566,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void mfcMoveMap(MfcController mfcController, int moveDis) {
+        Logger.d(TAG, MAP_TOUCH, " moveDis:" , moveDis);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         //触控态开始回车位倒计时
         startSelfParkingTimer();
