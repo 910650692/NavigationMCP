@@ -12,6 +12,7 @@ import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
@@ -58,6 +59,9 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
 
     @Override
     public void onInitView() {
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
+
         mRotateAnim = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
         mRotateAnim.setDuration(2000);
         mRotateAnim.setRepeatCount(Animation.INFINITE);
