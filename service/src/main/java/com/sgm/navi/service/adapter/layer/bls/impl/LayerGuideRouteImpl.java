@@ -15,6 +15,7 @@ import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.guide.model.CrossType;
 import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.layer.BizGuideRouteControl;
+import com.autonavi.gbl.layer.GuideLabelLayerItem;
 import com.autonavi.gbl.layer.RoutePathPointItem;
 import com.autonavi.gbl.layer.RouteTrafficEventTipsLayerItem;
 import com.autonavi.gbl.layer.model.BizEnergyKeyInfo;
@@ -173,6 +174,12 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 }
                 result.setEventID(eventID);
                 type = LayerPointItemType.ROUTE_POINT_TRAFFIC_EVENT;
+            }
+            case BizRouteType.BizRouteTypeGuideLabel -> {
+                GuideLabelLayerItem guideLabelLayerItem = (GuideLabelLayerItem) item;
+                int pathIndex = guideLabelLayerItem.getMAlterPathIndx();
+                result.setIndex(pathIndex);
+                type = LayerPointItemType.ROUTE_GUIDE_LABEL;
             }
         }
         Logger.d(TAG, "dispatchItemClick type = " + type + " ; result = " + result);

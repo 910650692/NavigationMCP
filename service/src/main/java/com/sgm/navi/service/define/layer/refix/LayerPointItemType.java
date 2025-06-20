@@ -36,5 +36,6 @@ public enum LayerPointItemType {
     ROUTE_POINT_WEATHER,    //路线天气
     ROUTE_POINT_REST_AREA,  //路线服务区
     ROUTE_POINT_TRAFFIC_EVENT,  //路线交通事件
-    ROUTE_POINT_JAM         //路线拥堵
+    ROUTE_POINT_JAM,         //路线拥堵
+    ROUTE_GUIDE_LABEL       //路线多备选标签
 }
