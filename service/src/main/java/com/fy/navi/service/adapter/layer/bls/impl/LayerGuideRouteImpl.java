@@ -625,6 +625,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             }
         }
         Logger.d(TAG, "openDynamicLevel dynamicLevelMode " + dynamicLevelMode);
+        openDynamicCenter(false);
     }
 
     /* 关闭动态比例尺 */
