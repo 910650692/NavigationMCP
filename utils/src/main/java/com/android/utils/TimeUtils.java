@@ -3,6 +3,8 @@ package com.android.utils;
 import android.content.Context;
 import android.text.format.DateFormat;
 
+import com.android.utils.log.Logger;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
@@ -776,6 +778,9 @@ public class TimeUtils {
         StringBuffer timeBuffer = new StringBuffer();
         long timeLong = System.currentTimeMillis() + second * 1000;
         boolean isHoleDay = DateFormat.is24HourFormat(context);
+        if (Logger.openLog) {
+            Logger.i("getScheduledTime", "isHoleDay = " + isHoleDay);
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeLong);
         int dayIndex = calendar.get(Calendar.AM_PM);
@@ -788,7 +793,7 @@ public class TimeUtils {
         } else {
             minStr = String.valueOf(min);
         }
-        if (dayIndex == 1) {
+        if (isHoleDay && dayIndex == 1) {
             hour += 12;
         }
         if (isHoleDay && hour < 10) {
