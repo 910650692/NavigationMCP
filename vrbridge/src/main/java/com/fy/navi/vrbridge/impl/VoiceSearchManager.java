@@ -91,10 +91,7 @@ public final class VoiceSearchManager {
     }
 
     private VoiceSearchManager() {
-        mSearchTaskId = -1;
-        mSearchType = IVrBridgeConstant.VoiceSearchType.DEFAULT;
-        mKeyword = null;
-        mSearchResultList = new ArrayList<>();
+
 
         //当前语义确认的泛型类型为以下
         mGenericsList = new ArrayList<>();
@@ -107,15 +104,13 @@ public final class VoiceSearchManager {
         mGenericsList.add(IVrBridgeConstant.DestType.RESTAURANT);
         mGenericsList.add(IVrBridgeConstant.DestType.SERVICE_STATION);
 
-        mNormalDestList = new SparseArray<>();
-        mGenericsDestList = new SparseArray<>();
-        mMultiplePoiArray = new SparseArray<>();
-
         mEtaNameList = new ArrayList<>();
         mEtaPointList = new ArrayList<>();
 
         mListPageOpened = SearchPackage.getInstance().isMIsShow();
         SearchPackage.getInstance().registerCallBack(IVrBridgeConstant.TAG, mSearchCallback);
+
+        resetSearchAbout();
     }
 
     /**
@@ -134,6 +129,19 @@ public final class VoiceSearchManager {
         mGenericsDestList.clear();
         mMultiplePoiArray.clear();
         mProcessDestIndex = -1;
+    }
+
+    /**
+     * 每次指令执行前将相关属性重置为默认.
+     */
+    private void resetSearchAbout() {
+        mSearchTaskId = -1;
+        mSearchType = IVrBridgeConstant.VoiceSearchType.DEFAULT;
+        mKeyword = null;
+        mSearchResultList = new ArrayList<>();
+        mNormalDestList = new SparseArray<>();
+        mGenericsDestList = new SparseArray<>();
+        mMultiplePoiArray = new SparseArray<>();
     }
 
     private final SearchResultCallback mSearchCallback = new SearchResultCallback() {
@@ -343,6 +351,7 @@ public final class VoiceSearchManager {
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.EMPTY_DEST);
         }
 
+        resetSearchAbout();
         mSessionId = sessionId;
         mDestInfo = arrivalBean;
         //目的地
@@ -483,11 +492,29 @@ public final class VoiceSearchManager {
 
         final int count = mSearchResultList.size();
         if (count == 1) {
-            //关键字搜结果只有一个，需要poi详情搜结果返回后再发起算路
-            mWaitPoiSearch = true;
+            final PoiInfoEntity poiInfoEntity = mSearchResultList.get(0);
+            if (null != poiInfoEntity && poiInfoEntity.isIsLocres()) {
+                //搜索结果为行政区域，直接回复HUGE，提示用户继续选择下一级或具体poi点
+                responsePoiHuge();
+            } else {
+                //关键字搜结果只有一个，需要poi详情搜结果返回后再发起算路
+                mWaitPoiSearch = true;
+            }
         } else {
             //搜索结果为多个，回调给语音，列表多轮选择
             responseSearchWithResult();
+        }
+    }
+
+    /**
+     * 回去搜索结果为行政区域，范围过大.
+     */
+    private void responsePoiHuge() {
+        if (null != mPoiCallback) {
+            final CallResponse poiDetailResponse = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.DETAIL_SEARCH_NO_RESULT);
+            poiDetailResponse.setSubCallResult(NaviSubCallResult.RESP_POI_SEARCH_KEYWORD_HUGE);
+            poiDetailResponse.setNeedPlayMessage(false);
+            mPoiCallback.onResponse(poiDetailResponse);
         }
     }
 
