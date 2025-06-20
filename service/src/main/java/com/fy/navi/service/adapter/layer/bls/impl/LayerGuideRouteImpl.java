@@ -82,6 +82,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         initBizTypeVisible();
         setRouteJamBubblesVisible(true);
         setGuideTrafficVisible(true);
+        setRouteEnergyEmptyPointVisible(false);
         Logger.d(TAG, "LayerGuideRouteImpl init");
     }
 
@@ -199,6 +200,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     private void updatePaths() {
         getLayerGuideRouteControl().updatePathArrow();
         setRouteJamBubblesVisible(true);
+        setRouteEnergyEmptyPointVisible(false);
         int result = getLayerGuideRouteControl().updatePaths();
         Logger.d(TAG, "LayerGuideRouteImpl updatePaths result : " + result);
     }
@@ -755,6 +757,12 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, "setRouteJamBubblesVisible isShow " + isShow);
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeRouteJamBubbles, isShow);
         return true;
+    }
+
+    /* 设置能量耗尽点扎标是否显示 只在全览态展示 */
+    public void setRouteEnergyEmptyPointVisible(boolean isShow) {
+        Logger.d(TAG, "isShow ", isShow);
+        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyEmptyPoint, isShow);
     }
 
     public void setGuideTrafficVisible(boolean isShow) {

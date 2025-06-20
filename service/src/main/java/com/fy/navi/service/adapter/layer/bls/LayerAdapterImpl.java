@@ -346,6 +346,11 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().openDynamicCenter(isDynaCenterLock);
     }
 
+    /* 设置能量耗尽点扎标是否显示 只在全览态展示 */
+    public void setRouteEnergyEmptyPointVisible(MapType mapTypeId, boolean isShow) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setRouteEnergyEmptyPointVisible(isShow);
+    }
+
     @Override
     public void updateGuideCarStyle(MapType mapTypeId) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerCar().updateGuideCarStyle();

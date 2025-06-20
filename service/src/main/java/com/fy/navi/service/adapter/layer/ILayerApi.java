@@ -124,6 +124,9 @@ public interface ILayerApi {
     /* 途经点扎标设置是否选中 */
     void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index);
 
+    /* 设置能量耗尽点扎标是否显示 只在全览态展示 */
+    void setRouteEnergyEmptyPointVisible(MapType mapTypeId, boolean isShow);
+
     /*========================================= ROUTE LAYER START =========================================*/
 
     /*图层点击注册监听*/
