@@ -56,6 +56,7 @@ public class SpeedMonitor implements ISpeedCallback {
     private void updateSpeed(float speed) {
         final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviPackage.getInstance().getCurrentNaviType());
         if (!isReady) {
+            Logger.w(TAG, "当前状态无需计时");
             cancelTicket();
             return;
         }
@@ -89,10 +90,12 @@ public class SpeedMonitor implements ISpeedCallback {
 
     private void onTicketEnd() {
         if (passedTime >= TIME_THRESHOLD) {
-            Logger.i(TAG, "onTicketEnd");
+            Logger.i(TAG, "onTicketEnd tickNum: " , passedTime);
             cancelTicket();
             if (callBack != null) {
                 callBack.startCruise();
+            } else {
+                Logger.w(TAG, "回调为空，无法开始巡航！");
             }
         }
     }

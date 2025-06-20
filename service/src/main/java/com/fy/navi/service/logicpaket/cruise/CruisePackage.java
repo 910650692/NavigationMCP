@@ -72,6 +72,7 @@ public class CruisePackage implements CruiseObserver {
     public boolean startCruise() {
         final boolean result = mCruiseAdapter.startCruise();
         if (result) {
+            Logger.d(TAG, "巡航开启成功");
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.CRUISE);
             mLayerAdapter.setVisibleCruiseSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, true);

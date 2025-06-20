@@ -877,8 +877,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             mViewModel.showOrHiddenCruise(true);
             return;
         }
+        Logger.d(TAG, "准备开启巡航");
         final boolean isSuccess = cruisePackage.startCruise();
         if (isSuccess) {
+            Logger.d(TAG, "开启巡航成功");
             String isOpen = mSettingPackage.getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
             if (isOpen != null && isOpen.equals("true")) {
                 Logger.i(TAG, "开始打点");
