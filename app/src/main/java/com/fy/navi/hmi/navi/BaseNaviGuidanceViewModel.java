@@ -824,4 +824,10 @@ public class BaseNaviGuidanceViewModel extends
             mModelSaveEntity.setViaList(mViaList);
         }
     }
+
+    public void onMapClick() {
+        if (mView != null) {
+            mView.onMapClick();
+        }
+    }
 }

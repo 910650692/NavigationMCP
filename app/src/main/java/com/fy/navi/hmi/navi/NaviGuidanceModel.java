@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 
 import androidx.fragment.app.Fragment;
 
@@ -73,6 +74,7 @@ import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
+import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.message.MessageCenterManager;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
@@ -94,12 +96,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implements
         IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
         IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack,
-        SearchResultCallback, ClusterMapOpenCloseListener, SettingPackage.SettingChangeCallback {
+        SearchResultCallback, ClusterMapOpenCloseListener, SettingPackage.SettingChangeCallback,
+        IMapPackageCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_MODEL;
     private final NaviPackage mNaviPackage;
     private final RoutePackage mRoutePackage;
@@ -151,6 +155,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private boolean mIsNeedUpdateViaList;
     private ScheduledFuture mScheduledFuture;
     private int mTimes = NumberUtils.NUM_8;
+    private float mDownX, mDownY;
+    private long mDownTime;
+    private static final int CLICK_THRESHOLD = 200; // ms
+    private static final int MOVE_THRESHOLD = 20; // px
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -197,6 +205,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.registerCallBack(NaviConstant.KEY_NAVI_MODEL, this);
         mSettingPackage.setSettingChangeCallback(TAG, this);
+        mMapPackage.registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mClusterMapOpenCloseManager.addClusterMapOpenCloseListener(this);
         initRunnable();
         // 因为生命周期是和HMI绑定的，如果页面重启并且是在导航台进入三分钟一次的终点POI查询
@@ -638,6 +647,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
         mRoutePackage.unRegisterRouteObserver(NaviConstant.KEY_NAVI_MODEL);
         mSettingPackage.unRegisterSettingChangeCallback(TAG);
+        mMapPackage.unRegisterCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mClusterMapOpenCloseManager.removeListener(this);
         if (mNaviPackage != null) {
             mNaviPackage.unregisterObserver(NaviConstant.KEY_NAVI_MODEL);
@@ -1326,6 +1336,32 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (mapType == MapType.MAIN_SCREEN_MAIN_MAP) {
             if (mViewModel != null) {
                 mViewModel.onPassByClick();
+            }
+        }
+    }
+
+    @Override
+    public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
+        if (Objects.equals(mapTypeId, MapType.MAIN_SCREEN_MAIN_MAP)) {
+            switch (touchEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mDownX = touchEvent.getX();
+                    mDownY = touchEvent.getY();
+                    mDownTime = System.currentTimeMillis();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    float upX = touchEvent.getX();
+                    float upY = touchEvent.getY();
+                    long upTime = System.currentTimeMillis();
+                    if (Math.abs(upX - mDownX) < MOVE_THRESHOLD &&
+                            Math.abs(upY - mDownY) < MOVE_THRESHOLD &&
+                            (upTime - mDownTime) < CLICK_THRESHOLD) {
+                        // 这是一次点击事件
+                        if (mViewModel != null) {
+                            mViewModel.onMapClick();
+                        }
+                    }
+                    break;
             }
         }
     }

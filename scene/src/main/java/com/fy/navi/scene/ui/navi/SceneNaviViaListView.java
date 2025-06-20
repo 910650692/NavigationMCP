@@ -306,4 +306,11 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
             }
         }
     }
+
+    public void updateSceneVisible(final boolean isVisible) {
+        Logger.i(TAG, "updateSceneVisible:", isVisible);
+        if (mScreenViewModel != null) {
+            mScreenViewModel.updateSceneVisible(isVisible);
+        }
+    }
 }

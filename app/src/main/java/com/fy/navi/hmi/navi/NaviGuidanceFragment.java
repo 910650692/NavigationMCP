@@ -43,7 +43,6 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
-import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
@@ -820,6 +819,13 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void setSapaDetailVisibility(boolean isVisible) {
         if (mSceneNaviSapaDetailView != null) {
             mSceneNaviSapaDetailView.setVisibility(isVisible ? VISIBLE : GONE);
+        }
+    }
+
+    public void onMapClick() {
+        if (mSceneNaviViaListView != null &&
+                mSceneNaviViaListView.getVisibility() == VISIBLE) {
+            mSceneNaviViaListView.updateSceneVisible(false);
         }
     }
 }
