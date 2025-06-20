@@ -10,6 +10,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizSearchControl;
 import com.autonavi.gbl.layer.SearchAlongWayLayerItem;
+import com.autonavi.gbl.layer.SearchChargeStationLayerItem;
 import com.autonavi.gbl.layer.model.BizChargeStationInfo;
 import com.autonavi.gbl.layer.model.BizSearchType;
 import com.autonavi.gbl.map.layer.LayerItem;
@@ -344,7 +345,35 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
         switch (item.getBusinessType()) {
             case BizSearchType.BizSearchTypeChargeStation: {
                 //TODO判断是否已经预约
-//                customUpdatePairs.add(createUpdateStylePair("best_icon","display:flex;"));
+                SearchChargeStationLayerItem searchChargeItem = (SearchChargeStationLayerItem) item;
+                BizChargeStationInfo chargeStationInfo = searchChargeItem.getMChargeStationInfo();
+                int slowFree = chargeStationInfo.slowFree;
+                int slowTotal = chargeStationInfo.slowTotal;
+                int fastFree = chargeStationInfo.fastFree;
+                int fastTotal = chargeStationInfo.fastTotal;
+                boolean isSlowShow = true;
+                boolean isFastShow = true;
+                if (slowTotal == 0) {
+                    customUpdatePairs.add(createUpdateStylePair("div_slow", "display:none;"));
+                    isSlowShow = false;
+                } else {
+                    customUpdatePairs.add(createUpdateValuePair("id_slow", slowFree + "/" + slowTotal));
+                }
+                if (fastTotal == 0) {
+                    customUpdatePairs.add(createUpdateStylePair("div_fast", "display:none;"));
+                    isFastShow = false;
+                } else {
+                    customUpdatePairs.add(createUpdateValuePair("id_fast", fastFree + "/" + fastTotal));
+                }
+                if (!isSlowShow && !isFastShow) {
+                    customUpdatePairs.add(createUpdateStylePair("detail_info", "display:none;"));
+                } else if (isSlowShow && isFastShow){
+                    break;
+                } else if (isSlowShow){
+                    customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:120px;"));
+                } else {
+                    customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:140px;"));
+                }
                 break;
             }
         }

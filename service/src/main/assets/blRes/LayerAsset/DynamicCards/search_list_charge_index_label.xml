@@ -1,16 +1,16 @@
 <div style="width:auto;height:auto;">
-    <div style="display:flex;flex-direction:row;justify-content:flex-end;align-items:center;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;width:auto;height:96px;margin-start:180px;background-image:global_image_bubble_bg_day_night;">
+    <div id="detail_info" style="display:flex;flex-direction:row;justify-content:flex-end;align-items:center;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;width:auto;height:96px;margin-start:180px;background-image:global_image_bubble_bg_day_night;">
         <div style="display:flex;flex-direction:row;justify-content:flex-end;align-items:center;margin-right:10px;">
             <div id="div_fast" style="display:flex;flex-direction:row;justify-content:flex-end;align-items:baseline;width:auto;height:40px;">
-                <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:24px;height:40px;"><label style="font-size:16px;color:#000000;font-family:font_cn;">快</label></div>
-                <label id="id_fast_total" style="margin-right:2px;margin-left:4px;font-size:16px;color:#f99500;font-family:font_cn;" lines="1">共</label>
-                <label id="id_fast_count" style="margin-right:6px;font-size:16px;color:#f99500;font-family:font_cn;" lines="1">28</label>
+                <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:24px;height:40px;"><label style="font-size:20px;color:#4ABA59;font-family:font_cn;">快</label></div>
+                <label id="id_fast" style="margin-right:2px;margin-left:4px;font-size:20px;color:#4ABA59;font-family:font_cn;" lines="1">""</label>
+<!--                <label id="id_fast_count" style="margin-right:6px;font-size:16px;color:#f99500;font-family:font_cn;" lines="1">28</label>-->
             </div>
             <div id="div_padding" style="width:4px;height:10px;" />
             <div id="div_slow" style="display:flex;flex-direction:row;justify-content:flex-end;align-items:baseline;width:auto;height:40px;">
-                <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:24px;height:40px;"><label style="font-size:16px;color:#000000;font-family:font_cn;">慢</label></div>
-                <label id="id_slow_total" style="margin-right:2px;margin-left:4px;font-size:16px;color:#0ecd50;font-family:font_cn;" lines="1">共</label>
-                <label id="id_slow_count" style="margin-right:6px;font-size:16px;color:#0ecd50;font-family:font_cn;" lines="1">2</label>
+                <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:24px;height:40px;"><label style="font-size:20px;color:#ff8500;font-family:font_cn;">慢</label></div>
+                <label id="id_slow" style="margin-right:2px;margin-left:4px;font-size:20px;color:#ff8500;font-family:font_cn;" lines="1">""</label>
+<!--                <label id="id_slow_count" style="margin-right:6px;font-size:16px;color:#0ecd50;font-family:font_cn;" lines="1">2</label>-->
             </div>
         </div>
     </div>
