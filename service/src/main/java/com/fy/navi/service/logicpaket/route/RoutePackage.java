@@ -1270,6 +1270,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mLayerAdapter.updateRouteEndPoint(mapTypeId, endPoint);
     }
 
+    /*更新终点扎标数据*/
+    public void updateViaPointList(MapType mapTypeId, List<PoiInfoEntity> viaPointList) {
+        mLayerAdapter.updateViaPointList(mapTypeId, viaPointList);
+    }
+
     /**
      * 绘制终点附近有可用停车点
      *

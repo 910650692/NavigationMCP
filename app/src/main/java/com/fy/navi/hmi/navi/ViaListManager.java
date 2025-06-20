@@ -2,6 +2,7 @@ package com.fy.navi.hmi.navi;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -71,6 +72,6 @@ public class ViaListManager {
             Logger.i(TAG, "errorCode:", errorCode, "message:", message, " 搜索结果:isEmpty(poiInfos)");
             return;
         }
-        //mRoutePackage.setPoiInfos(poiInfos);//TODO 算路使用时打开
+        mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, poiInfos);
     }
 }

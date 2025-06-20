@@ -30,6 +30,7 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -177,6 +178,11 @@ public class LayerAdapterImpl implements ILayerApi {
     /*自动添加的补能站数据*/
     public void updateRouteChargeStation(MapType mapTypeId, RouteChargeStationParam routeChargeStation) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().updateRouteChargeStation(routeChargeStation);
+    }
+
+    /*更新途径点信息*/
+    public void updateViaPointList(MapType mapTypeId, List<PoiInfoEntity> viaPointList) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().updateViaPointList(viaPointList);
     }
 
     /* 更新Odd信息 */

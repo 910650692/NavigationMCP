@@ -23,6 +23,7 @@ import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -128,6 +129,11 @@ public class LayerAdapter {
     /*自动添加的补能站数据*/
     public void updateRouteChargeStation(MapType mapTypeId, RouteChargeStationParam routeChargeStation) {
         mLayerApi.updateRouteChargeStation(mapTypeId, routeChargeStation);
+    }
+
+    /*更新途径点信息*/
+    public void updateViaPointList(MapType mapTypeId, List<PoiInfoEntity> viaPointList) {
+        mLayerApi.updateViaPointList(mapTypeId, viaPointList);
     }
 
     /*清除指定路线类型扎标*/

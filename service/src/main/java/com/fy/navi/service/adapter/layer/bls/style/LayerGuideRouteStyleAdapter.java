@@ -37,11 +37,13 @@ import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
-import com.fy.navi.service.define.route.RouteChargeStationInfo;
+import com.fy.navi.service.define.route.RouteChargeStationNumberInfo;
 import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RouteSupplementInfo;
 import com.fy.navi.service.define.route.RouteSupplementParams;
+import com.fy.navi.service.define.search.ChargeInfo;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.utils.GasCarTipManager;
@@ -86,6 +88,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     private RequestRouteResult mRouteResult = new RequestRouteResult();
     //自动添加的补能站
     private RouteChargeStationParam mRouteChargeStation = new RouteChargeStationParam();
+    //途径点信息
+    private List<PoiInfoEntity> mViaPointList = new ArrayList<>();
 
     public LayerGuideRouteStyleAdapter(int engineID, BizRoadCrossControl bizRoadCrossControl, BizGuideRouteControl bizGuideRouteControl, BizRoadFacilityControl roadFacilityControl, BizLabelControl bizLabelControl) {
         super(engineID);
@@ -352,18 +356,34 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     /**
-     * 途经点充电站数据  //todo 暂时没有数据
+     * 途经点充电站数据
      * @param rootView
      * @param data
      */
     private void setViaChargeStationInfo(View rootView, LayerItemRouteReplaceChargePoint data) {
+        final RouteAlterChargeStationInfo info = data.getInfo();
+        if (ConvertUtils.isEmpty(info)) {
+            Logger.e(TAG, "info is empty");
+            return;
+        }
         final TextView fastText = rootView.findViewById(R.id.route_charge_station_fast);
         final TextView slowText = rootView.findViewById(R.id.route_charge_station_slow);
         final Context context = rootView.getContext();
-        final String fastString = context.getString(R.string.layer_route_replace_charge_fast, "5/5");
-        safetySetText(fastText, fastString);
-        final String slowString = context.getString(R.string.layer_route_replace_charge_slow, "6/6");
-        safetySetText(slowText, slowString);
+        final String fastTotalNumber = info.getMFastPlugInfo().getMTotalNumber();
+        if (TextUtils.isEmpty(fastTotalNumber)) {
+            safetySetText(fastText, "");
+        } else {
+            final String fastString = context.getString(R.string.layer_route_replace_charge_fast, info.getMFastPlugInfo().getMTotalNumber());
+            safetySetText(fastText, fastString);
+        }
+        final String slowTotalNumber = info.getMSlowPlugInfo().getMTotalNumber();
+        if (TextUtils.isEmpty(slowTotalNumber)) {
+            safetySetText(slowText, "");
+        } else {
+            final String slowString = context.getString(R.string.layer_route_replace_charge_slow, info.getMSlowPlugInfo().getMTotalNumber());
+            safetySetText(slowText, slowString);
+        }
+
     }
 
     private void safetySetText(TextView textView, String string) {
@@ -376,6 +396,14 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             textView.setVisibility(GONE);
         }
         textView.setText(string);
+    }
+
+    /**
+     * 更新途径 点信息
+     * @param viaPointList
+     */
+    public void updateViaPointList(List<PoiInfoEntity> viaPointList) {
+        mViaPointList = new ArrayList<>(viaPointList);
     }
 
     /**
@@ -466,9 +494,28 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
      * @return LayerItemRouteReplaceChargePoint
      */
     private LayerItemRouteReplaceChargePoint getRouteViaChargePoint(LayerItem item) {
-        LayerItemRouteReplaceChargePoint chargePoint = new LayerItemRouteReplaceChargePoint();
-        chargePoint.setIndex(Integer.parseInt(item.getID()));
+        final int index = Integer.parseInt(item.getID());
+        final LayerItemRouteReplaceChargePoint chargePoint = new LayerItemRouteReplaceChargePoint();
         chargePoint.setType(1);
+        if (index >= 0 && index < mViaPointList.size()) {
+            final PoiInfoEntity poiInfoEntity = mViaPointList.get(index);
+            if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(poiInfoEntity.getChargeInfoList())) {
+                final ChargeInfo chargeInfo = poiInfoEntity.getChargeInfoList().get(0);
+                final RouteAlterChargeStationInfo info = new RouteAlterChargeStationInfo();
+                final RouteChargeStationNumberInfo fastInfo = new RouteChargeStationNumberInfo();
+                final RouteChargeStationNumberInfo slowInfo = new RouteChargeStationNumberInfo();
+                if (chargeInfo.getMFastTotal() > 0) {
+                    fastInfo.setMTotalNumber(chargeInfo.getMFastFree() + "/" + chargeInfo.getMFastTotal());
+                }
+                if (chargeInfo.getMSlowTotal() > 0) {
+                    slowInfo.setMTotalNumber(chargeInfo.getMSlowFree() + "/" + chargeInfo.getMSlowTotal());
+                }
+                info.setMFastPlugInfo(fastInfo);
+                info.setMSlowPlugInfo(slowInfo);
+                chargePoint.setInfo(info);
+            }
+            chargePoint.setIndex(index);
+        }
         return chargePoint;
     }
 

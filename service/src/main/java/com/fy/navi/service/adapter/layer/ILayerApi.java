@@ -23,6 +23,7 @@ import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -56,6 +57,9 @@ public interface ILayerApi {
 
     /*自动添加的补能站数据*/
     void updateRouteChargeStation(MapType mapTypeId, RouteChargeStationParam routeChargeStation);
+
+    /*更新途径点信息*/
+    void updateViaPointList(MapType mapTypeId, List<PoiInfoEntity> viaPointList);
 
     /* 更新Odd信息 */
     void updateOddInfo(MapType mapTypeId, ArrayList<LayerItemRouteOdd> oddInfoList, long pathId);

@@ -38,7 +38,6 @@ import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.RoutePathLayer;
 import com.autonavi.gbl.map.layer.model.RouteLayerScene;
 import com.autonavi.gbl.route.model.WeatherLabelItem;
-import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.bls.style.LayerGuideRouteStyleAdapter;
 import com.fy.navi.service.adapter.layer.bls.texture.TexturePoolManager;
 import com.fy.navi.service.adapter.navi.NaviConstant;
@@ -63,13 +62,17 @@ import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteLinePoints;
+import com.fy.navi.service.define.search.ChargeInfo;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapter> {
 
     private ArrayList<PathInfo> mPathInfoList = new ArrayList<>();
     private ArrayList<RoutePoint> mViaList = new ArrayList<>();
+    private RoutePoints mPathPoints;
 
     public LayerGuideRouteImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
@@ -279,8 +282,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         }
         RouteLinePoints routeLinePoints = routeResult.getMLineLayerParam().getMRouteLinePoints();
         Logger.i(TAG, "设置路线行程点的信息 -> " + routeLinePoints);
-        RoutePoints pathPoints = getRoutePoints(routeLinePoints);
-        int points = getLayerGuideRouteControl().setPathPoints(pathPoints);
+        mPathPoints = getRoutePoints(routeLinePoints);
+        int points = getLayerGuideRouteControl().setPathPoints(mPathPoints);
         Logger.d(TAG, "setPathPoints points " + points);
     }
 
@@ -297,6 +300,47 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             int result = getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaPoint).setFocus(String.valueOf(index), isSelect);
             Logger.d(TAG, "viaPoint setFocus result ",  result, " pathId ", pathId);
         }
+    }
+
+    /**
+     * 更新途径点信息
+     * @param viaPointList
+     */
+    public void updateViaPointList(List<PoiInfoEntity> viaPointList) {
+        if (ConvertUtils.isNull(viaPointList)) {
+            Logger.e(TAG, "via point list is null");
+            return;
+        }
+        mPathPoints.mViaPoints.clear();
+        for (PoiInfoEntity poiInfoEntity : viaPointList) {
+            final RoutePoint routePoint = new RoutePoint();
+            routePoint.mType = 2;
+            routePoint.mIsDraw = true;
+            routePoint.mPathId = isChargeStation(poiInfoEntity) ? LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal() : 0;
+            routePoint.mPos = new Coord3DDouble(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat(), 0);
+            mPathPoints.mViaPoints.add(routePoint);
+        }
+        mViaList = new ArrayList<>(mPathPoints.mViaPoints);
+        getStyleAdapter().updateViaPointList(viaPointList);
+        getLayerGuideRouteControl().setPathPoints(mPathPoints);
+        updatePaths();
+    }
+
+    /**
+     * 是否是充电站
+     * @param poiInfo
+     * @return
+     */
+    private boolean isChargeStation(PoiInfoEntity poiInfo) {
+        String currentNaviStatus = NavistatusAdapter.getInstance().getCurrentNaviStatus();
+        if (!TextUtils.equals(currentNaviStatus, NaviStatus.NaviStatusType.NAVING)) {
+            return false;
+        }
+        if (ConvertUtils.isEmpty(poiInfo) || ConvertUtils.isEmpty(poiInfo.getChargeInfoList())) {
+            return false;
+        }
+        ChargeInfo chargeInfo = poiInfo.getChargeInfoList().get(0);
+        return chargeInfo.getMFastTotal() > 0 || chargeInfo.getMSlowTotal() >= 0;
     }
 
     /* 路线替换补能扎标 */
@@ -423,8 +467,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 RoutePoint point = new RoutePoint();
                 point.mIsDraw = info.getMViaPoints().get(t).isMIsDraw();
                 point.mPathId = info.getMViaPoints().get(t).getMPathId();
-                //TODO, 目前不能区分普通点和充电站,等有完整数据时再作判断
-//                point.mPathId = LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal();
                 point.mType = info.getMViaPoints().get(t).getMType();
                 point.mPos = new Coord3DDouble(info.getMViaPoints().get(t).getMPos().getLon()
                         , info.getMViaPoints().get(t).getMPos().getLat()
