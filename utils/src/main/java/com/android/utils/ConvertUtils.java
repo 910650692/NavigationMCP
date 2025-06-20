@@ -1177,7 +1177,7 @@ public class ConvertUtils {
     public static String[] formatDistanceArray(Context context, int distance) {
         String[] distancs = new String[2];
         if (distance >= 100000) {
-            //10公里级
+            //100公里级
             distance = (distance / 1000) * 1000;
         }
 
@@ -1185,10 +1185,6 @@ public class ConvertUtils {
             int kiloMeter = distance / 1000;
             int leftMeter = distance % 1000;
             leftMeter = leftMeter / 100;
-            if (leftMeter >= 5) {
-                kiloMeter = kiloMeter + 1;
-                leftMeter = 0;
-            }
 
             StringBuffer sb = new StringBuffer();
 
