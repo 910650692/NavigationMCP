@@ -441,9 +441,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             mapPackage.setMapCenter(mapTypeId, new GeoPoint(positionPackage.getLastCarLocation().getLongitude(),
                     positionPackage.getLastCarLocation().getLatitude()));
             signalPackage.registerObserver(mapTypeId.name(), this);
+            setMapCenterInScreen();
             mapPackage.goToCarPosition(mapTypeId);
-            MapVisibleAreaInfo mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
-            mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
             naviPackage.registerObserver(mViewModel.mScreenId, this);
             // 注册监听
             cruisePackage.registerObserver(mViewModel.mScreenId, this);
