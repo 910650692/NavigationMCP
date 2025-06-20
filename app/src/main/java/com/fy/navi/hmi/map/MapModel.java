@@ -32,7 +32,6 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.exportservice.ExportIntentParam;
 import com.fy.navi.hmi.BuildConfig;
-import com.fy.navi.hmi.launcher.FloatViewManager;
 import com.fy.navi.hmi.navi.NaviGuidanceFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
 import com.fy.navi.hmi.splitscreen.SplitScreenManager;
@@ -138,8 +137,6 @@ import com.fy.navi.vrbridge.IVrBridgeConstant;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -156,7 +153,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ImmersiveStatusScene.IImmersiveStatusCallBack, IAosRestrictedObserver, IPositionPackageCallback,
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack
-        , ForecastCallBack, SearchResultCallback, SplitScreenManager.OnScreenModeChangedListener, INaviStatusCallback {
+        , ForecastCallBack, SearchResultCallback, SplitScreenManager.OnScreenModeChangedListener,
+        INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver {
     private final MapPackage mapPackage;
     private final LayerPackage layerPackage;
     private final PositionPackage positionPackage;
@@ -239,6 +237,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapVisibleAreaDataManager = MapVisibleAreaDataManager.getInstance();
         addGestureListening();//添加收拾监听
         NavistatusAdapter.getInstance().registerCallback(this);
+        SettingUpdateObservable.getInstance().addObserver(TAG, this);
     }
 
     @Override
@@ -263,6 +262,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         cruisePackage.unregisterObserver(mViewModel.mScreenId);
         NavistatusAdapter.getInstance().unRegisterCallback(this);
         SplitScreenManager.getInstance().unRegisterListener(this, TAG);
+        SettingUpdateObservable.getInstance().removeObserver(TAG, this);
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
@@ -640,6 +640,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onNaviStatusChange(String naviStatus) {
         mViewModel.onNaviStatusChange();
         mapModelHelp.onNaviStatusChange(naviStatus);
+        if (NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) && !mSettingPackage.getPrivacyStatus()) {
+            //导航结束，判断当前隐私协议状态，如果为拒绝，退出应用
+            System.exit(0);
+        }
     }
 
     @Override
@@ -1475,12 +1479,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         authorizationRequestDialog.setDialogClickListener(new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
-                final LocalDate currentDate = LocalDate.now();
-                final LocalDate oneYearLater = currentDate.plusYears(1);
-                final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
                 mSettingPackage.setPrivacyStatus(true);
-                mSettingPackage.setEndDate(oneYearLater.format(formatter));
-                SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_PRIVACY_STATUS, true);
             }
         });
         mViewModel.showAuthorizationRequestDialog(authorizationRequestDialog);
@@ -1644,4 +1643,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         }
     }
+
+    @Override
+    public void onUpdateSetting(String key, boolean value) {
+        if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
+            if (!(value || NaviStatusPackage.getInstance().isGuidanceActive())) {
+                //非引导态，拒绝隐私权限，退出应用
+                System.exit(0);
+            }
+        }
+    }
+
 }

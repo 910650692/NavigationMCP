@@ -963,15 +963,6 @@ public final class SettingPackage implements SettingAdapterCallback {
     }
 
     /**
-     * 设置授权到期时间
-     *
-     * @param endDateTime 到期时间
-     */
-    public void setEndDate(final String endDateTime) {
-        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_PRIVACY_END_DATE, endDateTime);
-    }
-
-    /**
      * 获取授权到期时间
      *
      * @return 时间
