@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabPaddingStart">@dimen/dp_0</item>
-        <item name="tabPaddingEnd">@dimen/dp_0</item>
-        <item name="tabPaddingTop">@dimen/dp_28</item>
-        <item name="tabPaddingBottom">@dimen/dp_28</item>
+        <item name="tabPaddingStart">0dp</item>
+        <item name="tabPaddingEnd">0dp</item>
+        <item name="tabPaddingTop">0dp</item>
+        <item name="tabPaddingBottom">0dp</item>
     </style>
 </resources>
