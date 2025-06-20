@@ -39,6 +39,10 @@ public class ForecastPackage implements ForecastAdapterCallback {
         mCallBacks.add(callBack);
     }
 
+    public void unregisterCallBack(final ForecastCallBack callBack) {
+        mCallBacks.remove(callBack);
+    }
+
 
     /**
      * 异步获取在线预测常去目的地(包含家、公司预测)

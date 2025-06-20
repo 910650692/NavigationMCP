@@ -49,6 +49,10 @@ public class MessageCenterManager {
         }
     }
 
+    public void unRegisterCallBack(final String key) {
+        mCallBacks.remove(key);
+    }
+
     /**
      * @param messageCenterInfo    数据
      */

@@ -257,12 +257,27 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onDestroy() {
         super.onDestroy();
         mapPackage.unBindMapView(mViewModel.getMapView());
+        speedMonitor.removeCallBack();
         speedMonitor.unInit();
         mapModelHelp.unInit();
+        aiwaysGestureManager = null;
+        restrictedPackage.removeRestrictedObserver(IAosRestrictedObserver.KEY_OBSERVER_LIMIT);
+        msgPushPackage.unregisterCallBack(TAG);
         cruisePackage.unregisterObserver(mViewModel.mScreenId);
+        messageCenterManager.unRegisterCallBack(MessageCenterManager.MESSAGECENTERKEY);
+        mRoutePackage.unRegisterRouteObserver("Map Activity");
+        mforCastPackage.unregisterCallBack(this);
+        searchPackage.unRegisterCallBack(mCallbackId);
+        mSettingPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        signalPackage.unregisterObserver(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        naviPackage.unregisterObserver(mViewModel.mScreenId);
+        mapPackage.unRegisterCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
+        layerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         NavistatusAdapter.getInstance().unRegisterCallback(this);
         SplitScreenManager.getInstance().unRegisterListener(this, TAG);
         SettingUpdateObservable.getInstance().removeObserver(TAG, this);
+        cancelSelfParkingTimer();
+        cancelCloseTmcTimerWithoutNetwork();
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {

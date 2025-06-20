@@ -179,6 +179,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.saveLastLocationInfo();
         Logger.i(TAG, "onDestroy");
         ThreadManager.getInstance().removeHandleTask(mOpenGuideRunnable);
+        if(mMsgTopDialog.isShowing()){
+            mMsgTopDialog.dismiss();
+            mMsgTopDialog = null;
+        }
         super.onDestroy();
     }
 

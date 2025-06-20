@@ -84,6 +84,10 @@ public class MsgPushPackage implements MsgPushAdapterCallback{
         }
     }
 
+    public synchronized void unregisterCallBack(String key) {
+        callBacks.remove(key);
+    }
+
     @Override
     public void notifyAutoPushMessage(MsgPushInfo msg) {
         for (MsgPushCallBack callBack : callBacks.values()) {
