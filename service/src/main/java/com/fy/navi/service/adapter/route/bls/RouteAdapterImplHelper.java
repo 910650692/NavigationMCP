@@ -1,52 +1,30 @@
 package com.fy.navi.service.adapter.route.bls;
 
 
-import android.util.Log;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.TimeUtils;
-import com.android.utils.thread.ThreadManager;
-import com.autonavi.gbl.common.model.Coord2DDouble;
-import com.autonavi.gbl.common.model.Coord2DInt32;
-import com.autonavi.gbl.common.path.model.ChargingArgumentsInfo;
-import com.autonavi.gbl.common.path.model.GroupSegment;
-import com.autonavi.gbl.common.path.model.LightBarItem;
-import com.autonavi.gbl.common.path.model.RestrictionInfo;
-import com.autonavi.gbl.common.path.model.TrafficIncident;
-import com.autonavi.gbl.common.path.option.LinkInfo;
-import com.autonavi.gbl.route.model.BLRerouteRequestInfo;
-import com.autonavi.gbl.route.observer.INaviRerouteObserver;
-import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.define.navistatus.NaviStatus;
-import com.fy.navi.service.define.route.Coord3DDouble;
-import com.fy.navi.service.define.route.RouteAlterChargePriceInfo;
-import com.fy.navi.service.define.route.RouteAlternativeChargeDetourInfo;
-import com.fy.navi.service.define.route.RouteChargeStationNumberInfo;
-import com.fy.navi.service.define.route.RouteCurrentPathParam;
-import com.fy.navi.service.define.route.RouteL2Data;
-import com.fy.navi.service.define.route.RouteLightBarItem;
-import com.fy.navi.service.define.route.RoutePriorityType;
-import com.fy.navi.service.define.route.RouteSupplementParams;
-import com.fy.navi.service.define.route.RouteSupplementInfo;
-import com.fy.navi.service.define.route.RouteTMCParam;
-import com.fy.navi.service.define.route.RouteWeatherID;
-import com.fy.navi.service.define.search.ParkingInfo;
-import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.define.search.SearchParkInOutInfo;
-import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.aosclient.BLAosService;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaResponseParam;
+import com.autonavi.gbl.common.model.Coord2DDouble;
+import com.autonavi.gbl.common.model.Coord2DInt32;
 import com.autonavi.gbl.common.path.model.ChargeStationInfo;
+import com.autonavi.gbl.common.path.model.ChargingArgumentsInfo;
 import com.autonavi.gbl.common.path.model.EndPointEnergyInfo;
+import com.autonavi.gbl.common.path.model.GroupSegment;
+import com.autonavi.gbl.common.path.model.LightBarItem;
 import com.autonavi.gbl.common.path.model.MainAction;
 import com.autonavi.gbl.common.path.model.POIInfo;
 import com.autonavi.gbl.common.path.model.PointType;
 import com.autonavi.gbl.common.path.model.RestAreaInfo;
 import com.autonavi.gbl.common.path.model.RestTollGateInfo;
+import com.autonavi.gbl.common.path.model.RestrictionInfo;
 import com.autonavi.gbl.common.path.model.RouteLimitInfo;
+import com.autonavi.gbl.common.path.model.TrafficIncident;
+import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.POIForRequest;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.RouteConstrainCode;
@@ -56,6 +34,7 @@ import com.autonavi.gbl.common.path.option.RouteType;
 import com.autonavi.gbl.common.path.option.SegmentInfo;
 import com.autonavi.gbl.common.path.option.UserAvoidInfo;
 import com.autonavi.gbl.route.RouteService;
+import com.autonavi.gbl.route.model.BLRerouteRequestInfo;
 import com.autonavi.gbl.route.model.PathResultData;
 import com.autonavi.gbl.route.model.RouteAlternativeChargeStationInfo;
 import com.autonavi.gbl.route.model.RouteAlternativeChargeStationResult;
@@ -63,32 +42,44 @@ import com.autonavi.gbl.route.model.RouteCollisionSolution;
 import com.autonavi.gbl.route.model.RouteInitParam;
 import com.autonavi.gbl.route.model.RouteSerialParallelState;
 import com.autonavi.gbl.route.model.WeatherLabelItem;
+import com.autonavi.gbl.route.observer.INaviRerouteObserver;
 import com.autonavi.gbl.route.observer.IRouteAlternativeChargeStationObserver;
 import com.autonavi.gbl.route.observer.IRouteResultObserver;
 import com.autonavi.gbl.route.observer.IRouteWeatherObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.route.RouteResultObserver;
+import com.fy.navi.service.define.aos.RestrictedAreaDetail;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.calibration.PowerType;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.define.route.Coord3DDouble;
+import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlongCityInfo;
 import com.fy.navi.service.define.route.RouteAlongCityParam;
+import com.fy.navi.service.define.route.RouteAlterChargePriceInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
+import com.fy.navi.service.define.route.RouteAlternativeChargeDetourInfo;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
 import com.fy.navi.service.define.route.RouteChargeStationInfo;
+import com.fy.navi.service.define.route.RouteChargeStationNumberInfo;
 import com.fy.navi.service.define.route.RouteChargeStationParam;
+import com.fy.navi.service.define.route.RouteCurrentPathParam;
+import com.fy.navi.service.define.route.RouteL2Data;
+import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RouteLineSegmentInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.route.RoutePoint;
 import com.fy.navi.service.define.route.RoutePreferenceID;
-import com.fy.navi.service.define.aos.RestrictedAreaDetail;
-import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
+import com.fy.navi.service.define.route.RoutePriorityType;
 import com.fy.navi.service.define.route.RouteRestAreaDetailsInfo;
 import com.fy.navi.service.define.route.RouteRestAreaInfo;
 import com.fy.navi.service.define.route.RouteRestAreaParam;
@@ -97,14 +88,21 @@ import com.fy.navi.service.define.route.RouteRestTollGateInfo;
 import com.fy.navi.service.define.route.RouteRestTollGateParam;
 import com.fy.navi.service.define.route.RouteRestrictionInfo;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
+import com.fy.navi.service.define.route.RouteSupplementInfo;
+import com.fy.navi.service.define.route.RouteSupplementParams;
+import com.fy.navi.service.define.route.RouteTMCParam;
 import com.fy.navi.service.define.route.RouteTrafficIncidentDetailsInfo;
 import com.fy.navi.service.define.route.RouteTrafficIncidentInfo;
 import com.fy.navi.service.define.route.RouteTrafficIncidentParam;
 import com.fy.navi.service.define.route.RouteWayID;
+import com.fy.navi.service.define.route.RouteWeatherID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.define.route.RouteWeatherParam;
+import com.fy.navi.service.define.search.ParkingInfo;
+import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchParkInOutInfo;
+import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.fy.navi.service.define.utils.NumberUtils;
-import com.fy.navi.service.define.calibration.PowerType;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -112,7 +110,6 @@ import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
@@ -1621,28 +1618,32 @@ public class RouteAdapterImplHelper {
      * @param routeCurrentPathParam 路线信息
      */
     public void sendL2SData(final RouteCurrentPathParam routeCurrentPathParam) {
-        ThreadManager.getInstance().runAsync(() -> {
-            if (routeCurrentPathParam == null) {
-                Logger.e(TAG, "sendL2SData: routeCurrentPathParam == null");
-                return;
-            }
-            final PathInfo pathInfo = (PathInfo) routeCurrentPathParam.getMPathInfo();
-            long startTime = System.currentTimeMillis();
-            if (pathInfo == null) {
-                Logger.e(TAG, "sendL2SData: pathInfo == null");
-                return;
-            }
-            final RouteL2Data routeL2Data = getRouteL2Data(pathInfo);
-            long middleTime = System.currentTimeMillis();
-            for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
-                if (resultObserver == null) {
-                    continue;
+        try {
+            ThreadManager.getInstance().runAsync(() -> {
+                if (routeCurrentPathParam == null) {
+                    Logger.e(TAG, "sendL2SData: routeCurrentPathParam == null");
+                    return;
                 }
-                resultObserver.onRouteL2Info(routeL2Data);
-            }
-            long endTime = System.currentTimeMillis();
-            Logger.d(TAG, "getRouteL2Data time: ", middleTime - startTime, endTime - middleTime);
-        });
+                final PathInfo pathInfo = (PathInfo) routeCurrentPathParam.getMPathInfo();
+                long startTime = System.currentTimeMillis();
+                if (pathInfo == null) {
+                    Logger.e(TAG, "sendL2SData: pathInfo == null");
+                    return;
+                }
+                final RouteL2Data routeL2Data = getRouteL2Data(pathInfo);
+                long middleTime = System.currentTimeMillis();
+                for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
+                    if (resultObserver == null) {
+                        continue;
+                    }
+                    resultObserver.onRouteL2Info(routeL2Data);
+                }
+                long endTime = System.currentTimeMillis();
+                Logger.d(TAG, "getRouteL2Data time: ", middleTime - startTime, endTime - middleTime);
+            });
+        } catch (Exception e) {
+            Logger.e(TAG, "sendL2SData: ", e);
+        }
     }
 
     /**
