@@ -60,6 +60,7 @@ import com.fy.navi.ui.view.refresh.RefreshListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding, SceneSearchPoiListImpl>
         implements ISceneRouteGasStationChargeSelectCallBack {
@@ -558,6 +559,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 }else{
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"value: "+info.getValue());
                     if(info.getValue().contains("_")){
+                        if("searchlist_charging_mode_fast".equals(info.getValue())){
+                            refreshLocalInfoListCheckedState(1, 2);
+                        }
                         mScreenViewModel.keywordSearch(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
                     }else{
                         mScreenViewModel.keywordSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
@@ -792,10 +796,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         mTaskId = mScreenViewModel.getMTaskId();
+        final String chargeType = ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
+        final String gasType = ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_station);
         // 处理用户搜索意图,意图为充电站显示快筛列表
         if(searchResultEntity != null
                 && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())
-                && isChargeQuery(searchResultEntity.getQueryTypeList())){
+                && isChargeGasQuery(searchResultEntity.getQueryTypeList(),chargeType)){
             mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
             mChildQuickList = mapCustomLabel(searchResultEntity.getLevel2LocalInfoList(),searchResultEntity);
             for (int i = 0; i < mChildQuickList.size(); i++) {
@@ -805,6 +811,20 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
             }else{
                 mAdapter.setQuickLabel("");
+            }
+            mQuickFilterListAdapter.setLabelList(mChildQuickList);
+        // 处理用户搜索意图,意图为加油站显示快筛列表
+        }else if(searchResultEntity != null
+                && ((!ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())
+                && isChargeGasQuery(searchResultEntity.getQueryTypeList(),gasType))
+                || isFilterShell(searchResultEntity.getLocalInfoList()))){
+            mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
+            mChildQuickList = mapCustomGasLabel(searchResultEntity.getLocalInfoList(),searchResultEntity);
+            for (int i = 0; i < mChildQuickList.size(); i++) {
+                mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
+            }
+            if(mCurrentSelectedQuick != -1){
+                refreshLocalInfoListCheckedState(2, mCurrentSelectedQuick + 1);
             }
             mQuickFilterListAdapter.setLabelList(mChildQuickList);
         // 自营站返回
@@ -1127,9 +1147,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 
-    // 判断用户搜索意图是否是充电站
-    private boolean isChargeQuery(ArrayList<String> list){
-        final String queryType = com.android.utils.ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
+    // 判断用户搜索意图是否是充电站或者加油站
+    private boolean isChargeGasQuery(ArrayList<String> list,String queryType){
         final double threshold = 0.5;
         int count = 0;
         for (int i = 0; i < list.size(); i++) {
@@ -1198,5 +1217,34 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         childListByHigh.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : childList);
         childListByLow.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : childList);
         return brand == 2 ? childListByHigh : childListByLow;
+    }
+
+    private List<SearchChildCategoryLocalInfo> mapCustomGasLabel(List<SearchCategoryLocalInfo> list,SearchResultEntity searchResultEntity) {
+        List<SearchChildCategoryLocalInfo> childList = new ArrayList<>();
+        if(!ConvertUtils.isEmpty(list)){
+            for (int i = 0; i < list.size(); i++) {
+                if(i == 2){
+                    childList = list.get(i).getCategoryLocalInfos().stream()
+                                    .filter(value -> !"searchlist_traffic_gas_brand_all".equals(value.getValue()))
+                                    .collect(Collectors.toCollection(ArrayList::new));
+                }
+            }
+        }
+        return childList;
+    }
+
+    private boolean isFilterShell(List<SearchCategoryLocalInfo> list){
+        int count = 0;
+        // 加油站 ”壳牌“快捷筛选，意图不是加油站，通过筛选列表判断意图
+        if(!ConvertUtils.isEmpty(list)){
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = 0; j < list.get(i).getCategoryLocalInfos().size(); j++) {
+                    if("searchlist_traffic_gas_brand_shell".equals(list.get(i).getCategoryLocalInfos().get(j).getValue())){
+                        count++;
+                    }
+                }
+            }
+        }
+        return count > 0;
     }
 }
