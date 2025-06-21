@@ -20,6 +20,7 @@ import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.view.SkinConstraintLayout;
@@ -98,5 +99,9 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     }
     public SkinConstraintLayout getRootView() {
         return mBinding.cluster;
+    }
+
+    public void bindMapView(){
+        mBinding.clusterMapview.post(() -> {MapPackage.getInstance().bindMapView(mBinding.clusterMapview);});
     }
 }

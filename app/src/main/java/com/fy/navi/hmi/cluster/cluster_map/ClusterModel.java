@@ -42,6 +42,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback ,SettingPackage.SettingChangeCallback{
     private static final String TAG = "ClusterModel";
     private static float MAP_ZOOM_LEVEL_DEFAULT = 17F;
+    private boolean isMapInitialized = false;
 
     public ClusterModel() {
 
@@ -219,6 +220,13 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
      */
     private void initClusterMapAndObservers(String from) {
         Logger.d(TAG, "sdk 成功",from);
+
+        // 检查是否已经初始化
+        if (isMapInitialized) {
+            Logger.d(TAG, "MapView 已经初始化过，跳过重复初始化");
+            return;
+        }
+
         boolean mapViewInitResult = MapPackage.getInstance().createMapView(MapType.CLUSTER_MAP);
         Logger.d(TAG, "mapViewInitResult: ==" , mapViewInitResult);
         if (!mapViewInitResult) return;
@@ -233,6 +241,8 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         SettingPackage.getInstance().setSettingChangeCallback(getMapId().name(), this);
 
         mViewModel.loadMapView();
+        // 标记为已初始化
+        isMapInitialized = true;
     }
 
 }

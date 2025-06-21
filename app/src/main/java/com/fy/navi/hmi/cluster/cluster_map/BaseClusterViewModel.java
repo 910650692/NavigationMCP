@@ -67,7 +67,7 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
     }
 
     public void loadMapView(){
-        MapPackage.getInstance().bindMapView(mView.getMapView());
+        mView.bindMapView();
     }
 
     public void updateEta(NaviEtaInfo naviEtaInfo) {
@@ -118,7 +118,6 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
         routeNameConstraintLayoutVisibility.set(false);
         remainingMileageConstraintLayoutVisibility.set(isVisible);
     }
-
     @Override
     public void onClose(boolean isCluster) {
         if (isCluster){
