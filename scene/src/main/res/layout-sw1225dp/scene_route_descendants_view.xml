@@ -11,7 +11,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/ly_descendants_view"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_545"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -24,9 +24,9 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/route_descendants_text"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_545"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_34"
                 android:layout_marginEnd="@dimen/dp_40"
                 android:textColor="@color/text_route_defult"
                 android:textSize="@dimen/sp_34"
