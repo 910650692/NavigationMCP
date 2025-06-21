@@ -164,6 +164,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         }
         if (mInvalidateCount == 0) {
             updateTmcAreaNew(tbitem, distanceHasPassed, totalDistance);
+            invalidate();
         }
         mInvalidateCount++;
     }
@@ -238,7 +239,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         } else {
             carPosition = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed) * rateDistanceToView);
         }
-        Logger.d(TAG, "mTotalDistance:", mTotalDistance, " hasPassedDistance:",
+        Logger.d(TAG, "jcsmTotalDistance:", mTotalDistance, " hasPassedDistance:",
                 hasPassedDistance, " mDistanceHasPassed :", mDistanceHasPassed, " width:",
                 width, " rateDistanceToView:", rateDistanceToView, " carPosition :", carPosition);
         // 移动车标的Y坐标
