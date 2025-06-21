@@ -15,6 +15,7 @@ import com.fy.navi.hmi.splitscreen.SplitFragment;
 import com.fy.navi.hmi.utils.ScreenTypeUtils;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
+import com.fy.navi.scene.impl.navi.TimerHelper;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
@@ -25,7 +26,6 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
-import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviModelSaveEntity;
@@ -166,6 +166,9 @@ public class BaseNaviGuidanceViewModel extends
      */
     public void onSwitchViaList() {
         if (Objects.equals(mNaviCrossImageVisibility.get(), Boolean.TRUE)) {
+            return;
+        }
+        if (!TimerHelper.isCanDo()) {
             return;
         }
         final Boolean b = mNaviViaListVisibility.get();

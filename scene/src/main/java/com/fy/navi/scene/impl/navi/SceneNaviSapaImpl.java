@@ -644,6 +644,9 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
      */
     public void onClick(final int type) {
         Logger.d(TAG, "onClick: type = ", type);
+        if (!TimerHelper.isCanDo()) {
+            return;
+        }
         if (mSapaInfoEntity == null) {
             Logger.e(TAG, "onClick: mSapaInfoEntity is null");
             return;
