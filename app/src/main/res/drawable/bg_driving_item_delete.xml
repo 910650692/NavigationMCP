@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="@color/setting_others_driving_delete_bg"/>
+    <corners android:bottomRightRadius="@dimen/dp_14" android:topRightRadius="@dimen/dp_14"/>
 </shape>

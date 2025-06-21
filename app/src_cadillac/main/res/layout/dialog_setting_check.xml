@@ -13,7 +13,7 @@
         android:background="@drawable/bg_shadow_system_cadillac">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1694"
+            android:layout_width="@dimen/dp_1600"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp_15"
             android:focusable="false"

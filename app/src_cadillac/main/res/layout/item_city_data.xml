@@ -26,14 +26,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:focusable="false"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@drawable/shape_bg_map_data">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_168"
                 android:clickable="true"
-                android:focusable="false"
-                android:background="@drawable/shape_bg_map_data">
+                android:focusable="false">
 
                 <com.fy.navi.ui.view.SkinView
                     android:id="@+id/item_city_line"
@@ -60,17 +60,19 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/item_city_new_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_40"
-                    android:paddingLeft="@dimen/dp_5"
-                    android:paddingEnd="@dimen/dp_5"
-                    android:text="@string/offline_item_city_tip"
-                    android:focusable="false"
-                    android:textColor="@color/setting_white"
-                    android:textSize="@dimen/sp_20"
-                    android:visibility="gone"
+                    android:layout_width="@dimen/dp_52"
+                    android:layout_height="@dimen/dp_52"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_58"
+                    android:layout_marginBottom="@dimen/dp_58"
                     android:background="@drawable/bg_end_point"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="@string/offline_item_city_tip"
+                    android:textColor="@color/setting_white"
+                    android:textSize="@dimen/sp_32"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@+id/item_city_name"
                     app:layout_constraintTop_toTopOf="parent" />
 

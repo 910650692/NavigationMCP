@@ -8,7 +8,7 @@
         android:layout_height="match_parent">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1518"
+            android:layout_width="@dimen/dp_1424"
             android:layout_height="@dimen/dp_595"
             android:layout_marginTop="@dimen/dp_601"
             android:layout_marginStart="@dimen/dp_263"
@@ -51,8 +51,7 @@
                 android:textColor="@color/forecast_title"
                 android:textSize="@dimen/sp_46"
                 app:layout_constraintTop_toBottomOf="@+id/forecast_title"
-                app:layout_constraintLeft_toLeftOf="@+id/forecast_title"
-                app:layout_constraintRight_toRightOf="@+id/forecast_title" />
+                app:layout_constraintLeft_toLeftOf="@+id/forecast_title" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/forecast_edit"

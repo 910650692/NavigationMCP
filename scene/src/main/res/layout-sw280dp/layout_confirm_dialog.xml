@@ -10,7 +10,7 @@
         android:focusable="false">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1694"
+            android:layout_width="@dimen/dp_1600"
             android:layout_height="@dimen/dp_495"
             android:layout_marginTop="@dimen/dp_701"
             android:layout_marginStart="@dimen/dp_263"
