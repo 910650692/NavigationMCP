@@ -45,7 +45,9 @@
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/route_detail_result_list"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_373"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintHeight_max="@dimen/dp_373"
             android:divider="@null"
             android:groupIndicator="@null"
             android:scrollbars="none"
