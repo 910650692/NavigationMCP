@@ -9,7 +9,7 @@ kotlin = "2.0.21"
 
 compileSdk = "34"
 buildSdk = "34.0.0"
-padminSdk = "27"
+padminSdk = "32"
 minSdk = "32"
 rxandroid = "2.1.1"
 targetSdk = "35"
@@ -34,10 +34,12 @@ gson = "2.10.1"
 glide = "4.16.0"
 greendao = "3.3.0"
 okhttp = "4.12.0"
-gminfo3 = "12.v3.+"
-boschinfo3 = "12.v3.25.23.5"
-gmframework = "12.v3.2431.1"
-boschframework = "12.v3.25.23.5"
+gm-gb-info3 = "12.v3.+"
+gm-clea-info3 = "14.v4.2522.1"
+bosch-info3 = "12.v3.25.24.2"
+gm-gb-framework = "12.v3.2517.3"
+gm-clea-framework = "14.v4.2525.3"
+bosch-framework = "12.v3.25.24.5"
 androidcar = "14.v4.2509.3"
 guava = "31.1-jre"
 protobuf = "3.14.0"
@@ -86,10 +88,12 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 rxbinding = {group = "com.jakewharton.rxbinding2", name = "rxbinding", version.ref = "rxbinding"}
 glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
 compiler_glide = {module = "com.github.bumptech.glide:compiler", version.ref = "glide"}
-gminfo3 = {module = "com.gm:info3_GB_R5" , version.ref = "gminfo3"}
-boschinfo3 = {module = "com.bosch:boschinfo3" , version.ref = "boschinfo3"}
-gmframework = {module = "com.patac.framework:patacframework_r5" , version.ref = "gmframework"}
-boschframework = {module = "com.bosch.framework:boschframework" , version.ref = "boschframework"}
+gm-gb-info3 = {module = "com.gm:info3_GB_R5" , version.ref = "gm-gb-info3"}
+gm-clea-info3 = {module = "com.gm:info3_vcupro" , version.ref = "gm-clea-info3"}
+bosch-info3 = {module = "com.bosch:boschinfo3" , version.ref = "bosch-info3"}
+gm-gb-framework = {module = "com.patac.framework:patacframework_r5" , version.ref = "gm-gb-framework"}
+gm-clea-framework = {module = "com.patac.framework:patacframework_vcupro" , version.ref = "gm-clea-framework"}
+bosch-framework = {module = "com.bosch.framework:boschframework" , version.ref = "bosch-framework"}
 androidcar = {module = "com.patac.framework:android.car_vcupro" , version.ref = "androidcar"}
 guava = {module = "com.google.guava:guava" , version.ref = "guava"}
 protobuf = {module = "com.google.protobuf:protobuf-java-util" , version.ref = "protobuf"}

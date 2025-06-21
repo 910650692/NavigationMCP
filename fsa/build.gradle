@@ -53,30 +53,6 @@ android {
             dimension flavorType
         }
     }
-
-    if (IS_PAD_RUN.toBoolean()){
-        sourceSets {
-            main {
-                java {
-                    exclude 'com/fy/navi/adas/AdasClient.java'
-                    exclude 'com/fy/navi/adas/L2PPManager.java'
-                    exclude 'com/fy/navi/adas/SuperCruiseManager.java'
-                }
-            }
-        }
-    } else {
-        sourceSets {
-            main {
-                debug{
-                    java{
-                        exclude 'com/fy/navi/adas/AdasClient.java'
-                        exclude 'com/fy/navi/adas/L2PPManager.java'
-                        exclude 'com/fy/navi/adas/SuperCruiseManager.java'
-                    }
-                }
-            }
-        }
-    }
 }
 
 dependencies {
@@ -85,11 +61,7 @@ dependencies {
     implementation libs.vehicleapi
     implementation libs.protobean
     implementation project(":engine:fsa")
-    if (IS_PAD_RUN.toBoolean()){
-        releaseImplementation project(":engine:adas")
-    }else {
-        implementation project(":engine:adas")
-    }
+    implementation project(":engine:adas")
     implementation project(":service")
     implementation project(":utils")
     implementation project(":patacnetlib")

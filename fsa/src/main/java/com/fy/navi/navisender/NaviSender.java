@@ -12,8 +12,7 @@ import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteLineInfo;
-import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
-import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
+import com.fy.navi.service.define.signal.RoadConditionGroup;
 import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
@@ -39,8 +38,7 @@ public class NaviSender {
     private static final String PREFIX = "cleacan";
 
     private final SignalPackage mSignalPackage;
-    private final RoadConditionGroupFirst mRoadConditionGroupFirst = new RoadConditionGroupFirst();
-    private final RoadConditionGroupSecond mRoadConditionGroupSecond = new RoadConditionGroupSecond();
+    private final RoadConditionGroup mRoadConditionGroup = new RoadConditionGroup();
     private final SdNavigationStatusGroup mSdNavigationStatusGroup = new SdNavigationStatusGroup();
 
     private List<RouteLineInfo> mRouteLineInfos = new ArrayList<>();
@@ -192,9 +190,8 @@ public class NaviSender {
             }
             mSignalPackage.setSdNavigationStatus(mSdNavigationStatusGroup);
 
-            mRoadConditionGroupSecond.setDataInv(1);
-            mRoadConditionGroupSecond.setEstimRemnDistn(naviETAInfo.getRemainDist() / 1000);
-            mRoadConditionGroupSecond.setEstimRemnTim(naviETAInfo.getRemainTime());
+            mRoadConditionGroup.setRemainDistance(naviETAInfo.getRemainDist() / 1000);
+            mRoadConditionGroup.setRemainTime(naviETAInfo.getRemainTime());
             logs.add("remainTime= " + naviETAInfo.getRemainTime());
 
             ArrayList<NaviEtaInfo.NaviTimeAndDist> chargeStationRemain = naviETAInfo.getChargeStationRemain();
@@ -359,14 +356,13 @@ public class NaviSender {
                         return;
                     }
                     RoadGroupData roadGroupData = mRoadGroupDatas.get(sendIndex);
-                    mRoadConditionGroupFirst.setIndxOfDynmInftAryNavRut(sendIndex + 1); // 导航路段信息索引号
-                    mRoadConditionGroupFirst.setEstimDistnCorpToIndxRut(roadGroupData.getRoadLength()); // 对应索引号的预估路段长度
-                    mRoadConditionGroupFirst.setEstimTimCorpToIndxRut(roadGroupData.getRoadTime()); // 通过路段的预估时长
-                    mRoadConditionGroupFirst.setEstimRodCndtnCorpToIndxRut(roadGroupData.getStatus()); // 对应索引号的道路状况
-                    mSignalPackage.setRoadConditionGroupFirst(mRoadConditionGroupFirst);
-                    mRoadConditionGroupSecond.setLngthDynInfmAryOfNavRut(mRoadGroupDatas.size());
-                    mRoadConditionGroupSecond.setDataInv(1);
-                    mSignalPackage.setRoadConditionGroupSecond(mRoadConditionGroupSecond);
+                    mRoadConditionGroup.setRoadSegmentIndex(sendIndex + 1);
+                    mRoadConditionGroup.setSegmentLength(roadGroupData.getRoadLength());
+                    mRoadConditionGroup.setSegmentTime(roadGroupData.getRoadTime());
+                    mRoadConditionGroup.setSegmentCondition(roadGroupData.getStatus());
+                    mRoadConditionGroup.setRoadSegmentCount(mRoadGroupDatas.size());
+                    mRoadConditionGroup.setDataInvalid(1);
+                    mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
                     sendIndex++;
                 }
             }, 0, 250, TimeUnit.MILLISECONDS);
@@ -422,7 +418,7 @@ public class NaviSender {
                     mSignalPackage.setTotalPredictedTimeFromStartToDestinationOnNavigation((int) routeLineInfo.getMTotalTime()); // 导航预计时长
                     logs.add("roadTime= " + routeLineInfo.getMTotalTime());
                 }
-                Logger.d(TAG, PREFIX , "算路信息: " , logs);
+                Logger.d(TAG, PREFIX , "导航状态: " , logs);
             } else {
                 mSdNavigationStatusGroup.setNaviStatRmnDist(0);
                 mSdNavigationStatusGroup.setNaviStatRmnDist_Inv(0);
@@ -439,14 +435,21 @@ public class NaviSender {
                 mSignalPackage.setVcuSpeedLimitArbitrationResults(255);
                 mSignalPackage.setVcuSpeedLimitArbitrationResultsAssured(0);
 
-                mSignalPackage.setRoadConditionGroupFirst(new RoadConditionGroupFirst());
-                mSignalPackage.setRoadConditionGroupSecond(new RoadConditionGroupSecond());
-
                 mSignalPackage.setTotalDistanceFromStartToDestinationOnNavigation(0); // 导航总距离
                 mSignalPackage.setTotalPredictedTimeFromStartToDestinationOnNavigation(0); // 导航预计时长
                 mSignalPackage.setRemainDistanceToChargingStation(0); // 距离充电站剩余里程
                 mSignalPackage.setRemainTimeToChargingStationy(0); // 距离充电站的剩余时长
-                Logger.d(TAG, PREFIX , "导航状态: " + logs);
+
+                mRoadConditionGroup.setRoadSegmentIndex(0);
+                mRoadConditionGroup.setSegmentLength(0);
+                mRoadConditionGroup.setSegmentTime(0);
+                mRoadConditionGroup.setSegmentCondition(15);
+                mRoadConditionGroup.setRoadSegmentCount(0);
+                mRoadConditionGroup.setRemainDistance(0);
+                mRoadConditionGroup.setRemainTime(0);
+                mRoadConditionGroup.setDataInvalid(0);
+                mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
+                Logger.d(TAG, PREFIX , "算路状态: " + logs);
             }
         }
     };

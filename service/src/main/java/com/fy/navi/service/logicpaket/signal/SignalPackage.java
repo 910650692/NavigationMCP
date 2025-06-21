@@ -1,21 +1,19 @@
 package com.fy.navi.service.logicpaket.signal;
 
 import android.content.Context;
-import android.hardware.automotive.vehicle.V2_0.VehicleArea;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.BuildConfig;
 import com.fy.navi.service.adapter.signal.SignalAdapter;
 import com.fy.navi.service.adapter.signal.SignalAdapterCallback;
-import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
-import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
+import com.fy.navi.service.define.signal.RoadConditionGroup;
 import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.Hashtable;
-
-import vendor.patac.vehicle.V1_0.PatacProperty;
+import java.util.Objects;
 
 public final class SignalPackage implements SignalAdapterCallback {
     public static final String TAG = SignalPackage.class.getSimpleName();
@@ -387,18 +385,16 @@ public final class SignalPackage implements SignalAdapterCallback {
 
     /**
      * 设置道路状态
-     * @param roadConditionGroupFirst
+     * @param roadConditionGroup
      */
-    public void setRoadConditionGroupFirst(RoadConditionGroupFirst roadConditionGroupFirst) {
-        mSignalAdapter.setRoadConditionGroupFirst(roadConditionGroupFirst);
-    }
-
-    /**
-     * 设置道路状态
-     * @param roadConditionGroupSecond
-     */
-    public void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond) {
-        mSignalAdapter.setRoadConditionGroupSecond(roadConditionGroupSecond);
+    public void setRoadConditionGroup(RoadConditionGroup roadConditionGroup) {
+        if (BuildConfig.DEBUG) Logger.d(TAG, roadConditionGroup);
+        if (Objects.equals(BuildConfig.FLAVOR, "clea_local_8155")) {
+            mSignalAdapter.setRoadConditionGroup(roadConditionGroup);
+        } else {
+            mSignalAdapter.setRoadConditionGroupFirst(roadConditionGroup);
+            mSignalAdapter.setRoadConditionGroupSecond(roadConditionGroup);
+        }
     }
 
     /**

@@ -15,8 +15,7 @@ import com.fy.navi.service.BuildConfig;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.signal.SignalAdapterCallback;
 import com.fy.navi.service.adapter.signal.SignalApi;
-import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
-import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
+import com.fy.navi.service.define.signal.RoadConditionGroup;
 import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
 import com.fy.navi.service.define.signal.SignalConst;
 import com.patac.vehicle.DriveAssistController;
@@ -823,30 +822,33 @@ public class SignalAdapterImpl implements SignalApi {
     }
 
     @Override
-    public void setRoadConditionGroupFirst(RoadConditionGroupFirst roadConditionGroupFirst) {
-        Logger.d(TAG, roadConditionGroupFirst);
+    public void setRoadConditionGroupFirst(RoadConditionGroup roadConditionGroup) {
         try {
-            Integer[] integers = new Integer[]{roadConditionGroupFirst.getIndxOfDynmInftAryNavRut(),
-                    roadConditionGroupFirst.getEstimDistnCorpToIndxRut(),
-                    roadConditionGroupFirst.getEstimTimCorpToIndxRut(),
-                    roadConditionGroupFirst.getEstimRodCndtnCorpToIndxRut()};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.ROAD_CONDITION_GROUP_FIRST
-                    , VehicleArea.GLOBAL, integers);
+//            int ROAD_CONDITION_GROUP_FIRST = 557928596;
+            mPropertyManager.setProperty(Integer[].class, 557928596
+                    , VehicleArea.GLOBAL, roadConditionGroup.toArrayFirst());
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
     }
 
     @Override
-    public void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond) {
-        Logger.d(TAG, roadConditionGroupSecond);
+    public void setRoadConditionGroupSecond(RoadConditionGroup roadConditionGroup) {
         try {
-            Integer[] integers = new Integer[]{roadConditionGroupSecond.getLngthDynInfmAryOfNavRut(),
-                    roadConditionGroupSecond.getEstimRemnDistn(),
-                    roadConditionGroupSecond.getEstimRemnTim(),
-                    roadConditionGroupSecond.getDataInv()};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.ROAD_CONDITION_GROUP_SECOND
-                    , VehicleArea.GLOBAL, integers);
+//            int ROAD_CONDITION_GROUP_SECOND = 557928595;
+            mPropertyManager.setProperty(Integer[].class, 557928595
+                    , VehicleArea.GLOBAL, roadConditionGroup.toArraySecond());
+        } catch (Exception e) {
+//            Logger.e(TAG, e.getMessage());
+        }
+    }
+
+    @Override
+    public void setRoadConditionGroup(RoadConditionGroup roadConditionGroup) {
+        try {
+//            int ROAD_CONDITION_GROUP = 557928600;
+            mPropertyManager.setProperty(Integer[].class, 557928600
+                    , VehicleArea.GLOBAL, roadConditionGroup.toArray());
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }

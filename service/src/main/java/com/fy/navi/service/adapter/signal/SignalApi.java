@@ -1,14 +1,9 @@
 package com.fy.navi.service.adapter.signal;
 
 import android.content.Context;
-import android.hardware.automotive.vehicle.V2_0.VehicleArea;
 
-import com.android.utils.log.Logger;
-import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
-import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
+import com.fy.navi.service.define.signal.RoadConditionGroup;
 import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
-
-import vendor.patac.vehicle.V1_0.PatacProperty;
 
 public interface SignalApi {
 
@@ -158,9 +153,11 @@ public interface SignalApi {
 
     void setTrafficJamRoadAverageSpeedAvailability(int value);
 
-    void setRoadConditionGroupFirst(RoadConditionGroupFirst roadConditionGroupFirst);
+    void setRoadConditionGroupFirst(RoadConditionGroup roadConditionGroup);
 
-    void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond);
+    void setRoadConditionGroupSecond(RoadConditionGroup roadConditionGroup);
+
+    void setRoadConditionGroup(RoadConditionGroup roadConditionGroup);
 
     void setTotalDistanceFromStartToDestinationOnNavigation(int value);
 

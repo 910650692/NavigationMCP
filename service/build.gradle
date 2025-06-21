@@ -91,10 +91,25 @@ dependencies {
     implementation project(":burypoint")
 
     implementation libs.androidcar
-    debugImplementation libs.gmframework
-    debugImplementation libs.gminfo3
-    releaseCompileOnly libs.gmframework
-    releaseCompileOnly libs.gminfo3
+
+    if (IS_PAD_RUN) {
+        implementation libs.gm.gb.framework
+        implementation libs.gm.gb.info3
+    } else {
+        defauleCompileOnly libs.gm.gb.framework
+        buickCompileOnly libs.gm.gb.framework
+        cadiCompileOnly libs.gm.gb.framework
+        clea_8255CompileOnly libs.gm.clea.framework
+        clea_8775CompileOnly libs.gm.clea.framework
+        clea_local_8155CompileOnly libs.bosch.framework
+
+        defauleCompileOnly libs.gm.gb.info3
+        buickCompileOnly libs.gm.gb.info3
+        cadiCompileOnly libs.gm.gb.info3
+        clea_8255CompileOnly libs.gm.clea.info3
+        clea_8775CompileOnly libs.gm.clea.info3
+        clea_local_8155CompileOnly libs.bosch.info3
+    }
 
     implementation libs.adapter.rxjava
     implementation libs.converter.gson

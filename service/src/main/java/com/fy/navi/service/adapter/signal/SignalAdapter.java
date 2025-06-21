@@ -3,8 +3,7 @@ package com.fy.navi.service.adapter.signal;
 import android.content.Context;
 
 import com.fy.navi.service.AdapterConfig;
-import com.fy.navi.service.define.signal.RoadConditionGroupFirst;
-import com.fy.navi.service.define.signal.RoadConditionGroupSecond;
+import com.fy.navi.service.define.signal.RoadConditionGroup;
 import com.fy.navi.service.define.signal.SdNavigationStatusGroup;
 
 import java.util.Objects;
@@ -138,12 +137,16 @@ public final class SignalAdapter {
         mSignalApi.setTrafficJamRoadAverageSpeedAvailability(value);
     }
 
-    public void setRoadConditionGroupFirst(RoadConditionGroupFirst roadConditionGroupFirst) {
-        mSignalApi.setRoadConditionGroupFirst(roadConditionGroupFirst);
+    public void setRoadConditionGroupFirst(RoadConditionGroup roadConditionGroup) {
+        mSignalApi.setRoadConditionGroupFirst(roadConditionGroup);
     }
 
-    public void setRoadConditionGroupSecond(RoadConditionGroupSecond roadConditionGroupSecond) {
-        mSignalApi.setRoadConditionGroupSecond(roadConditionGroupSecond);
+    public void setRoadConditionGroupSecond(RoadConditionGroup roadConditionGroup) {
+        mSignalApi.setRoadConditionGroupSecond(roadConditionGroup);
+    }
+
+    public void setRoadConditionGroup(RoadConditionGroup roadConditionGroup) {
+        mSignalApi.setRoadConditionGroup(roadConditionGroup);
     }
 
     public void setTotalDistanceFromStartToDestinationOnNavigation(int value) {

@@ -28,6 +28,7 @@ android {
     packagingOptions {
         pickFirst 'META-INF/DEPENDENCIES'
     }
+
 }
 
 dependencies {
@@ -36,7 +37,16 @@ dependencies {
     implementation libs.android.aop.core
     implementation libs.appcompat
     annotationProcessor libs.android.aop
-    debugImplementation libs.gmframework
-    releaseCompileOnly libs.gmframework
+
+    if (IS_PAD_RUN) {
+        implementation libs.gm.gb.framework
+    } else {
+        defauleCompileOnly libs.gm.gb.framework
+        buickCompileOnly libs.gm.gb.framework
+        cadiCompileOnly libs.gm.gb.framework
+        clea_8255CompileOnly libs.gm.clea.framework
+        clea_8775CompileOnly libs.gm.clea.framework
+        clea_local_8155CompileOnly libs.bosch.framework
+    }
 
 }
