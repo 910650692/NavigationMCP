@@ -14,9 +14,10 @@
         <item name="android:windowEnableSplitTouch">false</item>
         <!-- 窗口子视图是否独立 -->
         <item name="android:splitMotionEvents">false</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
-    <style name="ClusterTheme" parent="Base.Theme.NaviApp">
+    <style name="BaseClusterTheme" parent="Base.Theme.NaviApp">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="windowNoTitle">true</item>
