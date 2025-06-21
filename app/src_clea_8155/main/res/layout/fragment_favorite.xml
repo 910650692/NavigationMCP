@@ -118,7 +118,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/dp_20"
-                        android:padding="@dimen/dp_20"
+
                         android:src="@drawable/img_favorite_more" />
                 </com.fy.navi.ui.view.SkinRelativeLayout>
 
@@ -170,7 +170,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/dp_20"
-                        android:padding="@dimen/dp_20"
+                        
                         android:src="@drawable/img_favorite_more" />
                 </com.fy.navi.ui.view.SkinRelativeLayout>
 
