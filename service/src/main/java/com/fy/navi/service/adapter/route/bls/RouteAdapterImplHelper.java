@@ -638,8 +638,7 @@ public class RouteAdapterImplHelper {
     private final IRouteResultObserver mRouteResultObserver = new IRouteResultObserver() {
         @Override
         public void onNewRoute(final PathResultData pathResultData, final ArrayList<PathInfo> pathInfoList, final RouteLimitInfo routeLimitInfo) {
-            Logger.i(TAG, "平行路切换onNewRoute pathResultData -> " + pathResultData.errorCode, " pathInfoList -> "
-                    + pathInfoList.size(), " routeLimitInfo -> " + routeLimitInfo);
+            Logger.i(TAG, "onNewRoute pathResultData -> " + pathResultData.errorCode, " pathInfoList -> " + pathInfoList.size());
             if (ConvertUtils.isEmpty(pathResultData)) {
                 return;
             }
@@ -685,8 +684,7 @@ public class RouteAdapterImplHelper {
 
         @Override
         public void onNewRouteError(final PathResultData pathResultData, final RouteLimitInfo routeLimitInfo) {
-            Logger.i(TAG, "平行路切换onNewRouteError pathResultData : ", pathResultData,
-                    "routeLimitInfo : ", routeLimitInfo);
+            Logger.i(TAG, "onNewRouteError pathResultData : ", pathResultData.errorCode);
             if (ConvertUtils.isEmpty(mRouteResultObserverHashtable)) {
                 return;
             }
@@ -797,7 +795,6 @@ public class RouteAdapterImplHelper {
         final List<RouteLineInfo> routeResults = convertPathInfo2RouteResult(pathInfoList, requestRouteResult.isMIsOnlineRoute(),
                 requestRouteResult.isMRestoration());
         requestRouteResult.setMRouteLineInfos(routeResults);
-        Logger.i(TAG, "请求结果获取透传给HMI的信息 " + routeResults);
         for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
             if (resultObserver == null) {
                 continue;
@@ -841,7 +838,6 @@ public class RouteAdapterImplHelper {
         routeLineLayerParam.setMIsOnlineRoute(onlineRoute);
         routeLineLayerParam.setMPathInfoList(pathInfoList);
         routeLineLayerParam.setMSelectIndex(NumberUtils.NUM_0);
-//        Logger.i(TAG, "获取路线绘制的参数 " + GsonUtils.toJson(routeLineLayerParam));
         for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
             if (resultObserver == null) {
                 continue;

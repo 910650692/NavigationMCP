@@ -76,7 +76,8 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
         mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
         // 添加动画更新监听器
         mAnimator.addUpdateListener(animation -> {
-            final float angle = (float) animation.getAnimatedValue();
+            final float angles = (float) animation.getAnimatedValue();
+            int angle = (int) angles;
             if (shouldSkipUpdate(angle)) {
                 return;
             }
@@ -92,7 +93,7 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
      */
     private boolean shouldSkipUpdate(final float angle) {
         final float changeAngle = angle - mAngelTemp;
-        final float angleStep = 10;
+        final float angleStep = 30;
         if (changeAngle > 0f && changeAngle <= angleStep) {
             return true; // 跳过更新，避免高频调用浪费资源
         }

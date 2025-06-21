@@ -111,6 +111,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private int mParkSearchId = -1;
     private int mEndSearchId = -1;
     private List<RouteRestAreaInfo> mRouteRestAreaInfos;
+    private ImersiveStatus mCurrentImersiveStatus;
 
     public RouteModel() {
         mLayerPackage = LayerPackage.getInstance();
@@ -1177,15 +1178,20 @@ private void showRoutePark(final MapType mapTypeId) {
 
 @Override
 public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatus currentImersiveStatus) {
-    if ((Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus()
-            , NaviStatus.NaviStatusType.SELECT_ROUTE)) && currentImersiveStatus == ImersiveStatus.IMERSIVE) {
-        Logger.i(TAG, "show route preview");
-        mRoutePackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+    if (!Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.SELECT_ROUTE)) {
+        Logger.d(TAG, "不在选路态");
+        return;
+    }
+    if (currentImersiveStatus == ImersiveStatus.IMERSIVE) {
+        if (mCurrentImersiveStatus != currentImersiveStatus) {
+            mRoutePackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
     } else {
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.cancelTimer();
         }
     }
+    mCurrentImersiveStatus = currentImersiveStatus;
 }
 
     @Override

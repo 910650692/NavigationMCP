@@ -1183,7 +1183,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         assert bundle != null;
         final RouteSpeechRequestParam param = (RouteSpeechRequestParam) bundle.getSerializable("speech_open_route");
         if (!ConvertUtils.isEmpty(param)) {
-            Logger.i(TAG, "speech: " , ConvertUtils.isEmpty(param));
             assert param != null;
             final PoiInfoEntity mEndPoiInfoEntity = param.getMEndPoiInfoEntity();
             if (!ConvertUtils.isEmpty(mEndPoiInfoEntity)) {
@@ -1197,7 +1196,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         final RouteMsgPushInfo routeMsgPushInfo = (RouteMsgPushInfo) bundle.getSerializable(
                 AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MSG_PUSH_OPEN_ROUTE_TYPE);
         if (!ConvertUtils.isEmpty(routeMsgPushInfo)) {
-            Logger.i(TAG, "nomal: " , GsonUtils.toJson(routeMsgPushInfo));
             mViewModel.getTitle().set(routeMsgPushInfo.getMName());
             mViewModel.getEndName().set(routeMsgPushInfo.getMName());
             mViewModel.requestRouteRestoration(routeMsgPushInfo);
@@ -1207,7 +1205,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         final PoiInfoEntity poiInfoEntity = (PoiInfoEntity) bundle.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE);
         final int poiType = (int) bundle.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE);
         if (!ConvertUtils.isEmpty(poiInfoEntity)) {
-            Logger.i(TAG, "nomal: " , ConvertUtils.isEmpty(poiInfoEntity));
             mViewModel.getTitle().set(poiInfoEntity.getName());
             mViewModel.getEndName().set(poiInfoEntity.getName());
             final RouteRequestParam routeRequestParam = new RouteRequestParam();
