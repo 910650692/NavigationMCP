@@ -81,11 +81,10 @@
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_34"
                 android:layout_marginTop="@dimen/dp_7"
                 android:layout_marginEnd="@dimen/dp_29"
-                app:layout_constraintStart_toEndOf="@+id/item_favorite_img"
                 app:layout_constraintEnd_toStartOf="@id/item_favorite_navi"
+                app:layout_constraintStart_toStartOf="@+id/item_favorite_name"
                 app:layout_constraintTop_toBottomOf="@+id/item_favorite_name">
 
                 <com.fy.navi.ui.view.SkinTextView
