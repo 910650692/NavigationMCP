@@ -68,7 +68,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private SceneNaviControlMoreView mSceneNaviControlMoreView;
     private SceneNaviSapaDetailView mSceneNaviSapaDetailView;
     private SceneNaviSapaView mSceneNaviSapaView;
-
     private ISceneCallback mSceneCallback;
 
     @Override
@@ -619,7 +618,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         currentFragment = StackManager.getInstance().getCurrentFragment(mScreenId);
         if (!(currentFragment instanceof NaviGuidanceFragment)) {
             closeAllFragmentUpNavi();
-            mBinding.naviSceneContainer.setVisibility(VISIBLE);
         }
     }
 

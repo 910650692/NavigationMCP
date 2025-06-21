@@ -344,6 +344,14 @@ public class FragmentIntent {
         Fragment fragment = null;
         if (index != -1) {
             fragment = fragments.get(index);
+            if (fragment.getClass().getName().contains("NaviGuidanceFragment")) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("NAVI_CONTROL", 1);
+                if (fragment instanceof BaseFragment<?,?>) {
+                    BaseFragment baseFragment = (BaseFragment) fragment;
+                    baseFragment.onNewIntent(bundle);
+                }
+            }
             transaction.show(fragment);
         }
         transaction.commitAllowingStateLoss();
