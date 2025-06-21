@@ -136,7 +136,7 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
 
     @Override
     public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
-        RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
+//        RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
     }
 
     @Override

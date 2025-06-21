@@ -631,8 +631,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
-        Logger.i(TAG, "onRouteResult");
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+
     }
 
     @Override

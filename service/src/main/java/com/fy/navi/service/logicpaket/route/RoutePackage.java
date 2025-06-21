@@ -259,8 +259,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.SELECT_ROUTE);
         }
 
-        if (!mNaviStatusAdapter.isGuidanceActive()) {
-            mLayerAdapter.setCarLogoVisible(requestRouteResult.getMMapTypeId(), false);
+    }
+
+    public void setCarLogoVisible(MapType mapTypeId, boolean visible) {
+        if (!mNaviStatusAdapter.isGuidanceActive() && !visible) {
+            mLayerAdapter.setCarLogoVisible(mapTypeId, false);
+        }
+        if (visible) {
+            mLayerAdapter.setCarLogoVisible(mapTypeId, true);
         }
     }
 
@@ -1242,13 +1248,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public void showRouteLine(final MapType mapTypeId) {
         RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
         if (ConvertUtils.isEmpty(requestRouteResult)) return;
-        final List<RouteLineInfo> routeLineInfos = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMRouteLineInfos();
-        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP).getMLineLayerParam();
-        final ArrayList<String> arrivalTimes = new ArrayList<>();
-        for (RouteLineInfo routeLineInfo : routeLineInfos) {
-            arrivalTimes.add(routeLineInfo.getMTravelTime());
-        }
-        routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
         mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
 //            if (!mNaviStatusAdapter.isGuidanceActive()) {
 //                mLayerAdapter.setCarLogoVisible(mapTypeId, false);

@@ -26,8 +26,6 @@ public class RouteLineLayerParam {
     private int mSelectIndex = 0;
     /*** 是否绘制路线图层 **/
     private boolean mIsDrawLineLayer = true;
-    /*** 设置终点预计到达时间 **/
-    private ArrayList<String> mEstimatedTimeOfArrival = new ArrayList<>();
 
     @NonNull
     @Override
@@ -39,7 +37,6 @@ public class RouteLineLayerParam {
                 ", routeLinePoints=" + mRouteLinePoints +
                 ", passGrey=" + mPassGrey +
                 ", selectIndex=" + mSelectIndex +
-                ", estimatedTimeOfArrival=" + mEstimatedTimeOfArrival +
                 '}';
     }
 }

@@ -719,7 +719,11 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             Logger.e(TAG, "error endParam");
             return;
         }
-        mEndSearchId = mSearchPackage.poiIdSearch(endRouteParam.getPoiID(), true);
+        ThreadManager.getInstance().postDelay( () -> {
+            if (RoutePackage.getInstance().isRouteState()) {
+                mEndSearchId = mSearchPackage.poiIdSearch(endRouteParam.getPoiID(), true);
+            }
+        }, 2000);
     }
 
     /***
@@ -762,10 +766,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             mViewModel.hideProgressUI(true);
         }
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
-        final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
-        mParkSearchId = mSearchPackage.aroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
         //todo 图层去设置全览
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        ThreadManager.getInstance().postDelay( () -> {
+            if (RoutePackage.getInstance().isRouteState()) {
+                final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
+                mParkSearchId = mSearchPackage.aroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
+            }
+        }, 2000);
     }
 
 
@@ -880,6 +888,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (mIsFirstRequest) {
             Logger.i(TAG, "第一次进入算路失败");
             closeFragment(true);
+            mRoutePackage.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
             NaviStatusPackage.getInstance().setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
         }
     }
@@ -899,6 +908,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     @Override
     public void onRouteRequest() {
         mSearchPackage.clearLabelMark();
+        mRoutePackage.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, false);
         clearWeatherView();
         clearRestArea();
         clearRestrictionView();
