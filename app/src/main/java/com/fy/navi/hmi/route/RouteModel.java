@@ -702,9 +702,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
-        if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.hideProgressUI(true);
-        }
         if (ConvertUtils.isEmpty(requestRouteResult)) {
             return;
         }
@@ -761,6 +758,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.hideProgressUI(true);
+        }
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
         mParkSearchId = mSearchPackage.aroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);

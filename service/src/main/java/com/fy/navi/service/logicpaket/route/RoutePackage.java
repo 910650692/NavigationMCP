@@ -296,14 +296,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
         Logger.i(TAG, "onRouteDrawLine");
+        //默认选择第一条路线
+        selectDefaultRoute(routeLineLayerParam.getMMapTypeId());
         for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
             if (ConvertUtils.isEmpty(routeResultObserver)) {
                 continue;
             }
             routeResultObserver.onRouteDrawLine(routeLineLayerParam);
         }
-        //默认选择第一条路线
-        selectDefaultRoute(routeLineLayerParam.getMMapTypeId());
     }
 
     @Override
