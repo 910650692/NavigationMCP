@@ -193,7 +193,7 @@
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/dp_10"
-                        android:maxLines="2"
+                        android:maxLines="3"
                         android:textColor="@color/search_color_ffffff_70"
                         android:textSize="@dimen/sp_26"
                         app:layout_constraintEnd_toEndOf="@+id/end_guideline"
