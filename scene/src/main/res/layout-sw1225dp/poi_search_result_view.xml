@@ -28,7 +28,7 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_713"
+                android:layout_height="@dimen/dp_794"
                 android:layout_marginTop="@dimen/dp_17"
                 android:layout_marginBottom="@dimen/dp_271"
                 android:background="@drawable/bg_search_main_tab_sw1225">
@@ -75,12 +75,11 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/search_label_filter"
-                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/dp_26"
                     android:layout_marginEnd="@dimen/dp_40"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="@dimen/dp_40"
-                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
                 <com.fy.navi.ui.view.PullToRefreshLayout

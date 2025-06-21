@@ -85,7 +85,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private List<SearchCategoryLocalInfo> mLocalInfoList;
     private boolean mIsFilterViewShow = false;
     private final int mHorizontalSpacing = 12;
-    private final int mQuickLabelHorizontalSpacing = 14;
+    private final int mQuickLabelHorizontalSpacing = 8;
     private final int mChildHorizontalSpacing = 16;
     private final int mChildVerticalSpacing = 16;
     private final int mSpanCount = 3;
