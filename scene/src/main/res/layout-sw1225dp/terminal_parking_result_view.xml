@@ -9,15 +9,15 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_698"
-        android:layout_height="@dimen/dp_1078"
+        android:layout_width="@dimen/dp_628"
+        android:layout_height="@dimen/dp_749"
         android:padding="@dimen/dp_29"
         android:background="@drawable/bg_shadow_navi_buick"
         android:orientation="vertical">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_104">
+            android:layout_height="@dimen/dp_89">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:gravity="center_vertical"
@@ -27,15 +27,15 @@
                 android:layout_marginStart="@dimen/dp_30"
                 android:text="建议提前选择以下到达点"
                 android:textColor="@color/search_color_ffffff"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_32"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_terminal_close"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:src="@drawable/icon_poi_details_close"
                 app:layout_constraintBottom_toBottomOf="parent"

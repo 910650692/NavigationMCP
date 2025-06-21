@@ -14,7 +14,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_154"
+        android:layout_height="@dimen/dp_140"
         android:background="@drawable/recycler_item_selector">
 
         <androidx.constraintlayout.widget.Guideline
@@ -22,15 +22,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="@dimen/dp_72" />
+            app:layout_constraintGuide_begin="@dimen/dp_65" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_item_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_26"
             android:textColor="@color/search_quick_tab_view_color"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_25"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,28 +40,29 @@
             android:id="@+id/sktv_parking_item_recommended"
             android:layout_width="@dimen/dp_76"
             android:layout_height="@dimen/dp_46"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             android:background="@drawable/bg_parking_recommended"
             android:gravity="center"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:text="@string/st_parking_item_recommended"
             android:textColor="@color/setting_preference_select"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_22"
             app:layout_constraintStart_toEndOf="@+id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/sktv_parking_name"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_name"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_46"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_16"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/st_parking_item_recommended"
             android:textColor="@color/poi_details_bottom_ff_00"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
             app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_recommended"
             app:layout_constraintTop_toTopOf="parent"
@@ -72,47 +73,59 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_46"
             android:layout_marginTop="@dimen/dp_19"
+            android:layout_marginEnd="@dimen/dp_16"
             android:background="@drawable/bg_parking_recommended"
             android:gravity="center"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:textColor="@color/search_quick_tab_view_color"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_22"
             app:layout_constraintStart_toEndOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/sktv_parking_name"
+            app:layout_constraintEnd_toStartOf="@id/sktv_parking_item_sufficient_num"
             tools:text="105/200" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_item_sufficient_num"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_46"
-            android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_19"
+            android:layout_marginRight="@dimen/dp_16"
             android:background="@drawable/bg_parking_recommended"
             android:gravity="center"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:textColor="@color/setting_preference_select"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_22"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_leisure_num"
             app:layout_constraintTop_toBottomOf="@+id/sktv_parking_name"
+            app:layout_constraintEnd_toStartOf="@id/sktv_parking_item_distance"
             tools:text="充足" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_item_distance"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_46"
-            android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_19"
             android:background="@drawable/bg_parking_recommended"
             android:gravity="center"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:textColor="@color/search_loading_bg_80"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_22"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_sufficient_num"
             app:layout_constraintTop_toBottomOf="@+id/sktv_parking_name"
+            app:layout_constraintEnd_toStartOf="@id/decoy_view"
             tools:text="当前终点" />
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/decoy_view"
+            android:layout_width="@dimen/dp_26"
+            android:layout_height="@dimen/dp_46"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/sktv_parking_item_distance"
+            app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_distance"
+            app:layout_constraintTop_toTopOf="@+id/sktv_parking_item_distance" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/poi_to_navi"
