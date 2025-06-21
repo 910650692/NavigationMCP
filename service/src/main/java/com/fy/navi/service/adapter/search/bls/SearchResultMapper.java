@@ -1081,19 +1081,25 @@ public final class SearchResultMapper {
                 0 : Integer.parseInt(poiInfo.chargingStationInfo.fast_free);
         final int fastTotal = TextUtils.isEmpty(poiInfo.chargingStationInfo.fast_total) ?
                 0 : Integer.parseInt(poiInfo.chargingStationInfo.fast_total);
+        double price = 0;
+        // 充电费用：电费+服务费
+        if(!ConvertUtils.isEmpty(poiInfo.chargingStationInfo.currentPrice)){
+            price = poiInfo.chargingStationInfo.currentPrice.charging + poiInfo.chargingStationInfo.currentPrice.service;
+        }
         final ChargeInfo chargeInfo = new ChargeInfo()
                 .setSlow_free(slowFree)
                 .setSlow_total(slowTotal)
                 .setFast_free(fastFree)
                 .setFast_total(fastTotal)
                 .setMBrand(poiInfo.chargingStationInfo.brand_desc)
-                .setCurrentElePrice(poiInfo.chargingStationInfo.current_ele_price)
+                .setCurrentElePrice( price > 0 ? String.valueOf(price) : "0.00")
                 .setCurrentServicePrice(poiInfo.chargingStationInfo.parkPrice);
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "slow free: " + poiInfo.chargingStationInfo.slow_free
                 + " slow total: " + poiInfo.chargingStationInfo.slow_total
                 + " fast free: " + poiInfo.chargingStationInfo.fast_free
                 + " fast total: " + poiInfo.chargingStationInfo.fast_total
-                + " current_ele_price: " + poiInfo.chargingStationInfo.current_ele_price
+                + " current_ele_price: " + poiInfo.chargingStationInfo.currentPrice.charging
+                + " current_service_price: " + poiInfo.chargingStationInfo.currentPrice.service
                 + " parkPrice: " + poiInfo.chargingStationInfo.parkPrice);
         for (ChargingPlugInfo chargingPlugInfo : poiInfo.chargingStationInfo.plugsInfo) {
             if (chargingPlugInfo.plugType == AutoMapConstant.PLUG_TYPE_SLOW) {
