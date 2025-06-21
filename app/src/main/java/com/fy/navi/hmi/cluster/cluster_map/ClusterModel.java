@@ -30,6 +30,7 @@ import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -116,6 +117,12 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
                 MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1f);
             } else {
                 MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.8f);
+            }
+
+            if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)
+                    || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.LIGHT_NAVING)){
+                Logger.d(TAG, "导航中显示导航路线");
+                RoutePackage.getInstance().showRouteLine(getMapId());
             }
         }
     }
