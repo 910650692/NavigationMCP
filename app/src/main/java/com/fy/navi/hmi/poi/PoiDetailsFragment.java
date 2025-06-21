@@ -29,6 +29,7 @@ import com.fy.navi.ui.base.BaseFragment;
 public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, PoiDetailsViewModel> {
     private SearchResultEntity mSearchResultEntity;
     private AccessTokenParam mParams;
+    private int mViaIndex = -1;
     @Override
     public int onLayoutId() {
         return R.layout.fragment_poi_details;
@@ -81,12 +82,14 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
             final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
             final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
+            mViaIndex = parsedArgs.getInt(NaviConstant.VIA_POSITION, -1);
             mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType " , poiType);
             mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity,true);
             mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
             mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
             mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
+            mBinding.scenePoiDetailContentView.setViaIndexSelect(true,mViaIndex);
             if (isOpenFromNavi == 1) {
                 mBinding.scenePoiDetailContentView.setNaviControl(true);
             }
@@ -185,6 +188,16 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(!ConvertUtils.isNull(mBinding) && mViaIndex != -1){
+            // 取消途径点选中状态
+            mBinding.scenePoiDetailContentView.setViaIndexSelect(false,mViaIndex);
+            mViaIndex = -1;
+        }
     }
 
     private AccessTokenParam getAccessTokenParam(Activity activity){

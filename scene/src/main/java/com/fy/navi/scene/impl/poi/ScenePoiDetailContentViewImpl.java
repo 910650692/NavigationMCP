@@ -26,6 +26,7 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -47,6 +48,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     private final BehaviorPackage mBehaviorPackage;
     private final MapDataPackage mapDataPackage;
     private final RoutePackage mRoutePackage;
+    private final LayerPackage mLayerPackage;
     private int mTaskId;
     // 动力类型标定
     public MutableLiveData<Integer> mPowerType = new MutableLiveData<>();
@@ -65,6 +67,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         mBehaviorPackage = BehaviorPackage.getInstance();
         mapDataPackage = MapDataPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
+        mLayerPackage = LayerPackage.getInstance();
         mPowerType.setValue(-1);
     }
 
@@ -338,5 +341,9 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     public void startSGMLogin(){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"startSGMLogin");
         AccountPackage.getInstance().sendSGMLoginRequest(mScreenView.getContext());
+    }
+
+    public void setRouteViaPointSelect(boolean isSelect,int index){
+        mLayerPackage.setRouteViaPointSelectStatus(MapType.MAIN_SCREEN_MAIN_MAP,isSelect,index);
     }
 }
