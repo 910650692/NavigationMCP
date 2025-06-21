@@ -16,6 +16,7 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
@@ -30,6 +31,7 @@ import com.fy.navi.service.adapter.speech.SpeechAdapter;
 import com.fy.navi.service.adapter.user.usertrack.UserTrackAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
@@ -65,6 +67,7 @@ import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.service.tts.NaviMediaPlayer;
 import com.fy.navi.service.tts.TTSPlayHelper;
 
@@ -554,7 +557,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void onNaviStop() {
         Logger.i(TAG, "onNaviStop");
         ThreadManager.getInstance().postUi(() -> {
-            mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
+            closeNavi();
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {
@@ -1328,6 +1331,33 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                     }
                 }
             }
+        });
+    }
+
+    public void closeNavi() {
+        Logger.i(TAG, "closeNavi");
+        String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
+            mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
+        }
+        setPreviewStatus(false);
+        setFixedOverViewStatus(false);
+        stopSpeech();
+        mLayerAdapter.setVisibleGuideSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, false);
+        clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+        mLayerAdapter.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
+    }
+
+    /**
+     * 清除路线
+     *
+     * @param mapTypeId 屏幕ID
+     */
+    public void clearRouteLine(final MapType mapTypeId) {
+        ThreadManager.getInstance().execute(() -> {
+            mLayerAdapter.clearRouteLine(mapTypeId);
+            mLayerAdapter.clearLabelItem(mapTypeId);
+            mLayerAdapter.setCarLogoVisible(mapTypeId, true);
         });
     }
 }

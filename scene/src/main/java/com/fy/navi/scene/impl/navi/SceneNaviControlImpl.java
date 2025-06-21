@@ -114,10 +114,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         mNaviPackage.onNaviClose(true);
         mNaviPackage.stopNavigation();
         cancelTimer();
-        mNaviPackage.setPreviewStatus(false);
-        if (null != mCallBack) {
-            mCallBack.stopSpeech();
-        }
     }
 
     @Override
@@ -290,10 +286,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     protected void onDestroy() {
         super.onDestroy();
         cancelTimer();
-        if (null != mNaviPackage) {
-            mNaviPackage.setPreviewStatus(false);
-            mNaviPackage.setFixedOverViewStatus(false);
-        }
         if (null != mSignalPackage) {
             mSignalPackage.unregisterObserver(this.getClass().getSimpleName());
         }

@@ -1,11 +1,9 @@
 package com.fy.navi.hmi.navi;
 
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 
@@ -29,9 +27,7 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
@@ -86,7 +82,6 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
-import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.BaseModel;
 import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.utils.ClusterMapOpenCloseListener;
@@ -146,7 +141,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private final SearchPackage mSearchPackage;
     private ChargeTipManager mTipManager;
     private ViaListManager mViaListManager;
-    private String mFilename = "";
     // 路口大图是否显示
     private boolean mIsShowCrossImage;
     // 记录路口大图出现时的起始距离
@@ -326,18 +320,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             // 开始三分钟查询一次终点POI信息
             ThreadManager.getInstance().removeHandleTask(mEndPoiSearchRunnable);
             ThreadManager.getInstance().postUi(mEndPoiSearchRunnable);
-            String isOpen = SettingPackage.getInstance().getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
-            Logger.i(TAG, "isOpen:", isOpen);
-            if (isOpen != null && isOpen.equals("true")) {
-                Logger.d(TAG, "开始打点");
-                @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
-                        AppCache.getInstance().getMContext().getContentResolver(),
-                        Settings.Secure.ANDROID_ID
-                );
-                final long curTime = System.currentTimeMillis();
-                mFilename = curTime + "_" + 1 + "_" + androidId;
-                UserTrackPackage.getInstance().startGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename, 2000);
-            }
             mIsShowAutoAdd = true;
             final MapType mapTypeId = MapTypeManager.getInstance().
                     getMapTypeIdByName(mViewModel.mScreenId);
@@ -1311,18 +1293,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void closeNavi() {
         Logger.i(TAG, "closeNavi");
         mViewModel.onNaviStop();
-        UserTrackPackage.getInstance().
-                closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
-        mFilename = "";
-        mRoutePackage.removeAllRouteInfo(MapTypeManager.getInstance().
-                getMapTypeIdByName(mViewModel.mScreenId));
-        mLayerPackage.setVisibleGuideSignalLight(MapTypeManager.getInstance().
-                getMapTypeIdByName(mViewModel.mScreenId), false);
-        mRoutePackage.clearRouteLine(MapTypeManager.getInstance().
-                getMapTypeIdByName(mViewModel.mScreenId));
-        mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
-        // 清楚搜索图层的扎标
-        mSearchPackage.clearLabelMark();
     }
 
     @Override

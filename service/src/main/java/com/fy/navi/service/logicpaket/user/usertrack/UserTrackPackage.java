@@ -1,15 +1,22 @@
 package com.fy.navi.service.logicpaket.user.usertrack;
 
+import android.annotation.SuppressLint;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AppCache;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.navi.GuidanceObserver;
 import com.fy.navi.service.adapter.user.usertrack.UserTrackAdapter;
 import com.fy.navi.service.adapter.user.usertrack.UserTrackAdapterCallBack;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.service.define.user.usertrack.GpsTrackDepthBean;
 import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
@@ -18,8 +25,11 @@ import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
+import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
+import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
+import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 
 import org.json.JSONException;
@@ -34,7 +44,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchResultCallback {
+public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchResultCallback, IGuidanceObserver {
     private static final String TAG = MapDefaultFinalTag.USER_TRACK_SERVICE_TAG;
     private final UserTrackAdapter mUserTrackAdapter;
     private Hashtable<String,UserTrackCallBack> mCallBacks;
@@ -53,6 +63,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
     private int mReverseType = -1;
     private GpsTrackDepthBean mDepInfo;
     private String mPsFileName;
+    private String mFilename = "";
 
     private UserTrackPackage() {
         mUserTrackAdapter = UserTrackAdapter.getInstance();
@@ -73,6 +84,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         mUserTrackAdapter.initUserTrackService();
         mUserTrackAdapter.registerCallBack("UserTrackPackage", this);
         SearchPackage.getInstance().registerCallBack("UserTrackPackage", this);
+        NaviPackage.getInstance().registerObserver("UserTrackPackage", this);
     }
 
     /**
@@ -456,6 +468,28 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         return mUserTrackAdapter.startGpsTrack(psSavePath, psFileName, un32MsecRate);
     }
 
+    public void startGpsTrack() {
+        String isOpen = SettingPackage.getInstance().
+                getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
+        Logger.i(TAG, "isOpen:", isOpen);
+        if (isOpen != null && isOpen.equals("true")) {
+            Logger.d(TAG, "开始打点");
+            @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
+                    AppCache.getInstance().getMContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID
+            );
+            final long curTime = System.currentTimeMillis();
+            mFilename = curTime + "_" + 1 + "_" + androidId;
+            startGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename, 2000);
+        }
+    }
+
+    public void closeGpsTrack() {
+        UserTrackPackage.getInstance().
+                closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
+        mFilename = "";
+    }
+
     /**
      * 关闭Gps打点，并生成轨迹文件
      * @param psSavePath GPS轨迹文件保存路径
@@ -793,6 +827,16 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
 
     public static UserTrackPackage getInstance() {
         return Helper.EP;
+    }
+
+    @Override
+    public void onNaviStop() {
+        closeGpsTrack();
+    }
+
+    @Override
+    public void onNaviStart() {
+        startGpsTrack();
     }
 
     private static final class Helper {
