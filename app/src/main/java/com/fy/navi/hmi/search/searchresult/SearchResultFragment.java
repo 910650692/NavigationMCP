@@ -207,6 +207,8 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
      * @param isShow 是否可见
      */
     private void updateShowState(final boolean isShow) {
-        mViewModel.updateShowState(isShow);
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.updateShowState(isShow);
+        }
     }
 }

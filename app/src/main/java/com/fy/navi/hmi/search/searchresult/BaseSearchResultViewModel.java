@@ -106,7 +106,9 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
      * @param isShow 是否可见
      */
     public void updateShowState(final boolean isShow) {
-        mModel.updateShowState(isShow);
+        if (!ConvertUtils.isEmpty(mModel)) {
+            mModel.updateShowState(isShow);
+        }
     }
 
     /**
@@ -142,7 +144,7 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
                         entity.setPoint(point);
                         if(!ConvertUtils.isEmpty(object.getDouble("distance"))){
                             int distance = ConvertUtils.double2int(object.getDouble("distance") * 1000);
-                            final String[] distanceArray = ConvertUtils.formatEnDistanceArray(getApplication().getBaseContext(),distance);
+                            final String[] distanceArray = ConvertUtils.formatDistanceArray(getApplication().getBaseContext(),distance);
                             entity.setDistance(distanceArray[0]+distanceArray[1]);
                         }
                         ChargeInfo chargeInfo = GsonUtils.fromJson(jsonArray.getString(i),ChargeInfo.class);
