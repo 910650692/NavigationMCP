@@ -327,7 +327,6 @@
                 clickCommand="@{ViewModel.getPreferenceClick()}"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:layout_marginStart="@dimen/dp_9"
                 android:src="@{ViewModel.getRoutePreferenceDrawableVisibility()}"
                 app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
                 app:layout_constraintStart_toEndOf="@id/route_line_info_tv_prefer"
@@ -336,7 +335,7 @@
 
             <com.fy.navi.ui.view.SkinSwitch
                 android:id="@+id/route_line_info_switch_energy"
-                android:layout_width="@dimen/dp_100"
+                android:layout_width="@dimen/dp_90"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_12"
                 android:button="@drawable/switch_route_button"
