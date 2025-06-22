@@ -1,7 +1,5 @@
 package com.sgm.navi.service.adapter.map.bls;
 
-import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
-
 import android.view.MotionEvent;
 
 import com.android.utils.ConvertUtils;
@@ -142,8 +140,9 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
 
     public void destroyMapView(MapType mapTypeId) {
         if (mapViewPools.containsKey(mapTypeId)) {
-            callbacks.get(mapTypeId).clear();
             mapViewPools.get(mapTypeId).destroyMapView();
+            callbacks.get(mapTypeId).clear();
+            mapViewPools.remove(mapTypeId);
         }
     }
 
@@ -234,7 +233,6 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
 
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
-        Logger.d(TAG, MAP_TOUCH, " mapTypeId:" , mapTypeId, " touchEvent:", touchEvent.getActionMasked());
         if (callbacks.containsKey(mapTypeId)) {
             callbacks.get(mapTypeId).forEach(new Consumer<IMapAdapterCallback>() {
                 @Override

@@ -1,7 +1,6 @@
 
 package com.sgm.navi.service.adapter.map.bls;
 
-import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -108,8 +107,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     // 记录当前全览状态 true：进入 false：退出
     private boolean isPreview = false;
 
-    private static int ROUTERDRAWLABELTIME = 15;
-
     private int isZoomIn = -1;
 
     private IMapAdapterCallback callback;
@@ -121,16 +118,11 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         setMapService(mapService);
         setDefaultDevice(createMapDevice());
         setDefaultMapView(createMapView());
-//        getDefaultDevice().setRenderFpsByMode(MapRenderMode.MapRenderModeNormal,15);
-//        getDefaultDevice().setRenderFpsByMode(MapRenderMode.MapRenderModeNavi,15);
-//        getDefaultDevice().setRenderFpsByMode(MapRenderMode.MapRenderModeGestureAction,50);
-//        getDefaultDevice().setMaxFps(50);
         initOperatorPosture();
         initOperatorBusiness();
-        initOperatorGesture();
-        initRouterDrawLabel();
         initTheme(ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
         initSkyBox(ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
+        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapType, " 初始化 底图成功");
     }
 
     public MapViewImpl(Context context, AttributeSet attrs) {
@@ -140,11 +132,11 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     private MapDevice createMapDevice() {
         DeviceAttribute devAttribute = new DeviceAttribute();
-        devAttribute.renderVendorType = MapRenderVendor.OpenGL2;
+        devAttribute.renderVendorType = MapRenderVendor.OpenGL2;//TODO 性能优化配置
         devAttribute.uiTaskDeviceId = EngineAdapter.getInstance().mapDeviceID(mapType);
         devAttribute.deviceWorkMode = EGLDeviceWorkMode.EGLDeviceWorkMode_WithThreadWithEGLContextDrawIn;
-        devAttribute.isNeedAntialias = false;//是否开启全屏抗锯齿
-        devAttribute.samples = 2;//全屏抗锯齿倍数
+        devAttribute.isNeedAntialias = false;////TODO 性能优化配置 是否开启全屏抗锯齿
+        devAttribute.samples = 2;////TODO 性能优化配置 全屏抗锯齿倍数
         ServiceMgr.getServiceMgrInstance().setUiLooper(devAttribute.uiTaskDeviceId, ThreadManager.getInstance().getLooper(LooperType.MAP));
         return ConvertUtils.isNullRequire(getMapService().createDevice(EngineAdapter.getInstance().mapDeviceID(mapType), devAttribute, this),
                 "获取对应的 MapService 失败 : " + mapType);
@@ -152,22 +144,19 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     private MapView createMapView() {
         MapViewParam mapViewParam = new MapViewParam();
-        mapViewParam.x = 0;
-        mapViewParam.y = 0;
+        mapViewParam.x = mapViewParams.getX();
+        mapViewParam.y = mapViewParams.getY();
         mapViewParam.width = mapViewParams.getWidth();
         mapViewParam.height = mapViewParams.getHeight();
         mapViewParam.screenWidth = mapViewParams.getScreenWidth();
         mapViewParam.screenHeight = mapViewParams.getScreenHeight();
-
         mapViewParam.engineId = EngineAdapter.getInstance().engineID(mapType);
         mapViewParam.deviceId = getDefaultDevice().getDeviceId();
-        mapViewParam.cacheCountFactor = 2;
+        mapViewParam.cacheCountFactor = 2;//TODO 性能优化配置
         //引擎配置文件 高(mapprofile_fa1 3D超远视角+天空盒)/中(mapprofile_fa2 3D常规视角+天空盒)/低(mapprofile_fa3 3D无天空盒子视角 )
-        mapViewParam.mapProfileName = "mapprofile_fa2";
-        mapViewParam.zoomScaleMode = MapZoomScaleMode.DefaultMode;
-
-        mapViewParam.asyncTaskThreadCount = 4;// TODO 优化
-
+        mapViewParam.mapProfileName = "mapprofile_fa2";//TODO 性能优化配置
+        mapViewParam.zoomScaleMode = MapZoomScaleMode.PhysicalAdaptiveMode;//TODO 性能优化配置
+        mapViewParam.asyncTaskThreadCount = 4;//TODO 性能优化配置
         return ConvertUtils.isNullRequire(getMapService().createMapView(mapViewParam, this, this, null, null),
                 "获取对应的 MapView 失败 : " + mapType);
     }
@@ -181,6 +170,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         // 设置地图比例尺范围.
         getMapview().getOperatorPosture().setMaxZoomLevel(AutoMapConstant.MAP_ZOOM_LEVEL_MAX);
         getMapview().getOperatorPosture().setZoomLevel(AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT, true, true);
+        // 开启惯性滑动
+        getMapview().getOperatorGesture().enableSliding(true);
     }
 
     /**
@@ -189,71 +180,53 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     private void initOperatorBusiness() {
         //设置字体缩放系数
         MapParameter mapParameter = new MapParameter();
-        //设置底图默认字体大小
-        getMapview().getOperatorBusiness().setMapTextScale(AutoMapConstant.MAP_DEFAULT_TEXT_SIZE);
-        //显示路网
-        getMapview().getOperatorBusiness().showMapRoad(true);
-        //显示3D建筑
-        getMapview().getOperatorBusiness().showBuilding3D(true);
-        //开启POI标注
-        getMapview().getOperatorBusiness().setLabelVisable(true);
         //开启导航标注
         mapParameter.value1 = 1; //开启导航标注
         mapParameter.value2 = 15;//设置帧率
         mapParameter.value3 = 0;//按上层设置的帧率刷新
         mapParameter.value4 = 0;//保留
         getMapview().getOperatorBusiness().setMapBusinessDataPara(MapBusinessDataType.MAP_BUSINESSDATA_FORCE_NAVI_LABEL, mapParameter);
+        //设置底图默认字体大小
+        getMapview().getOperatorBusiness().setMapTextScale(AutoMapConstant.MAP_DEFAULT_TEXT_SIZE);
+        //开启POI标注
+        getMapview().getOperatorBusiness().setLabelVisable(true);
         //开启TMC
         getMapview().setControllerStatesOperator(MapControllerStatesType.MAP_CONTROLLER_ONOFF_TRAFFIC_STATE, 1, true);
-        // 显示开放图层
-        getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, true);
+        //显示路网
+        getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_LABLE_ROADNAME_ON, true);
+        //显示3D建筑
+        getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_BUILD_MODEL_ON, true);
         //设置简易三维开
         getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_SIMPLE3D_ON, true);
-        //显示室内地图
-        getMapview().getOperatorBusiness().setIndoorBuildingShow(true);
+        // 显示开放图层
+        getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, true);
         //设置地形阴影图开
         getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_STATE_IS_TOPOGRAPHY_SHOW, true);//开启地形阴影图
     }
 
-    /**
-     * 初始化地图的默认配置
-     * 增加惯性滑动方法   还有其他操作方法
-     */
-    private void initOperatorGesture() {
-        // 开启惯性滑动
-        getMapview().getOperatorGesture().enableSliding(true);
-        //3D模式下 移动地图 不隐藏poi
-        getMapview().getOperatorGesture().hidePoiOn3DMoving(false);
-        //3D模式下 惯性滑动 不隐藏poi
-        getMapview().getOperatorGesture().hidePoiOn3DSliding(false);
-    }
 
     /***
      * 初始化默认主题
      */
     private void initTheme(boolean isNight) {
-        final MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
+        MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         styleParam.time = isNight ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
         getMapview().getOperatorStyle().setMapStyle(styleParam, false);
     }
 
-    private void initRouterDrawLabel() {
-        //设置导航中刷新频率，不让道路名等频繁刷新
-        getMapview().setMapNeedForceDrawLabel(ROUTERDRAWLABELTIME);
-    }
 
     private void initSkyBox(boolean isNight) {
         String skyBoxPath = isNight ? GBLCacheFilePath.MAP_SKY_BOX_ASSET_DIR + "skybox_night.data" : GBLCacheFilePath.MAP_SKY_BOX_ASSET_DIR + "skybox_day.data";
         byte[] buffer = FileUtils.getInstance().getAssetFileContent(skyBoxPath);
         if (!ConvertUtils.isNull(buffer)) {
-            BinaryStream binaryStream = new BinaryStream(buffer);
             //设置天空盒子
             MapSkyboxParam mapSkyboxParam = new MapSkyboxParam();
             mapSkyboxParam.isOn = true; // 是否开启skybox，默认为true，非必须设置
             mapSkyboxParam.is3DRes = false; // 是否使用3D资源，*.data资源为2D天空卷轴，传false
-            mapSkyboxParam.DataBuff = binaryStream;
-//            mapSkyboxParam.frogColor = 0xFFDC143C; //雾气颜色，ARGB，默认为0xEFF4FFFF，非必须设置
+            mapSkyboxParam.DataBuff = new BinaryStream(buffer);
             getMapview().getOperatorBusiness().setMapSkyboxParam(mapSkyboxParam);
+            getMapview().resetTickCount(1);
+            Logger.d(TAG, mapType, " initSkyBox");
         }
     }
 
@@ -282,14 +255,17 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     public void setMapCenterInScreen(int x, int y) {
         getMapview().setMapLeftTop(x, y);
+        Logger.d(TAG, mapType, " setMapCenterInScreen");
     }
 
     public void setHudMapCenterInScreen(int x, int y) {
         getMapview().setMapLeftTop(x, y);
+        Logger.d(TAG, mapType, " setHudMapCenterInScreen");
     }
 
     public void setMapCenter(GeoPoint geoPoint) {
         getMapview().getOperatorPosture().setMapCenter(geoPoint.getLon(), geoPoint.getLat(), 0, true, true);
+        Logger.d(TAG, mapType, " setMapCenter");
     }
 
     public GeoPoint getMapCenter() {
@@ -307,9 +283,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     public boolean setTrafficStates(boolean isOpen) {
         int status = isOpen ? 1 : 0;
         boolean result = getMapview().setControllerStatesOperator(MapControllerStatesType.MAP_CONTROLLER_ONOFF_TRAFFIC_STATE, status, true);
-        if (result) {
-//            getMapview().resetTickCount(2);
-        }
         return result;
     }
 
@@ -324,7 +297,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     public void setMapViewTextSize(float f) {
         getMapview().getOperatorBusiness().setMapTextScale(f);
-//        getMapview().resetTickCount(1);
     }
 
     public float getCurrentZoomLevel() {
@@ -334,6 +306,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     public void showPreview(PreviewParams previewParams) {
         PreviewParam preview = GsonUtils.convertToT(previewParams, PreviewParam.class);
         getMapview().showPreview(preview, true, 500, -1);
+        Logger.d(TAG, mapType, " showPreview");
     }
 
     public void exitPreview() {
@@ -432,8 +405,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     public void setMapStyle(MapStateStyle mapStateStyle) {
         MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         styleParam.mode = MapStyleMode.MapModeDefault;
-        boolean isNightMode = ThemeUtils.INSTANCE.isNightModeEnabled(getContext());
-        styleParam.time = isNightMode ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
         switch (mapStateStyle) {
             case MAP_NAVI:
                 styleParam.state = MapModelDtoConstants.MAP_MODE_SUBSTATE_NAVI_CAR;
@@ -450,31 +421,32 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 break;
         }
         styleParam.forceUpdate = true;
-
-        Logger.d(TAG, mapType, "setMapStyle ", isNightMode);
+        Logger.d(TAG, mapType, "setMapStyle ", mapStateStyle);
         getMapview().getOperatorStyle().setMapStyle(styleParam, false);
-        initSkyBox(isNightMode);
     }
 
     public void update3DBuildingSwitch(boolean visible) {
-        if (getMapview() != null) {
-            getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_BUILD_MODEL_ON, visible);
-            // 设置渲染持续帧数 持续帧数完成后，进入降帧处理。实际绘制帧率为：持续帧数 + 降帧帧数
-//            getMapview().resetTickCount(2);
-            Logger.d(TAG, mapType, "update3DBuildingSwitch ", visible);
-        }
+        getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_BUILD_MODEL_ON, visible);
+        Logger.d(TAG, mapType, "update3DBuildingSwitch ", visible);
     }
 
     public void updateUiStyle(ThemeType uiMode) {
         final MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         final int preTime = styleParam.time;
         final int expectTime = uiMode == ThemeType.NIGHT ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
-        Logger.d(TAG, "preTime:" , preTime, "expectTime:" , expectTime);
+        Logger.d(TAG, "preTime:", preTime, "expectTime:", expectTime);
         if (preTime != expectTime) {
             styleParam.time = expectTime;
             initTheme(uiMode == ThemeType.NIGHT);
             initSkyBox(uiMode == ThemeType.NIGHT);
         }
+    }
+
+    /**
+     * 设置poi是否可点击
+     */
+    public void setMapLabelClickable(boolean enable) {
+        getMapview().getOperatorGesture().setMapLabelClickable(enable);
     }
 
     private void onMapClickPoi(MapType mapType, PoiInfoEntity poiInfo) {
@@ -539,10 +511,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     public void destroyMapView() {
         getDefaultDevice().detachSurfaceFromDevice();
-        mapview.removeGestureObserver(this);
-        mapview.removeMapviewObserver(this);
-        getMapService().destroyMapView(mapview);
-        mapview = null;
+        getMapview().removeGestureObserver(this);
+        getMapview().removeMapviewObserver(this);
+        getMapService().destroyMapView(getMapview());
+        setDefaultMapView(null);
         getDefaultDevice().attachSurfaceToDevice(null);
         getDefaultDevice().removeDeviceObserver(this);
         getMapService().destroyDevice(getDefaultDevice());
@@ -552,8 +524,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
      * 初始化截图参数
      */
     public void initScreenshotParams() {
-        Logger.d(TAG, "MapType: " + mapType, "需要支持截屏，开启Device渲染线程 截图尺寸 width =", +mapViewParams.getWidth(),
-                "height =", mapViewParams.getHeight());
+        Logger.d(TAG, mapType, "需要支持截屏，开启Device渲染线程 截图尺寸 width =", +mapViewParams.getWidth(), "height =", mapViewParams.getHeight());
         EGLSurfaceAttr eglSurfaceAttr = new EGLSurfaceAttr();
         eglSurfaceAttr.nativeWindow = -1;
         eglSurfaceAttr.isOnlyCreatePBSurface = true;
@@ -563,7 +534,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     }
 
     public void startScreenshot() {
-        Logger.d(TAG, "startScreenshot size", "width" + mapViewParams.getWidth(), +mapViewParams.getHeight());
+        Logger.d(TAG, "startScreenshot size width = " + mapViewParams.getWidth(), " height = ", mapViewParams.getHeight());
         getDefaultDevice().setScreenshotRect(0, 0, (int) mapViewParams.getWidth(), (int) mapViewParams.getHeight());
         getDefaultDevice().setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, this);
         getDefaultDevice().setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
@@ -582,6 +553,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         } else {
             eventName.append(BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_SLIDE);
         }
+        Logger.d(TAG, "sendBuryPointForZoomWithTwoFingers");
         BuryPointController.getInstance().setEventName(eventName.toString());
     }
 
@@ -596,6 +568,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         super.onAttachedToWindow();
         getMapview().addGestureObserver(this);
         getMapview().addMapviewObserver(this);
+        Logger.d(TAG, mapType, " onAttachedToWindow");
     }
 
     @Override
@@ -604,6 +577,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         if (ConvertUtils.isEmpty(getMapview())) return;
         getMapview().removeMapviewObserver(this);
         getMapview().removeGestureObserver(this);
+        Logger.d(TAG, mapType, " onDetachedFromWindow");
     }
 
     @Override
@@ -645,6 +619,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 }
             });
         }
+        Logger.d(TAG, mapType, " onMapModeChanged");
     }
 
     @Override
@@ -739,10 +714,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Logger.d(TAG, MAP_TOUCH, " event:" , event);
+        Logger.d(TAG, mapType, " onTouchEvent:", event.getAction());
         if (callback != null) {
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override
@@ -811,13 +786,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 }
             });
         }
-    }
-
-    /**
-     * 设置poi是否可点击
-     */
-    public void setMapLabelClickable(boolean enable) {
-        getMapview().getOperatorGesture().setMapLabelClickable(enable);
     }
 
     @Override
