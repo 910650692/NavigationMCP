@@ -35,7 +35,6 @@ import com.fy.navi.hmi.utils.CaptureScreenUtils;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppCache;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
-import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -46,6 +45,8 @@ import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.base.StackManager;
 
 /**
@@ -54,7 +55,8 @@ import com.fy.navi.ui.base.StackManager;
  * Date: 2025/4/24
  * Description: [在这里描述文件功能]
  */
-public class LauncherWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, CaptureScreenUtils.CaptureScreenCallBack, ComponentCallbacks {
+public class LauncherWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, CaptureScreenUtils.CaptureScreenCallBack, ComponentCallbacks,
+        NaviStatusCallback {
     private static final String TAG = "LauncherWindowService";
     private WindowManager mWindowManager;
     private View mView;
@@ -62,8 +64,9 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private NaviEtaInfo mNaviEtaInfo;
     private NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
-    private NavistatusAdapter mNaviStatusAdapter;
+    private NaviStatusPackage mNaviStatusPackage;
     private LaneInfoEntity mLastLanInfo;
+    private boolean mIsShowLane = false;
     private LayerAdapter mLayerAdapter;
     private final String KEY = "LauncherWindowService";
     private final MapType MAP_TYPE = MapType.MAIN_SCREEN_MAIN_MAP;
@@ -73,6 +76,8 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private boolean isInited = false;
     private boolean mCrossImgIsOnShowing = false;
     private CaptureScreenUtils captureScreenUtils;
+    private String currentNaviStatus;
+
     private LauncherWindowService() {
 
     }
@@ -95,14 +100,13 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         mLayerAdapter = LayerAdapter.getInstance();
         mMapPackage = MapPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
-        mNaviStatusAdapter = NavistatusAdapter.getInstance();
+        mNaviStatusPackage = NaviStatusPackage.getInstance();
         mWindowManager = (WindowManager) AppCache.getInstance().getMContext().getSystemService(WINDOW_SERVICE);
         mFloatManager = FloatViewManager.getInstance();
         currentUiMode = AppCache.getInstance().getMContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        if (ConvertUtils.equals(mNaviStatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-            mNaviEtaInfo = mNaviPackage.getCurrentNaviEtaInfo();
-        }
+        mNaviEtaInfo = mNaviPackage.getCurrentNaviEtaInfo();
         captureScreenUtils = CaptureScreenUtils.getInstance();
+        currentNaviStatus = mNaviStatusPackage.getCurrentNaviStatus();
     }
 
     private void initCallBacks() {
@@ -112,6 +116,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         mFloatManager.bindLauncherService();
         AppCache.getInstance().getMContext().registerComponentCallbacks(this);
         captureScreenUtils.registerListener(this);
+        mNaviStatusPackage.registerObserver(KEY, this);
     }
 
     private void unInitCallBacks() {
@@ -122,6 +127,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 //        mMapPackage.unregisterEGLScreenshotCallBack(KEY, this);
         mFloatManager.unBindLauncherService();
         captureScreenUtils.unRegisterListener(this);
+        mNaviStatusPackage.unregisterObserver(KEY);
     }
 
     private void initClickListener() {
@@ -143,15 +149,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     @Override
     public void onNaviInfo(NaviEtaInfo naviInfoBean) {
         IGuidanceObserver.super.onNaviInfo(naviInfoBean);
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isNull(mBinding)) {
-                mBinding.cardNaviView.setVisibility(View.GONE);
-                mBinding.cardTbtView.setVisibility(View.VISIBLE);
-                if (ConvertUtils.isEmpty(naviInfoBean)) return;
-                mNaviEtaInfo = naviInfoBean;
-                updateTbT();
-            }
-        });
+        updateTbT(naviInfoBean);
     }
 
     @Override
@@ -164,24 +162,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     @Override
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isNull(mBinding)) {
-                mLastLanInfo = laneInfo;
-                mBinding.sceneNaviLanes.setVisibility(isShowLane ? View.VISIBLE : View.GONE);
-                mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfo);
-            }
-        });
-    }
-
-    @Override
-    public void onNaviStop() {
-        IGuidanceObserver.super.onNaviStop();
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isNull(mBinding)) {
-                mBinding.cardNaviView.setVisibility(View.VISIBLE);
-                mBinding.cardTbtView.setVisibility(View.GONE);
-            }
-        });
+        updateLanInfo(isShowLane, laneInfo);
     }
 
     @Override
@@ -231,27 +212,20 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         layoutParams.y = top;
         mWindowManager.addView(mView, layoutParams);
         initClickListener();
-        mBinding.cardTbtView.setVisibility(
-                TextUtils.equals(mNaviStatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING) ? View.VISIBLE : View.GONE
-        );
-        mBinding.cardNaviView.setVisibility(
-                TextUtils.equals(mNaviStatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING) ? View.GONE : View.VISIBLE
-        );
-        if (!ConvertUtils.isNull(mLastLanInfo) && TextUtils.equals(mNaviStatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-            mBinding.sceneNaviLanes.onLaneInfo(true, mLastLanInfo);
-            updateTbT();
-        }
-        if (!ConvertUtils.isNull(mNaviEtaInfo) && TextUtils.equals(mNaviStatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-            updateTbT();
-        }
-        mBinding.ivCross.setVisibility(mCrossImgIsOnShowing ? View.VISIBLE : View.GONE);
+        changeUiTypeOnNaviStatusChanged();
+        updateLanInfo(mIsShowLane, mLastLanInfo);
+        updateTbT(mNaviEtaInfo);
     }
 
-    private void updateTbT() {
-        if (ConvertUtils.isNull(mNaviEtaInfo)) return;
-        mBinding.sceneNaviTbt.onNaviInfo(mNaviEtaInfo);
-        mBinding.sceneNaviEta.onNaviInfo(mNaviEtaInfo);
-        mBinding.sceneNaviTmc.onNaviInfo(mNaviEtaInfo);
+    private void updateTbT(NaviEtaInfo etaInfo) {
+        ThreadManager.getInstance().postUi(() -> {
+            this.mNaviEtaInfo = etaInfo;
+            if (!ConvertUtils.isNull(etaInfo) && !ConvertUtils.isNull(mBinding)) {
+                mBinding.sceneNaviTbt.onNaviInfo(mNaviEtaInfo);
+                mBinding.sceneNaviEta.onNaviInfo(mNaviEtaInfo);
+                mBinding.sceneNaviTmc.onNaviInfo(mNaviEtaInfo);
+            }
+        });
     }
 
     /***
@@ -276,14 +250,14 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     public static void startService() {
         if (TextUtils.equals("buick", BuildConfig.FLAVOR)) return;
-        Logger.i(TAG, "凯迪车型显示悬浮窗口！");
+        Logger.i(TAG, "start service success!");
         ThreadManager.getInstance().postUi(() -> {
             InstanceHolder.instance.init();
         });
     }
 
     public static void stopService() {
-        Logger.i(TAG, "凯迪车型关闭悬浮窗口！");
+        Logger.i(TAG, "stop service success！");
         InstanceHolder.instance.unInit();
     }
 
@@ -296,6 +270,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             } else if (!ConvertUtils.isNull(mView)) {
                 mView.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
                 mView.setFocusable(isShow);
+                changeUiTypeOnNaviStatusChanged();
             } else {
                 initView();
             }
@@ -313,9 +288,6 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     public void changeCrossVisible(boolean isVisible) {
         Logger.i(TAG, "changeCrossVisible:" + isVisible);
         mCrossImgIsOnShowing = isVisible;
-        if (!ConvertUtils.isNull(mBinding)) {
-            mBinding.ivCross.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        }
     }
 
     @Override
@@ -337,9 +309,45 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     @Override
     public void onImageProcessCompleted(@Nullable Bitmap bitmap) {
-        if (!ConvertUtils.isNull(bitmap) && !ConvertUtils.isNull(mBinding)) {
+        if (ConvertUtils.isNull(mBinding)) return;
+        if (!ConvertUtils.isNull(bitmap)) {
             mBinding.ivCross.setImageBitmap(bitmap);
+            mBinding.ivCross.setVisibility(mCrossImgIsOnShowing ? View.VISIBLE : View.GONE);
+        } else {
+            mBinding.ivCross.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onNaviStatusChange(String naviStatus) {
+        Logger.i(TAG, "onNaviStatusChange", naviStatus);
+        this.currentNaviStatus = naviStatus;
+        changeUiTypeOnNaviStatusChanged();
+    }
+
+    private void changeUiTypeOnNaviStatusChanged() {
+        Logger.i(TAG, "changeUiTypeOnNaviStatusChanged", ConvertUtils.isNull(mBinding), ConvertUtils.isNull(mView));
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mBinding) && !ConvertUtils.isNull(mView)) {
+                mBinding.cardTbtView.setVisibility(isOnNavigating() ? View.VISIBLE : View.GONE);
+                mBinding.cardNaviView.setVisibility(isOnNavigating() ? View.GONE : View.VISIBLE);
+            }
+        });
+    }
+
+    private void updateLanInfo(boolean isShowLane, LaneInfoEntity laneInfo) {
+        this.mLastLanInfo = laneInfo;
+        this.mIsShowLane = isShowLane;
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mBinding) && !ConvertUtils.isNull(mView)) {
+                mBinding.sceneNaviLanes.setVisibility(isShowLane ? View.VISIBLE : View.GONE);
+                mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfo);
+            }
+        });
+    }
+
+    private boolean isOnNavigating() {
+        return ConvertUtils.equals(currentNaviStatus, NaviStatus.NaviStatusType.NAVING);
     }
 
     public static LauncherWindowService getInstance() {

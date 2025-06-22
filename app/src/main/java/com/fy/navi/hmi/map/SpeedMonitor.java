@@ -30,7 +30,7 @@ public class SpeedMonitor implements ISpeedCallback {
     private CallBack callBack;
     private VehicleSpeedController mSpeedController;
     private ScheduledFuture scheduledFuture;
-
+    private float currentSpeed;
     public SpeedMonitor() {
 
     }
@@ -54,21 +54,28 @@ public class SpeedMonitor implements ISpeedCallback {
 
     // 处理车速更新的方法 speed单位 km/h
     private void updateSpeed(float speed) {
-        final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviPackage.getInstance().getCurrentNaviType());
-        if (!isReady) {
-            Logger.w(TAG, "当前状态无需计时");
-            cancelTicket();
-            return;
-        }
-        if (speed >= SPEED_THRESHOLD) {
-            if (!isTiming) {
-                startSchedule();
-            } else {
-                Logger.d(TAG, "正在计时当中...");
+        ThreadManager.getInstance().execute(() -> {
+            if (currentSpeed == speed) {
+                Logger.d(TAG, "车速没有发生变化！");
+                return;
             }
-        } else {
-            cancelTicket();
-        }
+            final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviPackage.getInstance().getCurrentNaviType());
+            if (!isReady) {
+                Logger.w(TAG, "当前状态无需计时");
+                cancelTicket();
+                return;
+            }
+            if (speed >= SPEED_THRESHOLD) {
+                if (!isTiming) {
+                    startSchedule();
+                } else {
+                    Logger.d(TAG, "正在计时当中...");
+                }
+            } else {
+                cancelTicket();
+            }
+            currentSpeed = speed;
+        });
     }
 
     @Override
@@ -93,7 +100,9 @@ public class SpeedMonitor implements ISpeedCallback {
             Logger.i(TAG, "onTicketEnd tickNum: " , passedTime);
             cancelTicket();
             if (callBack != null) {
-                callBack.startCruise();
+                ThreadManager.getInstance().postUi(() -> {
+                    callBack.startCruise();
+                });
             } else {
                 Logger.w(TAG, "回调为空，无法开始巡航！");
             }

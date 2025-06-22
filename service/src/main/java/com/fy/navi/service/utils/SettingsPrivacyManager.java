@@ -62,12 +62,16 @@ public class SettingsPrivacyManager implements IPrivacyPermission {
         mPackageName = AppCache.getInstance().getMContext().getPackageName();
         Logger.d(TAG, "PrivacyManager init", mPackageName);
         //注册LOCATION权限变化通知
-        PrivacyDataSourceRepository.getInstance().registerPrivacyPermissionChangeListener(
-                PrivacyBean.Privacy.LOCATION, SettingsPrivacyManager.this);
-        //获取Map所有申请的权限状态
-        List<PrivacyBean> locationApps = PrivacyDataSourceRepository.getInstance()
-                .getAppAllPrivacyList(mPackageName);
-        processMapLocationState(locationApps);
+        try {
+            PrivacyDataSourceRepository.getInstance().registerPrivacyPermissionChangeListener(
+                    PrivacyBean.Privacy.LOCATION, SettingsPrivacyManager.this);
+            //获取Map所有申请的权限状态
+            List<PrivacyBean> locationApps = PrivacyDataSourceRepository.getInstance()
+                    .getAppAllPrivacyList(mPackageName);
+            processMapLocationState(locationApps);
+        } catch (Exception e) {
+            Logger.e(TAG, e.getMessage());
+        }
     }
 
     /**
@@ -142,9 +146,13 @@ public class SettingsPrivacyManager implements IPrivacyPermission {
     public void setLocationPrivacyStatus(final boolean oneYear) {
         List<PrivacyBean.Privacy> privacyList = new ArrayList<>();
         privacyList.add(PrivacyBean.Privacy.LOCATION);
-        final boolean result = PrivacyDataSourceRepository
-                .getInstance().setPrivacyAuthorityUnCertified(mPackageName, privacyList, oneYear);
-        Logger.d(TAG, "setLocationPrivacy", oneYear, result);
+        try {
+            final boolean result = PrivacyDataSourceRepository
+                    .getInstance().setPrivacyAuthorityUnCertified(mPackageName, privacyList, oneYear);
+            Logger.d(TAG, "setLocationPrivacy", oneYear, result);
+        } catch (Exception e) {
+            Logger.e(TAG, "setLocationPrivacy", e.getMessage());
+        }
     }
 
 }
