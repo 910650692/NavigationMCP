@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="traffic_event_icon_bg">#F8F8FA</color>
+    <color name="route_charge_param_color">#CCFFFFFF</color>
 </resources>

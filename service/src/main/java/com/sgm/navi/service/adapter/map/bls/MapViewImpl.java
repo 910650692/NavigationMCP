@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
@@ -68,6 +69,7 @@ import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.engine.EngineAdapter;
 import com.sgm.navi.service.adapter.map.IMapAdapterCallback;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -498,8 +500,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 mapViewParams.getScreenWidth(),
                 mapViewParams.getScreenHeight()
         );
+        initScreenshotParams();
         if (mapViewParams.isOpenScreen()) {
-            initScreenshotParams();
             startScreenshot();
         }
     }
@@ -530,6 +532,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         eglSurfaceAttr.isOnlyCreatePBSurface = true;
         eglSurfaceAttr.width = (int) mapViewParams.getWidth();
         eglSurfaceAttr.height = (int) mapViewParams.getHeight();
+        eglSurfaceAttr.initColor = ResourceUtils.Companion.getInstance().getColor(R.color.route_charge_param_color);
         getDefaultDevice().attachSurfaceToDevice(eglSurfaceAttr);
     }
 
@@ -591,6 +594,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     @Override
     public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
         boolean openScreen = mapViewParams.isOpenScreen();
+        Logger.d(TAG, "onSurfaceChanged", "openScreen", openScreen);
         if (openScreen) startScreenshot();
     }
 
