@@ -153,6 +153,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private long mDownTime;
     private static final int CLICK_THRESHOLD = 200; // ms
     private static final int MOVE_THRESHOLD = 20; // px
+    private long mCurrentViaIndex;
+    // 记录手动提前到达的途经点索引
+    private long mArrivedViaIndex;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -308,6 +311,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             isNaviSuccess = mNaviPackage.startNavigation(false);
         }
         if (isNaviSuccess) {
+            mCurrentViaIndex = 0;
+            mArrivedViaIndex = NumberUtils.NUM_ERROR;
             final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
             if (isAutoScale) {
                 mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -569,6 +574,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onUpdateViaPass(final long viaIndex) {
+        mCurrentViaIndex = viaIndex + 1;
         List<RouteParam> allPoiParamList = OpenApiHelper.getAllPoiParamList(
                 MapType.MAIN_SCREEN_MAIN_MAP);
         // 删除途经点扎标
@@ -750,6 +756,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onUpdateViaPass() {
+        mArrivedViaIndex = mCurrentViaIndex;
+        // 清楚图层的途经点扎标
+        mNaviPackage.removeViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, mArrivedViaIndex + "");
+        // 清楚tbt面板的途经点信息
+        if (mViewModel != null) {
+            mViewModel.onNaviInfoByViaArrived(mNaviEtaInfo);
+        }
         mViewModel.onUpdateViaPass(-1);
     }
 
@@ -1333,5 +1346,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     break;
             }
         }
+    }
+
+    @Override
+    public boolean getIsViaArrived() {
+        boolean isArrive = mArrivedViaIndex == mCurrentViaIndex;
+        Logger.i(TAG, "getIsViaArrived isArrive = ", isArrive,
+                " mArrivedViaIndex = ", mArrivedViaIndex, " mCurrentViaIndex = ", mCurrentViaIndex);
+        return isArrive;
     }
 }

@@ -1236,7 +1236,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * @param newPathId 新的路径id
      */
     public void showMainAndSuggestPath(final long newPathId) {
-        // TODO 后续这边要加上推荐路线的推荐扎标，比如快多少分钟等等的
         Logger.i(TAG, "showMainAndSuggestPath");
         PathInfo currentPathInfo = OpenApiHelper.getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
         PathInfo suggestPathInfo = OpenApiHelper.getPathInfo(

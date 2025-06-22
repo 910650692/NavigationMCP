@@ -287,6 +287,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param naviEtaInfo navi eta info
      */
     public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
+        if (ConvertUtils.isEmpty(naviEtaInfo)) {
+            return;
+        }
         mBinding.sceneNaviTbt.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviEta.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);
@@ -466,6 +469,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param list 途径点列表
      */
     public void updateViaListState(List<NaviViaEntity> list) {
+        if (ConvertUtils.isEmpty(list)) {
+            return;
+        }
         if (mViewModel != null) {
             mViewModel.saveViaList(list);
         }
@@ -481,14 +487,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     public void onUpdateViaPass(final long viaIndex) {
         mBinding.sceneNaviViaInfo.onUpdateViaPass(viaIndex);
-        mBinding.sceneNaviViaArrive.onUpdateViaPass(viaIndex);
     }
 
     /**
      * 开始导航
      */
     public void startNavigation() {
-        mBinding.sceneNaviViaArrive.startNavigation();
         mBinding.sceneNaviViaInfo.startNavigation();
     }
 
@@ -825,5 +829,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                 mSceneNaviViaListView.getVisibility() == VISIBLE) {
             mSceneNaviViaListView.updateSceneVisible(false);
         }
+    }
+
+    public void onNaviInfoByViaArrived(NaviEtaInfo naviEtaInfo) {
+        if (ConvertUtils.isEmpty(naviEtaInfo)) {
+            return;
+        }
+        mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);
     }
 }

@@ -79,7 +79,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
     public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
         if (mScreenViewModel != null) {
-            mScreenViewModel.addSceneCallback(sceneCallback);
+            mScreenViewModel.addCallBack(sceneCallback);
         }
     }
 
@@ -88,7 +88,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
      * @param str 途经点名称
      * @param listSize 0
      */
-    public void onArriveVia(final String str, final int listSize) {
+    public void onArriveVia(final String str) {
         Logger.i(TAG, "onArriveVia: ", str);
         mViewBinding.stvWay.setText(str);
         mViewBinding.stvWayArrive.setVisibility(VISIBLE);

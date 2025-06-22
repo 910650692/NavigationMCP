@@ -239,9 +239,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         mNaviViaEntityList.clear();
         mNaviViaEntityList.addAll(list);
         addBatteryLeftData();
-        if (!ConvertUtils.isEmpty(mNaviViaEntityList)) {
-            mNaviViaListAdapter.notifyList(mNaviViaEntityList);
-        }
+        notifyList();
     }
 
     /**
@@ -264,7 +262,14 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         mElectVehicleETAInfoList.clear();
         mElectVehicleETAInfoList.addAll(infos);
         addBatteryLeftData();
+        notifyList();
+    }
+
+    private void notifyList() {
         if (!ConvertUtils.isEmpty(mNaviViaEntityList)) {
+            if (mISceneCallback != null) {
+                mNaviViaListAdapter.setIsViaArrived(mISceneCallback.getIsViaArrived());
+            }
             mNaviViaListAdapter.notifyList(mNaviViaEntityList);
         }
     }

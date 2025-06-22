@@ -254,4 +254,8 @@ public interface ISceneCallback {
     default Activity getActivity() {
         return null;
     }
+
+    default boolean getIsViaArrived() {
+        return false;
+    }
 }

@@ -33,6 +33,7 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
     private final List<NaviViaEntity> mList;
     private INaviViaItemClickListener onItemClickListener;
     private int powerType;
+    private boolean mIsViaArrived = false;
 
     public List<NaviViaEntity> getData() {
         return mList;
@@ -58,6 +59,10 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
         notifyDataSetChanged();
     }
 
+    public void setIsViaArrived(boolean isArrived) {
+        mIsViaArrived = isArrived;
+    }
+
     public void removeData(NaviViaEntity entity) {
         int pos = mList.indexOf(entity);
         if (pos < 0) return;
@@ -77,6 +82,17 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ResultHolder holder, int position) {
         Logger.d(TAG, "NaviAddViaAdapter onBindViewHolder " + position);
+        int dataSize = mList.size();
+        NaviViaEntity data = mList.get(position);
+        if (mIsViaArrived && dataSize > 1) {
+            // 如果途经点已到达，且数据大于1，则不显示最后一个途经点
+            if (position + 1 < dataSize) {
+                data = mList.get(position + 1);
+            }
+            dataSize = dataSize - 1;
+        }
+        final int dataSizeFinal = dataSize;
+        final NaviViaEntity dataFinal = data;
         // 非电动车不显示到达电量显示
         if (powerType != 1) {
             holder.itemBinding.stvAddViaElec.setVisibility(GONE);
@@ -84,22 +100,20 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
         } else {
             holder.itemBinding.stvAddViaElec.setVisibility(VISIBLE);
             holder.itemBinding.sivAddViaElec.setVisibility(VISIBLE);
-            setChargeUi(mList.get(position).getArriveBatteryLeft(),
+            setChargeUi(dataFinal.getArriveBatteryLeft(),
                     holder.itemBinding.sivAddViaElec, holder.itemBinding.stvAddViaElec);
         }
-        NaviViaEntity naviViaEntity = mList.get(position);
-        String name = TextUtils.isEmpty(naviViaEntity.getName()) ?
-                holder.itemBinding.getRoot().getContext().getString(R.string.navi_unknown_address) : mList.get(position).getName();
+        String name = TextUtils.isEmpty(dataFinal.getName()) ?
+                holder.itemBinding.getRoot().getContext().getString(R.string.navi_unknown_address) : dataFinal.getName();
         holder.itemBinding.stvAddViaName.setText(name);
-//        holder.itemBinding.setViaBean(naviViaEntity);
-        String distance = naviViaEntity.getDistance();
-        String arriveTime = naviViaEntity.getArriveTime();
-        String arriveDay = naviViaEntity.getArriveDay();
+        String distance = dataFinal.getDistance();
+        String arriveTime = dataFinal.getArriveTime();
+        String arriveDay = dataFinal.getArriveDay();
         String none = holder.itemBinding.getRoot().getContext().getString(R.string.navi_none);
         holder.itemBinding.stvAddViaDistance.setText(distance == null ? none : distance);
         holder.itemBinding.stvArriveTime.setText(arriveTime == null ? none : arriveTime);
         holder.itemBinding.stvArrivalDay.setText(arriveDay);
-        if (position == mList.size() - 1) {
+        if (position == dataSizeFinal - 1) {
             holder.itemBinding.stvAddViaIcon.setBackgroundResource(R.drawable.img_navi_via_item_btn_end);
             holder.itemBinding.stvAddViaIcon.setText(R.string.navi_via_item_end);
             holder.itemBinding.llActionContainer.setVisibility(GONE);
@@ -113,9 +127,10 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
         holder.itemBinding.clContent.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 if (!ConvertUtils.isEmpty(mList)) {
-                    Logger.d(TAG, "NaviAddViaAdapter item click " + position + ",mList：" + mList.size());
-                    if (mList.size() > 1 && (position != mList.size() - 1)) {
-                        onItemClickListener.onItemClick(position, mList.get(position));
+                    Logger.d(TAG, "NaviAddViaAdapter item click ", position + ",mList：",
+                            dataSizeFinal);
+                    if (dataSizeFinal > 1 && (position != dataSizeFinal - 1)) {
+                        onItemClickListener.onItemClick(position, dataFinal);
                         holder.itemBinding.swipeMenuLayout.smoothClose();
                     }
                 }
@@ -123,10 +138,11 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
         });
 
         holder.itemBinding.llActionContainer.setOnClickListener(v -> {
-            Logger.d(TAG, "NaviAddViaAdapter item click del " + position + ",mList：" + mList.size());
+            Logger.d(TAG, "NaviAddViaAdapter item click del ", position, ",mList：",
+                    dataSizeFinal);
             holder.itemBinding.swipeMenuLayout.smoothClose();
             if (onItemClickListener != null) {
-                onItemClickListener.onDelClick(position, mList.get(position));
+                onItemClickListener.onDelClick(position, dataFinal);
             }
         });
     }
@@ -166,8 +182,14 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
 
     @Override
     public int getItemCount() {
-        Logger.d(TAG, "NaviAddViaAdapter getItemCount " + mList.size());
-        return mList.size();
+        int size = ConvertUtils.isEmpty(mList) ? 0 : mList.size();
+        Logger.d(TAG, "NaviAddViaAdapter getItemCount ", size, " mIsViaArrived = ",
+                mIsViaArrived);
+        if (mIsViaArrived && size > 1) {
+            // 如果途经点已到达，且数据大于1，则不显示最后一个途经点
+            return size - 1;
+        }
+        return size;
     }
 
     public static class ResultHolder extends RecyclerView.ViewHolder {

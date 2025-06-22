@@ -43,7 +43,6 @@ import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -174,11 +173,11 @@ public class BaseNaviGuidanceViewModel extends
         final Boolean b = mNaviViaListVisibility.get();
         final boolean visible = Boolean.FALSE.equals(b);
         final List<NaviViaEntity> viaList = mModel.getViaList();
-        mView.showNaviViaList(visible);
         if (!ConvertUtils.isEmpty(viaList)) {
             mView.updateViaListState(viaList);
             mModel.updateViaListState(viaList);
         }
+        mView.showNaviViaList(visible);
     }
 
     /**
@@ -321,6 +320,10 @@ public class BaseNaviGuidanceViewModel extends
         mModelSaveEntity.setNaviEtaInfo(naviEtaInfo);
         updateRouteName(naviEtaInfo);
         mView.onNaviInfo(naviEtaInfo);
+    }
+
+    public void onNaviInfoByViaArrived(final NaviEtaInfo naviEtaInfo) {
+        mView.onNaviInfoByViaArrived(naviEtaInfo);
     }
 
     /**
@@ -832,5 +835,12 @@ public class BaseNaviGuidanceViewModel extends
         if (mView != null) {
             mView.onMapClick();
         }
+    }
+
+    public boolean getIsViaArrived() {
+        if (mModel != null) {
+            return mModel.getIsViaArrived();
+        }
+        return false;
     }
 }

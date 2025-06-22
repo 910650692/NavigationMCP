@@ -13,6 +13,7 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.route.RouteParam;
+import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.ArrayList;
@@ -46,6 +47,12 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
      */
     public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
         mNaviEtaInfo = naviEtaInfo;
+        if (mCallBack != null && mCallBack.getIsViaArrived()) {
+            if (!ConvertUtils.isEmpty(mNaviEtaInfo.viaRemain) &&
+                    mNaviEtaInfo.viaRemain.size() <= 1) {
+                return;
+            }
+        }
         checkWaypointInfo(naviEtaInfo);
     }
 
@@ -138,7 +145,13 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
         hideViaArrivedPop();
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
         if (!ConvertUtils.isEmpty(allPoiParamList) && allPoiParamList.size() >= 3) {
-            mScreenView.onArriveVia(allPoiParamList.get(1).getName(), 0);
+            mScreenView.onArriveVia(allPoiParamList.get(1).getName());
+        }
+        if (viaIndex == NumberUtils.NUM_ERROR) {
+            if (!ConvertUtils.isEmpty(mNaviEtaInfo.viaRemain) &&
+                    mNaviEtaInfo.viaRemain.size() <= 1) {
+                updateSceneVisible(false);
+            }
         }
     }
 

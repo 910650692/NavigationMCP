@@ -53,9 +53,6 @@ public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveView
                             getString(R.string.is_arrived),
                     allPoiParamList.get(1).getName()));
         }
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_VIA_ARRIVED_POP, true);
-        }
     }
 
     @Override
@@ -83,17 +80,4 @@ public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveView
     protected void initObserver() {
     }
 
-    /**
-     * @param viaIndex 途经点index
-     */
-    public void onUpdateViaPass(final long viaIndex) {
-        Logger.i(TAG, "onUpdateViaPass viaIndex = ", viaIndex);
-    }
-
-    /**
-     * 开始导航
-     */
-    public void startNavigation() {
-        Logger.i(TAG, "startNavigation");
-    }
 }
