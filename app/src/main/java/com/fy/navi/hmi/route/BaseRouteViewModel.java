@@ -1193,7 +1193,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param routeLineInfos 列表数据
      */
     public void setRouteResultListUI(final List<RouteLineInfo> routeLineInfos) {
-        ThreadManager.getInstance().postUi(() -> mView.setRouteResultListUI(routeLineInfos));
+        mView.setRouteResultListUI(routeLineInfos);
     }
 
     /***
@@ -1832,11 +1832,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         //设置偏好设置
         mCurrentPreferences = mModel.getPreferences();
         Logger.d(TAG, "mCurrentPreferences: " + mCurrentPreferences);
-    }
-
-    @Override
-    public void onResultListUpdate() {
-        //路线刷新完毕
     }
 
     @Override

@@ -355,11 +355,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_ROUTE_LIST)
     public void setRouteResultListUI(final List<RouteLineInfo> routeLineInfos) {
-        if (null == mRouteListPageView) {
-            Logger.e(TAG, "mRouteListPageView = null");
-            return;
-        }
-        if (!ConvertUtils.isEmpty(mBinding) && !ConvertUtils.isEmpty(mRouteListPageView.routeLineInfoSceneRouteResult)) {
+        if (!ConvertUtils.isEmpty(mRouteListPageView) && !ConvertUtils.isEmpty(mRouteListPageView.routeLineInfoSceneRouteResult)) {
             mRouteListPageView.routeLineInfoSceneRouteResult.notifyResultList(routeLineInfos);
         } else {
             Logger.e(TAG, ROUTE_ERROR);

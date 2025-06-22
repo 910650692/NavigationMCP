@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.api.route.ISceneRouteSelectCallBack;
 import com.fy.navi.scene.databinding.SceneRouteResultListViewBinding;
@@ -103,13 +104,7 @@ public class SceneRouteResultListView extends BaseSceneView<SceneRouteResultList
      * @param routeLineInfos 列表数据
      * */
     public void notifyResultList(final List<RouteLineInfo> routeLineInfos) {
-        mAdapter.setRouteBeanList(routeLineInfos);
-        for (ISceneRouteSelectCallBack callBack : mSceneRouteSelectCallBackHashtable.values()) {
-            if (ConvertUtils.isEmpty(callBack)) {
-                continue;
-            }
-            callBack.onResultListUpdate();
-        }
+        ThreadManager.getInstance().postUi(() -> mAdapter.setRouteBeanList(routeLineInfos));
     }
     /**
      * 更新列表选中item

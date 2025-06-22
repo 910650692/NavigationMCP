@@ -1196,6 +1196,11 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
 
     @Override
     public void onSilentSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+        if (!RoutePackage.getInstance().isRouteState()) {
+            mParkSearchId = -1;
+            mEndSearchId = -1;
+            return;
+        }
         if (mParkSearchId == taskId) {
             if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()
                     && mRoutePackage.isRouteState()) {
