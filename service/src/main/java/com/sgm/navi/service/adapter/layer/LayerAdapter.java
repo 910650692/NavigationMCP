@@ -192,6 +192,10 @@ public class LayerAdapter {
         return mLayerApi.setPathVisible(mapTypeId, index, isVisible);
     }
 
+    public boolean setPathVisible(MapType mapTypeId, long pathId, boolean isVisible) {
+        return mLayerApi.setPathVisible(mapTypeId, pathId, isVisible);
+    }
+
     /*删除途经点*/
     public void removeViaPoint(MapType mapTypeId, String pid) {
         mLayerApi.removeViaPoint(mapTypeId, pid);

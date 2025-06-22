@@ -145,6 +145,11 @@ public class LayerAdapterImplD implements ILayerApi {
     }
 
     @Override
+    public boolean setPathVisible(MapType mapTypeId, long pathId, boolean isVisible) {
+        return true;
+    }
+
+    @Override
     public boolean updatePathInfo(MapType mapTypeId, ArrayList<?> pathInfoList, int selectIndex) {
         return true;
     }

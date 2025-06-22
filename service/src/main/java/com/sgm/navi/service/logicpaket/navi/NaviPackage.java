@@ -847,10 +847,15 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (ConvertUtils.isEmpty(pathIDList)) {
             return;
         }
-        Logger.i(TAG, GsonUtils.toJson(pathIDList));
-        for (Long pathId : pathIDList) {
-            //todo清除该路线
-        }
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onDeletePath(pathIDList);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -1355,5 +1360,16 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mLayerAdapter.clearLabelItem(mapTypeId);
             mLayerAdapter.setCarLogoVisible(mapTypeId, true);
         });
+    }
+
+
+    /**
+     * 隐藏分歧备选路线
+     *
+     * @param pathId    路线唯一标识符
+     * @param isVisible 路线是否显示 -> 隐藏需传入false
+     */
+    public void setPathVisible(MapType mapType, long pathId, boolean isVisible) {
+        mLayerAdapter.setPathVisible(mapType, pathId, isVisible);
     }
 }

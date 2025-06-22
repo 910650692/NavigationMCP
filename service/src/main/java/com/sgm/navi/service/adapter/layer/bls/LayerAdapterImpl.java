@@ -234,6 +234,10 @@ public class LayerAdapterImpl implements ILayerApi {
         return layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setPathVisible(index, isVisible);
     }
 
+    public boolean setPathVisible(MapType mapTypeId, long pathId, boolean isVisible) {
+        return layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setPathVisible(pathId, isVisible);
+    }
+
     /**
      * 选择路线
      *

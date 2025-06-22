@@ -738,6 +738,32 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     }
 
     /**
+     * 隐藏分歧备选路线
+     *
+     * @param pathId    隐藏路线id -> 通过getPathId获取
+     * @param isVisible 路线是否显示 -> 隐藏需传入false
+     */
+    public boolean setPathVisible(long pathId, boolean isVisible) {
+        Logger.i(TAG, "setPathVisible pathId " + pathId + " isVisible " + isVisible);
+        ArrayList<RoutePathLayer> routePathLayers = getLayerGuideRouteControl().getRoutePathLayers();
+        if (ConvertUtils.isEmpty(routePathLayers)) {
+            Logger.e(TAG, "setPathVisible routePathLayers == null");
+            return false;
+        }
+        for (RoutePathLayer routePathLayer : routePathLayers) {
+            if (ConvertUtils.isEmpty(routePathLayer)) {
+                continue;
+            }
+            if (routePathLayer.getPathID() == pathId) {
+                routePathLayer.setVisible(isVisible);
+                Logger.d(TAG, "setPathVisible success pathId " + pathId);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 更新引导路线数据
      *
      * @param pathInfoList 路线数据

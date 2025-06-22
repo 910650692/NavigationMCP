@@ -207,6 +207,8 @@ public interface IGuidanceObserver {
 
     }
 
+    default void onDeletePath(ArrayList<Long> pathIDList) {}
+
     /**
      * 更优路线回调
      * @param newPathID 新道路id

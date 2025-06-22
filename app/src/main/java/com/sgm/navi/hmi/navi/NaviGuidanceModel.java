@@ -1358,4 +1358,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 " mArrivedViaIndex = ", mArrivedViaIndex, " mCurrentViaIndex = ", mCurrentViaIndex);
         return isArrive;
     }
+
+    public void onDeletePath(ArrayList<Long> pathIDList) {
+        if (!ConvertUtils.isEmpty(pathIDList)) {
+            for (long pathId : pathIDList) {
+                Logger.i(TAG, "onDeletePath pathId = ", pathId);
+                mNaviPackage.setPathVisible(MapType.MAIN_SCREEN_MAIN_MAP, pathId, false);
+            }
+        }
+    }
 }

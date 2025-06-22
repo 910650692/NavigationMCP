@@ -110,6 +110,8 @@ public interface ILayerApi {
      */
     boolean setPathVisible(MapType mapTypeId, int index, boolean isVisible);
 
+    boolean setPathVisible(MapType mapTypeId, long pathId, boolean isVisible);
+
     /**
      * 更新引导路线数据
      *
