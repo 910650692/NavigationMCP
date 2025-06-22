@@ -40,6 +40,7 @@ import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.account.AccountQRCodeLoginFragment;
@@ -468,6 +469,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             addFavoriteToMap();
             speedMonitor.registerSpeedCallBack();
             processExportCommand();
+            //如果处于导航状态，并且是全览或者是固定全览，从后台切到前台，进入全览
+            if(mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() || naviPackage.getPreviewStatus())){
+                OpenApiHelper.enterPreview(mapTypeId);
+            }
         }
     }
 
