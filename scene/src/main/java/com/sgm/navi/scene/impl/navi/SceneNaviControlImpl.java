@@ -159,6 +159,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         if (mNaviPackage.getFixedOverViewStatus()) {
             //退出固定全览
             mNaviPackage.setFixedOverViewStatus(false);
+            setImmersiveStatus(ImersiveStatus.IMERSIVE);
             exitPreview();
         } else { // 非固定全览下退出全览
             setImmersiveStatus(ImersiveStatus.TOUCH);

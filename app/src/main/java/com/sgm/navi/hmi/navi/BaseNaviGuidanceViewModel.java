@@ -428,10 +428,10 @@ public class BaseNaviGuidanceViewModel extends
         Logger.i(TAG, "onImmersiveStatusChange固定全览：",
                 NaviPackage.getInstance().getFixedOverViewStatus(),
                 " currentImersiveStatus:", currentImersiveStatus);
+        mView.onImmersiveStatusChange(currentImersiveStatus);
         // 1036921 继续导航显示的时候不显示当前道路名称
         mNaviRouteNameVisibility.set((currentImersiveStatus == ImersiveStatus.IMERSIVE) &&
                 Boolean.FALSE.equals(mNaviContinueVisibility.get()));
-        mView.onImmersiveStatusChange(currentImersiveStatus);
     }
 
     /**
