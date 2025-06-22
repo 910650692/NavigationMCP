@@ -8,11 +8,11 @@
 
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.favorite.HomeCompanyViewModel" />
+            type="com.sgm.navi.hmi.favorite.HomeCompanyViewModel" />
     </data>
 
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.mRootClick}"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -30,16 +30,16 @@
             android:orientation="vertical"
             app:defaultFocusOverridesHistory="true"
             app:wrapAround="true">
-            <com.fy.navi.scene.ui.favorite.SceneHomeCompanyView
+            <com.sgm.navi.scene.ui.favorite.SceneHomeCompanyView
                 android:id="@+id/home_company_view"
                 android:layout_width="@dimen/dp_922"
                 android:layout_height="@dimen/dp_456" />
 
-            <com.fy.navi.scene.ui.search.SceneSearchHistoryView
+            <com.sgm.navi.scene.ui.search.SceneSearchHistoryView
                 android:id="@+id/scene_nested_scroll_view"
                 android:layout_width="@dimen/dp_922"
                 android:layout_height="@dimen/dp_728"
                 android:layout_marginTop="@dimen/dp_m_82" />
         </com.android.car.ui.FocusArea>
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

@@ -7,17 +7,17 @@
 
         <variable
             name="ScenePoiDetailContentView"
-            type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+            type="com.sgm.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_scenic_spot_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_scenic_spot_price"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="¥35" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_scenic_spot_mark_value"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="4.7" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_scenic_spot_mark_layout"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_48"
@@ -56,38 +56,38 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/poi_scenic_spot_price">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_scenic_spot_mark_img1"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
                 android:src="@drawable/img_collect_48" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_scenic_spot_mark_img2"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
                 android:src="@drawable/img_collect_48" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_scenic_spot_mark_img3"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
                 android:src="@drawable/img_collect_48" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_scenic_spot_mark_img4"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
                 android:src="@drawable/img_collect_48" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_scenic_spot_mark_img5"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
                 android:src="@drawable/img_collect2_48" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinRecyclerView
+        <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/poi_scenic_spot_child_list"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_scenic_spot_price" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/poi_scenic_spot_child_expand_collapse"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
@@ -114,7 +114,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_scenic_spot_child_list" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_scenic_spot_hours_title"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
             app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line"
             tools:text="营业时间:" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_scenic_spot_hours_layout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
             app:layout_constraintStart_toEndOf="@+id/poi_scenic_spot_hours_title"
             app:layout_constraintTop_toTopOf="@+id/poi_scenic_spot_hours_title">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_scenic_spot_hours_content"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -144,15 +144,15 @@
                 android:textSize="@dimen/sp_38"
                 tools:text="营业时间：09:00 -- 21:00"/>
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_business_icon"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
                 android:src="@drawable/img_under_the_48" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_scenic_spot_phone"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -163,7 +163,7 @@
             app:layout_constraintTop_toBottomOf="@+id/poi_scenic_spot_hours_layout"
             tools:text="电话： "/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/poi_phone_icon"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -171,5 +171,5 @@
             app:layout_constraintStart_toEndOf="@+id/poi_scenic_spot_phone"
             app:layout_constraintTop_toTopOf="@+id/poi_scenic_spot_phone"/>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

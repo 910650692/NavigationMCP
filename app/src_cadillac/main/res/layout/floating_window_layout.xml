@@ -6,7 +6,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.fy.navi.ui.view.SkinCardView
+        <com.sgm.navi.ui.view.SkinCardView
             android:id="@+id/card_navi_view"
             android:layout_width="@dimen/dp_600"
             android:layout_height="@dimen/dp_152"
@@ -17,11 +17,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_home"
                     android:layout_width="@dimen/dp_92"
                     android:layout_height="@dimen/dp_92"
@@ -32,7 +32,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_bus"
                     android:layout_width="@dimen/dp_92"
                     android:layout_height="@dimen/dp_92"
@@ -42,7 +42,7 @@
                     app:layout_constraintStart_toEndOf="@id/sk_iv_basic_home"
                     app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_search"
                     android:layout_width="@dimen/dp_92"
                     android:layout_height="@dimen/dp_92"
@@ -50,11 +50,11 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
                     app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinCardView>
+        </com.sgm.navi.ui.view.SkinCardView>
 
-        <com.fy.navi.ui.view.SkinCardView
+        <com.sgm.navi.ui.view.SkinCardView
             android:id="@+id/card_tbt_view"
             android:layout_width="@dimen/dp_820"
             android:layout_height="wrap_content"
@@ -66,12 +66,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_top_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.fy.navi.scene.ui.navi.SceneNaviTbtView
+                <com.sgm.navi.scene.ui.navi.SceneNaviTbtView
                     android:id="@+id/scene_navi_tbt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_cross"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
 
-                <com.fy.navi.scene.ui.navi.SceneNaviEtaView
+                <com.sgm.navi.scene.ui.navi.SceneNaviEtaView
                     android:id="@+id/scene_navi_eta"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/iv_cross" />
 
-                <com.fy.navi.scene.ui.navi.SceneNaviTmcView
+                <com.sgm.navi.scene.ui.navi.SceneNaviTmcView
                     android:id="@+id/scene_navi_tmc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
 
-                <com.fy.navi.scene.ui.navi.SceneNaviLanesView
+                <com.sgm.navi.scene.ui.navi.SceneNaviLanesView
                     android:id="@+id/scene_navi_lanes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -121,8 +121,8 @@
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_lanes" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
-        </com.fy.navi.ui.view.SkinCardView>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/ly_descendants_view"
         android:layout_width="@dimen/dp_814"
         android:layout_height="@dimen/dp_176"
@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_supplement_total_mileage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_charge_start"
             android:layout_width="@dimen/dp_34"
             android:layout_height="@dimen/dp_34"
@@ -52,7 +52,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/route_charge_progress_icons"
             android:layout_width="@dimen/dp_678"
             android:layout_height="match_parent"
@@ -60,7 +60,7 @@
             app:layout_constraintStart_toStartOf="@+id/route_charge_progress"
             app:layout_constraintEnd_toEndOf="@+id/route_charge_progress"/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_charge_end"
             android:layout_width="@dimen/dp_34"
             android:layout_height="@dimen/dp_34"
@@ -70,7 +70,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_charge_total_mileage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,6 +83,6 @@
 
 
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

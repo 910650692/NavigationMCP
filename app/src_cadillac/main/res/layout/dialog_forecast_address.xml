@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1424"
             android:layout_height="@dimen/dp_595"
             android:layout_marginTop="@dimen/dp_601"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/forecast_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/forecast_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/forecast_title"
                 app:layout_constraintLeft_toLeftOf="@+id/forecast_title" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/forecast_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                 app:layout_constraintLeft_toRightOf="@+id/forecast_content"
                 app:layout_constraintTop_toTopOf="@+id/forecast_content" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/dialog_button_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                 app:layout_constraintStart_toStartOf="@+id/forecast_content"
                 app:layout_constraintTop_toBottomOf="@+id/forecast_content">
 
-                <com.fy.navi.ui.view.SkinButton
+                <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dialog_commit"
                     android:layout_width="@dimen/dp_420"
                     android:layout_height="@dimen/dp_100"
@@ -84,7 +84,7 @@
                     android:textColor="@color/dialog_commit_text_white"
                     android:textSize="@dimen/sp_38" />
 
-                <com.fy.navi.ui.view.SkinButton
+                <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dialog_cancel"
                     android:layout_width="@dimen/dp_420"
                     android:layout_marginStart="@dimen/dp_40"
@@ -94,8 +94,8 @@
                     android:textColor="@color/dialog_cancel_text_b3181818"
                     android:textSize="@dimen/sp_38" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

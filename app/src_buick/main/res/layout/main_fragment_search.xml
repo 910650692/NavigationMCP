@@ -8,27 +8,27 @@
 
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.search.mainsearch.MainSearchViewModel" />
+            type="com.sgm.navi.hmi.search.mainsearch.MainSearchViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.RootClick}"
         android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
         android:clickable="true"
         android:orientation="vertical">
 
-        <com.fy.navi.scene.ui.search.SceneMainSearchTopPartView
+        <com.sgm.navi.scene.ui.search.SceneMainSearchTopPartView
             android:id="@+id/search_view"
             android:layout_width="@dimen/dp_698"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.fy.navi.scene.ui.search.SceneMainSearchBottomPartView
+        <com.sgm.navi.scene.ui.search.SceneMainSearchBottomPartView
             android:id="@+id/scene_nested_scroll_view"
             android:layout_width="@dimen/dp_698"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_m_38" />
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

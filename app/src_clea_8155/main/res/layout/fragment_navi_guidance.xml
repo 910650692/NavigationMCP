@@ -9,22 +9,22 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.navi.NaviGuidanceViewModel" />
+            type="com.sgm.navi.hmi.navi.NaviGuidanceViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/skl_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/dp_96">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/navi_scene_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <!--上部分的父布局-->
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_top_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <!--tbt-->
-                <com.fy.navi.scene.ui.navi.SceneNaviTbtView
+                <com.sgm.navi.scene.ui.navi.SceneNaviTbtView
                     android:id="@+id/scene_navi_tbt"
                     clickCommand="@{ViewModel.mNaviAddVia}"
                     android:layout_width="@dimen/dp_545"
@@ -47,7 +47,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <!--路口大图区域 -->
-                <com.fy.navi.scene.ui.navi.SceneNaviCrossImageView
+                <com.sgm.navi.scene.ui.navi.SceneNaviCrossImageView
                     android:id="@+id/scene_navi_cross_image"
                     android:layout_width="@dimen/dp_545"
                     android:layout_height="@dimen/dp_334"
@@ -56,7 +56,7 @@
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt"
                     tools:visibility="gone" />
                 <!--eta信息-->
-                <com.fy.navi.scene.ui.navi.SceneNaviEtaView
+                <com.sgm.navi.scene.ui.navi.SceneNaviEtaView
                     android:id="@+id/scene_navi_eta"
                     clickCommand="@{ViewModel.mNaviAddVia}"
                     android:layout_width="@dimen/dp_545"
@@ -66,7 +66,7 @@
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_cross_image" />
                 <!--路况条-->
-                <com.fy.navi.scene.ui.navi.SceneNaviTmcView
+                <com.sgm.navi.scene.ui.navi.SceneNaviTmcView
                     android:id="@+id/scene_navi_tmc"
                     clickCommand="@{ViewModel.mNaviAddVia}"
                     android:layout_width="@dimen/dp_545"
@@ -78,7 +78,7 @@
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
                 <!--车道线-->
-                <com.fy.navi.scene.ui.navi.SceneNaviLanesView
+                <com.sgm.navi.scene.ui.navi.SceneNaviLanesView
                     android:id="@+id/scene_navi_lanes"
                     clickCommand="@{ViewModel.mNaviAddVia}"
                     android:layout_width="@dimen/dp_545"
@@ -90,7 +90,7 @@
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc" />
                 <!--显示经过途经点信息-->
-                <com.fy.navi.scene.ui.navi.SceneNaviViaInfoView
+                <com.sgm.navi.scene.ui.navi.SceneNaviViaInfoView
                     android:id="@+id/scene_navi_via_info"
                     clickCommand="@{ViewModel.mNaviAddVia}"
                     android:layout_width="@dimen/dp_545"
@@ -109,7 +109,7 @@
                     android:layout="@layout/scene_navi_via_list_view_stub"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier"
@@ -130,7 +130,7 @@
                 android:layout_marginTop="@dimen/dp_m_51"/>
 
             <!--悬挂卡-->
-            <com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHangingCard
+            <com.sgm.navi.scene.ui.navi.hangingcard.NaviSceneHangingCard
                 android:id="@+id/scene_handing_card"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -141,7 +141,7 @@
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
 
             <!--悬挂卡详情-->
-            <com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHandingCardDetail
+            <com.sgm.navi.scene.ui.navi.hangingcard.NaviSceneHandingCardDetail
                 android:id="@+id/scene_navi_card_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
 
             <!--控制tools-->
-            <com.fy.navi.scene.ui.navi.SceneNaviControlView
+            <com.sgm.navi.scene.ui.navi.SceneNaviControlView
                 android:id="@+id/scene_navi_control"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -171,7 +171,7 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <!--导航路线偏好-->
-            <com.fy.navi.scene.ui.navi.SceneNaviPreferenceView
+            <com.sgm.navi.scene.ui.navi.SceneNaviPreferenceView
                 android:id="@+id/scene_navi_preference"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
             <!--限速-->
-            <com.fy.navi.scene.ui.navi.SceneNaviSpeedView
+            <com.sgm.navi.scene.ui.navi.SceneNaviSpeedView
                 android:id="@+id/scene_navi_speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -200,7 +200,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
             <!--当前路名-->
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_607"
@@ -211,7 +211,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/scl_top_container">
 
-                <com.fy.navi.scene.ui.navi.view.ButtonText
+                <com.sgm.navi.scene.ui.navi.view.ButtonText
                     android:id="@+id/stv_navi_route_name"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_92"
@@ -222,10 +222,10 @@
                     android:textColor="@color/common_title_purple_color"
                     android:textSize="@dimen/sp_34"
                     tools:text="申港大道" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <!--最后一公里-->
-            <com.fy.navi.scene.ui.navi.SceneNaviLastMileView
+            <com.sgm.navi.scene.ui.navi.SceneNaviLastMileView
                 android:id="@+id/scene_navi_last_mile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -234,7 +234,7 @@
                 app:layout_constraintStart_toEndOf="@id/scl_top_container"
                 app:layout_constraintTop_toTopOf="@id/scl_top_container" />
             <!--主辅路/桥上桥下-->
-            <com.fy.navi.scene.ui.navi.SceneNaviParallelView
+            <com.sgm.navi.scene.ui.navi.SceneNaviParallelView
                 android:id="@+id/scene_navi_parallel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -244,7 +244,7 @@
                 app:layout_constraintStart_toEndOf="@id/scl_top_container"
                 tools:visibility="visible" />
             <!--途经点到达提示-->
-            <com.fy.navi.scene.ui.navi.SceneNaviViaArriveView
+            <com.sgm.navi.scene.ui.navi.SceneNaviViaArriveView
                 android:id="@+id/scene_navi_via_arrive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -263,7 +263,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.scene.ui.navi.SceneNaviChargeTipView
+            <com.sgm.navi.scene.ui.navi.SceneNaviChargeTipView
                 android:id="@+id/scene_navi_charge_tip"
                 android:layout_width="@dimen/dp_545"
                 android:layout_height="wrap_content"
@@ -274,10 +274,10 @@
                 app:layout_constraintStart_toStartOf="@id/scl_top_container"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <!--继续导航按钮-->
-        <com.fy.navi.scene.ui.navi.SceneNaviContinueView
+        <com.sgm.navi.scene.ui.navi.SceneNaviContinueView
             android:id="@+id/scene_navi_continue"
             android:layout_width="@dimen/dp_310"
             android:layout_height="@dimen/dp_92"
@@ -287,7 +287,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.fy.navi.scene.ui.navi.GuidanceSimulationView
+        <com.sgm.navi.scene.ui.navi.GuidanceSimulationView
             android:id="@+id/navi_sim_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -297,7 +297,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
 </layout>

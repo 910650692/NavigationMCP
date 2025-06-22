@@ -8,10 +8,10 @@
 
         <variable
             name="naviSapa"
-            type="com.fy.navi.scene.impl.navi.SceneNaviSapaImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviSapaImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_sapa"
         clickCommand="@{naviSapa.rootViewClick}"
         android:layout_width="@dimen/dp_545"
@@ -38,7 +38,7 @@
             layout="@layout/navi_sapa_only_toll"
             android:visibility="@{naviSapa.mViewVisible == 1 ? View.VISIBLE : View.GONE}" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
 
 

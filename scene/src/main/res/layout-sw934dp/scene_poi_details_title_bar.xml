@@ -7,22 +7,22 @@
 
         <variable
             name="SceneTitleBarView"
-            type="com.fy.navi.scene.api.poi.ISceneTitleBarView" />
+            type="com.sgm.navi.scene.api.poi.ISceneTitleBarView" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_820"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_search_main_tab"
         android:orientation="vertical">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_152"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_close"
                 clickCommand="@{SceneTitleBarView.closeFragment}"
                 android:layout_width="@dimen/dp_96"
@@ -32,7 +32,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_title_name"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -47,6 +47,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

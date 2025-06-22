@@ -9,18 +9,18 @@
 
         <variable
             name="tipImpl"
-            type="com.fy.navi.scene.impl.navi.SceneNaviChargeTipViewImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviChargeTipViewImpl" />
 
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_scene_charge_tip"
         android:minHeight="@dimen/dp_100">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="已为你刷新了补能规划" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             tools:text="xxxxxxxx"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,6 +69,6 @@
             app:layout_goneMarginEnd="@dimen/dp_26"
             tools:text="去充电" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

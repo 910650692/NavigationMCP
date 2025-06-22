@@ -9,16 +9,16 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.route.RouteViewModel" />
+            type="com.sgm.navi.hmi.route.RouteViewModel" />
     </data>
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/route_charge_list_info_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="@{ViewModel.getIncludePageVisibility() == 3 ? View.VISIBLE : View.GONE}"
         android:clickable="false">
 
-        <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
+        <com.sgm.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
             android:id="@+id/route_right_tab_list_charge_scene"
             android:layout_width="@dimen/dp_204"
             android:layout_height="@dimen/dp_494"
@@ -30,7 +30,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/route_charge_list_info_info_bg_title"
             android:layout_width="@dimen/dp_698"
             android:layout_height="@dimen/dp_170"
@@ -40,7 +40,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_charge_list_info_info_img_close"
                 clickCommand="@{ViewModel.getCloseChargelistClick()}"
                 android:layout_width="@dimen/dp_58"
@@ -51,7 +51,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_34"
@@ -62,7 +62,7 @@
                 app:layout_constraintStart_toEndOf="@id/route_charge_list_info_info_img_close"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_charge_list_info_refresh"
                 clickCommand="@{ViewModel.getChargeRefreshClick()}"
                 android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_charge_list_info_tv_avoid_road"
                 clickCommand="@{ViewModel.getChargeRefreshClick()}"
                 android:layout_width="@dimen/dp_48"
@@ -90,9 +90,9 @@
                 app:layout_constraintTop_toTopOf="@id/route_charge_list_info_refresh" />
 
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_route_charge_progress"
             android:layout_width="@dimen/dp_946"
             android:layout_height="@dimen/dp_170"
@@ -124,7 +124,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_charge_start"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
@@ -135,7 +135,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/route_charge_progress_icons"
                 android:layout_width="@dimen/dp_768"
                 android:layout_height="match_parent"
@@ -143,7 +143,7 @@
                 app:layout_constraintStart_toStartOf="@+id/route_charge_progress"
                 app:layout_constraintEnd_toEndOf="@+id/route_charge_progress"/>
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_charge_exhaustion_point"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
@@ -157,7 +157,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/route_expected_battery_depletion"
@@ -168,7 +168,7 @@
                 app:layout_constraintStart_toStartOf="@+id/route_charge_exhaustion_point"
                 app:layout_constraintEnd_toEndOf="@+id/route_charge_exhaustion_point"/>
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_charge_end"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
@@ -178,7 +178,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_charge_total_mileage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -189,9 +189,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/route_charge_end" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:layout_width="@dimen/dp_698"
             android:layout_height="@dimen/dp_640"
             android:layout_marginTop="@dimen/dp_132"
@@ -201,7 +201,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_charge_list_along_way_btn"
             android:layout_width="@dimen/dp_640"
             android:layout_height="@dimen/dp_112"
@@ -212,7 +212,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_charge_list_along_way_suer"
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_68"
@@ -228,7 +228,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/route_charge_list_along_way_btn"
             app:layout_constraintStart_toStartOf="@+id/route_charge_list_along_way_btn"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_68"
             android:text="@string/route_search_keyword_charge_cancel"
@@ -243,7 +243,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/route_charge_list_along_way_btn"
             app:layout_constraintStart_toEndOf="@+id/route_charge_list_along_way_suer"/>
 
-        <com.fy.navi.scene.ui.route.SceneRouteSearchChargeRefreshListView
+        <com.sgm.navi.scene.ui.route.SceneRouteSearchChargeRefreshListView
             android:id="@+id/route_charge_info_scene_route_search_refresh"
             android:layout_width="@dimen/dp_640"
             android:layout_height="@dimen/dp_0"
@@ -254,7 +254,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/route_charge_list_along_way_btn"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_36"
@@ -267,5 +267,5 @@
             app:layout_constraintBottom_toBottomOf="@+id/route_charge_info_scene_route_search_refresh"
             app:layout_constraintStart_toStartOf="@+id/route_charge_info_scene_route_search_refresh" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

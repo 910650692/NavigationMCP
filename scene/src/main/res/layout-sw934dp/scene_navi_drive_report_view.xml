@@ -8,14 +8,14 @@
 
         <variable
             name="naviDriveReport"
-            type="com.fy.navi.scene.impl.navi.SceneNaviDriveReportImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviDriveReportImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_700">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_total_mileage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="总路程"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_total_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,5 +43,5 @@
 
 
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

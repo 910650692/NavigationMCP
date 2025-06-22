@@ -9,16 +9,16 @@
 
         <variable
             name="naviTbt"
-            type="com.fy.navi.scene.impl.navi.SceneNaviTbtImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviTbtImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_progress"
         android:layout_width="@dimen/dp_545"
         android:layout_height="@dimen/dp_96"
         tools:background="@color/navi_color_FFFFFF_80">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_progress"
             android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_gps"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
@@ -73,7 +73,7 @@
             app:constraint_referenced_ids="sv_exit,siv_hud_sou33,stv_exit_num"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/sv_exit"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_98"
@@ -82,7 +82,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_div" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_hud_sou33"
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_68"
@@ -91,7 +91,7 @@
             app:layout_constraintStart_toStartOf="@id/sv_exit"
             app:layout_constraintTop_toTopOf="@id/sv_exit" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_exit_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
             app:layout_constraintStart_toStartOf="@id/sv_exit"
             app:layout_constraintTop_toBottomOf="@id/siv_hud_sou33" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_hud_sou3"
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_80"
@@ -125,7 +125,7 @@
             app:constraint_referenced_ids="stv_div_distance,stv_div_unit"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_div_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
             app:layout_goneMarginLeft="@dimen/dp_142"
             tools:text="493" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_div_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
             app:layout_constraintTop_toTopOf="@id/gl_route_name"
             tools:text="米" />
         <!--道路信息-->
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_div_address"
             android:layout_width="@dimen/dp_225"
             android:layout_height="wrap_content"
@@ -170,5 +170,5 @@
             app:layout_goneMarginLeft="@dimen/dp_24"
             tools:text="西藏中路东二路" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

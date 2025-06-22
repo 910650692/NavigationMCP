@@ -6,22 +6,22 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.setting.broadcast.SettingBroadcastViewModel" />
+            type="com.sgm.navi.hmi.setting.broadcast.SettingBroadcastViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinScrollView
+    <com.sgm.navi.ui.view.SkinScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
         android:fillViewport="true">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="@dimen/dp_859"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:showDividers="none">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/navi_broadcast_voice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
                 android:textSize="@dimen/sp_34"
                 android:textColor="@color/setting_bg_tab_text_select" />
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mOpenBroadcastVoiceListPage}"
                 android:id="@+id/broadcast_entry"
                 android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@drawable/bg_setting_voice">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/navi_broadcast_voice_current"
                     android:layout_width="@dimen/dp_80"
                     android:layout_height="@dimen/dp_80"
@@ -47,7 +47,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/navi_broadcast_voice_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
                     app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_current"
                     app:layout_constraintTop_toTopOf="parent"/>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/navi_broadcast_voice_others_1"
                     android:layout_width="@dimen/dp_46"
                     android:layout_height="@dimen/dp_46"
@@ -68,7 +68,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/navi_broadcast_voice_others_2"
                     android:layout_width="@dimen/dp_46"
                     android:layout_height="@dimen/dp_46"
@@ -77,7 +77,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/navi_broadcast_voice_others_3"
                     android:layout_width="@dimen/dp_46"
                     android:layout_height="@dimen/dp_46"
@@ -86,7 +86,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/navi_broadcast_voice_others_4"
                     android:layout_width="@dimen/dp_46"
                     android:layout_height="@dimen/dp_46"
@@ -95,7 +95,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/img_setting_corner"
@@ -104,9 +104,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/navi_broadcast_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                 android:textSize="@dimen/sp_34"
                 android:textColor="@color/setting_bg_tab_text_select" />
 
-            <com.fy.navi.ui.view.SkinRadioGroup
+            <com.sgm.navi.ui.view.SkinRadioGroup
                 android:id="@+id/navi_broadcast"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_90"
@@ -124,7 +124,7 @@
                 android:background="@drawable/bg_setting_checkbox"
                 android:layout_marginTop="@dimen/dp_16">
 
-                <com.fy.navi.ui.view.SkinRadioButton
+                <com.sgm.navi.ui.view.SkinRadioButton
                     clickCommand="@{viewModel.mSwitchNaviBroadcastDetailClick}"
                     android:id="@+id/navi_broadcast_detailed"
                     android:layout_width="0dp"
@@ -138,7 +138,7 @@
                     android:gravity="center"
                     android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                <com.fy.navi.ui.view.SkinRadioButton
+                <com.sgm.navi.ui.view.SkinRadioButton
                     clickCommand="@{viewModel.mSwitchNaviBroadcastConciseClick}"
                     android:id="@+id/navi_broadcast_concise"
                     android:layout_width="0dp"
@@ -152,7 +152,7 @@
                     android:gravity="center"
                     android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                <com.fy.navi.ui.view.SkinRadioButton
+                <com.sgm.navi.ui.view.SkinRadioButton
                     clickCommand="@{viewModel.mSwitchNaviBroadcastSimpleClick}"
                     android:id="@+id/navi_broadcast_simple"
                     android:layout_width="0dp"
@@ -165,15 +165,15 @@
                     android:button="@null"
                     android:gravity="center"
                     android:textColor="@color/setting_bg_tab_text_unselect"/>
-            </com.fy.navi.ui.view.SkinRadioGroup>
+            </com.sgm.navi.ui.view.SkinRadioGroup>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/dp_60">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     clickCommand="@{viewModel.mSwitchCruiseBroadcastClick}"
                     android:id="@+id/switch_eagle_eye_map"
                     android:layout_width="wrap_content"
@@ -181,7 +181,7 @@
                     android:layout_gravity="center"
                     android:background="@{viewModel.mIsCruiseBroadcast ? @drawable/img_setting_switch_on : @drawable/img_setting_switch_off}" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/cruise_broadcast_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -191,17 +191,17 @@
                     android:textSize="@dimen/sp_34"
                     android:textColor="@color/setting_bg_tab_text_select"/>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_90"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/dp_20"
                 android:gravity="center_horizontal">
 
-                <com.fy.navi.ui.view.SkinCheckBox
+                <com.sgm.navi.ui.view.SkinCheckBox
                     clickCommand="@{viewModel.mSwitchCruiseBroadcastRoadConditionClick}"
                     android:id="@+id/cruise_broadcast_road_condition"
                     android:layout_width="0dp"
@@ -215,7 +215,7 @@
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_34" />
 
-                <com.fy.navi.ui.view.SkinCheckBox
+                <com.sgm.navi.ui.view.SkinCheckBox
                     clickCommand="@{viewModel.mSwitchCruiseBroadcastCameraClick}"
                     android:id="@+id/cruise_broadcast_camera"
                     android:layout_width="0dp"
@@ -230,7 +230,7 @@
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_34" />
 
-                <com.fy.navi.ui.view.SkinCheckBox
+                <com.sgm.navi.ui.view.SkinCheckBox
                     clickCommand="@{viewModel.mSwitchCruiseBroadcastSafeClick}"
                     android:id="@+id/cruise_broadcast_safe"
                     android:layout_width="0dp"
@@ -244,7 +244,7 @@
                     android:text="@string/setting_broadcast_cruise_safe"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_34" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SkinScrollView>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinScrollView>
 </layout>

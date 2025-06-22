@@ -1,0 +1,100 @@
+package com.sgm.navi.hmi.favorite;
+
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+
+import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
+import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.ui.action.Action;
+import com.sgm.navi.ui.base.BaseViewModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BaseCollectViewModel extends BaseViewModel<CollectFragment, CollectModel>  {
+    public BaseCollectViewModel(final @NonNull Application application) {
+        super(application);
+    }
+    @Override
+    protected CollectModel initModel() {
+        return new CollectModel();
+    }
+
+    public Action rootClick = () -> {
+    };
+
+    /**
+     * setCollectData
+     */
+    public void setCollectData() {
+        mView.setAdapterData();
+    }
+
+    public ArrayList<PoiInfoEntity> getFavoriteListAsync() {
+        return mModel.getFavoriteListAsync();
+    }
+
+    public List<PoiInfoEntity> getPushMsgList() {
+        return mModel.getPushMsgList();
+    }
+
+    /**
+     * 动力类型标定
+     * -1 无效值
+     * 0 汽油车
+     * 1 纯电动车
+     * 2 插电式混动汽车
+     * @return 动力类型
+     */
+    public int powerType() {
+        return mModel.powerType();
+    }
+
+    public void notifyNetSearchResult(int taskId,BaseRep result){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
+        if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
+            ArrayList<PoiInfoEntity> list = new ArrayList<>();
+            // 回调出的数据转换List
+            try {
+                JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
+                JSONArray jsonArray = jsonObject.getJSONArray("items");
+                if(jsonArray.length() > 0){
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
+                        if(object.getBoolean("stationSaved")){
+                            PoiInfoEntity entity = GsonUtils.fromJson(jsonArray.getString(i),PoiInfoEntity.class);
+                            GeoPoint point = new GeoPoint();
+                            point.setLat(ConvertUtils.str2Double(object.getString("stationLat")));
+                            point.setLon(ConvertUtils.str2Double(object.getString("stationLng")));
+                            entity.setPoint(point)
+                                  .setName(entity.getStationName())
+                                  .setAddress(entity.getStationAddress());
+                            list.add(entity);
+                        }
+                    }
+                }
+                mView.notifyNetSearchResult(taskId,list);
+            } catch (JSONException e) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e.getMessage());
+                notifyNetSearchResultError(taskId,e.getMessage());
+            }
+        }else{
+            notifyNetSearchResultError(taskId,result.getMessage());
+        }
+    }
+
+    public void notifyNetSearchResultError(int taskId,String message){
+        mView.notifySearchResultByNetError(taskId,message);
+    }
+}

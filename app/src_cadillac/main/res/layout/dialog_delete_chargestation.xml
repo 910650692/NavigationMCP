@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         android:focusable="false">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1600"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_310"
@@ -21,7 +21,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/clear_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
                 android:textSize="@dimen/sp_52"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/clear_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/clear_title" />
 
-            <com.fy.navi.ui.view.SkinButton
+            <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/dialog_commit"
                 android:layout_width="@dimen/dp_420"
                 android:layout_height="@dimen/dp_100"
@@ -57,7 +57,7 @@
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintTop_toBottomOf="@id/clear_content" />
 
-            <com.fy.navi.ui.view.SkinButton
+            <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/dialog_cancel"
                 android:layout_width="@dimen/dp_420"
                 android:layout_height="0dp"
@@ -71,7 +71,7 @@
                 app:layout_constraintStart_toEndOf="@id/dialog_commit"
                 app:layout_constraintTop_toTopOf="@id/dialog_commit" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

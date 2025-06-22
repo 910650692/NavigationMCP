@@ -5,9 +5,9 @@
         <import type="android.view.View" />
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.drivingrecord.DrivingRecordViewModel" />
+            type="com.sgm.navi.hmi.drivingrecord.DrivingRecordViewModel" />
     </data>
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
         android:clickable="true"
@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <!--标题-->
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -32,7 +32,7 @@
                 app:nudgeDown="@+id/focus_tab"
                 app:nudgeUp="@+id/focus_tab">
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     clickCommand="@{ViewModel.mDrivingRecordBack}"
                     android:focusable="true"
                     android:layout_width="@dimen/dp_74"
@@ -43,7 +43,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     clickCommand="@{ViewModel.mToRecordSetting}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -55,7 +55,7 @@
                     app:layout_constraintTop_toTopOf="parent"/>
             </com.android.car.ui.FocusArea>
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:focusable="false"
@@ -65,7 +65,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/driving_record_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/driving_record_more"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -89,7 +89,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <com.android.car.ui.FocusArea
             android:id="@+id/focus_tab"
@@ -100,7 +100,7 @@
             app:nudgeUp="@+id/focus_close">
 
             <!--未登录提示-->
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_94"
                 android:layout_marginTop="@dimen/dp_30"
@@ -108,7 +108,7 @@
                 android:visibility="@{ViewModel.mLoginTipVisibility ? View.VISIBLE : View.GONE}"
                 android:background="@color/setting_bg_to_login">
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     clickCommand="@{ViewModel.mToLogin}"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_94"
@@ -119,7 +119,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/driving_record_login_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.fy.navi.ui.view.SkinButton
+                <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dr_content_btn"
                     android:layout_width="@dimen/dp_160"
                     android:layout_height="@dimen/dp_68"
@@ -146,9 +146,9 @@
                     android:text="@string/driving_record_login"
                     android:textColor="@color/setting_bg_to_login_text"
                     android:textSize="@dimen/sp_38" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
             <!--导航tab切换-->
-            <com.fy.navi.ui.view.SkinRadioGroup
+            <com.sgm.navi.ui.view.SkinRadioGroup
                 android:id="@+id/driving_record_tab_group"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_120"
@@ -161,7 +161,7 @@
                 android:layout_marginEnd="@dimen/dp_52"
                 android:padding="@dimen/dp_12">
 
-                <com.fy.navi.ui.view.SkinRadioButton
+                <com.sgm.navi.ui.view.SkinRadioButton
                     android:id="@+id/driving_record_tab_1"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
@@ -176,7 +176,7 @@
                     android:textColor="@color/setting_white"
                     android:textSize="@dimen/sp_46" />
 
-                <com.fy.navi.ui.view.SkinRadioButton
+                <com.sgm.navi.ui.view.SkinRadioButton
                     android:id="@+id/driving_record_tab_2"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
@@ -188,9 +188,9 @@
                     android:text="@string/driving_record_tab_2"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_46" />
-            </com.fy.navi.ui.view.SkinRadioGroup>
+            </com.sgm.navi.ui.view.SkinRadioGroup>
             <!--数据列表-->
-            <com.fy.navi.ui.view.SkinRecyclerView
+            <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/rv_driving_record_list"
                 android:visibility="@{ViewModel.mRecordListViewVisibility ? View.VISIBLE : View.GONE}"
                 android:layout_width="match_parent"
@@ -199,7 +199,7 @@
                 android:layout_marginBottom="@dimen/dp_52" />
         </com.android.car.ui.FocusArea>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/empty_view"
             android:visibility="@{ViewModel.mEmptyViewVisibility ? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
@@ -210,5 +210,5 @@
             android:textColor="@color/setting_bg_tab_text_select"
             android:textSize="@dimen/sp_46" />
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

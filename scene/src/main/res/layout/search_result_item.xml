@@ -5,27 +5,27 @@
 
     <data>
 
-        <import type="com.fy.navi.service.define.search.PoiInfoEntity" />
+        <import type="com.sgm.navi.service.define.search.PoiInfoEntity" />
 
         <variable
             name="poiBean"
-            type="com.fy.navi.service.define.search.PoiInfoEntity" />
+            type="com.sgm.navi.service.define.search.PoiInfoEntity" />
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.SearchResultAdapter.ResultHolder" />
+            type="com.sgm.navi.scene.ui.adapter.SearchResultAdapter.ResultHolder" />
 
         <variable
             name="layoutPosition"
             type="String" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/dp_158">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/crl_poi_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_num"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_52"
@@ -49,7 +49,7 @@
                 app:layout_constraintTop_toTopOf="@+id/crl_poi_item"
                 tools:text="1" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_icon"
                 android:layout_width="@dimen/dp_68"
                 android:layout_height="@dimen/dp_68"
@@ -59,9 +59,9 @@
                 app:layout_constraintBottom_toBottomOf="@+id/crl_poi_item"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/crl_poi_item" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/crl_poi_des"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/crl_poi_detail">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_name"
                 android:layout_width="wrap_content"
                 android:maxWidth="@dimen/dp_438"
@@ -90,7 +90,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5"
                 tools:text="德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑" />
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/search_label"
                 android:layout_width="@dimen/dp_76"
                 tools:text="最快"
@@ -103,7 +103,7 @@
                 app:layout_constraintTop_toTopOf="@+id/poi_name"
                 app:layout_constraintBottom_toBottomOf="@+id/poi_name"
                 app:layout_constraintStart_toEndOf="@+id/poi_name"/>
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_distance"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                 app:layout_constraintStart_toEndOf="@+id/poi_distance"
                 app:layout_constraintTop_toTopOf="@+id/poi_address" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_address"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -142,9 +142,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/poi_name"
                 tools:text="德国慕尼黑啤酒节柏林节柏林披萨慕尼" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/poi_to_navi"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_106"
@@ -153,7 +153,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/crl_poi_des">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_navi_icon"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
@@ -163,7 +163,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/text_navi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -173,9 +173,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_navi_icon" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/crl_poi_detail"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -246,6 +246,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

@@ -8,14 +8,14 @@
 
         <variable
             name="naviSearch"
-            type="com.fy.navi.scene.impl.navi.search.SceneNaviSearchResultViewImpl" />
+            type="com.sgm.navi.scene.impl.navi.search.SceneNaviSearchResultViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_top_bar"
             android:layout_width="@dimen/dp_640"
             android:layout_height="@dimen/dp_112"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <com.fy.navi.scene.ui.navi.view.ButtonImageView
+        <com.sgm.navi.scene.ui.navi.view.ButtonImageView
             android:id="@+id/navi_search_along_way_exit"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -33,7 +33,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/siv_top_bar"
             app:layout_constraintStart_toStartOf="@+id/siv_top_bar"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_along_way_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             android:textSize="@dimen/sp_34"
             tools:text="充电站"/>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/navi_search_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,21 +56,21 @@
             app:layout_constraintTop_toBottomOf="@+id/siv_top_bar"
             android:layout_marginTop="@dimen/dp_20">
 
-            <com.fy.navi.scene.ui.route.SceneRouteSearchChargeRefreshListView
+            <com.sgm.navi.scene.ui.route.SceneRouteSearchChargeRefreshListView
                 android:id="@+id/charge_station_list"
                 android:layout_height="@dimen/dp_428"
                 android:layout_width="@dimen/dp_640"
                 android:visibility="@{naviSearch.mResultVisibleType == 0 ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/bg_navi_control" />
 
-            <com.fy.navi.scene.ui.navi.search.NaviSearchResultListView
+            <com.sgm.navi.scene.ui.navi.search.NaviSearchResultListView
                 android:id="@+id/other_list"
                 android:layout_height="@dimen/dp_428"
                 android:layout_width="@dimen/dp_640"
                 android:visibility="@{naviSearch.mResultVisibleType == 1 ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/bg_navi_control" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_38"
@@ -78,7 +78,7 @@
                 android:orientation="horizontal"
                 android:layout_gravity="center_horizontal">
 
-                <com.fy.navi.scene.ui.navi.view.ButtonText
+                <com.sgm.navi.scene.ui.navi.view.ButtonText
                     android:id="@+id/navi_search_confirm"
                     android:layout_width="@dimen/dp_268"
                     android:layout_height="@dimen/dp_76"
@@ -89,7 +89,7 @@
                     clickCommand="@{() -> naviSearch.closeSearchResultView()}"
                     android:text="@string/dialog_commit"/>
 
-                <com.fy.navi.scene.ui.navi.view.ButtonText
+                <com.sgm.navi.scene.ui.navi.view.ButtonText
                     android:id="@+id/navi_search_cancel"
                     android:layout_width="@dimen/dp_268"
                     android:layout_height="@dimen/dp_76"
@@ -101,9 +101,9 @@
                     clickCommand="@{() -> naviSearch.closeSearchResultView()}"
                     android:text="@string/dialog_cancel"/>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
         <include android:id="@+id/navi_search_type"
             layout="@layout/navi_search_type_select_view"
@@ -113,5 +113,5 @@
             app:layout_constraintBottom_toBottomOf="@+id/navi_search_result"
             android:layout_marginStart="@dimen/dp_20"/>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

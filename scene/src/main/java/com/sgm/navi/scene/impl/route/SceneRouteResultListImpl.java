@@ -1,0 +1,22 @@
+package com.sgm.navi.scene.impl.route;
+
+import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.scene.BaseSceneModel;
+import com.sgm.navi.scene.api.route.ISceneRouteResultList;
+import com.sgm.navi.scene.ui.route.SceneRouteResultListView;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
+
+public class SceneRouteResultListImpl extends BaseSceneModel<SceneRouteResultListView> implements ISceneRouteResultList {
+
+    private final RoutePackage mRoutePackage;
+
+    public SceneRouteResultListImpl(final SceneRouteResultListView screenView) {
+        super(screenView);
+        mRoutePackage = RoutePackage.getInstance();
+    }
+
+    @Override
+    public void selectRoute(final int index) {
+        ThreadManager.getInstance().execute(() -> mRoutePackage.selectRoute(mMapTypeId, index));
+    }
+}

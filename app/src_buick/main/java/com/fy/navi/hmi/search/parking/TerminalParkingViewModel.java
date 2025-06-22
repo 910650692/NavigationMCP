@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.search.parking;
+package com.sgm.navi.hmi.search.parking;
 
 import android.app.Application;
 

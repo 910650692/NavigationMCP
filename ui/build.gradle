@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.fy.navi.ui'
+    namespace 'com.sgm.navi.ui'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
     buildToolsVersion libs.versions.buildSdk.get()
 

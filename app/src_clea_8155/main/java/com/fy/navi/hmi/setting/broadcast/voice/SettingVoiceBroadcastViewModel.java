@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.setting.broadcast.voice;
+package com.sgm.navi.hmi.setting.broadcast.voice;
 
 import android.app.Application;
 

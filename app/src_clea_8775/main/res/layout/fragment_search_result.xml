@@ -8,10 +8,10 @@
 
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.search.searchresult.SearchResultViewModel" />
+            type="com.sgm.navi.hmi.search.searchresult.SearchResultViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:clickable="true"
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="wrap_content"
@@ -20,11 +20,11 @@
         android:layout_marginTop="@dimen/dp_34"
         android:orientation="vertical">
 
-        <com.fy.navi.scene.ui.search.SceneSearchPoiList
+        <com.sgm.navi.scene.ui.search.SceneSearchPoiList
             android:id="@+id/scene_poi_list"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             app:layoutType="scene_search_result_fragment" />
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 
 </layout>

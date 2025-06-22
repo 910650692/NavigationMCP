@@ -6,10 +6,10 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.setting.others.privacy.SettingOthersPrivacyViewModel" />
+            type="com.sgm.navi.hmi.setting.others.privacy.SettingOthersPrivacyViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
         android:clickable="true"
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_privacy_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 app:nudgeDown="@+id/focus_content"
                 app:nudgeUp="@+id/focus_content">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mFinishPrivacy}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -48,7 +48,7 @@
 
             </com.android.car.ui.FocusArea>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
@@ -57,9 +57,9 @@
                 android:text="@string/setting_others_privacy"
                 android:textSize="@dimen/sp_46"
                 android:textColor="@color/black" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/line_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
@@ -67,7 +67,7 @@
             app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_layout"
             android:background="@color/transparent"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/setting_others_privacy_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/line_view"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/setting_others_privacy_location_description"
@@ -91,7 +91,7 @@
             app:layout_constraintStart_toStartOf="@+id/setting_others_privacy_location"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_location"/>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_privacy_switch"
             android:layout_width="@dimen/dp_376"
             android:layout_height="@dimen/dp_120"
@@ -104,14 +104,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/line_view">
 
-            <com.fy.navi.ui.view.SkinRadioGroup
+            <com.sgm.navi.ui.view.SkinRadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:focusable="false"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinRadioButton
+                <com.sgm.navi.ui.view.SkinRadioButton
                     clickCommand="@{viewModel.mOneYearPrivacy}"
                     android:id="@+id/setting_others_privacy_one_year"
                     android:layout_width="0dp"
@@ -126,7 +126,7 @@
                     android:textColor="@color/black"
                     android:text="@string/setting_others_privacy_one_year" />
 
-                <com.fy.navi.ui.view.SkinRadioButton
+                <com.sgm.navi.ui.view.SkinRadioButton
                     clickCommand="@{viewModel.mNeverPrivacy}"
                     android:id="@+id/setting_others_privacy_never"
                     android:layout_width="0dp"
@@ -140,10 +140,10 @@
                     android:textSize="@dimen/sp_38"
                     android:textColor="@color/black"
                     android:text="@string/setting_others_privacy_never" />
-            </com.fy.navi.ui.view.SkinRadioGroup>
-        </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinRadioGroup>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_privacy_end_date_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -153,7 +153,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_switch">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_privacy_end_date"
@@ -161,7 +161,7 @@
                 android:textSize="@dimen/sp_38"
                 android:layout_marginTop="@dimen/dp_22" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_privacy_end_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -169,6 +169,6 @@
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_38"
                 android:layout_marginTop="@dimen/dp_22" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

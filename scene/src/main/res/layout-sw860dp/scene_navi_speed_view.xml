@@ -9,22 +9,22 @@
 
         <variable
             name="naviSpeedLimit"
-            type="com.fy.navi.scene.impl.navi.SceneNaviSpeedImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviSpeedImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true">
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/sv_overall_speed"
             android:layout_width="@dimen/dp_122"
             android:layout_height="@dimen/dp_330"
             android:background="@drawable/bg_speed_normal" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/sv_current_speed"
             android:layout_width="@dimen/dp_122"
             android:layout_height="@dimen/dp_122"
@@ -33,7 +33,7 @@
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
             app:layout_constraintTop_toTopOf="@id/sv_overall_speed" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_current_speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             app:layout_constraintTop_toTopOf="@id/sv_current_speed"
             tools:text="90" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_current_speed_key"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             app:layout_constraintStart_toStartOf="@id/sv_current_speed"
             app:layout_constraintTop_toBottomOf="@id/stv_current_speed" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_speed_limit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
             app:layout_constraintTop_toBottomOf="@id/sv_current_speed"
             tools:text="90" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_speed_limit_key"
             android:layout_width="@dimen/dp_122"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
             app:layout_constraintTop_toBottomOf="@id/stv_speed_limit" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
             app:layout_constraintTop_toBottomOf="@id/stv_speed_limit_key"
             tools:text="8.5" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_distance_key"
             android:layout_width="@dimen/dp_122"
             android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
             app:layout_constraintTop_toBottomOf="@id/stv_distance" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
 
 

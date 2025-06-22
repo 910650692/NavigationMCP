@@ -8,22 +8,22 @@
 
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.search.parking.BaseTerminalParkingViewModelViewModel" />
+            type="com.sgm.navi.hmi.search.parking.BaseTerminalParkingViewModelViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:clickable="true"
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.fy.navi.scene.ui.search.SceneTerminalParkingListView
+        <com.sgm.navi.scene.ui.search.SceneTerminalParkingListView
             android:id="@+id/scene_terminal_parking_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:maxHeight="@dimen/dp_772"
             app:layoutType="scene_search_result_fragment" />
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 
 </layout>

@@ -8,21 +8,21 @@
         <import type="android.view.View" />
         <variable
             name="model"
-            type="com.fy.navi.service.define.route.RouteLineInfo" />
+            type="com.sgm.navi.service.define.route.RouteLineInfo" />
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.RouteDetailsResultsChildAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.RouteDetailsResultsChildAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/item_root_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_70"
         android:paddingStart="@dimen/dp_50"
         android:paddingEnd="@dimen/dp_50">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_detail_info_item_child_img"
             android:layout_width="@dimen/dp_42"
             android:layout_height="@dimen/dp_42"
@@ -31,7 +31,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_detail_info_item_child_description"
             android:layout_width="@dimen/dp_300"
             android:layout_height="wrap_content"
@@ -46,5 +46,5 @@
             tools:text="42米 后进入北苑中街" />
 
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

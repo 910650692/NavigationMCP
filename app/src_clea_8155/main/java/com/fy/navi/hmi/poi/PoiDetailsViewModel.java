@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.poi;
+package com.sgm.navi.hmi.poi;
 
 import android.app.Application;
 

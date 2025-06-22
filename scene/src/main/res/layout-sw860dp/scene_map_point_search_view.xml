@@ -6,16 +6,16 @@
     <data>
         <variable
             name="SceneMapPointSearchView"
-            type="com.fy.navi.scene.api.favorite.ISceneMapPointSearchView" />
+            type="com.sgm.navi.scene.api.favorite.ISceneMapPointSearchView" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_698"
         android:layout_height="@dimen/dp_501"
         android:padding="@dimen/dp_29"
         android:background="@drawable/bg_shadow_navi_buick">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/cs_poi_no_result"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,7 +24,7 @@
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/no_result_hint" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/no_result_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/no_result_button"
                 android:layout_width="@dimen/dp_264"
                 android:layout_height="@dimen/dp_76"
@@ -65,7 +65,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -83,7 +83,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintGuide_end="@dimen/dp_69" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/sk_poi_name"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/poi_type_icon"
             clickCommand="@{SceneMapPointSearchView.closeFragment}"
             android:layout_width="@dimen/dp_58"
@@ -108,7 +108,7 @@
             app:layout_constraintEnd_toEndOf="@+id/end_guideline"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_second_address"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
             app:layout_constraintEnd_toEndOf="@+id/end_guideline"
             tools:text="世纪大道1号" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_distance_time"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
             tools:text="5.2公里   30分钟"
             android:visibility="gone"/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_arrival_capacity"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
@@ -149,7 +149,7 @@
             app:layout_constraintTop_toTopOf="@+id/poi_arrival_capacity"
             android:visibility="gone"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_arrival_capacity"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
             tools:text="15%到达"
             android:visibility="gone"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_business_hours"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
             tools:text="营业时间: 09:00 -- 21:00"
             android:visibility="gone"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_phone"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -194,7 +194,7 @@
             android:visibility="gone"/>
 
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_setting"
             clickCommand="@{SceneMapPointSearchView.clickSetting}"
             android:layout_width="match_parent"
@@ -206,7 +206,7 @@
             app:layout_constraintStart_toStartOf="@+id/start_guideline"
             app:layout_constraintEnd_toEndOf="@+id/end_guideline">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/siv_setting"
                 android:layout_width="@dimen/dp_68"
                 android:layout_height="@dimen/dp_68"
@@ -217,7 +217,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:visibility="gone"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -230,7 +230,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 <!--        <include-->
 <!--            android:id="@+id/scene_poi_details_bottom_view"-->
 <!--            layout="@layout/scene_poi_details_bottom_view"-->
@@ -240,5 +240,5 @@
 <!--            app:layout_constraintBottom_toBottomOf="parent"-->
 <!--            app:layout_constraintStart_toStartOf="@+id/start_guideline" />-->
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

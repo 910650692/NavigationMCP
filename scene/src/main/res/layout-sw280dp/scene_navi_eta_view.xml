@@ -9,10 +9,10 @@
 
         <variable
             name="naviEta"
-            type="com.fy.navi.scene.impl.navi.SceneNaviEtaImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviEtaImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="false"
@@ -38,7 +38,7 @@
             app:constraint_referenced_ids="siv_hud_sou31,stv_text_next"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_text_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             app:layout_constraintTop_toTopOf="@id/gl_arrive"
             tools:text="随后" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_hud_sou31"
             android:layout_width="@dimen/dp_62"
             android:layout_height="@dimen/dp_62"
@@ -65,7 +65,7 @@
             app:layout_constraintStart_toEndOf="@id/stv_text_next"
             app:layout_constraintTop_toTopOf="@id/stv_text_next" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_remaining_distance_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             tools:text="123公里·10小时53分钟"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_arrive_default"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_arrive" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_arrive_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
             app:layout_constraintTop_toTopOf="@id/gl_arrive"
             tools:text="12:50" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_arrival_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -122,5 +122,5 @@
             app:layout_constraintEnd_toStartOf="@id/stv_arrive_default"
             tools:text="+2" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

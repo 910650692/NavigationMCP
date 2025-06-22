@@ -8,18 +8,18 @@
 
         <variable
             name="naviArrive"
-            type="com.fy.navi.scene.impl.navi.SceneNaviViaArriveViewImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviViaArriveViewImpl" />
 
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_root"
         android:layout_width="@dimen/dp_1200"
         android:layout_height="@dimen/dp_360"
         android:background="@drawable/bg_shadow_system_ndlc_8155">
 
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:color="@color/navi_color_FF595F_100">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_via_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                 tools:text="是否已抵达？" />
 
 
-            <com.fy.navi.scene.ui.navi.view.ButtonText
+            <com.sgm.navi.scene.ui.navi.view.ButtonText
                 android:id="@+id/stv_confirm"
                 clickCommand="@{naviArrive.onUpdateViaPass}"
                 android:layout_width="@dimen/dp_475"
@@ -60,7 +60,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.fy.navi.scene.ui.navi.view.ButtonText
+            <com.sgm.navi.scene.ui.navi.view.ButtonText
                 android:id="@+id/stv_cancel"
                 clickCommand="@{()-> naviArrive.updateSceneVisible(Boolean.FALSE)}"
                 android:layout_width="@dimen/dp_475"
@@ -76,8 +76,8 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

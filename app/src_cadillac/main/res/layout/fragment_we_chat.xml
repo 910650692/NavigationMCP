@@ -9,10 +9,10 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.wechat.WeChatViewModel" />
+            type="com.sgm.navi.hmi.wechat.WeChatViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
         android:clickable="true"
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/we_chat_title_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" >
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     clickCommand="@{ViewModel.mChatConnectBack}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -53,7 +53,7 @@
                     android:src="@drawable/img_setting_back" />
             </com.android.car.ui.FocusArea>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/we_chat_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,14 +65,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <com.android.car.ui.FocusArea
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/we_chat_title_layout">
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -80,7 +80,7 @@
                 android:visibility="@{ViewModel.mIsBind ? View.GONE : View.VISIBLE}"
                 app:layout_constraintTop_toBottomOf="@+id/we_chat_title_layout">
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:layout_width="@dimen/dp_320"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_90"
@@ -89,7 +89,7 @@
                     android:focusable="false"
                     android:orientation="vertical">
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/chat_content_img"
                         android:layout_width="@dimen/dp_280"
                         android:layout_height="@dimen/dp_280"
@@ -99,7 +99,7 @@
                         android:focusable="false"
                         android:visibility="@{ViewModel.mQRCodeVisible ? View.VISIBLE : View.GONE}" />
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="@dimen/dp_320"
                         android:layout_height="@dimen/dp_320"
                         android:orientation="vertical"
@@ -107,7 +107,7 @@
                         android:focusable="false"
                         android:visibility="@{ViewModel.mQRCodeLoadingVisible ? View.VISIBLE : View.GONE}">
 
-                        <com.fy.navi.ui.view.SkinImageView
+                        <com.sgm.navi.ui.view.SkinImageView
                             android:id="@+id/account_qrcode_loading"
                             android:layout_width="@dimen/dp_160"
                             android:layout_height="@dimen/dp_160"
@@ -123,9 +123,9 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:textSize="@dimen/sp_38"/>
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="@dimen/dp_320"
                         android:layout_height="@dimen/dp_320"
                         android:orientation="vertical"
@@ -134,7 +134,7 @@
                         android:focusable="false"
                         android:visibility="@{ViewModel.mQRCodeLoadFailedVisible ? View.VISIBLE : View.GONE}">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_qr_code_load_failed"
@@ -142,7 +142,7 @@
                             android:focusable="false"
                             android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                        <com.fy.navi.ui.view.SkinButton
+                        <com.sgm.navi.ui.view.SkinButton
                             clickCommand="@{ViewModel.mRetry}"
                             android:layout_width="@dimen/dp_320"
                             android:layout_height="@dimen/dp_96"
@@ -152,9 +152,9 @@
                             android:focusable="true"
                             android:textColor="@color/setting_white"
                             android:background="@drawable/bg_setting_dialog_confirm_selector"/>
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/chat_connect_login_tip"
@@ -162,16 +162,16 @@
                         android:textSize="@dimen/sp_32"
                         android:focusable="false"
                         android:layout_marginTop="@dimen/dp_32" />
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_90"
                     android:layout_marginStart="@dimen/dp_171"
                     android:focusable="false">
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/chat_content_img_tip"
                         android:layout_width="@dimen/dp_603"
                         android:layout_height="@dimen/dp_247"
@@ -181,7 +181,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/chat_content_tip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -194,7 +194,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/chat_content_img_tip" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_24"
@@ -205,10 +205,10 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/chat_content_tip" />
-                </com.fy.navi.ui.view.SkinConstraintLayout>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -217,34 +217,34 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/we_chat_title_layout">
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_90"
                     android:focusable="false"
                     android:orientation="vertical">
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_112"
                         android:layout_height="@dimen/dp_112"
                         android:layout_marginStart="@dimen/dp_225"
                         android:focusable="false"
                         android:src="@drawable/img_user_default"/>
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_24"
                         android:layout_marginStart="@dimen/dp_77"
                         android:focusable="false">
 
-                        <com.fy.navi.ui.view.SkinImageView
+                        <com.sgm.navi.ui.view.SkinImageView
                             android:layout_width="@dimen/dp_74"
                             android:layout_height="@dimen/dp_74"
                             android:src="@drawable/img_wechat_unbind"
                             android:focusable="false"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="@dimen/sp_46"
@@ -252,9 +252,9 @@
                             android:layout_marginStart="@dimen/dp_16"
                             android:text="@string/chat_connect_bind"
                             android:focusable="false"/>
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         clickCommand="@{ViewModel.mHowToBind}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -266,17 +266,17 @@
                         android:layout_marginStart="@dimen/dp_167"
                         android:text="@string/chat_connect_no_bind"/>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_1000"
                     android:layout_height="@dimen/dp_637"
                     android:layout_marginTop="@dimen/dp_90"
                     android:layout_marginStart="@dimen/dp_119"
                     android:focusable="false"
                     android:src="@mipmap/icon_wechat_bind"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
         </com.android.car.ui.FocusArea>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

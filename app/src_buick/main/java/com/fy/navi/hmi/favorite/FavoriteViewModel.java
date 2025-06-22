@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.favorite;
+package com.sgm.navi.hmi.favorite;
 
 import android.app.Application;
 

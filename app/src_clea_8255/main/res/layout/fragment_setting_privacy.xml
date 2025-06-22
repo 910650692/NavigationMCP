@@ -6,16 +6,16 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.setting.others.privacy.SettingOthersPrivacyViewModel" />
+            type="com.sgm.navi.hmi.setting.others.privacy.SettingOthersPrivacyViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1224"
         android:layout_height="@dimen/dp_714"
         android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mFinishPrivacy}"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
@@ -25,7 +25,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -37,7 +37,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/setting_others_privacy_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/setting_others_privacy_location_description"
@@ -59,7 +59,7 @@
             app:layout_constraintStart_toStartOf="@+id/setting_others_privacy_location"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_location"/>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_privacy_switch"
             android:layout_width="@dimen/dp_296"
             android:layout_height="@dimen/dp_90"
@@ -71,13 +71,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinRadioGroup
+            <com.sgm.navi.ui.view.SkinRadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinRadioButton
+                <com.sgm.navi.ui.view.SkinRadioButton
                     clickCommand="@{viewModel.mOneYearPrivacy}"
                     android:id="@+id/setting_others_privacy_one_year"
                     android:layout_width="0dp"
@@ -91,7 +91,7 @@
                     android:textColor="@color/black"
                     android:text="@string/setting_others_privacy_one_year" />
 
-                <com.fy.navi.ui.view.SkinRadioButton
+                <com.sgm.navi.ui.view.SkinRadioButton
                     clickCommand="@{viewModel.mNeverPrivacy}"
                     android:id="@+id/setting_others_privacy_never"
                     android:layout_width="0dp"
@@ -104,10 +104,10 @@
                     android:textSize="@dimen/sp_34"
                     android:textColor="@color/black"
                     android:text="@string/setting_others_privacy_never" />
-            </com.fy.navi.ui.view.SkinRadioGroup>
-        </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinRadioGroup>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_privacy_end_date_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -118,20 +118,20 @@
             app:layout_constraintEnd_toEndOf="@+id/setting_others_privacy_switch"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_switch">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_privacy_end_date"
                 android:textColor="@color/color_black_70"
                 android:textSize="@dimen/sp_30" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_privacy_end_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.mEndDate}"
                 android:textColor="@color/color_black_70"
                 android:textSize="@dimen/sp_30" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

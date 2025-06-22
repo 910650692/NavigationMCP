@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.splitscreen;
+package com.sgm.navi.hmi.splitscreen;
 
 import android.app.Application;
 

@@ -9,15 +9,15 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.launcher.LauncherSmallCardViewModel" />
+            type="com.sgm.navi.hmi.launcher.LauncherSmallCardViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <!--地图-->
-        <com.fy.navi.service.define.map.CardWidgetMapView
+        <com.sgm.navi.service.define.map.CardWidgetMapView
             android:id="@+id/map_screen_view"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
@@ -37,7 +37,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="parent" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/navi_info_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <!--tbt-->
-            <com.fy.navi.scene.ui.navi.SceneNaviTbtView
+            <com.sgm.navi.scene.ui.navi.SceneNaviTbtView
                 android:id="@+id/scene_navi_tbt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,23 +55,23 @@
                 tools:background="@android:color/holo_blue_dark" />
 
             <!--eta信息-->
-            <com.fy.navi.scene.ui.navi.SceneNaviEtaView
+            <com.sgm.navi.scene.ui.navi.SceneNaviEtaView
                 android:id="@+id/scene_navi_eta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_navi_tbt_middle" />
 
             <!--路况条-->
-            <com.fy.navi.scene.ui.navi.SceneNaviTmcView
+            <com.sgm.navi.scene.ui.navi.SceneNaviTmcView
                 android:id="@+id/scene_navi_tmc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_navi_tbt_middle"
                 android:paddingHorizontal="@dimen/dp_30" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/stop_navi"
             clickCommand="@{ViewModel.stopNavi}"
             android:layout_width="wrap_content"
@@ -94,5 +94,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

@@ -6,16 +6,16 @@
     <data>
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.PoiListDetailsScenicChildAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.PoiListDetailsScenicChildAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_child_layout"
         android:layout_width="@dimen/dp_234"
         android:layout_height="@dimen/dp_90"
         android:background="@drawable/custom_filter_item_bg_selector_day">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/child_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/child_sub_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,5 +45,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

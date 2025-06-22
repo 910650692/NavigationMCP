@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.setting.others;
+package com.sgm.navi.hmi.setting.others;
 
 import android.app.Application;
 

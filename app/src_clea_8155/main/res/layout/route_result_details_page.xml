@@ -9,15 +9,15 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.route.RouteViewModel" />
+            type="com.sgm.navi.hmi.route.RouteViewModel" />
     </data>
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_613"
         android:layout_height="wrap_content"
         android:visibility="@{ViewModel.getIncludePageVisibility() == 1 ? View.VISIBLE : View.GONE}"
         android:clickable="true">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/route_detail_info_bg_title"
             android:layout_width="@dimen/dp_613"
             android:layout_height="@dimen/dp_163"
@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_detail_info_img_close"
                 clickCommand="@{ViewModel.getCloseDetailsRouteClick()}"
                 android:layout_width="@dimen/dp_58"
@@ -38,7 +38,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_detail_info_tv_sim_navi"
                 clickCommand="@{ViewModel.getStartSimNaviClick()}"
                 android:layout_width="@dimen/dp_160"
@@ -54,7 +54,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_detail_info_tv_avoid"
                 clickCommand="@{ViewModel.getAvoidClick()}"
                 android:layout_width="@dimen/dp_160"
@@ -72,7 +72,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="gone" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_detail_info_tv_avoid_road"
                 clickCommand="@{ViewModel.getAvoidRoadClick()}"
                 android:layout_width="@dimen/dp_160"
@@ -88,9 +88,9 @@
                 app:layout_constraintEnd_toStartOf="@+id/route_detail_info_tv_sim_navi"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.scene.ui.route.SceneRouteDetailsResultListView
+        <com.sgm.navi.scene.ui.route.SceneRouteDetailsResultListView
             android:id="@+id/route_detail_info_scene_route_details_result"
             android:layout_width="@dimen/dp_613"
             android:layout_height="wrap_content"
@@ -101,5 +101,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/route_detail_info_bg_title" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

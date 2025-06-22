@@ -6,10 +6,10 @@
 
         <variable
             name="ISceneSugSearchPoiList"
-            type="com.fy.navi.scene.api.search.ISceneSearchPoiList" />
+            type="com.sgm.navi.scene.api.search.ISceneSearchPoiList" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -20,14 +20,14 @@
             android:layout_width="@dimen/dp_698"
             android:layout_height="@dimen/dp_170" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_698"
             android:layout_height="@dimen/dp_668"
             android:layout_marginTop="@dimen/dp_m_38"
             android:padding="@dimen/dp_29"
             android:background="@drawable/bg_shadow_navi_buick">
 
-            <com.fy.navi.ui.view.SkinRecyclerView
+            <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/offline_recycler_search_result"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -38,7 +38,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <com.fy.navi.ui.view.SkinRecyclerView
+            <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/offline_recycler_search_keyword_result"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -50,7 +50,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:visibility="gone"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/search_no_result_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/search_no_city_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -77,8 +77,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 
 </layout>

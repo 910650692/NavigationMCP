@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.search.alongway;
+package com.sgm.navi.hmi.search.alongway;
 
 import android.app.Application;
 

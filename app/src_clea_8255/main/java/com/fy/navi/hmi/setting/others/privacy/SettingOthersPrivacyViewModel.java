@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.setting.others.privacy;
+package com.sgm.navi.hmi.setting.others.privacy;
 
 import android.app.Application;
 

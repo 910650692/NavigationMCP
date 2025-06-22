@@ -4,25 +4,25 @@
 
     <data>
 
-        <import type="com.fy.navi.service.define.navi.NaviViaEntity" />
+        <import type="com.sgm.navi.service.define.navi.NaviViaEntity" />
 
         <variable
             name="viaBean"
-            type="com.fy.navi.service.define.navi.NaviViaEntity" />
+            type="com.sgm.navi.service.define.navi.NaviViaEntity" />
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.NaviViaListAdapter.ResultHolder" />
+            type="com.sgm.navi.scene.ui.adapter.NaviViaListAdapter.ResultHolder" />
 
     </data>
 
-    <com.fy.navi.ui.view.SwipeMenuLayout
+    <com.sgm.navi.ui.view.SwipeMenuLayout
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_124"
         android:orientation="horizontal">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/cl_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,7 +35,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="@dimen/dp_40" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_add_via_icon"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
@@ -48,7 +48,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_add_via_elec"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/gl_name" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/siv_add_via_elec"
                 android:layout_width="@dimen/dp_31"
                 android:layout_height="@dimen/dp_31"
@@ -68,7 +68,7 @@
                 app:layout_constraintEnd_toStartOf="@id/stv_add_via_elec"
                 app:layout_constraintTop_toTopOf="@id/stv_add_via_elec" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_add_via_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                 app:constraint_referenced_ids="stv_add_via_distance,stv_arrive_default,stv_arrive_time,
                                                stv_arrival_day" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_add_via_distance"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                 app:layout_constraintStart_toStartOf="@id/stv_add_via_name"
                 tools:text="98公里42分钟" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_arrive_default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                 app:layout_constraintTop_toTopOf="@id/stv_add_via_distance"
                 tools:text="@string/rg_arrive_word" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_arrive_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
                 app:layout_constraintTop_toTopOf="@id/stv_add_via_distance"
                 tools:text="12:50" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_arrival_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -146,9 +146,9 @@
                 app:layout_constraintStart_toEndOf="@id/stv_arrive_time"
                 tools:text="+2" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_action_container"
             android:layout_width="@dimen/dp_107"
             android:layout_height="match_parent"
@@ -156,12 +156,12 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
                 android:background="@drawable/img_delete_68_sw1225" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -169,6 +169,6 @@
                 android:text="@string/navi_del"
                 android:textColor="@color/navi_color_FFFFFF_100"
                 android:textSize="@dimen/sp_26" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SwipeMenuLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SwipeMenuLayout>
 </layout>

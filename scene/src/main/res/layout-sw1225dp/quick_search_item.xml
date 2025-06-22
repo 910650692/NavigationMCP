@@ -7,19 +7,19 @@
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.QuickSearchListAdapter.ResultHolder" />
+            type="com.sgm.navi.scene.ui.adapter.QuickSearchListAdapter.ResultHolder" />
 
         <variable
             name="layoutPosition"
             type="String" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_133"
         android:layout_height="@dimen/dp_143"
         android:paddingTop="@dimen/dp_17">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/sk_iv_bg"
             android:layout_width="@dimen/dp_66"
             android:layout_height="@dimen/dp_66"
@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/sk_iv_icon"
             android:layout_width="@dimen/dp_49"
             android:layout_height="@dimen/dp_49"
@@ -37,7 +37,7 @@
             app:layout_constraintStart_toStartOf="@+id/sk_iv_bg"
             app:layout_constraintTop_toTopOf="@+id/sk_iv_bg" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/quick_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,5 +48,5 @@
             app:layout_constraintEnd_toEndOf="@+id/sk_iv_bg"
             app:layout_constraintStart_toStartOf="@+id/sk_iv_bg"
             app:layout_constraintTop_toBottomOf="@+id/sk_iv_bg" />
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

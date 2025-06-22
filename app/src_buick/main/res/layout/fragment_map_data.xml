@@ -8,10 +8,10 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.mapdata.MapDataViewModel" />
+            type="com.sgm.navi.hmi.mapdata.MapDataViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_1282"
         android:layout_height="@dimen/dp_772"
         android:orientation="vertical"
@@ -20,7 +20,7 @@
         android:background="@drawable/bg_shadow_navi_buick">
 
         <!--离线搜索标题-->
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/rl_offline_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_112"
@@ -30,7 +30,7 @@
             android:gravity="center_vertical"
             android:background="@drawable/shape_bg_map_data">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_offline_map_back"
                 clickCommand="@{ViewModel.mFinishMapDataView}"
                 android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/img_setting_back" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 clickCommand="@{ViewModel.mSearchMapDataView}"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
@@ -48,22 +48,22 @@
                 android:textColor="@color/offline_hint_text"
                 android:textSize="@dimen/sp_34" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinNestedScrollView
+        <com.sgm.navi.ui.view.SkinNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
             android:layout_marginBottom="@dimen/dp_24"
             android:fillViewport="true">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="@dimen/dp_1224"
                 android:layout_height="@dimen/dp_714"
                 android:orientation="vertical">
 
                 <!--下载管理入口-->
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/manager_data_view"
                     clickCommand="@{ViewModel.mToManagerMapDataView}"
                     android:layout_width="match_parent"
@@ -77,7 +77,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:background="@drawable/shape_bg_map_data">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_30"
@@ -88,7 +88,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{ViewModel.mAllDownloadingDataSize}"
@@ -98,7 +98,7 @@
                         app:layout_constraintEnd_toStartOf="@+id/manager_city_view"
                         app:layout_constraintTop_toTopOf="parent"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/manager_city_view"
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent"
@@ -112,10 +112,10 @@
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30" />
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                 <!--当前城市包-->
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/view_current_data"
                     android:layout_width="@dimen/dp_552"
                     android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:background="@drawable/shape_bg_map_data">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/current_city_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/current_city_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/current_city_name" />
 
                     <!--按钮下载状态-->
-                    <com.fy.navi.scene.ui.setting.DownloadBtnView
+                    <com.sgm.navi.scene.ui.setting.DownloadBtnView
                         android:id="@+id/download_view"
                         clickCommand="@{ViewModel.mToDownloadCurrentCity}"
                         android:layout_width="@dimen/dp_180"
@@ -173,10 +173,10 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                 <!--附近推荐城市-->
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/view_near_data"
                     android:layout_width="@dimen/dp_552"
                     android:layout_height="wrap_content"
@@ -187,7 +187,7 @@
                     app:layout_constraintLeft_toRightOf="@+id/view_current_data"
                     android:background="@drawable/shape_bg_map_data">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         clickCommand="@{ViewModel.mToNearMapDataView}"
                         android:id="@+id/tv_near_offline_data"
                         android:layout_width="wrap_content"
@@ -202,7 +202,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_near_data_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -216,7 +216,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_near_offline_data" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/btn_download_near_data"
                         clickCommand="@{ViewModel.mToDownloadNearData}"
                         android:visibility="@{ViewModel.mNearDownloadBtnVisibility ? View.VISIBLE : View.GONE}"
@@ -232,10 +232,10 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                 <!--全部城市-->
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/tv_offline_data_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -248,7 +248,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/view_current_data" />
 
                 <!--基础功能包-->
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/view_country_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -258,7 +258,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_offline_data_tip">
 
-                    <com.fy.navi.ui.view.CustomSwipeMenuLayout
+                    <com.sgm.navi.ui.view.CustomSwipeMenuLayout
                         android:id="@+id/swipe_menu_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -266,13 +266,13 @@
                         app:layout_constraintStart_toStartOf="parent"
                         android:orientation="horizontal">
 
-                        <com.fy.navi.ui.view.SkinConstraintLayout
+                        <com.sgm.navi.ui.view.SkinConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_140"
                             android:clickable="true"
                             android:background="@drawable/shape_bg_map_data">
 
-                            <com.fy.navi.ui.view.SkinTextView
+                            <com.sgm.navi.ui.view.SkinTextView
                                 android:id="@+id/country_city_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -285,7 +285,7 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <com.fy.navi.ui.view.SkinTextView
+                            <com.sgm.navi.ui.view.SkinTextView
                                 android:layout_width="@dimen/dp_128"
                                 android:layout_height="@dimen/dp_46"
                                 android:layout_marginStart="@dimen/dp_24"
@@ -299,7 +299,7 @@
                                 app:layout_constraintLeft_toRightOf="@+id/country_city_name"
                                 app:layout_constraintTop_toTopOf="parent"  />
 
-                            <com.fy.navi.ui.view.SkinTextView
+                            <com.sgm.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/dp_20"
@@ -312,7 +312,7 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/country_city_name" />
 
-                            <com.fy.navi.scene.ui.setting.DownloadBtnView
+                            <com.sgm.navi.scene.ui.setting.DownloadBtnView
                                 android:id="@+id/country_download_view"
                                 clickCommand="@{ViewModel.mStartDownload}"
                                 android:layout_width="@dimen/dp_180"
@@ -323,7 +323,7 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <!--数据包大小-->
-                            <com.fy.navi.ui.view.SkinTextView
+                            <com.sgm.navi.ui.view.SkinTextView
                                 android:id="@+id/country_data_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -347,9 +347,9 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"/>
 
-                        </com.fy.navi.ui.view.SkinConstraintLayout>
+                        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:id="@+id/country_delete"
                             clickCommand="@{ViewModel.mToDeleteCountryCity}"
                             android:layout_width="@dimen/dp_150"
@@ -363,12 +363,12 @@
                             android:textColor="@color/color_80_ffffff"
                             android:gravity="center" />
 
-                    </com.fy.navi.ui.view.CustomSwipeMenuLayout>
+                    </com.sgm.navi.ui.view.CustomSwipeMenuLayout>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                 <!--全部城市地图数据-->
-                <com.fy.navi.ui.view.SkinRecyclerView
+                <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/rv_offline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -381,10 +381,10 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/view_country_data" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinNestedScrollView>
+        </com.sgm.navi.ui.view.SkinNestedScrollView>
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 
 </layout>

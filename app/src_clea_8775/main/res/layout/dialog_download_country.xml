@@ -6,7 +6,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1452"
             android:layout_height="@dimen/dp_413"
             android:paddingHorizontal="@dimen/dp_21"
@@ -18,7 +18,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/bg_shadow_system_ndlc_8155">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/dialog_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/dialog_button_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_94"
@@ -40,7 +40,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <com.fy.navi.ui.view.SkinButton
+                <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dialog_commit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -50,7 +50,7 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_34" />
 
-                <com.fy.navi.ui.view.SkinButton
+                <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dialog_cancel"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -61,8 +61,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_34" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

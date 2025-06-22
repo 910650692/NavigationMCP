@@ -8,17 +8,17 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.map.BaseMapViewModel" />
+            type="com.sgm.navi.hmi.map.BaseMapViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="false"
         android:minWidth="@dimen/dp_577"
         android:orientation="vertical">
 
-        <com.fy.navi.scene.ui.navi.SceneNaviLanesView
+        <com.sgm.navi.scene.ui.navi.SceneNaviLanesView
             android:id="@+id/cruise_lanes_view"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_87"
@@ -43,7 +43,7 @@
             app:layout_constraintStart_toStartOf="@id/cruise_lanes_view"
             app:layout_constraintTop_toBottomOf="@id/cruise_lanes_view"/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_voice"
             android:layout_width="@dimen/dp_49"
             android:layout_height="@dimen/dp_49"
@@ -55,7 +55,7 @@
             app:layout_constraintTop_toTopOf="@id/view_bg"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             app:layout_constraintTop_toBottomOf="@id/iv_voice"
             tools:text="播报" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_current_road_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,6 +84,6 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="当前道路" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

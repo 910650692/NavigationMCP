@@ -8,14 +8,14 @@
         <import type="android.view.View" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_222"
         android:layout_height="@dimen/dp_96"
         android:layout_marginTop="@dimen/dp_24"
         android:background="@drawable/bg_limit_city_button_selector"
         android:focusable="true">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,6 +31,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="呼和浩特市" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

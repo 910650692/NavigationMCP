@@ -9,10 +9,10 @@
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.TerminalParkingResultAdapter.ResultHolder" />
+            type="com.sgm.navi.scene.ui.adapter.TerminalParkingResultAdapter.ResultHolder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_140"
         android:background="@drawable/recycler_item_selector">
@@ -24,7 +24,7 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="@dimen/dp_65" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_item_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="1" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_item_recommended"
             android:layout_width="@dimen/dp_76"
             android:layout_height="@dimen/dp_46"
@@ -53,7 +53,7 @@
             app:layout_constraintEnd_toStartOf="@id/sktv_parking_name"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_name"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_46"
@@ -68,7 +68,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="大雨停车场" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_item_leisure_num"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_46"
@@ -85,7 +85,7 @@
             app:layout_constraintEnd_toStartOf="@id/sktv_parking_item_sufficient_num"
             tools:text="105/200" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_item_sufficient_num"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_46"
@@ -102,7 +102,7 @@
             app:layout_constraintEnd_toStartOf="@id/sktv_parking_item_distance"
             tools:text="充足" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_item_distance"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_46"
@@ -118,7 +118,7 @@
             app:layout_constraintEnd_toStartOf="@id/decoy_view"
             tools:text="当前终点" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/decoy_view"
             android:layout_width="@dimen/dp_26"
             android:layout_height="@dimen/dp_46"
@@ -127,7 +127,7 @@
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_distance"
             app:layout_constraintTop_toTopOf="@+id/sktv_parking_item_distance" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/poi_to_navi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_navi_icon"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
@@ -147,7 +147,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/text_navi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -157,6 +157,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_navi_icon" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

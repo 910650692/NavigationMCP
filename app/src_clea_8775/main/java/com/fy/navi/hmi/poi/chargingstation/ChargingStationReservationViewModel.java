@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.poi.chargingstation;
+package com.sgm.navi.hmi.poi.chargingstation;
 
 import android.app.Application;
 

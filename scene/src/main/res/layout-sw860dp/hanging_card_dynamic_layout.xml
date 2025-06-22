@@ -7,13 +7,13 @@
 
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/sc_root"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_118"
         android:background="@drawable/bg_handing_card_fold">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_icon"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -24,7 +24,7 @@
             app:layout_constraintBottom_toTopOf="@id/view_indicator"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -51,5 +51,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_goneMarginBottom="6dp" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

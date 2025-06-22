@@ -7,10 +7,10 @@
 
         <variable
             name="ScenePoiChargingStationReservationView"
-            type="com.fy.navi.scene.impl.poi.ScenePoiChargingStationReservationViewImpl" />
+            type="com.sgm.navi.scene.impl.poi.ScenePoiChargingStationReservationViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_820"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_poi_main_tab"
@@ -31,14 +31,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintGuide_end="@dimen/dp_52" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="@+id/end_guideline"
             app:layout_constraintStart_toStartOf="@+id/start_guideline"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_type_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/sk_poi_name" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/sk_poi_name"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_type_icon"
                 clickCommand="@{ScenePoiChargingStationReservationView.closeFragment}"
                 android:layout_width="@dimen/dp_74"
@@ -78,7 +78,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/sk_poi_name" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_second_address"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/sk_poi_name"
                 tools:text="世纪大道1号" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_distance_time"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
                 tools:text="5.2公里   30分钟" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/siv_arrival_capacity"
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
@@ -116,7 +116,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
                 app:layout_constraintTop_toTopOf="@+id/poi_arrival_capacity" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_arrival_capacity"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
                 app:layout_constraintTop_toTopOf="@+id/poi_distance_time"
                 tools:text="15%到达" />
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/charge_reservation_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/poi_distance_time">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/charge_station_type"
                     android:layout_width="@dimen/dp_46"
                     android:layout_height="@dimen/dp_45"
@@ -153,7 +153,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="快" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/charge_station_status"
                     android:layout_width="@dimen/dp_76"
                     android:layout_height="@dimen/dp_45"
@@ -167,7 +167,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="已约" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/charge_station_device_name"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_45"
@@ -180,7 +180,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="大雨停车场" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/charge_station_left_time"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_45"
@@ -192,7 +192,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/charge_station_device_name"
                     tools:text="预约剩余时间：28分钟 " />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/charge_station_device_number"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_45"
@@ -204,9 +204,9 @@
                     app:layout_constraintTop_toBottomOf="@+id/charge_station_left_time"
                     tools:text="设备编号：x x x x x x x x x" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_charge_unlock"
                 android:layout_width="@dimen/dp_338"
                 android:layout_height="@dimen/dp_120"
@@ -220,7 +220,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/charge_reservation_detail"
                 app:layout_goneMarginStart="@dimen/dp_0" />
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_cancel_reservation"
                 android:layout_width="@dimen/dp_152"
                 android:layout_height="@dimen/dp_130"
@@ -229,7 +229,7 @@
                 app:layout_constraintStart_toEndOf="@+id/poi_charge_unlock"
                 app:layout_constraintTop_toTopOf="@+id/poi_charge_unlock">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/poi_cancel_img"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -239,7 +239,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_cancel_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -251,9 +251,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/poi_cancel_img" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_go_here"
                 android:layout_width="@dimen/dp_114"
                 android:layout_height="@dimen/dp_130"
@@ -262,7 +262,7 @@
                 app:layout_constraintStart_toEndOf="@+id/poi_cancel_reservation"
                 app:layout_constraintTop_toTopOf="@+id/poi_charge_unlock">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/siv_phone"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -272,7 +272,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -284,9 +284,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/siv_phone" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

@@ -6,10 +6,10 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.setting.broadcast.voice.SettingVoiceBroadcastViewModel" />
+            type="com.sgm.navi.hmi.setting.broadcast.voice.SettingVoiceBroadcastViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_1282"
         android:layout_height="@dimen/dp_772"
         android:clickable="true"
@@ -17,12 +17,12 @@
         android:orientation="vertical"
         android:background="@drawable/bg_shadow_navi_buick">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/voice_broadcast_head"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_132">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mSwitchVoiceBroadcastClick}"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
@@ -32,7 +32,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
@@ -46,19 +46,19 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinNestedScrollView
+        <com.sgm.navi.ui.view.SkinNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:scrollbars="vertical">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/current_voice_broadcast_layout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_140"
@@ -69,7 +69,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
-                    <com.fy.navi.scene.ui.setting.SceneCircleImageView
+                    <com.sgm.navi.scene.ui.setting.SceneCircleImageView
                         android:id="@+id/current_voice_broadcast_header"
                         android:layout_width="@dimen/dp_80"
                         android:layout_height="@dimen/dp_80"
@@ -79,7 +79,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/current_voice_broadcast_current_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/current_voice_broadcast_header"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/current_voice_broadcast_current_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -103,9 +103,9 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/current_voice_broadcast_default_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     />
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/default_voice_broadcast_layout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_140"
@@ -130,7 +130,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
-                    <com.fy.navi.scene.ui.setting.SceneCircleImageView
+                    <com.sgm.navi.scene.ui.setting.SceneCircleImageView
                         android:id="@+id/default_voice_header"
                         android:layout_width="@dimen/dp_80"
                         android:layout_height="@dimen/dp_80"
@@ -140,7 +140,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/default_voice_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/default_voice_header"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         clickCommand="@{viewModel.mSwitchDefaultVoice}"
                         android:background="@drawable/bg_voice_operate_selector"
                         android:enabled="@{!viewModel.mIsDefaultVoiceUsed}"
@@ -168,9 +168,9 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/recommend_voice_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -182,7 +182,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/default_voice_broadcast_layout"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.fy.navi.ui.view.SkinRecyclerView
+                <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/recommend_voice_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -194,10 +194,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinNestedScrollView>
+        </com.sgm.navi.ui.view.SkinNestedScrollView>
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 
 </layout>

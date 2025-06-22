@@ -6,17 +6,17 @@
 
         <variable
             name="SceneSearchHistoryImpl"
-            type="com.fy.navi.scene.impl.search.SceneSearchHistoryImpl" />
+            type="com.sgm.navi.scene.impl.search.SceneSearchHistoryImpl" />
     </data>
     <!--MFC-->
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_922"
         android:layout_height="wrap_content"
         android:focusable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_add0"
             clickCommand="@{()-> SceneSearchHistoryImpl.commonAdd(0)}"
             android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_add0"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -40,7 +40,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_add0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,9 +53,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_add0" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_add1"
             clickCommand="@{()-> SceneSearchHistoryImpl.commonAdd(1)}"
             android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
             app:layout_constraintStart_toEndOf="@id/scl_add0"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_add1"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -78,7 +78,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_add1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,9 +91,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_add1" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_add2"
             clickCommand="@{()-> SceneSearchHistoryImpl.commonAdd(2)}"
             android:layout_width="wrap_content"
@@ -106,7 +106,7 @@
             app:layout_constraintStart_toEndOf="@id/scl_add1"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_add2"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -116,7 +116,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_add2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -129,10 +129,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_add2" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -145,7 +145,7 @@
             app:layout_constraintStart_toEndOf="@id/scl_add2"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_star"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -155,7 +155,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_car_washing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -168,6 +168,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_star" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

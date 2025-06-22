@@ -6,10 +6,10 @@
 
         <variable
             name="QuickSearchView"
-            type="com.fy.navi.scene.api.search.ISceneQuickSearchView" />
+            type="com.sgm.navi.scene.api.search.ISceneQuickSearchView" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_922"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -23,7 +23,7 @@
             android:layout_width="@dimen/dp_922"
             android:layout_height="@dimen/dp_254" />
 
-        <com.fy.navi.ui.view.SkinRecyclerView
+        <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/sk_rcv_quick"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_930"
@@ -34,7 +34,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinRecyclerView
+        <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/sk_rcv_suggestion"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_930"
@@ -46,7 +46,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/recycler_no_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,5 +59,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

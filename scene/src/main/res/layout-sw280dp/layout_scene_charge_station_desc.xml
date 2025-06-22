@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fy.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sgm.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="wrap_content"
@@ -7,7 +7,7 @@
     android:focusable="false"
     android:orientation="horizontal">
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tv_logo_quick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:textColor="@color/card_quick_color"
         android:textSize="@dimen/sp_32" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tv_quick_use"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:textSize="@dimen/sp_32"
         tools:text="66" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tv_quick_total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
         tools:text="/88" />
 
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tv_logo_slow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
         android:textColor="@color/card_slow_color"
         android:textSize="@dimen/sp_32" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tv_slow_use"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
         android:textSize="@dimen/sp_32"
         tools:text="66" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tv_slow_total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
         android:textSize="@dimen/sp_32"
         tools:text="/88" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tv_tense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
         android:textColor="@color/card_tense_color"
         android:textSize="@dimen/sp_32" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tv_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,4 +91,4 @@
         android:textColor="@color/traffic_title_color"
         android:textSize="@dimen/sp_26"
         android:text="港城广场充电111-112"/>
-</com.fy.navi.ui.view.SkinLinearLayout>
+</com.sgm.navi.ui.view.SkinLinearLayout>

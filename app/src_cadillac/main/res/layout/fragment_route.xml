@@ -9,19 +9,19 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.route.RouteViewModel" />
+            type="com.sgm.navi.hmi.route.RouteViewModel" />
     </data>
 
     <com.android.car.ui.FocusArea
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_2062"
             android:layout_height="@dimen/dp_1102"
             android:focusable="false">
             <!--tab list-->
-            <com.fy.navi.scene.ui.route.SceneRouteGasStationWeatherServiceView
+            <com.sgm.navi.scene.ui.route.SceneRouteGasStationWeatherServiceView
                 android:id="@+id/route_right_tab_list_scene"
                 android:layout_width="@dimen/dp_302"
                 android:layout_height="@dimen/dp_702"
@@ -36,7 +36,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 tools:visibility="gone" />
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{ViewModel.getTabChargingClick()}"
                 android:layout_width="@dimen/dp_302"
                 android:layout_height="@dimen/dp_302"
@@ -50,7 +50,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 tools:visibility="gone">
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:id="@+id/route_right_tab_list_charging_station"
                     android:layout_width="@dimen/dp_200"
                     android:layout_height="@dimen/dp_200"
@@ -59,7 +59,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/route_right_tab_list_tv_charging_station"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                     app:layout_constraintStart_toStartOf="@id/route_right_tab_list_charging_station"
                     app:select_text_color="@color/tab_list_route_tab_list_select" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/route_right_tab_list_iv_charging_station"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -83,9 +83,9 @@
                     app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_charging_station"
                     app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_tv_charging_station"
                     app:layout_constraintStart_toStartOf="@id/route_right_tab_list_tv_charging_station" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{ViewModel.getTabGasClick()}"
                 android:layout_width="@dimen/dp_302"
                 android:layout_height="@dimen/dp_302"
@@ -99,7 +99,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 tools:visibility="gone">
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:id="@+id/route_right_tab_list_gas_station"
                     android:layout_width="@dimen/dp_200"
                     android:layout_height="@dimen/dp_200"
@@ -108,7 +108,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/route_right_tab_list_tv_gas_station"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
                     app:layout_constraintStart_toStartOf="@id/route_right_tab_list_gas_station"
                     app:select_text_color="@color/tab_list_route_tab_list_select" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/route_right_tab_list_iv_gas_station"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -132,7 +132,7 @@
                     app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_gas_station"
                     app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_gas_station"
                     app:layout_constraintStart_toStartOf="@id/route_right_tab_list_gas_station" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <ViewStub
                 android:id="@+id/route_line_info_root"
@@ -187,6 +187,6 @@
                 android:paddingVertical="@dimen/dp_29"
                 tools:visibility="gone" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.android.car.ui.FocusArea>
 </layout>

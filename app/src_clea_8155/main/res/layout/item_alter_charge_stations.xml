@@ -8,12 +8,12 @@
         <import type="android.view.View" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/layout_charge_station"
         android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_154">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_charge_station_number"
             android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_30"
@@ -28,7 +28,7 @@
             app:layout_constraintHorizontal_bias="0.05"
             tool:text="1"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_charge_station_name"
             android:textColor="@color/text_route_detail_title"
             android:textSize="@dimen/sp_34"
@@ -42,7 +42,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:text="@string/route_selected_charge_station"/>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/ly_charge_fast"
             android:layout_width="@dimen/dp_150"
             android:layout_height="@dimen/dp_46"
@@ -52,7 +52,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_charge_fast"
                 android:layout_width="@dimen/dp_46"
                 android:layout_height="@dimen/dp_46"
@@ -65,7 +65,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_charge_fast_total_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -77,9 +77,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 tool:text="/88"/>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/ly_charge_slow"
             android:layout_width="@dimen/dp_150"
             android:layout_height="@dimen/dp_46"
@@ -89,7 +89,7 @@
             app:layout_constraintStart_toEndOf="@+id/ly_charge_fast"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_charge_slow"
                 android:layout_width="@dimen/dp_46"
                 android:layout_height="@dimen/dp_46"
@@ -101,7 +101,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_charge_slow_total_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,9 +113,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 tool:text="/88"/>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_charge_station_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tool:text="12 公里"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_charge_station_cost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
             app:layout_constraintEnd_toStartOf="@+id/button_alter"
             tool:text="￥1.65/度"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/button_alter"
             android:textColor="@color/route_charge_button_text_color"
             android:textSize="@dimen/sp_30"
@@ -155,6 +155,6 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

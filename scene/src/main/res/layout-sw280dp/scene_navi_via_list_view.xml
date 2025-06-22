@@ -9,10 +9,10 @@
 
         <variable
             name="naviViaList"
-            type="com.fy.navi.scene.api.navi.ISceneNaviViaList" />
+            type="com.sgm.navi.scene.api.navi.ISceneNaviViaList" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_add_via"
         android:layout_width="@dimen/dp_820"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         tools:layout_height="@dimen/dp_1918"
         tools:layout_width="@dimen/dp_820">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -31,12 +31,12 @@
             android:maxHeight="@dimen/dp_810"
             android:paddingBottom="@dimen/dp_40">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:focusable="false"
                 android:layout_height="wrap_content">
 
-                <com.fy.navi.ui.view.SkinRecyclerView
+                <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/srv_add_via"
                     android:focusable="false"
                     android:layout_width="match_parent"
@@ -46,9 +46,9 @@
                     app:layout_constraintHeight_max="@dimen/dp_618"
                     android:overScrollMode="never"/>
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.scene.ui.navi.view.ButtonLinearLayout
+            <com.sgm.navi.scene.ui.navi.view.ButtonLinearLayout
                 android:id="@+id/sll_add_via"
                 clickCommand="@{naviViaList.skipAlongWayFragment}"
                 android:layout_width="match_parent"
@@ -60,14 +60,14 @@
                 android:focusable="true"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/siv_add_via"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:focusable="false"
                     android:background="@drawable/img_add_58" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_add_via"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -77,10 +77,10 @@
                     android:text="@string/navi_add_via"
                     android:textColor="@color/common_title_color"
                     android:textSize="@dimen/sp_46" />
-            </com.fy.navi.scene.ui.navi.view.ButtonLinearLayout>
+            </com.sgm.navi.scene.ui.navi.view.ButtonLinearLayout>
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
 
 

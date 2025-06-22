@@ -6,10 +6,10 @@
         <import type="android.view.View" />
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.map.MapViewModel" />
+            type="com.sgm.navi.hmi.map.MapViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:id="@+id/message_center_parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,12 +20,12 @@
         android:gravity="center_vertical"
         android:background="@drawable/bg_search_main_tab">
 
-        <com.fy.navi.ui.view.SkinRelativeLayout
+        <com.sgm.navi.ui.view.SkinRelativeLayout
             android:id="@+id/base_map_message_left_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_operate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                 android:textSize="@dimen/sp_32"
                 />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/base_map_message_center_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,9 +44,9 @@
                 android:src="@drawable/img_message_center_weather"
                 />
 
-        </com.fy.navi.ui.view.SkinRelativeLayout>
+        </com.sgm.navi.ui.view.SkinRelativeLayout>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/base_map_message_center_line"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_53"
@@ -55,7 +55,7 @@
             android:visibility="@{ViewModel.messageLineVisibility ? View.VISIBLE : View.GONE}"
             />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/base_map_message_center_line_height"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_64"
@@ -64,7 +64,7 @@
             android:visibility="@{ViewModel.messageLineHeightVisibility ? View.VISIBLE : View.GONE}"
             />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/base_map_message_center_view"
             android:layout_marginStart="@dimen/dp_29"
             android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
             android:paddingVertical="@dimen/dp_22"
             android:maxWidth="@dimen/dp_506">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                 android:textColor="@color/message_center_title"
                 />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,9 +101,9 @@
                 android:visibility="@{ViewModel.messageCenterContentVisibility ? View.VISIBLE : View.GONE}"
                 android:textSize="@dimen/sp_26"/>
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/message_center_close"
             android:layout_width="@dimen/dp_49"
             android:layout_height="@dimen/dp_49"
@@ -114,5 +114,5 @@
 
             />
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

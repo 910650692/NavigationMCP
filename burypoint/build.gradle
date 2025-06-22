@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.fy.navi.burypoint'
+    namespace 'com.sgm.navi.burypoint'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
     buildToolsVersion libs.versions.buildSdk.get()
 

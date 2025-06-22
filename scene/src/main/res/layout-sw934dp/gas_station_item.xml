@@ -8,21 +8,21 @@
         <import type="android.view.View" />
         <variable
             name="model"
-            type="com.fy.navi.service.define.route.RouteParam" />
+            type="com.sgm.navi.service.define.route.RouteParam" />
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.adapter.GasStationAdapter.Holder" />
+            type="com.sgm.navi.scene.adapter.GasStationAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/route_item_via_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_poi_gas_price_bg"
 
         >
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_gas_oil_type"
             android:layout_width="wrap_content"
             android:minWidth="@dimen/dp_72"
@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_gas_oil_price"
             android:layout_width="wrap_content"
             android:minWidth="@dimen/dp_108"
@@ -53,5 +53,5 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

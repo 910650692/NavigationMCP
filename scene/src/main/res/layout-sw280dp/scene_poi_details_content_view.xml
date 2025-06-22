@@ -9,14 +9,14 @@
 
         <variable
             name="ScenePoiDetailContentView"
-            type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+            type="com.sgm.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.scene.ui.route.SceneRouteDescendantsView
+        <com.sgm.navi.scene.ui.route.SceneRouteDescendantsView
             android:id="@+id/ly_secondary_poi"
             android:layout_width="@dimen/dp_1096"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_922"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_shadow_navi_cadillac"
@@ -38,7 +38,7 @@
             android:maxHeight="@dimen/dp_1084"
             android:padding="@dimen/dp_51">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/cs_poi_no_result"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -49,7 +49,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="gone">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_loading"
                     android:layout_width="@dimen/dp_160"
                     android:layout_height="@dimen/dp_160"
@@ -62,7 +62,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="packed" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/no_result_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/iv_loading"
                     app:layout_constraintVertical_chainStyle="packed" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/no_result_button"
                     android:layout_width="@dimen/dp_264"
                     android:layout_height="@dimen/dp_76"
@@ -92,7 +92,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/no_result_hint"
                     tools:visibility="gone" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     clickCommand="@{ScenePoiDetailContentView.closeFragment}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -102,7 +102,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/start_guideline"
@@ -121,7 +121,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintGuide_end="@dimen/dp_52" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_offline_hint"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/search_offline_hint"
                 tools:visibility="gone" />
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_type_text"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="@dimen/dp_46"
@@ -153,7 +153,7 @@
                 android:visibility="gone"
                 />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/sk_poi_name"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
                 app:layout_goneMarginTop="@dimen/dp_52"
                 tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_type_icon"
                 clickCommand="@{ScenePoiDetailContentView.closeFragment}"
                 android:layout_width="@dimen/dp_74"
@@ -182,7 +182,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/poi_offline_hint"
                 app:layout_goneMarginTop="@dimen/dp_48" />
 
-            <com.fy.navi.scene.ui.search.MaxHeightScrollView
+            <com.sgm.navi.scene.ui.search.MaxHeightScrollView
                 android:id="@+id/poi_details_scroll"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -196,14 +196,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/sk_poi_name"
                 app:maxHeight="@dimen/dp_628">
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/poi_base_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
                     android:paddingHorizontal="@dimen/dp_52">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/poi_second_address"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
@@ -215,7 +215,7 @@
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         tools:text="世纪大道1号" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/poi_distance_time"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
@@ -231,7 +231,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
                         tools:text="5.2公里   30分钟" />
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_arrival_capacity"
                         android:layout_width="@dimen/dp_54"
                         android:layout_height="@dimen/dp_54"
@@ -244,7 +244,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
                         app:layout_constraintTop_toTopOf="@+id/poi_arrival_capacity" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/poi_arrival_capacity"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
@@ -267,7 +267,7 @@
                         android:focusable="false"
                         app:layout_constraintTop_toBottomOf="@+id/poi_distance_time" />
 
-                    <com.fy.navi.ui.view.SkinConstraintLayout
+                    <com.sgm.navi.ui.view.SkinConstraintLayout
                         android:id="@+id/poi_content_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -354,13 +354,13 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                    </com.fy.navi.ui.view.SkinConstraintLayout>
+                    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                    <!-- </com.fy.navi.ui.view.SkinScrollView>-->
+                    <!-- </com.sgm.navi.ui.view.SkinScrollView>-->
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            </com.fy.navi.scene.ui.search.MaxHeightScrollView>
+            </com.sgm.navi.scene.ui.search.MaxHeightScrollView>
 
             <include
                 android:id="@+id/scene_poi_details_bottom_view"
@@ -374,8 +374,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

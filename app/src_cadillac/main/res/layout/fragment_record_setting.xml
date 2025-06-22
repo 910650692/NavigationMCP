@@ -7,9 +7,9 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.drivingrecord.recordsetting.RecordSettingViewModel" />
+            type="com.sgm.navi.hmi.drivingrecord.recordsetting.RecordSettingViewModel" />
     </data>
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
         android:clickable="true"
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/record_setting_title"
             android:focusable="false"
             android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                 app:nudgeDown="@+id/record_setting_focus"
                 app:nudgeUp="@+id/record_setting_focus">
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     clickCommand="@{ViewModel.mCloseRecordSetting}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -47,7 +47,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </com.android.car.ui.FocusArea>
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:src="@drawable/img_setting_close"
@@ -57,7 +57,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/driving_record_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
         <com.android.car.ui.FocusArea
@@ -81,7 +81,7 @@
             app:nudgeDown="@+id/focus_close"
             app:nudgeUp="@+id/focus_close">
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 clickCommand="@{ViewModel.mSwitchRecordSetting}"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_202"
@@ -92,7 +92,7 @@
                 android:layout_marginEnd="@dimen/dp_52"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector" />
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 clickCommand="@{ViewModel.mClearDivingRecord}"
                 android:id="@+id/record_setting_clear_focus"
                 android:layout_width="match_parent"
@@ -104,7 +104,7 @@
 
         </com.android.car.ui.FocusArea>
 
-        <com.fy.navi.ui.view.SkinCheckBox
+        <com.sgm.navi.ui.view.SkinCheckBox
             clickCommand="@{ViewModel.mSwitchRecordSetting}"
             android:id="@+id/record_setting_auto_check"
             android:layout_width="wrap_content"
@@ -118,7 +118,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_title"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/record_setting_auto_check_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
             app:layout_constraintTop_toBottomOf="@+id/record_setting_title"
             app:layout_constraintStart_toEndOf="@+id/record_setting_auto_check"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/record_setting_auto_check_des"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -143,7 +143,7 @@
             app:layout_constraintTop_toBottomOf="@+id/record_setting_auto_check_text"
             app:layout_constraintStart_toStartOf="@+id/record_setting_auto_check_text"/>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/record_setting_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
@@ -155,7 +155,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_auto_check_des" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/record_setting_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
             app:layout_constraintTop_toBottomOf="@+id/record_setting_line"
             app:layout_constraintStart_toStartOf="@+id/record_setting_auto_check"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/record_setting_clear_des"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -179,7 +179,7 @@
             app:layout_constraintTop_toBottomOf="@+id/record_setting_clear"
             app:layout_constraintStart_toStartOf="@+id/record_setting_clear"/>
 
-        <com.fy.navi.ui.view.SkinButton
+        <com.sgm.navi.ui.view.SkinButton
             clickCommand="@{ViewModel.mClearDivingRecord}"
             android:id="@+id/record_setting_clear_btn"
             android:layout_width="@dimen/dp_208"
@@ -194,7 +194,7 @@
             app:layout_constraintTop_toTopOf="@+id/record_setting_line"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
             android:focusable="false"
@@ -204,5 +204,5 @@
             android:layout_marginStart="@dimen/dp_52"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_clear_des" />
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

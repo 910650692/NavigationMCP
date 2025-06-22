@@ -11,7 +11,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="@dimen/dp_310"
         android:layout_height="@dimen/dp_92"
-        tools:parentTag="com.fy.navi.ui.view.SkinConstraintLayout">
+        tools:parentTag="com.sgm.navi.ui.view.SkinConstraintLayout">
 
         <View
             android:id="@+id/view_bg"
@@ -26,7 +26,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_navi_continue_icon"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -36,7 +36,7 @@
             app:layout_constraintStart_toStartOf="@id/view_bg"
             app:layout_constraintTop_toTopOf="@id/view_bg" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"

@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.search.around;
+package com.sgm.navi.hmi.search.around;
 
 import android.app.Application;
 

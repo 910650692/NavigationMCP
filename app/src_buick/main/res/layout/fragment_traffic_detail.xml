@@ -7,17 +7,17 @@
 
         <import type="android.view.View" />
         <import type="com.android.utils.TimeUtils"/>
-        <import type="com.fy.navi.hmi.traffic.TrafficEventUiState" />
+        <import type="com.sgm.navi.hmi.traffic.TrafficEventUiState" />
         <variable
             name="context"
             type="android.content.Context" />
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.traffic.TrafficViewModel" />
+            type="com.sgm.navi.hmi.traffic.TrafficViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
         android:layout_width="@dimen/dp_698"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:background="@drawable/bg_shadow_navi_buick"
         android:paddingBottom="@dimen/dp_53">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"
             clickCommand="@{ViewModel.closeSelf}"
             android:layout_width="@dimen/dp_58"
@@ -50,7 +50,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_icon"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -59,7 +59,7 @@
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
             app:layout_constraintTop_toTopOf="@id/iv_icon"
             app:layout_constraintBottom_toBottomOf="@id/iv_icon"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             app:layout_constraintTop_toBottomOf="@id/iv_icon" />
 
         <!--车辆距离此处的距离-->
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_distance_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             app:layout_constraintTop_toTopOf="@id/tv_distance" />
 
         <!--事件发生到现在的时间-->
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
             app:layout_constraintEnd_toEndOf="@id/iv_close"
             app:layout_constraintTop_toTopOf="@id/tv_distance" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
             app:layout_constraintEnd_toEndOf="@id/iv_close"
             app:layout_constraintTop_toBottomOf="@id/tv_distance" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_pic"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_194"
@@ -131,7 +131,7 @@
             clickCommand="@{ViewModel.openImageDetail}"
             tools:background="@color/account_blue_text" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_increase"
             android:layout_width="@dimen/dp_268"
             android:layout_height="@dimen/dp_76"
@@ -147,7 +147,7 @@
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/iv_pic" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_decrease"
             android:layout_width="@dimen/dp_268"
             android:layout_height="@dimen/dp_76"
@@ -162,7 +162,7 @@
             app:layout_constraintEnd_toEndOf="@id/iv_close"
             app:layout_constraintTop_toTopOf="@id/tv_increase" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_pre"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -173,7 +173,7 @@
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_increase" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_next"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -183,7 +183,7 @@
             app:layout_constraintEnd_toEndOf="@id/iv_close"
             app:layout_constraintTop_toTopOf="@id/iv_pre" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -222,6 +222,6 @@
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             tools:visibility="invisible" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

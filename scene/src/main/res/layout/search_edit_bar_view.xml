@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_search_top_view"
         android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_112"
         android:background="@drawable/bg_search_main_tab">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -19,7 +19,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinEditText
+        <com.sgm.navi.ui.view.SkinEditText
             android:id="@+id/search_bar_edit_view"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -43,9 +43,9 @@
             tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠">
 
             <requestFocus />
-        </com.fy.navi.ui.view.SkinEditText>
+        </com.sgm.navi.ui.view.SkinEditText>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_edit_clear"
             android:layout_width="@dimen/dp_42"
             android:layout_height="@dimen/dp_42"
@@ -55,5 +55,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

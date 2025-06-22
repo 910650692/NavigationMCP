@@ -9,11 +9,11 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.limit.BaseLimitDriverViewModel" />
+            type="com.sgm.navi.hmi.limit.BaseLimitDriverViewModel" />
     </data>
 
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
         android:layout_width="@dimen/dp_922"
         android:layout_height="match_parent"
@@ -21,7 +21,7 @@
         android:focusable="false"
         android:clickable="true">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_input"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_254"
@@ -30,7 +30,7 @@
             android:focusable="false"
             android:background="@drawable/bg_shadow_navi_cadillac">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_back"
                 clickCommand="@{ViewModel.closeCitySelectionPage}"
                 android:layout_width="@dimen/dp_74"
@@ -41,7 +41,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinEditText
+            <com.sgm.navi.ui.view.SkinEditText
                 android:id="@+id/edit_text_id"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -61,9 +61,9 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_930"
             android:layout_marginTop="@dimen/dp_223"
@@ -74,7 +74,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_current_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/select_city_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,8 +111,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_current_city" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

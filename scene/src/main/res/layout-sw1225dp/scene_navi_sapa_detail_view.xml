@@ -7,10 +7,10 @@
 
         <variable
             name="sapaDetail"
-            type="com.fy.navi.scene.impl.navi.SceneNaviSapaDetailImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviSapaDetailImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -27,5 +27,5 @@
             tools:visibility="visible" />
 
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

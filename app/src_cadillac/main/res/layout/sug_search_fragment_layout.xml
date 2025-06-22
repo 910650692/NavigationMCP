@@ -8,10 +8,10 @@
 
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.search.suggestion.SuggestionResultViewModel" />
+            type="com.sgm.navi.hmi.search.suggestion.SuggestionResultViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,13 +27,13 @@
             android:orientation="vertical"
             app:defaultFocusOverridesHistory="true"
             app:wrapAround="true">
-            <com.fy.navi.scene.ui.search.SceneSugSearchPoiList
+            <com.sgm.navi.scene.ui.search.SceneSugSearchPoiList
                 android:id="@+id/scene_sug_poi_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusable="false"
                 app:layoutType="scene_sug_search_fragment" />
         </com.android.car.ui.FocusArea>
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 
 </layout>

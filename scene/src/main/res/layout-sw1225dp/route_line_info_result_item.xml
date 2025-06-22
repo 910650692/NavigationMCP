@@ -9,10 +9,10 @@
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.RouteResultAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.RouteResultAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/item_root_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_124"
@@ -20,12 +20,12 @@
         android:paddingStart="@dimen/dp_30"
         android:paddingEnd="@dimen/dp_30">
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/item_root_view_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_num"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -36,7 +36,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="xx小时xx分钟" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="少收费" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
             tools:text="xx公里" />
 
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_item_traffic_light"
             android:layout_width="@dimen/dp_31"
             android:layout_height="@dimen/dp_31"
@@ -84,7 +84,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_distance" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_traffic_light_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
             app:layout_constraintStart_toEndOf="@+id/route_item_traffic_light"
             tools:text="88" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_item_traffic_price"
             android:layout_width="@dimen/dp_31"
             android:layout_height="@dimen/dp_31"
@@ -106,7 +106,7 @@
             app:layout_constraintStart_toEndOf="@+id/route_item_traffic_light_value" />
 
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
             app:layout_constraintStart_toEndOf="@+id/route_item_traffic_price"
             tools:text="3" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_item_electricity_img"
             android:layout_width="@dimen/dp_31"
             android:layout_height="@dimen/dp_31"
@@ -128,7 +128,7 @@
             app:layout_constraintStart_toEndOf="@+id/route_item_price" />
 
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_electricity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -139,5 +139,5 @@
             app:layout_constraintStart_toEndOf="@+id/route_item_electricity_img"
             tools:text="60%到达" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

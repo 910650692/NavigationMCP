@@ -9,9 +9,9 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.route.RouteViewModel" />
+            type="com.sgm.navi.hmi.route.RouteViewModel" />
     </data>
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/route_weather_details"
         android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
@@ -21,7 +21,7 @@
         android:background="@drawable/bg_shadow_navi_buick"
         android:clickable="true">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_weather_details_iv"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_120"
@@ -31,7 +31,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/img_route_weather_clear" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_weather_details_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             app:layout_constraintTop_toTopOf="@+id/route_weather_details_iv"
             tools:text="阴转晴" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_weather_details_city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             app:layout_constraintStart_toEndOf="@+id/route_weather_details_iv"
             tools:text="孝感市" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             clickCommand="@{ViewModel.getCloseWeatherDetailsClick()}"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -64,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_weather_details_distance_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
             app:layout_constraintTop_toBottomOf="@+id/route_weather_details_iv"
             tools:text="54.2公里 40分钟" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_weather_details_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
             app:layout_constraintTop_toBottomOf="@+id/route_weather_details_distance_time"
             tools:text="途径延安时段时晴，预计将持续至明天以后，影响路段共303公里，温度5℃~15℃。" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_weather_details_update_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
             app:layout_constraintTop_toBottomOf="@+id/route_weather_details_description"
             tools:text="高德交通：更新于13分钟前" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_weather_details_button"
             clickCommand="@{ViewModel.getWeatherAviodClick()}"
             android:layout_width="match_parent"
@@ -116,5 +116,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

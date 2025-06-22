@@ -7,10 +7,10 @@
 
         <variable
             name="Scene"
-            type="com.fy.navi.scene.api.route.ISceneRouteDetailsResultList" />
+            type="com.sgm.navi.scene.api.route.ISceneRouteDetailsResultList" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_828"
         android:focusable="false"
@@ -18,7 +18,7 @@
         android:paddingRight="@dimen/dp_40"
         android:paddingBottom="@dimen/dp_30">
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_details_list_bg_header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_148"
@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_details_list_img_header"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
@@ -35,7 +35,7 @@
             app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_header"
             app:layout_constraintTop_toTopOf="@id/route_details_list_bg_header" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_24"
@@ -48,7 +48,7 @@
             app:layout_constraintStart_toEndOf="@id/route_details_list_img_header"
             app:layout_constraintTop_toTopOf="@id/route_details_list_bg_header" />
 
-        <com.fy.navi.ui.view.SkinRecyclerView
+        <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/route_detail_result_list"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_534"
@@ -58,7 +58,7 @@
             android:scrollbars="none"
             app:layout_constraintTop_toBottomOf="@id/route_details_list_bg_header" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_details_list_bg_footer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_148"
@@ -66,7 +66,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_details_list_img_footer"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
@@ -75,7 +75,7 @@
             app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_footer"
             app:layout_constraintTop_toTopOf="@id/route_details_list_bg_footer" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_details_list_tv_footer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
             app:layout_constraintTop_toTopOf="@id/route_details_list_bg_footer"
             tools:text="终点：上海海事大学上海海事大学上海海事大学" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
 </layout>

@@ -1,11 +1,11 @@
-package com.fy.navi.hmi.favorite;
+package com.sgm.navi.hmi.favorite;
 
 import android.app.Application;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 
 public class FavoriteViewModel extends BaseFavoriteViewModel {

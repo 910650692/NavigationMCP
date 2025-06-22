@@ -4,29 +4,29 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.fy.navi.service.greendao.history.History" />
+        <import type="com.sgm.navi.service.greendao.history.History" />
 
         <variable
             name="poiBean"
-            type="com.fy.navi.service.greendao.history.History" />
+            type="com.sgm.navi.service.greendao.history.History" />
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.SearchHistoryAdapter.FooterViewHolder" />
+            type="com.sgm.navi.scene.ui.adapter.SearchHistoryAdapter.FooterViewHolder" />
 
         <variable
             name="layoutPosition"
             type="String" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_delete_record"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_17"
         >
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_delete"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
@@ -37,7 +37,7 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,6 +50,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

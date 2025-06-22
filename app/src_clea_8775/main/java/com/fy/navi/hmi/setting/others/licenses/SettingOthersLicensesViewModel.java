@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.setting.others.licenses;
+package com.sgm.navi.hmi.setting.others.licenses;
 
 import android.app.Application;
 

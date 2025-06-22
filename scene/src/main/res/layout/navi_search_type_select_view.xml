@@ -7,15 +7,15 @@
 
         <variable
             name="naviSearch"
-            type="com.fy.navi.scene.impl.navi.search.SceneNaviSearchResultViewImpl" />
+            type="com.sgm.navi.scene.impl.navi.search.SceneNaviSearchResultViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_174"
         android:layout_height="@dimen/dp_504"
         android:background="@drawable/bg_navi_control">
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/around"
             android:layout_width="@dimen/dp_174"
             android:layout_height="@dimen/dp_168"
@@ -24,7 +24,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_around"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             app:layout_constraintStart_toStartOf="@id/around"
             app:layout_constraintBottom_toBottomOf="@id/around"/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_around"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -46,7 +46,7 @@
             app:layout_constraintStart_toStartOf="@id/around"
             app:layout_constraintBottom_toTopOf="@id/stv_around"/>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/destination"
             android:layout_width="@dimen/dp_174"
             android:layout_height="@dimen/dp_168"
@@ -55,7 +55,7 @@
             app:layout_constraintBottom_toTopOf="@+id/around"
             />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_destination"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             app:layout_constraintStart_toStartOf="@id/destination"
             app:layout_constraintBottom_toBottomOf="@id/destination"/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_destination"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -78,7 +78,7 @@
             app:layout_constraintBottom_toTopOf="@id/stv_destination"
             />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/along_way"
             android:layout_width="@dimen/dp_174"
             android:layout_height="@dimen/dp_168"
@@ -87,7 +87,7 @@
             app:layout_constraintBottom_toTopOf="@+id/destination"
             />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_along_way"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
             app:layout_constraintStart_toStartOf="@id/along_way"
             app:layout_constraintBottom_toBottomOf="@id/along_way"/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_along_way"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -108,5 +108,5 @@
             app:layout_constraintEnd_toEndOf="@id/along_way"
             app:layout_constraintStart_toStartOf="@id/along_way"
             app:layout_constraintBottom_toTopOf="@id/stv_along_way"/>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

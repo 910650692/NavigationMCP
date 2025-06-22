@@ -8,17 +8,17 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.account.AccountQRCodeLoginViewModel" />
+            type="com.sgm.navi.hmi.account.AccountQRCodeLoginViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1282"
         android:layout_height="@dimen/dp_772"
         android:clickable="true"
         android:padding="@dimen/dp_29"
         android:background="@drawable/bg_shadow_navi_buick">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/phone_qrcode_login_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_138"
@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 clickCommand="@{ViewModel.mAccountBack}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:layout_marginStart="@dimen/dp_26"
                 android:src="@drawable/img_setting_back" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/account_qrcode_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,17 +43,17 @@
                 android:text="@string/setting_others_account"
                 android:textSize="@dimen/sp_38"
                 android:textColor="@color/setting_bg_tab_text_select" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/phone_qrcode_login_title">
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
@@ -61,7 +61,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/account_qrcode_content_img"
                     android:layout_width="@dimen/dp_234"
                     android:layout_height="@dimen/dp_234"
@@ -70,14 +70,14 @@
                     tools:visibility="gone"
                     android:visibility="@{ViewModel.mQRCodeVisible ? View.VISIBLE : View.GONE}" />
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:layout_width="@dimen/dp_260"
                     android:layout_height="@dimen/dp_260"
                     android:orientation="vertical"
                     android:gravity="center"
                     android:visibility="@{ViewModel.mQRCodeLoadingVisible ? View.VISIBLE : View.GONE}">
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/account_qrcode_loading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -91,9 +91,9 @@
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30"/>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:layout_width="@dimen/dp_260"
                     android:layout_height="@dimen/dp_260"
                     android:orientation="vertical"
@@ -101,14 +101,14 @@
                     tools:visibility="gone"
                     android:visibility="@{ViewModel.mQRCodeLoadFailedVisible ? View.VISIBLE : View.GONE}">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_qr_code_load_failed"
                         android:textSize="@dimen/sp_30"
                         android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                    <com.fy.navi.ui.view.SkinButton
+                    <com.sgm.navi.ui.view.SkinButton
                         clickCommand="@{ViewModel.mRetry}"
                         android:layout_width="@dimen/dp_200"
                         android:layout_height="@dimen/dp_76"
@@ -117,9 +117,9 @@
                         android:textSize="@dimen/sp_30"
                         android:textColor="@color/setting_white"
                         android:background="@drawable/bg_setting_preference_select"/>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/account_qrcode_content_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -128,9 +128,9 @@
                     android:text="@string/account_QRCode_login_tip"
                     android:textSize="@dimen/sp_26"
                     android:textColor="@color/setting_bg_tab_text_unselect" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="@dimen/dp_634"
                 android:layout_height="@dimen/dp_473"
                 android:orientation="vertical"
@@ -143,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-                <com.fy.navi.ui.view.SkinTabLayout
+                <com.sgm.navi.ui.view.SkinTabLayout
                     android:id="@+id/account_qrcode_tab"
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_2"
@@ -152,7 +152,7 @@
                     app:tabInlineLabel="true"
                     app:tabIndicatorColor="@color/setting_switch_selected"/>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

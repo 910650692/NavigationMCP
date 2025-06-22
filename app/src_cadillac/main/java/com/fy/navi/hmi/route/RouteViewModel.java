@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.route;
+package com.sgm.navi.hmi.route;
 
 import android.app.Application;
 import android.view.KeyEvent;
@@ -6,8 +6,8 @@ import android.view.View;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.define.navistatus.NaviStatus;
-import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 public class RouteViewModel extends BaseRouteViewModel {
     private static final String TAG = "Cadillac RouteViewModel";

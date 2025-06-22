@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_root"
     android:layout_width="1000dp"
@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -28,7 +28,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/close"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/test_version" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/test_calibration"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/close" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/test_signal"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/test_calibration" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/test_open_cluster_activity"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/test_signal" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/test_close_cluster_activity"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/test_open_cluster_activity" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/test_show_dr"
                 android:layout_width="@dimen/dp_250"
                 android:layout_height="@dimen/dp_40"
@@ -114,7 +114,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/test_close_cluster_activity"
                 app:marquee="true" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/test_hide_dr"
                 android:layout_width="@dimen/dp_250"
                 android:layout_height="@dimen/dp_40"
@@ -131,7 +131,7 @@
                 app:layout_constraintTop_toTopOf="@id/test_show_dr"
                 app:marquee="true" />
 
-            <com.fy.navi.ui.view.SkinCheckBox
+            <com.sgm.navi.ui.view.SkinCheckBox
                 android:id="@+id/navi_pos_record"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_54"
@@ -145,7 +145,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/test_show_dr" />
 
-            <com.fy.navi.ui.view.SkinCheckBox
+            <com.sgm.navi.ui.view.SkinCheckBox
                 android:id="@+id/test_nav_log"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -166,7 +166,7 @@
                 app:layout_constraintTop_toTopOf="@+id/test_nav_log" />
 
 
-            <com.fy.navi.ui.view.SkinCheckBox
+            <com.sgm.navi.ui.view.SkinCheckBox
                 android:id="@+id/test_gaode_log"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -185,7 +185,7 @@
                 app:layout_constraintLeft_toRightOf="@+id/test_gaode_log"
                 app:layout_constraintTop_toTopOf="@+id/test_gaode_log" />
 
-            <com.fy.navi.ui.view.SkinCheckBox
+            <com.sgm.navi.ui.view.SkinCheckBox
                 android:id="@+id/navi_record"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_54"
@@ -200,7 +200,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/test_gaode_log" />
 
-            <com.fy.navi.ui.view.SkinCheckBox
+            <com.sgm.navi.ui.view.SkinCheckBox
                 android:id="@+id/record_play"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_54"
@@ -214,6 +214,6 @@
                 android:textSize="@dimen/sp_25"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/navi_record" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-</com.fy.navi.ui.view.SkinConstraintLayout>
+</com.sgm.navi.ui.view.SkinConstraintLayout>

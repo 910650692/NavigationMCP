@@ -8,15 +8,15 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.mapdata.search.SearchMapDataViewModel" />
+            type="com.sgm.navi.hmi.mapdata.search.SearchMapDataViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/cl_search_map"
         android:layout_width="@dimen/dp_3082"
         android:layout_height="@dimen/dp_934">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="@dimen/dp_1282"
             android:layout_height="@dimen/dp_772"
             android:padding="@dimen/dp_29"
@@ -25,7 +25,7 @@
             android:background="@drawable/bg_shadow_navi_buick"
             android:orientation="vertical">
 
-            <com.fy.navi.ui.view.SkinRelativeLayout
+            <com.sgm.navi.ui.view.SkinRelativeLayout
                 android:id="@+id/rl_offline_top"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_112"
@@ -35,7 +35,7 @@
                 android:background="@drawable/shape_bg_map_data"
                 android:gravity="center_vertical">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_offline_map_back"
                     clickCommand="@{ViewModel.mCloseSearchMapDataView}"
                     android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/img_setting_back" />
 
-                <com.fy.navi.ui.view.SkinEditText
+                <com.sgm.navi.ui.view.SkinEditText
                     android:id="@+id/search_offline_edit_view"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_112"
@@ -64,9 +64,9 @@
                     android:textSize="@dimen/sp_34">
 
                     <requestFocus />
-                </com.fy.navi.ui.view.SkinEditText>
+                </com.sgm.navi.ui.view.SkinEditText>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/edit_clear"
                     clickCommand="@{ViewModel.mClearEdit}"
                     android:layout_width="wrap_content"
@@ -77,20 +77,20 @@
                     android:src="@drawable/img_setting_close"
                     android:visibility="visible" />
 
-            </com.fy.navi.ui.view.SkinRelativeLayout>
+            </com.sgm.navi.ui.view.SkinRelativeLayout>
 
-            <com.fy.navi.ui.view.SkinScrollView
+            <com.sgm.navi.ui.view.SkinScrollView
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:fillViewport="true">
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="@dimen/dp_40">
 
                     <!--全部城市地图数据-->
-                    <com.fy.navi.ui.view.SkinRecyclerView
+                    <com.sgm.navi.ui.view.SkinRecyclerView
                         android:id="@+id/rv_search_offline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/rl_offline_top" />
 
                     <!--无数据提示-->
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/no_search_offline_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -111,12 +111,12 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            </com.fy.navi.ui.view.SkinScrollView>
+            </com.sgm.navi.ui.view.SkinScrollView>
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

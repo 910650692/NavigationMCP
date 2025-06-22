@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.startup;
+package com.sgm.navi.hmi.startup;
 
 import android.app.Application;
 

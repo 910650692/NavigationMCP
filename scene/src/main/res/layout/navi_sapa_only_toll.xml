@@ -8,16 +8,16 @@
 
         <variable
             name="naviSapa"
-            type="com.fy.navi.scene.impl.navi.SceneNaviSapaImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviSapaImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_157"
         clickCommand="@{()->naviSapa.onClick(1)}"
         android:background="@drawable/bg_navi_toll_station_first">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:layout_width="@dimen/dp_42"
             android:layout_height="@dimen/dp_42"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
             android:layout_marginTop="@dimen/dp_26"
             android:layout_marginStart="@dimen/dp_24" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_first_service_toll_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             android:layout_marginTop="@dimen/dp_24"
             tools:text="收费站" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_first_service_toll_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             android:layout_marginStart="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_26" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/sll_only_toll_services"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             app:layout_constraintTop_toTopOf="@+id/stv_first_service_toll_distance"
             android:layout_marginStart="@dimen/dp_2">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/siv_first_service_toll_etc"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
@@ -72,7 +72,7 @@
                 android:visibility="@{naviSapa.mOnlyTollEtcVisible ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/img_etc_42" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/siv_first_toll_alipay"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
@@ -80,10 +80,10 @@
                 android:layout_marginEnd="@dimen/dp_2"
                 android:background="@drawable/img_zf_42" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_only_toll_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -103,5 +103,5 @@
             android:gravity="center"
             tools:text="经" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

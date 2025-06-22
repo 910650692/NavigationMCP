@@ -6,9 +6,9 @@
         <import type="android.view.View" />
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.drivingrecord.recordlogin.DrivingRecordLoginViewModel" />
+            type="com.sgm.navi.hmi.drivingrecord.recordlogin.DrivingRecordLoginViewModel" />
     </data>
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
         android:padding="@dimen/dp_51"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content">
 
             <!--未登录有数据view-->
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/data_login_view"
                 android:visibility="@{ViewModel.mLoginVisible? View.VISIBLE : View.GONE}"
                 android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                 android:focusable="false"
                 tools:visibility="gone">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     clickCommand="@{ViewModel.mToClose}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -47,7 +47,7 @@
                     android:src="@drawable/img_setting_close"
                     android:layout_gravity="right" />
                 <!--登录二维码-->
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/code_img"
                     android:layout_width="@dimen/dp_280"
                     android:layout_height="@dimen/dp_280"
@@ -59,7 +59,7 @@
                     android:visibility="@{ViewModel.mQRCodeVisible ? View.VISIBLE : View.GONE}"
                     tools:visibility="gone"/>
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:layout_width="@dimen/dp_320"
                     android:layout_height="@dimen/dp_320"
                     android:orientation="vertical"
@@ -70,14 +70,14 @@
                     android:layout_marginTop="@dimen/dp_181"
                     android:visibility="@{ViewModel.mQRCodeLoadingVisible ? View.VISIBLE : View.GONE}">
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/driving_record_qrcode_loading"
                         android:layout_width="@dimen/dp_160"
                         android:layout_height="@dimen/dp_160"
                         android:focusable="false"
                         android:src="@drawable/img_setting_qr_loading"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_qr_code_loading"
@@ -85,9 +85,9 @@
                         android:layout_marginTop="@dimen/dp_24"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_32"/>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:layout_width="@dimen/dp_320"
                     android:layout_height="@dimen/dp_320"
                     android:layout_marginTop="@dimen/dp_181"
@@ -98,7 +98,7 @@
                     tools:visibility="visible"
                     android:visibility="@{ViewModel.mQRCodeLoadFailedVisible ? View.VISIBLE : View.GONE}">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_qr_code_load_failed"
@@ -106,7 +106,7 @@
                         android:focusable="false"
                         android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                    <com.fy.navi.ui.view.SkinButton
+                    <com.sgm.navi.ui.view.SkinButton
                         clickCommand="@{ViewModel.mRetry}"
                         android:layout_width="@dimen/dp_200"
                         android:layout_height="@dimen/dp_76"
@@ -116,9 +116,9 @@
                         android:textSize="@dimen/sp_32"
                         android:textColor="@color/setting_white"
                         android:background="@drawable/bg_setting_dialog_confirm_selector"/>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_32"
@@ -127,9 +127,9 @@
                     android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_32" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
             <!--未登录无数据view-->
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/no_data_login_view"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
@@ -138,12 +138,12 @@
                 android:visibility="@{ViewModel.mLoginVisible? View.GONE : View.VISIBLE}"
                 tools:visibility="visible">
                 <!--标题-->
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false">
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         clickCommand="@{ViewModel.mDrivingRecordBack}"
                         android:layout_width="@dimen/dp_74"
                         android:layout_height="@dimen/dp_74"
@@ -156,7 +156,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/driving_record_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/driving_record_more"
                         clickCommand="@{ViewModel.mToRecordSetting}"
                         android:layout_width="@dimen/dp_74"
@@ -181,16 +181,16 @@
                         android:src="@drawable/img_setting_others_selected"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
                 <!--登录提示页面-->
-                <com.fy.navi.ui.view.SkinRelativeLayout
+                <com.sgm.navi.ui.view.SkinRelativeLayout
                     android:id="@+id/empty_view"
                     android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <com.fy.navi.ui.view.SkinView
+                    <com.sgm.navi.ui.view.SkinView
                         android:id="@+id/view_line"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_1"
@@ -198,7 +198,7 @@
                         android:layout_alignParentTop="true"
                         android:background="@color/transparent" />
                     <!--登录二维码-->
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:id="@+id/login_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -209,7 +209,7 @@
                         android:focusable="false"
                         android:orientation="vertical">
 
-                        <com.fy.navi.ui.view.SkinImageView
+                        <com.sgm.navi.ui.view.SkinImageView
                             android:id="@+id/qrcode_img"
                             android:layout_width="@dimen/dp_280"
                             android:layout_height="@dimen/dp_280"
@@ -219,7 +219,7 @@
                             android:visibility="@{ViewModel.mQRCodeVisible ? View.VISIBLE : View.GONE}"
                             tools:visibility="visible"/>
 
-                        <com.fy.navi.ui.view.SkinLinearLayout
+                        <com.sgm.navi.ui.view.SkinLinearLayout
                             android:layout_width="@dimen/dp_320"
                             android:layout_height="@dimen/dp_320"
                             android:orientation="vertical"
@@ -229,14 +229,14 @@
                             android:focusable="false"
                             android:visibility="@{ViewModel.mQRCodeLoadingVisible ? View.VISIBLE : View.GONE}">
 
-                            <com.fy.navi.ui.view.SkinImageView
+                            <com.sgm.navi.ui.view.SkinImageView
                                 android:id="@+id/driving_record_qrcode_loading_no_data"
                                 android:layout_width="@dimen/dp_160"
                                 android:layout_height="@dimen/dp_1600"
                                 android:focusable="false"
                                 android:src="@drawable/img_setting_qr_loading"/>
 
-                            <com.fy.navi.ui.view.SkinTextView
+                            <com.sgm.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_qr_code_loading"
@@ -244,9 +244,9 @@
                                 android:layout_marginTop="@dimen/dp_24"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:textSize="@dimen/sp_32"/>
-                        </com.fy.navi.ui.view.SkinLinearLayout>
+                        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                        <com.fy.navi.ui.view.SkinLinearLayout
+                        <com.sgm.navi.ui.view.SkinLinearLayout
                             android:layout_width="@dimen/dp_320"
                             android:layout_height="@dimen/dp_320"
                             android:orientation="vertical"
@@ -255,7 +255,7 @@
                             tools:visibility="gone"
                             android:focusable="false"
                             android:visibility="@{ViewModel.mQRCodeLoadFailedVisible ? View.VISIBLE : View.GONE}">
-                            <com.fy.navi.ui.view.SkinTextView
+                            <com.sgm.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_qr_code_load_failed"
@@ -263,7 +263,7 @@
                                 android:textSize="@dimen/sp_32"
                                 android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                            <com.fy.navi.ui.view.SkinButton
+                            <com.sgm.navi.ui.view.SkinButton
                                 clickCommand="@{ViewModel.mRetry}"
                                 android:layout_width="@dimen/dp_200"
                                 android:layout_height="@dimen/dp_76"
@@ -273,9 +273,9 @@
                                 android:textSize="@dimen/sp_32"
                                 android:textColor="@color/setting_white"
                                 android:background="@drawable/bg_setting_dialog_confirm_selector"/>
-                        </com.fy.navi.ui.view.SkinLinearLayout>
+                        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_32"
@@ -284,9 +284,9 @@
                             android:text="@string/account_QRCode_login_tip"
                             android:textColor="@color/setting_bg_tab_text_select"
                             android:textSize="@dimen/sp_32" />
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
                     <!--暂无记录提示-->
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/view_line"
@@ -297,7 +297,7 @@
                         android:focusable="false"
                         android:orientation="vertical">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -305,7 +305,7 @@
                             android:focusable="false"
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:textSize="@dimen/sp_46" />
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_32"
@@ -314,11 +314,11 @@
                             android:text="@string/driving_record_login_details_tip"
                             android:textColor="@color/setting_bg_login_detail"
                             android:textSize="@dimen/sp_38" />
-                    </com.fy.navi.ui.view.SkinLinearLayout>
-                </com.fy.navi.ui.view.SkinRelativeLayout>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinRelativeLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
         </com.android.car.ui.FocusArea>
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

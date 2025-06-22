@@ -9,17 +9,17 @@
 
         <variable
             name="naviLastMile"
-            type="com.fy.navi.scene.api.navi.ISceneNaviLastMile" />
+            type="com.sgm.navi.scene.api.navi.ISceneNaviLastMile" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_51"
         android:paddingVertical="@dimen/dp_51"
         android:background="@drawable/bg_shadow_navi_cadillac">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1192"
             android:layout_height="@dimen/dp_180"
             android:focusable="false"
@@ -28,7 +28,7 @@
             tools:layout_width="@dimen/dp_1192"
             tools:visibility="visible">
 
-            <com.fy.navi.scene.ui.navi.view.ButtonText
+            <com.sgm.navi.scene.ui.navi.view.ButtonText
                 android:id="@+id/stv_send_phone"
                 clickCommand="@{naviLastMile.onSend}"
                 android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/sv_line"
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="@dimen/dp_120"
@@ -53,7 +53,7 @@
                 app:layout_constraintStart_toEndOf="@id/stv_send_phone"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.scene.ui.navi.view.ButtonImageView
+            <com.sgm.navi.scene.ui.navi.view.ButtonImageView
                 android:id="@+id/siv_close"
                 clickCommand="@{naviLastMile.onClose}"
                 android:layout_width="@dimen/dp_74"
@@ -65,7 +65,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_send_request_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
                 app:layout_constraintStart_toEndOf="@id/sv_line"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_way_arrive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -90,9 +90,9 @@
                 android:textSize="@dimen/sp_46"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/stv_send_request_info" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
 </layout>

@@ -9,19 +9,19 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.map.MapViewModel" />
+            type="com.sgm.navi.hmi.map.MapViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".startup.StartupActivity">
-        <com.fy.navi.service.define.map.MainScreenMapView
+        <com.sgm.navi.service.define.map.MainScreenMapView
             android:id="@+id/main_mapview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/search_main_tab"
             clickCommand="@{ViewModel.intercept}"
             android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_150"
                 android:background="@drawable/bg_shadow_navi_buick"
@@ -43,7 +43,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_home"
                     clickCommand="@{ViewModel.openHomeFragment}"
                     android:layout_width="@dimen/dp_92"
@@ -54,7 +54,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_bus"
                     clickCommand="@{ViewModel.openCompanyFragment}"
                     android:layout_width="@dimen/dp_92"
@@ -65,7 +65,7 @@
                     app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_search"
                     clickCommand="@{ViewModel.openSearchFragment}"
                     android:layout_width="@dimen/dp_92"
@@ -76,9 +76,9 @@
                     app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_150"
                 android:background="@drawable/bg_shadow_navi_buick"
@@ -89,7 +89,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_home_tq"
                     clickCommand="@{ViewModel.openHomeFragment}"
                     android:layout_width="@dimen/dp_92"
@@ -100,7 +100,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/sk_iv_basic_home_text"
                     clickCommand="@{ViewModel.openHomeFragment}"
                     android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
                     app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.scene.ui.map.component.MultiStageProgressBar
+                <com.sgm.navi.scene.ui.map.component.MultiStageProgressBar
                     android:id="@+id/sk_iv_basic_home_progress"
                     clickCommand="@{ViewModel.openHomeFragment}"
                     android:layout_width="@dimen/dp_90"
@@ -124,7 +124,7 @@
                     app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
                     app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_home_text" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_bus_tq"
                     clickCommand="@{ViewModel.openCompanyFragment}"
                     android:layout_width="@dimen/dp_92"
@@ -135,7 +135,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/sk_iv_basic_bus_text"
                     clickCommand="@{ViewModel.openCompanyFragment}"
                     android:layout_width="wrap_content"
@@ -150,7 +150,7 @@
                     app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.scene.ui.map.component.MultiStageProgressBar
+                <com.sgm.navi.scene.ui.map.component.MultiStageProgressBar
                     android:id="@+id/sk_iv_basic_bus_progress"
                     clickCommand="@{ViewModel.openCompanyFragment}"
                     android:layout_width="@dimen/dp_90"
@@ -159,7 +159,7 @@
                     app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
                     app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_bus_text" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="@dimen/dp_1"
                     android:layout_height="@dimen/dp_44"
                     android:layout_marginStart="@dimen/dp_464"
@@ -168,7 +168,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/sk_iv_basic_search_tq"
                     clickCommand="@{ViewModel.openSearchFragment}"
                     android:layout_width="@dimen/dp_92"
@@ -179,12 +179,12 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
         <!--推送服务，导航回家-->
-        <com.fy.navi.scene.ui.map.SceneNaviHomeView
+        <com.sgm.navi.scene.ui.map.SceneNaviHomeView
             android:id="@+id/scene_navi_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -194,7 +194,7 @@
             app:layout_constraintTop_toBottomOf="@id/search_main_tab" />
 
         <!--ND独有 回家，公司view-->
-        <com.fy.navi.scene.ui.map.SceneGoHomeView
+        <com.sgm.navi.scene.ui.map.SceneGoHomeView
             android:id="@+id/scene_go_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -204,7 +204,7 @@
             app:layout_constraintTop_toBottomOf="@id/search_main_tab"
             tools:visibility="gone"/>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/search_main_tab_bottom"
             clickCommand="@{ViewModel.intercept}"
             android:layout_width="wrap_content"
@@ -219,7 +219,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_routing"
                 clickCommand="@{ViewModel.searchForChargeStation}"
                 android:layout_width="@dimen/dp_92"
@@ -230,7 +230,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_car_head"
                 clickCommand="@{ViewModel.carHeader}"
                 imageRes="@{ViewModel.carModeImgId}"
@@ -243,7 +243,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginEnd="@dimen/dp_60" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_settings"
                 clickCommand="@{ViewModel.openSettingFragment}"
                 android:layout_width="@dimen/dp_92"
@@ -255,9 +255,9 @@
                 app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_car_head"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/parking_main_tab_bottom"
             clickCommand="@{ViewModel.backToSelfParking}"
             android:layout_width="wrap_content"
@@ -275,7 +275,7 @@
             app:layout_goneMarginRight="@dimen/dp_516"
             app:layout_goneMarginStart="@dimen/dp_1106">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/self_parking_space_iv"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
@@ -284,7 +284,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -292,11 +292,11 @@
                 android:textColor="@color/poi_details_bottom_ff_00"
                 android:textSize="@dimen/sp_34">
 
-            </com.fy.navi.ui.view.SkinTextView>
+            </com.sgm.navi.ui.view.SkinTextView>
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.scene.ui.map.SceneScaleView
+        <com.sgm.navi.scene.ui.map.SceneScaleView
             android:id="@+id/scene_scale_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -307,7 +307,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_split_info"
             android:layout_width="@dimen/dp_196"
             android:layout_height="@dimen/dp_196"
@@ -324,7 +324,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.fy.navi.ui.view.SkinFrameLayout
+        <com.sgm.navi.ui.view.SkinFrameLayout
             android:id="@+id/layout_fragment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -336,7 +336,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/test_button"
             android:layout_width="@dimen/dp_400"
             android:layout_height="@dimen/dp_400"
@@ -375,7 +375,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_main_tab" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/root_guide_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -386,7 +386,7 @@
             app:layout_constraintTop_toBottomOf="@id/search_main_tab"
             tools:visibility="visible">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_guide_login_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -398,7 +398,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 clickCommand="@{ViewModel.guideLoginClose}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -408,7 +408,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/guide_login_close" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_guide_login_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -419,7 +419,7 @@
                 app:layout_constraintLeft_toLeftOf="@id/tv_guide_login_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_guide_login_title" />
 
-            <com.fy.navi.ui.view.SkinButton
+            <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/btn_guide_login_bind"
                 clickCommand="@{ViewModel.guideLoginBind}"
                 android:layout_width="@dimen/dp_268"
@@ -436,7 +436,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_guide_login_content" />
 
-            <com.fy.navi.ui.view.SkinButton
+            <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/btn_guide_login_cancel"
                 clickCommand="@{ViewModel.guideLoginCancel}"
                 android:layout_width="@dimen/dp_268"
@@ -452,7 +452,7 @@
                 app:layout_constraintStart_toEndOf="@id/btn_guide_login_bind"
                 app:layout_constraintTop_toTopOf="@id/btn_guide_login_bind" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

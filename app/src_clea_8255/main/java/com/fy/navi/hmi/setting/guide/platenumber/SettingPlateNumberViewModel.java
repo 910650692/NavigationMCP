@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.setting.guide.platenumber;
+package com.sgm.navi.hmi.setting.guide.platenumber;
 
 import android.app.Application;
 

@@ -1,10 +1,10 @@
-package com.fy.navi.hmi.search.offlinesearch;
+package com.sgm.navi.hmi.search.offlinesearch;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-import com.fy.navi.hmi.search.suggestion.BaseSuggestionResultVm;
+import com.sgm.navi.hmi.search.suggestion.BaseSuggestionResultVm;
 
 
 public class OfflineSearchViewModel extends BaseOfflineSearchResultVm {

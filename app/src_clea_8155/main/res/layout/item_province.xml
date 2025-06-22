@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_119"
     android:layout_marginBottom="@dimen/dp_20"
     android:background="@drawable/shape_bg_map_data">
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/item_province_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.fy.navi.ui.view.SkinImageView
+    <com.sgm.navi.ui.view.SkinImageView
         android:id="@+id/item_province_expand"
         android:layout_width="@dimen/dp_49"
         android:layout_height="@dimen/dp_49"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!--按钮下载状态-->
-    <com.fy.navi.scene.ui.setting.DownloadBtnView
+    <com.sgm.navi.scene.ui.setting.DownloadBtnView
         android:id="@+id/item_download_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/item_province_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,4 +53,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/item_download_status" />
 
-</com.fy.navi.ui.view.SkinConstraintLayout>
+</com.sgm.navi.ui.view.SkinConstraintLayout>

@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.limit;
+package com.sgm.navi.hmi.limit;
 
 import android.app.Application;
 

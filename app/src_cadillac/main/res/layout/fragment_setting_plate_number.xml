@@ -6,10 +6,10 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.setting.guide.platenumber.SettingPlateNumberViewModel" />
+            type="com.sgm.navi.hmi.setting.guide.platenumber.SettingPlateNumberViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
         android:focusable="false"
@@ -28,19 +28,19 @@
             app:nudgeDown="@+id/focus_tab"
             app:nudgeUp="@+id/focus_tab">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusable="false">
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/setting_plate_number_title"
                     android:layout_width="match_parent"
                     android:focusable="false"
                     android:layout_height="@dimen/dp_174"
                     android:orientation="horizontal">
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         clickCommand="@{viewModel.mClosePlateNumber}"
                         android:layout_width="@dimen/dp_74"
                         android:layout_height="@dimen/dp_74"
@@ -50,7 +50,7 @@
                         android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                         android:src="@drawable/img_setting_back" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_579"
@@ -60,7 +60,7 @@
                         android:textColor="@color/setting_bg_tab_text_select"
                         android:textSize="@dimen/sp_52" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/setting_plate_number_finish"
                         clickCommand="@{viewModel.mPlateNumberInputFinish}"
                         android:layout_width="@dimen/dp_240"
@@ -73,9 +73,9 @@
                         android:text="@string/setting_guide_plate_number_finish"
                         android:textColor="@color/setting_white"
                         android:textSize="@dimen/sp_46" />
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_plate_number_title_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_plate_number_province"
                     clickCommand="@{viewModel.mShowProvinceKeyboard}"
                     android:layout_width="@dimen/dp_252"
@@ -105,7 +105,7 @@
                     app:layout_constraintStart_toEndOf="@+id/setting_plate_number_title_text"
                     app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
 
-                <com.fy.navi.ui.view.SkinEditText
+                <com.sgm.navi.ui.view.SkinEditText
                     android:id="@+id/setting_plate_number_number"
                     android:layout_width="@dimen/dp_974"
                     android:layout_height="@dimen/dp_120"
@@ -119,7 +119,7 @@
                     app:layout_constraintStart_toEndOf="@+id/setting_plate_number_province"
                     app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province" />
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     clickCommand="@{viewModel.mShowPlateNumberKeyboard}"
                     android:layout_width="@dimen/dp_974"
                     android:layout_height="@dimen/dp_120"
@@ -129,7 +129,7 @@
                     app:layout_constraintStart_toEndOf="@+id/setting_plate_number_province"
                     app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province"/>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/setting_plate_number_clear"
                     clickCommand="@{viewModel.mClearPlateNumber}"
                     android:layout_width="@dimen/dp_54"
@@ -143,7 +143,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
                     app:layout_constraintTop_toTopOf="@+id/setting_plate_number_number" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
@@ -155,7 +155,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
                     app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_number" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_car_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
                     app:layout_constraintStart_toStartOf="@+id/setting_plate_number_title_text"
                     app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title_text" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_car_type_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -180,11 +180,11 @@
                     app:layout_constraintStart_toEndOf="@+id/setting_car_type"
                     app:layout_constraintTop_toTopOf="@+id/setting_car_type" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         </com.android.car.ui.FocusArea>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/setting_plate_number_keyboard_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -203,7 +203,7 @@
                 app:nudgeDown="@+id/focus_close"
                 app:nudgeUp="@+id/focus_close">
 
-                <com.fy.navi.scene.ui.setting.ProvinceKeyboardView
+                <com.sgm.navi.scene.ui.setting.ProvinceKeyboardView
                     android:id="@+id/setting_province_keyboard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -215,7 +215,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.scene.ui.setting.PlateNumberKeyboardView
+                <com.sgm.navi.scene.ui.setting.PlateNumberKeyboardView
                     android:id="@+id/setting_plate_number_keyboard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -231,9 +231,9 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </com.android.car.ui.FocusArea>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
 </layout>

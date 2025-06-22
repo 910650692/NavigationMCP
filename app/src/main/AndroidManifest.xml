@@ -48,7 +48,7 @@
     </queries>
 
     <application
-        android:name="com.fy.navi.NaviApplication"
+        android:name="com.sgm.navi.NaviApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:extractNativeLibs="true"
@@ -71,7 +71,7 @@
             android:theme="@style/ClusterTheme"
             android:excludeFromRecents="true">
             <intent-filter>
-                <action android:name="com.fy.navi.hmi.cluster_map.ClusterActivity" />
+                <action android:name="com.sgm.navi.hmi.cluster_map.ClusterActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -85,7 +85,7 @@
             android:screenOrientation="landscape"
             android:taskAffinity="">
             <intent-filter>
-                <action android:name="com.fy.navi.hmi.hud.HudActivity" />
+                <action android:name="com.sgm.navi.hmi.hud.HudActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -139,18 +139,18 @@
             tools:ignore="DiscouragedApi" />
 
         <service
-            android:name="com.fy.navi.exportservice.MapService"
+            android:name="com.sgm.navi.exportservice.MapService"
             android:defaultToDeviceProtectedStorage="true"
             android:exported="true"
             android:foregroundServiceType="specialUse" />
         <service
-            android:name="com.fy.navi.NaviService"
+            android:name="com.sgm.navi.NaviService"
             android:defaultToDeviceProtectedStorage="true"
             android:exported="true"
             android:foregroundServiceType="shortService" />
 
         <receiver
-            android:name="com.fy.navi.broadcast.NaviMfcHardKeyReceiver"
+            android:name="com.sgm.navi.broadcast.NaviMfcHardKeyReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -159,7 +159,7 @@
         </receiver>
 
         <receiver
-            android:name="com.fy.navi.broadcast.BootCompletedReceiver"
+            android:name="com.sgm.navi.broadcast.BootCompletedReceiver"
             android:enabled="true"
             android:exported="true"
             android:directBootAware="true">
@@ -170,7 +170,7 @@
 
         <!--对接Settings隐私协议-->
         <meta-data
-            android:name="com.fy.navi.hmi"
+            android:name="com.sgm.navi.hmi"
             android:value="local" />
     </application>
 

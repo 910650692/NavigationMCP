@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/search_filter_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         tools:visibility="visible">
 
-        <com.fy.navi.ui.view.SkinScrollView
+        <com.sgm.navi.ui.view.SkinScrollView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_372"
             android:layout_marginTop="@dimen/dp_40"
@@ -18,7 +18,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/dp_40"
@@ -26,7 +26,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_filter_title1"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/poi_gas_oil_list"
                     tools:text="位置距离" />
 
-                <com.fy.navi.ui.view.SkinRecyclerView
+                <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_title1"
                     app:layout_goneMarginTop="@dimen/dp_40" />
 
-                <com.fy.navi.ui.view.SkinRecyclerView
+                <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list1_child"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list1" />
 
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_filter_title2"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list1_child"
                     tools:text="全部分类" />
 
-                <com.fy.navi.ui.view.SkinRecyclerView
+                <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_title2"
                     app:layout_goneMarginTop="@dimen/dp_40" />
 
-                <com.fy.navi.ui.view.SkinRecyclerView
+                <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list2_child"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list2" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_filter_title3"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list2_child"
                     tools:text="推荐排序" />
 
-                <com.fy.navi.ui.view.SkinRecyclerView
+                <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -106,18 +106,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_title3"
                     app:layout_goneMarginTop="@dimen/dp_40" />
 
-                <com.fy.navi.ui.view.SkinRecyclerView
+                <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list3_child"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list3" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinScrollView>
+        </com.sgm.navi.ui.view.SkinScrollView>
 
-        <com.fy.navi.scene.ui.navi.view.ButtonText
+        <com.sgm.navi.scene.ui.navi.view.ButtonText
             android:id="@+id/search_filter_confirm"
             android:layout_width="@dimen/dp_268"
             android:layout_height="@dimen/dp_90"
@@ -132,7 +132,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.fy.navi.scene.ui.navi.view.ButtonText
+        <com.sgm.navi.scene.ui.navi.view.ButtonText
             android:id="@+id/search_filter_cancel"
             android:layout_width="@dimen/dp_268"
             android:layout_height="@dimen/dp_90"
@@ -146,5 +146,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

@@ -8,17 +8,17 @@
 
         <variable
             name="viaDetail"
-            type="com.fy.navi.scene.impl.navi.SceneNaviViaDetailImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviViaDetailImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_698"
         android:layout_height="@dimen/dp_162"
         android:paddingVertical="@dimen/dp_29"
         android:paddingHorizontal="@dimen/dp_29"
         android:background="@drawable/bg_shadow_navi_buick">
         
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_via_detail_icon"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -28,7 +28,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:background="@{viaDetail.mViaIcon}"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_via_detail_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:textColor="@color/navi_color_000000_100"
             tools:text="大雨加油站" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_via_detail_title_only"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
 
 
         <!--途经点详情卡的内容-->
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/sc_via_detail_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,28 +75,28 @@
             android:layout_marginBottom="@dimen/dp_12">
 
             <!--可获取到空闲充电站的内容（显示空闲/总数）-->
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sl_via_detail_charge_with_free_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="@{viaDetail.mViaContent == 0 ? View.VISIBLE : View.GONE}"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="@{viaDetail.mFastChargeShow == 1 ? View.VISIBLE : View.GONE}"
                     android:layout_marginEnd="@dimen/dp_16"
                     android:orientation="horizontal">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/quick_charge"
                         android:textSize="@dimen/sp_26"
                         android:textColor="@color/navi_color_4ABA59_100" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_8"
@@ -106,7 +106,7 @@
                         tools:text="66"
                         android:textColor="@color/navi_color_000000_100"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/slash"
@@ -114,7 +114,7 @@
                         android:textSize="@dimen/sp_26"
                         android:textColor="@color/navi_color_000000_50"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_26"
@@ -123,7 +123,7 @@
                         tools:text="88"
                         android:textColor="@color/navi_color_000000_50"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_8"
@@ -133,22 +133,22 @@
                         tools:text="66"
                         android:textColor="@color/navi_color_000000_100"/>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="@{viaDetail.mFastChargeShow == 0 ? View.VISIBLE : View.GONE}"
                     android:orientation="horizontal">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/slow_charge"
                         android:textSize="@dimen/sp_26"
                         android:textColor="@color/navi_color_FF8500_100" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_8"
@@ -158,7 +158,7 @@
                         tools:text="66"
                         android:textColor="@color/navi_color_000000_100"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/slash"
@@ -166,7 +166,7 @@
                         android:textSize="@dimen/sp_26"
                         android:textColor="@color/navi_color_000000_50"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_26"
@@ -175,7 +175,7 @@
                         tools:text="88"
                         android:textColor="@color/navi_color_000000_50"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_8"
@@ -185,19 +185,19 @@
                         tools:text="66"
                         android:textColor="@color/navi_color_000000_100"/>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <!--可获取到空闲停车场的内容（显示空闲/总数）-->
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sl_via_detail_parking_with_free_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="@{viaDetail.mViaContent == 2 ? View.VISIBLE : View.GONE}"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_26"
@@ -205,14 +205,14 @@
                     tools:text="44"
                     android:textColor="@color/navi_color_000000_100"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/slash"
                     android:textSize="@dimen/sp_26"
                     android:textColor="@color/navi_color_000000_50"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_26"
@@ -220,17 +220,17 @@
                     tools:text="88"
                     android:textColor="@color/navi_color_000000_50"/>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <!--不可获取到空闲停车场的内容（只显示总数）-->
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sl_via_detail_parking_without_free_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="@{viaDetail.mViaContent == 3 ? View.VISIBLE : View.GONE}"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_26"
@@ -238,17 +238,17 @@
                     tools:text="44"
                     android:textColor="@color/navi_color_000000_100"/>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <!--加油站信息-->
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sl_via_detail_gas_station"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="@{viaDetail.mViaContent == 4 ? View.VISIBLE : View.GONE}"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_gas_92"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -258,7 +258,7 @@
                     android:layout_marginEnd="@dimen/dp_16"
                     android:textColor="@color/navi_color_000000_100"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_gas_95"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -268,7 +268,7 @@
                     android:layout_marginEnd="@dimen/dp_16"
                     android:textColor="@color/navi_color_000000_100"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_gas_98"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -278,12 +278,12 @@
                     android:layout_marginEnd="@dimen/dp_16"
                     android:textColor="@color/navi_color_000000_100"/>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

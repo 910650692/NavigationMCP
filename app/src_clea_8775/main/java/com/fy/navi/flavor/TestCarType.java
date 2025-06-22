@@ -1,7 +1,7 @@
-package com.fy.navi.flavor;
+package com.sgm.navi.flavor;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.MapDefaultFinalTag;
 
 /**
  * @Description TODO

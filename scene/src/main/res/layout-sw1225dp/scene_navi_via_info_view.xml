@@ -7,20 +7,20 @@
 
         <variable
             name="naviViaInfo"
-            type="com.fy.navi.scene.impl.navi.SceneNaviViaInfoImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviViaInfoImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_545"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/sv_bottom_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_78"
             android:background="@drawable/bg_navi_tbt_bottom_view_sw1225" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_way"
             android:layout_width="@dimen/dp_37"
             android:layout_height="@dimen/dp_37"
@@ -34,7 +34,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_way"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
             tools:text="杨高中路地铁站" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_way_arrive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_via_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,5 +74,5 @@
             app:layout_constraintEnd_toEndOf="@+id/sv_bottom_view"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
             tools:text="等2个途经点" />
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

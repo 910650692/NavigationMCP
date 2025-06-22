@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +8,7 @@
     tools:layout_height="@dimen/dp_180"
     tools:layout_width="@dimen/dp_800">
 
-    <com.fy.navi.ui.view.SkinImageView
+    <com.sgm.navi.ui.view.SkinImageView
         android:id="@+id/siv_toll_icon"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/stv_toll_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         app:layout_constraintStart_toEndOf="@id/siv_toll_icon"
         app:layout_constraintTop_toTopOf="@id/siv_toll_icon" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/stv_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         app:layout_constraintStart_toStartOf="@id/siv_toll_icon"
         app:layout_constraintTop_toBottomOf="@id/siv_toll_icon" />
 
-    <com.fy.navi.ui.view.SkinImageView
+    <com.sgm.navi.ui.view.SkinImageView
         android:id="@+id/siv_toll_icon_etc"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
@@ -56,7 +56,7 @@
         app:layout_constraintStart_toEndOf="@id/stv_distance"
         app:layout_constraintTop_toTopOf="@id/stv_distance" />
 
-    <com.fy.navi.ui.view.SkinImageView
+    <com.sgm.navi.ui.view.SkinImageView
         android:id="@+id/siv_toll_icon_zf"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
@@ -65,7 +65,7 @@
         app:layout_constraintStart_toEndOf="@id/siv_toll_icon_etc"
         app:layout_constraintTop_toTopOf="@id/siv_toll_icon_etc" />
 
-    <com.fy.navi.ui.view.SkinImageView
+    <com.sgm.navi.ui.view.SkinImageView
         android:id="@+id/siv_toll_icon_pss"
         android:layout_width="@dimen/dp_46"
         android:layout_height="@dimen/dp_46"
@@ -75,4 +75,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</com.fy.navi.ui.view.SkinConstraintLayout>
+</com.sgm.navi.ui.view.SkinConstraintLayout>

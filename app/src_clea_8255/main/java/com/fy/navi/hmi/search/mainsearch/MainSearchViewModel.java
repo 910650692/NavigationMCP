@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.search.mainsearch;
+package com.sgm.navi.hmi.search.mainsearch;
 
 import android.app.Application;
 

@@ -6,10 +6,10 @@
         <import type="android.view.View" />
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.carconnect.CarConnectViewModel" />
+            type="com.sgm.navi.hmi.carconnect.CarConnectViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
         android:clickable="true"
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/car_connect_title_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                 app:nudgeDown="@+id/focus_tab"
                 app:nudgeUp="@+id/focus_tab">
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     clickCommand="@{ViewModel.mCarConnectBack}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -46,7 +46,7 @@
                     android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
             </com.android.car.ui.FocusArea>
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:focusable="false"
@@ -57,7 +57,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/car_connect_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,9 +70,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/line_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
@@ -80,7 +80,7 @@
             app:layout_constraintTop_toBottomOf="@+id/car_connect_title_layout"
             android:background="@color/transparent"/>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0"
             android:orientation="vertical"
@@ -90,7 +90,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -98,21 +98,21 @@
                 android:layout_marginTop="@dimen/dp_73"
                 android:gravity="center">
 
-                <com.fy.navi.scene.ui.setting.SceneCircleImageView
+                <com.sgm.navi.scene.ui.setting.SceneCircleImageView
                     android:id="@+id/iv_user_icon"
                     android:layout_width="@dimen/dp_112"
                     android:layout_height="@dimen/dp_112"
                     android:focusable="false"
                     android:src="@drawable/img_default_user_icon" />
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:focusable="false"
                     android:layout_marginStart="@dimen/dp_24">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                         android:focusable="false"
                         android:textColor="@color/black" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_connect_tip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -131,11 +131,11 @@
                         android:focusable="false"
                         android:textColor="@color/color_black_70"/>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_310"
                 android:orientation="horizontal"
@@ -143,7 +143,7 @@
                 android:layout_marginTop="@dimen/dp_83"
                 android:paddingHorizontal="@dimen/dp_52">
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     clickCommand="@{ViewModel.mOpenHelpFirst}"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
@@ -152,7 +152,7 @@
                     android:focusedByDefault="true"
                     android:background="@drawable/bg_car_connect_function_selector">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_car_connect_login_function_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/car_connect_login_function_1_des"
@@ -176,7 +176,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_1"
                         app:layout_constraintStart_toStartOf="@+id/tv_car_connect_login_function_1"/>
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_90"
                         android:layout_height="@dimen/dp_90"
                         android:src="@drawable/img_remote_navi"
@@ -186,9 +186,9 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     clickCommand="@{ViewModel.mOpenHelpSecond}"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
@@ -197,7 +197,7 @@
                     android:focusable="true"
                     android:background="@drawable/bg_car_connect_function_selector">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_car_connect_login_function_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -210,7 +210,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/car_connect_login_function_2_des"
@@ -221,7 +221,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_2"
                         app:layout_constraintStart_toStartOf="@+id/tv_car_connect_login_function_2"/>
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_90"
                         android:layout_height="@dimen/dp_90"
                         android:src="@drawable/img_no_sense_connnect"
@@ -231,9 +231,9 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     clickCommand="@{ViewModel.mOpenHelpThird}"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
@@ -242,7 +242,7 @@
                     android:layout_marginStart="@dimen/dp_25"
                     android:background="@drawable/bg_car_connect_function_selector">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_car_connect_login_function_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -255,7 +255,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/car_connect_login_function_3_des"
@@ -266,7 +266,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_3"
                         app:layout_constraintStart_toStartOf="@+id/tv_car_connect_login_function_3"/>
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_90"
                         android:layout_height="@dimen/dp_90"
                         android:src="@drawable/img_find_car"
@@ -276,9 +276,9 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     clickCommand="@{ViewModel.mOpenHelpForth}"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
@@ -287,7 +287,7 @@
                     android:layout_marginStart="@dimen/dp_25"
                     android:background="@drawable/bg_car_connect_function_selector">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_car_connect_login_function_4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -300,7 +300,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"/>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/car_connect_login_function_4_des"
@@ -311,7 +311,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_4"
                         app:layout_constraintStart_toStartOf="@+id/tv_car_connect_login_function_4"/>
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_90"
                         android:layout_height="@dimen/dp_90"
                         android:src="@drawable/img_data_sync"
@@ -321,11 +321,11 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 clickCommand="@{ViewModel.mLastOneMile}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -334,7 +334,7 @@
                 android:focusable="true"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector">
 
-                <com.fy.navi.ui.view.SkinCheckBox
+                <com.sgm.navi.ui.view.SkinCheckBox
                     android:id="@+id/cb_car_connect_login_function"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -342,7 +342,7 @@
                     android:focusable="false"
                     android:button="@drawable/setting_custom_thumb"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:focusable="false"
@@ -351,10 +351,10 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_46" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

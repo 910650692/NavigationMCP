@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.search.suggestion;
+package com.sgm.navi.hmi.search.suggestion;
 
 import android.app.Application;
 

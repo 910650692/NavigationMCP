@@ -7,17 +7,17 @@
 
         <variable
             name="SceneSettingPreferenceView"
-            type="com.fy.navi.scene.api.route.ISceneRoutePreference" />
+            type="com.sgm.navi.scene.api.route.ISceneRoutePreference" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/setting_route_preference"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLarge">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceRecommend(0)}"
             android:id="@+id/preference_recommend"
             android:layout_width="@dimen/dp_418"
@@ -33,7 +33,7 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceFirstHighway(0)}"
             android:id="@+id/preference_first_highway"
             android:layout_width="@dimen/dp_197"
@@ -50,7 +50,7 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceNotHighway(0)}"
             android:id="@+id/preference_not_highway"
             android:layout_width="@dimen/dp_197"
@@ -67,7 +67,7 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceAvoidCongestion(0)}"
             android:id="@+id/preference_avoid_congestion"
             android:layout_width="@dimen/dp_197"
@@ -84,7 +84,7 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceFirstMainRoad(0)}"
             android:id="@+id/preference_first_main_road"
             android:layout_width="@dimen/dp_197"
@@ -102,7 +102,7 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceLessCharge(0)}"
             android:id="@+id/preference_less_charge"
             android:layout_width="@dimen/dp_197"
@@ -120,7 +120,7 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceFastestSpeed(0)}"
             android:id="@+id/preference_fastest_speed"
             android:layout_width="@dimen/dp_197"
@@ -139,5 +139,5 @@
             app:select_background_color="@drawable/bg_setting_preference"/>
 
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

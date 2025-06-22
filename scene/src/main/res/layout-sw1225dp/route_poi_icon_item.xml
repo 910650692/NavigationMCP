@@ -5,19 +5,19 @@
     <data>
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.RoutePOIIconAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.RoutePOIIconAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_70"
         android:layout_height="@dimen/dp_66"
         android:gravity="center"
         >
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/poi_service_area_img_lighting"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
             android:src="@drawable/img_lightning_black_48"
             />
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

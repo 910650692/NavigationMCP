@@ -4,36 +4,36 @@
 
     <data>
 
-        <import type="com.fy.navi.service.greendao.history.History" />
+        <import type="com.sgm.navi.service.greendao.history.History" />
 
         <variable
             name="poiBean"
-            type="com.fy.navi.service.greendao.history.History" />
+            type="com.sgm.navi.service.greendao.history.History" />
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.SearchHistoryAdapter.ResultHolder" />
+            type="com.sgm.navi.scene.ui.adapter.SearchHistoryAdapter.ResultHolder" />
 
         <variable
             name="layoutPosition"
             type="String" />
     </data>
     <!--MFC-->
-    <com.fy.navi.ui.view.SwipeMenuLayout
+    <com.sgm.navi.ui.view.SwipeMenuLayout
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="false"
         android:orientation="horizontal">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="false"
             android:paddingEnd="@dimen/dp_40">
 
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sk_icon_layout"
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                     android:visibility="gone"
                     tools:text="1" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/search_icon"
                     android:layout_width="@dimen/dp_54"
                     android:layout_height="@dimen/dp_54"
@@ -70,7 +70,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/poi_icon"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
@@ -81,9 +81,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/crl_poi_des"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
                 app:layout_constraintStart_toEndOf="@id/sk_icon_layout"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                     android:textSize="@dimen/sp_46"
                     tools:text="德国慕尼黑" />
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/sk_info_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                     android:layout_marginTop="@dimen/dp_14"
                     android:orientation="horizontal">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/poi_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                         android:focusable="false"
                         android:background="@color/search_quick_tab_view_color" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/poi_address"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
@@ -150,10 +150,10 @@
                         android:textColor="@color/search_quick_tab_view_color"
                         android:textSize="@dimen/sp_38"
                         tools:text="德国慕尼黑啤酒节柏林节柏林披萨慕尼" />
-                </com.fy.navi.ui.view.SkinLinearLayout>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/poi_to_navi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -165,14 +165,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_navi_icon"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:focusable="false"
                     android:src="@drawable/img_basic_ic_navi" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/text_navi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -181,11 +181,11 @@
                     android:layout_marginTop="@dimen/dp_6"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_38" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_action_container"
             android:layout_width="@dimen/dp_320"
             android:layout_height="match_parent"
@@ -193,7 +193,7 @@
             android:focusable="false"
             android:orientation="horizontal">
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_collect"
                 android:layout_width="@dimen/dp_160"
                 android:layout_height="match_parent"
@@ -202,14 +202,14 @@
                 android:focusable="false"
                 android:orientation="vertical">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_collect"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:focusable="false"
                     android:src="@drawable/img_star58" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_collect"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -220,9 +220,9 @@
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_38" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_delete"
                 android:layout_width="@dimen/dp_160"
                 android:layout_height="match_parent"
@@ -231,13 +231,13 @@
                 android:focusable="false"
                 android:orientation="vertical">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:focusable="false"
                     android:src="@drawable/img_basic_ic_delete_white" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_delete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -248,7 +248,7 @@
                     android:textColor="@color/search_color_delete_text"
                     android:textSize="@dimen/sp_38" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SwipeMenuLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SwipeMenuLayout>
 </layout>

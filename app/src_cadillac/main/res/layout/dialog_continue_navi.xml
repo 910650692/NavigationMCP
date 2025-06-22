@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_820"
             android:layout_height="@dimen/dp_500"
             android:background="@drawable/shape_bg_dialog"
@@ -18,7 +18,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_continue_title"
                 android:layout_width="@dimen/dp_1200"
                 android:layout_height="@dimen/dp_68"
@@ -29,7 +29,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_continue_content"
                 android:layout_width="@dimen/dp_1400"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/stv_continue_title" />
 
-            <com.fy.navi.ui.view.SkinButton
+            <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/dialog_commit"
                 android:layout_width="@dimen/dp_300"
                 android:layout_height="@dimen/dp_100"
@@ -51,7 +51,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.fy.navi.ui.view.SkinButton
+            <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/dialog_cancel"
                 android:layout_width="@dimen/dp_300"
                 android:layout_height="@dimen/dp_100"
@@ -62,6 +62,6 @@
                 android:textSize="@dimen/sp_42"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/dialog_commit" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

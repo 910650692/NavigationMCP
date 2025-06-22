@@ -6,7 +6,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1136"
             android:layout_height="@dimen/dp_360"
             android:paddingHorizontal="@dimen/dp_18"
@@ -18,7 +18,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/bg_shadow_system_buick_vcs">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/dialog_message"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_196"
@@ -30,7 +30,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:background="@color/setting_line"
@@ -40,14 +40,14 @@
                 android:layout_marginEnd="@dimen/dp_40"
                 app:layout_constraintTop_toBottomOf="@+id/dialog_message" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/dialog_button_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_128"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <com.fy.navi.ui.view.SkinButton
+                <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dialog_commit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -57,13 +57,13 @@
                     android:textColor="@color/setting_dialog_confirm"
                     android:textSize="@dimen/sp_36" />
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:id="@+id/dialog_line"
                     android:layout_width="@dimen/dp_2"
                     android:layout_height="match_parent"
                     android:background="@color/setting_line"/>
 
-                <com.fy.navi.ui.view.SkinButton
+                <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dialog_cancel"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -73,8 +73,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_36" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingDefaultResource">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_411"
         android:clickable="true"
         android:layout_height="@dimen/dp_157"
@@ -13,7 +13,7 @@
         android:paddingTop="@dimen/dp_26"
         android:paddingEnd="@dimen/dp_22">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/textViewTimeRemaining"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/textViewEstimatedArrival"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewTimeRemaining" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/buttonGoHome"
             android:layout_width="@dimen/dp_111"
             android:layout_height="@dimen/dp_65"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <com.fy.navi.scene.ui.map.component.MultiStageProgressBar
+        <com.sgm.navi.scene.ui.map.component.MultiStageProgressBar
             android:id="@+id/sk_iv_basic_home_progress"
             android:layout_width="@dimen/dp_361"
             android:layout_height="@dimen/dp_3"
@@ -54,5 +54,5 @@
             android:layout_marginTop="@dimen/dp_13"
             app:layout_constraintTop_toBottomOf="@+id/textViewEstimatedArrival" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

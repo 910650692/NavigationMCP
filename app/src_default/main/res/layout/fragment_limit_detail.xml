@@ -9,11 +9,11 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.limit.BaseLimitDriverViewModel" />
+            type="com.sgm.navi.hmi.limit.BaseLimitDriverViewModel" />
     </data>
 
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
         android:layout_width="@dimen/dp_698"
         android:layout_height="@dimen/dp_772"
@@ -23,7 +23,7 @@
         android:background="@drawable/bg_shadow_navi_buick"
         android:clickable="true">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:text="@string/limit_policy" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"
             clickCommand="@{ViewModel.closePage}"
             android:layout_width="@dimen/dp_58"
@@ -47,12 +47,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/tv_loading" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/tv_retry" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_retry"
                 android:layout_width="@dimen/dp_264"
                 android:layout_height="@dimen/dp_76"
@@ -90,15 +90,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_policy"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/layout_multi_city"
                 android:layout_width="@dimen/dp_362"
                 android:layout_height="@dimen/dp_58"
@@ -108,7 +108,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_item_pre"
                     android:layout_width="@dimen/dp_58"
                     android:layout_height="@dimen/dp_58"
@@ -128,7 +128,7 @@
                     android:orientation="horizontal"/>
 
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_item_next"
                     android:layout_width="@dimen/dp_58"
                     android:layout_height="@dimen/dp_58"
@@ -137,9 +137,9 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="上海市"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 clickCommand="@{ViewModel.otherCitySelection}"
                 android:id="@+id/tv_other_city"
                 android:layout_width="wrap_content"
@@ -177,7 +177,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_no_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -188,8 +188,8 @@
                 app:layout_constraintStart_toStartOf="@id/tv_city"
                 app:layout_constraintTop_toBottomOf="@id/tv_other_city" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

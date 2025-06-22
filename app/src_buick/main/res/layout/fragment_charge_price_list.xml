@@ -5,20 +5,20 @@
     <data>
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.poi.chargingstation.BaseChargePriceListViewModel" />
+            type="com.sgm.navi.hmi.poi.chargingstation.BaseChargePriceListViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="@dimen/dp_698"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:orientation="vertical">
-        <com.fy.navi.scene.ui.poi.ScenePoiChargePriceListView
+        <com.sgm.navi.scene.ui.poi.ScenePoiChargePriceListView
             android:id="@+id/charge_price"
             android:layout_width="@dimen/dp_698"
             android:layout_height="wrap_content">
 
-        </com.fy.navi.scene.ui.poi.ScenePoiChargePriceListView>
-    </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.scene.ui.poi.ScenePoiChargePriceListView>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

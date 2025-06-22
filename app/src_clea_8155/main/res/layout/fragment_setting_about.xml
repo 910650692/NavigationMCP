@@ -6,10 +6,10 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.setting.others.about.SettingOthersAboutViewModel" />
+            type="com.sgm.navi.hmi.setting.others.about.SettingOthersAboutViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1110"
         android:layout_height="@dimen/dp_1078"
         android:background="@drawable/bg_shadow_navi_ndlc_8155"
@@ -19,7 +19,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/setting_others_about_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mFinishAbout}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -49,9 +49,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_image_layout"
             android:layout_width="@dimen/dp_217"
             android:layout_height="wrap_content"
@@ -62,13 +62,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_layout">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/setting_others_about_image"
                 android:layout_width="@dimen/dp_218"
                 android:layout_height="@dimen/dp_160"
                 android:src="@mipmap/icon_setting_about" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_about_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,10 +76,10 @@
                 android:text="@{viewModel.mSdkVersion}"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_26" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="@dimen/dp_392"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_34"
@@ -88,12 +88,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_layout">
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_others_about_channel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,20 +101,20 @@
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_22" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.mChannelID}"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_22" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_others_about_data_version"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -122,25 +122,25 @@
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_22" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.mMapDataVersion}"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_22" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_about_draw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.mVersion}"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_22" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_layout"
             android:layout_width="@dimen/dp_508"
             android:layout_height="wrap_content"
@@ -150,14 +150,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/setting_others_about_layout">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/setting_others_about_protocol_center"
                 clickCommand="@{viewModel.mOpenProtocolCenter}"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_77"
                 android:background="@drawable/bg_setting_about">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_others_about_protocol_center_text"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -168,7 +168,7 @@
                     android:textSize="@dimen/sp_26"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_9"
@@ -178,10 +178,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/setting_others_about_licenses_info"
                 clickCommand="@{viewModel.mOpenLicensesInfo}"
                 android:layout_width="match_parent"
@@ -189,7 +189,7 @@
                 android:layout_marginTop="@dimen/dp_14"
                 android:background="@drawable/bg_setting_about">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_others_about_licenses_info_title"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -200,7 +200,7 @@
                     android:textSize="@dimen/sp_26"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_9"
@@ -210,10 +210,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/setting_others_about_help"
                 clickCommand="@{viewModel.mOpenHelp}"
                 android:layout_width="match_parent"
@@ -221,7 +221,7 @@
                 android:layout_marginTop="@dimen/dp_14"
                 android:background="@drawable/bg_setting_about">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_others_about_help_title"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -232,7 +232,7 @@
                     android:textSize="@dimen/sp_26"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_9"
@@ -242,11 +242,11 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/setting_others_about_contact_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -257,7 +257,7 @@
             app:layout_constraintStart_toStartOf="@id/setting_others_layout"
             app:layout_constraintTop_toBottomOf="@id/setting_others_layout" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_web"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -268,14 +268,14 @@
             app:layout_constraintStart_toStartOf="@id/setting_others_about_contact_title"
             app:layout_constraintTop_toBottomOf="@id/setting_others_about_contact_title">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_web"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_22" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_about_url"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -283,9 +283,9 @@
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_22" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:layout_width="@dimen/dp_508"
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_14"
@@ -294,7 +294,7 @@
             app:layout_constraintStart_toStartOf="@id/setting_others_layout"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_web" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/line_center"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_60"
@@ -303,7 +303,7 @@
             app:layout_constraintStart_toStartOf="@id/setting_others_layout"
             app:layout_constraintTop_toTopOf="@+id/setting_others_about_web" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_wechat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -314,23 +314,23 @@
             app:layout_constraintStart_toStartOf="@id/setting_others_layout"
             app:layout_constraintTop_toBottomOf="@id/setting_others_about_web">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_wechat"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_22" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_title"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_22" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_60"
             android:layout_marginTop="@dimen/dp_13"
@@ -339,7 +339,7 @@
             app:layout_constraintStart_toStartOf="@id/setting_others_layout"
             app:layout_constraintTop_toTopOf="@+id/setting_others_about_wechat" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_tel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -349,23 +349,23 @@
             app:layout_constraintStart_toStartOf="@id/line_center"
             app:layout_constraintTop_toTopOf="@id/setting_others_about_web">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_tel"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_22" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_tel_number"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_22" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_qq"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -375,21 +375,21 @@
             app:layout_constraintStart_toStartOf="@id/line_center"
             app:layout_constraintTop_toTopOf="@id/setting_others_about_wechat">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_qq"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_22" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_qq_number"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_22" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

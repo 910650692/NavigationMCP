@@ -5,10 +5,10 @@
     <data>
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.setting.SettingViewModel" />
+            type="com.sgm.navi.hmi.setting.SettingViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
         android:clickable="true"
@@ -27,7 +27,7 @@
             app:nudgeDown="@+id/focus_tab"
             app:nudgeUp="@+id/focus_tab">
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 clickCommand="@{ViewModel.mFinishSetting}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -39,7 +39,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
         </com.android.car.ui.FocusArea>
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/setting_close"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -50,7 +50,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
+                <com.sgm.navi.scene.ui.setting.SceneVerticalTabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="@dimen/dp_288"
                     android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                     app:tabPaddingEnd="@dimen/dp_0"/>
             </com.android.car.ui.FocusArea>
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="match_parent"
                 android:focusable="false"
@@ -108,6 +108,6 @@
                     android:layout_marginStart="@dimen/dp_45"
                     android:layout_weight="1" />
             </com.android.car.ui.FocusArea>
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

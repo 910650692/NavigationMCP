@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.account;
+package com.sgm.navi.hmi.account;
 
 import android.app.Application;
 

@@ -7,10 +7,10 @@
 
         <variable
             name="naviContinue"
-            type="com.fy.navi.scene.impl.navi.SceneNaviContinueImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviContinueImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_navi_continue"
         android:background="@drawable/bg_navi_continue"
         clickCommand="@{() -> naviContinue.naviContinueClick()}"
@@ -18,7 +18,7 @@
         android:layout_width="@dimen/dp_310"
         android:layout_height="@dimen/dp_92">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_navi_continue_icon"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -28,7 +28,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/dp_52"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_34"
@@ -39,5 +39,5 @@
             android:text="@string/navi_continue_navi"
             android:layout_marginStart="@dimen/dp_12"/>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

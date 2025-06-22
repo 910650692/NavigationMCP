@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.map;
+package com.sgm.navi.hmi.map;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -16,11 +16,11 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.fy.navi.hmi.BuildConfig;
-import com.fy.navi.hmi.R;
-import com.fy.navi.hmi.navi.AuthorizationRequestDialog;
-import com.fy.navi.service.define.map.MainScreenMapView;
-import com.fy.navi.service.define.mfc.MfcController;
+import com.sgm.navi.hmi.BuildConfig;
+import com.sgm.navi.hmi.R;
+import com.sgm.navi.hmi.navi.AuthorizationRequestDialog;
+import com.sgm.navi.service.define.map.MainScreenMapView;
+import com.sgm.navi.service.define.mfc.MfcController;
 
 import java.util.concurrent.ScheduledFuture;
 

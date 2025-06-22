@@ -5,21 +5,21 @@
     <data>
         <variable
             name="sceneTerminalViewImpl"
-            type="com.fy.navi.scene.impl.search.SceneTerminalViewImpl" />
+            type="com.sgm.navi.scene.impl.search.SceneTerminalViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_628"
         android:layout_height="@dimen/dp_749"
         android:padding="@dimen/dp_29"
         android:background="@drawable/bg_shadow_navi_buick"
         android:orientation="vertical">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_89">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:gravity="center_vertical"
                 android:id="@+id/sk_tv_terminal_title"
                 android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_terminal_close"
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
@@ -42,14 +42,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinRecyclerView
+        <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/recycler_search_result"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/dp_24"/>
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 
 </layout>

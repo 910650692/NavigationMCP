@@ -1,10 +1,10 @@
-package com.fy.navi.hmi.search.parking;
+package com.sgm.navi.hmi.search.parking;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-import com.fy.navi.hmi.search.searchresult.BaseSearchResultViewModel;
+import com.sgm.navi.hmi.search.searchresult.BaseSearchResultViewModel;
 
 /**
  * @Description TODO

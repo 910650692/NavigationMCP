@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.setting.others.protocol;
+package com.sgm.navi.hmi.setting.others.protocol;
 
 import android.app.Application;
 

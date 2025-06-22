@@ -7,10 +7,10 @@
 
         <variable
             name="ScenePoiDetailContentView"
-            type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+            type="com.sgm.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_gas_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.fy.navi.ui.view.SkinRecyclerView
+        <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/poi_gas_oil_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             app:layout_constraintTop_toBottomOf="@+id/poi_gas_oil_list" />
 
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_gas_oil_layout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_gas_business_hours"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -57,16 +57,16 @@
                 android:textSize="@dimen/sp_38"
                 tools:text="营业时间: 09:00 -- 21:00" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_business_icon"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
                 android:visibility="gone"
                 android:src="@drawable/img_under_the_48" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_gas_phone"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="电        话: 021-888888" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/poi_phone_icon"
             android:layout_width="@dimen/dp_56"
             android:layout_height="@dimen/dp_56"
@@ -89,5 +89,5 @@
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/poi_gas_phone"
             app:layout_constraintTop_toTopOf="@+id/poi_gas_phone"/>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

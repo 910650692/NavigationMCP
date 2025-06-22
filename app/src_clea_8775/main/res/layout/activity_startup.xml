@@ -7,17 +7,17 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.startup.StartupViewModel" />
+            type="com.sgm.navi.hmi.startup.StartupViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
         tools:context=".startup.StartupActivity">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/main_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/activating_img"
             android:layout_width="@dimen/dp_225"
             android:layout_height="@dimen/dp_225"
@@ -38,7 +38,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/activating_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,12 +51,12 @@
             app:layout_constraintTop_toBottomOf="@id/activating_img"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinFrameLayout
+        <com.sgm.navi.ui.view.SkinFrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.search.offlinesearch;
+package com.sgm.navi.hmi.search.offlinesearch;
 
 import android.app.Application;
 

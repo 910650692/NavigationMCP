@@ -6,10 +6,10 @@
         <import type="android.view.View"/>
         <variable
             name="model"
-            type="com.fy.navi.service.define.voice.VoiceInfo" />
+            type="com.sgm.navi.service.define.voice.VoiceInfo" />
         <variable
             name="holder"
-            type="com.fy.navi.hmi.setting.broadcast.adapter.SettingVoiceBroadcastAdapter.Holder" />
+            type="com.sgm.navi.hmi.setting.broadcast.adapter.SettingVoiceBroadcastAdapter.Holder" />
 
     </data>
 
@@ -20,7 +20,7 @@
         android:background="@drawable/bg_selecting_bar"
         android:layout_marginTop="@dimen/dp_24">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/recommend_voice_header"
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_80"
@@ -30,7 +30,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/recommend_voice_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/setting_broadcast_voice_has_update"
@@ -54,7 +54,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/recommend_voice_size"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/recommend_voice_operate"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_76"
@@ -73,7 +73,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/recommend_voice_operate_view"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
@@ -82,7 +82,7 @@
             app:layout_constraintStart_toStartOf="@+id/recommend_voice_operate"
             app:layout_constraintEnd_toEndOf="@+id/recommend_voice_operate"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
@@ -94,7 +94,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/recommend_voice_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

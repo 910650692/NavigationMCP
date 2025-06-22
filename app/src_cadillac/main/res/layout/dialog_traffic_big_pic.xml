@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="false">
@@ -32,7 +32,7 @@
             app:layout_constraintStart_toStartOf="@id/view_bg"
             app:layout_constraintTop_toTopOf="@id/view_bg" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_pre"
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_68"
@@ -43,7 +43,7 @@
             app:layout_constraintStart_toStartOf="@id/view_bg"
             app:layout_constraintTop_toTopOf="@id/view_bg" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_next"
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_68"
@@ -54,7 +54,7 @@
             app:layout_constraintEnd_toEndOf="@id/view_bg"
             app:layout_constraintTop_toTopOf="@id/view_bg" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
             app:layout_constraintStart_toStartOf="@id/view_bg"
             tools:text="1/4" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_68"
@@ -77,5 +77,5 @@
             app:layout_constraintEnd_toEndOf="@id/view_bg"
             app:layout_constraintTop_toTopOf="@id/view_bg" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

@@ -7,22 +7,22 @@
 
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.favorite.CollectViewModel" />
+            type="com.sgm.navi.hmi.favorite.CollectViewModel" />
     </data>
 
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="@dimen/dp_640"
         android:layout_height="match_parent"
         android:clickable="true"
         android:orientation="vertical">
 
-        <com.fy.navi.scene.ui.favorite.SceneCollectView
+        <com.sgm.navi.scene.ui.favorite.SceneCollectView
             android:id="@+id/collect_view"
             android:layout_width="@dimen/dp_640"
             android:layout_height="match_parent">
 
-        </com.fy.navi.scene.ui.favorite.SceneCollectView>
-    </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.scene.ui.favorite.SceneCollectView>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

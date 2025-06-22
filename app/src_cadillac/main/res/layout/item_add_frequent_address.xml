@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/dp_168"
     android:layout_height="@dimen/dp_168"
     android:background="@drawable/bg_setting_voice">
 
-    <com.fy.navi.ui.view.SkinImageView
+    <com.sgm.navi.ui.view.SkinImageView
         android:id="@+id/iv_add1"
         android:layout_width="@dimen/dp_74"
         android:layout_height="@dimen/dp_74"
@@ -15,5 +15,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</com.fy.navi.ui.view.SkinConstraintLayout>
+</com.sgm.navi.ui.view.SkinConstraintLayout>
 

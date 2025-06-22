@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.traffic;
+package com.sgm.navi.hmi.traffic;
 
 import android.app.Application;
 

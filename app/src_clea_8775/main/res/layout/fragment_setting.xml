@@ -5,17 +5,17 @@
     <data>
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.setting.SettingViewModel" />
+            type="com.sgm.navi.hmi.setting.SettingViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1110"
         android:layout_height="@dimen/dp_1078"
         android:clickable="true"
         android:padding="@dimen/dp_34"
         android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/setting_close"
             clickCommand="@{ViewModel.mFinishSetting}"
             android:layout_width="wrap_content"
@@ -26,14 +26,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
+            <com.sgm.navi.scene.ui.setting.SceneVerticalTabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="@dimen/dp_190"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 app:tabIndicatorHeight="0dp"
                 app:tabRippleColor="@null" />
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="match_parent"
                 android:background="@color/setting_line"
@@ -64,6 +64,6 @@
                 android:layout_marginStart="@dimen/dp_26"
                 android:layout_weight="1" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

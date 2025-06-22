@@ -1,10 +1,10 @@
-<com.fy.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sgm.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center">
 
-    <com.fy.navi.ui.view.SkinImageView
+    <com.sgm.navi.ui.view.SkinImageView
         android:id="@+id/tabIcon"
         android:visibility="gone"
         android:layout_width="wrap_content"
@@ -12,7 +12,7 @@
         android:layout_marginStart="@dimen/dp_22"
         android:src="@drawable/img_setting_guide" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tabText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,4 +24,4 @@
         android:textSize="@dimen/sp_34"
         android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-</com.fy.navi.ui.view.SkinLinearLayout>
+</com.sgm.navi.ui.view.SkinLinearLayout>

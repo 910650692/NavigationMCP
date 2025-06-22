@@ -9,20 +9,20 @@
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.FilterChildListAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.FilterChildListAdapter.Holder" />
 
         <variable
             name="costTime"
-            type="com.fy.navi.service.define.search.CostTime" />
+            type="com.sgm.navi.service.define.search.CostTime" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/charge_price_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_charge_price_root_bg">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:text="@string/search_charge_current_time" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="00:00-06:00" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:text="@{@string/charge_price_all(costTime.getPrice())}" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_electric"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
             app:layout_constraintStart_toEndOf="@+id/charge_price_electric"
             app:layout_constraintTop_toTopOf="@+id/charge_price_electric" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,5 +107,5 @@
             app:layout_constraintTop_toTopOf="@id/charge_price_electric"
             tools:text="服务费：¥1.89" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

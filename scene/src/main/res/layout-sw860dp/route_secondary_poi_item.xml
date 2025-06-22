@@ -9,15 +9,15 @@
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.RouteSecondaryPoiAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.RouteSecondaryPoiAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/ly_route_secondary_poi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_route_secondary_poi"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_76"
@@ -39,5 +39,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             tool:text="航站楼1" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

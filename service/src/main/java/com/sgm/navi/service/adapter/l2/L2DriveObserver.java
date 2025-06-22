@@ -1,0 +1,12 @@
+package com.sgm.navi.service.adapter.l2;
+
+import com.sgm.navi.service.define.navi.L2NaviBean;
+
+/**
+ * @Description TODO
+ * @Author lww
+ * @date 2025/3/12
+ */
+public interface L2DriveObserver {
+    void onSdTbtDataChange(L2NaviBean l2NaviBean);
+}

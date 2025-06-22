@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.fy.navi.burypoint.anno.HookMethod
-import com.fy.navi.burypoint.bean.BuryProperty
-import com.fy.navi.burypoint.constant.BuryConstant
-import com.fy.navi.burypoint.controller.BuryPointController
+import com.sgm.navi.burypoint.anno.HookMethod
+import com.sgm.navi.burypoint.bean.BuryProperty
+import com.sgm.navi.burypoint.constant.BuryConstant
+import com.sgm.navi.burypoint.controller.BuryPointController
 import com.google.android.material.snackbar.Snackbar
 
 

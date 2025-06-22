@@ -9,28 +9,28 @@
 
         <variable
             name="Scene"
-            type="com.fy.navi.scene.api.route.ISceneRoutePreference" />
+            type="com.sgm.navi.scene.api.route.ISceneRoutePreference" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingVertical="@dimen/dp_29"
         android:paddingHorizontal="@dimen/dp_29"
         android:background="@drawable/bg_shadow_navi_buick">
 
-        <com.fy.navi.ui.view.SkinScrollView
+        <com.sgm.navi.ui.view.SkinScrollView
             android:layout_width="@dimen/dp_640"
             android:layout_height="@dimen/dp_376"
             android:scrollbars="none">
             <!--算路偏好-->
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/dp_32"
                 android:paddingBottom="@dimen/dp_32">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_route_preference_selected"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                     android:textSize="@dimen/sp_30"
                     tools:text="不走高速+躲避拥堵"/>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/siv_preference_close"
                     android:layout_width="@dimen/dp_48"
                     android:layout_height="@dimen/dp_48"
@@ -52,7 +52,7 @@
                     clickCommand="@{() -> Scene.closeScene()}"
                     android:background="@drawable/img_up_42"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/preference_recommend"
                     clickCommand="@{() -> Scene.preferenceRecommend(1)}"
                     android:layout_width="@dimen/dp_560"
@@ -69,7 +69,7 @@
                     app:select_background_color="@drawable/navi_selector_preference"
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/preference_avoid_congestion"
                     clickCommand="@{() -> Scene.preferenceAvoidCongestion(1)}"
                     android:layout_width="@dimen/dp_268"
@@ -85,7 +85,7 @@
                     app:select_background_color="@drawable/navi_selector_preference"
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/preference_first_main_road"
                     clickCommand="@{() -> Scene.preferenceFirstMainRoad(1)}"
                     android:layout_width="@dimen/dp_268"
@@ -102,7 +102,7 @@
                     app:select_background_color="@drawable/navi_selector_preference"
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/preference_first_highway"
                     clickCommand="@{() -> Scene.preferenceFirstHighway(1)}"
                     android:layout_width="@dimen/dp_268"
@@ -118,7 +118,7 @@
                     app:select_background_color="@drawable/navi_selector_preference"
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/preference_not_highway"
                     clickCommand="@{() -> Scene.preferenceNotHighway(1)}"
                     android:layout_width="@dimen/dp_268"
@@ -135,7 +135,7 @@
                     app:select_background_color="@drawable/navi_selector_preference"
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/preference_less_charge"
                     clickCommand="@{() -> Scene.preferenceLessCharge(1)}"
                     android:layout_width="@dimen/dp_268"
@@ -151,7 +151,7 @@
                     app:select_background_color="@drawable/navi_selector_preference"
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/preference_fastest_speed"
                     clickCommand="@{() -> Scene.preferenceFastestSpeed(1)}"
                     android:layout_width="@dimen/dp_268"
@@ -168,9 +168,9 @@
                     app:select_background_color="@drawable/navi_selector_preference"
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
-        </com.fy.navi.ui.view.SkinScrollView>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinScrollView>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

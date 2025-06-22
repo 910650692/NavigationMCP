@@ -7,10 +7,10 @@
         <import type="android.view.View" />
         <variable
             name="SceneCollectViewImpl"
-            type="com.fy.navi.scene.impl.favorite.SceneCollectViewImpl" />
+            type="com.sgm.navi.scene.impl.favorite.SceneCollectViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:id="@+id/scl_search_top_view"
         android:layout_width="@dimen/dp_613"
         android:layout_height="match_parent"
@@ -22,7 +22,7 @@
             android:layout_width="@dimen/dp_613"
             android:layout_height="@dimen/dp_168" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_613"
             android:layout_height="@dimen/dp_781"
             android:layout_marginBottom="@dimen/dp_280"
@@ -31,7 +31,7 @@
             android:layout_marginTop="@dimen/dp_m_40"
             android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/tv_favorite_switch"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_77"
@@ -47,14 +47,14 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible">
 
-                <com.fy.navi.ui.view.SkinRadioGroup
+                <com.sgm.navi.ui.view.SkinRadioGroup
                     android:id="@+id/navi_broadcast"
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal">
 
-                    <com.fy.navi.ui.view.SkinRadioButton
+                    <com.sgm.navi.ui.view.SkinRadioButton
                         android:id="@+id/navi_broadcast_standard"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -67,7 +67,7 @@
                         android:textColor="@drawable/color_setting_checkbox_selector"
                         android:textSize="@dimen/sp_29" />
 
-                    <com.fy.navi.ui.view.SkinRadioButton
+                    <com.sgm.navi.ui.view.SkinRadioButton
                         android:id="@+id/navi_broadcast_large"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -78,10 +78,10 @@
                         android:text="@string/favorite_switch_charge"
                         android:textColor="@drawable/color_setting_checkbox_selector"
                         android:textSize="@dimen/sp_29" />
-                </com.fy.navi.ui.view.SkinRadioGroup>
+                </com.sgm.navi.ui.view.SkinRadioGroup>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
-            <com.fy.navi.ui.view.SkinRecyclerView
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+            <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/rcv_collect"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -89,7 +89,7 @@
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_34" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_no_favorite"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -98,7 +98,7 @@
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"
                 android:orientation="vertical">
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/tv_no_favorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -106,9 +106,9 @@
                     android:layout_marginTop="@dimen/dp_10"
                     android:textSize="@dimen/sp_29"
                     android:text="@string/scv_not_have_favorite"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_no_sgm"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -120,7 +120,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"  >
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_no_charging"
@@ -128,7 +128,7 @@
                     android:textSize="@dimen/sp_26"
                     android:layout_marginTop="@dimen/dp_20" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_no_charging_tip"
@@ -136,7 +136,7 @@
                     android:textSize="@dimen/sp_26"
                     android:layout_marginTop="@dimen/dp_10" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/sll_no_login"
                     android:layout_width="@dimen/dp_264"
                     android:layout_height="@dimen/dp_80"
@@ -146,9 +146,9 @@
                     android:textColor="@color/white"
                     android:layout_marginTop="@dimen/dp_28"
                     android:background="@drawable/bg_setting_preference_select"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_no_charge"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -160,15 +160,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"  >
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_no_charging_data"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_26"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_no_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -180,7 +180,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"  >
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_charging_request_fail"
@@ -188,7 +188,7 @@
                     android:textSize="@dimen/sp_26" />
 
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/sll_no_refresh"
                     android:layout_width="@dimen/dp_250"
                     android:layout_height="@dimen/dp_83"
@@ -198,9 +198,9 @@
                     android:textColor="@color/white"
                     android:layout_marginTop="@dimen/dp_28"
                     android:background="@drawable/bg_setting_preference_select"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_no_net"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -212,14 +212,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"  >
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_charging_offline"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_26" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

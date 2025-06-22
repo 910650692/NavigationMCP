@@ -8,21 +8,21 @@
         <import type="android.view.View" />
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.FilterChildListAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.FilterChildListAdapter.Holder" />
 
         <variable
             name="costTime"
-            type="com.fy.navi.service.define.search.CostTime" />
+            type="com.sgm.navi.service.define.search.CostTime" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/charge_price_root"
         android:layout_width="@dimen/dp_560"
         android:layout_height="@dimen/dp_130"
         android:background="@drawable/bg_charge_price_item"
         >
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_type"
             android:layout_width="@dimen/dp_76"
             android:layout_height="@dimen/dp_46"
@@ -38,7 +38,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/charge_price_time"
             />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_electric"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/charge_price_electric"
             app:layout_constraintTop_toTopOf="@+id/charge_price_electric"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,5 +106,5 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/charge_price_electric"
             />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

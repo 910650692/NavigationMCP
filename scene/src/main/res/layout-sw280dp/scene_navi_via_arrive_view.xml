@@ -8,23 +8,23 @@
 
         <variable
             name="naviArrive"
-            type="com.fy.navi.scene.impl.navi.SceneNaviViaArriveViewImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviViaArriveViewImpl" />
 
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_51"
         android:paddingVertical="@dimen/dp_51"
         android:background="@drawable/bg_shadow_navi_cadillac">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_root"
             android:layout_width="@dimen/dp_1600"
             android:layout_height="@dimen/dp_400"
             android:focusable="false">
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusable="false"
@@ -33,7 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:color="@color/navi_color_FF595F_100">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_via_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                     android:layout_marginTop="@dimen/dp_80"
                     tools:text="是否已抵达？" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/siv_horizontal_line"
                     android:layout_width="@dimen/dp_1312"
                     android:layout_height="@dimen/dp_2"
@@ -62,7 +62,7 @@
                     android:layout_marginBottom="@dimen/dp_186"/>
 
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/siv_vertical_line"
                     android:layout_width="@dimen/dp_2"
                     android:layout_height="@dimen/dp_186"
@@ -73,7 +73,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.fy.navi.scene.ui.navi.view.ButtonText
+                <com.sgm.navi.scene.ui.navi.view.ButtonText
                     android:id="@+id/stv_confirm"
                     android:layout_width="@dimen/dp_432"
                     android:layout_height="@dimen/dp_100"
@@ -89,7 +89,7 @@
                     android:textColor="@color/navi_color_FFFFFF_100"
                     android:text="@string/confirm"/>
 
-                <com.fy.navi.scene.ui.navi.view.ButtonText
+                <com.sgm.navi.scene.ui.navi.view.ButtonText
                     android:id="@+id/stv_cancel"
                     android:layout_width="@dimen/dp_432"
                     android:layout_height="@dimen/dp_100"
@@ -107,11 +107,11 @@
 
 
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
 

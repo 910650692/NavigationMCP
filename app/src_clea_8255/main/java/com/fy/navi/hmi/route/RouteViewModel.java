@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.route;
+package com.sgm.navi.hmi.route;
 
 import android.app.Application;
 

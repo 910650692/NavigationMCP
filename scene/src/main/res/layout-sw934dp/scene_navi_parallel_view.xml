@@ -9,10 +9,10 @@
 
         <variable
             name="naviParallel"
-            type="com.fy.navi.scene.impl.navi.SceneNaviParallelImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviParallelImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -26,7 +26,7 @@
             app:constraint_referenced_ids="sv_bridge_up_down,siv_bridge_up_down,stv_bridge_up_down"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/sv_bridge_up_down"
             clickCommand="@{naviParallel.mClickBridgeUpDown}"
             android:layout_width="@dimen/dp_204"
@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:background="@color/navi_color_FF595F_100" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_bridge_up_down"
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_68"
@@ -47,7 +47,7 @@
             app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toTopOf="@id/sv_bridge_up_down" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_bridge_up_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             app:constraint_referenced_ids="sv_main_auxiliary,siv_main_auxiliary,stv_main_auxiliary"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/sv_main_auxiliary"
             clickCommand="@{naviParallel.mClickMainAuxiliary}"
             android:layout_width="@dimen/dp_204"
@@ -81,7 +81,7 @@
             app:layout_goneMarginStart="@dimen/dp_0"
             tools:background="@color/navi_color_FF595F_100" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_main_auxiliary"
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_68"
@@ -91,7 +91,7 @@
             app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
             app:layout_constraintTop_toTopOf="@id/sv_main_auxiliary" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_main_auxiliary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -104,5 +104,5 @@
             app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
             app:layout_constraintTop_toBottomOf="@id/siv_main_auxiliary" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

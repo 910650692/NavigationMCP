@@ -6,10 +6,10 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.setting.others.about.help.SettingHelpViewModel" />
+            type="com.sgm.navi.hmi.setting.others.about.help.SettingHelpViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_1282"
         android:layout_height="@dimen/dp_772"
         android:clickable="true"
@@ -17,12 +17,12 @@
         android:background="@drawable/bg_shadow_navi_buick"
         android:orientation="vertical">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/help_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_138">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 clickCommand="@{viewModel.mClickBack}"
@@ -32,7 +32,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_help"
@@ -42,20 +42,20 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@color/transparent"/>
 
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/help_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
+            <com.sgm.navi.scene.ui.setting.SceneVerticalTabLayout
                 android:id="@+id/help_table"
                 android:layout_width="@dimen/dp_223"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/help_line"
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="match_parent"
@@ -79,7 +79,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/help_table"/>
 
-            <com.fy.navi.ui.view.SkinScrollView
+            <com.sgm.navi.ui.view.SkinScrollView
                 android:id="@+id/help_scroll"
                 android:layout_width="@dimen/dp_900"
                 android:layout_height="match_parent"
@@ -90,26 +90,26 @@
                 app:layout_constraintStart_toEndOf="@+id/help_line"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/remote_navi"
                     android:layout_width="@dimen/dp_860"
                     android:layout_height="match_parent">
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:visibility="@{viewModel.mSelectPosition == 0 ? View.VISIBLE : View.GONE}"
                         android:layout_marginTop="@dimen/dp_30">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_one"
                             android:textSize="@dimen/sp_26"
                             android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_one_answer"
@@ -117,7 +117,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_two"
@@ -125,7 +125,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_two_answer"
@@ -133,7 +133,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_three"
@@ -141,7 +141,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_three_answer"
@@ -149,7 +149,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_four"
@@ -157,7 +157,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_four_answer"
@@ -165,7 +165,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_five"
@@ -173,7 +173,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_question_five_answer"
@@ -181,23 +181,23 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:visibility="@{viewModel.mSelectPosition == 1 ? View.VISIBLE : View.GONE}"
                         android:layout_marginTop="@dimen/dp_30">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_display_one"
                             android:textSize="@dimen/sp_26"
                             android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_display_one_answer"
@@ -205,7 +205,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_display_two"
@@ -213,7 +213,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_display_two_answer"
@@ -221,7 +221,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_display_three"
@@ -229,7 +229,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_display_three_answer"
@@ -237,7 +237,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_display_four"
@@ -245,7 +245,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_display_four_answer"
@@ -253,23 +253,23 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:visibility="@{viewModel.mSelectPosition == 2 ? View.VISIBLE : View.GONE}"
                         android:layout_marginTop="@dimen/dp_30">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_one"
                             android:textSize="@dimen/sp_26"
                             android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_one_answer"
@@ -277,7 +277,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_two"
@@ -285,7 +285,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_two_answer"
@@ -293,7 +293,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_three"
@@ -301,7 +301,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_three_answer"
@@ -309,7 +309,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_four"
@@ -317,7 +317,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_four_answer"
@@ -325,7 +325,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_five"
@@ -333,7 +333,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_route_five_answer"
@@ -341,23 +341,23 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:visibility="@{viewModel.mSelectPosition == 3 ? View.VISIBLE : View.GONE}"
                         android:layout_marginTop="@dimen/dp_30">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_one"
                             android:textSize="@dimen/sp_26"
                             android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_one_answer"
@@ -365,7 +365,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_two"
@@ -373,7 +373,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_two_answer"
@@ -381,7 +381,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_three"
@@ -389,7 +389,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_three_answer"
@@ -397,7 +397,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_four"
@@ -405,7 +405,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_four_answer"
@@ -413,7 +413,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_five"
@@ -421,7 +421,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_search_five_answer"
@@ -430,23 +430,23 @@
                             android:layout_marginTop="@dimen/dp_16"/>
 
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:visibility="@{viewModel.mSelectPosition == 4 ? View.VISIBLE : View.GONE}"
                         android:layout_marginTop="@dimen/dp_30">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_broadcast_one"
                             android:textSize="@dimen/sp_26"
                             android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_broadcast_one_answer"
@@ -454,7 +454,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_broadcast_two"
@@ -462,7 +462,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_broadcast_two_answer"
@@ -470,7 +470,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_broadcast_three"
@@ -478,7 +478,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_broadcast_three_answer"
@@ -486,7 +486,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_broadcast_four"
@@ -494,7 +494,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_broadcast_four_answer"
@@ -503,23 +503,23 @@
                             android:layout_marginTop="@dimen/dp_16"/>
 
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:visibility="@{viewModel.mSelectPosition == 5 ? View.VISIBLE : View.GONE}"
                         android:layout_marginTop="@dimen/dp_30">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_data_one"
                             android:textSize="@dimen/sp_26"
                             android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_data_one_answer"
@@ -527,7 +527,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_data_two"
@@ -535,7 +535,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_data_two_answer"
@@ -543,7 +543,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_data_three"
@@ -551,7 +551,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_data_three_answer"
@@ -559,7 +559,7 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_data_four"
@@ -567,7 +567,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:layout_marginTop="@dimen/dp_40"/>
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_others_help_tab_data_four_answer"
@@ -575,12 +575,12 @@
                             android:textColor="@color/setting_car_logo_text_gray"
                             android:layout_marginTop="@dimen/dp_16"/>
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            </com.fy.navi.ui.view.SkinScrollView>
+            </com.sgm.navi.ui.view.SkinScrollView>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

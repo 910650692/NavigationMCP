@@ -7,23 +7,23 @@
 
         <variable
             name="SceneSearchHistoryImpl"
-            type="com.fy.navi.scene.impl.search.SceneSearchHistoryImpl" />
+            type="com.sgm.navi.scene.impl.search.SceneSearchHistoryImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinFrameLayout
+    <com.sgm.navi.ui.view.SkinFrameLayout
         android:layout_width="@dimen/dp_545"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_search_main_tab"
         android:clipToOutline="true"
         android:layerType="hardware"
         android:paddingVertical="@dimen/dp_20">
-        <!--    <com.fy.navi.scene.ui.search.MaxheightNestedScrollView-->
+        <!--    <com.sgm.navi.scene.ui.search.MaxheightNestedScrollView-->
         <!--        android:layout_width="@dimen/dp_545"-->
         <!--        android:fillViewport="true"-->
         <!--        android:padding="@dimen/dp_1"-->
         <!--        android:scrollbars="vertical"-->
         <!--        android:layout_height="match_parent">-->
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_545"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
 
-            <com.fy.navi.ui.view.SkinRecyclerView
+            <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/rcy_record"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_record_null"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_412"
@@ -56,7 +56,7 @@
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view" />
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_delete_record"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_49"
@@ -65,7 +65,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rcy_record">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_delete"
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
@@ -74,7 +74,7 @@
                     app:layout_constraintRight_toLeftOf="@+id/tv_delete"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/tv_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,8 +86,8 @@
                     app:layout_constraintLeft_toRightOf="@id/iv_delete"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-        <!--    </com.fy.navi.scene.ui.search.MaxheightNestedScrollView>-->
-    </com.fy.navi.ui.view.SkinFrameLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+        <!--    </com.sgm.navi.scene.ui.search.MaxheightNestedScrollView>-->
+    </com.sgm.navi.ui.view.SkinFrameLayout>
 </layout>

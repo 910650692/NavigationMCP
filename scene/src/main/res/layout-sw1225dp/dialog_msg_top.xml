@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/top_dialog_view"
             android:layout_width="@dimen/dp_941"
             android:layout_height="@dimen/dp_87"
@@ -15,7 +15,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/top_dialog_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -29,7 +29,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="更新" />
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/line"
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="@dimen/dp_52"
@@ -38,7 +38,7 @@
                 app:layout_constraintStart_toEndOf="@+id/top_dialog_title"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/top_dialog_content"
                 android:layout_width="@dimen/dp_707"
                 android:layout_height="@dimen/dp_45"
@@ -53,7 +53,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="地图数据更新地图数据更新通知地图知地图数据更新地图数据更新通知地图数据更新通知地图数据更新通知" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/top_dialog_img_close"
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
@@ -62,6 +62,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

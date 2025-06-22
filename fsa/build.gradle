@@ -5,7 +5,7 @@ plugins {
 String flavorType = "type"
 
 android {
-    namespace 'com.fy.navi.fsa'
+    namespace 'com.sgm.navi.fsa'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
     buildToolsVersion libs.versions.buildSdk.get()
 

@@ -7,15 +7,15 @@
 
         <variable
             name="naviTMC"
-            type="com.fy.navi.scene.impl.navi.SceneNaviTmcImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviTmcImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_56"
         android:focusable="false">
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:layout_width="@dimen/dp_46"
             android:layout_height="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_6"
@@ -25,7 +25,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.scene.ui.navi.component.ComponentTMCRes
+        <com.sgm.navi.scene.ui.navi.component.ComponentTMCRes
             android:id="@+id/tmrtr_resources"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_8"
@@ -36,7 +36,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_1"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_2"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -53,7 +53,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_31"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -61,7 +61,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_32"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -69,7 +69,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_33"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -77,7 +77,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_34"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -85,7 +85,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_35"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -93,7 +93,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_36"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -101,7 +101,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_37"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -109,7 +109,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_38"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -117,7 +117,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_39"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -125,7 +125,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_310"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -133,7 +133,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_311"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -141,7 +141,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_312"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -149,7 +149,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_313"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -157,7 +157,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_314"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -165,7 +165,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_315"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -173,7 +173,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_316"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -181,7 +181,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_317"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -189,7 +189,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_3"
             style="@style/style_navi_tmc_tv_cadi"
             android:focusable="false"
@@ -197,7 +197,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tmrtr_resources"
             app:layout_constraintTop_toTopOf="@+id/tmrtr_resources" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_car"
             android:layout_width="@dimen/dp_52"
             android:layout_height="@dimen/dp_52"
@@ -207,5 +207,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

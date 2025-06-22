@@ -4,7 +4,7 @@ plugins {
 String flavorType = "type"
 
 android {
-    namespace 'com.fy.navi.scene'
+    namespace 'com.sgm.navi.scene'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
     buildToolsVersion libs.versions.buildSdk.get()
 

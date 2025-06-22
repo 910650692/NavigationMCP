@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/reminderRootIndex"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             style="@style/dialog_buick_parent"
             android:background="@drawable/bg_shadow_system_buick_avenir"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -15,7 +15,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/dialog_title"
                 style="@style/dialog_buick_title"
                 android:layout_marginTop="@dimen/dp_70"
@@ -25,7 +25,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/ll_sub_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,14 +34,14 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/dialog_title">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/reminder_click_view"
                     style="@style/dialog_buick_sub_title"
                     android:text="@string/reminder_click_to_view"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/reminder_terms_service"
                     style="@style/dialog_buick_high_light"
                     android:layout_marginStart="@dimen/dp_6"
@@ -49,14 +49,14 @@
                     app:layout_constraintStart_toEndOf="@+id/reminder_click_view"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     style="@style/dialog_buick_sub_title"
                     android:layout_marginStart="@dimen/dp_6"
                     android:text="、"
                     app:layout_constraintStart_toEndOf="@+id/reminder_terms_service"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/reminder_page_privacy"
                     style="@style/dialog_buick_high_light"
                     android:layout_marginStart="@dimen/dp_6"
@@ -64,7 +64,7 @@
                     app:layout_constraintStart_toEndOf="@+id/reminder_click_view1"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/net_scrollView"
@@ -78,7 +78,7 @@
                 app:layout_constraintStart_toStartOf="@id/ll_sub_content"
                 app:layout_constraintTop_toBottomOf="@+id/ll_sub_content">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     style="@style/dialog_buick_content"
                     android:lineSpacingExtra="@dimen/dp_1"
                     android:paddingBottom="@dimen/dp_15"
@@ -86,7 +86,7 @@
 
             </androidx.core.widget.NestedScrollView>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/dialog_content"
                 android:layout_width="@dimen/dp_1100"
                 android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/net_scrollView" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_128"
                 android:orientation="horizontal"
@@ -117,7 +117,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/line">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_commit"
                     style="@style/dialog_buick_positive_btn"
                     android:layout_width="@dimen/dp_0"
@@ -131,7 +131,7 @@
                     android:layout_height="match_parent"
                     android:background="#4D818199" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_cancel"
                     style="@style/dialog_buick_negative_btn"
                     android:layout_width="@dimen/dp_0"
@@ -140,8 +140,8 @@
                     android:gravity="center"
                     android:text="@string/not_agree_and_exit" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

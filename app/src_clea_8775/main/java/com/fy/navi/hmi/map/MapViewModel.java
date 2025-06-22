@@ -1,13 +1,13 @@
-package com.fy.navi.hmi.map;
+package com.sgm.navi.hmi.map;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-import com.fy.navi.hmi.splitscreen.SplitScreenManager;
-import com.fy.navi.hmi.utils.ScreenTypeUtils;
-import com.fy.navi.service.define.screen.ScreenType;
-import com.fy.navi.ui.action.Action;
+import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
+import com.sgm.navi.hmi.utils.ScreenTypeUtils;
+import com.sgm.navi.service.define.screen.ScreenType;
+import com.sgm.navi.ui.action.Action;
 
 /**
  * @Description TODO

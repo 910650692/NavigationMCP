@@ -7,7 +7,7 @@
 
     </data>
 
-    <com.fy.navi.ui.view.SkinCardView
+    <com.sgm.navi.ui.view.SkinCardView
         android:layout_width="@dimen/dp_820"
         android:layout_height="@dimen/dp_152"
         android:elevation="@dimen/dp_30"
@@ -16,19 +16,19 @@
         app:cardBackgroundColor="@color/common_bg_color"
         app:cardCornerRadius="@dimen/dp_14">
 
-        <com.fy.navi.ui.view.SwipeDeleteLayout
+        <com.sgm.navi.ui.view.SwipeDeleteLayout
             android:id="@+id/swipeDeleteView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="false"
             android:clickable="true">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusable="false">
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/cl_gas_expand"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -40,7 +40,7 @@
                         android:layout_height="match_parent"
                         android:focusable="false" />
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/iv_icon"
                         android:layout_width="@dimen/dp_74"
                         android:layout_height="@dimen/dp_74"
@@ -51,7 +51,7 @@
                         app:layout_constraintStart_toStartOf="@id/view_bg"
                         app:layout_constraintTop_toTopOf="@id/view_bg" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_title"
                         android:layout_width="@dimen/dp_528"
                         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                         app:layout_constraintVertical_chainStyle="packed"
                         tools:text="加油站…" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_sub_title"
                         android:layout_width="@dimen/dp_96"
                         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                         app:layout_constraintStart_toStartOf="@id/tv_title"
                         app:layout_constraintTop_toBottomOf="@id/tv_title">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:id="@+id/tv_95"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                             android:textColor="@color/common_title_color"
                             android:textSize="@dimen/sp_32" />
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:id="@+id/tv_95_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                             android:textSize="@dimen/sp_32"
                             tools:text="￥7.6" />
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:id="@+id/tv_92"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                             android:textColor="@color/common_title_color"
                             android:textSize="@dimen/sp_32" />
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:id="@+id/tv_92_price"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
 
                     </LinearLayout>
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/iv_navi_icon"
                         android:layout_width="@dimen/dp_54"
                         android:layout_height="@dimen/dp_54"
@@ -150,7 +150,7 @@
                         app:layout_constraintTop_toTopOf="@id/view_bg"
                         app:layout_constraintVertical_chainStyle="packed" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -175,16 +175,16 @@
                         app:layout_constraintEnd_toEndOf="@id/tv_distance"
                         app:layout_constraintStart_toStartOf="@id/tv_distance"
                         app:layout_constraintTop_toTopOf="@id/iv_navi_icon" />
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/cl_gas_unexpand"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
                     tools:visibility="visible">
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/iv_icon_unexpand"
                         android:layout_width="@dimen/dp_74"
                         android:layout_height="@dimen/dp_74"
@@ -194,7 +194,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_title_unexpand"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -210,7 +210,7 @@
                         app:layout_constraintStart_toEndOf="@id/iv_icon_unexpand"
                         tools:text="国家电网务区充电站充电充电…" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/tv_sub_title_unexpand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -226,10 +226,10 @@
                         app:layout_constraintStart_toEndOf="@id/tv_title_unexpand"
                         tools:text="服务区" />
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <include layout="@layout/handup_delete_view" />
-        </com.fy.navi.ui.view.SwipeDeleteLayout>
-    </com.fy.navi.ui.view.SkinCardView>
+        </com.sgm.navi.ui.view.SwipeDeleteLayout>
+    </com.sgm.navi.ui.view.SkinCardView>
 </layout>

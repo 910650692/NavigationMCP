@@ -8,22 +8,22 @@
 
         <variable
             name="sapaDetail"
-            type="com.fy.navi.scene.impl.navi.SceneNaviSapaDetailImpl" />
+            type="com.sgm.navi.scene.impl.navi.SceneNaviSapaDetailImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingVertical="@dimen/dp_51"
         android:paddingHorizontal="@dimen/dp_51"
         android:background="@drawable/bg_shadow_navi_cadillac">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_820"
             android:layout_height="wrap_content"
             android:focusable="false">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/siv_toll_details_status_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 android:textColor="@color/navi_color_000000_50"
                 tools:text="暂停营业" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/siv_toll_details_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 android:textColor="@color/navi_color_000000_100"
                 tools:text="收费站" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/siv_line"
                 android:layout_width="@dimen/dp_716"
                 android:layout_height="@dimen/dp_1"
@@ -69,7 +69,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="@dimen/dp_334"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/siv_toll_details_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 android:textColor="@color/navi_color_000000_100"
                 tools:text="5.2公里" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/siv_toll_details_remaintime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                 android:textColor="@color/navi_color_000000_100"
                 tools:text="30分钟" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/siv_toll_details_remiancharge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                 android:textColor="@color/navi_color_000000_100"
                 android:text="@string/charge_remain_arrive" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/siv_toll_remain_charge_icon"
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
@@ -123,7 +123,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/siv_toll_details_remiancharge"
                 android:layout_marginEnd="@dimen/dp_8" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/siv_toll_exit"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -135,7 +135,7 @@
                 android:layout_marginTop="@dimen/dp_48"
                 android:layout_marginEnd="@dimen/dp_36" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/siv_toll_details_route_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
                 android:textColor="@color/navi_color_000000_70"
                 tools:text="江苏省苏州吴中区" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
@@ -159,7 +159,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="@dimen/dp_352">
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/sll_toll_services"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_68"
@@ -171,7 +171,7 @@
                     android:layout_marginStart="@dimen/dp_52"
                     android:layout_marginTop="@dimen/dp_24">
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_toll_details_service_alipay"
                         android:layout_width="@dimen/dp_54"
                         android:layout_height="@dimen/dp_54"
@@ -184,7 +184,7 @@
                         android:layout_marginEnd="@dimen/dp_8"
                         android:background="@drawable/img_zf_black_42" />
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_toll_details_service_etc"
                         android:layout_width="@dimen/dp_54"
                         android:layout_height="@dimen/dp_54"
@@ -197,9 +197,9 @@
                         android:layout_marginEnd="@dimen/dp_8"
                         android:background="@drawable/img_etc_black_42" />
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/siv_horizontal_line"
                     android:layout_width="@dimen/dp_560"
                     android:layout_height="@dimen/dp_1"
@@ -208,7 +208,7 @@
                     android:background="@color/navi_color_000000_40"
                     android:layout_marginTop="@dimen/dp_24"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/siv_toll_details_business_hours"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -222,7 +222,7 @@
                     android:textColor="@color/navi_color_000000_70"
                     tools:text="营业时间：00:00—24:00" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/siv_toll_details_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -236,7 +236,7 @@
                     android:textColor="@color/navi_color_000000_70"
                     tools:text="电        话：00:00—24:00" />
 
-                <com.fy.navi.scene.ui.navi.view.ButtonText
+                <com.sgm.navi.scene.ui.navi.view.ButtonText
                     android:id="@+id/bt_toll_details_add_via"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_120"
@@ -252,9 +252,9 @@
                     android:text="@{sapaDetail.mButtonText}"
                     tools:text="添加途经点"
                     android:textColor="@color/navi_color_FFFFFF_100" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_toll_details_tel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -265,7 +265,7 @@
                 android:visibility="gone"
                 android:layout_marginBottom="@dimen/dp_38">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_58"
                     android:layout_height="@dimen/dp_58"
                     android:focusable="false"
@@ -276,7 +276,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/stv_service_details_tel_text" />
 
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_service_details_tel_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -288,12 +288,12 @@
                     android:text="@string/navi_tel" />
 
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
 </layout>

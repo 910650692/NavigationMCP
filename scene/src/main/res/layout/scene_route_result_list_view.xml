@@ -9,10 +9,10 @@
 
         <variable
             name="Scene"
-            type="com.fy.navi.scene.api.route.ISceneRouteResultList" />
+            type="com.sgm.navi.scene.api.route.ISceneRouteResultList" />
     </data>
 
-    <com.fy.navi.ui.view.SkinRecyclerView
+    <com.sgm.navi.ui.view.SkinRecyclerView
         android:id="@+id/route_result"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

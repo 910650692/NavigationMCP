@@ -8,10 +8,10 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.map.MapViewModel" />
+            type="com.sgm.navi.hmi.map.MapViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:id="@+id/message_center_parent"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_120"
@@ -24,13 +24,13 @@
         android:focusable="false"
         android:visibility="@{ViewModel.messageCenterVisible ? View.VISIBLE : View.GONE}">
 
-        <com.fy.navi.ui.view.SkinRelativeLayout
+        <com.sgm.navi.ui.view.SkinRelativeLayout
             android:id="@+id/base_map_message_left_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="false">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_operate"
                 clickCommand="@{ViewModel.messageCenterOperateClick}"
                 android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:textSize="@dimen/sp_52" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/base_map_message_center_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,9 +50,9 @@
                 android:focusable="false"
                 android:visibility="@{ViewModel.messageCenterImgVisibility ? View.VISIBLE : View.GONE}" />
 
-        </com.fy.navi.ui.view.SkinRelativeLayout>
+        </com.sgm.navi.ui.view.SkinRelativeLayout>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/base_map_message_center_line"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_63"
@@ -61,7 +61,7 @@
             android:focusable="false"
             android:visibility="@{ViewModel.messageLineVisibility ? View.VISIBLE : View.GONE}" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/base_map_message_center_line_hight"
             android:layout_width="@dimen/dp_2"
             android:layout_height="@dimen/dp_72"
@@ -70,7 +70,7 @@
             android:focusable="false"
             android:visibility="@{ViewModel.messageLineHeightVisibility ? View.VISIBLE : View.GONE}" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/base_map_message_center_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             android:focusable="false"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -109,9 +109,9 @@
                 android:textSize="@dimen/sp_30"
                 android:visibility="@{ViewModel.messageCenterContentVisibility ? View.VISIBLE : View.GONE}" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/message_center_close"
             clickCommand="@{ViewModel.messageCenterGone}"
             android:layout_width="@dimen/dp_74"
@@ -123,5 +123,5 @@
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             />
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

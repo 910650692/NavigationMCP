@@ -6,34 +6,34 @@
     <data>
         <variable
             name="model"
-            type="com.fy.navi.service.define.search.PoiInfoEntity" />
+            type="com.sgm.navi.service.define.search.PoiInfoEntity" />
         <variable
             name="holder"
-            type="com.fy.navi.hmi.favorite.adapter.FavoriteDataAdapter.Holder" />
+            type="com.sgm.navi.hmi.favorite.adapter.FavoriteDataAdapter.Holder" />
         <variable
             name="layoutPosition"
             type="String" />
     </data>
 
-    <com.fy.navi.ui.view.CustomSwipeMenuLayout
+    <com.sgm.navi.ui.view.CustomSwipeMenuLayout
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_204"
         android:orientation="horizontal">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/content_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:layout_marginEnd="@dimen/dp_220"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/item_favorite_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="1" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/item_favorite_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
                 app:layout_constraintStart_toEndOf="@+id/item_favorite_img"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
@@ -70,7 +70,7 @@
                     android:textSize="@dimen/sp_46"
                     tools:text="@string/favorite_item_name" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/item_favorite_top_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,9 +86,9 @@
                     android:textSize="@dimen/sp_30"
                     app:layout_constraintStart_toEndOf="@+id/item_favorite_name"
                     app:layout_constraintTop_toTopOf="parent" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
@@ -98,7 +98,7 @@
                 app:layout_constraintStart_toEndOf="@+id/item_favorite_img"
                 app:layout_constraintTop_toBottomOf="@+id/item_favorite_name">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/item_favorite_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                     android:textSize="@dimen/sp_38"
                     tools:text="198km" />
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:id="@+id/item_favorite_line"
                     android:layout_width="@dimen/dp_1"
                     android:layout_height="@dimen/dp_22"
@@ -117,7 +117,7 @@
                     android:background="@color/color_black_70"
                     android:focusable="false" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/item_favorite_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -130,9 +130,9 @@
                     app:layout_constraintStart_toEndOf="@+id/item_favorite_line"
                     app:layout_constraintTop_toBottomOf="@+id/item_favorite_name"
                     tools:text="@string/favorite_item_address" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/item_favorite_navi"
                 android:layout_width="@dimen/dp_220"
                 android:layout_height="match_parent"
@@ -144,13 +144,13 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" >
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:focusable="false"
                     android:src="@drawable/img_favorite_navigation"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:focusable="false"
@@ -159,18 +159,18 @@
                     android:textColor="@color/color_black_70"
                     android:textSize="@dimen/sp_38" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_action_container"
             android:layout_width="@dimen/dp_440"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/item_favorite_top"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
@@ -179,13 +179,13 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/item_favorite_top_icon"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:src="@drawable/img_favorite_top"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/item_favorite_top_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -194,9 +194,9 @@
                     android:textColor="@color/color_black_70"
                     android:textSize="@dimen/sp_38" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/item_favorite_delete"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
@@ -205,12 +205,12 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:src="@drawable/img_favorite_delete"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_item_delete"
@@ -218,7 +218,7 @@
                     android:layout_marginTop="@dimen/dp_6"
                     android:textSize="@dimen/sp_38" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.CustomSwipeMenuLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.CustomSwipeMenuLayout>
 </layout>

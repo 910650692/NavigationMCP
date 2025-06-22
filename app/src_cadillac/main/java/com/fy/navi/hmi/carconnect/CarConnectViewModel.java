@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.carconnect;
+package com.sgm.navi.hmi.carconnect;
 
 import android.app.Application;
 

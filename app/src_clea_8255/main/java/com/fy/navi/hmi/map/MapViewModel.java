@@ -1,9 +1,9 @@
-package com.fy.navi.hmi.map;
+package com.sgm.navi.hmi.map;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
-import com.fy.navi.service.BuildConfig;
+import com.sgm.navi.service.BuildConfig;
 /**
  * @Description TODO
  * @Author lvww

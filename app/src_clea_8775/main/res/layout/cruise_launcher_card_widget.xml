@@ -7,15 +7,15 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.launcher.LauncherSmallCardViewModel" />
+            type="com.sgm.navi.hmi.launcher.LauncherSmallCardViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.fy.navi.scene.ui.navi.SceneNaviLanesView
+        <com.sgm.navi.scene.ui.navi.SceneNaviLanesView
             android:id="@+id/scene_lanes_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_92"
@@ -24,7 +24,7 @@
             tools:layout_height="@dimen/dp_92" />
 
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
@@ -33,7 +33,7 @@
             android:minWidth="@dimen/dp_342"
             android:paddingHorizontal="@dimen/dp_16">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_icon"
                 android:layout_width="@dimen/dp_90"
                 android:layout_height="@dimen/dp_90"
@@ -43,7 +43,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 app:layout_constraintBottom_toTopOf="@id/tv_camera_desc"
                 tools:text="15.5" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tv_distance"
                 app:layout_constraintStart_toEndOf="@id/tv_distance" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_camera_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_distance"
                 app:layout_constraintStart_toStartOf="@id/tv_distance" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 
 </layout>

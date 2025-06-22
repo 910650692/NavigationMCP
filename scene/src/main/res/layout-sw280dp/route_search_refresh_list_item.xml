@@ -9,18 +9,18 @@
 
         <variable
             name="model"
-            type="com.fy.navi.service.define.route.RouteLineInfo" />
+            type="com.sgm.navi.service.define.route.RouteLineInfo" />
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.RouteSearchRefreshAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.RouteSearchRefreshAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_820"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/item_root_view_service"
             android:layout_width="@dimen/dp_820"
             android:layout_height="@dimen/dp_168"
@@ -29,7 +29,7 @@
             android:paddingStart="@dimen/dp_20"
             tools:visibility="visible">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_item_service_num"
                 android:layout_width="@dimen/dp_53"
                 android:layout_height="match_parent"
@@ -41,7 +41,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_item_service_name"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_60"
@@ -56,7 +56,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="临港服务区临港服务区临港服务区临港服务区临港服务区" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_item_service_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 app:layout_constraintStart_toStartOf="@+id/route_item_service_name"
                 tools:text="198km | 临港服务区临港服务区临港服务区临港服务区临港服务区" />
 
-            <com.fy.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_item_service_add_bg"
                 android:layout_width="@dimen/dp_146"
                 android:layout_height="match_parent"
@@ -80,7 +80,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_item_service_add_img"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -91,7 +91,7 @@
                 app:layout_constraintStart_toStartOf="@+id/route_item_service_add_bg"
                 app:layout_constraintTop_toTopOf="@+id/route_item_service_add_bg" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_item_service_add_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -104,8 +104,8 @@
                 app:layout_constraintStart_toStartOf="@+id/route_item_service_add_bg"
                 tools:text="已添加" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

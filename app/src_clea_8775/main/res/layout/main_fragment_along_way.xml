@@ -7,11 +7,11 @@
 
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.search.alongway.MainAlongWaySearchViewModel" />
+            type="com.sgm.navi.hmi.search.alongway.MainAlongWaySearchViewModel" />
     </data>
 
 
-    <com.fy.navi.ui.view.SkinLinearLayout
+    <com.sgm.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="@dimen/dp_545"
         android:layout_height="wrap_content"
@@ -20,15 +20,15 @@
         android:clickable="true"
         android:orientation="vertical">
 
-        <com.fy.navi.scene.ui.search.SceneMainAlongWaySearchView
+        <com.sgm.navi.scene.ui.search.SceneMainAlongWaySearchView
             android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.fy.navi.scene.ui.search.SceneSearchHistoryView
+        <com.sgm.navi.scene.ui.search.SceneSearchHistoryView
             android:id="@+id/scene_nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_499"
             android:layout_marginTop="@dimen/dp_17" />
-    </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

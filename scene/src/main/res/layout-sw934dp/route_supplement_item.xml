@@ -9,15 +9,15 @@
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.RouteSupplementAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.RouteSupplementAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/ly_route_supplement_poi"
         android:layout_width="@dimen/dp_545"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/view_supplement_start"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_37"
@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="@+id/iv_route_charge"
             app:layout_constraintEnd_toEndOf="@+id/iv_route_charge"/>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/view_supplement_end"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_0"
@@ -36,7 +36,7 @@
             app:layout_constraintStart_toStartOf="@+id/iv_route_charge"
             app:layout_constraintEnd_toEndOf="@+id/iv_route_charge"/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_route_charge"
             android:layout_width="@dimen/dp_26"
             android:layout_height="@dimen/dp_26"
@@ -46,7 +46,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/iv_route_charge"
             tool:text="1"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
             app:layout_constraintStart_toStartOf="parent"
             tool:text="金桥国家电网充电站充电站" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             app:layout_constraintStart_toStartOf="@+id/tv_supplement_name"
             tool:text="198km" />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/view_supplement_line"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_18"
@@ -99,7 +99,7 @@
             app:layout_constraintStart_toEndOf="@+id/tv_supplement_distance"
             app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_distance"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
             app:layout_constraintStart_toEndOf="@+id/view_supplement_line"
             tool:text="世纪大道123号(近陆家嘴近陆" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/ly_supplement_charge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
             app:layout_constraintStart_toStartOf="@+id/tv_supplement_distance"
             app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_supplement_fast_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
                 android:textSize="@dimen/sp_26"
                 android:text="@string/charge_title_fast" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_supplement_fast_current"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_fast_title"
                 tool:text="66"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_supplement_fast_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
                 app:layout_goneMarginStart="@dimen/dp_7"
                 tool:text="/88"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_supplement_slow_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_supplement_fast_total"
                 app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_supplement_slow_current"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -182,7 +182,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_slow_title"
                 tool:text="66"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_supplement_slow_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -195,9 +195,9 @@
                 app:layout_goneMarginStart="@dimen/dp_7"
                 tool:text="/88"/>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/tv_supplement_spend_image"
             android:background="@drawable/img_route_money_unselect"
             android:layout_width="@dimen/dp_24"
@@ -208,7 +208,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance"
             app:layout_goneMarginStart="@dimen/dp_61"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_spend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -220,7 +220,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance"
             tool:text="1.76/度"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -233,7 +233,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_spend"
             tool:text="需下高速"/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_supplement_electricity"
             android:background="@drawable/img_electricity_low_42"
             android:layout_width="@dimen/dp_36"
@@ -243,7 +243,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_supplement_name" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -256,7 +256,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/iv_supplement_electricity"
             tool:text="40%到达，23分钟冲到80%"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_replace_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -269,7 +269,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_supplement_name"
             tool:text="2个备选充电站"/>
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_supplement_replace"
             android:background="@drawable/img_route_down"
             android:layout_width="@dimen/dp_36"
@@ -279,7 +279,7 @@
             app:layout_constraintTop_toTopOf="@+id/tv_supplement_replace_title"
             app:layout_constraintBottom_toBottomOf="@+id/tv_supplement_replace_title"/>
 
-        <com.fy.navi.ui.view.SkinRecyclerView
+        <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/tv_supplement_replace_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -287,5 +287,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_supplement_replace_title" />
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

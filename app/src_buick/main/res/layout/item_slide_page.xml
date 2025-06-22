@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fy.navi.ui.view.SkinLinearLayout
+<com.sgm.navi.ui.view.SkinLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.fy.navi.ui.view.SkinImageView
+    <com.sgm.navi.ui.view.SkinImageView
         android:id="@+id/car_connect_bg"
         android:layout_width="@dimen/dp_464"
         android:layout_height= "@dimen/dp_260"
         android:src="@mipmap/icon_account_car_connect"/>
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/car_connect_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         android:textSize="@dimen/sp_30"
         android:textColor="@color/setting_bg_tab_text_select" />
 
-    <com.fy.navi.ui.view.SkinTextView
+    <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/car_connect_title_des"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,4 +32,4 @@
         android:textSize="@dimen/sp_26"
         android:textColor="@color/setting_bg_tab_text_unselect" />
 
-</com.fy.navi.ui.view.SkinLinearLayout>
+</com.sgm.navi.ui.view.SkinLinearLayout>

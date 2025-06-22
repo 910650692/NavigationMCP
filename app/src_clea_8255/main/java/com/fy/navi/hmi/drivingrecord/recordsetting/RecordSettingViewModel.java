@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.drivingrecord.recordsetting;
+package com.sgm.navi.hmi.drivingrecord.recordsetting;
 
 import android.app.Application;
 

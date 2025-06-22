@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1600"
             android:layout_height="@dimen/dp_600"
             android:layout_marginStart="@dimen/dp_310"
@@ -21,7 +21,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/permission_title"
                 android:layout_width="@dimen/dp_1200"
                 android:layout_height="@dimen/dp_68"
@@ -32,7 +32,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="权限申请" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/permission_content"
                 android:layout_width="@dimen/dp_1400"
                 android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/permission_title"
                 tools:text="地图导航中所需要权限，如果没有该权限将可能造成地图无法使用，点击确定按钮跳转到申请权限界面进行申请，点击取消可能会造成地图部分功能暂时无法使用" />
 
-            <com.fy.navi.ui.view.SkinButton
+            <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/dialog_commit"
                 android:layout_width="@dimen/dp_420"
                 android:layout_height="@dimen/dp_100"
@@ -54,7 +54,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.fy.navi.ui.view.SkinButton
+            <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/dialog_cancel"
                 android:layout_width="@dimen/dp_420"
                 android:layout_height="@dimen/dp_100"
@@ -65,6 +65,6 @@
                 android:layout_marginStart="@dimen/dp_40"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/dialog_commit" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

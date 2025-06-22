@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_view"
     android:layout_width="@dimen/dp_417"
@@ -7,14 +7,14 @@
     android:layout_marginEnd="@dimen/dp_30"
     android:layout_marginBottom="@dimen/dp_20">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal"
             android:background="@drawable/bg_setting_voice">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/tv_frequent_address_text"
                     android:layout_width="@dimen/dp_288"
                     android:layout_height="match_parent"
@@ -28,7 +28,7 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_34" />
 
-                <com.fy.navi.ui.view.SkinEditText
+                <com.sgm.navi.ui.view.SkinEditText
                     android:id="@+id/tv_frequent_address_title"
                     android:layout_width="@dimen/dp_288"
                     android:layout_height="match_parent"
@@ -45,11 +45,11 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_34" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/tv_frequent_address_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/img_favorite_more" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-</com.fy.navi.ui.view.SkinConstraintLayout>
+</com.sgm.navi.ui.view.SkinConstraintLayout>

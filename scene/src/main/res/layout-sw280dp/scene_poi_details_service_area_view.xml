@@ -7,23 +7,23 @@
 
         <variable
             name="ScenePoiDetailContentView"
-            type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+            type="com.sgm.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_service_area_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.fy.navi.ui.view.SkinRecyclerView
+        <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/poi_service_area_facility"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_70"
             android:background="@drawable/bg_charge_appointment"/>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_service_area_oil"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_55"
@@ -34,7 +34,7 @@
             app:layout_constraintTop_toBottomOf="@+id/poi_service_area_facility"
             android:background="@drawable/bg_charge_appointment">
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_service_area_img_gas_station"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
@@ -42,14 +42,14 @@
                 android:src="@drawable/img_route_poi_details_gas_icon"
                 />
 
-            <com.fy.navi.ui.view.SkinRecyclerView
+            <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/route_poidetail_gas_station"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_55"
                 android:layout_marginStart="@dimen/dp_28"/>
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_service_area_hours_layout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_service_area_oil">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_service_area_hours"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -68,16 +68,16 @@
                 android:textSize="@dimen/sp_38"
                 android:text="营业时间: 09:00 -- 21:00"/>
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_business_icon"
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
                 android:visibility="gone"
                 android:src="@drawable/img_under_the_48" />
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_service_area_phone"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
             app:layout_constraintTop_toBottomOf="@+id/poi_service_area_hours_layout"
             tools:text="电        话: 021-888888" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/poi_phone_icon"
             android:layout_width="@dimen/dp_54"
             android:layout_height="@dimen/dp_54"
@@ -98,5 +98,5 @@
             android:src="@drawable/img_under_the_48"
             app:layout_constraintStart_toEndOf="@+id/poi_service_area_phone"
             app:layout_constraintTop_toTopOf="@+id/poi_service_area_phone"/>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

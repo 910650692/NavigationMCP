@@ -8,20 +8,20 @@
         <import type="android.view.View" />
         <variable
             name="model"
-            type="com.fy.navi.service.define.route.RouteParam" />
+            type="com.sgm.navi.service.define.route.RouteParam" />
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.FilterChildListAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.FilterChildListAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/filter_child_root"
         android:layout_width="@dimen/dp_176"
         android:layout_height="@dimen/dp_76"
         android:background="@drawable/custom_filter_item_bg_selector_day"
         >
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/filter_child_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             />
         
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/filter_child_img"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
@@ -46,5 +46,5 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

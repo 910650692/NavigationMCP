@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/reminderRootIndex"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1760"
             android:layout_height="@dimen/dp_800"
             android:background="@drawable/bg_confirm_dialog"
@@ -16,7 +16,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/dialog_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/ll_sub_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/dialog_title">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/reminder_click_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/reminder_terms_service"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -61,14 +61,14 @@
                     app:layout_constraintStart_toEndOf="@+id/reminder_click_view"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     style="@style/dialog_buick_sub_title"
                     android:layout_marginStart="@dimen/dp_7"
                     android:text="，"
                     app:layout_constraintStart_toEndOf="@+id/reminder_terms_service"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/reminder_page_privacy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                     app:layout_constraintStart_toEndOf="@+id/reminder_click_view1"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/net_scrollView"
@@ -92,7 +92,7 @@
                 app:layout_constraintStart_toStartOf="@id/ll_sub_content"
                 app:layout_constraintTop_toBottomOf="@+id/ll_sub_content">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_32"
@@ -102,7 +102,7 @@
 
             </androidx.core.widget.NestedScrollView>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/dialog_content"
                 android:layout_width="@dimen/dp_1100"
                 android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                 app:layout_constraintTop_toBottomOf="@id/dialog_title" />
 
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_88"
                 android:orientation="horizontal"
@@ -124,7 +124,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_commit"
                     android:layout_width="@dimen/dp_352"
                     android:layout_height="match_parent"
@@ -134,7 +134,7 @@
                     android:textSize="@dimen/sp_29"
                     android:background="@drawable/authorization_agree_bg"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_cancel"
                     android:layout_width="@dimen/dp_352"
                     android:layout_height="match_parent"
@@ -145,8 +145,8 @@
                     android:layout_marginStart="@dimen/dp_40"
                     android:background="@drawable/authorization_disagree_bg"/>
 
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

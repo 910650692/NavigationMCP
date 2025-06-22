@@ -31,7 +31,7 @@
                 android:indeterminate="true"
                 android:indeterminateDrawable="@drawable/img_setting_qr_loading"/>
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/loading_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/loading_content">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/loading_close"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"

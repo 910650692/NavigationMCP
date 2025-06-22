@@ -8,24 +8,24 @@
         <import type="android.view.View" />
         <variable
             name="model"
-            type="com.fy.navi.service.define.route.RouteLineInfo" />
+            type="com.sgm.navi.service.define.route.RouteLineInfo" />
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.RouteDetailsResultsAdapter.Holder" />
+            type="com.sgm.navi.scene.ui.adapter.RouteDetailsResultsAdapter.Holder" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/item_root_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_130"
             />
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_detail_info_item_img_bg"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_130"
@@ -33,14 +33,14 @@
             app:layout_constraintStart_toStartOf="@+id/item_root_view"
             app:layout_constraintTop_toTopOf="@+id/item_root_view"/>
 
-        <com.fy.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_detail_info_item_img_bg_view"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
             app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_detail_info_item_img"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
@@ -59,7 +59,7 @@
             app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_detail_info_item_road_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
             app:layout_constraintTop_toTopOf="@+id/item_root_view"
             tools:text="晨晖路" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_detail_info_item_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
             app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
             tools:text="42米 红绿灯1个" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_detail_info_item_img_updown"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
@@ -93,7 +93,7 @@
             app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg" />
 
-        <com.fy.navi.ui.view.SkinRecyclerView
+        <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/route_detail_info_item_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -101,5 +101,5 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/dp_130"/>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

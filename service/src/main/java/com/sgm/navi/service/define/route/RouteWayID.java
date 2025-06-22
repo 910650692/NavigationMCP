@@ -1,0 +1,14 @@
+package com.sgm.navi.service.define.route;
+
+public enum RouteWayID {
+    ROUTE_WAY_DEFAULT,
+    ROUTE_WAY_REFRESH,
+    ROUTE_WAY_AVOID,
+    ROUTE_WAY_ADD_VIA,
+    ROUTE_WAY_DELETE_VIA,
+    ROUTE_WAY_SORT_VIA,
+    ROUTE_WAY_SPEECH,
+    ROUTE_WAY_ADD_ALL_VIA,
+    ROUTE_WAY_CHANGE_END,
+    ROUTE_WAY_CHANGE_PREFERENCE
+}

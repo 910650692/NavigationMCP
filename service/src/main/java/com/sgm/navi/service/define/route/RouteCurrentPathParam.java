@@ -1,0 +1,18 @@
+package com.sgm.navi.service.define.route;
+
+import com.sgm.navi.service.define.map.MapType;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class RouteCurrentPathParam {
+    /*** 请求Id **/
+    private long mRequestId;
+    /*** 屏幕Id **/
+    private MapType mMapTypeId;
+    private boolean mIsOnlineRoute = true;
+    /*** 详情数据 **/
+    private Object mPathInfo;
+}

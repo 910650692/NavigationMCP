@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.setting.broadcast;
+package com.sgm.navi.hmi.setting.broadcast;
 
 import android.app.Application;
 

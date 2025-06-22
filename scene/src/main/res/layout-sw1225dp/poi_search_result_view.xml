@@ -7,14 +7,14 @@
 
         <variable
             name="IScenePoiList"
-            type="com.fy.navi.scene.api.search.ISceneSearchPoiList" />
+            type="com.sgm.navi.scene.api.search.ISceneSearchPoiList" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_545"
         android:layout_height="match_parent">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/root_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_95" />
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_794"
                 android:layout_marginTop="@dimen/dp_17"
@@ -41,7 +41,7 @@
                     android:visibility="visible"
                     tools:visibility="gone"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_offline_hint"
                     android:layout_width="match_parent"
                     android:paddingStart="@dimen/dp_26"
@@ -59,7 +59,7 @@
                     android:textSize="@dimen/sp_25"
                     android:textColor="@color/search_color_ffffff_70"/>
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_result_no_data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                     android:layout_marginTop="@dimen/dp_20"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <com.fy.navi.ui.view.PullToRefreshLayout
+                <com.sgm.navi.ui.view.PullToRefreshLayout
                     android:id="@+id/pull_refresh_layout"
                     app:layout_constraintTop_toBottomOf="@+id/search_label_filter"
                     android:layout_marginVertical="@dimen/dp_17"
@@ -90,16 +90,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_0">
 
-                    <com.fy.navi.ui.view.SkinRecyclerView
+                    <com.sgm.navi.ui.view.SkinRecyclerView
                         android:id="@+id/recycler_search_result"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
-                </com.fy.navi.ui.view.PullToRefreshLayout>
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.PullToRefreshLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
+        <com.sgm.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
             android:id="@+id/route_right_tab_list_charge_scene"
             android:layout_width="@dimen/dp_545"
             android:layout_height="@dimen/dp_124"
@@ -109,6 +109,6 @@
             android:layout_marginBottom="@dimen/dp_130"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

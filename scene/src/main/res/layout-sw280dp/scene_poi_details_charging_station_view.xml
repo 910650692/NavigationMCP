@@ -7,16 +7,16 @@
         <import type="android.view.View"/>
         <variable
             name="detailViewModel"
-            type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+            type="com.sgm.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_charge_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/latest_charge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:textSize="@dimen/sp_30"
             android:layout_height="wrap_content"/>
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_label"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_width="wrap_content"
@@ -41,13 +41,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/latest_charge"
             />
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/poi_charge_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_label">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_charge_fast_layout"
                 android:layout_width="@dimen/dp_338"
                 android:layout_height="@dimen/dp_134"
@@ -56,7 +56,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_charge_fast_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_charge_fast_occupied"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="18" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_charge_fast_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                     app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_occupied"
                     tools:text="/36" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_charge_fast_current_and_vlot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/poi_charge_fast_total"
                     tools:text="21kw.800v" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_58"
                     android:layout_height="@dimen/dp_58"
                     android:layout_marginEnd="@dimen/dp_4"
@@ -111,9 +111,9 @@
                     android:background="@drawable/img_basic_ic_corner"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_charge_slow_layout"
                 android:layout_width="@dimen/dp_338"
                 android:layout_height="@dimen/dp_134"
@@ -123,7 +123,7 @@
                 app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_layout"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_charge_slow_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_charge_slow_occupied"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -146,7 +146,7 @@
                     app:layout_constraintStart_toEndOf="@+id/poi_charge_slow_title"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="18" />
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_charge_slow_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -158,7 +158,7 @@
                     app:layout_constraintStart_toEndOf="@+id/poi_charge_slow_occupied"
                     tools:text="/36" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/poi_charge_slow_current_and_vlot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/poi_charge_slow_total"
                     tools:text="21kw.800v" />
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_58"
                     android:layout_height="@dimen/dp_58"
                     android:layout_marginEnd="@dimen/dp_4"
@@ -178,9 +178,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <View
             android:layout_width="@dimen/dp_560"
@@ -190,7 +190,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_layout"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_appointment"
             android:layout_width="@dimen/dp_76"
             android:layout_height="@dimen/dp_46"
@@ -206,7 +206,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/poi_charge_price_allday" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_price"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -219,7 +219,7 @@
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_layout"
             tools:text="充电费用: 1.2元/度" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_price_allday"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -233,7 +233,7 @@
             app:layout_constraintStart_toEndOf="@+id/poi_charge_price"
             app:layout_constraintTop_toTopOf="@+id/poi_charge_price" />
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_park_price"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -245,7 +245,7 @@
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_price"
             tools:text="停车费   : 会员免费" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_charge_business_layout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -254,7 +254,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_park_price">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_chareg_business_hours"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -266,15 +266,15 @@
                 app:layout_constraintTop_toBottomOf="@+id/poi_charge_park_price"
                 tools:text="营业时间: 09:00 -- 21:00" />
 
-            <com.fy.navi.ui.view.SkinImageView
+            <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_business_icon"
                 android:layout_width="@dimen/dp_45"
                 android:layout_height="@dimen/dp_45"
                 android:visibility="gone"
                 android:src="@drawable/img_under_the_48" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_area_phone"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -285,7 +285,7 @@
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_business_layout"
             tools:text="电        话: 021-888888" />
 
-        <com.fy.navi.ui.view.SkinImageView
+        <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/poi_phone_icon"
             android:layout_width="@dimen/dp_45"
             android:layout_height="@dimen/dp_45"
@@ -294,7 +294,7 @@
             app:layout_constraintStart_toEndOf="@+id/poi_charge_area_phone"
             app:layout_constraintTop_toTopOf="@+id/poi_charge_area_phone"/>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/poi_charge_img_layout"
             android:layout_width="@dimen/dp_716"
             android:layout_height="wrap_content"
@@ -303,7 +303,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_area_phone">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_charge_img_title"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -317,7 +317,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_charge_img_confirm"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -341,14 +341,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.ui.view.SkinImageView
+                <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/poi_charge_img"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     tools:src="@mipmap/ic_launcher" />
             </androidx.cardview.widget.CardView>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

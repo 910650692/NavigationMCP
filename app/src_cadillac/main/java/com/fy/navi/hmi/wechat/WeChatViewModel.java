@@ -1,4 +1,4 @@
-package com.fy.navi.hmi.wechat;
+package com.sgm.navi.hmi.wechat;
 
 import android.app.Application;
 

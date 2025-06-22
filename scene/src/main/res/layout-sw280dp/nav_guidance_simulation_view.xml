@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fy.navi.ui.view.SkinRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.sgm.navi.ui.view.SkinRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -7,14 +7,14 @@
     tools:layout_height="@dimen/dp_180"
     tools:layout_width="@dimen/dp_800">
 
-    <com.fy.navi.ui.view.SkinImageButton
+    <com.sgm.navi.ui.view.SkinImageButton
         android:id="@+id/switch_sim_navi"
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_100"
         android:focusable="false"
         android:background="@drawable/pause_sim_navi" />
 
-    <com.fy.navi.ui.view.SkinButton
+    <com.sgm.navi.ui.view.SkinButton
         android:id="@+id/switch_sim_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
         android:text="40km/h"
         android:textSize="@dimen/dp_34" />
 
-    <com.fy.navi.ui.view.SkinImageButton
+    <com.sgm.navi.ui.view.SkinImageButton
         android:id="@+id/sim_speed_reduce"
         android:layout_width="@dimen/dp_90"
         android:layout_height="@dimen/dp_90"
@@ -37,4 +37,4 @@
         android:layout_marginTop="@dimen/dp_5"
         android:src="@drawable/img_route_down"
         android:background="@color/white"/>
-</com.fy.navi.ui.view.SkinRelativeLayout>
+</com.sgm.navi.ui.view.SkinRelativeLayout>

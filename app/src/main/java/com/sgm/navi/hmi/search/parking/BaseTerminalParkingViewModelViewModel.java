@@ -1,0 +1,56 @@
+package com.sgm.navi.hmi.search.parking;
+
+
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+
+import com.android.utils.log.Logger;
+import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.sgm.navi.ui.action.Action;
+import com.sgm.navi.ui.base.BaseViewModel;
+
+
+public class BaseTerminalParkingViewModelViewModel extends BaseViewModel<TerminalParkingFragment, TerminalParkingModel> {
+    public BaseTerminalParkingViewModelViewModel(@NonNull final Application application) {
+        super(application);
+    }
+
+    @Override
+    protected TerminalParkingModel initModel() {
+        return new TerminalParkingModel();
+    }
+
+    private final Action mRootClick = () -> {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "rootClick: ");
+    };
+
+    public Action getRootClick() {
+        return mRootClick;
+    }
+
+    /**
+     * 搜索结果回调
+     * @param taskId 任务id
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        mView.notifySearchResult(taskId, searchResultEntity);
+    }
+
+    /**
+     * 恢复fragment状态
+     */
+    public void onReStoreFragment() {
+        mModel.onReStoreFragment();
+    }
+
+    /**
+     * 终点停车场扎标点击事件
+     * @param index 点击下标
+     */
+    public void onMarkTerminalParkClickCallBack(final int index) {
+        mView.onMarkTerminalParkClickCallBack(index);
+    }
+}

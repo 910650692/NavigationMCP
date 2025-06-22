@@ -9,10 +9,10 @@
 
         <variable
             name="viewModel"
-            type="com.fy.navi.hmi.setting.guide.SettingGuideViewModel" />
+            type="com.sgm.navi.hmi.setting.guide.SettingGuideViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinScrollView
+    <com.sgm.navi.ui.view.SkinScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="false"
@@ -27,14 +27,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/include_setting_navi"
                 android:focusable="false"
                 android:layout_width="@dimen/dp_1104"
                 android:layout_height="wrap_content">
 
                 <!--路线偏好-->
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/btnLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.scene.ui.setting.SceneSettingPreferenceView
+                <com.sgm.navi.scene.ui.setting.SceneSettingPreferenceView
                     android:id="@+id/setting_route_preference"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnLarge"/>
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     clickCommand="@{viewModel.mAvoidLimitClick}"
                     android:id="@+id/navi_avoid_limit"
                     android:layout_width="match_parent"
@@ -66,7 +66,7 @@
                     app:layout_constraintStart_toStartOf="@id/setting_route_preference"
                     app:layout_constraintTop_toBottomOf="@id/setting_route_preference">
 
-                    <com.fy.navi.ui.view.SkinCheckBox
+                    <com.sgm.navi.ui.view.SkinCheckBox
                         clickCommand="@{viewModel.mAvoidLimitClick}"
                         android:id="@+id/navi_avoid_limit_check"
                         android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
                         android:background="@android:color/transparent"
                         android:button="@drawable/setting_custom_thumb" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_32"
@@ -84,9 +84,9 @@
                         android:focusable="false"
                         android:textColor="@color/setting_bg_tab_text_select"
                         android:textSize="@dimen/sp_46" />
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     clickCommand="@{viewModel.mOfflineAvoidLimitClick}"
                     android:id="@+id/navi_avoid_limit_offline"
                     android:layout_width="match_parent"
@@ -96,7 +96,7 @@
                     app:layout_constraintStart_toStartOf="@id/setting_route_preference"
                     app:layout_constraintTop_toBottomOf="@id/setting_route_preference"/>
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     clickCommand="@{viewModel.mModifyPlateNumber}"
                     android:id="@+id/navi_car_number_layout"
                     android:layout_width="wrap_content"
@@ -108,7 +108,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/setting_route_preference" >
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/navi_car_number"
                         android:layout_width="wrap_content"
                         android:paddingStart="@dimen/dp_56"
@@ -123,7 +123,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_74"
                         android:layout_height="@dimen/dp_74"
                         android:src="@drawable/img_setting_corner"
@@ -133,9 +133,9 @@
                         app:layout_constraintTop_toTopOf="@+id/navi_car_number"
                         app:layout_constraintEnd_toEndOf="@+id/navi_car_number"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:focusable="false"
@@ -143,7 +143,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_avoid_limit" />
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     clickCommand="@{viewModel.mVehicleGuide}"
                     android:id="@+id/navi_vehicle_guide"
                     android:layout_width="match_parent"
@@ -156,7 +156,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/navi_avoid_limit">
 
-                    <com.fy.navi.ui.view.SkinCheckBox
+                    <com.sgm.navi.ui.view.SkinCheckBox
                         clickCommand="@{viewModel.mVehicleGuide}"
                         android:id="@+id/switch_lane_level"
                         android:layout_width="wrap_content"
@@ -166,7 +166,7 @@
                         android:background="@android:color/transparent"
                         android:button="@drawable/setting_custom_thumb" />
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_32"
@@ -174,7 +174,7 @@
                         android:focusable="false"
                         android:orientation="vertical">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_guide_vehicle_guide"
@@ -182,7 +182,7 @@
                             android:textColor="@color/setting_bg_tab_text_select"
                             android:textSize="@dimen/sp_46" />
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_22"
@@ -191,10 +191,10 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:textSize="@dimen/sp_38" />
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:background="@color/setting_line"
@@ -203,7 +203,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_vehicle_guide" />
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     clickCommand="@{viewModel.mChargingPlan}"
                     android:id="@+id/navi_charging_plan"
                     android:layout_width="match_parent"
@@ -216,7 +216,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/navi_vehicle_guide">
 
-                    <com.fy.navi.ui.view.SkinCheckBox
+                    <com.sgm.navi.ui.view.SkinCheckBox
                         clickCommand="@{viewModel.mChargingPlan}"
                         android:id="@+id/switch_charging_plan"
                         android:layout_width="wrap_content"
@@ -226,7 +226,7 @@
                         android:background="@android:color/transparent"
                         android:button="@drawable/setting_custom_thumb" />
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_32"
@@ -234,7 +234,7 @@
                         android:focusable="false"
                         android:orientation="vertical">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_guide_charging_plan"
@@ -242,7 +242,7 @@
                             android:textColor="@color/setting_bg_tab_text_select"
                             android:textSize="@dimen/sp_46" />
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_22"
@@ -251,10 +251,10 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:textSize="@dimen/sp_38" />
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:focusable="false"
@@ -262,7 +262,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_charging_plan" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/map_display_des"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -274,7 +274,7 @@
                     app:layout_constraintTop_toBottomOf="@id/navi_charging_plan"
                     android:textSize="@dimen/sp_46" />
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/map_display"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_120"
@@ -285,7 +285,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/map_display_des">
 
-                    <com.fy.navi.scene.ui.setting.DynamicCheckBox
+                    <com.sgm.navi.scene.ui.setting.DynamicCheckBox
                         clickCommand="@{viewModel.mChargingStationClick}"
                         android:id="@+id/charging_station"
                         android:layout_width="@dimen/dp_344"
@@ -301,7 +301,7 @@
                         android:textColor="@drawable/setting_checkbox_text_color_selector"
                         android:textSize="@dimen/sp_46" />
 
-                    <com.fy.navi.scene.ui.setting.DynamicCheckBox
+                    <com.sgm.navi.scene.ui.setting.DynamicCheckBox
                         clickCommand="@{viewModel.mRoadConditionClick}"
                         android:id="@+id/road_condition"
                         android:layout_width="@dimen/dp_344"
@@ -315,7 +315,7 @@
                         android:textColor="@drawable/setting_checkbox_text_color_selector"
                         android:textSize="@dimen/sp_46" />
 
-                    <com.fy.navi.scene.ui.setting.DynamicCheckBox
+                    <com.sgm.navi.scene.ui.setting.DynamicCheckBox
                         clickCommand="@{viewModel.mFavoritePointClick}"
                         android:id="@+id/favorite_point"
                         android:layout_width="@dimen/dp_344"
@@ -330,9 +330,9 @@
                         android:textColor="@drawable/setting_checkbox_text_color_selector"
                         android:textSize="@dimen/sp_46" />
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:visibility="gone"
@@ -343,7 +343,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/map_display" />
 
                 <!--地图字号-->
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/font_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -355,7 +355,7 @@
                     app:layout_constraintTop_toBottomOf="@id/map_display"
                     android:textSize="@dimen/sp_46" />
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/navi_font_size"
                     android:layout_width="@dimen/dp_744"
                     android:layout_height="@dimen/dp_120"
@@ -367,14 +367,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/font_size">
 
-                    <com.fy.navi.ui.view.SkinRadioGroup
+                    <com.sgm.navi.ui.view.SkinRadioGroup
                         android:layout_width="match_parent"
                         android:layout_height="fill_parent"
                         android:gravity="center_horizontal"
                         android:focusable="false"
                         android:orientation="horizontal">
 
-                        <com.fy.navi.ui.view.SkinRadioButton
+                        <com.sgm.navi.ui.view.SkinRadioButton
                             clickCommand="@{viewModel.mNaviTextSizeStandardClick}"
                             android:id="@+id/font_size_standard"
                             android:layout_width="0dp"
@@ -389,7 +389,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_font_size_standard" />
 
-                        <com.fy.navi.ui.view.SkinRadioButton
+                        <com.sgm.navi.ui.view.SkinRadioButton
                             clickCommand="@{viewModel.mNaviTextSizeLargeClick}"
                             android:id="@+id/font_size_large"
                             android:layout_width="0dp"
@@ -403,11 +403,11 @@
                             android:textSize="@dimen/sp_46"
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_font_size_large" />
-                    </com.fy.navi.ui.view.SkinRadioGroup>
+                    </com.sgm.navi.ui.view.SkinRadioGroup>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_29"
@@ -417,7 +417,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_font_size" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/navi_mode_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -429,7 +429,7 @@
                     app:layout_constraintTop_toBottomOf="@id/navi_font_size"
                     android:textSize="@dimen/sp_46" />
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/navi_mode"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_120"
@@ -440,14 +440,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/navi_mode_title">
 
-                    <com.fy.navi.ui.view.SkinRadioGroup
+                    <com.sgm.navi.ui.view.SkinRadioGroup
                         android:layout_width="match_parent"
                         android:layout_height="fill_parent"
                         android:gravity="center_horizontal"
                         android:focusable="false"
                         android:orientation="horizontal">
 
-                        <com.fy.navi.ui.view.SkinRadioButton
+                        <com.sgm.navi.ui.view.SkinRadioButton
                             clickCommand="@{viewModel.mSwitchMapModel2DUpClick}"
                             android:id="@+id/navi_HeadUp"
                             android:layout_width="0dp"
@@ -462,7 +462,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_mode_HeadUp" />
 
-                        <com.fy.navi.ui.view.SkinRadioButton
+                        <com.sgm.navi.ui.view.SkinRadioButton
                             clickCommand="@{viewModel.mSwitchMapModel2DNorthClick}"
                             android:id="@+id/navi_NorthUp"
                             android:layout_width="0dp"
@@ -478,7 +478,7 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_mode_NorthUp" />
 
-                        <com.fy.navi.ui.view.SkinRadioButton
+                        <com.sgm.navi.ui.view.SkinRadioButton
                             clickCommand="@{viewModel.mSwitchMapModel3DUpClick}"
                             android:id="@+id/navi_3D_HeadUp"
                             android:layout_width="0dp"
@@ -493,11 +493,11 @@
                             android:textSize="@dimen/sp_46"
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_mode_3D_HeadUp" />
-                    </com.fy.navi.ui.view.SkinRadioGroup>
+                    </com.sgm.navi.ui.view.SkinRadioGroup>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_29"
@@ -507,7 +507,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_mode" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_guide_car_logo_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -519,7 +519,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/navi_mode" />
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/setting_guide_car_logo"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_168"
@@ -530,13 +530,13 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/setting_guide_car_logo_title">
 
-                    <com.fy.navi.ui.view.SkinRadioGroup
+                    <com.sgm.navi.ui.view.SkinRadioGroup
                         android:layout_width="match_parent"
                         android:layout_height="fill_parent"
                         android:focusable="false"
                         android:orientation="horizontal">
 
-                        <com.fy.navi.scene.ui.setting.DrawableCenterRadioButton
+                        <com.sgm.navi.scene.ui.setting.DrawableCenterRadioButton
                             clickCommand="@{viewModel.mSwitchMapLogoDefaultClick}"
                             android:id="@+id/setting_guide_car_logo_default"
                             android:layout_width="0dp"
@@ -557,7 +557,7 @@
                             app:normalTextColor="@color/setting_car_logo_text_gray"
                             app:selectedTextColor="@color/setting_bg_tab_text_unselect"/>
 
-                        <com.fy.navi.scene.ui.setting.DrawableCenterRadioButton
+                        <com.sgm.navi.scene.ui.setting.DrawableCenterRadioButton
                             clickCommand="@{viewModel.mSwitchMapLogoBrandClick}"
                             android:id="@+id/setting_guide_car_logo_brand"
                             android:layout_width="0dp"
@@ -579,7 +579,7 @@
                             app:selectedTextColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_car_logo_brand" />
 
-                        <com.fy.navi.scene.ui.setting.DrawableCenterRadioButton
+                        <com.sgm.navi.scene.ui.setting.DrawableCenterRadioButton
                             clickCommand="@{viewModel.mSwitchMapLogoSpeedClick}"
                             android:id="@+id/setting_guide_car_logo_speed"
                             android:layout_width="0dp"
@@ -600,11 +600,11 @@
                             app:normalTextColor="@color/setting_car_logo_text_gray"
                             app:selectedTextColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_car_logo_speed" />
-                    </com.fy.navi.ui.view.SkinRadioGroup>
+                    </com.sgm.navi.ui.view.SkinRadioGroup>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     clickCommand="@{viewModel.mAutoScale}"
                     android:id="@+id/setting_guide_auto_scale"
                     android:layout_width="match_parent"
@@ -617,7 +617,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/setting_guide_car_logo">
 
-                    <com.fy.navi.ui.view.SkinCheckBox
+                    <com.sgm.navi.ui.view.SkinCheckBox
                         clickCommand="@{viewModel.mAutoScale}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -626,7 +626,7 @@
                         android:background="@android:color/transparent"
                         android:button="@drawable/setting_custom_thumb" />
 
-                    <com.fy.navi.ui.view.SkinLinearLayout
+                    <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_32"
@@ -634,7 +634,7 @@
                         android:focusable="false"
                         android:orientation="vertical">
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/setting_guide_auto_scale"
@@ -642,7 +642,7 @@
                             android:textColor="@color/setting_bg_tab_text_select"
                             android:textSize="@dimen/sp_46" />
 
-                        <com.fy.navi.ui.view.SkinTextView
+                        <com.sgm.navi.ui.view.SkinTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_8"
@@ -651,10 +651,10 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:textSize="@dimen/sp_38" />
 
-                    </com.fy.navi.ui.view.SkinLinearLayout>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                    </com.sgm.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:focusable="false"
@@ -662,7 +662,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/setting_guide_auto_scale" />
 
-                <com.fy.navi.ui.view.SkinTextView
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_guide_offline_map"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -674,7 +674,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/setting_guide_auto_scale" />
 
-                <com.fy.navi.ui.view.SkinView
+                <com.sgm.navi.ui.view.SkinView
                     clickCommand="@{viewModel.mOpenOfflineData}"
                     android:layout_width="@dimen/dp_536"
                     android:layout_height="@dimen/dp_192"
@@ -685,7 +685,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
 
-                <com.fy.navi.ui.view.SkinLinearLayout
+                <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/setting_guide_offline_map_detail"
                     android:layout_width="@dimen/dp_536"
                     android:layout_height="@dimen/dp_192"
@@ -698,7 +698,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:background="@drawable/bg_setting_checkbox">
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -708,7 +708,7 @@
                         android:textSize="@dimen/sp_46"
                         android:textColor="@color/setting_bg_tab_text_select" />
 
-                    <com.fy.navi.ui.view.SkinImageView
+                    <com.sgm.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_74"
                         android:layout_height="@dimen/dp_74"
                         android:layout_marginStart="@dimen/dp_138"
@@ -716,11 +716,11 @@
                         android:focusable="false"
                         android:src="@drawable/img_setting_corner"/>
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         </com.android.car.ui.FocusArea>
 
-    </com.fy.navi.ui.view.SkinScrollView>
+    </com.sgm.navi.ui.view.SkinScrollView>
 </layout>

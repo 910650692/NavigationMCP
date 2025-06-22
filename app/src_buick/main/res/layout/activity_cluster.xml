@@ -9,21 +9,21 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.cluster.ClusterViewModel" />
+            type="com.sgm.navi.hmi.cluster.ClusterViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/cluster"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".cluster.cluster_map.ClusterActivity">
-        <com.fy.navi.service.define.map.ClusterMapView
+        <com.sgm.navi.service.define.map.ClusterMapView
             android:id="@+id/cluster_mapview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible" />
         <!--当前路名-->
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:visibility="@{ViewModel.routeNameConstraintLayoutVisibility ? View.VISIBLE : View.GONE}"
             android:id="@+id/routeNameConstraintLayout"
             android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="@dimen/dp_100"
             android:background="@drawable/bg_navi_control">
-            <com.fy.navi.scene.ui.navi.view.ButtonText
+            <com.sgm.navi.scene.ui.navi.view.ButtonText
                 android:id="@+id/stv_navi_route_name"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_92"
@@ -44,9 +44,9 @@
                 android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_34"
                 tools:text="申港大道" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
         <!--到达时间    剩余里程-->
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/remainingMileageConstraintLayout"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_54"
@@ -59,7 +59,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stvArriveTime"
                 android:layout_width="wrap_content"
                 android:text="@{ViewModel.arriveTimeField}"
@@ -73,7 +73,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="9:00"
                 />
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_arrival_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                 app:layout_constraintStart_toEndOf="@id/stvArriveTime"
                 tools:text="+2"
                 />
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_arrive_default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!--            剩余里程-->
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/remaining_mileage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
                 android:textColor="@color/cluster_title_transparent_ninety"
                 android:textSize="@dimen/sp_26"
                 tools:text="22699" />
-            <com.fy.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/remaining_mileage_util"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -127,6 +127,6 @@
                 android:textColor="@color/cluster_unit_transparent_sixty"
                 android:textSize="@dimen/sp_24"
                 tools:text="公里" />
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
