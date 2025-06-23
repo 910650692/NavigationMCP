@@ -4,6 +4,10 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.file.ParseJsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.autonavi.gbl.ehp.EHPService;
+import com.autonavi.gbl.ehp.model.EHPInitParam;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.define.code.CodeManager;
 import com.sgm.navi.service.define.code.ErrorCode;
 import com.sgm.navi.service.define.setting.SettingController;
@@ -56,6 +60,7 @@ public class StartService {
     private static final String TAG = MapDefaultFinalTag.INIT_SERVICE_TAG;
     private static int engineActive = -1;
     private static CopyOnWriteArrayList<ISdkInitCallback> sdkInitCallbacks; //此处回调必须使用List集合
+    private EHPService mEHPService;
 
     private StartService() {
         Logger.i(TAG, "start SDK before......");
@@ -177,7 +182,25 @@ public class StartService {
         initMapService();
         initLayerService();
         initOtherService();
+        initEhpService();
         conformSuccessCallback();
+    }
+
+    public void initEhpService() {
+        if (CalibrationPackage.getInstance().adasConfigurationType() != 8) {
+            Logger.i(TAG, "not GMC L2++ configuration");
+            return;
+        }
+        if (mEHPService == null) {
+            mEHPService = (EHPService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.EHPSingleServiceID);
+            if (mEHPService == null) {
+                Logger.d(TAG, "mEHPService == null");
+                return;
+            }
+        }
+        EHPInitParam ehpInitParam = new EHPInitParam();
+        boolean result = mEHPService.init(ehpInitParam);
+        Logger.d(TAG, "initEhpService result = " , result);
     }
 
     private void initPositionService() {

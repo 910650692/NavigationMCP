@@ -25,6 +25,7 @@ import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.calibration.CalibrationAdapter;
 import com.sgm.navi.service.adapter.engine.EngineObserver;
 import com.sgm.navi.service.adapter.engine.IEngineApi;
 import com.sgm.navi.service.define.code.CodeManager;
@@ -33,6 +34,7 @@ import com.sgm.navi.service.define.engine.GaodeLogLevel;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.greendao.CommonManager;
+import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class EngineAdapterImpl implements IEngineApi {
     private static final String ERR_MSG = "Error Massage : ";
     // TODO: 配置父子渠道包，每次更新aar包时都要核实一下
     private final String mChanelName = "C13953968867";
+    private final String mGmcL2ChanelName = "C13953984967";
 
     static {
         Logger.i(TAG, "load gbl xxx.so");
@@ -170,6 +173,9 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public String getChanelName() {
+        if (CalibrationAdapter.getInstance().adasConfigurationType() == 8) {
+            return mGmcL2ChanelName;
+        }
         return mChanelName;
     }
 
@@ -234,7 +240,7 @@ public class EngineAdapterImpl implements IEngineApi {
         if (Logger.openLog) {
             Logger.d(TAG, "userDataPath ", baseInitParam.userDataPath);
         }
-        baseInitParam.channelName = mChanelName;
+        baseInitParam.channelName = getChanelName();
         if (Logger.openLog) {
             Logger.d(TAG, "channelName ", baseInitParam.channelName);
         }

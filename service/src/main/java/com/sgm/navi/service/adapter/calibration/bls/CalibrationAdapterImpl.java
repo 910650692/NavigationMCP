@@ -24,7 +24,7 @@ public class CalibrationAdapterImpl implements CalibrationApi {
     private boolean P_V2XMapDisplay_Func_Enable;
     private int P_SpeedLimitInformationSource;
     private int P_ADAS_Configuration_Infomation;
-    private int ADAS_Configuration_Type;
+    private int ADAS_Configuration_Type = -1;
     private boolean P_RearSeatTouchPanel_Func_Enable;
     private int P_HUD_Func_Enable;
     private boolean P_Navigation_Deflection_Enable;
@@ -75,7 +75,6 @@ public class CalibrationAdapterImpl implements CalibrationApi {
         P_V2XMapDisplay_Func_Enable = mCalibrationManager.getBoolean(CalId.P_V2XMapDisplay_Func_Enable, false);
         P_SpeedLimitInformationSource = mCalibrationManager.getEnumeration(CalId.P_SpeedLimitInformationSource, -1);
         P_ADAS_Configuration_Infomation = mCalibrationManager.getEnumeration(CalId.P_ADAS_Configuration_Infomation, -1);
-        ADAS_Configuration_Type = mCalibrationManager.getEnumeration(CalId.ADAS_Configuration_Type, -1);
         P_RearSeatTouchPanel_Func_Enable = mCalibrationManager.getBoolean(CalId.P_RearSeatTouchPanel_Func_Enable, false);
         P_HUD_Func_Enable = mCalibrationManager.getEnumeration(CalId.P_HUD_Func_Enable, -1);
         P_Navigation_Deflection_Enable = mCalibrationManager.getBoolean(CalId.P_Navigation_Deflection_Enable, false);
@@ -151,6 +150,9 @@ public class CalibrationAdapterImpl implements CalibrationApi {
 
     @Override
     public int adasConfigurationType() {
+        if (ADAS_Configuration_Type == -1) {
+            ADAS_Configuration_Type = mCalibrationManager.getEnumeration(CalId.ADAS_Configuration_Type, -2);
+        }
         Logger.d(TAG, "s ADAS_Configuration_Type: " + ADAS_Configuration_Type);
         return ADAS_Configuration_Type;
     }
