@@ -21,6 +21,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.scene.BaseSceneView;
+import com.sgm.navi.scene.BuildConfig;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.scene.databinding.SceneCollectViewBinding;
@@ -250,16 +251,26 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
      * 设置适配器数据
      * @param data data
      */
-    public void setAdapterData(final List<PoiInfoEntity> data) {
-        mAdapter.notifyList(data);
-        if (mViewBinding != null) {
-            hideEmptyView();
-            if (ConvertUtils.isEmpty(data)) {
-                mViewBinding.sllNoFavorite.setVisibility(View.VISIBLE);
-                if (mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
-                    mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_receive));
-                } else {
-                    mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
+    public void setAdapterData(final List<PoiInfoEntity> data,final boolean isChargeStation) {
+        if(ConvertUtils.isEmpty(mViewBinding)){
+            return;
+        }
+        boolean isChargeSelect = mViewBinding.naviBroadcastLarge.isChecked();
+        if(BuildConfig.DEBUG){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"charge isselect: " + isChargeSelect + "isChargeStation: "+isChargeStation);
+        }
+        // 保证搜索列表和搜索行为一致
+        if((isChargeSelect && isChargeStation) || (!isChargeSelect && !isChargeStation)){
+            mAdapter.notifyList(data);
+            if (mViewBinding != null) {
+                hideEmptyView();
+                if (ConvertUtils.isEmpty(data)) {
+                    mViewBinding.sllNoFavorite.setVisibility(View.VISIBLE);
+                    if (mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
+                        mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_receive));
+                    } else {
+                        mViewBinding.tvNoFavorite.setText(AppCache.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
+                    }
                 }
             }
         }
@@ -366,7 +377,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
             return;
         }
-        setAdapterData(poiInfoEntity);
+        setAdapterData(poiInfoEntity,true);
     }
 
     public void notifySearchResultByNetError(int taskId,String message){

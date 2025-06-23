@@ -53,7 +53,7 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
     private void initFavoriteList() {
         final List<PoiInfoEntity> poiInfoEntityList = mViewModel.getFavoriteListAsync();
         ThreadManager.getInstance().postUi(() -> {
-            mBinding.collectView.setAdapterData(poiInfoEntityList);
+            mBinding.collectView.setAdapterData(poiInfoEntityList,false);
         });
     }
 
@@ -64,7 +64,7 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
         final List<PoiInfoEntity> poiInfoEntityList = mViewModel.getPushMsgList();
         ThreadManager.getInstance().postUi(() -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "initPushMsgList size: " + poiInfoEntityList.size());
-            mBinding.collectView.setAdapterData(poiInfoEntityList);
+            mBinding.collectView.setAdapterData(poiInfoEntityList,false);
         });
     }
 
@@ -115,7 +115,7 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
     public void setAdapterData(){
         ThreadManager.getInstance().postUi(() -> {
             final List<PoiInfoEntity> poiInfoEntityList = mViewModel.getFavoriteListAsync();
-            mBinding.collectView.setAdapterData(poiInfoEntityList);
+            mBinding.collectView.setAdapterData(poiInfoEntityList,false);
         });
     }
 
