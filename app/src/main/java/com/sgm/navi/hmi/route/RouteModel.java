@@ -809,17 +809,18 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     public void onRouteRestrictionInfo(final RouteRestrictionParam routeRestrictionParam) {
         mRestirctionTaskId = mRoutePackage.requestRestirction(routeRestrictionParam.getMMapTypeId());
         mRouteRestrictionInfo = routeRestrictionParam.getMRouteRestrictionInfo();
+        int currentIndex = getCurrentIndex();
         if (ConvertUtils.isEmpty(mRouteRestrictionInfo)
-                || getCurrentIndex() == -1
-                || mRouteRestrictionInfo.size() < getCurrentIndex()
-                || ConvertUtils.isEmpty(mRouteRestrictionInfo.get(getCurrentIndex()))) {
+                || currentIndex == -1
+                || currentIndex >= mRouteRestrictionInfo.size()
+                || ConvertUtils.isEmpty(mRouteRestrictionInfo.get(currentIndex))) {
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.updateRestrictionTextUI(RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEINVALID);
             }
             return;
         }
         if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.updateRestrictionTextUI((int) mRouteRestrictionInfo.get(getCurrentIndex()).getMTitleType());
+            mViewModel.updateRestrictionTextUI((int) mRouteRestrictionInfo.get(currentIndex).getMTitleType());
         }
     }
 
@@ -1230,15 +1231,19 @@ public void onSearchResult(final int taskId, final int errorCode, final String m
     if (mLocalTaskId != taskId) {
         return;
     }
+    List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+    if (poiList == null || poiList.isEmpty()) {
+        Logger.d(TAG, "poiList is empty");
+        return;
+    }
     if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.DEEP_INFO_SEARCH) {
-        final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
+        final PoiInfoEntity poiInfoEntity = poiList.get(0);
         if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(mTaskMap.get(taskId))) {
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.setDetailsAddress(poiInfoEntity.getAddress());
             }
         }
     }
-    Logger.i(TAG, GsonUtils.toJson(searchResultEntity.getPoiList()));
     if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD
             || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
             || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.AROUND_SEARCH
@@ -1273,7 +1278,7 @@ public void onSearchResult(final int taskId, final int errorCode, final String m
         }
     } else if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH
             || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
-        final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
+        final PoiInfoEntity poiInfoEntity = poiList.get(0);
         if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(mTaskMap.get(taskId))) {
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.showRouteSearchDetailsUI(mTaskMap.get(taskId), poiInfoEntity, mGasChargeAlongList, mListSearchType);
