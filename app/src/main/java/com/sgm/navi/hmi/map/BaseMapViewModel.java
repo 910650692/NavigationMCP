@@ -436,8 +436,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void setMapCenterInScreen() {
         Logger.i(TAG, "setMapCenterInScreen");
-        mModel.goToCarPosition();
-        mModel.setMapCenterInScreen();
+        BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment){
+            mModel.goToCarPosition();
+            mModel.setMapCenterInScreen();
+        }
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         boolean exist = StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),MainSearchFragment.class.getSimpleName());
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
@@ -459,8 +462,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             searchKey = bundle.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON, -1);
         }
         Logger.i(TAG, "setMapCenterInScreen type:" , type);
-        mModel.goToCarPosition();
-        mModel.setMapCenterInScreen();
+        BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment || baseFragment instanceof NaviGuidanceFragment){
+            mModel.goToCarPosition();
+            mModel.setMapCenterInScreen();
+        }
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set((type != -1 || searchKey == AutoMapConstant.SearchType.MAIN_SEARCH_ICON
