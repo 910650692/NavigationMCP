@@ -9,8 +9,8 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/top_dialog_view"
-            android:layout_width="@dimen/dp_941"
-            android:layout_height="@dimen/dp_87"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_95"
             android:background="@drawable/dialog_shape_bg_msg_top"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -40,9 +40,10 @@
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/top_dialog_content"
-                android:layout_width="@dimen/dp_707"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginStart="@dimen/dp_34"
+                android:maxWidth="707dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -58,7 +59,9 @@
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
                 android:layout_marginEnd="@dimen/dp_31"
+                android:layout_marginStart="@dimen/dp_31"
                 android:src="@drawable/img_dialog_top_close"
+                app:layout_constraintStart_toEndOf="@+id/top_dialog_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
