@@ -34,14 +34,17 @@ public class MainSearchFragment extends BaseFragment<MainFragmentSearchBinding, 
         final String[] categories;
         final TypedArray iconArray;
         // 油车
-        if (powerType == 0){
-            categories = getResources().getStringArray(R.array.main_search_categories_name_gas);
-            iconArray = getResources().obtainTypedArray(R.array.main_search_categories_gas_icons);
-        }else {
+        if (powerType == 1) {
             categories = getResources().getStringArray(R.array.main_search_categories_name_charging);
             iconArray = getResources().obtainTypedArray(R.array.main_search_categories_charging_icons);
+        } else if (powerType == 2) {
+            categories = getResources().getStringArray(R.array.main_search_categories_name_phev);
+            iconArray = getResources().obtainTypedArray(R.array.main_search_categories_phev_icons);
+        } else {
+            categories = getResources().getStringArray(R.array.main_search_categories_name_gas);
+            iconArray = getResources().obtainTypedArray(R.array.main_search_categories_gas_icons);
         }
-        mBinding.searchView.setSkinTextViews(categories,iconArray);
+        mBinding.searchView.setSkinTextViews(categories, iconArray);
     }
 
     @Override
