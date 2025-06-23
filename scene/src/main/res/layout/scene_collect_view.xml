@@ -22,6 +22,7 @@
             android:layout_height="@dimen/dp_170" />
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:visibility="gone"
             android:layout_width="@dimen/dp_698"
             android:layout_height="@dimen/dp_640"
             android:paddingStart="@dimen/dp_29"
