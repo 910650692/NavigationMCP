@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-def lib_version = "0.3.8"
+def lib_version = "1.0.1"
 
 android {
     namespace 'com.sgm.navi.mapservice'

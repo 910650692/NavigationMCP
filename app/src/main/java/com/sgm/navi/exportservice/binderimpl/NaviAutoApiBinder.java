@@ -55,6 +55,7 @@ import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteLineInfo;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePoiType;
+import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
 import com.sgm.navi.service.define.search.CityInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
@@ -597,7 +598,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         } catch (IllegalStateException statusException) {
             Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
         } finally {
-            closeRouteException();
+            closeRouteCallback();
         }
     }
 
@@ -649,7 +650,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                 } catch (IllegalStateException e) {
                     Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
                 } finally {
-                    closeRouteException();
+                    closeRouteCallback();
                 }
             }
 
@@ -676,7 +677,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                 } catch (IllegalStateException exception) {
                     Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
                 } finally {
-                    closeRouteException();
+                    closeRouteCallback();
                 }
             }
         };
@@ -708,7 +709,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     /**
      * 关闭路线规划结果回调.
      */
-    private void closeRouteException() {
+    private void closeRouteCallback() {
         try {
             mRouteCallbackList.finishBroadcast();
             mInRouteCallBack = false;
@@ -1498,7 +1499,25 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         endPoint.setLat(geoPoint.getLat());
         endPoint.setLon(geoPoint.getLon());
         poiInfoEntity.setPoint(endPoint);
-        processJumpPage(INaviConstant.OpenIntentPage.ROUTE_PAGE, "", poiInfoEntity);
+
+        final boolean appForeGroundStatus = ProcessManager.isAppInForeground();
+        if (appForeGroundStatus) {
+            final RouteSpeechRequestParam requestParam = new RouteSpeechRequestParam();
+            requestParam.setMEndPoiInfoEntity(poiInfoEntity);
+            requestParam.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+            if (isNaviStatus(INNER_CLIENT)) {
+                //当前为导航态，更换目的地直接发起快速导航
+                RoutePackage.getInstance().requestRouteFromSpeech(requestParam);
+            } else {
+                //打开算路界面
+                final Bundle bundle = new Bundle();
+                bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.ROUTING);
+                bundle.putSerializable(IVrBridgeConstant.VoiceIntentParams.ROUTE_REQUEST, requestParam);
+                MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+            }
+        } else {
+            processJumpPage(INaviConstant.OpenIntentPage.ROUTE_PAGE, "", poiInfoEntity);
+        }
     }
 
     @Override
