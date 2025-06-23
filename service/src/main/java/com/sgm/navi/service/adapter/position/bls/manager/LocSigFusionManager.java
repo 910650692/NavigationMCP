@@ -148,16 +148,6 @@ public class LocSigFusionManager implements IPosSensorParaObserver, ILocationLis
         }
     }
 
-    public void setCustomPOI(double lon, double lat) {
-        Location location = new Location(android.location.LocationManager.GPS_PROVIDER);
-        if (lon != 0 && lat != 0) {
-            location.setLongitude(lon);
-            location.setLatitude(lat);
-            onGpsInfo(LocationUtil.getLocGnssByLocation(location, 9));
-        }
-        Logger.i(TAG, " setCustomPOI customPOI lon=" + lon + " lat=" + lat);
-    }
-
     public void onMeterSpeedChanged(float speed) {
         if (mGnssManager != null) {
             mGnssManager.onMeterSpeedChanged(speed);

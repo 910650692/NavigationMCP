@@ -41,9 +41,6 @@ public interface IPositionApi {
 
     void setDrEnable(boolean enable);
 
-    /*自定义起点*/
-    void setCustomPOI(double lon, double lat);
-
     void locationLogSwitch(boolean isOpen);
 
     void onSpeedChanged(float speed);

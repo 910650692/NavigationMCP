@@ -29,7 +29,6 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     private PositionAdapter mPositionAdapter = null;
     private SignalAdapter mSignalAdapter;
     private final List<IPositionPackageCallback> mIPositionCallback = new CopyOnWriteArrayList<>();
-    private int locationTaskSearchId = -1;
     public GeoPoint currentGeo;
     private AtomicBoolean atomicBoolean = new AtomicBoolean(false);
     private GpsTrackPointBean mGpsTrackPointBean;
@@ -113,11 +112,6 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
         this.mPositionAdapter.saveLocStorage();
     }
 
-    @Override
-    public void onDrInfo(DrBean drInfo) {
-
-    }
-
     /**
      * 平行路切换完成回调
      */
@@ -135,15 +129,6 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
         if (!ConvertUtils.isEmpty(mIPositionCallback)) {
             for (IPositionPackageCallback callback : mIPositionCallback) {
                 callback.onParallelRoadUpdate(entity);
-            }
-        }
-    }
-
-    @Override
-    public void onMapMatchFeedbackUpdate(LocMMInfo locMMInfo) {
-        if (!ConvertUtils.isEmpty(mIPositionCallback)) {
-            for (IPositionPackageCallback callback : mIPositionCallback) {
-                callback.onMapMatchFeedbackUpdate(locMMInfo);
             }
         }
     }
@@ -230,11 +215,6 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     /*是否开启DR模式*/
     public void setDrEnable(boolean enable) {
         mPositionAdapter.setDrEnable(enable);
-    }
-
-    /*自定义起点*/
-    public void setCustomPOI(double lon, double lat) {
-        mPositionAdapter.setCustomPOI(lon, lat);
     }
 
     /*是否开启定位日志*/

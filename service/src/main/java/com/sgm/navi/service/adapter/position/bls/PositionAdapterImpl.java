@@ -1,5 +1,7 @@
 package com.sgm.navi.service.adapter.position.bls;
 
+import android.location.LocationManager;
+
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -54,7 +56,7 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
             mVehicleSpeedController = new VehicleSpeedController(AppCache.getInstance().getMContext(), this);
             mVehicleSpeedController.registerCallback();
         }
-        boolean initResult = positionStrategy.initLocEngine(mLocMode, new PositionConfig());
+        boolean initResult = positionStrategy.initLocEngine(mLocMode);
         Logger.i(TAG, "initLocEngine: " + initResult + ",mLocMode：" + mLocMode);
         return initResult;
     }
@@ -71,7 +73,6 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
 
     @Override
     public void stopPosition() {
-        positionStrategy.doStopLocate();
         unInit();
     }
 
@@ -142,17 +143,9 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
     }
 
     @Override
-    public void setCustomPOI(double lon, double lat) {
-        if (mLocSigFusionManager != null) {
-            mLocSigFusionManager.setCustomPOI(lon, lat);
-        }
-    }
-
-    @Override
     public void locationLogSwitch(boolean isOpen) {
         if (positionStrategy != null) {
             positionStrategy.locationLogSwitch(isOpen);
         }
     }
-
 }

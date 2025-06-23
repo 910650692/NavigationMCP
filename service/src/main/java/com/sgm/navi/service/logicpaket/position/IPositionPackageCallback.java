@@ -44,10 +44,6 @@ public interface IPositionPackageCallback {
     default void onParallelRoadUpdate(LocParallelInfoEntity entity) {
     }
 
-    /***更新MM信息***/
-    default void onMapMatchFeedbackUpdate(LocMMInfo locMMInfo) {
-    }
-
     /*** 卫星数 **/
     default void onSatelliteNum(int num){}
 }

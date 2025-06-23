@@ -12,8 +12,6 @@ public interface IPositionAdapterCallback {
 
    default void onLocationInfo(LocInfoBean locationInfo){}
 
-    default void onDrInfo(DrBean drInfo){}
-
     /***DR标定信息***/
     default  void onLocAnalysisResult(@PositionConstant.DRDebugEvent int infoType, String info){}
 
@@ -22,9 +20,6 @@ public interface IPositionAdapterCallback {
 
     /***更新主辅路信息***/
     default void onParallelRoadUpdate(LocParallelInfoEntity entity){}
-
-    /***更新MM信息***/
-    default void onMapMatchFeedbackUpdate(LocMMInfo locMMInfo){}
 
     /***Gps 状态改变回调***/
     default void onGpsSatellitesChanged(boolean isLocSuccess){}

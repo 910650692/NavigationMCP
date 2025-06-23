@@ -73,12 +73,6 @@ public class LocationFuncSwitch {
                 locModeType.sensorOption = getSensorOption(positionConfig);
                 locModeType.mountAngle = getMountAngle(positionConfig);
                 break;
-            case DrFront: // DR模式(前端融合)
-                // 功能插件，设置要启用的决策插件类型，该值为枚举LocFuncSwitch的位运算组合。
-                // 前端融合模式(0x72604或者468484)
-                locModeType.locType = LocType.LocTypeDrFront;
-                locModeType.funcs = LocationFuncSwitch.DR_FRONT_DEFAULT;
-                break;
         }
         //定位模块云+端功能是否开启,一般情况下有EHP项目才需要开启
 //        if (AutoConstant.isOpenLocationEhp) {

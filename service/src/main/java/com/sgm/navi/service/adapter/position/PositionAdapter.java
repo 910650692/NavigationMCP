@@ -84,10 +84,6 @@ public class PositionAdapter {
         mPositionApi.setDrEnable(enable);
     }
 
-    public void setCustomPOI(double lon, double lat) {
-        mPositionApi.setCustomPOI(lon, lat);
-    }
-
     public void locationLogSwitch(boolean isOpen) {
         mPositionApi.locationLogSwitch(isOpen);
     }

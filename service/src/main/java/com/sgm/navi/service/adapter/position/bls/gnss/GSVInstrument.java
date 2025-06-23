@@ -20,7 +20,7 @@ public class GSVInstrument extends GnssStatus.Callback {
      */
     public static final int MAX_GPS_SATELLITE_NUM = 16;
 
-    public GSVInstrument( IUsedSatelliteNumCallback callback) {
+    public GSVInstrument(IUsedSatelliteNumCallback callback) {
         mCallback = callback;
     }
 

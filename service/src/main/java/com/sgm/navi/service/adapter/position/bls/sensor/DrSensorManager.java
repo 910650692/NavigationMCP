@@ -55,7 +55,6 @@ public class DrSensorManager implements SensorEventListener {
 
     private long mCarSpeedTime;
     private float mCarSpeed = 0;
-    private Runnable mCustomTimer;
     private final IDrSensorListener mListener;
     private AtomicInteger mIsGyroReady = new AtomicInteger(0);
     private AtomicInteger mIsAccReady = new AtomicInteger(0);
@@ -138,19 +137,17 @@ public class DrSensorManager implements SensorEventListener {
         setLocPulseInfo();
         if (mTemperatureCount.get() == 0) {
             parseTemperature();
-        } else {
-            mTemperatureCount.incrementAndGet();
-            if (mTemperatureCount.get() == 10) {
-                mTemperatureCount.set(0);
-            }
+        } else if (mTemperatureCount.get() == 100) {//延长解析温度的时间
+            parseTemperature();
+            mTemperatureCount.set(0);
         }
+        mTemperatureCount.incrementAndGet();
     }
 
     private void stopSensorReport() {
         Logger.i(TAG, "stopTimerTask");
         if (mScheduledFuture != null) {
             ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
-            mCustomTimer = null;
         }
     }
 

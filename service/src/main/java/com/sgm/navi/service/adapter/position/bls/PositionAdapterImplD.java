@@ -34,7 +34,7 @@ public class PositionAdapterImplD implements IPositionApi {
 
     @Override
     public LocInfoBean getLastCarLocation() {
-        LocInfoBean locInfoBean =  new LocInfoBean();
+        LocInfoBean locInfoBean = new LocInfoBean();
         locInfoBean.setLongitude(SettingConstant.DEFAULT_LON_SH);
         locInfoBean.setLatitude(SettingConstant.DEFAULT_LAT_SH);
         locInfoBean.setAltitude(SettingConstant.DEFAULT_ALT_SH);
@@ -75,11 +75,6 @@ public class PositionAdapterImplD implements IPositionApi {
 
     @Override
     public void setDrEnable(boolean enable) {
-
-    }
-
-    @Override
-    public void setCustomPOI(double lon, double lat) {
 
     }
 

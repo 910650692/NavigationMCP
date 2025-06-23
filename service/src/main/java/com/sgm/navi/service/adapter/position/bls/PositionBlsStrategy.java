@@ -13,13 +13,11 @@ import androidx.annotation.NonNull;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.file.FileUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.LooperType;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.pos.PosService;
-import com.autonavi.gbl.pos.model.DrInfo;
 import com.autonavi.gbl.pos.model.GPSDatetime;
 import com.autonavi.gbl.pos.model.GraspRoadResult;
 import com.autonavi.gbl.pos.model.LocFeedbackNode;
@@ -29,7 +27,6 @@ import com.autonavi.gbl.pos.model.LocMatchInfo;
 import com.autonavi.gbl.pos.model.LocModeType;
 import com.autonavi.gbl.pos.model.LocSignData;
 import com.autonavi.gbl.pos.model.PosWorkPath;
-import com.autonavi.gbl.pos.observer.IPosDrInfoObserver;
 import com.autonavi.gbl.pos.observer.IPosGraspRoadResultObserver;
 import com.autonavi.gbl.pos.observer.IPosLocInfoObserver;
 import com.autonavi.gbl.pos.observer.IPosMapMatchFeedbackObserver;
@@ -67,11 +64,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /***定位模块细分管理***/
-public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFeedbackObserver, IPosDrInfoObserver,
+public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFeedbackObserver,
         Handler.Callback, IPosGraspRoadResultObserver {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private static final long SAVE_LOC_INTERVAL = 300 * 1000;// 五分钟存一次
@@ -79,7 +74,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
     public static final int NETWORK_PROVIDER_SOURCE_TYPE = 1;
     private static final String MMF_KEY = "AmapAutoMMF";
     private static final List<IPositionAdapterCallback> callbacks = new CopyOnWriteArrayList<>();
-    private static final DrBean drInfo = new DrBean();
     /* 定位状态*/
     protected LocStatus mSdkLocStatus = LocStatus.ON_LOCATION_GPS_FAIl;
     //位置信息
@@ -88,13 +82,10 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
     private LocMode mLocMode;
     private LocationManager mLocationManager;
     private PositionConfig mPositionConfig;
-    private ScheduledFuture mSaveLocationFuture;
-    private Runnable mCustomTimer;
     private Handler mH;
     private static final int MSG_LOC_DR_INFO_UPDATE = 1;
     private static final int MSG_LOC_STATUS_UPDATE = 2;
-    private static final int MSG_LOC_GNSS_INFO_UPDATE = 3;
-    private static final int MSG_SEND_DR = 4;
+    private static final int MSG_LOC_SAVE = 3;
     private long mLastLocTimeStamp = -1;
     private boolean mIsLocSuccess;//是否定位成功
     private int mGear = -1;
@@ -118,10 +109,9 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
     /**
      * 初始化定位模块
      *
-     * @param locMode        定位工作模式结构体
-     * @param positionConfig
+     * @param locMode 定位工作模式结构体
      */
-    public boolean initLocEngine(LocMode locMode, PositionConfig positionConfig) {
+    public boolean initLocEngine(LocMode locMode) {
         mLocMode = locMode;
         PosWorkPath posWorkPath = new PosWorkPath();
         String posRootDir = GBLCacheFilePath.POS_DIR + "pos";
@@ -145,10 +135,11 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         Logger.d(TAG, "initLocEngine :" + resultCode + "\n" +
                 "contextDir：" + contextDir);
         if (resultCode == 0) {
-            startLocStorageTimerTask();
+            if (mH != null) {
+                mH.sendEmptyMessage(MSG_LOC_SAVE);
+            }
             // 信号记录功能开关
             mPosService.signalRecordSwitch(mAutoNaviPosLogEnable, LocationFuncSwitch.getLocLogConf());
-//            mPosService.signalRecordSwitch(true, LocationFuncSwitch.getLocLogConf());
             return true;
         }
         return false;
@@ -160,7 +151,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
      */
     public void uninitLocEngine() {
         saveLocStorage();
-        stopLocStorageTimerTask();
         mH.removeCallbacksAndMessages(null);
         mPosParallelRoadController.removeObserver();
         // 添加位置信息观察者
@@ -258,44 +248,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         }
     }
 
-    /**
-     * Dr融合位置（匹配前和匹配后）及相关信息透出给外部使用
-     * 此接口是在引擎线程内触发的，严禁做大规模运算或调用可能导致线程挂起的接口，如IO操作、同步类接口(同步DBUS)等。
-     */
-    @Override
-    public void onDrInfoUpdate(DrInfo drInfo) {
-        this.drInfo.drRawPos.setLat(drInfo.drRawPos.lat);
-        this.drInfo.drRawPos.setLon(drInfo.drRawPos.lon);
-        this.drInfo.drRawPos.setZ(drInfo.drRawPos.z);
-        this.drInfo.aziAcc = drInfo.aziAcc;
-        this.drInfo.drMatchAzi = drInfo.drMatchAzi;
-        this.drInfo.tickTime = drInfo.tickTime;
-        this.drInfo.gpsStatus = drInfo.gpsStatus;
-        this.drInfo.drAzi = drInfo.drAzi;
-        this.drInfo.spd = drInfo.spd;
-        this.drInfo.posAcc = drInfo.posAcc;
-        this.drInfo.moveStatus = drInfo.moveStatus;
-        this.drInfo.drStatus = drInfo.drStatus;
-        this.drInfo.sceneState = drInfo.sceneState;
-        this.drInfo.deltaBearing = drInfo.deltaBearing;
-        this.drInfo.deltaPos = drInfo.deltaPos;
-        this.drInfo.pluseSpd = drInfo.pluseSpd;
-        this.drInfo.deltaAlt = drInfo.deltaAlt;
-        this.drInfo.deltaAltAcc = drInfo.deltaAltAcc;
-        this.drInfo.slopeValue = drInfo.slopeValue;
-        this.drInfo.slopeAcc = drInfo.slopeAcc;
-        this.drInfo.moveDist = drInfo.moveDist;
-        this.drInfo.bMountAngleReady = drInfo.bMountAngleReady;
-        this.drInfo.matchStatus = drInfo.matchStatus;
-        this.drInfo.drMatchPos.setZ(drInfo.drMatchPos.z);
-        this.drInfo.drMatchPos.setLon(drInfo.drMatchPos.lon);
-        this.drInfo.drMatchPos.setLat(drInfo.drMatchPos.lat);
-        if (mH.hasMessages(MSG_SEND_DR)) {
-            mH.removeMessages(MSG_SEND_DR);
-        }
-        mH.sendEmptyMessage(MSG_SEND_DR);
-    }
-
     public LocInfoBean getLastCarLocation() {
         Logger.d(TAG, "getLastCarLocation: locInfoBean = ", locInfoBean.getAddress(),
                 locInfoBean.getLatitude(), locInfoBean.getLongitude());
@@ -327,11 +279,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         Bundle bundle = new Bundle();
         bundle.putString("AmapAutoMMF", mmfInfo);
         mLocationManager.sendExtraCommand(selectProvider(), MMF_KEY, bundle);
-        LocMMInfo locMMInfo = GsonUtils.convertToT(locMMFeedbackInfo, LocMMInfo.class);
-        // Logger.d("xqniu-----locMMFeedbackInfo" + GsonUtils.toJson(locMMFeedbackInfo) + "\n locMMInfo:" + GsonUtils.toJson(locMMInfo));
-        for (IPositionAdapterCallback callback : callbacks) {
-            callback.onMapMatchFeedbackUpdate(locMMInfo);
-        }
     }
 
     /**
@@ -383,10 +330,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         return LocationManager.GPS_PROVIDER;
     }
 
-    public void doStopLocate() {
-
-    }
-
     /***切换主辅路、高架***/
     public void switchParallelRoad(int switchRoadType, BigInteger roadId) {
         if (mPosService != null) {
@@ -433,25 +376,6 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         return mPosService != null && mPosService.isInit() == ServiceInitStatus.ServiceInitDone;
     }
 
-    private void startLocStorageTimerTask() {
-        Logger.i(TAG, "startLocStorageTimerTask");
-        stopLocStorageTimerTask();
-        mCustomTimer = new Runnable() {
-            @Override
-            public void run() {
-                saveLocStorage();
-            }
-        };
-        mSaveLocationFuture = ThreadManager.getInstance().asyncWithFixDelay(mCustomTimer, SAVE_LOC_INTERVAL, SAVE_LOC_INTERVAL, TimeUnit.MILLISECONDS);
-    }
-
-    private void stopLocStorageTimerTask() {
-        if (mSaveLocationFuture != null) {
-            ThreadManager.getInstance().cancelDelayRun(mSaveLocationFuture);
-            mCustomTimer = null;
-        }
-    }
-
     @Override
     public boolean handleMessage(@NonNull Message msg) {
         switch (msg.what) {
@@ -465,26 +389,15 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
                 for (IPositionAdapterCallback callback : callbacks) {
                     callback.onGpsSatellitesChanged(mIsLocSuccess);
                 }
-//                if (!mIsLocSuccess) {
-//                    ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_loc_filed));
-//                }
+            }
+            case MSG_LOC_SAVE: {
+                saveLocStorage();
+                if (mH.hasMessages(MSG_LOC_SAVE)) {
+                    mH.removeMessages(MSG_LOC_SAVE);
+                }
+                mH.sendEmptyMessageDelayed(MSG_LOC_SAVE, SAVE_LOC_INTERVAL);
             }
             break;
-            case MSG_LOC_GNSS_INFO_UPDATE: {
-
-            }
-            break;
-            case MSG_SEND_DR:
-                for (IPositionAdapterCallback callback : callbacks) {
-                    callback.onDrInfo(drInfo);
-                }
-                if (mH.hasMessages(MSG_SEND_DR)) {
-                    mH.removeMessages(MSG_SEND_DR);
-                }
-                Message message = new Message();
-                message.what = MSG_SEND_DR;
-                mH.sendMessageDelayed(message, 1000);
-                break;
             default:
                 break;
         }
