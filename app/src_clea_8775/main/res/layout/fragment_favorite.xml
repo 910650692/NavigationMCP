@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:anedroid="http://schemas.android.com/tools">
 
     <data>
         <import type="android.view.View" />
@@ -100,12 +101,13 @@
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/favorite_home_name"
-                        android:layout_width="@dimen/dp_210"
+                        android:layout_width="@dimen/dp_190"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/favorite_home"
                         android:layout_marginTop="@dimen/dp_2"
                         android:layout_marginStart="@dimen/dp_82"
                         android:text="@string/favorite_setting"
+                        android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_26" />
@@ -151,12 +153,13 @@
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/favorite_company_name"
-                        android:layout_width="@dimen/dp_210"
+                        android:layout_width="@dimen/dp_190"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/favorite_company"
                         android:layout_marginStart="@dimen/dp_82"
                         android:layout_marginTop="@dimen/dp_2"
                         android:text="@string/favorite_setting"
+                        android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_26" />
