@@ -839,6 +839,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (ConvertUtils.isEmpty(naviEtaInfo)) {
             return;
         }
-        mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);
+        if (mBinding == null) {
+            return;
+        }
+        mBinding.sceneNaviTmc.onNaviInfoByViaArrived(naviEtaInfo);
     }
 }

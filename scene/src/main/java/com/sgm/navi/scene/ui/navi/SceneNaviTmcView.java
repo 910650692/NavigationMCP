@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.scene.R;
@@ -138,6 +139,10 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         }
     }
 
+    public void onNaviInfoByViaArrived(NaviEtaInfo naviEtaInfo){
+        hideViaIcon(0);
+    }
+
     /**
      * 初始化
      *
@@ -238,9 +243,13 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         } else {
             carPosition = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed) * rateDistanceToView);
         }
-        Logger.d(TAG, "jcsmTotalDistance:", mTotalDistance, " hasPassedDistance:",
-                hasPassedDistance, " mDistanceHasPassed :", mDistanceHasPassed, " width:",
-                width, " rateDistanceToView:", rateDistanceToView, " carPosition :", carPosition);
+        if (Logger.openLog) {
+            Logger.d(TAG, "mTotalDistance:", mTotalDistance, " hasPassedDistance:",
+                    hasPassedDistance, " mDistanceHasPassed :", mDistanceHasPassed, " width:",
+                    width, " rateDistanceToView:", rateDistanceToView, " carPosition :", carPosition,
+                    " mChargeStationRemain:",ConvertUtils.isEmpty(mChargeStationRemain) ? "null" : mChargeStationRemain.size(),
+                    " mViaRemain:",ConvertUtils.isEmpty(mViaRemain) ? "null" : mViaRemain.size());
+        }
         // 移动车标的Y坐标
         NaviUiUtil.setTranslation(mViewBinding.sivCar, carPosition, mIsHorizontal);
         ArrayList<Integer> chargeShowList = new ArrayList<>();
@@ -309,6 +318,10 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 logBuilder.append(" ").append(mViaShowIndex + i).append(".via:").append(via);
                 via = getRemainCheckedVia(i, via);
                 if (via == -1) {
+                    continue;
+                }
+                if (mISceneCallback != null && mISceneCallback.getIsViaArrived() && i == 0) {
+                    //如果是途经点手动到达了，则不显示第一个途经点
                     continue;
                 }
                 logBuilder.append(".checkVia:").append(via);
