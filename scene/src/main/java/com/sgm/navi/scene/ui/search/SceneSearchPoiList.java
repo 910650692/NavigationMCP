@@ -390,6 +390,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
             if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                 mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), false, mPoiInfoEntity);
+            } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), false);
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), false);
             }
@@ -402,6 +404,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
             if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                 mScreenViewModel.aroundSearch(mPageNum, mSearchText, mPoiInfoEntity, String.valueOf(mRange), false);
+            } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), false);
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText);
             }
@@ -475,6 +479,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mFilterOneChildAdapter.setCategoryList(null);
                 if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                     mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+                } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                    mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
                 } else {
                     mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
                 }
@@ -495,6 +501,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mFilterTwoChildAdapter.setCategoryList(null);
                 if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                     mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+                } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                    mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
                 } else {
                     mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
                 }
@@ -515,6 +523,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mFilterThreeChildAdapter.setCategoryList(null);
                 if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                     mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+                } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                    mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
                 } else {
                     mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
                 }
@@ -578,6 +588,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mFilterOneAdapter.notifyDataSetChanged();
             if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                 mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+            } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
             }
@@ -588,6 +600,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mFilterOneAdapter.notifyDataSetChanged();
             if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                 mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+            } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
             }
@@ -598,6 +612,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mFilterOneAdapter.notifyDataSetChanged();
             if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                 mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+            } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
             }
@@ -1232,6 +1248,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     private boolean isFilterShell(List<SearchCategoryLocalInfo> list){
+        if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH || mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH){
+            return false;
+        }
         int count = 0;
         // 加油站 ”壳牌“快捷筛选，意图不是加油站，通过筛选列表判断意图
         if(!ConvertUtils.isEmpty(list)){

@@ -264,6 +264,16 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     }
 
     /**
+     * 途经点搜索2.0
+     * @param keyword 关键字
+     */
+    public void alongWaySearch(final String keyword, final String retain,
+                               final String classifyData, final boolean isSilentSearch) {
+        logSearch("alongWaySearch classifyData: ", classifyData);
+        mTaskId = mSearchPackage.enRouteKeywordSearch(keyword,retain,classifyData,isSilentSearch);
+    }
+
+    /**
      * 中止当前搜索
      */
     public void abortSearch() {

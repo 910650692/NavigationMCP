@@ -1008,6 +1008,39 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * V2顺路搜索2.0
+     * @param keyword      关键字
+     * @param retain       筛选回传参数，使用搜索结果中的SearchClassifyInfo.retainState值原样回传
+     * @param classifyData 一筛参数
+     * @param isSilentSearch 是否静默搜索
+     * @return
+     */
+    public int enRouteKeywordSearch(final String keyword, final String retain,
+                                    final String classifyData, final boolean isSilentSearch) {
+        if (keyword == null || null == mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP)) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute en route keyword search: searchRequestParameterBuilder is null.");
+            return -1;
+        }
+        final GeoPoint userLoc = new GeoPoint();
+        userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .isSilentSearch(isSilentSearch)
+                .keyword(keyword)
+                .searchType(AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH)
+                .userLoc(userLoc)
+                .retainState(retain)
+                .checkedLevel("1")
+                .classifyV2Data(classifyData)
+                .pathInfo(mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP).getMPathInfo())
+                .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
+                .build();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "en route keyword search.");
+        return mSearchAdapter.enRouteKeywordSearch(requestParameterBuilder);
+    }
+
+    /**
      *  pid批量搜索
      * @param pidList   pid列表
      * @param scene scene推荐场景取值， 0: 无效场景，1: 搜索详情页场景，2：路线规划页场景，3：导航结束页场景，4：导航中

@@ -159,6 +159,11 @@ public final class SearchRequestParamV2 {
         paramV2.userLoc.lon = searchRequestInfo.getUserLoc().getLon();
         paramV2.userLoc.lat = searchRequestInfo.getUserLoc().getLat();
         paramV2.naviScene = SearchEnrouteScene.BeforeNavi;
+        paramV2.classifyParam.retainState = searchRequestInfo.getRetainState();
+        paramV2.classifyParam.checkedLevel = searchRequestInfo.getCheckedLevel();
+        paramV2.classifyParam.classifyV2Data = searchRequestInfo.getClassifyV2Data();
+        paramV2.classifyParam.classifyV2Level2Data = searchRequestInfo.getClassifyV2Level2Data();
+        paramV2.classifyParam.claissfyV2Level3Data = searchRequestInfo.getClassifyV2Level3Data();
         Logger.d("NaviApp_Search_Service", "convertToSearchEnRouteKeywordParamV2 keyword: " + paramV2.keyword
                 + " userLoc: " + paramV2.userLoc.lat + "," + paramV2.userLoc.lon
                 + " naviScene: " + paramV2.naviScene);

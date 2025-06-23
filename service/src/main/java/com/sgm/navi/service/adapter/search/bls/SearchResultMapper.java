@@ -959,7 +959,52 @@ public final class SearchResultMapper {
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
         searchResultEntity.setPoiList(poiList);
+        searchResultEntity.setTotal(poiList.size());
         searchResultEntity.setPoiType(Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork()) ? 1 : 0);//0=离线数据，1=在线数据
+
+        //获取筛选分类数据
+        if (result.classify != null) {
+            searchResultEntity.setRetain(result.classify.retainState);//筛选搜索需要的信息
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromSearchEnRouteResult retainState: " + result.classify.retainState);
+            if (result.classify.classifyItemInfo != null) {
+                //一筛参数列表
+                final List<SearchCategoryLocalInfo> categoryLocalInfoList = Optional.ofNullable(result.classify.classifyItemInfo.categoryInfoList)
+                        .orElse(new ArrayList<>())
+                        .stream()
+                        .map(this::mapSearchCategoryInfo)
+                        .collect(Collectors.toList());
+                if (!categoryLocalInfoList.isEmpty()) {
+                    for (int i = 0; i < categoryLocalInfoList.size(); i++) {
+                        final List<SearchChildCategoryLocalInfo> level1Infos = Optional.ofNullable(result.classify.classifyItemInfo.categoryInfoList.
+                                        get(i).childCategoryInfo)
+                                .orElse(new ArrayList<>())
+                                .stream()
+                                .map(this::mapSearchChildCategoryInfo)
+//                                .filter(this::shouldIncludeInResult)//过滤value或者name值不存在的item
+                                .collect(Collectors.toList());
+                        if (!level1Infos.isEmpty()) {
+                            for (int j = 0; j < level1Infos.size(); j++) {
+                                final List<SearchChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
+                                                result.classify.classifyItemInfo.categoryInfoList.
+                                                        get(i).childCategoryInfo.
+                                                        get(j).childCategoryInfoList)
+                                        .orElse(new ArrayList<>())
+                                        .stream()
+                                        .map(this::mapSearchChildCategoryInfo)
+//                                        .filter(this::shouldIncludeInResult)//过滤value或者name值不存在的item
+                                        .collect(Collectors.toList());
+                                level1Infos.get(j).setCategoryLocalInfos(level1ChildInfos);
+                            }
+                            // 过滤掉没有子节点且自身没有value的数据
+                            level1Infos.removeIf(info -> !ConvertUtils.isEmpty(info.getCategoryLocalInfos()) && info.getCategoryLocalInfos().isEmpty() && ConvertUtils.isEmpty(info.getValue()));
+                        }
+                        categoryLocalInfoList.get(i).setCategoryLocalInfos(level1Infos);
+                    }
+                }
+                searchResultEntity.setLocalInfoList(categoryLocalInfoList);
+            }
+
+        }
         return searchResultEntity;
     }
 
