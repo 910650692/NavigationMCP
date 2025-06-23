@@ -284,6 +284,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             mFreqAddressLayout.addView(itemView, params);
         }
 
+
+
+
         // 添加按钮逻辑
         if (addressCount <= 3) {
             final View addButton = LayoutInflater.from(getContext()).inflate(R.layout.item_add_frequent_address, mFreqAddressLayout, false);
@@ -292,6 +295,13 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             addButton.measure(withSpec, heightSpec);
             final int targetRow = addressCount / maxItemPerRow; // 计算应插入的行
             final int targetCol = addressCount % maxItemPerRow; // 计算应插入的列
+
+            //BUGFIX 1058717
+            if (mFrequentAddressList.size() >= 3) {
+                addButton.setVisibility(View.GONE);
+            } else {
+                addButton.setVisibility(View.VISIBLE);
+            }
 
             addButton.setOnClickListener(v -> {
                 if (mFrequentAddressList.size() >= 3) {
