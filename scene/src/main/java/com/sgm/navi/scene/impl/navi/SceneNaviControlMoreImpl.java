@@ -346,7 +346,6 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
                     @Override
                     public void run() {
                         notifySceneStateChange(false);
-                        setImmersiveStatus(ImersiveStatus.TOUCH);
                         if(mCallBack != null){
                             mCallBack.skipNaviControlScene();
                         }
@@ -394,6 +393,7 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
         if (mNaviPackage.getFixedOverViewStatus() || mNaviPackage.getClusterFixOverViewStatus()) {
             return;
         }
+        initTimer();
         if (null != mImmersiveStatusScene) {
             Logger.d(TAG, MAP_TOUCH, " immersiveStatus:" , immersiveStatus);
             mImmersiveStatusScene.setImmersiveStatus(mMapTypeId, immersiveStatus);
