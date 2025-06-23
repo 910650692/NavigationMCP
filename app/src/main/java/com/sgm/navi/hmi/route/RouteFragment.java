@@ -103,6 +103,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private final int mMaxWidthWithBatter= 322;
     private final int mMaxWidthWithoutBatter= 530;
     private static final int SWIPE_THRESHOLD = 100;
+    private static final int TIPS_DELAY = 8000;
     private RouteRequestLoadingDialog mRouteRequestLoadingDialog;
     private RouteSearchLoadingDialog mSearchLoadingDialog;
     private RouteViaPointAdapter mRouteViaPointAdapter;
@@ -453,6 +454,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 }
             });
             mMsgTopDialog.showDialog();
+            ThreadManager.getInstance().postDelay(this::hideTrip, TIPS_DELAY);
         }
     }
 
