@@ -7,8 +7,6 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 
 import com.android.utils.log.Logger;
-import com.sgm.navi.burypoint.anno.HookMethod;
-import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.hmi.permission.ReminderDialog;
 import com.sgm.navi.service.AppCache;
@@ -40,12 +38,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.d(TAG, "检测隐私弹窗和网络 缓存等");
-        if (mModel.isShowStartupException()) {
-            popStartupExceptionDialog();
-        } else {
-            checkPrivacyRights();
-        }
+        checkPrivacyRights();
     }
 
     private void checkPrivacyRights() {
@@ -81,24 +74,6 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         });
         reminderDialog.show();
     }
-
-    @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN_FAIL)
-    public void popStartupExceptionDialog() {
-        StartupExceptionDialog startupExceptionDialog = new StartupExceptionDialog(mView, new IBaseDialogClickListener() {
-            @Override
-            public void onNetWorkConnect() {
-                checkPrivacyRights();
-            }
-
-            @Override
-            public void onExit() {
-                StackManager.getInstance().exitApp();
-            }
-        });
-        startupExceptionDialog.show();
-    }
-
-
 
     public void startMapActivity() {
         Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);

@@ -12,6 +12,8 @@ import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.NaviService;
+import com.sgm.navi.burypoint.anno.HookMethod;
+import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.service.AppCache;
@@ -19,10 +21,13 @@ import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.code.UserDataCode;
+import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.logicpaket.activate.ActivatePackage;
 import com.sgm.navi.service.logicpaket.activate.IActivateObserver;
 import com.sgm.navi.ui.base.BaseModel;
+import com.sgm.navi.ui.base.StackManager;
+import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.io.File;
 
@@ -89,7 +94,11 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     @Override
     public void onPermissionsSuccess() {
         Logger.d(TAG, "权限都申请成功 开启引擎初始化");
-        startInitEngine();
+        if (isShowStartupException()) {
+            popStartupExceptionDialog();
+        } else {
+            startInitEngine();
+        }
     }
 
     @Override
@@ -101,7 +110,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     public boolean isShowStartupException() {
         boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
         boolean isOfflineData = "1".equals(commonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
-        boolean isCache = isCached();
+        boolean isCache = false;  //目前默认false
         Logger.d(TAG, "is net connect: " + isNetConnect + ", is offline data: " + isOfflineData + ", is cached: " + isCache);
         return !(isNetConnect || isOfflineData || isCache);
     }
@@ -126,7 +135,11 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     public void checkPermission() {
         Logger.i(TAG, "checkPermission");
         if (PermissionUtils.getInstance().checkoutPermission()) {
-            startInitEngine();
+            if (isShowStartupException()) {
+                popStartupExceptionDialog();
+            } else {
+                startInitEngine();
+            }
         } else {
             PermissionUtils.getInstance().requestPermission();
         }
@@ -136,6 +149,24 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
         Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
         ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN_FAIL)
+    public void popStartupExceptionDialog() {
+        StartupExceptionDialog startupExceptionDialog = new StartupExceptionDialog(
+            StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()),
+            new IBaseDialogClickListener() {
+                @Override
+                public void onNetWorkConnect() {
+                    startInitEngine();
+                }
+
+                @Override
+                public void onExit() {
+                    StackManager.getInstance().exitApp();
+                }
+            });
+        startupExceptionDialog.show();
     }
 
     /***
