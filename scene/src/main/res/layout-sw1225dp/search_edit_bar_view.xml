@@ -34,6 +34,7 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
+            android:textCursorDrawable="@drawable/cursor_color"
             android:textColor="@color/search_deep_text_day"
             android:textColorHint="@color/search_shallow_text_day"
             android:textSize="@dimen/sp_29"
