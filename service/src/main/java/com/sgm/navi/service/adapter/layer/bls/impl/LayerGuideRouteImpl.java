@@ -86,7 +86,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         initBizTypeVisible();
         setRouteJamBubblesVisible(true);
         setGuideTrafficVisible(true);
-        setRouteEnergyEmptyPointVisible(false);
+        setRouteEnergyEmptyPointVisible(true);
         Logger.d(TAG, "LayerGuideRouteImpl init");
     }
 
@@ -174,6 +174,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 GuideLabelLayerItem guideLabelLayerItem = (GuideLabelLayerItem) item;
                 int pathIndex = guideLabelLayerItem.getMAlterPathIndx();
                 result.setIndex(pathIndex);
+                result.setEventID(guideLabelLayerItem.getMPathId());
                 type = LayerPointItemType.ROUTE_GUIDE_LABEL;
             }
         }
@@ -205,7 +206,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     private void updatePaths() {
         getLayerGuideRouteControl().updatePathArrow();
         setRouteJamBubblesVisible(true);
-        setRouteEnergyEmptyPointVisible(false);
+        setRouteEnergyEmptyPointVisible(true);
         int result = getLayerGuideRouteControl().updatePaths();
         Logger.d(TAG, "LayerGuideRouteImpl updatePaths result : " + result);
     }

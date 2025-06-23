@@ -20,6 +20,7 @@ public class LayerItemRoutePointClickResult {
     public String toString() {
         return "LayerItemRoutePointClickResult{" +
                 "index=" + index +
+                ", eventID=" + eventID +
                 ", log=" + log +
                 ", lat=" + lat +
                 '}';
