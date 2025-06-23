@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 
 import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.map.MapMode;
+import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
@@ -57,6 +58,6 @@ public interface IMapAdapterCallback {
     default void isEnterPreview(MapType mapTypeId, boolean isEnterPreview) {
     }
 
-    default void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
+    default void onEGLScreenshot(MapType mapTypeId, byte[] bytes, MapScreenShotDataInfo info) {
     }
 }

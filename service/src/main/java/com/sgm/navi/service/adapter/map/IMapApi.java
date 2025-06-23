@@ -1,5 +1,7 @@
 package com.sgm.navi.service.adapter.map;
 
+import android.graphics.Rect;
+
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.bean.PreviewParams;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
@@ -157,4 +159,8 @@ public interface IMapApi {
      * @return
      */
     double calcStraightDistance(GeoPoint startPoint, GeoPoint endPoint);
+
+    void openOrCloseScreenshot(MapType mapTypeId, boolean isOpen);
+
+    void updateScreenshotRect(MapType mapTypeId, Rect rect);
 }

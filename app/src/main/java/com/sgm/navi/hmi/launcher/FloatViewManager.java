@@ -99,16 +99,17 @@ public class FloatViewManager {
      * 主动获取Launcher桌面方法：
      * @return
      */
-    public int getDesktopMode() {
-        currentDeskMode = Settings.Global.getInt(mContentResolver, DESKTOP_MODE_KEY, DesktopMode.KANZI_MODE.getValue());
-        Logger.i(TAG, "getDesktopMode", currentDeskMode);
-        return currentDeskMode;
+    public void getDesktopMode() {
+        ThreadManager.getInstance().execute(() -> {
+            currentDeskMode = Settings.Global.getInt(mContentResolver, DESKTOP_MODE_KEY, DesktopMode.KANZI_MODE.getValue());
+            Logger.i(TAG, "getDesktopMode", currentDeskMode);
+        });
     }
 
     private FloatViewManager() {
         mContentResolver = AppCache.getInstance().getMApplication().getContentResolver();
         mContentResolver.registerContentObserver(uri, true, observer);
-        currentDeskMode = getDesktopMode();
+        getDesktopMode();
     }
 
     private static final class Holder {
@@ -143,38 +144,47 @@ public class FloatViewManager {
      * 显示所有的Widgets
      */
     public void showAllCardWidgets() {
-        try {
-            if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
-                mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER);
-                Logger.i(TAG, "showAllCardWidgets-Success!");
+        ThreadManager.getInstance().execute(() -> {
+            try {
+                if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
+                    mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER);
+                    Logger.i(TAG, "showAllCardWidgets-Success!");
+                }
+            } catch (Exception e) {
+                Logger.e(TAG, "showAllCardWidgets failed", e.getMessage());
             }
-        } catch (Exception e) {
-            Logger.e(TAG, "showAllCardWidgets failed", e.getMessage());
-        }
+        });
     }
 
-    public void hideAllCardWidgets() {
-        stopTimer();
-        try {
-            if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
-                mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.HIDE_APP_WIDGET_AND_WEATHER);
-                starTimer();
-                Logger.i(TAG, "hideAllCardWidgets-Success!");
+    public void hideAllCardWidgets(boolean isNeedStartTimer) {
+        ThreadManager.getInstance().execute(() -> {
+            Logger.i(TAG, "hideAllCardWidgets", isNeedStartTimer);
+            stopTimer();
+            try {
+                if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
+                    mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.HIDE_APP_WIDGET_AND_WEATHER);
+                    if (isNeedStartTimer) {
+                        starTimer();
+                    }
+                    Logger.i(TAG, "hideAllCardWidgets-Success!");
+                }
+            } catch (Exception e) {
+                Logger.e(TAG, "showAllCardWidgets failed", e.getMessage());
             }
-        } catch (Exception e) {
-            Logger.e(TAG, "showAllCardWidgets failed", e.getMessage());
-        }
+        });
     }
 
     private void starTimer() {
-        Logger.i(TAG, "starTimer");
-        try {
-            scheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
-                showAllCardWidgets();
-            }, DELAY_TIME);
-        } catch (Exception e) {
-            Logger.i(TAG, "starTimer failed", e.getMessage());
-        }
+        ThreadManager.getInstance().execute(() -> {
+            Logger.i(TAG, "starTimer");
+            try {
+                scheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
+                    showAllCardWidgets();
+                }, DELAY_TIME);
+            } catch (Exception e) {
+                Logger.i(TAG, "starTimer failed", e.getMessage());
+            }
+        });
     }
 
     private void stopTimer() {

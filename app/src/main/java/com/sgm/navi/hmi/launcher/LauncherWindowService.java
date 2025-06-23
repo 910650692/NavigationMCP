@@ -35,6 +35,7 @@ import com.sgm.navi.hmi.utils.CaptureScreenUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
+import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
@@ -153,10 +154,9 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     }
 
     @Override
-    public void onEGLScreenshot(MapType mapType, byte[] bytes) {
-        IEglScreenshotCallBack.super.onEGLScreenshot(mapType, bytes);
+    public void onEGLScreenshot(MapType mapType, byte[] bytes, MapScreenShotDataInfo info) {
         if (mapType == MAP_TYPE && !ConvertUtils.isNull(mView) && !ConvertUtils.isEmpty(bytes) && mCrossImgIsOnShowing) {
-            captureScreenUtils.processPicture(bytes, mLayerAdapter.getRoadCrossRect(MAP_TYPE));
+            captureScreenUtils.processPicture(bytes, info);
         }
     }
 
@@ -288,6 +288,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     public void changeCrossVisible(boolean isVisible) {
         Logger.i(TAG, "changeCrossVisible:" + isVisible);
         mCrossImgIsOnShowing = isVisible;
+        if (!isVisible && !ConvertUtils.isNull(mBinding)) {
+            ThreadManager.getInstance().postUi(() -> {
+                mBinding.ivCross.setVisibility(View.GONE);
+            });
+        }
     }
 
     @Override
@@ -347,7 +352,9 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     }
 
     private boolean isOnNavigating() {
-        return ConvertUtils.equals(currentNaviStatus, NaviStatus.NaviStatusType.NAVING);
+        final boolean isOnNavigating = ConvertUtils.equals(currentNaviStatus, NaviStatus.NaviStatusType.NAVING);
+        Logger.i(TAG, "isOnNavigating", isOnNavigating);
+        return isOnNavigating;
     }
 
     public static LauncherWindowService getInstance() {

@@ -9,10 +9,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -67,38 +66,31 @@ public class CaptureScreenUtils {
     /***
      * 裁剪图片, 需要在子线程执行
      * @param bytes
-     * @param rect
+     * @param info
      * @return 返回一个期望的Bitmap
      */
     @WorkerThread
-    public void processPicture(byte[] bytes, Rect rect) {
+    public void processPicture(byte[] bytes, MapScreenShotDataInfo info) {
         ThreadManager.getInstance().execute(() -> {
             Bitmap orginBitmap = null;
             Bitmap flippedBitmap = null;
-            Bitmap cropBitmap = null;
             try {
-                // 注意：这个宽高要和API里面设置的裁剪区域大小一致
-                int width = ScreenUtils.Companion.getInstance().getRealScreenWidth(AppCache.getInstance().getMContext());
-                int height = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppCache.getInstance().getMContext());
-                orginBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                Bitmap.Config config = info.format == 0 ? Bitmap.Config.RGB_565 : Bitmap.Config.ARGB_8888;
+                orginBitmap = Bitmap.createBitmap(info.width, info.height, config);
                 orginBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));
                 // 翻转图像
                 Matrix matrix = new Matrix();
                 matrix.postScale(1, -1);
                 matrix.postTranslate(orginBitmap.getWidth(), orginBitmap.getHeight());
                 flippedBitmap = Bitmap.createBitmap(orginBitmap, 0, 0, orginBitmap.getWidth(), orginBitmap.getHeight(), matrix, true);
-                cropBitmap = Bitmap.createBitmap(flippedBitmap, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);// 数值来自UI（1.12-11）
             } catch (Exception e) {
                 Logger.e(TAG, "processPicture failed:" + e.getMessage());
             } finally {
                 if (!ConvertUtils.isNull(orginBitmap)) {
                     orginBitmap.recycle();
                 }
-                if (!ConvertUtils.isNull(flippedBitmap)) {
-                    flippedBitmap.recycle();
-                }
                 Logger.d(TAG, "processPicture end!");
-                notifyProcessCompleted(cropBitmap);
+                notifyProcessCompleted(flippedBitmap);
             }
         });
     }

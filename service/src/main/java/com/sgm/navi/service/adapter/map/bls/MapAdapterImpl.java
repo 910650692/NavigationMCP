@@ -1,5 +1,7 @@
 package com.sgm.navi.service.adapter.map.bls;
 
+import android.graphics.Rect;
+
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.layer.model.BizLayerUtil;
@@ -229,5 +231,15 @@ public class MapAdapterImpl implements IMapApi {
     public double calcStraightDistance(GeoPoint startPoint, GeoPoint endPoint) {
         return BizLayerUtil.calcDistanceBetweenPoints(new Coord2DDouble(startPoint.getLon(), startPoint.getLat()),
                 new Coord2DDouble(endPoint.getLon(), endPoint.getLat()));
+    }
+
+    @Override
+    public void openOrCloseScreenshot(MapType mapTypeId, boolean isOpen) {
+        mapViewPoolManager.getMapViewImpl(mapTypeId).openOrCloseScreenshot(isOpen);
+    }
+
+    @Override
+    public void updateScreenshotRect(MapType mapTypeId, Rect rect) {
+        mapViewPoolManager.getMapViewImpl(mapTypeId).updateScreenshotRect(rect);
     }
 }

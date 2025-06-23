@@ -80,7 +80,7 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
                 Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
             }
         });
-        FloatViewManager.getInstance().hideAllCardWidgets();
+        FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 
     @Override
@@ -107,6 +107,7 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
             mFailedDialog.cancel();
         }
         PermissionUtils.getInstance().remove();
+        FloatViewManager.getInstance().showAllCardWidgets();
         super.onDestroy();
     }
 

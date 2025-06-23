@@ -20,6 +20,7 @@ import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.ActivityMapBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
+import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
 import com.sgm.navi.hmi.startup.StartupActivity;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
@@ -139,6 +140,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onStart() {
         super.onStart();
+        LauncherWindowService.getInstance().showOrHideFloatView(false);
     }
 
     @Override
@@ -270,7 +272,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onFragmentSizeChanged();
         mViewModel.stopCruise();
         setMapFocusable(false);
-        FloatViewManager.getInstance().hideAllCardWidgets();
+        FloatViewManager.getInstance().hideAllCardWidgets(true);
     }
 
     public void setMapFocusable(boolean b) {

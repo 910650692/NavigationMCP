@@ -23,4 +23,9 @@ public class MainScreenMapView extends FullScreenMapView {
     public MapType provideMapTypeId() {
         return MapType.MAIN_SCREEN_MAIN_MAP;
     }
+
+    @Override
+    public boolean isOpenScreen() {
+        return true;
+    }
 }

@@ -14,6 +14,7 @@ import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.HUDMapView;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
+import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
@@ -122,7 +123,7 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
     }
 
     @Override
-    public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
+    public void onEGLScreenshot(MapType mapTypeId, byte[] bytes, MapScreenShotDataInfo info) {
         Logger.d(TAG, "HUDMap截图数据长度：" + bytes.length, "hudCallbackMap size : " + hudCallbackMap.size());
         for (IHudCallback hudCallback : hudCallbackMap.values()) {
             hudCallback.onEGLScreenshot(mapTypeId, bytes);

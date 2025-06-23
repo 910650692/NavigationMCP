@@ -1,5 +1,6 @@
 package com.sgm.navi.service.logicpaket.map;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
@@ -17,6 +18,7 @@ import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.bean.PreviewParams;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
+import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapStateStyle;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
@@ -406,12 +408,12 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     }
 
     @Override
-    public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
+    public void onEGLScreenshot(MapType mapTypeId, byte[] bytes, MapScreenShotDataInfo info) {
         if (callbacks.containsKey(mapTypeId)) {
             callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
                 @Override
                 public void accept(IMapPackageCallback callback) {
-                    callback.onEGLScreenshot(mapTypeId, bytes);
+                    callback.onEGLScreenshot(mapTypeId, bytes, info);
                 }
             });
         }
@@ -469,5 +471,13 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
                 }
             }
         });
+    }
+
+    public void openOrCloseScreenshot(MapType mapTypeId, boolean isOpen) {
+        mMapAdapter.openOrCloseScreenshot(mapTypeId, isOpen);
+    }
+
+    public void updateScreenshotRect(MapType mapTypeId, Rect rect) {
+        mMapAdapter.updateScreenshotRect(mapTypeId, rect);
     }
 }

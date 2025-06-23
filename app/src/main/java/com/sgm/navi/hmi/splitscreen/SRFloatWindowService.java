@@ -34,6 +34,7 @@ import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
+import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
@@ -155,10 +156,10 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
     }
 
     @Override
-    public void onEGLScreenshot(MapType mapType, byte[] bytes) {
+    public void onEGLScreenshot(MapType mapType, byte[] bytes, MapScreenShotDataInfo info) {
         IEglScreenshotCallBack.super.onEGLScreenshot(mapType, bytes);
         if (mapType == MAP_TYPE && !ConvertUtils.isNull(mView) && !ConvertUtils.isEmpty(bytes) && mCrossImgIsOnShowing) {
-            captureScreenUtils.processPicture(bytes, mLayerAdapter.getRoadCrossRect(MAP_TYPE));
+            captureScreenUtils.processPicture(bytes, info);
         }
     }
 

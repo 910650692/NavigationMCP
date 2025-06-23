@@ -523,6 +523,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void onCrossImageInfo(final boolean isShowImage,
                                  final CrossImageEntity naviImageInfo) {
         Logger.i(TAG, "onCrossImageInfo isShowImage:" + isShowImage + " naviImageInfo:" + naviImageInfo);
+        mapPackage.openOrCloseScreenshot(MapType.MAIN_SCREEN_MAIN_MAP, isShowImage);
         lastCrossEntity = naviImageInfo;
         mCrossImgIsOnShowing = isShowImage;
         ThreadManager.getInstance().postUi(() -> {
@@ -921,6 +922,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void setRoadCrossRect(final MapType surfaceViewId, final Rect rect) {
         Logger.i(TAG, "setRoadCrossRect");
         mLayerAdapter.updateRoadCrossRect(surfaceViewId, rect);
+        mapPackage.updateScreenshotRect(surfaceViewId, rect);
     }
 
     /**

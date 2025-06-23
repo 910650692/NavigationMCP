@@ -15,6 +15,7 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.map.IMapAdapterCallback;
 import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.map.MapMode;
+import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
@@ -304,13 +305,13 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
     }
 
     @Override
-    public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
+    public void onEGLScreenshot(MapType mapTypeId, byte[] bytes, MapScreenShotDataInfo info) {
         if (callbacks.containsKey(mapTypeId)) {
             Logger.d(TAG, mapTypeId, "==onEGLScreenshot", bytes.length);
             callbacks.get(mapTypeId).forEach(new Consumer<IMapAdapterCallback>() {
                 @Override
                 public void accept(IMapAdapterCallback callback) {
-                    callback.onEGLScreenshot(mapTypeId, bytes);
+                    callback.onEGLScreenshot(mapTypeId, bytes, info);
                 }
             });
         }

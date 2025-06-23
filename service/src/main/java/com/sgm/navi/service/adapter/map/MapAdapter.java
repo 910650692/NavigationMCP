@@ -1,5 +1,7 @@
 package com.sgm.navi.service.adapter.map;
 
+import android.graphics.Rect;
+
 import com.sgm.navi.service.AdapterConfig;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.adapter.setting.SettingAdapter;
@@ -241,5 +243,13 @@ public class MapAdapter {
 
     public void resetTickCount(MapType mapTypeId, int tickCount) {
         mIMapApi.resetTickCount(mapTypeId, tickCount);
+    }
+
+    public void openOrCloseScreenshot(MapType mapTypeId, boolean isOpen) {
+        mIMapApi.openOrCloseScreenshot(mapTypeId, isOpen);
+    }
+
+    public void updateScreenshotRect(MapType mapTypeId, Rect rect) {
+        mIMapApi.updateScreenshotRect(mapTypeId, rect);
     }
 }

@@ -42,6 +42,6 @@ public class MapViewModel extends BaseMapViewModel {
 
     @Override
     public boolean isSupportSplitScreen() {
-        return super.isSupportSplitScreen();
+        return true;
     }
 }

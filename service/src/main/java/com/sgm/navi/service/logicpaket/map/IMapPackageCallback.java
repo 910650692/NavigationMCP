@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 
 import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.map.MapMode;
+import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -47,6 +48,5 @@ public interface IMapPackageCallback {
     //语音通过MapPackage触发此接口，传递打开页面的参数.
     default void onVoiceOpenPage(MapType mapTypeId, Bundle bundle) {}
 
-    default void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {}
-
+    default void onEGLScreenshot(MapType mapTypeId, byte[] bytes, MapScreenShotDataInfo info) {}
 }

@@ -4,6 +4,7 @@ package com.sgm.navi.service.adapter.map.bls;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -75,6 +76,7 @@ import com.sgm.navi.service.adapter.map.IMapAdapterCallback;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.bean.PreviewParams;
 import com.sgm.navi.service.define.map.MapMode;
+import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapStateStyle;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.MapViewParams;
@@ -112,7 +114,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     private int isZoomIn = -1;
 
     private IMapAdapterCallback callback;
-
+    private boolean isOnScreenshoting = false;
+    private Rect crossImgScreenshotRect;
     public MapViewImpl(Context context, MapType mapType, MapService mapService) {
         this(context, null);
         this.mapType = mapType;
@@ -500,10 +503,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 mapViewParams.getScreenWidth(),
                 mapViewParams.getScreenHeight()
         );
-        initScreenshotParams();
-        if (mapViewParams.isOpenScreen()) {
-            startScreenshot();
-        }
     }
 
     private void updateMapPortParams(long x, long y, long width, long height, long screenWidth, long screenHeight) {
@@ -537,10 +536,17 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     }
 
     public void startScreenshot() {
-        Logger.d(TAG, "startScreenshot size width = " + mapViewParams.getWidth(), " height = ", mapViewParams.getHeight());
-        getDefaultDevice().setScreenshotRect(0, 0, (int) mapViewParams.getWidth(), (int) mapViewParams.getHeight());
+        if (ConvertUtils.isNull(crossImgScreenshotRect)) {
+            Logger.e(TAG, "updateScreenshotRect failed , rect is null!");
+            return;
+        }
+        final int mapHeight = mapViewParams == null ? 0 : (int) mapViewParams.getScreenHeight();
+        final int left = crossImgScreenshotRect.left;
+        final int top = mapHeight - crossImgScreenshotRect.bottom;
+        getDefaultDevice().setScreenshotRect(left, top,  crossImgScreenshotRect.width(), crossImgScreenshotRect.height());
         getDefaultDevice().setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, this);
         getDefaultDevice().setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
+        Logger.i(TAG, "startScreenshot-success!");
     }
 
     @HookMethod
@@ -795,7 +801,26 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     @Override
     public void onEGLScreenshot(int i, byte[] pBitmapBuffer, ScreenShotDataInfo screenShotDataInfo, int i1, long l) {
         if (callback != null) {
-            callback.onEGLScreenshot(mapType, pBitmapBuffer);
+            callback.onEGLScreenshot(mapType, pBitmapBuffer, GsonUtils.convertToT(screenShotDataInfo, MapScreenShotDataInfo.class));
+        }
+    }
+
+    public void openOrCloseScreenshot(boolean isOpen) {
+        Logger.i(TAG, "openOrCloseScreenshot", isOpen);
+        if (isOpen) {
+            getDefaultDevice().setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, this);
+            getDefaultDevice().setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
+        } else {
+            getDefaultDevice().setScreenshotMode(ScreenShotMode.ScreenShotModeNull, null);
+        }
+        isOnScreenshoting = isOpen;
+    }
+
+    public void updateScreenshotRect(Rect rect) {
+        crossImgScreenshotRect = rect;
+        if (mapViewParams.isOpenScreen()) {
+            initScreenshotParams();
+            startScreenshot();
         }
     }
 }
