@@ -665,6 +665,14 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
 
     }
 
+    /**
+     * 设置终点图片
+     *
+     */
+    public void setSearchCharge(boolean isCharge) {
+        mRouteChargeGasListPageView.routeRightTabListChargeScene.setSearchCharge(isCharge);
+    }
+
     /***
      * 展示充电站列表
      * @param poiInfoEntities 搜索数据

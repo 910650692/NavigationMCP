@@ -10,7 +10,7 @@ public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<Scene
         implements ISceneRouteGasStationWeatherService {
 
     public boolean isGasStationSelect() {
-        return mIsChargingStationSelect;
+        return mIsGasStationSelect;
     }
 
     public void setGasStationSelect(final boolean isGasStationSelect) {

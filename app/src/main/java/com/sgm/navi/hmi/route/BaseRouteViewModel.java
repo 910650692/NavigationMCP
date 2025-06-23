@@ -1656,8 +1656,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void showHideTab(final boolean isLongRoute) {
         if (mModel.powerType() == 1) {
             mTabVisibility.set(isLongRoute ? 2 : 1);
-        } else {
+        } else if (mModel.powerType() == 0){
             mTabVisibility.set(isLongRoute ? 2 : 3);
+        } else if (mModel.powerType() == 2) {
+            mTabVisibility.set(isLongRoute ? 2 : 4);
         }
     }
 
@@ -1878,6 +1880,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 if (isChecked) {
                     mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
                     mModel.getSearchListChargeAndShow(mSearchKeyWord, 0);
+                    mView.setSearchCharge(true);
                 } else {
                     hideRouteSearchDetailsUI();
                     hideRouteSearchListUI();
@@ -1908,6 +1911,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 if (isChecked) {
                     mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
                     mModel.getSearchListChargeAndShow(mGasSearchKeyWord, 0);
+                    mView.setSearchCharge(false);
                 } else {
                     hideRouteSearchDetailsUI();
                     hideRouteSearchListUI();
@@ -1924,8 +1928,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void onTabListGasChargeClick(final int tabIndex) {
         if (mSearchListType == 0) {
             mModel.getSearchListChargeAndShow(mSearchKeyWord, tabIndex);
+            mView.setSearchCharge(true);
         } else if (mSearchListType == 1) {
             mModel.getSearchListChargeAndShow(mGasSearchKeyWord, tabIndex);
+            mView.setSearchCharge(false);
         }
     }
 
@@ -1936,6 +1942,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         if (Boolean.FALSE.equals(mIsChargingSelect)) {
             mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
             mModel.getSearchListChargeAndShow(mSearchKeyWord, 0);
+            mView.setSearchCharge(true);
         } else {
             hideRouteSearchDetailsUI();
             hideRouteSearchListUI();
@@ -1956,6 +1963,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         if (Boolean.FALSE.equals(mIsGasSelect)) {
             mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
             mModel.getSearchListChargeAndShow(mGasSearchKeyWord, 0);
+            mView.setSearchCharge(false);
         } else {
             hideRouteSearchDetailsUI();
             hideRouteSearchListUI();

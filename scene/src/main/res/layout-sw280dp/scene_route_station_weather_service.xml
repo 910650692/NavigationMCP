@@ -14,7 +14,7 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_600">
+        android:layout_height="wrap_content">
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_right_tab_list_service"
@@ -93,9 +93,11 @@
             android:layout_height="@dimen/dp_200"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:focusable="true"
+            app:layout_goneMarginTop="@dimen/dp_0"
+            app:layout_constraintTop_toBottomOf="@+id/route_right_tab_list_gas_station"
             app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
             app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_right_tab_list_tv_charging_station"
@@ -131,7 +133,8 @@
             android:layout_height="@dimen/dp_200"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:focusable="true"
-            app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_charging_station"
             app:layout_constraintStart_toStartOf="parent">
 
             <com.sgm.navi.ui.view.SkinTextView

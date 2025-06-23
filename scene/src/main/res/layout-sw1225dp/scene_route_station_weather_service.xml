@@ -12,7 +12,7 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_545"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <com.sgm.navi.ui.view.SkinView
@@ -20,10 +20,12 @@
             clickCommand="@{Scene.clickService}"
             android:layout_width="@dimen/dp_77"
             android:layout_height="@dimen/dp_90"
+            android:layout_marginBottom="@dimen/dp_22"
+            android:layout_marginStart="@dimen/dp_98"
+            android:layout_marginEnd="@dimen/dp_61"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/route_right_tab_list_weather"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/route_right_tab_list_weather" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_right_tab_list_tv_service"
@@ -54,6 +56,7 @@
             clickCommand="@{Scene.clickWeather}"
             android:layout_width="@dimen/dp_77"
             android:layout_height="@dimen/dp_90"
+            android:layout_marginStart="@dimen/dp_98"
             app:layout_constraintEnd_toStartOf="@+id/route_right_tab_list_service"
             app:layout_constraintStart_toEndOf="@+id/route_right_tab_list_charging_station"
             app:layout_constraintTop_toTopOf="@+id/route_right_tab_list_service" />
@@ -85,8 +88,10 @@
             clickCommand="@{Scene.clickChargingStation}"
             android:layout_width="@dimen/dp_77"
             android:layout_height="@dimen/dp_90"
+            android:layout_marginStart="@dimen/dp_98"
+            app:layout_goneMarginStart="@dimen/dp_61"
             app:layout_constraintEnd_toStartOf="@id/route_right_tab_list_weather"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/route_right_tab_list_gas_station"
             app:layout_constraintTop_toTopOf="@+id/route_right_tab_list_weather">
 
             <com.sgm.navi.ui.view.SkinTextView
@@ -118,7 +123,7 @@
             clickCommand="@{Scene.clickGasStation}"
             android:layout_width="@dimen/dp_77"
             android:layout_height="@dimen/dp_90"
-            app:layout_constraintEnd_toStartOf="@id/route_right_tab_list_weather"
+            android:layout_marginStart="@dimen/dp_61"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/route_right_tab_list_weather">
 

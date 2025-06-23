@@ -14,7 +14,7 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_146"
-        android:layout_height="@dimen/dp_436">
+        android:layout_height="wrap_content">
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_right_tab_list_service"
@@ -83,6 +83,8 @@
             clickCommand="@{Scene.clickChargingStation}"
             android:layout_width="@dimen/dp_146"
             android:layout_height="@dimen/dp_146"
+            app:layout_goneMarginTop="@dimen/dp_0"
+            app:layout_constraintTop_toBottomOf="@+id/route_right_tab_list_gas_station"
             app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -116,7 +118,8 @@
             clickCommand="@{Scene.clickGasStation}"
             android:layout_width="@dimen/dp_146"
             android:layout_height="@dimen/dp_146"
-            app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_charging_station"
             app:layout_constraintStart_toStartOf="parent">
 
             <com.sgm.navi.ui.view.SkinTextView

@@ -99,9 +99,12 @@ public class SceneRouteGasStationWeatherServiceView extends BaseSceneView<SceneR
         if (carType == 1) {
             mViewBinding.routeRightTabListGasStation.setVisibility(View.GONE);
             mViewBinding.routeRightTabListChargingStation.setVisibility(View.VISIBLE);
-        } else {
+        } else if (carType == 0) {
             mViewBinding.routeRightTabListGasStation.setVisibility(View.VISIBLE);
             mViewBinding.routeRightTabListChargingStation.setVisibility(View.GONE);
+        } else if (carType == 2) {
+            mViewBinding.routeRightTabListGasStation.setVisibility(View.VISIBLE);
+            mViewBinding.routeRightTabListChargingStation.setVisibility(View.VISIBLE);
         }
     }
 
