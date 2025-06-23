@@ -375,6 +375,9 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
             mSearchLoadingDialog.hide();
         }
+        if (ConvertUtils.isEmpty(mViewBinding)) {
+            return;
+        }
         mViewBinding.suggestResultListAlong.setVisibility(VISIBLE);
         mViewBinding.rcyRecordAlong.setVisibility(GONE);
         mViewBinding.sclDeleteRecordAlong.setVisibility(GONE);
