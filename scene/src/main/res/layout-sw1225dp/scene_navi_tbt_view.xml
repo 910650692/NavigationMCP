@@ -143,18 +143,18 @@
             android:id="@+id/stv_div_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintBaseline_toBaselineOf="@id/stv_div_distance"
             android:layout_marginLeft="@dimen/dp_7"
             android:gravity="center"
             android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_37"
-            app:layout_constraintBottom_toBottomOf="@id/gl_route_name"
             app:layout_constraintStart_toEndOf="@id/stv_div_distance"
-            app:layout_constraintTop_toTopOf="@id/gl_route_name"
             tools:text="米" />
         <!--道路信息-->
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_div_address"
-            android:layout_width="@dimen/dp_225"
+            android:layout_width="wrap_content"
+            android:maxWidth="@dimen/dp_225"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_35"
             android:layout_marginEnd="@dimen/dp_22"
@@ -163,10 +163,8 @@
             android:singleLine="true"
             android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_37"
-            app:layout_constraintBottom_toBottomOf="@id/gl_route_name"
+            app:layout_constraintBaseline_toBaselineOf="@id/stv_div_distance"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/stv_div_unit"
-            app:layout_constraintTop_toTopOf="@id/gl_route_name"
             app:layout_goneMarginLeft="@dimen/dp_24"
             tools:text="西藏中路东二路" />
 
