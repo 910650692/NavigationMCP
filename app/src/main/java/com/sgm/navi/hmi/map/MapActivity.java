@@ -189,8 +189,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onMoveMapCenter() {
         Logger.i(TAG, "onMoveMapCenter");
-        mBinding.searchMainTab.setVisibility(View.GONE);
-        mViewModel.setMapCenterInScreen();
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.searchMainTab.setVisibility(View.GONE);
+            mViewModel.setMapCenterInScreen();
+        });
     }
 
     @Override
