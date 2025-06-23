@@ -129,6 +129,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     private int[] mOfflineRouteErrorCode = {822083585, 822083587, 822083584, 822083590,
             822083592, 822083593, 822083594, 822083595, 822083596, 822083599, 822083600, 822083602};
     private long mPathID = -1;
+    private boolean mRouteTips = false;
 
     /**
      * 获取报错信息是否需要离线
@@ -1147,6 +1148,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     private void clearVai(final MapType mapTypeId) {
         mViaRouteParams.put(mapTypeId, new ArrayList<>());
+    }
+
+    public boolean isRouteTips() {
+        return mRouteTips;
+    }
+
+    public void setRouteTips(boolean mRouteTips) {
+        this.mRouteTips = mRouteTips;
     }
 
     /**

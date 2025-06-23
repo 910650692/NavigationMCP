@@ -649,8 +649,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mAlongTabSearchVisibility = new ObservableField<>(false);
         mRoutePreferenceVisibility = new ObservableField<>(false);
         mRoutePreferenceDrawableVisibility = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
-        mCountDownHint = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.route_start_navi)
-                + "(" + NumberUtils.NUM_9 + "s)");
+        mCountDownHint = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.route_start_navi));
         mRestriction = new ObservableField<>("");
         mRestrictionBackground = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.color.text_route_restriction_error));
         mRestrictionTextColor = new ObservableField<>(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_restriction_text_error));
@@ -1009,6 +1008,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      */
     public void initTimer() {
         if (NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
+            return;
+        }
+        if (mModel.isRouteTips()) {
+            Logger.d(TAG, "isRouteTips");
             return;
         }
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {

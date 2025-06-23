@@ -694,6 +694,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         return mRoutePackage.getSelectRouteIndex().get(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
+    public boolean isRouteTips() {
+        return mRoutePackage.isRouteTips();
+    }
+
+    public void setRouteTips(boolean mRouteTips) {
+        mRoutePackage.setRouteTips(mRouteTips);
+    }
+
     /**
      * 取消算路
      * */
@@ -962,15 +970,18 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 clearWeatherView();
                 clearRestArea();
             }
+            mRoutePackage.setRouteTips(false);
             if (!ConvertUtils.isEmpty(mViewModel) && mRouteLineInfos != null) {
                 if (routeIndex >= 0 && routeIndex < mRouteLineInfos.size()
                         && NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
                     if (!mRouteLineInfos.get(routeIndex).isMCanBeArrive() && !mRouteLineInfos.get(routeIndex).isMRestoration()) {
                         mViewModel.showTripDialog(ResourceUtils.Companion.getInstance().getString(R.string.route_trip_title)
                                 , ResourceUtils.Companion.getInstance().getString(R.string.route_trip_elec_not_arrive));
+                        mRoutePackage.setRouteTips(true);
                     } else if (mRouteLineInfos.get(routeIndex).getMRemainPercent() < 20 && !mRouteLineInfos.get(routeIndex).isMRestoration()) {
                         mViewModel.showTripDialog(ResourceUtils.Companion.getInstance().getString(R.string.route_trip_title)
                                 , ResourceUtils.Companion.getInstance().getString(R.string.route_trip_elec_small));
+                        mRoutePackage.setRouteTips(true);
                     }
                     final boolean atLeastDistance = !ConvertUtils.isEmpty(mRouteLineInfos)
                             && mRouteLineInfos.size() > routeIndex
