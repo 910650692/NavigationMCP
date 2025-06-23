@@ -45,6 +45,7 @@ import com.sgm.navi.service.define.route.RouteAvoidInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
 import com.sgm.navi.service.define.route.RouteCurrentPathParam;
 import com.sgm.navi.service.define.route.RouteL2Data;
+import com.sgm.navi.service.define.route.RouteLineInfo;
 import com.sgm.navi.service.define.route.RouteLineSegmentInfo;
 import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.route.RouteParam;
@@ -1184,6 +1185,38 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 return;
             }
         }
+    }
+
+    /**
+     * 删除路线信息引导过分歧点
+     *
+     * @param mapTypeId  屏幕ID
+     * @param pathId 路线ID
+     */
+    public void removeRouteLineInfo(final MapType mapTypeId, final long pathId) {
+        Logger.e(TAG, "removeRouteLineInfo " + pathId);
+        RequestRouteResult requestRouteResult = mRequestRouteResults.get(mapTypeId);
+        if (requestRouteResult == null || ConvertUtils.isEmpty(requestRouteResult)) {
+            Logger.e(TAG, "no data");
+            return;
+        }
+        List<RouteLineInfo> mRouteLineInfos = requestRouteResult.getMRouteLineInfos();
+        if (mRouteLineInfos != null && !ConvertUtils.isEmpty(mRouteLineInfos)) {
+            int index = -1;
+            for (int t = 0; t < mRouteLineInfos.size(); t++) {
+                if (pathId == mRouteLineInfos.get(t).getMPathID()) {
+                    index = t;
+
+                }
+            }
+            Integer currentIndex = getSelectRouteIndex().get(mapTypeId);
+            if (currentIndex != null && index != -1 && index != currentIndex) {
+                mRouteLineInfos.remove(index);
+            } else {
+                Logger.e(TAG, "not find in RouteLineInfos");
+            }
+        }
+
     }
 
     /**
