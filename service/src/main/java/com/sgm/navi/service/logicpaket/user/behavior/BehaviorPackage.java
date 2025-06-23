@@ -139,6 +139,9 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
         ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
         if (isLogin()) { // 用户已登录，从云端获取数据
             dataList = mBehaviorAdapter.getSimpleFavoriteList();
+            if (dataList != null && dataList.size() > 0) {
+                Logger.d(TAG, "getFavoritePoiData: size = " + dataList.size());
+            }
         } else { // 用户未登录，从本地获取数据
             final List<Favorite> favoriteList = mManager.getValueByCommonName(UserDataCode.FAVORITE_TYPE_POI);
             if (!ConvertUtils.isEmpty(favoriteList)) {

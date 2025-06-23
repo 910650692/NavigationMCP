@@ -37,6 +37,7 @@ public class AccountQRCodeLoginModel extends BaseModel<AccountQRCodeLoginViewMod
     @Override
     public void onDestroy() {
         NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
+        mAccountPackage.unRegisterCallBack("AccountQRCodeLoginModel");
     }
 
     @Override

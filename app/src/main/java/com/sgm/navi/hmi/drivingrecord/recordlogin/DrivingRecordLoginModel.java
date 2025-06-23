@@ -86,6 +86,7 @@ public class DrivingRecordLoginModel extends BaseModel<DrivingRecordLoginViewMod
     public void onDestroy() {
         super.onDestroy();
         NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
+        mAccountPackage.unRegisterCallBack("DrivingRecordLoginModel");
     }
 
     @Override

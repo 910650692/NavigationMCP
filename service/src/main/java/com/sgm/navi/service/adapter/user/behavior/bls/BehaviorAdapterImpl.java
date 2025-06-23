@@ -184,7 +184,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                 mBehaviorService.getSimpleFavoriteList(FavoriteType.FavoriteTypePoi, true);
         //HMI进行业务处理
         final ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
-        if (simpleFavoriteList != null) {
+        if (simpleFavoriteList != null && simpleFavoriteList.size() > 0) {
             for (SimpleFavoriteItem item : simpleFavoriteList) {
                 final FavoriteInfo info = new FavoriteInfo()
                         .setItemId(item.item_id)
@@ -207,6 +207,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                 simpleFavoriteInfo = getFavorite(simpleFavoriteInfo);
                 dataList.add(simpleFavoriteInfo);
             }
+        } else {
+            Logger.d(TAG, "getSimpleFavoriteList: list is null");
         }
         return dataList;
     }
