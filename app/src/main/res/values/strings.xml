@@ -522,23 +522,23 @@
     <string name="setting_others_help_tab_search_five">5、搜索支持手写吗?</string>
     <string name="setting_others_help_tab_search_five_answer">支持手写，输入法增加联想功能。</string>
 
-    <string name="setting_others_help_tab_broadcast_one">1. 语音播报可有简洁版?</string>
+    <string name="setting_others_help_tab_broadcast_one">1、语音播报可有简洁版?</string>
     <string name="setting_others_help_tab_broadcast_one_answer">在图面上，点击左上角更多按钮，选择【设置】—【声音播报】—【导航播报】—【简洁播报】即可。</string>
-    <string name="setting_others_help_tab_broadcast_two">2. 语音播报的开关在哪?</string>
+    <string name="setting_others_help_tab_broadcast_two">2、语音播报的开关在哪?</string>
     <string name="setting_others_help_tab_broadcast_two_answer">在图面上，点击右上角的信息栏，可展开快捷面板调节音量，也可在【设置】—【声音播报】里调节音量大小。</string>
-    <string name="setting_others_help_tab_broadcast_three">3. 如何更新语音?</string>
+    <string name="setting_others_help_tab_broadcast_three">3、如何更新语音?</string>
     <string name="setting_others_help_tab_broadcast_three_answer">进入【离线数据】—【导航语音】，可在线下载语音。也可在官网下载语音文件，将文件复制到车机内amapauto9—data—voice文件夹下。</string>
-    <string name="setting_others_help_tab_broadcast_four">4. 语音播报和音乐如何兼容?</string>
-    <string name="setting_others_help_tab_broadcast_four_answer">5. 进入【设置】—【声音播报】—【混音模式】，可选择压低音乐或暂停音乐。</string>
+    <string name="setting_others_help_tab_broadcast_four">4、语音播报和音乐如何兼容?</string>
+    <string name="setting_others_help_tab_broadcast_four_answer">5、进入【设置】—【声音播报】—【混音模式】，可选择压低音乐或暂停音乐。</string>
 
-    <string name="setting_others_help_tab_data_one">1. 离线地图有什么用?</string>
+    <string name="setting_others_help_tab_data_one">1、离线地图有什么用?</string>
     <string name="setting_others_help_tab_data_one_answer">下载离线地图后，无网或弱网情况下软件将自动使用离线地图进行搜索、导航，部分城市离线地图还支持路口大图和三维路口大图功能。</string>
-    <string name="setting_others_help_tab_data_two">2. 如何下载、更新地图?</string>
+    <string name="setting_others_help_tab_data_two">2、如何下载、更新地图?</string>
     <string name="setting_others_help_tab_data_two_answer">在图面上，点击左上角更多按钮，选择【离线数据】，我们为您提供了二种方式进行数据下载、更新。\n方式一:在线更新。点击【离线地图】，可直接联网下载地图数据;
         \n方式二:U盘更新。前往官网(www.amapauto.com)下载地图数据包解压后存放于U盘根目录，进入【离线数据】—【U盘更新】，将自动识别您U盘中的数据，您可根据需要选择需要更新的数据。</string>
-    <string name="setting_others_help_tab_data_three">3. 如何更改存储位置?</string>
+    <string name="setting_others_help_tab_data_three">3、如何更改存储位置?</string>
     <string name="setting_others_help_tab_data_three_answer">进入【离线数据】—【更改存储位置】，可以选择您希望存放离线数据的存储位置，我们会将您已经下载的数据移动到该存储位置。</string>
-    <string name="setting_others_help_tab_data_four">4. 我插了外置卡/U盘，为什么不识别?</string>
+    <string name="setting_others_help_tab_data_four">4、我插了外置卡/U盘，为什么不识别?</string>
     <string name="setting_others_help_tab_data_four_answer">请先检查外置卡/U盘是否插牢，如果已插牢，并且在其他文件管理软件能够识别的情况下，请尝试在外置卡下创建一个文件。如果创建失败可能是外置卡损坏或系统方限制了外置卡的使用权限，建议更换外置卡，或者和系统方联系。</string>
 
 
