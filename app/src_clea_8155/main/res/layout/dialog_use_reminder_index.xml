@@ -62,9 +62,12 @@
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
                 <com.sgm.navi.ui.view.SkinTextView
-                    style="@style/dialog_buick_sub_title"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_42"
                     android:layout_marginStart="@dimen/dp_7"
                     android:text="，"
+                    android:textSize="@dimen/sp_32"
+                    android:textColor="@color/dialog_buick_content_color"
                     app:layout_constraintStart_toEndOf="@+id/reminder_terms_service"
                     app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
 
