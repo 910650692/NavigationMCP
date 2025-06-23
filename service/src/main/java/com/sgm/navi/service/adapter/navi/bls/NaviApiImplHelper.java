@@ -38,11 +38,14 @@ import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.GuidanceObserver;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
+import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.cruise.CruiseParamEntity;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
+import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.NaviParamEntity;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.route.ChargingInfo;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -65,6 +68,8 @@ public class NaviApiImplHelper {
     private boolean mIsSimpleNavigation = false;
     // 当前导航信息
     protected NaviInfo mNaviInfo;
+    private RouteLineLayerParam mRouteLineLayerParam;
+    private int mainIndex;
 
     protected NaviApiImplHelper(final GuideService guideService) {
         this.mGuideService = guideService;
@@ -143,8 +148,9 @@ public class NaviApiImplHelper {
     }
 
     //设置开启导航路线
-    protected void setNaviPathParam(final RouteLineLayerParam routeLineLayerParam) {
+    protected void updateNaviPathParam(final RouteLineLayerParam routeLineLayerParam) {
         checkNaviService();
+        //导航中更新路线发送加热数据
         mNaviObserver.onBatterHotTime();
         final NaviPath naviPath = new NaviPath();
         // 设置完整路线信息 算路时会返回
@@ -154,6 +160,26 @@ public class NaviApiImplHelper {
         naviPath.point = (POIForRequest) routeLineLayerParam.getMPoiForRequest(); // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
         naviPath.strategy = routeLineLayerParam.getMStrategy(); // 设置算路策略
         mGuideService.setNaviPath(naviPath);
+    }
+
+    //设置开启导航路线
+    protected void setNaviPathParam(final int routeIndex, final RouteLineLayerParam routeLineLayerParam) {
+        mRouteLineLayerParam = routeLineLayerParam;
+        mainIndex = routeIndex;
+    }
+
+    //获取开启导航关键参数
+    protected NaviPath getNaviPathParam() {
+        //开始导航时发送加热数据
+        mNaviObserver.onBatterHotTime();
+        final NaviPath naviPath = new NaviPath();
+        // 设置完整路线信息 算路时会返回
+        naviPath.vecPaths = (ArrayList<PathInfo>) mRouteLineLayerParam.getMPathInfoList();
+        naviPath.mainIdx = mainIndex; // 设置主路线索引
+        naviPath.type = mRouteLineLayerParam.getMRouteType(); // 设置算路类型
+        naviPath.point = (POIForRequest) mRouteLineLayerParam.getMPoiForRequest(); // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
+        naviPath.strategy = mRouteLineLayerParam.getMStrategy(); // 设置算路策略
+        return naviPath;
     }
 
     /**

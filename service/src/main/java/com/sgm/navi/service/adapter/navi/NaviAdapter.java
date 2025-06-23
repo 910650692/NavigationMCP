@@ -137,10 +137,11 @@ public final class NaviAdapter {
      */
     public void updateNaviPath(final RouteLineLayerParam routeLineLayerParam) {
         mNaviApi.updateNaviPath(routeLineLayerParam);
-        if (NaviStatus.NaviStatusType.NAVING.equals(NavistatusAdapter.getInstance().getCurrentNaviStatus())) {
-            mLayerAdapter.updateGuideCarStyle(MapType.MAIN_SCREEN_MAIN_MAP);
-            mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
-        }
+        mLayerAdapter.updateGuideCarStyle(MapType.MAIN_SCREEN_MAIN_MAP);
+        mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
+    }
+    public void setNaviPath(final int routeIndex, final RouteLineLayerParam routeLineLayerParam) {
+        mNaviApi.setNaviPath(routeIndex, routeLineLayerParam);
     }
 
     public static NaviAdapter getInstance() {

@@ -1248,9 +1248,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
         if (ConvertUtils.isEmpty(requestRouteResult)) return;
         mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
-//            if (!mNaviStatusAdapter.isGuidanceActive()) {
-//                mLayerAdapter.setCarLogoVisible(mapTypeId, false);
-//            }
     }
 
     /**
@@ -1442,7 +1439,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             mRouteAdapter.setCurrentPath(routeCurrentPathParam);
         }
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
-            mNaviAdapter.updateNaviPath(routeLineLayerParam);
+            if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
+                mNaviAdapter.updateNaviPath(routeLineLayerParam);
+            } else {
+                mNaviAdapter.setNaviPath(0, routeLineLayerParam);
+            }
         }
         // TODO: 2025/6/8 暂时先放在这里 后续OpenApiHelper需要删除
         OpenApiHelper.setCurrentPathInfos((ArrayList<PathInfo>)
@@ -1484,7 +1485,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mLayerAdapter.setSelectedPathIndex(mapTypeId, routeIndex);
         mSelectRouteIndex.put(mapTypeId, routeIndex);
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
-            mNaviAdapter.updateNaviPath(routeLineLayerParam);
+            mNaviAdapter.setNaviPath(routeIndex, routeLineLayerParam);
         }
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
             final RouteCurrentPathParam routeCurrentPathParam = requestRouteResult.getMRouteCurrentPathParam();

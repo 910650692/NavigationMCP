@@ -184,6 +184,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
+        mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
         return result;
     }
 

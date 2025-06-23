@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.navi.bls;
 
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.option.PathInfo;
+import com.autonavi.gbl.guide.model.NaviPath;
 import com.autonavi.gbl.guide.model.NaviType;
 import com.autonavi.gbl.guide.model.QueryLanesInfo;
 import com.autonavi.gbl.guide.model.guidecontrol.Param;
@@ -18,6 +19,7 @@ import com.sgm.navi.service.define.navi.NaviStartType;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,19 +52,25 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
 
     @Override
     public boolean startNavigation(final NaviStartType naviStartType) {
-        boolean startNaviSuccess;
+        final NaviPath naviPath = mNaviApiImplHelper.getNaviPathParam();
+        final ArrayList<PathInfo> vecPaths = naviPath.vecPaths;
+        boolean startNaviSuccess = false;
+        if (!vecPaths.isEmpty()) {
             mNaviApiImplHelper.initGuideParam();
+            final boolean setNaviPathSuccess = getGuideService().setNaviPath(naviPath);
+            Logger.i(TAG, "NaviAdapterApiImpl setNaviPath: " + setNaviPathSuccess);
             if (naviStartType == NaviStartType.NAVI_TYPE_GPS) {
                 mNaviId = NaviConstant.NAVI_ID;
                 startNaviSuccess = getGuideService().startNavi(mNaviId, NaviType.NaviTypeGPS);
             } else {
                 mNaviId = NaviConstant.NAVI_SIM_ID;
+
                 startNaviSuccess = getGuideService().startNavi(mNaviId, NaviType.NaviTypeSimulation);
             }
-            Logger.i(TAG, "NaviAdapterApiImpl startNavi: ", startNaviSuccess, ",mNaviId：",
-                    mNaviId);
-
-        Logger.i(TAG, "onNaviStar 导航开启");
+            Logger.i(TAG, "NaviAdapterApiImpl startNavi: " + startNaviSuccess + ",mNaviId：" + mNaviId);
+        } else {
+            Logger.e(TAG, "NaviAdapterApiImpl startNavi: vecPaths.isEmpty");
+        }
         mNaviApiImplHelper.startNavi(startNaviSuccess);
         return startNaviSuccess;
     }
@@ -70,7 +78,13 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     @Override
     public void updateNaviPath(final RouteLineLayerParam routeLineLayerParam) {
         Logger.i(TAG, "updateNaviPath: ");
-        mNaviApiImplHelper.setNaviPathParam(routeLineLayerParam);
+        mNaviApiImplHelper.updateNaviPathParam(routeLineLayerParam);
+    }
+
+    @Override
+    public void setNaviPath(final int routeIndex,final RouteLineLayerParam routeLineLayerParam) {
+        Logger.i(TAG, "updateNaviPath: ");
+        mNaviApiImplHelper.setNaviPathParam(routeIndex, routeLineLayerParam);
     }
 
     @Override

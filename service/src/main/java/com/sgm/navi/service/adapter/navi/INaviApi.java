@@ -51,6 +51,8 @@ public interface INaviApi {
      */
     void updateNaviPath(RouteLineLayerParam routeLineLayerParam);
 
+    void setNaviPath(final int routeIndex, RouteLineLayerParam routeLineLayerParam);
+
     /**
      * 注销观察者
      *
