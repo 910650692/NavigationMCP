@@ -1201,18 +1201,25 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
         Logger.i(TAG, "onRouteItemClick result = ", result.toString(), " type = ", type);
         if (type == LayerPointItemType.ROUTE_PATH) {
-            int currentNaviType = mNaviPackage.getCurrentNaviType();
-            if (currentNaviType != 0) {
-                Logger.i(TAG, "非GPS 导航，不支持手动切换路线");
-                return;
-            }
-            if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                Logger.i(TAG, "离线状态，不支持手动切换路线");
-                return;
-            }
             long pathId = result.getIndex();
-            mNaviPackage.selectPath(MapType.MAIN_SCREEN_MAIN_MAP, pathId);
+            onRouteClick(pathId);
+        } else if (type == LayerPointItemType.ROUTE_GUIDE_LABEL) {
+            long pathId = result.getEventID();
+            onRouteClick(pathId);
         }
+    }
+
+    private void onRouteClick(long pathId) {
+        int currentNaviType = mNaviPackage.getCurrentNaviType();
+        if (currentNaviType != 0) {
+            Logger.i(TAG, "非GPS 导航，不支持手动切换路线");
+            return;
+        }
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            Logger.i(TAG, "离线状态，不支持手动切换路线");
+            return;
+        }
+        mNaviPackage.selectPath(MapType.MAIN_SCREEN_MAIN_MAP, pathId);
     }
 
     @Override
