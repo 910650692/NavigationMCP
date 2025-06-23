@@ -109,6 +109,11 @@
                     android:background="@drawable/bg_navi_tbt_bottom"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
+
+                <com.sgm.navi.ui.view.SkinButton
+                    android:id="@+id/scene_navi_scl_top"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/dp_0"/>
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <ViewStub
