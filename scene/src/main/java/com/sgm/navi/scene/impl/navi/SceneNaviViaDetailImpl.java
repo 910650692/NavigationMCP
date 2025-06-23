@@ -22,6 +22,7 @@ import com.sgm.navi.service.define.search.ParkingInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 
@@ -33,6 +34,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
     public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_DETAIL_IMPL;
     private String mCurrentPoiId = null;
     private int mSearchId;
+    private int powerType = NumberUtils.NUM_ERROR;
 
     public ObservableField<Drawable> mViaIcon;
     public ObservableField<String> mViaTitle;
@@ -83,6 +85,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
     protected void onCreate() {
         super.onCreate();
         SearchPackage.getInstance().registerCallBack(TAG, this);
+        powerType = OpenApiHelper.powerType();
     }
 
     @Override
@@ -110,8 +113,11 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
 
     public void showViaDetail(boolean b) {
         mIsNeedShow = b;
-        boolean isCanShow = (mCurrentPoiType == AutoMapConstant.PointTypeCode.GAS_STATION ||
-                mCurrentPoiType == AutoMapConstant.PointTypeCode.CHARGING_STATION ||
+        // 纯电车不显示加油站，油车不显示充电站
+        boolean isCanShow = ((mCurrentPoiType == AutoMapConstant.PointTypeCode.GAS_STATION &&
+                powerType != NumberUtils.NUM_1) ||
+                (mCurrentPoiType == AutoMapConstant.PointTypeCode.CHARGING_STATION &&
+                        powerType == NumberUtils.NUM_1) ||
                 mCurrentPoiType == AutoMapConstant.PointTypeCode.PARKING_LOT);
         Logger.i(TAG, "setShowViaDetail", "isCanShow:", isCanShow, " isNeedShow = ",
                 mIsNeedShow);
@@ -139,11 +145,6 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
                         INaviSceneEvent.SceneStateChangeType.SceneShowState :
                         INaviSceneEvent.SceneStateChangeType.SceneCloseState),
                 NaviSceneId.NAVI_SCENE_VIA_DETAIL);
-    }
-
-    @Override
-    public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-
     }
 
     @Override
