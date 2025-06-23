@@ -39,7 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
-                    tools:visibility="gone"/>
+                    tools:visibility="gone" />
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_offline_hint"
@@ -82,18 +82,21 @@
                     android:layout_marginTop="@dimen/dp_20"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+
                 <com.sgm.navi.ui.view.PullToRefreshLayout
                     android:id="@+id/pull_refresh_layout"
-                    app:layout_constraintTop_toBottomOf="@+id/search_label_filter"
-                    android:layout_marginVertical="@dimen/dp_17"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_0">
+                    android:layout_height="@dimen/dp_0"
+                    app:layout_goneMarginTop="@dimen/dp_80"
+                    android:layout_marginBottom="@dimen/dp_17"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_offline_hint"
+                    tools:layout_editor_absoluteX="1dp">
 
                     <com.sgm.navi.ui.view.SkinRecyclerView
                         android:id="@+id/recycler_search_result"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent" />
                 </com.sgm.navi.ui.view.PullToRefreshLayout>
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
