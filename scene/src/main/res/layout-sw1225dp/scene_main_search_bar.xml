@@ -30,7 +30,7 @@
                 clickCommand="@{MainSearchView.closeSearch}"
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
-                android:src="@drawable/img_basic_ic_back"
+                android:src="@drawable/img_back_58"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
