@@ -401,6 +401,25 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         });
     }
 
+    public void refreshPathList() {
+        long currentPathID = OpenApiHelper.getCurrentPathId(MapType.MAIN_SCREEN_MAIN_MAP);
+        ArrayList<PathInfo> pathInfos = new ArrayList<>(OpenApiHelper.getCurrentPathInfos());
+        int mainPathIndex = NumberUtils.NUM_ERROR;
+        if (pathInfos.isEmpty()) {
+            Logger.i(TAG, "refreshPathList: pathInfos is empty");
+            return;
+        }
+        for (int i = 0; i < pathInfos.size(); i++) {
+            if (pathInfos.get(i).getPathID() == currentPathID) {
+                mainPathIndex = i;
+                break;
+            }
+        }
+        if (mainPathIndex != NumberUtils.NUM_ERROR) {
+            mNaviAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, mainPathIndex);
+        }
+    }
+
     private static final class Helper {
         private static final NaviPackage NAVI_PACKAGE = new NaviPackage();
     }
@@ -417,17 +436,14 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     /**
-     * 地图上选择路线，切换path加上路线绘制
+     * 设置选择的主路线
      *
      * @param mapTypeId 屏幕id
      * @param pathId    路线id
-     * @param pathIndex 路线索引
      */
-    public void selectPath(final MapType mapTypeId, final long pathId, final int pathIndex) {
-        Logger.i(TAG, "selectPath: " + pathId + ",pathIndex:" + pathIndex + "mapId = " +
-                mapTypeId);
+    public void selectPath(final MapType mapTypeId, final long pathId) {
+        Logger.i(TAG, "selectPath: ", pathId, "mapId = ", mapTypeId);
         selectMainPathID(pathId);
-        mLayerAdapter.setSelectedPathIndex(mapTypeId, pathIndex);
     }
 
     /*设置静音*/

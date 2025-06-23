@@ -14,7 +14,6 @@ import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.ETAInfo;
-import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
@@ -71,6 +70,12 @@ public final class OpenApiHelper {
                     (PathInfo) ROUTE_PACKAGE.getCurrentPathInfo(mapTypeId).getMPathInfo();
         } else {
             return CURRENT_PATH_INFO;
+        }
+    }
+
+    public static void removePathById(final long pathId) {
+        if (!ConvertUtils.isEmpty(CURRENT_PATH_INFOS)) {
+            CURRENT_PATH_INFOS.removeIf(pathInfo -> pathId == pathInfo.getPathID());
         }
     }
 
@@ -334,50 +339,4 @@ public final class OpenApiHelper {
             final GeoPoint geoPoint) {
         return SEARCH_PACKAGE.getTravelTimeFutureIncludeChargeLeft(geoPoint);
     }
-
-    /**
-     * @param pathId 路径id
-     * @return 返回对应pathId的索引
-     */
-    public static int getPathIndex(final long pathId) {
-        if (!ConvertUtils.isEmpty(CURRENT_PATH_INFOS)) {
-            for (PathInfo pathInfo : CURRENT_PATH_INFOS) {
-                if (null == pathInfo) {
-                    continue;
-                }
-                if (pathInfo.getPathID() == pathId) {
-                    return (int)pathInfo.getPathIndex();
-                }
-            }
-        }
-        return NumberUtils.NUM_ERROR;
-    }
-
-    // 个性化道路接口
-//    public static void test() {
-//        Logger.i("shisong", "CURRENT_PATH_INFOS size = " + CURRENT_PATH_INFOS.size());
-//        List<PathInfo> list = CURRENT_PATH_INFOS;
-//        if (!ConvertUtils.isEmpty(list)) {
-//            for (PathInfo pathInfo : list) {
-//                long segmentCount = pathInfo.getSegmentCount();
-//                for (long i = 0; i < segmentCount; i++) {
-//                    SegmentInfo segment = pathInfo.getSegmentInfo(i);
-//                    long linkCount = segment.getLinkCount();
-//                    long curPathId = -1;
-//                    String roadName = "";
-//                    for (long j = 0; j < linkCount; j++) {
-//                        LinkInfo link = segment.getLinkInfo(j);
-//                        if (curPathId != pathInfo.getPathID() ||
-//                                !roadName.equals(link.getRoadName())) {
-//                            curPathId = pathInfo.getPathID();
-//                            roadName = link.getRoadName();
-//                            Logger.i("shisong", "pathId = " + curPathId,
-//                                    "roadName = " + roadName);
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

@@ -1210,8 +1210,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 return;
             }
             long pathId = result.getIndex();
-            int pathIndex = OpenApiHelper.getPathIndex(pathId);
-            mNaviPackage.selectPath(MapType.MAIN_SCREEN_MAIN_MAP, pathId, pathIndex);
+            mNaviPackage.selectPath(MapType.MAIN_SCREEN_MAIN_MAP, pathId);
         }
     }
 
@@ -1367,8 +1366,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (!ConvertUtils.isEmpty(pathIDList)) {
             for (long pathId : pathIDList) {
                 Logger.i(TAG, "onDeletePath pathId = ", pathId);
-                mNaviPackage.setPathVisible(MapType.MAIN_SCREEN_MAIN_MAP, pathId, false);
+                mRoutePackage.removeRouteLineInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathId);
+                OpenApiHelper.removePathById(pathId);
             }
+            mNaviPackage.refreshPathList();
         }
     }
 }
