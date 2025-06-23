@@ -22,6 +22,7 @@ public class L2Package {
 
     private final L2Adapter mL2Adapter;
     private final LayerAdapter mLayerAdapter;
+    private boolean mInitialized = false;
 
     //region INSTANCE
     public static L2Package getInstance() {
@@ -44,8 +45,13 @@ public class L2Package {
             Logger.i(TAG, "not L2++ configuration");
             return;
         }
+        if (mInitialized) {
+            Logger.i(TAG, "initialized");
+            return;
+        }
         mL2Adapter.registerCallback(mL2DriveObserver);
         mL2Adapter.init();
+        mInitialized = true;
     }
 
     private final L2DriveObserver mL2DriveObserver = new L2DriveObserver() {

@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class L2Adapter {
     private static final String TAG = L2Adapter.class.getSimpleName();
-    private static final String PREFIX = "l2++性能测试";
+    private static final String PREFIX = "l2++";
 
     private L2DriveObserver l2DriveObserver;
     private volatile L2NaviBean l2NaviBean;
@@ -77,6 +77,9 @@ public class L2Adapter {
     //endregion
 
     public void init() {
+        if (l2NaviBean != null) {
+            return;
+        }
         l2NaviBean = new L2NaviBean();
         l2NaviBean.setCrossInfoData(new L2NaviBean.CrossInfoDataBean()); // 组合
         l2NaviBean.setVehiclePosition(new L2NaviBean.VehiclePositionBean()); // 组合
