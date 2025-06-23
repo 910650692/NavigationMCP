@@ -105,22 +105,17 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         final LayerItemRoutePointClickResult result = new LayerItemRoutePointClickResult();
         switch (item.getBusinessType()) {
             case BizRouteType.BizRouteTypeStartPoint -> {
-                type = LayerPointItemType.ROUTE_POINT_START;
-                Coord3DDouble coord3DDouble = ((RoutePathPointItem) item).getPosition();
-                if (!ConvertUtils.isEmpty(coord3DDouble)) {
-                    result.setLat(coord3DDouble.lat);
-                    result.setLog(coord3DDouble.lon);
-                }
+                //起点扎标无需下发点击事件
+                return;
             }
             case BizRouteType.BizRouteTypeEndPoint -> {
                 if (item instanceof RoutePathPointItem endPoint) {
                     int pathId = (int) endPoint.getPathId();
                     if (pathId == LayerPointItemType.ROUTE_POINT_END_PARK.ordinal()) {
                         type = LayerPointItemType.ROUTE_POINT_END_PARK;
-                    } else if (pathId == LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS.ordinal()) {
-                        type = LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS;
                     } else {
-                        type = LayerPointItemType.ROUTE_POINT_END;
+                        //除终点停车场扎标外 其余终点类型扎标无需下发点击事件
+                        return;
                     }
                     Coord3DDouble coord3DDouble = endPoint.getPosition();
                     if (!ConvertUtils.isEmpty(coord3DDouble)) {

@@ -347,6 +347,12 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 //TODO判断是否已经预约
                 SearchChargeStationLayerItem searchChargeItem = (SearchChargeStationLayerItem) item;
                 BizChargeStationInfo chargeStationInfo = searchChargeItem.getMChargeStationInfo();
+                if (ConvertUtils.isEmpty(chargeStationInfo)) {
+                    if (Logger.openLog) {
+                        Logger.e(TAG, "chargeStationInfo == null");
+                    }
+                    return customUpdatePairs;
+                }
                 int slowFree = chargeStationInfo.slowFree;
                 int slowTotal = chargeStationInfo.slowTotal;
                 int fastFree = chargeStationInfo.fastFree;
