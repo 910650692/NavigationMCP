@@ -85,8 +85,10 @@
                 android:id="@+id/rcv_collect"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"
                 android:layout_marginTop="@dimen/dp_20"
+                app:layout_goneMarginTop="@dimen/dp_24"
                 android:layout_marginBottom="@dimen/dp_34" />
 
             <com.sgm.navi.ui.view.SkinLinearLayout
