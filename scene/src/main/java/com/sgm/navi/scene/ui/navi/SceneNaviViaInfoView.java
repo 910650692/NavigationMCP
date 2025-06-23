@@ -129,4 +129,10 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
     public void startNavigation() {
         mScreenViewModel.startNavigation();
     }
+
+    public void refreshViaInfo() {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.refreshViaInfo();
+        }
+    }
 }

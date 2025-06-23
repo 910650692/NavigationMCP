@@ -587,6 +587,7 @@ public class BaseNaviGuidanceViewModel extends
                 final List<NaviViaEntity> viaList = mModel.getViaList();
                 if (!ConvertUtils.isEmpty(viaList)) {
                     mView.updateViaListState(viaList);
+                    mView.refreshViaInfo();
                     mModel.updateViaListState(viaList);
                 }
             }

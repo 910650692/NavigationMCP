@@ -480,6 +480,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         }
     }
 
+    public void refreshViaInfo() {
+        mBinding.sceneNaviViaInfo.refreshViaInfo();
+    }
+
     /**
      * 途经点通过回调
      *

@@ -99,6 +99,8 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
                     onViaWaypoint(viaName);
                     updateViaInfo();
                 }
+            } else {
+                updateSceneVisible(false);
             }
             if (!viaName.equals(mViaName)) {
                 updateViaInfo();
@@ -130,6 +132,11 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
     private void updateSceneVisible(final boolean isVisible) {
         Logger.i(TAG, "updateSceneVisible isVisible = ", isVisible,
                 " mScreenView.isVisible() = ", mScreenView.isVisible());
+        if (!isVisible) {
+            mScreenView.getNaviSceneEvent().notifySceneStateChange(
+                    INaviSceneEvent.SceneStateChangeType.SceneCloseState,
+                    NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO);
+        }
         if(mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO);
@@ -198,5 +205,18 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
         Logger.i(TAG, "startNavigation");
         mViaIndex = -1;
         mViaName = "";
+    }
+
+    public void refreshViaInfo() {
+        final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
+        final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
+        if (!ConvertUtils.isEmpty(allPoiParamList)) {
+            if (allPoiParamList.size() > 2) {
+                final String viaName = allPoiParamList.get(1).getName();
+                mScreenView.updateViaInfo(viaName, viaRemain.size());
+            } else {
+                updateSceneVisible(false);
+            }
+        }
     }
 }
