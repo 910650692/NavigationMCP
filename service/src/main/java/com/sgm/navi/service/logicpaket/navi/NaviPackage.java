@@ -29,6 +29,7 @@ import com.sgm.navi.service.adapter.signal.SignalAdapterCallback;
 import com.sgm.navi.service.adapter.speech.SpeechAdapter;
 import com.sgm.navi.service.adapter.user.usertrack.UserTrackAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CameraInfoEntity;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
@@ -120,6 +121,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     private final NaviModelSaveEntity mModelSaveEntity;
     private boolean mIsShowLanes;
+    // 终点扎标显示内容
+    private LayerItemRouteEndPoint mEndPoint;
 
     private NaviPackage() {
         mGuidanceObservers = new Hashtable<>();
@@ -1373,5 +1376,18 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public void setPathVisible(MapType mapType, long pathId, boolean isVisible) {
         mLayerAdapter.setPathVisible(mapType, pathId, isVisible);
+    }
+
+    /* 设置能量耗尽点扎标是否显示 只在全览态展示 */
+    public void setRouteEnergyEmptyPointVisible(MapType mapTypeId, boolean isShow) {
+        mLayerAdapter.setRouteEnergyEmptyPointVisible(mapTypeId, isShow);
+    }
+
+    public LayerItemRouteEndPoint getEndPoint() {
+        return mEndPoint;
+    }
+
+    public void setEndPoint(LayerItemRouteEndPoint mEndPoint) {
+        this.mEndPoint = mEndPoint;
     }
 }

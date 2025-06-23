@@ -333,6 +333,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             if (!openClusterOverView()) {
                 mMapPackage.goToCarPosition(mapTypeId);
                 mLayerPackage.setFollowMode(mapTypeId, true);
+                mNaviPackage.setRouteEnergyEmptyPointVisible(MapType.MAIN_SCREEN_MAIN_MAP,
+                        false);
             }
         }
     }
@@ -410,14 +412,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 String chargeInfoStr = getChargeInfo(fastFree, fastTotal, slowFree, slowTotal);
                 if (TextUtils.isEmpty(chargeInfoStr) && !TextUtils.isEmpty(businessTime)) {
                     endPoint.setBusinessHours(businessTime);
-                    mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+                    mNaviPackage.setEndPoint(endPoint);
                     return;
                 }
                 endPoint.setBusinessHours(chargeInfoStr);
-                mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+                mNaviPackage.setEndPoint(endPoint);
             } else if (!TextUtils.isEmpty(businessTime)) {
                 endPoint.setBusinessHours(businessTime);
-                mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+                mNaviPackage.setEndPoint(endPoint);
             }
         }
     }
@@ -514,6 +516,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onNaviStop() {
+        mNaviPackage.setEndPoint(null);
         closeNavi();
     }
 

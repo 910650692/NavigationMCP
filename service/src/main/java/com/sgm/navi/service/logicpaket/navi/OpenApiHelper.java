@@ -8,6 +8,8 @@ import com.autonavi.gbl.common.path.option.PathInfo;
 import com.sgm.navi.service.R;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
+import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RouteParam;
@@ -235,6 +237,11 @@ public final class OpenApiHelper {
         // 关闭自动比例尺
         NAVI_PACKAGE.closeDynamicLevel(mapTypeId);
         ROUTE_PACKAGE.naviShowPreview(mapTypeId);
+        LayerItemRouteEndPoint endPoint = NAVI_PACKAGE.getEndPoint();
+        if (endPoint != null) {
+            ROUTE_PACKAGE.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+        }
+        NAVI_PACKAGE.setRouteEnergyEmptyPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
     }
 
     /**
@@ -265,6 +272,10 @@ public final class OpenApiHelper {
                 MAP_PACKAGE.getCurrentMapMode(mMapType) != mMapMode) {
             MAP_PACKAGE.switchMapMode(mMapType, mMapMode, true);
         }
+        LayerItemRouteEndPoint endPoint = new LayerItemRouteEndPoint();
+        endPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
+        ROUTE_PACKAGE.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+        NAVI_PACKAGE.setRouteEnergyEmptyPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, false);
     }
 
     /**
