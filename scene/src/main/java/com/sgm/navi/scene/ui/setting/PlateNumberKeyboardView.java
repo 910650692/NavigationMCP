@@ -25,7 +25,10 @@ public class PlateNumberKeyboardView extends GridLayout {
     private static final String BUTTON_NAME = "删除";
 
     private static final String[] FIRST_ROW = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
-    private static final String[] SECOND_ROW = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"};
+
+    //BUGFIX 1065816
+    private static final String[] SECOND_ROW_CONTAIN_P = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"};
+    private static final String[] SECOND_ROW = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O"};
     private static final String[] THIRD_ROW = {"A", "S", "D", "F", "G", "H", "J", "K", "L"};
     private static final String[] FOURTH_ROW = {"Z", "X", "C", "V", "B", "N", "M", BUTTON_NAME};
 
@@ -38,6 +41,8 @@ public class PlateNumberKeyboardView extends GridLayout {
     private OnKeyPressListener mListener;
     private SkinCheckBox mLastSelectedButton;
 
+    private boolean isNeedCharacterP = false;
+
     private static final List<String> DISABLED_KEYS = Arrays.asList("I", "O");
 
 
@@ -49,6 +54,11 @@ public class PlateNumberKeyboardView extends GridLayout {
     public PlateNumberKeyboardView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
+    }
+
+    public void setKeyBoardType(boolean isNeedCharacterP) {
+        this.isNeedCharacterP = isNeedCharacterP;
+        invalidate();
     }
 
     /**
@@ -68,7 +78,11 @@ public class PlateNumberKeyboardView extends GridLayout {
         setOrientation(VERTICAL);
         // 添加四行按键
         addKeyboardRow(FIRST_ROW, true,false);
-        addKeyboardRow(SECOND_ROW,true,false);
+        if (isNeedCharacterP) {
+            addKeyboardRow(SECOND_ROW_CONTAIN_P,true,false);
+        } else {
+            addKeyboardRow(SECOND_ROW,false,true);
+        }
         addKeyboardRow(THIRD_ROW,false,true);
         addKeyboardRow(FOURTH_ROW,false,false);
     }
