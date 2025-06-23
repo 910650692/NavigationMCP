@@ -102,14 +102,23 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
      */
     public void updateViaInfo(final String viaName, final int totalSize) {
         Logger.i(TAG, "updateViaInfo: ", viaName);
-        mViewBinding.stvWayArrive.setVisibility(GONE);
+
+        boolean isViaArrived = mISceneCallback != null && mISceneCallback.getIsViaArrived();
+        boolean showViaCount = totalSize > 1;
+
         mViewBinding.stvWay.setText(viaName);
-        if (totalSize > 1) {
-            mViewBinding.stvViaCount.setVisibility(VISIBLE);
-            mViewBinding.stvViaCount.setText(String.format(getResources().
-                    getString(R.string.navi_via_count), totalSize));
-        } else {
+
+        if (isViaArrived) {
+            mViewBinding.stvWayArrive.setVisibility(VISIBLE);
             mViewBinding.stvViaCount.setVisibility(GONE);
+        } else {
+            mViewBinding.stvWayArrive.setVisibility(GONE);
+            mViewBinding.stvViaCount.setVisibility(showViaCount ? VISIBLE : GONE);
+        }
+        if (showViaCount) {
+            mViewBinding.stvViaCount.setText(
+                    getResources().getString(R.string.navi_via_count, totalSize)
+            );
         }
     }
 

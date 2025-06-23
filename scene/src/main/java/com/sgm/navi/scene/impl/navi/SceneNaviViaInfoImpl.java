@@ -154,12 +154,6 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
         if (!ConvertUtils.isEmpty(allPoiParamList) && allPoiParamList.size() >= 3) {
             mScreenView.onArriveVia(allPoiParamList.get(1).getName());
         }
-        if (viaIndex == NumberUtils.NUM_ERROR) {
-            if (!ConvertUtils.isEmpty(mNaviEtaInfo.viaRemain) &&
-                    mNaviEtaInfo.viaRemain.size() <= 1) {
-                updateSceneVisible(false);
-            }
-        }
     }
 
     /**
@@ -170,7 +164,7 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
         if (!ConvertUtils.isEmpty(allPoiParamList)) {
             mScreenView.updateViaInfo(getViaName(),
-                    mNaviEtaInfo.viaRemain.size());
+                    allPoiParamList.size() - NumberUtils.NUM_2);
         }
     }
 
