@@ -114,7 +114,7 @@
     <string name="navi_meter_start">仪表导航已开启，地图默认显示全程路线</string>
     <string name="navi_send">发送</string>
     <string name="navi_send_request_info">是否需要发送目的地到手机继续导航？</string>
-    <string name="navi_arrive_destination">即将达到目的地</string>
+    <string name="navi_arrive_destination">即将到达目的地</string>
     <string name="navi_tel">电话</string>
     <string name="left_battery_warning">续航里程不足50km</string>
     <string name="charge_station_crowd_tip">%s充电站目前拥挤</string>
