@@ -108,12 +108,12 @@
                 android:id="@+id/poi_distance"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_9"
                 android:text="@{poiBean.distance}"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_26"
-                app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
-                app:layout_constraintTop_toBottomOf="@+id/poi_name"
+                app:layout_constraintBottom_toBottomOf="@+id/poi_address"
+                app:layout_constraintTop_toTopOf="@+id/poi_address"
+                app:layout_constraintStart_toStartOf="@+id/poi_name"
                 tools:text="100Km" />
 
             <View
