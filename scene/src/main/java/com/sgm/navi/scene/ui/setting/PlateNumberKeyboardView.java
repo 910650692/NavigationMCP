@@ -129,19 +129,6 @@ public class PlateNumberKeyboardView extends GridLayout {
                 keyView.setEnabled(false); // 禁用点击
                 keyView.setAlpha(0.5f); // 设置透明度
             } else {
-                // 设置点击事件
-//                keyView.setOnClickListener(v -> {
-//                    if (mListener != null) {
-//                        if (BUTTON_NAME.equals(key)) {
-//                            mListener.onDelete();
-//                        } else {
-//                            mListener.onKeyPress(key);
-//                        }
-//                        keyView.setSelected(true);
-//                        updateCheckBoxTextColor(keyView,true);
-//                        keyView.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
-//                    }
-//                });
                 keyView.setOnTouchListener((v, event) -> {
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:

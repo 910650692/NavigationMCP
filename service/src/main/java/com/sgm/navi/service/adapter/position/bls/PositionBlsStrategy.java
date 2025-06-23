@@ -297,6 +297,8 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
     }
 
     public LocInfoBean getLastCarLocation() {
+        Logger.d(TAG, "getLastCarLocation: locInfoBean = ", locInfoBean.getAddress(),
+                locInfoBean.getLatitude(), locInfoBean.getLongitude());
         return locInfoBean;
     }
 

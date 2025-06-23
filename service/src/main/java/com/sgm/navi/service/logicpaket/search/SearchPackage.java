@@ -1855,6 +1855,8 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final GeoPoint startPoint = new GeoPoint();
         startPoint.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
         startPoint.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "calcStraightDistance : startPoint = ", startPoint.getLat(),
+                startPoint.getLon(), "; endPoint = ", endPoint.getLat(), endPoint.getLon());
         return formatDistanceArrayInternal((int) Math.round(mLayerAdapter.calcStraightDistance(startPoint, endPoint)));
     }
 

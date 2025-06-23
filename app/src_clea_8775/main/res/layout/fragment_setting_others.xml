@@ -44,6 +44,7 @@
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/account_name"
+                        clickCommand="@{viewModel.mOpenAccount}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_others_account"
@@ -52,6 +53,7 @@
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/account_detail"
+                        clickCommand="@{viewModel.mOpenAccount}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_3"

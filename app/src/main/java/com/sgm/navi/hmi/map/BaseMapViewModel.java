@@ -68,6 +68,7 @@ import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.route.RoutePoiType;
+import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.route.RouteRestrictionParam;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
 import com.sgm.navi.service.define.route.RouteTMCParam;
@@ -76,6 +77,7 @@ import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.service.logicpaket.user.forecast.IForecastAddressCallBack;
@@ -992,10 +994,27 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     /***触发算路***/
     public void startRoute(PoiInfoEntity poiInfoEntity) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
-        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
-        addFragment(new RouteFragment(), bundle);
+        switch (mModel.getNaviStatus()) {
+            case NaviStatus.NaviStatusType.SELECT_ROUTE,
+                 NaviStatus.NaviStatusType.ROUTING,
+                 NaviStatus.NaviStatusType.NAVING:
+                final RouteRequestParam routeRequestParam = new RouteRequestParam();
+                routeRequestParam.setMPoiInfoEntity(poiInfoEntity);
+                routeRequestParam.setMRoutePoiType(RoutePoiType.ROUTE_POI_TYPE_END);
+                routeRequestParam.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+                RoutePackage.getInstance().requestRoute(routeRequestParam);
+                break;
+            case NaviStatus.NaviStatusType.NO_STATUS,
+                 NaviStatus.NaviStatusType.CRUISE,
+                 NaviStatus.NaviStatusType.LIGHT_NAVING:
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
+                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
+                addFragment(new RouteFragment(), bundle);
+                break;
+            default:
+                break;
+        }
     }
 
     public IBaseScreenMapView getMapView() {

@@ -1,5 +1,6 @@
 package com.sgm.navi.service.adapter.position.bls;
 
+import com.android.utils.log.Logger;
 import com.sgm.navi.service.adapter.position.IPositionAdapterCallback;
 import com.sgm.navi.service.adapter.position.IPositionApi;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -9,6 +10,8 @@ import com.sgm.navi.service.define.setting.SettingConstant;
 import java.math.BigInteger;
 
 public class PositionAdapterImplD implements IPositionApi {
+
+    private static final String TAG = PositionAdapterImplD.class.getSimpleName();
     @Override
     public void registerCallback(IPositionAdapterCallback callback) {
 
@@ -35,6 +38,8 @@ public class PositionAdapterImplD implements IPositionApi {
         locInfoBean.setLongitude(SettingConstant.DEFAULT_LON_SH);
         locInfoBean.setLatitude(SettingConstant.DEFAULT_LAT_SH);
         locInfoBean.setAltitude(SettingConstant.DEFAULT_ALT_SH);
+        Logger.d(TAG, "getLastCarLocation: locInfoBean = ", locInfoBean.getAddress(),
+                locInfoBean.getLatitude(), locInfoBean.getLongitude());
         return locInfoBean;
     }
 
