@@ -844,4 +844,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         }
         mBinding.sceneNaviTmc.onNaviInfoByViaArrived(naviEtaInfo);
     }
+
+    public void updateSclTopClickState(boolean isClickable) {
+        if (mBinding == null) {
+            return;
+        }
+        mBinding.sceneNaviSclTop.setClickable(isClickable);
+        mBinding.sceneNaviSclTop.setEnabled(isClickable);
+    }
 }

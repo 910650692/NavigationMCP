@@ -199,6 +199,7 @@ public class BaseNaviGuidanceViewModel extends
                 mView.onCrossImageInfo(isVisible);
                 mNaviCrossImageVisibility.set(isVisible);
                 mView.updateViewRadius();
+                mView.updateSclTopClickState(!isVisible);
                 break;
             case NAVI_SCENE_ETA:
                 mNaviEtaVisibility.set(isVisible);
