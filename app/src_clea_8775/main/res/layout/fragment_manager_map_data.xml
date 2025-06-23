@@ -135,13 +135,13 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_marginBottom="@dimen/dp_34"
-            android:layout_marginEnd="@dimen/dp_34"
-            android:layout_marginStart="@dimen/dp_34"
             android:layout_marginTop="@dimen/dp_36"
-            android:scrollbars="none"
+            android:scrollbars="vertical"
             android:fillViewport="true">
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:layout_marginEnd="@dimen/dp_34"
+                android:layout_marginStart="@dimen/dp_34"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
