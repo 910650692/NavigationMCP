@@ -351,13 +351,16 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
     /**
      * 清除车牌号
      */
-    public void clearPlateNumber(){
+    public void clearPlateNumber() {
         if (!Objects.equals(mPlateNumber, "")) {
             mIsClearPlateNumber = true;
+            mBinding.settingPlateNumberFinish.setEnabled(true);
+            mBinding.settingPlateNumberFinish.setAlpha(1.0f);
+        } else {
+            mBinding.settingPlateNumberFinish.setEnabled(false);
+            mBinding.settingPlateNumberFinish.setAlpha(0.5f);
         }
         mBinding.settingPlateNumberNumber.setText("");
-        mBinding.settingPlateNumberFinish.setEnabled(true);
-        mBinding.settingPlateNumberFinish.setAlpha(1.0f);
     }
 
     /**
