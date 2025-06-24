@@ -88,10 +88,10 @@
 
                 <com.sgm.navi.ui.view.SkinImageView
                     clickCommand="@{ScenePoiDetailContentView.closeFragment}"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
-                    android:layout_marginTop="@dimen/dp_38"
-                    android:layout_marginEnd="@dimen/dp_26"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginEnd="@dimen/dp_22"
                     android:src="@drawable/icon_poi_details_close"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
