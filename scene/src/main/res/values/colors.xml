@@ -272,7 +272,7 @@
     <color name="bg_charge_price_root_color">#26B2AFC2</color>
     <color name="bg_confirm_dialog_sw280_color">#FFB2AFC2</color>
     <color name="charge_card_bg">#FFFFFFFF</color>
-    <color name="scene_route_preference_txt_color">#000000</color>
+    <color name="scene_route_preference_txt_color">#FFFFFF</color>
 
     <color name="navi_one_third_screen_icon_color">#ffffff</color>
 
