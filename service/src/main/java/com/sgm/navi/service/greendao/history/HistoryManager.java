@@ -205,6 +205,12 @@ public class HistoryManager {
                 .where(HistoryDao.Properties.MIsCompleted.eq(false))
                 .list();
         if (!ConvertUtils.isEmpty(histories)) {
+            for (int i = 0; i < histories.size(); i++) {
+                History history = histories.get(i);
+                if (!ConvertUtils.isEmpty(history) && !ConvertUtils.isEmpty(history.getMViaPoint())) {
+                    return histories.get(i);
+                }
+            }
             return histories.get(0);
         } else {
             return null; //没有找到数据

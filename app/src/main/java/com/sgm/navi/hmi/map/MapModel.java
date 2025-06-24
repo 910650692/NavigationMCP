@@ -33,24 +33,19 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
-import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
-import com.sgm.navi.hmi.setting.SettingFragment;
-import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
-import com.sgm.navi.mapservice.bean.INaviConstant;
-import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
-import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
-import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
-import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
-import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.account.AccountQRCodeLoginFragment;
 import com.sgm.navi.hmi.message.MessageCenterHelper;
 import com.sgm.navi.hmi.navi.AuthorizationRequestDialog;
 import com.sgm.navi.hmi.navi.ContinueNaviDialog;
+import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.navi.PhoneAddressDialog;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
+import com.sgm.navi.hmi.setting.SettingFragment;
+import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
 import com.sgm.navi.hmi.utils.AiWaysGestureManager;
+import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -58,6 +53,8 @@ import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
+import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.aos.RestrictedEndNumberParam;
 import com.sgm.navi.service.define.aos.RestrictedParam;
 import com.sgm.navi.service.define.aos.TrafficRestrictResponseParam;
@@ -65,6 +62,7 @@ import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
@@ -112,6 +110,7 @@ import com.sgm.navi.service.logicpaket.message.MessageCenterCallBack;
 import com.sgm.navi.service.logicpaket.message.MessageCenterManager;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.IPositionPackageCallback;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
@@ -134,6 +133,7 @@ import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
+import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
 import java.io.Serializable;
@@ -816,6 +816,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     Logger.e(TAG, "getMEndPoiName null");
                     return;
                 }
+                if (TextUtils.isEmpty(mUncompletedNavi.getMViaPoint())) {
+                    Logger.e(TAG, "getMViaPoint null");
+                    return;
+                }
                 mViewModel.continueNavi(mUncompletedNavi.getMEndPoiName());
             }
         } catch (WindowManager.BadTokenException e) {
@@ -829,10 +833,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public void onContinueNaviClick() {
         if (mUncompletedNavi == null) {
+            Logger.i(TAG, "mUncompletedNavi null");
             return;
         }
         onCancelContinueNaviClick();
         String midPoint = mUncompletedNavi.getMViaPoint();
+        if (Logger.openLog) {
+            Logger.d(TAG, "midPoint:", midPoint);
+        }
         if (!ConvertUtils.isEmpty(midPoint)) {
             RouteSpeechRequestParam routeSpeechRequestParam = GsonUtils.fromJson(midPoint, RouteSpeechRequestParam.class);
             routeSpeechRequestParam.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
