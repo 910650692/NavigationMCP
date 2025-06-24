@@ -783,6 +783,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void setLimitDriverVisibility(boolean visibility) {
         limitDriverVisibility.set(visibility);
+        if (!visibility) {
+            this.routeRestrictionParam = null;
+        }
     }
 
     public void updateLimitInfo(@Nullable RouteRestrictionParam param) {

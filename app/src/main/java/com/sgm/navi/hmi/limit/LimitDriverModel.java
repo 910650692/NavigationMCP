@@ -4,7 +4,10 @@ package com.sgm.navi.hmi.limit;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.hmi.R;
 import com.sgm.navi.service.define.aos.RestrictedArea;
 import com.sgm.navi.service.define.aos.RestrictedParam;
 import com.sgm.navi.service.define.map.MapType;
@@ -64,12 +67,15 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
      */
     public void queryLimitPolicyByCityCode(final String cityCode) {
         Logger.d(TAG, "queryRetry cityCode:" , cityCode);
+        mCurrentCityCode = cityCode;
         final String license = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
         if (license == null || license.isEmpty()) {
             Logger.d(TAG, "No license plate set");
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_avoid_limit_tip));
+            mViewModel.loadingFail();
             return;
         }
-        mCurrentCityCode = cityCode;
         final RestrictedParam restrictedParam = new RestrictedParam();
         // 请求根据车型等信息获取的规则 type = 7 请求城市全部规则 type = 8 请求城市列表 type = 9 根据规则请求数据
         restrictedParam.setRestrict_type(7);
@@ -98,6 +104,8 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
         if (mCurrentCityCode != null && !mCurrentCityCode.isEmpty()) {
             Logger.d(TAG, "queryRetry cityCode:" , mCurrentCityCode);
             queryLimitPolicyByCityCode(mCurrentCityCode);
+        } else {
+            mViewModel.loadingFail();
         }
     }
 
