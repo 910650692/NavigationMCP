@@ -41,9 +41,14 @@ public class LimitCitiesAdapter extends RecyclerView.Adapter<LimitCitiesAdapter.
      * @param data 数据
      */
     public void setData(final List<CityDataInfo> data) {
+        //去除无效非城市数据
         if (data != null && !data.isEmpty()) {
             if (data.get(0).getName().equals("全省下载")) {
                 data.remove(0);
+            }
+            String lastCityName = data.get(data.size() -1).getName();
+            if (lastCityName == null || lastCityName.isEmpty()) {
+                data.remove(data.size() -1);
             }
         }
         this.mDate.clear();
