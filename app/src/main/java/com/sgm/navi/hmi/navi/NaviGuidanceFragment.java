@@ -652,6 +652,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                 mViewModel.isRequestRouteForPlateNumberAndAvoidLimitChange();
                 if (mSceneNaviControlMoreView != null) {
                     mSceneNaviControlMoreView.updateBroadcast();
+                    mSceneNaviControlMoreView.updateCarModel();
                 }
                 OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             } else {
