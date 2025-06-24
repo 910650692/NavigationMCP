@@ -699,14 +699,22 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         switch (mSearchType) {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
-                if (mCityCode != 0) {
-                    mScreenViewModel.keywordSearch(pageNum, keyword, mCityCode, false, isReSearch);
-                } else {
-                    mScreenViewModel.keywordSearch(pageNum, keyword, isReSearch);
+                if(!ConvertUtils.isEmpty(getClassifyData())){
+                    mScreenViewModel.keywordSearch(pageNum, keyword, mResultEntity.getRetain(),getClassifyData(),false);
+                }else{
+                    if (mCityCode != 0) {
+                        mScreenViewModel.keywordSearch(pageNum, keyword, mCityCode, false, isReSearch);
+                    } else {
+                        mScreenViewModel.keywordSearch(pageNum, keyword, isReSearch);
+                    }
                 }
                 break;
             case AutoMapConstant.SearchType.AROUND_SEARCH:
-                mScreenViewModel.aroundSearch(pageNum, keyword, mPoiInfoEntity, String.valueOf(mRange), isReSearch);
+                if(!ConvertUtils.isEmpty(getClassifyData())){
+                    mScreenViewModel.aroundSearch(pageNum, keyword, mResultEntity.getRetain(),getClassifyData(),false, mPoiInfoEntity);
+                }else{
+                    mScreenViewModel.aroundSearch(pageNum, keyword, mPoiInfoEntity, String.valueOf(mRange), isReSearch);
+                }
                 break;
             case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:
                 mScreenViewModel.alongWaySearch(keyword);
