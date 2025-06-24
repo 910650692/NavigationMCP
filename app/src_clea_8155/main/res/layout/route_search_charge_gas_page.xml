@@ -204,15 +204,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/route_charge_list_info_info_bg_title" />
 
-        <com.sgm.navi.scene.ui.route.SceneRouteSearchChargeRefreshListView
-            android:id="@+id/route_charge_info_scene_route_search_refresh"
-            android:layout_width="@dimen/dp_613"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_781"
+            android:orientation="vertical"
             android:layout_marginTop="@dimen/dp_m_48"
-            android:background="@drawable/bg_shadow_navi_ndlc_8155"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/route_charge_list_info_info_bg_title"
-            app:layout_goneMarginBottom="@dimen/dp_34" />
+            app:layout_goneMarginBottom="@dimen/dp_34">
+
+            <com.sgm.navi.scene.ui.route.SceneRouteSearchChargeRefreshListView
+                android:id="@+id/route_charge_info_scene_route_search_refresh"
+                android:layout_width="@dimen/dp_613"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_shadow_navi_ndlc_8155" />
+
+
+            <View
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="@dimen/dp_100"
+                android:layout_weight="0"
+                android:visibility="@{ViewModel.getAlongTabSearchVisibility() ? View.VISIBLE: View.GONE}" />
+        </LinearLayout>
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_charge_list_along_way_btn"
