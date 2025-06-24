@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.R;
@@ -96,6 +97,11 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
             holder.mRouteLineInfoResultItemBinding.routeItemElectricityImg.setVisibility(View.VISIBLE);
             holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setVisibility(View.VISIBLE);
             holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setText(routeLineInfo.getMElecRouteLabel());
+            if (routeLineInfo.getMRemainPercent() < 20) {
+                holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setTextColor(
+                        AppCache.getInstance().getMContext().getResources().getColor(R.color.text_route_restriction_text_error));
+                holder.mRouteLineInfoResultItemBinding.routeItemElectricityImg.setImageResource(R.drawable.img_electricity_empty_42);
+            }
         } else {
             holder.mRouteLineInfoResultItemBinding.routeItemElectricityImg.setVisibility(View.GONE);
             holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setVisibility(View.GONE);

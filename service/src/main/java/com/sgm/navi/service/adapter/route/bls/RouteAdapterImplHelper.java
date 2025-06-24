@@ -496,9 +496,13 @@ public class RouteAdapterImplHelper {
                         elecRouteLabel = elec + "%可达";
                         canBeArrive = true;
                         routeResult.setMRemainPercent(elec);
+                    } else{
+                        int elec = (int) ((int)info.getLength() / BevPowerCarUtils.getInstance().batterToDistance - BevPowerCarUtils.getInstance().initlialHVBattenergy);
+                        int chargingCycles = (int) Math.ceil((double) elec / BevPowerCarUtils.getInstance().maxBattenergy);
+                        elecRouteLabel = "预计充电" + chargingCycles + "次";
                     }
                 } else {
-                    final int remain = (int) (BevPowerCarUtils.getInstance().initlialHVBattenergy
+                    int remain = (int) (BevPowerCarUtils.getInstance().initlialHVBattenergy
                             * BevPowerCarUtils.getInstance().batterToDistance - info.getLength());
                     if (remain > 0) {
                         final int elec = (int) (remain * 100 / BevPowerCarUtils.getInstance().batterToDistance
@@ -506,6 +510,12 @@ public class RouteAdapterImplHelper {
                         elecRouteLabel = elec + "%可达";
                         canBeArrive = true;
                         routeResult.setMRemainPercent(elec);
+                    } else {
+                        remain = - remain;
+                        final int elec = (int) (remain * 100 / BevPowerCarUtils.getInstance().batterToDistance
+                                / BevPowerCarUtils.getInstance().maxBattenergy);
+                        int chargingCycles = (int) Math.ceil((double) elec / BevPowerCarUtils.getInstance().maxBattenergy);
+                        elecRouteLabel = "预计充电" + chargingCycles + "次";
                     }
                 }
                 // 判断补能计划是否生效

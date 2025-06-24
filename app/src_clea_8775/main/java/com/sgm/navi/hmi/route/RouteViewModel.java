@@ -8,4 +8,9 @@ public class RouteViewModel extends BaseRouteViewModel {
         setMsgDialogTop(100);
         setMsgDialogLeft(700);
     }
+
+    @Override
+    public boolean isNDCar() {
+        return true;
+    }
 }

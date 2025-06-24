@@ -64,6 +64,7 @@
     <color name="route_vai_remove_color">#4B535D</color>
     <color name="route_white">#FFFFFFFF</color>
     <color name="route_progressBar_color">#4ABA59</color>
+    <color name="text_route_restriction_text_error">#FFC73333</color>
 
     <color name="text_route_defult">#B3000000</color>
     <color name="text_route_title">#66000000</color>
