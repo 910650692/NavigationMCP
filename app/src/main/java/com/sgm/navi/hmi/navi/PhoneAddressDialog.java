@@ -1,25 +1,23 @@
 package com.sgm.navi.hmi.navi;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.databinding.DialogPhoneAddressBinding;
 import com.sgm.navi.ui.dialog.BaseDialog;
 
 public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
 
     public static final int SHOW_TIME = 8000;
-    private final Handler mHandler = new Handler(Looper.myLooper());
 
     public PhoneAddressDialog(final Context context) {
         super(context);
-        mHandler.postDelayed(this::dismiss, SHOW_TIME);
+        ThreadManager.getInstance().postDelay(this::dismiss, SHOW_TIME);
     }
 
     @Override
@@ -34,6 +32,10 @@ public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
             if (mDialogClickListener != null) {
                 mDialogClickListener.onCommitClick();
             }
+        });
+
+        mViewBinding.ivClose.setOnClickListener(v -> {
+            dismiss();
         });
     }
 
@@ -53,14 +55,16 @@ public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
      * show dialog
      */
     public void showDialog() {
-        super.showDialog(Gravity.TOP);
+        super.showDialog(Gravity.TOP | Gravity.START);
         final Window window = getWindow();
         if (null == window) {
             return;
         }
-        window.setLayout(getContext().getResources().getDimensionPixelOffset(com.sgm.navi.ui.R.dimen.dp_948),
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT);
         final WindowManager.LayoutParams params = window.getAttributes();
+        params.x = 417;
+        params.y = 85;
         window.setAttributes(params);
     }
 }
