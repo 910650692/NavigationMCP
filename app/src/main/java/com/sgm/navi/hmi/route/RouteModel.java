@@ -1066,6 +1066,22 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     }
                 });
                 break;
+            case ROUTE_GUIDE_LABEL:
+                ThreadManager.getInstance().execute(() -> {
+                    if (!ConvertUtils.isEmpty(mRouteLineInfos)) {
+                        int index = -1;
+                        for (int t = 0; t < mRouteLineInfos.size(); t++) {
+                            if (item.getEventID() == mRouteLineInfos.get(t).getMPathID()) {
+                                index = t;
+                            }
+                        }
+
+                        if (index != -1 && index != getCurrentIndex()) {
+                            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, index);
+                        }
+                    }
+                });
+                break;
             case ROUTE_POINT_START:
             case ROUTE_POINT_END:
             case ROUTE_POINT_VIA:
