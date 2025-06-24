@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadcastBinding, SettingBroadcastViewModel>{
+
+    private final static String TAG = SettingBroadcastFragment.class.getSimpleName();
     @Override
     public int onLayoutId() {
         return R.layout.fragment_setting_broadcast;
@@ -33,6 +35,7 @@ public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadc
 
     @Override
     public void onInitView() {
+        Logger.d(TAG, "onInitView: ");
         mViewModel.initView();
         setCurrentVoice();
         setVoiceIcons();

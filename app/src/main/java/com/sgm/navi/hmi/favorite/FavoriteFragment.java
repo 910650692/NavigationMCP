@@ -87,6 +87,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
     @Override
     public void onInitView() {
+        Logger.d(TAG, "onInitView: ");
         initFavoriteList();
         backToTop();
 //        initFrequentAddress();

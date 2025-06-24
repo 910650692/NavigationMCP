@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ResourceUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
@@ -19,6 +20,7 @@ import java.util.Objects;
 
 public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding, SettingGuideViewModel> {
 
+    private final static String TAG = SettingNaviFragment.class.getSimpleName();
     @Override
     public int onLayoutId() {
         return R.layout.fragment_setting_navi;
@@ -37,6 +39,7 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
 
     @Override
     public void onInitView() {
+        Logger.d(TAG, "onInitView: ");
         //获取初始化数据
         mViewModel.initView();
         updateCheckBoxTextColor();

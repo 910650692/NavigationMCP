@@ -21,6 +21,7 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
 public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBinding, SettingOthersViewModel> {
 
+    private final static String TAG = SettingOthersFragment.class.getSimpleName();
     private SettingCheckDialog mClearMemoryDialog;
     private SettingCheckDialog mResetSettingDialog;
     private SettingCheckDialog mLogoutAccountDialog;
@@ -37,6 +38,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
 
     @Override
     public void onInitView() {
+        Logger.d(TAG, "onInitView: ");
         mViewModel.initView();
         initDialog();
     }
