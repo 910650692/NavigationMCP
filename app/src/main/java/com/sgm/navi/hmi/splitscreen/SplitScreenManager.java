@@ -128,11 +128,11 @@ public class SplitScreenManager {
 
     /***
      * 当前位置：SR处于2/3右侧，导航左侧1/3
-     * 切换SR到屏幕左侧1/3，导航到右侧2/3
+     * 导航切换到全屏
      */
-    public void switchSRToOneThirdScreenAndPositionLeft() {
-        Logger.i(TAG, "switchSRToOneThirdScreenAndPositionLeft");
-        switchSplitScreen(2, "");
+    public void switchNaviToFullScreen() {
+        Logger.i(TAG, "导航切换到全屏！");
+        exitSplitScreen(0, "");
     }
 
     private static final class InstanceHolder {
@@ -199,15 +199,19 @@ public class SplitScreenManager {
      * @param extra 预留字段，传空字符串即可
      */
     public void enterSplitScreen(String pkg, int position, int size, String secondPkg, String extra) {
-        Logger.i(TAG, "enterSplitScreen", pkg, position, size, secondPkg, secondPkg);
-        if (isServiceConnect && !ConvertUtils.isNull(mBinder)) {
-            try {
-                mBinder.enterISplitScreen(pkg, position, size, secondPkg, extra);
-            } catch (RemoteException e) {
-                Logger.e(TAG, e.getMessage());
+        try {
+            Logger.i(TAG, "enterSplitScreen-start", pkg, position, size, secondPkg, secondPkg);
+            if (isServiceConnect && !ConvertUtils.isNull(mBinder)) {
+                try {
+                    mBinder.enterISplitScreen(pkg, position, size, secondPkg, extra);
+                } catch (RemoteException e) {
+                    Logger.e(TAG, e.getMessage());
+                }
+            } else {
+                Logger.e(TAG, "service disconnect or mBinder is null!");
             }
-        } else {
-            Logger.e(TAG, "service disconnect or mBinder is null!");
+        } catch (Exception e) {
+            Logger.e(TAG, "enterSplitScreen-failed", pkg, position, size, secondPkg, secondPkg);
         }
     }
 
@@ -218,15 +222,19 @@ public class SplitScreenManager {
      * @param extra
      */
     public void exitSplitScreen(int type, String extra) {
-        Logger.e(TAG, "exitSplitScreen", type, extra);
-        if (isServiceConnect && !ConvertUtils.isNull(mBinder)) {
-            try {
-                mBinder.exitISplitScreen(type, extra);
-            } catch (RemoteException e) {
-                Logger.e(TAG, "exitSplitScreen failed" , e.getMessage());
+        try {
+            Logger.i(TAG, "exitSplitScreen-start", type, extra);
+            if (isServiceConnect && !ConvertUtils.isNull(mBinder)) {
+                try {
+                    mBinder.exitISplitScreen(type, extra);
+                } catch (RemoteException e) {
+                    Logger.e(TAG, "exitSplitScreen failed" , e.getMessage());
+                }
+            } else {
+                Logger.e(TAG, "exitSplitScreen failed: service not connect or mBinder is null!");
             }
-        } else {
-            Logger.e(TAG, "exitSplitScreen failed: service not connect or mBinder is null!");
+        } catch (Exception e) {
+            Logger.e(TAG, "exitSplitScreen-failed", e.getMessage(),  type, extra);
         }
     }
 

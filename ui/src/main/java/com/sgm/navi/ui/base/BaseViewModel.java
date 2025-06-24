@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 
 public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> extends AndroidViewModel implements IBaseViewModel {
@@ -95,7 +96,14 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
 
     @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle) {
-        mView.addFragment(fragment, bundle);
+        final BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(mScreenId);
+        if (!ConvertUtils.isNull(currentFragment) && ConvertUtils.equals(currentFragment.getClass().getName(), fragment.getClass().getName())) {
+            if (!ConvertUtils.isNull(fragment)) {
+                fragment.setArguments(bundle);
+            }
+        } else {
+            mView.addFragment(fragment, bundle);
+        }
     }
 
     @Override

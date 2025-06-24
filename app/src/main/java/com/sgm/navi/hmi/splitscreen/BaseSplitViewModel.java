@@ -96,7 +96,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action goHome = () -> {
         Logger.i(TAG, "goHome");
-        SplitScreenManager.getInstance().switchSRToOneThirdScreenAndPositionLeft();
+        SplitScreenManager.getInstance().switchNaviToFullScreen();
         startMapActivity(INaviConstant.OpenIntentPage.GO_HOME, null);
     };
 
@@ -105,7 +105,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action goCompany = () -> {
         Logger.i(TAG, "goCompany");
-        SplitScreenManager.getInstance().switchSRToOneThirdScreenAndPositionLeft();
+        SplitScreenManager.getInstance().switchNaviToFullScreen();
         startMapActivity(INaviConstant.OpenIntentPage.GO_COMPANY, null);
     };
 
@@ -114,7 +114,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action doSearch = () -> {
         Logger.i(TAG, "doSearch");
-        SplitScreenManager.getInstance().switchSRToOneThirdScreenAndPositionLeft();
+        SplitScreenManager.getInstance().switchNaviToFullScreen();
         startMapActivity(INaviConstant.OpenIntentPage.SEARCH_PAGE, null);
     };
 
@@ -123,7 +123,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action chargeOrGas = () -> {
         Logger.i(TAG, "chargeOrGas");
-        SplitScreenManager.getInstance().switchSRToOneThirdScreenAndPositionLeft();
+        SplitScreenManager.getInstance().switchNaviToFullScreen();
         startMapActivity(INaviConstant.OpenIntentPage.SEARCH_RESULT_PAGE, null);
     };
 
