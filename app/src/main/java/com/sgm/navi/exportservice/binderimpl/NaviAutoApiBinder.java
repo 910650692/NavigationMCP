@@ -79,6 +79,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
 
@@ -86,6 +87,14 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
     private static final String TAG = NaviAutoApiBinder.class.getSimpleName();
     private static final String INNER_CLIENT = "default";
+    private static final String DBA_CLIENT = "com.patac.hmi.dba";
+    private static final String ONSTAR_CLIENT = "com.patac.hmi.onstar";
+    private static final String ADM_CLIENT = "com.sgm.hmi.lvmapa.adm";
+    private static final String ADMHC_CLIENT = "com.sgm.hmi.lvmapa.admhc";
+    private static final String ADCU_CLIENT = "com.sgm.hmi.lvmapa.adcu";
+    private static final String GALLERY_CLIENT = "com.patac.hmi.gallery";
+    private static final int REVERSE_INTERVAL = 30 * 1000;
+
 
     private final RemoteCallbackList<INaviAutoApiCallback> mNaviAutoCallbackList = new RemoteCallbackList<>();
     private final RemoteCallbackList<INaviAutoLocationCallback> mLocationCallbackList = new RemoteCallbackList<>();
@@ -132,6 +141,9 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     //当前引导面板状态
     private int mGuidePanelStatus;
 
+    //允许调用逆地理编码接口的应用包名集合
+    private ConcurrentHashMap<String, Long> mReversePkgMap;
+
     private final MyFsaService.ExportEventCallBack mEventCallBack =
             (eventId, eventStr) -> handleExportEvent(eventId, transformBeanDefine(eventStr));
 
@@ -151,6 +163,14 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
         MyFsaService.getInstance().registerExportEventCallBack(mEventCallBack);
         mGuidePanelStatus = getGuidePanelStatus(TAG);
+
+        mReversePkgMap = new ConcurrentHashMap<>();
+        mReversePkgMap.put(DBA_CLIENT, 0L);
+        mReversePkgMap.put(ONSTAR_CLIENT, 0L);
+        mReversePkgMap.put(ADM_CLIENT, 0L);
+        mReversePkgMap.put(ADMHC_CLIENT, 0L);
+        mReversePkgMap.put(ADCU_CLIENT, 0L);
+        mReversePkgMap.put(GALLERY_CLIENT, 0L);
     }
 
     /**
@@ -620,6 +640,9 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         mRouteResultObserver = new IRouteResultObserver() {
             @Override
             public void onRouteResult(final RequestRouteResult requestRouteResult) {
+                if (isNaviStatus(INNER_CLIENT)) {
+                    return;
+                }
                 if (mInRouteCallBack) {
                     Logger.e(TAG, "already in route callback broadcast, can't process tbt");
                     return;
@@ -656,6 +679,9 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
             @Override
             public void onRouteFail(final MapType mapTypeId, final String errorMsg) {
+                if (isNaviStatus(INNER_CLIENT)) {
+                    return;
+                }
                 if (mInRouteCallBack) {
                     Logger.e(TAG, "already in route callback broadcast, can't process tbt");
                     return;
@@ -1436,15 +1462,25 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
     @Override
     public int requestReverseGeoSearch(final String clientPkg, final BaseGeoPoint baseGeoPoint) {
-        if (null == baseGeoPoint) {
+        if (null == baseGeoPoint || null == clientPkg || !mReversePkgMap.containsKey(clientPkg)) {
             Logger.e(TAG, "point is empty, can't reverseSearch");
             return -1;
         }
-        Logger.i(TAG, clientPkg + " reverseGeoSearch: " + baseGeoPoint);
 
-        final GeoPoint geoPoint = new GeoPoint(baseGeoPoint.getLon(), baseGeoPoint.getLat());
-        mGeoSearchId = SearchPackage.getInstance().geoSearch(geoPoint, true);
-        return mGeoSearchId;
+        Logger.i(TAG, clientPkg, "reverseGeoSearch", baseGeoPoint);
+        final Long temp = mReversePkgMap.getOrDefault(clientPkg, 0L);
+        final long lastCallMills = null != temp ? temp : 0L;
+        final long currentMillis = System.currentTimeMillis();
+
+        if (GALLERY_CLIENT.equals(clientPkg) || currentMillis - lastCallMills > REVERSE_INTERVAL) {
+            //如果是图库应用或距上一次调用间隔大于30s
+            mReversePkgMap.replace(clientPkg, currentMillis);
+            final GeoPoint geoPoint = new GeoPoint(baseGeoPoint.getLon(), baseGeoPoint.getLat());
+            mGeoSearchId = SearchPackage.getInstance().geoSearch(geoPoint, true);
+            return mGeoSearchId;
+        } else {
+            return -1;
+        }
     }
 
     @Override
