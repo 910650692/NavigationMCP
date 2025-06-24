@@ -15,13 +15,13 @@
         android:clickable="true"
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <com.sgm.navi.scene.ui.search.SceneTerminalParkingListView
             android:id="@+id/scene_terminal_parking_list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layoutType="scene_search_result_fragment" />
     </com.sgm.navi.ui.view.SkinLinearLayout>
 
