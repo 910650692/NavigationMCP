@@ -112,6 +112,8 @@
                     tools:text="21kw.800v" />
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/poi_charge_fast_info"
+                    android:visibility="gone"
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
                     android:layout_marginEnd="@dimen/dp_3"
@@ -183,6 +185,8 @@
                     tools:text="21kw.800v" />
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/poi_charge_slow_info"
+                    android:visibility="gone"
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
                     android:layout_marginEnd="@dimen/dp_3"

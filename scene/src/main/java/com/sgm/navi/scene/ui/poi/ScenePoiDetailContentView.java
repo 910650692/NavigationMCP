@@ -933,7 +933,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setVisibility(GONE);
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(fastTotal.replace("/",""));
             }
-
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastInfo.setVisibility(ConvertUtils.isNull(mPoiInfoEntity.getOperatorId()) ? GONE : VISIBLE);
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowInfo.setVisibility(ConvertUtils.isNull(mPoiInfoEntity.getOperatorId()) ? GONE : VISIBLE);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.
                     setText(fastInfo);
             final String slowFree = chargeInfo.getSlow_free() == 0 ?
