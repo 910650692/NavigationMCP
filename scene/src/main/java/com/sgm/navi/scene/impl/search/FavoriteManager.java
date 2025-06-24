@@ -38,9 +38,10 @@ final public class FavoriteManager {
         if (poiInfoEntity == null || poiInfoEntity.getPoint() == null) {
             return;
         }
-        if (BehaviorPackage.getInstance().isFavorite(poiInfoEntity.getPid()+type)) {
-            return;
-        }
+        //在CollectResultAdapter中已经判断过了，此处不用重复判断
+//        if (BehaviorPackage.getInstance().isFavorite(poiInfoEntity.getPid()+type)) {
+//            return;
+//        }
         final FavoriteInfo favoriteInfo = new FavoriteInfo();
         favoriteInfo.setCommonName(type);
         poiInfoEntity.setFavoriteInfo(favoriteInfo);

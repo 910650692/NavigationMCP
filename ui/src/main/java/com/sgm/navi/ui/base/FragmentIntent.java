@@ -178,8 +178,8 @@ public class FragmentIntent {
             }
             if (nextShow) {
                 final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
-                if (Logger.openLog) {
-                    Logger.i(TAG, "移除上一个。显示下一个", toFragment);
+                if (Logger.openLog && toFragment != null) {
+                    Logger.i(TAG, "移除上一个。显示下一个", toFragment.getClass().getSimpleName());
                 }
                 if (!ConvertUtils.isEmpty(toFragment)) {
                     if (toFragment.getClass().getName().contains("NaviGuidanceFragment")) {
@@ -214,8 +214,8 @@ public class FragmentIntent {
             }
         }
         final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
-        if(Logger.openLog) {
-            Logger.i(TAG, "移除上一个。显示下一个", toFragment);
+        if(Logger.openLog && toFragment != null) {
+            Logger.i(TAG, "移除上一个。显示下一个", toFragment.getClass().getSimpleName());
         }
         if (!ConvertUtils.isEmpty(toFragment)) {
             currentFragment = toFragment;
@@ -238,7 +238,7 @@ public class FragmentIntent {
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
         if(Logger.openLog) {
-            Logger.i(TAG, "showCurrentFragment", toFragment);
+            Logger.i(TAG, "showCurrentFragment", toFragment.getClass().getSimpleName());
         }
         if (!ConvertUtils.isEmpty(toFragment)) {
             if(Logger.openLog) {
@@ -250,7 +250,7 @@ public class FragmentIntent {
         if (!fragments.isEmpty()) {
             for (int t = 0; t < fragments.size(); t++) {
                 if(Logger.openLog) {
-                    Logger.i(TAG, "showCurrentFragment", fragments.get(t));
+                    Logger.i(TAG, "showCurrentFragment", fragments.get(t).getClass().getSimpleName());
                     Logger.i(TAG, "showCurrentFragment", fragments.get(t).isHidden());
                 }
             }

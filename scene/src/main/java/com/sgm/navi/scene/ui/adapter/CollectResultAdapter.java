@@ -38,6 +38,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
     private OnItemClickListener mOnItemClickListener;
     //0 普通收藏 1 常用地址 3 收到的点
     private int mCollectionType = 0;
+    private int mHomeCompanyType = -1;
 
 
     public void setOnItemClickListener(final OnItemClickListener listener) {
@@ -50,6 +51,13 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
     public void setCollectionType(final int collectionType) {
         this.mCollectionType = collectionType;
         notifyList(mPoiEntities);
+    }
+
+    /**
+     * @param homeCompanyType 0 普通收藏 1 家 2 公司 3 常用地址 4 途径点
+     */
+    public void setHomeCompanyType(final int homeCompanyType) {
+        this.mHomeCompanyType = homeCompanyType;
     }
 
 
@@ -120,6 +128,9 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         //根据UE，收藏点不需要显示距离数据
         holder.mResultItemBinding.itemFavoriteDistance.setVisibility(View.GONE);
         holder.mResultItemBinding.itemFavoriteLine.setVisibility(View.GONE);
+        holder.mResultItemBinding.textNavi.setText(R.string.st_go_here);
+        holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
+                .getDrawable(R.drawable.img_basic_ic_navi));
         if (mSearchPackage.isAlongWaySearch()) {
             if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
@@ -132,20 +143,42 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             }
 
         } else {
-            holder.mResultItemBinding.textNavi.setText(R.string.st_go_here);
-            holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
-                    .getDrawable(R.drawable.img_basic_ic_navi));
-        }
-        //若是常用地址或者收到的点，设置为加图标
-        if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
-            if (mPoiEntities.get(position).getAddress().isEmpty()) {
-                holder.mResultItemBinding.crlPoiDes.setVisibility(View.GONE);
-                holder.mResultItemBinding.crlPoiName.setVisibility(View.VISIBLE);
+            if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
+                if (mPoiEntities.get(position).getAddress().isEmpty()) {
+                    holder.mResultItemBinding.crlPoiDes.setVisibility(View.GONE);
+                    holder.mResultItemBinding.crlPoiName.setVisibility(View.VISIBLE);
+                }
+                //若是常用地址或者收到的点，设置为加图标
+                if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
+                    if (ConvertUtils.isEmpty(BehaviorPackage.getInstance().isFavorite(mPoiEntities.get(position)))) {
+                        holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().
+                                getDrawable(R.drawable.img_addq_58));
+                        holder.mResultItemBinding.textNavi.setText(R.string.mps_set_add);
+                    } else {
+                        //已收藏状态显示已添加
+                        holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                        holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
+                                .getDrawable(R.drawable.img_route_search_added));
+                    }
+                } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COMMON) {
+                    if (!BehaviorPackage.getInstance().isFrequentAddress(mPoiEntities.get(position))) {
+                        holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().
+                                getDrawable(R.drawable.img_addq_58));
+                        holder.mResultItemBinding.textNavi.setText(R.string.mps_set_add);
+                    } else {
+                        //已收藏状态显示已添加
+                        holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                        holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
+                                .getDrawable(R.drawable.img_route_search_added));
+                    }
+                } else {
+                    //默认显示添加
+                    holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().
+                            getDrawable(R.drawable.img_addq_58));
+                    holder.mResultItemBinding.textNavi.setText(R.string.mps_set_add);
+                }
+                holder.mResultItemBinding.llActionContainer.setVisibility(View.GONE); //隐藏左滑按钮
             }
-            holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().
-                    getDrawable(R.drawable.img_addq_58));
-            holder.mResultItemBinding.textNavi.setText(R.string.mps_set_add);
-            holder.mResultItemBinding.llActionContainer.setVisibility(View.GONE); //隐藏左滑按钮
         }
 
         holder.mResultItemBinding.crlPoiDes.setOnClickListener(v -> {
@@ -173,7 +206,25 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         });
 
         holder.mResultItemBinding.poiToNavi.setOnClickListener(v -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click " + GsonUtils.toJson(mPoiEntities.get(position)));
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click " + mPoiEntities.get(position).getName()
+                    + " ,id: " + mPoiEntities.get(position).getPid()
+                    + " ,point: " + mPoiEntities.get(position).getPoint());
+            if (mSearchPackage.isAlongWaySearch()) {
+                if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
+                    return;
+                }
+            } else {
+                //若是常用地址或者收到的点并且已经添加，直接return
+                if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
+                    if (!ConvertUtils.isEmpty(BehaviorPackage.getInstance().isFavorite(mPoiEntities.get(position)))) {
+                        return;
+                    }
+                } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COMMON) {
+                    if (BehaviorPackage.getInstance().isFrequentAddress(mPoiEntities.get(position))) {
+                        return;
+                    }
+                }
+            }
             if (mOnItemClickListener != null) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click1 算路/添加常用地址/添加收到的点");
                 mOnItemClickListener.onNaviClick(position, mPoiEntities.get(position));
@@ -212,10 +263,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
                     mOnItemClickListener.updateCollectStatus(mPoiEntities.get(position));
                 }
                 mPoiEntities.remove(position);
-                notifyItemRemoved(position);
-                if (!AccountPackage.getInstance().isLogin()) {
-                    notifyDataSetChanged();
-                }
+                notifyDataSetChanged();
                 // 删除成功后的toast弹框
                 ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_deleted));
             }

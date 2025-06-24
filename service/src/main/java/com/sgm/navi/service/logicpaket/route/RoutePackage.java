@@ -1260,7 +1260,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 || ConvertUtils.isEmpty(poiInfoEntity.getPoint())) {
             return false;
         }
-        if ((!ConvertUtils.isEmpty(routeParam.getPoiID()) && routeParam.getPoiID() == poiInfoEntity.getPid()) || (routeParam.getRealPos().getLat() == poiInfoEntity.getPoint().getLat()
+        if ((!ConvertUtils.isEmpty(routeParam.getPoiID()) && ConvertUtils.equals(routeParam.getPoiID(), poiInfoEntity.getPid()))
+                || (routeParam.getRealPos().getLat() == poiInfoEntity.getPoint().getLat()
                 && routeParam.getRealPos().getLon() == poiInfoEntity.getPoint().getLon())) {
             return true;
         }

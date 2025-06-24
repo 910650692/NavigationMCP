@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.BaseSceneView;
 import com.sgm.navi.scene.BuildConfig;
 import com.sgm.navi.scene.R;
@@ -147,10 +148,10 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                         }
 //                        closeAllFragmentsUntilTargetFragment("MainAlongWaySearchFragment");
                     } else {
-                        //如果是常用地址/收到的点跳转的收藏界面，那么点击导航按钮，根据来源页面的HomeCompany类型收藏为收藏点/常去的点
-                        FavoriteManager.getInstance().addFavorite(poiInfoEntity, mHomeCompanyType);
                         closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
                         showCurrentFragment();
+                        //如果是常用地址/收到的点跳转的收藏界面，那么点击导航按钮，根据来源页面的HomeCompany类型收藏为收藏点/常去的点
+                        ThreadManager.getInstance().runAsync(() -> FavoriteManager.getInstance().addFavorite(poiInfoEntity, mHomeCompanyType));
                     }
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
@@ -295,6 +296,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
 
     public void setHomeCompanyType(final int homeCompanyType) {
         this.mHomeCompanyType = homeCompanyType;
+        mAdapter.setHomeCompanyType(mHomeCompanyType);
     }
 
     /**
