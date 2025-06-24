@@ -8,7 +8,7 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.adapter.position.VehicleSpeedController;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.position.ISpeedCallback;
-import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +60,8 @@ public class SpeedMonitor implements ISpeedCallback {
             return;
         }
         currentSpeed = speed;
-        final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviPackage.getInstance().getCurrentNaviType());
+        Logger.d(TAG, "当前状态 :",  NaviStatusPackage.getInstance().getCurrentNaviStatus());
+        final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviStatusPackage.getInstance().getCurrentNaviStatus());
         if (!isReady) {
             Logger.d(TAG, "当前状态无需计时");
             cancelTicket();
