@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.ConvertUtils;
@@ -75,11 +76,17 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     public void closeFragment() {
         boolean isOpenFromNavi = mScreenView != null && mScreenView.getIsOpenFromNavi();
         if (!isOpenFromNavi) {
-            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+            Fragment fragment = StackManager.getInstance().getCurrentFragment(mMapTypeId.name());
+            if (fragment != null) {
+                StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+            }
         } else {
             Bundle bundle = new Bundle();
             bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
-            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
+            Fragment fragment = StackManager.getInstance().getCurrentFragment(mMapTypeId.name());
+            if (fragment != null) {
+                StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
+            }
         }
         // 清除扎标的点
         mSearchPackage.clearPoiLabelMark();
