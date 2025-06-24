@@ -211,7 +211,7 @@ public class L2Adapter {
                 crossInfoDataBean.setFrontLaneType(new ArrayList<>());
                 crossInfoDataBean.setSegmentIndex(-1);
                 crossInfoDataBean.setLinkIndex(-1);
-                crossInfoDataBean.setTimestamp(0);
+                crossInfoDataBean.setTimestamp(System.currentTimeMillis());
                 crossInfoDataBean.setLaneNum(0);
                 crossInfoDataBean.setLaneTypes(new ArrayList<>());
                 l2NaviBean.setHasTidalLane(0);
@@ -510,17 +510,16 @@ public class L2Adapter {
             L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
             if (!isShowLane) {
                 Logger.i(TAG, "lane hide");
-                crossInfoDataBean.setTimestamp(0);
+                crossInfoDataBean.setTimestamp(System.currentTimeMillis());
                 crossInfoDataBean.setLaneNum(0);
                 crossInfoDataBean.setLaneTypes(new ArrayList<>());
                 return;
             }
             if (ConvertUtils.isEmpty(laneInfoEntity)) {
                 Logger.i(TAG, "laneInfoEntity null");
-                crossInfoDataBean.setTimestamp(0);
+                crossInfoDataBean.setTimestamp(System.currentTimeMillis());
                 crossInfoDataBean.setLaneNum(0);
                 crossInfoDataBean.setLaneTypes(new ArrayList<>());
-
                 return;
             }
             ArrayList<Integer> backLanes = laneInfoEntity.getBackLane();
