@@ -22,10 +22,10 @@
     <string name="reminder_dialog_commit">确定</string>
     <string name="reminder_dialog_cancel">取消</string>
     <string name="reminder_page_service_content">
-        1.1在使用高德提供的软件、网站、服务(统称为"高德产品或服务",包括但不限于适用于电脑、移动智能终端、车载导航仪、智能后视镜、行车记录仪的产品及服务、高德地图开放平台产品及服务)之前,请您务必认真阅读并充分理解《高德服务条款》、《高德隐私权政策》以及开通或使用某项服务的附加条款(统称为"高德服务协议"),特别是关于特别提示、个人信息保护、接收邮件及消息、担保与保保证、免责及责任限制、争议解决等条款,该类条款可能以粗体下划线方式进行标识请您注意重点阅读。
-        \n1.2如果您对本条款有疑问,请您通过高德客服渠道进行询问,高德将向您解释本条款内容。一旦您开始使用高德产品或服务,即表示您已经理解并同意相关协议,该协议即构成对您具有法律约束力的法律文件
-        \n1.3您声明您有充分的权力、能力和权限来同意和履行本条款。如果您代表您的雇主或客户同意本条款,您声明您有充分的法律律授权使您的雇主或客户受到本条款的约束。如果您没有充分的法律授权,请您确保由您的雇主或客户的授权人士来同意本条款。
-        \n1.4高德重视未成年人的安全及个人信息保护,如您为未成年人,请您务必在您的监护人仔细阅读高德服务协议并同意的前提下使用我们的产品或服务或向我们提供信息;如您违反法律法规或高德服务协议内容使用高德产品或服务,造成的一切后果由您及您的监护人承担。
+        1.1在使用高德提供的软件、网站、服务(统称为"高德产品或服务"，包括但不限于适用于电脑、移动智能终端、车载导航仪、智能后视镜、行车记录仪的产品及服务、高德地图开放平台产品及服务)之前，请您务必认真阅读并充分理解《高德服务条款》、《高德隐私权政策》以及开通或使用某项服务的附加条款(统称为"高德服务协议")，特别是关于特别提示、个人信息保护、接收邮件及消息、担保与保保证、免责及责任限制、争议解决等条款，该类条款可能以粗体下划线方式进行标识请您注意重点阅读。
+        \n1.2如果您对本条款有疑问，请您通过高德客服渠道进行询问，高德将向您解释本条款内容。一旦您开始使用高德产品或服务，即表示您已经理解并同意相关协议，该协议即构成对您具有法律约束力的法律文件
+        \n1.3您声明您有充分的权力、能力和权限来同意和履行本条款。如果您代表您的雇主或客户同意本条款，您声明您有充分的法律律授权使您的雇主或客户受到本条款的约束。如果您没有充分的法律授权，请您确保由您的雇主或客户的授权人士来同意本条款。
+        \n1.4高德重视未成年人的安全及个人信息保护，如您为未成年人，请您务必在您的监护人仔细阅读高德服务协议并同意的前提下使用我们的产品或服务或向我们提供信息；如您违反法律法规或高德服务协议内容使用高德产品或服务，造成的一切后果由您及您的监护人承担。
     </string>
     <string name="reminder_page_privacy_content">
         欢迎您使用我们的产品和服务！我们深知个人信息对您的重要性，您的信赖对我们非常重要，我们将严格遵守法律法规要求采取相应的安全保护措施，致力于保护您的个人信息安全可控。基于此，高德（或简称“我们”）制定本《高德隐私权政策》（下称“本政策”/“本隐私政策”），帮助您充分了解在您使用我们产品和服务的过程中，我们会如何收集、使用、共享、存储和保护您的个人信息以及您可以如何管理您的个人信息，以便您更好地作出适当的选择。
@@ -259,7 +259,7 @@
     <string name="favorite_no_charging_data">暂未收藏专属充电站</string>
     <string name="favorite_charging_request_fail">数据获取失败，请刷新</string>
     <string name="favorite_charging_offline">无网络链接，请检查网络后重试</string>
-    <string name="unlock_error">地锁下降失败,请重试</string>
+    <string name="unlock_error">地锁下降失败，请重试</string>
     <string name="unlock_success">地锁已成功下降</string>
     <string name="query_error">请求失败</string>
     <string name="favorite_top">返回顶部</string>
@@ -274,9 +274,9 @@
     <string name="car_connect_unLogin_function_2">无感互联</string>
     <string name="car_connect_unLogin_function_2_tip">您最后浏览的地点和路线将会自动同步到车机</string>
     <string name="car_connect_unLogin_function_3">手机查看爱车位置</string>
-    <string name="car_connect_unLogin_function_3_tip">手机高德自动显示爱车位置,找车方便不费心</string>
+    <string name="car_connect_unLogin_function_3_tip">手机高德自动显示爱车位置，找车方便不费心</string>
     <string name="car_connect_unLogin_function_4">同步双端历史&amp;收藏</string>
-    <string name="car_connect_unLogin_function_4_tip">您的收藏和历史地点会自动同步和存储,查看更方便</string>
+    <string name="car_connect_unLogin_function_4_tip">您的收藏和历史地点会自动同步和存储，查看更方便</string>
     <string name="car_connect_unLogin_function_tip">上车后，手机开启导航时，导航路线自动投射至车机大屏，手机则变为遥控器</string>
     <string name="car_connect_unLogin_function_prompt">发现可连接设备，点击下方按钮去扫码连接吧</string>
     <string name="car_connect_unLogin_function_no_device">当前没有发现可用设备</string>
@@ -295,7 +295,7 @@
     <string name="car_connect_login_function_last_distance">最后1公里发送目的地至高德APP</string>
     <string name="car_connect_login_toast">手机车机链接成功</string>
     <string name="chat_connect_title">微信互联</string>
-    <string name="chat_connect_tip">绑定微信后,微信位置可发送至车机,快速发起导航</string>
+    <string name="chat_connect_tip">绑定微信后，微信位置可发送至车机，快速发起导航</string>
     <string name="chat_connect_login_tip">使用微信扫码绑定</string>
     <string name="chat_connect_send_to_car">发送位置至车机</string>
     <string name="chat_connect_bind">已绑定微信</string>
@@ -360,7 +360,7 @@
     <string name="setting_guide_route_preference">路线偏好</string>
     <string name="setting_guide_avoid_limit">避开限行</string>
     <string name="setting_guide_charging_plan">补能规划</string>
-    <string name="setting_guide_charging_plan_des">到达目的地有电量风险时,将自动规划含充电站的路线</string>
+    <string name="setting_guide_charging_plan_des">到达目的地有电量风险时，将自动规划含充电站的路线</string>
     <string name="setting_guide_car_number">沪AFY120</string>
     <string name="setting_guide_plate_number_first_tip">第一位只能输入字母</string>
     <string name="setting_guide_plate_number_check_not_available">车牌校验未通过</string>
@@ -374,7 +374,7 @@
     <string name="setting_guide_plate_number_clear_tip">删除后无法使用限行提醒等功能</string>
     <string name="setting_guide_plate_number_default">京</string>
     <string name="setting_guide_plate_number_input">输入车牌</string>
-    <string name="setting_guide_plate_number_tip">输入车牌号后,将为您避开城市限行路段</string>
+    <string name="setting_guide_plate_number_tip">输入车牌号后，将为您避开城市限行路段</string>
     <string name="setting_guide_avoid_limit_tip">输入车牌后可启用功能</string>
     <string name="setting_guide_map_display">地图显示</string>
     <string name="setting_guide_road_condition">实时路况</string>
@@ -497,7 +497,7 @@
     <string name="setting_others_help_tab_display_two">2、如何显示路况信息?</string>
     <string name="setting_others_help_tab_display_two_answer">点击状态栏展开状态面板，点击“路况”图标即可开启实时路况，此功能需要车机联网。</string>
     <string name="setting_others_help_tab_display_three">3、导航中实时路况的颜色分别代表什么意思?</string>
-    <string name="setting_others_help_tab_display_three_answer">实时路况共有五种颜色，分别代表的含义是:绿色-畅通;黄色-缓慢;红色-拥堵;深红色-严重拥堵;蓝色-该路段无路况信息。</string>
+    <string name="setting_others_help_tab_display_three_answer">实时路况共有五种颜色，分别代表的含义是:绿色-畅通；黄色-缓慢；红色-拥堵；深红色-严重拥堵；蓝色-该路段无路况信息。</string>
     <string name="setting_others_help_tab_display_four">4、如何退出高德地图车机版?</string>
     <string name="setting_others_help_tab_display_four_answer">点击车机物理返回按钮2次，即可关闭并退出高德地图车机版。</string>
 
@@ -535,7 +535,7 @@
     <string name="setting_others_help_tab_data_one">1、离线地图有什么用?</string>
     <string name="setting_others_help_tab_data_one_answer">下载离线地图后，无网或弱网情况下软件将自动使用离线地图进行搜索、导航，部分城市离线地图还支持路口大图和三维路口大图功能。</string>
     <string name="setting_others_help_tab_data_two">2、如何下载、更新地图?</string>
-    <string name="setting_others_help_tab_data_two_answer">在图面上，点击左上角更多按钮，选择【离线数据】，我们为您提供了二种方式进行数据下载、更新。\n方式一:在线更新。点击【离线地图】，可直接联网下载地图数据;
+    <string name="setting_others_help_tab_data_two_answer">在图面上，点击左上角更多按钮，选择【离线数据】，我们为您提供了二种方式进行数据下载、更新。\n方式一:在线更新。点击【离线地图】，可直接联网下载地图数据；
         \n方式二:U盘更新。前往官网(www.amapauto.com)下载地图数据包解压后存放于U盘根目录，进入【离线数据】—【U盘更新】，将自动识别您U盘中的数据，您可根据需要选择需要更新的数据。</string>
     <string name="setting_others_help_tab_data_three">3、如何更改存储位置?</string>
     <string name="setting_others_help_tab_data_three_answer">进入【离线数据】—【更改存储位置】，可以选择您希望存放离线数据的存储位置，我们会将您已经下载的数据移动到该存储位置。</string>
@@ -624,7 +624,7 @@
 
     <!--  权限申请  -->
     <string name="authorization_request_title">\"高德地图\"权限申请</string>
-    <string name="authorization_request_content_first">保障\"精确定位与导航巡航\"、\"路线规划\"等功能正常使用,应用需要以下权限</string>
+    <string name="authorization_request_content_first">保障\"精确定位与导航巡航\"、\"路线规划\"等功能正常使用，应用需要以下权限</string>
     <string name="authorization_request_content_renew">您对\"高德地图\"的授权已于%s到期。请重新授权以下权限，保障\"精确定位与导航巡航\"、\"路线规划\"等功能正常使用：</string>
     <string name="authorization_request_agree">同意一年</string>
     <string name="authorization_request_cancel">不同意</string>
