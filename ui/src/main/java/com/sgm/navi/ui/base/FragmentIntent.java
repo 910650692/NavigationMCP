@@ -237,7 +237,7 @@ public class FragmentIntent {
     public static void showCurrentFragment(final String screenId, final FragmentManager fragmentManager) {
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
-        if(Logger.openLog) {
+        if(Logger.openLog && toFragment != null) {
             Logger.i(TAG, "showCurrentFragment", toFragment.getClass().getSimpleName());
         }
         if (!ConvertUtils.isEmpty(toFragment)) {

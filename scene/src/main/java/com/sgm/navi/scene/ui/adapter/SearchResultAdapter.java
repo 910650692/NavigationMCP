@@ -262,7 +262,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             }
         }
         if (mPoiInfoEntity != null) {
-            if ("0米".equals(mPoiInfoEntity.getDistance())) {
+            if ("0m".equals(mPoiInfoEntity.getDistance())) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mPoiInfoEntity.getDistance() is: " + mSearchPackage.calcStraightDistance(mPoiInfoEntity.getPoint()));
                 mPoiInfoEntity.setDistance(mSearchPackage.calcStraightDistance(mPoiInfoEntity.getPoint()));
             }
