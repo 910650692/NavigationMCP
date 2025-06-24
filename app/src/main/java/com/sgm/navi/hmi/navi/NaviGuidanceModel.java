@@ -517,6 +517,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onNaviStop() {
         mNaviPackage.setEndPoint(null);
+        mSettingPackage.setConfigKeyMute(0);
         closeNavi();
     }
 
@@ -577,7 +578,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onUpdateViaPass(final long viaIndex) {
-        Logger.i("shisong", "onUpdate viaIndex = " + viaIndex);
+        Logger.i(TAG, "onUpdate viaIndex = " + viaIndex);
         mCurrentViaIndex = viaIndex + 1;
         List<RouteParam> allPoiParamList = OpenApiHelper.getAllPoiParamList(
                 MapType.MAIN_SCREEN_MAIN_MAP);
