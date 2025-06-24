@@ -31,6 +31,10 @@ public class EnginePackage implements EngineObserver {
         ConvertUtils.remove(engineObserverHashtable, key);
     }
 
+    public void loadLibrary() {
+        mEngineAdapter.loadLibrary();
+    }
+
     public void checkSdkLimit() {
         mEngineAdapter.checkSdkLimit();
     }
@@ -73,6 +77,22 @@ public class EnginePackage implements EngineObserver {
 
     public String getChanelName() {
         return mEngineAdapter.getChanelName();
+    }
+
+    @Override
+    public void onLoadLibraryFail(int code, String msg) {
+        for (IEngineObserver iEngineObserver : engineObserverHashtable.values()) {
+            if (ConvertUtils.isEmpty(iEngineObserver)) continue;
+            iEngineObserver.onLoadLibraryFail(code, msg);
+        }
+    }
+
+    @Override
+    public void onLoadLibrarySuccess() {
+        for (IEngineObserver iEngineObserver : engineObserverHashtable.values()) {
+            if (ConvertUtils.isEmpty(iEngineObserver)) continue;
+            iEngineObserver.onLoadLibrarySuccess();
+        }
     }
 
     @Override

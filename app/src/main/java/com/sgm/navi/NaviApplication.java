@@ -9,6 +9,7 @@ import androidx.annotation.WorkerThread;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.DeviceUtils;
 import com.android.utils.crash.AppCrashRecord;
+import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
@@ -60,16 +61,16 @@ public class NaviApplication extends BaseApplication implements Application.Acti
     }
 
     private void initComponent() {
+        AppCache.getInstance().setMApplication(this);
+        AppCache.getInstance().setMContext(getApplicationContext());
+        AppCache.getInstance().setMFlavor(BuildConfig.FLAVOR);
+        registerActivityLifecycleCallbacks(NaviApplication.this);
+        BaseTestCarType testCarType = new TestCarType();
+        initARouter();
         ThreadManager.getInstance().execute(() -> {
-            AppCache.getInstance().setMApplication(this);
-            AppCache.getInstance().setMContext(getApplicationContext());
-            AppCache.getInstance().setMFlavor(BuildConfig.FLAVOR);
-            registerActivityLifecycleCallbacks(NaviApplication.this);
-            BaseTestCarType testCarType = new TestCarType();
-            initARouter();
             initDataTrack();
             try {
-            	PatacNetClient.getInstance().init(this); // 初始化网络适配器
+                PatacNetClient.getInstance().init(this); // 初始化网络适配器
             } catch (Exception e) {
                 //临时Catch方案，ND8775台架 install的包会crash
                 Logger.e(TAG, "PatacNetClient init failed: " + e.getMessage());
@@ -102,7 +103,6 @@ public class NaviApplication extends BaseApplication implements Application.Acti
     /***
      * 初始化其它服务,运行在子线程
      */
-    @WorkerThread
     private void initOtherService() {
         SplitScreenManager.getInstance().init();
         LauncherWindowService.startService();

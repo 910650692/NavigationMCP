@@ -56,13 +56,19 @@ public class EngineAdapterImpl implements IEngineApi {
     private final String mChanelName = "C13953968867";
     private final String mGmcL2ChanelName = "C13953984967";
 
-    static {
-        Logger.i(TAG, "load gbl xxx.so");
-        SdkSoLoadUtils.loadLibrary();
-    }
-
     public EngineAdapterImpl() {
         mEngineObserverList = new ArrayList<>();
+    }
+
+    @Override
+    public void loadLibrary() {
+        Logger.i(TAG, "load gbl xxx.so");
+        if (FileUtils.getInstance().isExternalStorageAvailable()) {
+            SdkSoLoadUtils.loadLibrary();
+            onEngineObserver(10008);
+        } else {
+            onEngineObserver(10007);
+        }
     }
 
     @Override
@@ -304,9 +310,13 @@ public class EngineAdapterImpl implements IEngineApi {
         for (EngineObserver observer : mEngineObserverList) {
             if (ConvertUtils.equals(0, code)) {
                 observer.onInitEngineSuccess();
-            } else if(ConvertUtils.equals(10005, code)){
+            } else if (ConvertUtils.equals(10005, code)) {
                 observer.onInitBaseLibSuccess();
-            }else {
+            } else if (ConvertUtils.equals(10007, code)) {
+                observer.onLoadLibraryFail(code, CodeManager.getInstance().getEngineMsg(code));
+            } else if (ConvertUtils.equals(10008, code)) {
+                observer.onLoadLibrarySuccess();
+            } else {
                 observer.onInitEngineFail(code, CodeManager.getInstance().getEngineMsg(code));
             }
         }

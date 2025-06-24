@@ -7,6 +7,10 @@ package com.sgm.navi.service.adapter.engine;
  */
 public interface EngineObserver {
 
+    void onLoadLibraryFail(int code, String msg);
+
+    void onLoadLibrarySuccess();
+
     default void onInitBaseLibSuccess(){
 
     }

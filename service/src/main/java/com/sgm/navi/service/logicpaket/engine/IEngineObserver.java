@@ -6,6 +6,14 @@ package com.sgm.navi.service.logicpaket.engine;
  * @date 2024/11/26
  */
 public interface IEngineObserver {
+    default void onLoadLibraryFail(int code, String msg) {
+
+    }
+
+    default void onLoadLibrarySuccess() {
+
+    }
+
     default void onInitBaseLibSuccess(){
 
     }

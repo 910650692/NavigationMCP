@@ -117,8 +117,8 @@ public class FileUtils {
     /**
      * 检查文件是否存在.
      *
-     * @param filepath
-     * @return
+     * @param filepath Detected files
+     * @return true 存在/false 不存在
      */
     public boolean checkFile(File filepath) {
         if (ConvertUtils.isEmpty(filepath)) return false;
@@ -128,8 +128,8 @@ public class FileUtils {
     /**
      * 检查文件路径是否存在.
      *
-     * @param dirPath
-     * @return
+     * @param dirPath Detected file path
+     * @return true 存在/false 不存在
      */
     public boolean checkFileDir(File dirPath) {
         if (ConvertUtils.isNull(dirPath)) return false;
@@ -139,9 +139,9 @@ public class FileUtils {
     /**
      * 创建文件
      *
-     * @param file
-     * @param forceRecreate
-     * @return
+     * @param file          File path
+     * @param forceRecreate 是否强制创建
+     * @return true 创建成功/false 创建失败
      */
     private boolean createFile(File file, boolean forceRecreate) {
         try {
@@ -161,9 +161,9 @@ public class FileUtils {
     /**
      * 创建文件目录.
      *
-     * @param dirPath
-     * @param forceRecreate
-     * @return
+     * @param dirPath       File path
+     * @param forceRecreate 是否强制创建
+     * @return true 创建成功/false 创建失败
      */
     public boolean createDir(File dirPath, boolean forceRecreate) {
         if (ConvertUtils.isEmpty(dirPath)) return false;
@@ -179,8 +179,8 @@ public class FileUtils {
     /**
      * 删除文件.
      *
-     * @param path
-     * @return
+     * @param path File path
+     * @return true 删除成功/false 删除失败
      */
     public boolean deleteFile(File path) {
         if (!checkFile(path)) return true;
@@ -335,7 +335,7 @@ public class FileUtils {
             buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
         } catch (IOException e) {
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.d(TAG, "[copyFile] e = {?}", Log.getStackTraceString(e));
             }
         } finally {
@@ -424,7 +424,7 @@ public class FileUtils {
                 fos.write(buffer);
             }
         } catch (IOException e) {
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.d(TAG, "[copyFile] e = {?}", Log.getStackTraceString(e));
             }
         } finally {
@@ -552,7 +552,7 @@ public class FileUtils {
      */
     public boolean setFullPermissions(String dirPath) {
         if (ConvertUtils.isEmpty(dirPath)) {
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.i(TAG, "initEngineParam dirPath isEmpty");
             }
             return false;
@@ -565,9 +565,9 @@ public class FileUtils {
             @SuppressLint("SetWorldWritable")
             boolean writable = file.setWritable(true, false);
             boolean executable = file.setExecutable(true, false);
-            if(Logger.openLog) {
-                Logger.i(TAG, "initEngineParam isDirectory：" , file.isDirectory() , " isFile:" , file.isFile() , " exists:" , file.exists()
-                    , " readable:" , readable , " writable:" , writable , " executable:" , executable , " dirPath:" , dirPath);
+            if (Logger.openLog) {
+                Logger.i(TAG, "initEngineParam isDirectory：", file.isDirectory(), " isFile:", file.isFile(), " exists:", file.exists()
+                        , " readable:", readable, " writable:", writable, " executable:", executable, " dirPath:", dirPath);
             }
             return readable && writable && executable;
         } catch (Exception e) {
@@ -600,24 +600,29 @@ public class FileUtils {
 
     /**
      * 应用外部缓存目录
+     * <p>
+     * 外部沙箱位置：sdcard/Android/data/your_package/files
+     * </>
      *
-     * @return 外部沙箱位置：sdcard/Android/data/your_package/files
      */
     private void getEmulatedPhonePath() {
         boolean isAvailable = isExternalStorageAvailable();
         boolean hasPermission = checkExternalStoragePermission(mContext);
-        if(Logger.openLog) {
-            Logger.i(TAG, "isAvailable:", isAvailable, " hasPermission:", hasPermission);
-        }
+        Logger.i(TAG, "isAvailable:", isAvailable, " hasPermission:", hasPermission);
         SD_APP_PATH = mContext.getExternalFilesDir(null) + File.separator;
     }
 
     /**
      * @return 是否有外部存储 true:有 false:没有
      */
-    private boolean isExternalStorageAvailable() {
+    public boolean isExternalStorageAvailable() {
         String state = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(state);
+        if (!Environment.MEDIA_MOUNTED.equals(state)) {
+            return false;
+        }
+        Logger.d(TAG, "MNT partition was mounted successfully");
+        File file = mContext.getExternalFilesDir(null);
+        return checkFileDir(file);
     }
 
     /**
@@ -627,9 +632,7 @@ public class FileUtils {
     private boolean checkExternalStoragePermission(Context context) {
         int externalStoragePermissionCheck = ContextCompat.checkSelfPermission(context,
                 Manifest.permission.MANAGE_EXTERNAL_STORAGE);
-        if(Logger.openLog) {
-            Logger.i(TAG, "externalStoragePermissionCheck:", externalStoragePermissionCheck);
-        }
+        Logger.i(TAG, "externalStoragePermissionCheck:", externalStoragePermissionCheck);
         return externalStoragePermissionCheck == PackageManager.PERMISSION_GRANTED;
     }
 

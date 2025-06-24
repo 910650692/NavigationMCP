@@ -11,6 +11,8 @@ import com.sgm.navi.service.define.map.MapType;
  */
 public interface IEngineApi {
 
+    void loadLibrary();
+
     /**
      * 添加初始化观察者
      * @param observer EngineObserver

@@ -76,7 +76,6 @@ public class ActivateAdapterImpl implements IActivateApi {
                 onActivatedError(20008, codeManager.getActivateMsg(20008));
             }
         };
-        ActivationManager.getInstance().addManualActivateListener(manualActivateListener);
     }
 
     @Override
@@ -98,6 +97,7 @@ public class ActivateAdapterImpl implements IActivateApi {
 
     @Override
     public void addActivateObserver(final ActivateObserver observer) {
+        ActivationManager.getInstance().addManualActivateListener(manualActivateListener);
         if (ConvertUtils.isContain(mActObserverList, observer)) {
             return;
         }

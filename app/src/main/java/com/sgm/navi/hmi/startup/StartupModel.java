@@ -81,7 +81,6 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         super.onCreate();
         PermissionUtils.getInstance().setPermissionsObserver(this);
         StartService.getInstance().registerSdkCallback(TAG, this);
-        ActivatePackage.getInstance().addActObserver(mActObserver);
     }
 
     @Override
@@ -179,6 +178,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     @Override
     public void onSdkInitSuccess() {
         Logger.i(TAG, "onSdkInitSuccess");
+        ActivatePackage.getInstance().addActObserver(mActObserver);
         StartService.getInstance().unregisterSdkCallback(this);
         mViewModel.startMapActivity();
     }

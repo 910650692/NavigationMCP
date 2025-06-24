@@ -29,6 +29,10 @@ public final class EngineAdapter {
         mIEngineApi.addInitEnginObserver(observer);
     }
 
+    public void loadLibrary() {
+        mIEngineApi.loadLibrary();
+    }
+
     public void checkSdkLimit() {
         mIEngineApi.checkSdkLimit();
     }

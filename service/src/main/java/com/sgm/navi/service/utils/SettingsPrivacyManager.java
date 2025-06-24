@@ -151,7 +151,7 @@ public class SettingsPrivacyManager implements IPrivacyPermission {
                     .getInstance().setPrivacyAuthorityUnCertified(mPackageName, privacyList, oneYear);
             Logger.d(TAG, "setLocationPrivacy", oneYear, result);
         } catch (Exception e) {
-            Logger.e(TAG, "setLocationPrivacy", e.getMessage());
+            Logger.w(TAG, "setLocationPrivacy", e.getMessage());
         }
     }
 
