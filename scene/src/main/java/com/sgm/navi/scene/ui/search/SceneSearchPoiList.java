@@ -908,6 +908,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mViewBinding.searchOfflineHint.setVisibility(VISIBLE);
                 mViewBinding.searchOfflineHint.setText(getContext().getString(R.string.search_offline_hint, cityDataInfo.getName()));
             }
+        } else {
+            mViewBinding.searchOfflineHint.setVisibility(GONE);
         }
         mResultEntity = searchResultEntity;
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySearchResult name: " + searchResultEntity.getKeyword());
