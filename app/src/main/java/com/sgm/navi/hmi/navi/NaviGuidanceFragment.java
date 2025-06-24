@@ -8,11 +8,15 @@ import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_ETA;
 import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TBT;
 import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TMC;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -68,6 +72,36 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private SceneNaviControlMoreView mSceneNaviControlMoreView;
     private SceneNaviSapaDetailView mSceneNaviSapaDetailView;
     private SceneNaviSapaView mSceneNaviSapaView;
+    private PhoneStateListener mPhoneStateListener;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPhoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String phoneNumber) {
+                super.onCallStateChanged(state, phoneNumber);
+                if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                    Logger.i(TAG, "电话通话状态 OFFHOOK");
+                    int broadcastMode = SettingPackage.getInstance().getConfigKeyBroadcastMode();
+                    if (broadcastMode != NaviConstant.BroadcastType.BROADCAST_CONCISE) {
+                        switchBroadcastMode(NaviConstant.BroadcastType.BROADCAST_CONCISE);
+                    }
+                }
+            }
+        };
+        TelephonyManager telephonyManager = (TelephonyManager) requireContext().
+                getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null) {
+            telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
+    }
+
+    private void switchBroadcastMode(int mode) {
+        if (mSceneNaviControlMoreView != null) {
+            mSceneNaviControlMoreView.switchBroadcastMode(mode);
+        }
+    }
     private ISceneCallback mSceneCallback;
 
     @Override
@@ -796,6 +830,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     @Override
     public void onDestroy() {
         super.onDestroy();
+        TelephonyManager telephonyManager = (TelephonyManager) requireContext().
+                getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null) {
+            telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+        }
+        mPhoneStateListener = null;
         mSceneCallback = null;
     }
 

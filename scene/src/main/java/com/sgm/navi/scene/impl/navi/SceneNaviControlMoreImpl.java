@@ -190,6 +190,15 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
         sendBroadcastModeTts(broadcastMode);
     }
 
+    public void switchBroadcastMode(int broadcastMode) {
+        mSettingPackage.setConfigKeyBroadcastMode(broadcastMode);
+        mScreenView.updateBroadcast(broadcastMode);
+        Logger.i(TAG, "updateBroadcast：", broadcastMode);
+
+        //For Bury Point
+        sendBroadcastModeTts(broadcastMode);
+    }
+
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_VOICE_SELECT)
     private void sendBroadcastModeTts(int broadcastMode) {
         String tts = switch (broadcastMode) {

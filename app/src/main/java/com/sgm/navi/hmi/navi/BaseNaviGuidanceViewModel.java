@@ -43,7 +43,6 @@ import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;

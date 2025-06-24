@@ -250,4 +250,10 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
             mScreenViewModel.alongSearch(NumberUtils.NUM_4);
         }
     }
+
+    public void switchBroadcastMode(int broadcastMode) {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.switchBroadcastMode(broadcastMode);
+        }
+    }
 }
