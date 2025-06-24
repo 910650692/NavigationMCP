@@ -498,7 +498,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             final int spaceFree = parkingInfo.getSpaceFree();
             final int spaceTotal = parkingInfo.getSpaceTotal();
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "spaceFree :" + spaceFree + " spaceTotal :" + spaceTotal);
-            if (spaceFree == -1 && spaceTotal == -1) {
+            // 停车位总数为0，直接隐藏显示
+            if ((spaceFree == -1 && spaceTotal == -1) || spaceTotal == 0) {
                 binding.getRoot().setVisibility(GONE);
                 resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
             } else if (spaceFree == -1) {
