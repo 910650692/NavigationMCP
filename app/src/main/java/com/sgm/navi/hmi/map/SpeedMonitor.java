@@ -31,6 +31,7 @@ public class SpeedMonitor implements ISpeedCallback {
     private VehicleSpeedController mSpeedController;
     private ScheduledFuture scheduledFuture;
     private float currentSpeed;
+
     public SpeedMonitor() {
 
     }
@@ -54,28 +55,26 @@ public class SpeedMonitor implements ISpeedCallback {
 
     // 处理车速更新的方法 speed单位 km/h
     private void updateSpeed(float speed) {
-        ThreadManager.getInstance().execute(() -> {
-            if (currentSpeed == speed) {
-                Logger.d(TAG, "车速没有发生变化！");
-                return;
-            }
-            final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviPackage.getInstance().getCurrentNaviType());
-            if (!isReady) {
-                Logger.w(TAG, "当前状态无需计时");
-                cancelTicket();
-                return;
-            }
-            if (speed >= SPEED_THRESHOLD) {
-                if (!isTiming) {
-                    startSchedule();
-                } else {
-                    Logger.d(TAG, "正在计时当中...");
-                }
+        if (currentSpeed == speed) {
+            Logger.d(TAG, "车速没有发生变化！");
+            return;
+        }
+        currentSpeed = speed;
+        final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviPackage.getInstance().getCurrentNaviType());
+        if (!isReady) {
+            Logger.d(TAG, "当前状态无需计时");
+            cancelTicket();
+            return;
+        }
+        if (speed >= SPEED_THRESHOLD) {
+            if (!isTiming) {
+                startSchedule();
             } else {
-                cancelTicket();
+                Logger.d(TAG, "正在计时当中...");
             }
-            currentSpeed = speed;
-        });
+        } else {
+            cancelTicket();
+        }
     }
 
     @Override
@@ -97,7 +96,7 @@ public class SpeedMonitor implements ISpeedCallback {
 
     private void onTicketEnd() {
         if (passedTime >= TIME_THRESHOLD) {
-            Logger.i(TAG, "onTicketEnd tickNum: " , passedTime);
+            Logger.i(TAG, "onTicketEnd tickNum: ", passedTime);
             cancelTicket();
             if (callBack != null) {
                 ThreadManager.getInstance().postUi(() -> {
@@ -109,18 +108,23 @@ public class SpeedMonitor implements ISpeedCallback {
         }
     }
 
+    /***
+     * 放在子线程执行
+     */
     private void startSchedule() {
-        Logger.i(TAG, "startSchedule:" , isTiming);
-        try {
-            isTiming = true;
-            scheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(() -> {
-                passedTime ++;
-                onTicketEnd();
-            }, 0, INTERVAL_TIME, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            isTiming = false;
-            Logger.e(TAG, "startSchedule failed:" + e.getMessage());
-        }
+        ThreadManager.getInstance().execute(() -> {
+            Logger.i(TAG, "startSchedule:", isTiming);
+            try {
+                isTiming = true;
+                scheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(() -> {
+                    passedTime++;
+                    onTicketEnd();
+                }, 0, INTERVAL_TIME, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                isTiming = false;
+                Logger.e(TAG, "startSchedule failed:" + e.getMessage());
+            }
+        });
     }
 
     private void cancelTicket() {
@@ -129,7 +133,7 @@ public class SpeedMonitor implements ISpeedCallback {
         try {
             if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
                 boolean cancelResult = scheduledFuture.cancel(true);
-                Logger.i(TAG, "cancelTicket:" , cancelResult);
+                Logger.i(TAG, "cancelTicket:", cancelResult);
             } else {
                 Logger.d(TAG, "cancelTicket failed: scheduledFuture is null or has completed!");
             }
