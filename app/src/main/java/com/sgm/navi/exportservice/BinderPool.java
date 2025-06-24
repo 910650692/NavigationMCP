@@ -5,6 +5,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
@@ -17,6 +18,8 @@ import com.sgm.navi.mapservice.base.BinderType;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
+import com.sgm.navi.service.define.code.UserDataCode;
+import com.sgm.navi.service.greendao.CommonManager;
 
 import java.util.HashMap;
 
@@ -51,6 +54,13 @@ public final class BinderPool extends IBinderPool.Stub {
     @Override
     public void startInitEngine(final String pkgName) {
         Logger.d(TAG, pkgName + "startInitEngine");
+        CommonManager commonManager = CommonManager.getInstance();
+        commonManager.init();
+        final boolean isFirstLauncher = TextUtils.isEmpty(
+                commonManager.getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH));
+        if (isFirstLauncher) {
+            return;
+        }
         if (null != AppCache.getInstance().getMContext()) {
             Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
             final Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
