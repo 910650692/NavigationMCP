@@ -11,7 +11,7 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_search_main_tab"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,16 +24,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHeight_default="spread" />
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintHeight_max="@dimen/dp_770"/>
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_record_null_along"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_452"
             android:text="@string/shv_record_null"
             android:textColor="@color/search_color_ffffff_70"
             android:textSize="@dimen/sp_26"
             android:visibility="gone"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +49,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHeight_default="spread" />
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintHeight_max="@dimen/dp_770"/>
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_delete_record_along"
