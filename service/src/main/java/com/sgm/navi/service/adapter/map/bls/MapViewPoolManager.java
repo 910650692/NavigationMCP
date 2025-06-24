@@ -53,12 +53,19 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
     }
 
     public synchronized void initMapService() {
-        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "初始化底图服务");
+        Logger.d(TAG, "初始化底图服务");
         InitMapParam initMapParam = new InitMapParam();
-        /*** 地图数据路径绝对地址 **/
-        initMapParam.dataPath = GBLCacheFilePath.MAP_DATA_DIR;
+        initMapParam.systemParam.cpucorenum = Runtime.getRuntime().availableProcessors();
+        initMapParam.systemParam.permitPreLoad = true;
+        initMapParam.systemParam.platform = "android";
+        initMapParam.systemParam.memory = 4;
+        initMapParam.systemParam.memoryRation = 1.0F;
         /*** 基本数据路径地址URL **/
         initMapParam.basePath = GBLCacheFilePath.MAP_BASE_PATH;
+        initMapParam.indoorPath = GBLCacheFilePath.MAP_INDOOR_PATH;
+
+        /*** 地图数据路径绝对地址 **/
+        initMapParam.dataPath = GBLCacheFilePath.MAP_DATA_DIR;
         /*** 配置引擎样式文件MapAssert的绝对地址 **/
         initMapParam.assetPath = GBLCacheFilePath.MAP_ASSET_DIR;
         //设置字体font_cn路径
@@ -94,7 +101,7 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
 
     public synchronized MapService getMapService() {
         if (mapService.get() == null) {
-            Logger.e(MapDefaultFinalTag.INIT_SERVICE_TAG, "初始化底图服务");
+            Logger.e(TAG, "初始化底图服务");
             initMapService();
         }
         return mapService.get();
@@ -102,7 +109,7 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
 
     public boolean createMapView(MapType mapTypeId) {
         if (!mapViewPools.containsKey(mapTypeId)) {
-            Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId, "  创建底图 :");
+            Logger.d(TAG, mapTypeId, "  创建底图 :");
             MapViewImpl mapView = new MapViewImpl(AppCache.getInstance().getMContext(), mapTypeId, getMapService());
             mapView.setCallbacks(this);
             mapViewPools.put(mapTypeId, mapView);
@@ -112,10 +119,10 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
 
     public MapViewImpl getMapViewImpl(MapType mapTypeId) {
         if (!mapViewPools.containsKey(mapTypeId)) {
-            Logger.e(MapDefaultFinalTag.INIT_SERVICE_TAG, "getMapViewImpl createMapView :" + mapTypeId.toString());
+            Logger.e(TAG, "getMapViewImpl createMapView :", mapTypeId);
             createMapView(mapTypeId);
         }
-        return ConvertUtils.isNullRequire(mapViewPools.get(mapTypeId), "获取对应的MapSurfaceViewImp失败 : " + mapTypeId.toString());
+        return ConvertUtils.isNullRequire(mapViewPools.get(mapTypeId), "获取对应的MapSurfaceViewImp失败 : " + mapTypeId);
     }
 
     public boolean isMapViewExist(MapType mapTypeId) {
@@ -127,14 +134,14 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
             callbacks.put(mapTypeId, new ArrayList<>());
         }
         if (!callbacks.get(mapTypeId).contains(observer)) {
-            Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId + " 注册回调 ：" + observer.getClass().getSimpleName() + ";size =" + callbacks.get(mapTypeId).size());
+            Logger.d(TAG, mapTypeId, " 注册回调 ：", observer.getClass().getSimpleName(), ";size =", callbacks.get(mapTypeId).size());
             callbacks.get(mapTypeId).add(observer);
         }
     }
 
     public void unRegisterCallback(MapType mapTypeId, IMapAdapterCallback observer) {
         if (callbacks.get(mapTypeId).contains(observer)) {
-            Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId + " 移除回调 ：" + observer.getClass().getSimpleName() + ";size =" + callbacks.get(mapTypeId).size());
+            Logger.d(TAG, mapTypeId, " 移除回调 ：", observer.getClass().getSimpleName(), ";size =", callbacks.get(mapTypeId).size());
             callbacks.get(mapTypeId).remove(observer);
         }
     }

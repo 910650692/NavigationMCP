@@ -56,19 +56,13 @@ public class MapAdapterImpl implements IMapApi {
                 mapView.getMapViewWidth(), mapView.getMapViewHeight(),
                 mapView.getScreenWidth(), mapView.getScreenHeight(),
                 mapView.getScreenDensityDpi(), mapView.isOpenScreen());
-        Logger.d(TAG, "MapAdapterImpl bindMapView :", mapViewParams);
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.getMapViewImpl(mapView.provideMapTypeId());
         mapSurfaceViewImp.changeMapViewParams(mapViewParams);
-        boolean isBindView = mapView.isBindMapView();
-        Logger.d(TAG, "MapAdapterImpl 是否依赖可见视图", isBindView);
-        if (!isBindView) return;
         mapView.bindMapView(mapSurfaceViewImp);
     }
 
     @Override
     public void unBindMapView(IBaseScreenMapView mapView) {
-        if (null == mapView) return;
-        Logger.d(TAG, "MapAdapterImpl unBindMapView :", mapView.provideMapTypeId().toString());
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.getMapViewImpl(mapView.provideMapTypeId());
         mapView.unBindMapView(mapSurfaceViewImp);
     }

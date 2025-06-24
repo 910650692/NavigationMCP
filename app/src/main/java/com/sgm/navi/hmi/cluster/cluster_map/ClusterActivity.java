@@ -13,6 +13,7 @@ import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.cluster.ClusterViewModel;
 import com.sgm.navi.hmi.databinding.ActivityClusterBinding;
+import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
@@ -95,11 +96,15 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     public IBaseScreenMapView getMapView() {
         return mBinding.clusterMapview;
     }
+
     public SkinConstraintLayout getRootView() {
         return mBinding.cluster;
     }
 
-    public void bindMapView(){
-        mBinding.clusterMapview.post(() -> {MapPackage.getInstance().bindMapView(mBinding.clusterMapview);});
+    public void bindMapView() {
+        mBinding.clusterMapview.post(() -> {
+            MapPackage.getInstance().bindMapView(mBinding.clusterMapview);
+            LayerAdapter.getInstance().initLayer(MapType.CLUSTER_MAP);
+        });
     }
 }

@@ -2,7 +2,6 @@
 package com.sgm.navi.service.adapter.map.bls;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -27,6 +26,7 @@ import com.autonavi.gbl.map.OperatorPosture;
 import com.autonavi.gbl.map.adapter.MapHelper;
 import com.autonavi.gbl.map.adapter.MapSurfaceView;
 import com.autonavi.gbl.map.layer.model.OpenLayerID;
+import com.autonavi.gbl.map.model.BusinessDeviceThreadMode;
 import com.autonavi.gbl.map.model.DeviceAttribute;
 import com.autonavi.gbl.map.model.EGLDeviceWorkMode;
 import com.autonavi.gbl.map.model.EGLSurfaceAttr;
@@ -114,8 +114,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     private int isZoomIn = -1;
 
     private IMapAdapterCallback callback;
-    private boolean isOnScreenshoting = false;
     private Rect crossImgScreenshotRect;
+
     public MapViewImpl(Context context, MapType mapType, MapService mapService) {
         this(context, null);
         this.mapType = mapType;
@@ -136,14 +136,17 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
 
     private MapDevice createMapDevice() {
+        int deviceId = EngineAdapter.getInstance().mapDeviceID(mapType);
         DeviceAttribute devAttribute = new DeviceAttribute();
-        devAttribute.renderVendorType = MapRenderVendor.OpenGL2;//TODO 性能优化配置
-        devAttribute.uiTaskDeviceId = EngineAdapter.getInstance().mapDeviceID(mapType);
+        devAttribute.renderVendorType = MapRenderVendor.OpenGL3;//星河效果
+        devAttribute.uiTaskDeviceId = deviceId;
         devAttribute.deviceWorkMode = EGLDeviceWorkMode.EGLDeviceWorkMode_WithThreadWithEGLContextDrawIn;
-        devAttribute.isNeedAntialias = false;////TODO 性能优化配置 是否开启全屏抗锯齿
-        devAttribute.samples = 2;////TODO 性能优化配置 全屏抗锯齿倍数
-        ServiceMgr.getServiceMgrInstance().setUiLooper(devAttribute.uiTaskDeviceId, ThreadManager.getInstance().getLooper(LooperType.MAP));
-        return ConvertUtils.isNullRequire(getMapService().createDevice(EngineAdapter.getInstance().mapDeviceID(mapType), devAttribute, this),
+        devAttribute.businessDeviceThreadMode = BusinessDeviceThreadMode.WithInnerWorkThread;
+        devAttribute.isNeedAntialias = true;
+        devAttribute.samples = 2;//TODO 性能优化配置 全屏抗锯齿倍数
+        ServiceMgr.getServiceMgrInstance().setUiLooper(deviceId, ThreadManager.getInstance().getLooper(LooperType.valueOf(mapType.name())));
+        Logger.d(TAG, mapType, "createMapDevice deviceId=", deviceId);
+        return ConvertUtils.isNullRequire(getMapService().createDevice(deviceId, devAttribute, this),
                 "获取对应的 MapService 失败 : " + mapType);
     }
 
@@ -158,7 +161,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         mapViewParam.engineId = EngineAdapter.getInstance().engineID(mapType);
         mapViewParam.deviceId = getDefaultDevice().getDeviceId();
         mapViewParam.cacheCountFactor = 2;//TODO 性能优化配置
-        //引擎配置文件 高(mapprofile_fa1 3D超远视角+天空盒)/中(mapprofile_fa2 3D常规视角+天空盒)/低(mapprofile_fa3 3D无天空盒子视角 )
+        //引擎配置文件 星河效果高(mapprofile_fa1 3D超远视角+天空盒)/中(mapprofile_fa2 3D常规视角+天空盒)/低(mapprofile_fa3 3D无天空盒子视角 )
         mapViewParam.mapProfileName = "mapprofile_fa2";//TODO 性能优化配置
         mapViewParam.zoomScaleMode = MapZoomScaleMode.PhysicalAdaptiveMode;//TODO 性能优化配置
         mapViewParam.asyncTaskThreadCount = 4;//TODO 性能优化配置
@@ -506,6 +509,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     }
 
     private void updateMapPortParams(long x, long y, long width, long height, long screenWidth, long screenHeight) {
+        Logger.d(TAG, mapType, "updateMapPortParams");
         MapViewPortParam mapViewPortParam = new MapViewPortParam(x, y, width, height, screenWidth, screenHeight);
         getMapview().setMapviewPort(mapViewPortParam);
     }
@@ -524,7 +528,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     /**
      * 初始化截图参数
      */
-    public void initScreenshotParams() {
+    private void initScreenshotParams() {
         Logger.d(TAG, mapType, "需要支持截屏，开启Device渲染线程 截图尺寸 width =", +mapViewParams.getWidth(), "height =", mapViewParams.getHeight());
         EGLSurfaceAttr eglSurfaceAttr = new EGLSurfaceAttr();
         eglSurfaceAttr.nativeWindow = -1;
@@ -535,7 +539,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getDefaultDevice().attachSurfaceToDevice(eglSurfaceAttr);
     }
 
-    public void startScreenshot() {
+    private void startScreenshot() {
         if (ConvertUtils.isNull(crossImgScreenshotRect)) {
             Logger.e(TAG, "updateScreenshotRect failed , rect is null!");
             return;
@@ -543,10 +547,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         final int mapHeight = mapViewParams == null ? 0 : (int) mapViewParams.getScreenHeight();
         final int left = crossImgScreenshotRect.left;
         final int top = mapHeight - crossImgScreenshotRect.bottom;
-        getDefaultDevice().setScreenshotRect(left, top,  crossImgScreenshotRect.width(), crossImgScreenshotRect.height());
+        getDefaultDevice().setScreenshotRect(left, top, crossImgScreenshotRect.width(), crossImgScreenshotRect.height());
         getDefaultDevice().setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, this);
         getDefaultDevice().setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
-        Logger.i(TAG, "startScreenshot-success!");
+        Logger.d(TAG, "startScreenshot-success!");
     }
 
     @HookMethod
@@ -593,6 +597,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     public void surfaceCreated(SurfaceHolder holder) {
         super.surfaceCreated(holder);
         if (callback != null) {
+            Logger.d(TAG, mapType, " onMapLoadSuccess");
             callback.onMapLoadSuccess(mapType);
         }
     }
@@ -600,7 +605,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     @Override
     public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
         boolean openScreen = mapViewParams.isOpenScreen();
-        Logger.d(TAG, "onSurfaceChanged", "openScreen", openScreen);
+        Logger.d(TAG, mapType, "onSurfaceChanged", "openScreen", openScreen);
         if (openScreen) startScreenshot();
     }
 
@@ -806,14 +811,13 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     }
 
     public void openOrCloseScreenshot(boolean isOpen) {
-        Logger.i(TAG, "openOrCloseScreenshot", isOpen);
+        Logger.i(TAG, mapType, "openOrCloseScreenshot", isOpen);
         if (isOpen) {
             getDefaultDevice().setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, this);
             getDefaultDevice().setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
         } else {
             getDefaultDevice().setScreenshotMode(ScreenShotMode.ScreenShotModeNull, null);
         }
-        isOnScreenshoting = isOpen;
     }
 
     public void updateScreenshotRect(Rect rect) {

@@ -74,6 +74,7 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     public static final String MAP_DATA_DIR = GBL_MAP + "data/";
     /*** 基本数据路径地址URL **/
     public static final String MAP_BASE_PATH = "http://mps.amap.com:80/";
+    public static final String MAP_INDOOR_PATH = "http://m5.amap.com/";
 
 
     public static final String TBT_COMMON_CACHE_PATH = GBL_MAP + "tbtCommonComponent/cache";

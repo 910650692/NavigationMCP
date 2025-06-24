@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ScreenUtils;
+import com.android.utils.log.Logger;
+import com.sgm.navi.service.MapDefaultFinalTag;
 
 public abstract class FullScreenMapView extends FrameLayout implements IBaseScreenMapView {
     private MapType mapTypeId = MapType.MAIN_SCREEN_MAIN_MAP;
@@ -70,16 +72,22 @@ public abstract class FullScreenMapView extends FrameLayout implements IBaseScre
     @Override
     public void bindMapView(View mapSurfaceView) {
         ViewParent viewParent = mapSurfaceView.getParent();
-        if(viewParent!= null){
+        if (viewParent != null) {
             ViewGroup viewGroup = (ViewGroup) viewParent;
             viewGroup.removeView(mapSurfaceView);
         }
-        addView(mapSurfaceView);
+        if (isBindMapView()) {
+            addView(mapSurfaceView);
+            Logger.d(MapDefaultFinalTag.MAP_SERVICE_TAG, provideMapTypeId(), " bindMapView");
+        } else {
+            Logger.e(MapDefaultFinalTag.MAP_SERVICE_TAG, provideMapTypeId(), " not bindMapView");
+        }
     }
 
     @Override
     public void unBindMapView(View mapSurfaceView) {
         removeView(mapSurfaceView);
+        Logger.e(MapDefaultFinalTag.MAP_SERVICE_TAG, provideMapTypeId(), " unBindMapView");
     }
 
     @Override

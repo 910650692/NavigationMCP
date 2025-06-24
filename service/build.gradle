@@ -10,6 +10,10 @@ android {
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
     buildToolsVersion libs.versions.buildSdk.get()
 
+    aaptOptions {
+        noCompress 'cmb'
+    }
+
     defaultConfig {
         minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         consumerProguardFiles "consumer-rules.pro"

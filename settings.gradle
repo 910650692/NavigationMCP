@@ -47,7 +47,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NaviApp"
+rootProject.name = "SGMNavigation"
 include ':app'
 include ':ui'
 include ':service'
