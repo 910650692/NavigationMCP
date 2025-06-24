@@ -635,7 +635,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ImmersiveStatusScene.getInstance().unRegisterCallback("NaviGuidanceModel");
         mSearchPackage.unRegisterCallBack(NaviConstant.KEY_NAVI_MODEL);
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
-        mLayerPackage.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
         mRoutePackage.unRegisterRouteObserver(NaviConstant.KEY_NAVI_MODEL);
         mSettingPackage.unRegisterSettingChangeCallback(TAG);
         mMapPackage.unRegisterCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
