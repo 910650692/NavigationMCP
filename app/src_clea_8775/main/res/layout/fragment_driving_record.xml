@@ -19,15 +19,16 @@
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/dp_32"
             android:layout_height="wrap_content">
+
             <com.sgm.navi.ui.view.SkinImageView
                 clickCommand="@{ViewModel.mDrivingRecordBack}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/img_setting_back"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:layout_marginStart="@dimen/dp_22"
+                android:src="@drawable/img_setting_close"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/driving_record_title"
                 android:layout_width="wrap_content"

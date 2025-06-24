@@ -21,9 +21,9 @@
             android:layout_height="wrap_content">
             <com.sgm.navi.ui.view.SkinImageView
                 clickCommand="@{ViewModel.mDrivingRecordBack}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/img_setting_back"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:src="@drawable/img_setting_close"
                 android:layout_marginStart="@dimen/dp_22"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
