@@ -1869,7 +1869,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     @Override
     public void onRouteDetailsChecked(final boolean checkedLeastOne) {
         mAvoidBackground.set(checkedLeastOne);
-        mAvoidTestColor.set(checkedLeastOne ? ResourceUtils.Companion.getInstance().getColor(R.color.white)
+        mAvoidTestColor.set(checkedLeastOne ? ResourceUtils.Companion.getInstance().getColor(R.color.route_white)
                 : ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
         mAvoidClickable.set(checkedLeastOne);
     }
