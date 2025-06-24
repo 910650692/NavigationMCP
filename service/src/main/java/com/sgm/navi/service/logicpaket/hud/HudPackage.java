@@ -16,10 +16,12 @@ import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
@@ -120,6 +122,11 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         MapPackage.getInstance().switchMapMode(MapType.HUD_MAP, MapMode.UP_2D, false);
         MapPackage.getInstance().setZoomLevel(MapType.HUD_MAP, 15);
         LayerAdapter.getInstance().setDynamicLevelLock(MapType.HUD_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+        if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)
+                || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.LIGHT_NAVING)){
+            Logger.d(TAG, "导航中显示导航路线 hud");
+            RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
+        }
     }
 
     @Override
@@ -131,13 +138,13 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
     }
 
     @Override
-    public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
-//        RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
-    }
-
-    @Override
     public void onNaviStop() {
         //TODO
         RoutePackage.getInstance().clearRouteLine(MapType.HUD_MAP);
+    }
+
+    @Override
+    public void onNaviStart() {
+        RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
     }
 }

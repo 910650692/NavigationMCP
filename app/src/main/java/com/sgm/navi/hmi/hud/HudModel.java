@@ -19,6 +19,7 @@ import com.sgm.navi.service.define.layer.RouteLineLayerParam;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.cruise.CruisePackage;
 import com.sgm.navi.service.logicpaket.cruise.ICruiseObserver;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
@@ -26,6 +27,7 @@ import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
@@ -112,13 +114,15 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
             } else {
                 MapPackage.getInstance().setMapViewTextSize(MapType.HUD_MAP, 1.8f);
             }
+
+            if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)
+                    || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.LIGHT_NAVING)){
+                Logger.d(TAG, "导航中显示导航路线 HUDActivity");
+                RoutePackage.getInstance().showRouteLine(getMapId());
+            }
         }
     }
 
-    @Override
-    public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
-        Logger.i(TAG, "onRouteDrawLine:" , routeLineLayerParam.getMMapTypeId());
-    }
 
     @Override
     public void onNaviStart() {
