@@ -282,7 +282,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     }
 
     public void resetTickCount(int tickCount) {
-//        getMapview().resetTickCount(tickCount);
+        getMapview().resetTickCount(tickCount);
     }
 
     public boolean setTrafficStates(boolean isOpen) {
