@@ -1,5 +1,6 @@
 package com.sgm.navi.scene.ui.adapter;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,8 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
         } else {
             holder.mTextView.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_secondary_poi_unselected));
             holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
+            holder.mTextView.setEllipsize(TextUtils.TruncateAt.END);
+            holder.mTextView.clearFocus();
         }
         holder.mTextView.setText(mChildInfoList.get(position).getShortName());
         holder.mLayout.setOnClickListener(new View.OnClickListener() {
