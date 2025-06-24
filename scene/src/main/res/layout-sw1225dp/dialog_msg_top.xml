@@ -6,7 +6,8 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/top_dialog_view"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_95"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/dp_22"
             android:background="@drawable/dialog_shape_bg_msg_top"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
