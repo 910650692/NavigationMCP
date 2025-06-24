@@ -170,6 +170,10 @@ public class NaviApiImplHelper {
 
     //获取开启导航关键参数
     protected NaviPath getNaviPathParam() {
+        if (ConvertUtils.isEmpty(mRouteLineLayerParam)) {
+            Logger.e(TAG, "getNaviPathParam: mRouteLineLayerParam is null");
+            return null;
+        }
         //开始导航时发送加热数据
         mNaviObserver.onBatterHotTime();
         final NaviPath naviPath = new NaviPath();
