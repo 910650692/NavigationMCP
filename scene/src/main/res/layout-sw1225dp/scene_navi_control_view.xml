@@ -66,8 +66,9 @@
 
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_455"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_192"
+            android:maxWidth="@dimen/dp_455"
             android:layout_marginStart="@dimen/dp_m_51"
             android:background="@drawable/bg_shadow_navi_buick"
             android:padding="@dimen/dp_34"
@@ -81,6 +82,7 @@
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
                 <!--看全览-->
@@ -129,7 +131,8 @@
                     app:layout_constraintBottom_toBottomOf="@+id/sv_overview_switch"
                     app:layout_constraintEnd_toStartOf="@id/sv_more_setup"
                     app:layout_constraintStart_toEndOf="@id/sv_overview_switch"
-                    app:layout_constraintTop_toTopOf="@+id/sv_overview_switch">
+                    app:layout_constraintTop_toTopOf="@+id/sv_overview_switch"
+                    app:layout_goneMarginEnd="@dimen/dp_26">
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_variation"
