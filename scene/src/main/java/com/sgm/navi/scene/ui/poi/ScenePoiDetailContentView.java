@@ -780,7 +780,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                         try {
                                             //拨打电话
                                             final Intent intent = new Intent();
-                                            intent.setAction(Intent.ACTION_CALL);
+                                            intent.setAction(Intent.ACTION_DIAL);
                                             intent.setData(Uri.parse("tel:" + phoneString.get(0)));
                                             final Context context = getContext();
                                             context.startActivity(intent);
