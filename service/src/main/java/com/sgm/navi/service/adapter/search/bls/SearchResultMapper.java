@@ -273,7 +273,7 @@ public final class SearchResultMapper {
                                 level1Infos.get(j).setCategoryLocalInfos(level1ChildInfos);
                             }
                             // 过滤掉没有子节点且自身没有value的数据
-                            level1Infos.removeIf(info -> !ConvertUtils.isEmpty(info.getCategoryLocalInfos()) && info.getCategoryLocalInfos().isEmpty() && ConvertUtils.isEmpty(info.getValue()));
+                            level1Infos.removeIf(info -> ConvertUtils.isEmpty(info.getCategoryLocalInfos()) && ConvertUtils.isEmpty(info.getValue()));
                         }
                         categoryLocalInfoList.get(i).setCategoryLocalInfos(level1Infos);
                     }
