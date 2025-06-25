@@ -2,6 +2,7 @@ package com.sgm.navi;
 
 import android.app.Activity;
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
@@ -39,7 +40,27 @@ public class NaviApplication extends BaseApplication implements Application.Acti
     public void onCreate() {
         super.onCreate();
         Logger.setDefaultTag(MapDefaultFinalTag.DEFAULT_TAG);
+        Log.e("NaviApp_Start", "isExternalStorageAvailable start");
+        if (!FileUtils.getInstance().isExternalStorageAvailable()) {
+            Log.e("NaviApp_Start", "isExternalStorageAvailable is false = killSelf");
+            killSelf();
+        }
         initComponent();
+    }
+
+    private void killSelf() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.e("NaviApp_Start", "isExternalStorageAvailable is false");
+                System.exit(1);
+            }
+        }).start();
     }
 
     @Override
@@ -54,8 +75,10 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         if (activity instanceof MapActivity) {
             ProcessManager.updateProcessStatus(processStatus);
             switch (processStatus) {
-                case ProcessStatus.AppRunStatus.RESUMED -> ProcessManager.updateIsAppInForeground(true);
-                case ProcessStatus.AppRunStatus.PAUSED -> ProcessManager.updateIsAppInForeground(false);
+                case ProcessStatus.AppRunStatus.RESUMED ->
+                        ProcessManager.updateIsAppInForeground(true);
+                case ProcessStatus.AppRunStatus.PAUSED ->
+                        ProcessManager.updateIsAppInForeground(false);
             }
         }
     }
