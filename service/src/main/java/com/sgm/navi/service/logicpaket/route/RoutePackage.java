@@ -330,6 +330,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     @Override
     public void onRouteWeatherInfo(final RouteWeatherParam routeWeatherParam) {
         Logger.i(TAG, "onRouteWeatherInfo");
+        if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
+            return;
+        }
         if (ConvertUtils.isEmpty(routeWeatherParam)) {
             for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
@@ -337,10 +340,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 }
                 routeResultObserver.onRouteWeatherInfo(null);
             }
-            return;
-        }
-        showWeatherView(routeWeatherParam.getMMapTypeId());
-        if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             return;
         }
         for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {

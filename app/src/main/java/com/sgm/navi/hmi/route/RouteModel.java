@@ -112,6 +112,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private int mEndSearchId = -1;
     private List<RouteRestAreaInfo> mRouteRestAreaInfos;
     private ImersiveStatus mCurrentImersiveStatus;
+    private boolean mRestrictionLabel = false;
+    private boolean mWeatherLabel = false;
+    private boolean mRestAreaLabel = false;
 
     public RouteModel() {
         mLayerPackage = LayerPackage.getInstance();
@@ -140,7 +143,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         super.onDestroy();
         Logger.d(TAG, "unRegisterCallBack");
         ImmersiveStatusScene.getInstance().unRegisterCallback(TAG);
-        mRoutePackage.clearRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP);
+        clearRestrictionView();
         mRoutePackage.unRegisterRouteObserver(TAG);
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.unRegisterCallBack(TAG);
@@ -208,7 +211,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * 隐藏天气数据
      * */
     public void hideWeatherList() {
-        mRoutePackage.clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+        clearWeatherView();
         //hide weather list 不需要
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.hideWeatherDeatilsUI();
@@ -491,10 +494,21 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     /**
+     * 绘制限行图层
+     * */
+    public void showRestrictionView(final RouteRestrictionParam routeRestrictionParam) {
+        mRestrictionLabel = true;
+        mRoutePackage.showRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP, routeRestrictionParam.getMReStrictedAreaResponseParam());
+    }
+
+    /**
      * 清除限行图层
      * */
     public void clearRestrictionView() {
-        mRoutePackage.clearRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (mRestrictionLabel) {
+            mRestrictionLabel = false;
+            mRoutePackage.clearRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
     }
 
     /**
@@ -505,10 +519,24 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     /**
+     * 绘制天气图层
+     * */
+    public void showWeatherView(final RouteWeatherParam routeWeatherParam) {
+        if (routeWeatherParam == null) {
+            return;
+        }
+        mWeatherLabel = true;
+        mRoutePackage.showWeatherView(routeWeatherParam.getMMapTypeId());
+    }
+
+    /**
      * 清除天气图层
      * */
     public void clearWeatherView() {
-        mRoutePackage.clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (mWeatherLabel) {
+            mWeatherLabel = false;
+            mRoutePackage.clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
     }
 
     /**
@@ -519,6 +547,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             Logger.d(TAG, "Index out of bounds ");
             return;
         }
+        mRestAreaLabel = true;
         mRoutePackage.showRestArea(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex());
     }
 
@@ -526,7 +555,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * 清除服务区图层
      * */
     public void clearRestArea() {
-        mRoutePackage.clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (mRestAreaLabel) {
+            mRestAreaLabel = false;
+            mRoutePackage.clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
     }
 
     /***
@@ -806,6 +838,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.hideSearchProgressUI();
         }
+        showWeatherView(routeWeatherParam);
         if (ConvertUtils.isEmpty(routeWeatherParam)) {
             ThreadManager.getInstance().postUi(() -> ToastUtils.Companion.getInstance().showCustomToastView(
                     ResourceUtils.Companion.getInstance().getString(R.string.route_error_wearher)));
@@ -844,8 +877,8 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             return;
         }
         if (routeRestrictionParam.getMRestrictedArea().getMRequestId() == mRestirctionTaskId) {
-            mRoutePackage.clearRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP);
-            mRoutePackage.showRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP, routeRestrictionParam.getMReStrictedAreaResponseParam());
+            clearRestrictionView();
+            showRestrictionView(routeRestrictionParam);
             mRouteRestrictionParams = routeRestrictionParam;
         }
     }
