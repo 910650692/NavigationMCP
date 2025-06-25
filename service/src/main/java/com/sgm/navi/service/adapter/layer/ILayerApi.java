@@ -42,8 +42,6 @@ public interface ILayerApi {
 
 
     /*========================================= ROUTE LAYER START =========================================*/
-    /* 全览参数句柄转换 */
-    PreviewParams.RectDouble getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult);
 
     /* 绘制路线 */
     void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult);
@@ -165,6 +163,9 @@ public interface ILayerApi {
 
     /* 设置自动比例尺是否主动调整地图中心 */
     void openDynamicCenter(MapType mapTypeId, boolean isDynaCenterLock);
+
+    /* 路线全览 */
+    void showPreviewView(MapType mapTypeId);
 
     /*========================================= ROUTE LAYER END =========================================*/
 

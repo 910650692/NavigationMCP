@@ -131,16 +131,9 @@ public class LayerAdapterImpl implements ILayerApi {
         return 1;
     }
 
-    /**
-     * 全览参数句柄转换
-     *
-     * @param mapTypeId
-     * @param pathResult
-     * @return
-     */
-    @Override
-    public PreviewParams.RectDouble getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult) {
-        return layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().getPathResultBound(pathResult);
+    /* 路线全览 */
+    public void showPreviewView(MapType mapTypeId) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().showPreviewView();
     }
 
     /**

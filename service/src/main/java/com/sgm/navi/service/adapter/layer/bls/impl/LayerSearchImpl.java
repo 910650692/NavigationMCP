@@ -4,6 +4,7 @@ package com.sgm.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
@@ -21,6 +22,9 @@ import com.autonavi.gbl.layer.model.BizSearchParentPoint;
 import com.autonavi.gbl.layer.model.BizSearchType;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.model.PointD;
+import com.autonavi.gbl.map.model.PreviewParam;
+import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.layer.bls.style.LayerSearchStyleAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemSearchResult;
@@ -207,7 +211,41 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 result = updateSearchAlongRouteListSinglePoint(searchResult);
             }
         }
+        ArrayList<PoiInfoEntity> searchResultPoints = searchResult.getSearchResultPoints();
+        if (!ConvertUtils.isEmpty(searchResultPoints) && searchResultPoints.size() > 5) {
+            showPreviewView(searchResultPoints);
+        }
         return result;
+    }
+
+    /* 搜索全览 */
+    private void showPreviewView(ArrayList<PoiInfoEntity> searchResultPoints) {
+        PreviewParam previewParam = new PreviewParam();
+        ArrayList<PointD> points = new ArrayList<>();
+        for (PoiInfoEntity poiInfo : searchResultPoints) {
+            PointD point = new PointD();
+            point.x = poiInfo.getMPoint().getLon();
+            point.y = poiInfo.getMPoint().getLat();
+            points.add(point);
+        }
+        previewParam.screenLeft = ResourceUtils.Companion.getInstance().
+                getDimensionPixelSize(R.dimen.route_margin_screen_left);
+        previewParam.screenTop = ResourceUtils.Companion.getInstance().
+                getDimensionPixelSize(R.dimen.route_margin_screen_top);
+        previewParam.screenRight = ResourceUtils.Companion.getInstance().
+                getDimensionPixelSize(R.dimen.route_margin_screen_right);
+        previewParam.screenBottom = ResourceUtils.Companion.getInstance().
+                getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
+        previewParam.points = points;
+        previewParam.bUseRect = false;
+        if (null != getMapView()) {
+            getMapView().showPreview(previewParam, true, 500, -1);
+            if (Logger.openLog) {
+                Logger.d(TAG, "showPreviewView previewParam ", previewParam);
+            }
+        } else {
+            Logger.e(TAG, "getMapView == null");
+        }
     }
 
     /* 搜索路线图层业务 */

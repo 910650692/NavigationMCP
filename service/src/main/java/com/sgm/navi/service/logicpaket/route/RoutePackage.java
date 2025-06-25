@@ -1400,9 +1400,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                     getDimensionPixelSize(R.dimen.route_margin_screen_top);
             int routeScreenBottom = ResourceUtils.Companion.getInstance().
                     getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
-            mMapPackage.showPreview(mapTypeId, true, routeScreenLeft, routeScreenTop,
-                    routeScreenRight, routeScreenBottom, mLayerAdapter.getPathResultBound(mapTypeId,
-                            routeLineLayerParam.getMPathInfoList()));
+//            mMapPackage.showPreview(mapTypeId, true, routeScreenLeft, routeScreenTop,
+//                    routeScreenRight, routeScreenBottom, mLayerAdapter.getPathResultBound(mapTypeId,
+//                            routeLineLayerParam.getMPathInfoList()));
         });
     }
 
@@ -1416,19 +1416,20 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
             return;
         }
-        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.
-                get(mapTypeId).getMLineLayerParam();
-        int screenLeft = ResourceUtils.Companion.getInstance().
-                getDimensionPixelSize(R.dimen.margin_screen_left);
-        int screenRight = ResourceUtils.Companion.getInstance().
-                getDimensionPixelSize(R.dimen.margin_screen_right);
-        int screenTop = ResourceUtils.Companion.getInstance().
-                getDimensionPixelSize(R.dimen.margin_screen_top);
-        int screenBottom = ResourceUtils.Companion.getInstance().
-                getDimensionPixelSize(R.dimen.margin_screen_bottom);
-        mMapPackage.showPreview(mapTypeId, true, screenLeft, screenTop, screenRight,
-                screenBottom, mLayerAdapter.getPathResultBound(mapTypeId,
-                        routeLineLayerParam.getMPathInfoList()));
+        mLayerAdapter.showPreviewView(mapTypeId);
+//        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.
+//                get(mapTypeId).getMLineLayerParam();
+//        int screenLeft = ResourceUtils.Companion.getInstance().
+//                getDimensionPixelSize(R.dimen.margin_screen_left);
+//        int screenRight = ResourceUtils.Companion.getInstance().
+//                getDimensionPixelSize(R.dimen.margin_screen_right);
+//        int screenTop = ResourceUtils.Companion.getInstance().
+//                getDimensionPixelSize(R.dimen.margin_screen_top);
+//        int screenBottom = ResourceUtils.Companion.getInstance().
+//                getDimensionPixelSize(R.dimen.margin_screen_bottom);
+//        mMapPackage.showPreview(mapTypeId, true, screenLeft, screenTop, screenRight,
+//                screenBottom, mLayerAdapter.getPathResultBound(mapTypeId,
+//                        routeLineLayerParam.getMPathInfoList()));
     }
 
     /**
@@ -1441,8 +1442,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
             return;
         }
-        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
-        mMapPackage.showPreview(mapTypeId, true, rect.left, rect.top, rect.right, rect.bottom, mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList()));
+        mLayerAdapter.showPreviewView(mapTypeId);
+//        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
+//        mMapPackage.showPreview(mapTypeId, true, rect.left, rect.top, rect.right, rect.bottom, mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList()));
     }
 
     /**

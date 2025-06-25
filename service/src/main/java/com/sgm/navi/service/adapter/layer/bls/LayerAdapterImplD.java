@@ -49,9 +49,9 @@ public class LayerAdapterImplD implements ILayerApi {
 
     }
 
-    @Override
-    public PreviewParams.RectDouble getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult) {
-        return new PreviewParams.RectDouble();
+    /* 路线全览 */
+    public void showPreviewView(MapType mapTypeId) {
+
     }
 
     @Override

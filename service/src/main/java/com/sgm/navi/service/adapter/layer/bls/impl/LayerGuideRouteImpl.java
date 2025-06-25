@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.common.model.RectDouble;
@@ -38,7 +39,9 @@ import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.RoutePathLayer;
 import com.autonavi.gbl.map.layer.model.RouteLayerScene;
+import com.autonavi.gbl.map.model.PreviewParam;
 import com.autonavi.gbl.route.model.WeatherLabelItem;
+import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.layer.bls.style.LayerGuideRouteStyleAdapter;
 import com.sgm.navi.service.adapter.layer.bls.texture.TexturePoolManager;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
@@ -71,6 +74,7 @@ import java.util.List;
 
 public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapter> {
 
+    private PreviewParam mPreviewParam;
     private ArrayList<PathInfo> mPathInfoList = new ArrayList<>();
     private ArrayList<RoutePoint> mViaList = new ArrayList<>();
     private RoutePoints mPathPoints;
@@ -185,19 +189,45 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     }
 
     /*全览转换 */
-    public PreviewParams.RectDouble getPathResultBound(ArrayList<?> pathResult) {
-        PreviewParams previewParams = new PreviewParams();
-        if (ConvertUtils.isEmpty(pathResult)) {
-            Logger.e(TAG, "getPathResultBound pathResult is Empty");
-            return new PreviewParams.RectDouble();
+    public RectDouble getPathResultBound() {
+        if (ConvertUtils.isEmpty(mPathInfoList)) {
+            Logger.e(TAG, "getPathResultBound mPathInfoList is Empty");
+            return new RectDouble();
         }
-        ArrayList<PathInfo> pathInfos = (ArrayList<PathInfo>) pathResult;
-        RectDouble rectDouble = BizGuideRouteControl.getPathResultBound(pathInfos);
+        RectDouble rectDouble = BizGuideRouteControl.getPathResultBound(mPathInfoList);
         Logger.d(TAG, "path info 转换为预览巨型区域参数：", rectDouble);
         if (!ConvertUtils.isEmpty(rectDouble)) {
-            return new PreviewParams.RectDouble(rectDouble.left, rectDouble.right, rectDouble.top, rectDouble.bottom);
+            return rectDouble;
         }
-        return new PreviewParams.RectDouble();
+        return new RectDouble();
+    }
+
+    /* 路线全览 */
+    public void showPreviewView() {
+        if (ConvertUtils.isEmpty(mPreviewParam)) {
+            mPreviewParam = new PreviewParam();
+            mPreviewParam.mapBound = getPathResultBound();
+            mPreviewParam.bUseRect = true;
+            mPreviewParam.screenLeft = ResourceUtils.Companion.getInstance().
+                    getDimensionPixelSize(R.dimen.route_margin_screen_left);
+            mPreviewParam.screenTop = ResourceUtils.Companion.getInstance().
+                    getDimensionPixelSize(R.dimen.route_margin_screen_top);
+            mPreviewParam.screenRight = ResourceUtils.Companion.getInstance().
+                    getDimensionPixelSize(R.dimen.route_margin_screen_right);
+            mPreviewParam.screenBottom = ResourceUtils.Companion.getInstance().
+                    getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
+            if (Logger.openLog) {
+                Logger.d(TAG, "mPreviewParam init");
+            }
+        }
+        if (null != getMapView()) {
+            getMapView().showPreview(mPreviewParam, true, 500, -1);
+            if (Logger.openLog) {
+                Logger.d(TAG, "showPreviewView mPreviewParam ", mPreviewParam);
+            }
+        } else {
+            Logger.e(TAG, "getMapView == null");
+        }
     }
 
     /**
@@ -232,6 +262,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         setMainMapPathDrawStyle(false, false, true);
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyRemainPoint, true);
         updatePaths();
+        showPreviewView();
     }
 
     /* 更新终点扎标数据 */
@@ -866,6 +897,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, "clearPaths");
         getLayerGuideRouteControl().clearPaths();
         getLayerRoadFacilityControl().clearAllItems();
+        mPreviewParam = null;
     }
 
     /**

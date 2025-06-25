@@ -108,8 +108,9 @@ public class LayerAdapter {
         return mLayerApi.setFollowMode(mapTypeId, bFollow);
     }
 
-    public PreviewParams.RectDouble getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult) {
-        return mLayerApi.getPathResultBound(mapTypeId, pathResult);
+    /* 路线全览 */
+    public void showPreviewView(MapType mapTypeId) {
+        mLayerApi.showPreviewView(mapTypeId);
     }
 
     public void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
