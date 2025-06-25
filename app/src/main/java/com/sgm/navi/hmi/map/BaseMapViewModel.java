@@ -183,6 +183,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void onCreate() {
         super.onCreate();
         mModel.checkContinueNavi(mView);
+        mView.setSelfParkingViewMarginStart();
     }
 
     @Override
@@ -1307,6 +1308,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mScaleViewVisibility.set(screenType != ScreenType.SCREEN_1_3);
         sRVisible.set(screenType != ScreenType.SCREEN_1_3);
         mIsFullScreen.set(screenType == ScreenType.SCREEN_FULL);
+        mView.setSelfParkingViewMarginStart();
         final BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(mScreenId);
         switch (screenType) {
             case SCREEN_1_3 -> {

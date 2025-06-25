@@ -52,6 +52,8 @@ import com.sgm.navi.hmi.navi.PhoneAddressDialog;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
 import com.sgm.navi.hmi.utils.AiWaysGestureManager;
+import com.sgm.navi.hmi.utils.ScreenTypeUtils;
+import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -543,7 +545,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
         //是触控态的时候显示回车位   否则隐藏
 //        if (Boolean.FALSE.equals(mViewModel.bottomNaviVisibility.get())) return;
-        if (parkingViewExist()) {
+        if (ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_1_3 || parkingViewExist()) {
             if (currentImersiveStatus == ImersiveStatus.TOUCH) {
                 mViewModel.showOrHideSelfParkingView(true);
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
@@ -1649,6 +1651,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onScreenModeChanged(ScreenType screenType, String jsonPath) {
         mapVisibleAreaDataManager.loadData(jsonPath);
         mViewModel.onScreenModeChanged(screenType);
+        //分屏后，由于地图加载先与分屏回调，故重新设置视口锚点。
+        setMapCenterInScreen();
+        mapPackage.goToCarPosition(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     /**
