@@ -908,19 +908,18 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     private void switchClusterActivity(final boolean isOpen) {
         int secondeDid = 2; // 仪表的DisplayId
-        if (!"gm".equals(Build.MANUFACTURER)) { // 如果是非车机环境
-            final DisplayManager displayManager = AppCache.getInstance().getMContext().getSystemService(DisplayManager.class);
+        final DisplayManager displayManager = AppCache.getInstance().getMContext().getSystemService(DisplayManager.class);
+        if (BuildConfig.DEBUG && displayManager != null) {
             for (Display display : displayManager.getDisplays()) {
-                Logger.d(FsaConstant.FSA_TAG, "dispaly: " , display.getName() , ", id " , display.getDisplayId() , " :" , display);
-                if (display.getDisplayId() != 0) {
-                    secondeDid = display.getDisplayId();
-                    break;
+                if (display == null) {
+                    continue;
                 }
+                Logger.d(FsaConstant.FSA_TAG, "dispaly: " , display.getName() , ", id " , display.getDisplayId() , " :" , display);
             }
         }
-        if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//CLEA平台 仪表的DisplayId=3
-            secondeDid = 3;
-        }
+//        if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//CLEA平台 仪表的DisplayId=3
+//            secondeDid = 3;
+//        } // TODO 待仪表display3可用后解除注释
         Logger.d(FsaConstant.FSA_TAG, "switchClusterActivity: " , isOpen , secondeDid);
         if (isOpen) {
             Logger.d(FsaConstant.FSA_TAG, "open ClusterActivity");
