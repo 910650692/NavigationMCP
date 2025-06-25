@@ -24,6 +24,7 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.code.UserDataCode;
+import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RoutePoiType;
 import com.sgm.navi.service.define.search.FavoriteInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -31,6 +32,7 @@ import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.define.user.usertrack.HistoryRouteItemBean;
 import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.greendao.history.History;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
@@ -174,8 +176,21 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 resultHolder.resultItemBinding.subLineView.setVisibility(View.GONE);
             }
             if (mSearchPackage.isAlongWaySearch()) {
-                resultHolder.resultItemBinding.textNavi.setText(R.string.st_along_way_point);
-                resultHolder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_addq_58));
+                PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                        .setPid(mHistory.getMPoiId())
+                        .setName(mHistory.getMEndPoiName())
+                        .setAddress(mHistory.getMEndPoiName());
+                if (!ConvertUtils.isEmpty(mPoiEntities.get(position).getMEndPoint())) {
+                    poiInfoEntity.setPoint(parseGeoPoint(mPoiEntities.get(position).getMEndPoint()));
+                }
+                if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                    resultHolder.resultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                    resultHolder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
+                            .getDrawable(R.drawable.img_route_search_added));
+                } else {
+                    resultHolder.resultItemBinding.textNavi.setText(R.string.st_along_way_point);
+                    resultHolder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_addq_58));
+                }
 
             } else {
                 resultHolder.resultItemBinding.textNavi.setText(R.string.st_go_here);

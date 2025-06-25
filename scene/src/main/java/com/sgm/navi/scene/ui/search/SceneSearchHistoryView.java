@@ -234,7 +234,16 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                     sendBuryPointForAddFavorite(poiInfoEntity, commonName);
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
-                        RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                        if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                            if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                                ToastUtils.Companion.getInstance().showCustomToastView("起点终点不能删除");
+                            } else {
+                                RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                            }
+                        } else {
+                            RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                        }
+
                     } else {
                         SearchPackage.getInstance().clearLabelMark();
                         final Fragment fragment = (Fragment) ARouter.getInstance()
