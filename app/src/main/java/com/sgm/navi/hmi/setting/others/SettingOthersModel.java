@@ -36,7 +36,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
     private static final String MODEL_NAME = "SettingOthersModel";
 
     private final String[] mDirPaths = {
-            GBLCacheFilePath.BLS_LOG, GBLCacheFilePath.BLS_LOG_DATA
+            GBLCacheFilePath.BLS_LOG
     };
 
     public SettingOthersModel() {

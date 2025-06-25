@@ -15,7 +15,6 @@ public interface GBLCacheFilePath extends AutoMapConstant {
 
     /*** Auto Map log path **/
     public static final String BLS_LOG = GBL_MAP + "bllog";
-    public static final String BLS_LOG_DATA = GM_LOG_ROOT_PATH + "bllog";
 
     public static final String BLS_COOKIES_PATH = GBL_MAP + "cookie";
     /*** AutoSDK资源文件的原始目录 **/

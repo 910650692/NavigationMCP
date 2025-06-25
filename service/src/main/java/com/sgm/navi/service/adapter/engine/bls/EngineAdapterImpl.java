@@ -251,13 +251,8 @@ public class EngineAdapterImpl implements IEngineApi {
             Logger.d(TAG, "channelName ", baseInitParam.channelName);
         }
         baseInitParam.setIPlatformInterface(PLAT_FORM_INTERFACE);
-        if (FileUtils.getInstance().checkFileDir(GBLCacheFilePath.GM_LOG_ROOT_PATH) &&
-                FileUtils.getInstance().setFullPermissions(GBLCacheFilePath.GM_LOG_ROOT_PATH)) {
-            baseInitParam.logPath = GBLCacheFilePath.BLS_LOG_DATA;
-        } else {
-            baseInitParam.logPath = GBLCacheFilePath.BLS_LOG;
-            FileUtils.getInstance().setFullPermissions(GBLCacheFilePath.GBL_MAP);
-        }
+        baseInitParam.logPath = GBLCacheFilePath.BLS_LOG;
+        FileUtils.getInstance().setFullPermissions(GBLCacheFilePath.GBL_MAP);
         if (Logger.openLog) {
             Logger.d(TAG, "logPath ", baseInitParam.logPath);
         }
