@@ -98,10 +98,12 @@ public class SettingManager {
      * @return value
      */
     public String getValueByKey(final String key) {
+        Logger.d(TAG, "getValueByKey key = " + key);
         final NaviSetting naviSetting = mSettingDao.queryBuilder()
                 .where(NaviSettingDao.Properties.MName.eq(key))
                 .unique();
         if (naviSetting != null) {
+            Logger.d(TAG, "getValueByKey value = " + naviSetting.getMValue());
             return naviSetting.getMValue();
         } else {
             return "";

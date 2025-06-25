@@ -136,6 +136,7 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED);
         if (TextUtils.isEmpty(value)) {
             value = SettingController.VALUE_GENERIC_TRUE;
+            setHomeCompanyDisplay(true);
         }
         final boolean isHomeCompanyDisplay = Boolean.parseBoolean(value);
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED, isHomeCompanyDisplay);
