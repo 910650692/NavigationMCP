@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import androidx.databinding.library.baseAdapters.BR;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.sgm.navi.hmi.R;
@@ -98,6 +99,8 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
                 }
                 for (int i = 0; i < mProvDataInfos.size(); i++) {
                     if (mProvDataInfos.get(i).getName().contains(editText)) {
+                        mViewModel.mTextViewVisibility.setValue(false);
+                        mViewModel.mCloseViewVisibility.setValue(false);
                         final LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding
                                 .recyclerView.getLayoutManager();
                         if (layoutManager != null) {
@@ -110,15 +113,29 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
                             continue;
                         }
                         if (cityDataInfo.getName().contains(editText)) {
+                            mViewModel.mTextViewVisibility.setValue(false);
+                            mViewModel.mCloseViewVisibility.setValue(false);
                             final LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding
                                     .recyclerView.getLayoutManager();
                             if (layoutManager != null) {
                                 layoutManager.scrollToPositionWithOffset(i ,0);
                             }
                             break;
+                        } else {
+                            mViewModel.mTextViewVisibility.setValue(true);
+                            mViewModel.mCloseViewVisibility.setValue(true);
+                            mViewModel.mTextViewContent.setValue("没有找到\"" + editText + "\"相关的城市");
+                            break;
                         }
                     }
                 }
+            }
+        });
+
+        mViewModel.mEditTextContent.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                mBinding.editTextId.setText(s);
             }
         });
 

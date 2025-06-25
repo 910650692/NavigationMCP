@@ -5,6 +5,7 @@ import android.app.Application;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -37,6 +38,11 @@ public class BaseLimitDriverViewModel extends BaseViewModel<LimitDriveFragment, 
     public BaseLimitDriverViewModel(final @NonNull Application application) {
         super(application);
     }
+
+    public MutableLiveData<Boolean> mTextViewVisibility = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mCloseViewVisibility = new MutableLiveData<>(false);
+    public MutableLiveData<String> mTextViewContent = new MutableLiveData<>("");
+    public MutableLiveData<String> mEditTextContent = new MutableLiveData<>("");
 
     @Override
     protected LimitDriverModel initModel() {
@@ -115,6 +121,15 @@ public class BaseLimitDriverViewModel extends BaseViewModel<LimitDriveFragment, 
     private final Action mCloseCitySelectionPage = () -> {
         StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
     };
+
+
+    private final Action mClearTextContent = () -> {
+        mEditTextContent.setValue("");
+    };
+
+    public Action getClearTextContent() {
+        return mClearTextContent;
+    }
 
     public Action getCloseCitySelectionPage() {
         return mCloseCitySelectionPage;
