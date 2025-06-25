@@ -57,7 +57,7 @@
             android:layout_height="@dimen/dp_74"
             android:layout_marginEnd="@dimen/dp_20"
             android:src="@drawable/img_poi_edit_delete"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:focusable="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             app:layout_constraintBottom_toBottomOf="parent"
