@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.log.Logger;
 import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.map.MapAdapter;
@@ -388,6 +389,7 @@ public final class SettingPackage implements SettingAdapterCallback {
      * @param isChargingPlan true 打开 false 关闭
      */
     public void setChargingPlan(final boolean isChargingPlan) {
+        Logger.i(TAG, "isChargingPlan:", isChargingPlan);
         mIsCurCloseChargingPlan = !isChargingPlan;
         mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN, String.valueOf(isChargingPlan));
         for (SettingChangeCallback callback : mChangeCallbackList.values()) {

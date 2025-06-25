@@ -700,9 +700,18 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void openSupplyPlan() {
-        ISceneCallback.super.openSupplyPlan();
-        // TODO
-        Logger.i(TAG, "开启补能规划，重新算路！");
+        // 开启补能规划，重新算路
+        try {
+            ThreadManager.getInstance().execute(() -> {
+                SettingPackage.getInstance().setChargingPlan(true);
+                final RouteRequestParam param = new RouteRequestParam();
+                param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
+                param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
+                mRoutePackage.requestRoute(param);
+            });
+        } catch (Exception e) {
+            Logger.e(TAG, "openSupplyPlan error: ", e.getMessage());
+        }
     }
 
     /**

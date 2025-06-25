@@ -54,7 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChargeTipManager {
-    private static final String TAG = "ChargeTipManager";
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CHARGE_TIP_MANAGER;
     private NaviGuidanceViewModel mViewModel;
     private final SpeechPackage mSpeechPackage;
     private final SearchPackage mSearchPackage;
@@ -128,7 +128,6 @@ public class ChargeTipManager {
             mNaviViaEntityList.addAll(list);
         }
         mIsCurViaChecked = false;
-        mIsChargingPlanOpen = SettingPackage.getInstance().getChargingPlan();//补能规划开关
     }
 
     /***
@@ -141,19 +140,23 @@ public class ChargeTipManager {
             return;
         }
         mIntervalCount++;
-        if (mIntervalCount < 6) {
+        if (mIntervalCount < 60) {
             return;
         }
         mIntervalCount = 0;
-        //Logger.d(TAG, "naviETAInfo:", naviETAInfo);
-        Logger.d(TAG, "mIsChargeNum:", mIsChargeNumChecked, " mIsPowerLow:", mIsPowerLowOpenSupplyChecked
-                , " PlanOpen:", mIsChargingPlanOpen, " ChargingPlan:", SettingPackage.getInstance().getCurCloseChargingPlan()
-                , " isLowPower:", isLowPowerNotified);
+        mIsChargingPlanOpen = SettingPackage.getInstance().getChargingPlan();//补能规划开关
+        boolean isCurClose = SettingPackage.getInstance().getCurCloseChargingPlan();//是否当前上电内关闭的补能开关
+        //boolean isRouteTips = mRoutePackage.getRouteTips();//路径规划页是否已提醒电量低
+        if (Logger.openLog) {
+            Logger.i(TAG, "mIsChargeNum:", mIsChargeNumChecked, " mIsPowerLowChecked:", mIsPowerLowOpenSupplyChecked
+                    , " PlanOpen:", mIsChargingPlanOpen, " isCurClose:", isCurClose, " isLowPower:", isLowPowerNotified,
+                    " mIsCurViaChecked:", mIsCurViaChecked, " mIsViaDetailSearching:", mIsViaDetailSearching);
+        }
         checkViaChargeStationState(naviETAInfo);
         if (!mIsChargeNumChecked) {
             checkChargeStationNum();
         }
-        if (!mIsChargingPlanOpen && !SettingPackage.getInstance().getCurCloseChargingPlan()) {
+        if (!mIsChargingPlanOpen && !isCurClose) {
             //TODO 路径规划页是否已提醒
             if (!mIsPowerLowOpenSupplyChecked && isUnreachableOrLow()) {
                 mIsPowerLowOpenSupplyChecked = true;
@@ -231,8 +234,6 @@ public class ChargeTipManager {
         if (naviETAInfo == null) {
             return;
         }
-        Logger.i(TAG, "mIsChargingPlanOpen:", mIsChargingPlanOpen, " mIsCurViaChecked:",
-                mIsCurViaChecked, " mIsViaDetailSearching:", mIsViaDetailSearching);
         NaviEtaInfo.NaviTimeAndDist viaChargeStation;
         if (mIsChargingPlanOpen) {
             //补能规划打开后使用补能充电桩
@@ -260,7 +261,9 @@ public class ChargeTipManager {
             return;
         }
         NaviViaEntity viaEntity = mNaviViaEntityList.get(0);
-        Logger.i(TAG, "viaEntity: ", viaEntity);
+        if (Logger.openLog) {
+            Logger.i(TAG, "viaEntity: ", viaEntity);
+        }
         if (ConvertUtils.isEmpty(viaEntity)) {
             return;
         }
