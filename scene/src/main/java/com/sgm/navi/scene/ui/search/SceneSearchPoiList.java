@@ -357,6 +357,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      */
     private void setupSearchActions() {
         mViewBinding.searchTextBarView.ivClose.setOnClickListener(view -> {
+            // 筛选页退出不直接返回上一级
+            if(mIsFilterViewShow){
+                hideFilterPage();
+                return;
+            }
             if (mIsOpenFromNavi) {
                 mScreenViewModel.closeSearchOpenFromNavi();
             } else {
@@ -405,7 +410,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                 mScreenViewModel.aroundSearch(mPageNum, mSearchText, mPoiInfoEntity, String.valueOf(mRange), false);
             } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
-                mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), false);
+                mScreenViewModel.alongWaySearch(mSearchText);
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText);
             }
@@ -820,6 +825,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mTaskId = mScreenViewModel.getMTaskId();
         final String chargeType = ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
         final String gasType = ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_station);
+        mChildQuickList = new ArrayList<>();
         // 处理用户搜索意图,意图为充电站显示快筛列表
         if(searchResultEntity != null
                 && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())
@@ -1273,5 +1279,19 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
         }
         return count > 0;
+    }
+
+    private void hideFilterPage(){
+        mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
+        mIsFilterViewShow = false;
+        mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
+        if(ConvertUtils.isEmpty(mResultEntity.getPoiList())){
+            mViewBinding.searchResultNoData.setVisibility(VISIBLE);
+        }else{
+            mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
+        }
+        if(!ConvertUtils.isEmpty(mChildQuickList)){
+            mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
+        }
     }
 }
