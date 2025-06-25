@@ -641,10 +641,10 @@ public class BaseNaviGuidanceViewModel extends
      */
     public void isRequestRouteForPlateNumberAndAvoidLimitChange() {
         Logger.d(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange");
-        if (mCurrentPlateNumber.equals(mModel.getPlateNumber()) &&
-                mCurrentavoidLimit.equals(mModel.getAvoidLimit()) &&
-                mCurrentEnergy.equals(mModel.getEnergy()) &&
-                mCurrentPreferences.equals(mModel.getPreferences())) {
+        if (Objects.equals(mCurrentPlateNumber, mModel.getPlateNumber()) &&
+                Objects.equals(mCurrentavoidLimit, mModel.getAvoidLimit()) &&
+                Objects.equals(mCurrentEnergy, mModel.getEnergy()) &&
+                Objects.equals(mCurrentPreferences, mModel.getPreferences())) {
             Logger.d(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange 没有改变");
             return;
         }
