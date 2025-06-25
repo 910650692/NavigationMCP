@@ -89,7 +89,9 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
         mapFontInfo4.fontPath = GBLCacheFilePath.COPY_ASSETS_DIR + "font/Roboto-Bold.ttf";
         initMapParam.fontParam.overlayFontInfoList.add(mapFontInfo4);
         mapService.set((MapService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.MapSingleServiceID));
-        mapService.get().initMap(initMapParam);
+        if (null != mapService.get()) {
+            mapService.get().initMap(initMapParam);
+        }
     }
 
     public void unInitMapService() {
