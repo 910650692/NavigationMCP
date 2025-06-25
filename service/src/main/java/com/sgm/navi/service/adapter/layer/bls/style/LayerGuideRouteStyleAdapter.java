@@ -26,6 +26,7 @@ import com.autonavi.gbl.layer.ViaChargeStationLayerItem;
 import com.autonavi.gbl.layer.model.BizRoadCrossType;
 import com.autonavi.gbl.layer.model.BizRouteType;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.layer.bls.bean.RasterImageBean;
 import com.sgm.navi.service.adapter.layer.bls.bean.VectorCrossBean;
@@ -729,23 +730,21 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         return updateJson;
     }
 
-//    @Override
-//    public List<CustomUpdatePair> createUpdatePair(LayerItem item, String markerInfo) {
-//        switch (item.getBusinessType()) {
-//            case BizRouteType.BizRouteTypeGuideLabel:
-//                Logger.d(TAG, "多备选路线卡片内容填充");
-//                GuideLabelLayerItem labelItem = (GuideLabelLayerItem) item;
-//                return addCardGuideLabelMarker(labelItem, markerInfo);
-//            case BizRouteType.BizRouteTypeRouteJamBubbles:
-//                RouteJamBubblesLayerItem jamBubblesLayerItem = (RouteJamBubblesLayerItem) item;
-//                return addCardGuideJamBubblesMarker(jamBubblesLayerItem, markerInfo);
-//            case BizRouteType.BizRouteTypeViaETA:
-//                ViaETALayerItem viaETALayerItem = (ViaETALayerItem) item;
-//                return addCardGuideViaETAMarker(viaETALayerItem);
-//
-//        }
-//        return super.createUpdatePair(item, markerInfo);
-//    }
+    @Override
+    public List<CustomUpdatePair> updateTextureUpdatePair(LayerItem item) {
+        List<CustomUpdatePair> customUpdatePairs = new ArrayList<>();
+        switch (item.getBusinessType()) {
+            case BizRouteType.BizRouteTypeViaPoint -> {
+                RoutePathPointItem pointItem = (RoutePathPointItem) item;
+                if (pointItem.getPathId() == 0) {
+                    //隐藏途经点右上角关闭按钮
+                    customUpdatePairs.add(createUpdateStylePair("click_delete_focus", "display:none;"));
+                    customUpdatePairs.add(createUpdateStylePair("click_delete", "display:none;"));
+                }
+            }
+        }
+        return customUpdatePairs;
+    }
 //
 //    private List<CustomUpdatePair> addCardGuideViaETAMarker(ViaETALayerItem viaETALayerItem) {
 //        List<CustomUpdatePair> viaETAList = new ArrayList<>();
