@@ -2,6 +2,9 @@
 package com.sgm.navi.scene.ui.adapter;
 
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -95,11 +98,11 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
     @Override
     public void onBindViewHolder(@NonNull final ResultHolder holder, final int position) {
         holder.itemView.setSelected(position == mSelectedPosition);
-        holder.mTerminalParkingItemBinding.sktvParkingItemRecommended.setVisibility(View.GONE);
+        holder.mTerminalParkingItemBinding.sktvParkingItemRecommended.setVisibility(GONE);
         if (position == 0) {
-            holder.mTerminalParkingItemBinding.sktvParkingItemRecommended.setVisibility(View.VISIBLE);
+            holder.mTerminalParkingItemBinding.sktvParkingItemRecommended.setVisibility(VISIBLE);
         } else {
-            holder.mTerminalParkingItemBinding.sktvParkingItemRecommended.setVisibility(View.GONE);
+            holder.mTerminalParkingItemBinding.sktvParkingItemRecommended.setVisibility(GONE);
         }
         // 获取当前 POI 信息
         final PoiInfoEntity poiEntity = mPoiEntities.get(position);
@@ -115,7 +118,7 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
         final String totalSpace = String.valueOf(parkingInfo.getSpace());
         final String freeSpace = String.valueOf(parkingInfo.getSpaceFree());
         if (ConvertUtils.equals(totalSpace, DEFAULT_NUM) && ConvertUtils.equals(freeSpace, DEFAULT_NUM)) {
-            holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setVisibility(View.GONE);
+            holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setVisibility(GONE);
         } else if (ConvertUtils.equals(totalSpace, DEFAULT_NUM)) {
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setText(freeSpace);
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setTextColor(
@@ -128,8 +131,13 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setText(getColoredParkingInfo(totalSpace, freeSpace));
         }
 
-        // 设置繁忙状态
-        holder.mTerminalParkingItemBinding.sktvParkingItemSufficientNum.setText(getBusStatusString(position));
+        // 设置繁忙状态,1064249:状态未知则不显示该标签
+        if(ConvertUtils.isEmpty(getBusStatusString(position))){
+            holder.mTerminalParkingItemBinding.sktvParkingItemSufficientNum.setVisibility(GONE);
+        }else {
+            holder.mTerminalParkingItemBinding.sktvParkingItemSufficientNum.setVisibility(VISIBLE);
+            holder.mTerminalParkingItemBinding.sktvParkingItemSufficientNum.setText(getBusStatusString(position));
+        }
 
         // 当前位置显示
         holder.mTerminalParkingItemBinding.sktvParkingItemDistance.setText(
@@ -191,7 +199,7 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
      */
     private String getBusStatusString(final int position) {
         final int busyStatus = mPoiEntities.get(position).getParkingInfoList().get(0).getBusyStatus();
-        return BUSY_STATUS_MAP.getOrDefault(busyStatus, "未知");
+        return BUSY_STATUS_MAP.getOrDefault(busyStatus, "");
     }
 
     @Override
