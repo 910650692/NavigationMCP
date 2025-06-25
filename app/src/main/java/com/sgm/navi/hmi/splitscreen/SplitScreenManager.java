@@ -47,7 +47,7 @@ public class SplitScreenManager {
     private int mScreenDp;//单位dp, 屏幕可用宽度
     private final CopyOnWriteArrayList<OnScreenModeChangedListener> mListeners = new CopyOnWriteArrayList<>();
     private final int ONE_THIRD_WIDTH, TWO_THIRD_WIDTH;// 1/3, 2/3的阈值
-    private final int OFFSET = 50;//误差偏移量
+    private final int OFFSET = 2;//误差偏移量
 
     private SplitScreenManager() {
         SCREEN_FULL_WIDTH = ScreenUtils.Companion.getInstance().px2dp(

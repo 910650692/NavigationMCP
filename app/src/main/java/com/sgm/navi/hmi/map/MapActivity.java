@@ -4,14 +4,12 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ResourceUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -25,7 +23,6 @@ import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
 import com.sgm.navi.hmi.startup.StartupActivity;
-import com.sgm.navi.hmi.utils.ScreenTypeUtils;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
@@ -36,14 +33,12 @@ import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
-import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
-import com.sgm.navi.ui.view.SkinLinearLayout;
 
 import java.util.List;
 
@@ -348,13 +343,5 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
         }
         return super.dispatchTouchEvent(ev);
-    }
-
-    public void setSelfParkingViewMarginStart(){
-        if(!mViewModel.showNdGoHomeView()) return;
-        SkinLinearLayout layout = mBinding.parkingMainTabBottom;
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) layout.getLayoutParams();
-        params.setMarginStart(ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_FULL ? ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_1143) : ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_758));
-        layout.setLayoutParams(params);
     }
 }
