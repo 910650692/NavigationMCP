@@ -46,17 +46,28 @@
                 android:textColor="@color/setting_bg_tab_text_select" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.sgm.navi.ui.view.SkinImageView
-            android:id="@+id/setting_others_about_licenses_qr_img"
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="@dimen/dp_221"
             android:layout_height="@dimen/dp_221"
-            android:src="@mipmap/icon_setting_about_licenses"
-            android:layout_marginTop="@dimen/dp_132"
-            android:padding="@dimen/dp_7"
             android:background="@drawable/bg_we_chat"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_licenses_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/dp_132">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/setting_others_about_licenses_qr_img"
+                android:layout_width="@dimen/dp_200"
+                android:layout_height="@dimen/dp_200"
+                android:src="@mipmap/icon_setting_about_licenses"
+                android:background="@drawable/bg_setting_others_about_licenses_qr_img"
+                android:clipToOutline="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/setting_others_about_licenses_qr"
@@ -68,7 +79,7 @@
             android:textSize="@dimen/sp_22"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_qr_img" />
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/setting_others_about_licenses_version"
