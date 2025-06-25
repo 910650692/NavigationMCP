@@ -190,6 +190,9 @@ public final class MapStateManager {
 
         @Override
         public void onRouteResult(final RequestRouteResult requestRouteResult) {
+            if (isNaviStatus()) {
+                return;
+            }
             if (null != requestRouteResult && null != requestRouteResult.getMRouteLineInfos()
                     && !requestRouteResult.getMRouteLineInfos().isEmpty()) {
                 final List<RouteLineInfo> routeLineInfos = requestRouteResult.getMRouteLineInfos();

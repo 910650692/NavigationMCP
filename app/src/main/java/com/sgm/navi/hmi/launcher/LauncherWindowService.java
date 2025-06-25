@@ -264,7 +264,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     public void showOrHideFloatView(boolean isShow) {
         Logger.i(TAG, "showOrHideFloatView:" + isShow);
-        SettingPackage.getInstance().sendVrLauncherShow(isShow);
+        //SettingPackage.getInstance().sendVrLauncherShow(isShow);
         ThreadManager.getInstance().postUi(() -> {
             mIsOnShowing = isShow;
             if (!isInited) {
