@@ -38,12 +38,15 @@
             <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/rcy_record"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:nestedScrollingEnabled="false"
                 app:layout_constraintBottom_toTopOf="@+id/scl_delete_record"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view" />
+                app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintHeight_min="@dimen/dp_499"
+                app:layout_constraintHeight_max="@dimen/dp_770"/>
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_record_null"
