@@ -111,7 +111,10 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
      * 搜索相关事件
      */
     private void setupSearchActions() {
-        mViewBinding.skIvTerminalClose.setOnClickListener(v -> mScreenViewModel.closeSearch());
+        mViewBinding.skIvTerminalClose.setOnClickListener(v -> {
+            mScreenViewModel.showRoutePark();
+            mScreenViewModel.closeSearch();
+        });
     }
 
     /**

@@ -41,6 +41,13 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
     }
 
     /**
+     * 展示终点停车场扎标
+     */
+    public void showRoutePark(){
+        mRoutePackage.showRoutePark(MapType.MAIN_SCREEN_MAIN_MAP);
+    }
+
+    /**
      * 周边搜索
      * @param keyword 关键字
      * @param geoPoint 坐标
