@@ -35,7 +35,7 @@ public class NaviMediaPlayer {
         if (null == mMediaFocusRequest) {
             AudioAttributes.Builder builder = new AudioAttributes.Builder();
             AudioAttributes mediaAttributes = builder
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)//设置音频流的内容类型为音乐
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .build();
             //请求临时音频焦点
             mMediaFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
@@ -121,12 +121,18 @@ public class NaviMediaPlayer {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     Logger.d(TAG, "onCompletion");
+                    if (mAudioManager != null && mMediaFocusRequest != null) {
+                        mAudioManager.abandonAudioFocusRequest(mMediaFocusRequest);
+                    }
                 }
             });
             mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                 @Override
                 public boolean onError(MediaPlayer mp, int what, int extra) {
                     Logger.e(TAG, "onError what:", what, " extra:", extra);
+                    if (mAudioManager != null && mMediaFocusRequest != null) {
+                        mAudioManager.abandonAudioFocusRequest(mMediaFocusRequest);
+                    }
                     return false;
                 }
             });
