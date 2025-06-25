@@ -48,6 +48,7 @@ import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.base.StackManager;
 
 /**
@@ -263,6 +264,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     public void showOrHideFloatView(boolean isShow) {
         Logger.i(TAG, "showOrHideFloatView:" + isShow);
+        SettingPackage.getInstance().sendVrLauncherShow(isShow);
         ThreadManager.getInstance().postUi(() -> {
             mIsOnShowing = isShow;
             if (!isInited) {

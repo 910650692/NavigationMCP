@@ -38,6 +38,7 @@ public final class MapState {
         mIsInTeam = false;
         mIsTeamLeader = false;
         mIsCruiseEnable = false;
+        mIsDisplayInLauncher = false;
     }
 
     private boolean mOpenStatus; //导航app是否打开，boolean值 - true:是 - false:否（默认）
@@ -71,7 +72,8 @@ public final class MapState {
     private boolean mIsAgreeTeamAgreement; //是否已同意组队协议条款，暂不支持组队，false
     private boolean mIsInTeam;  //是否已在组队队伍，同上
     private boolean mIsTeamLeader; //是否组队队伍的队长，同上
-    private boolean mIsCruiseEnable;
+    private boolean mIsCruiseEnable; //巡航功能是否支持，boolean值 - true:是 - false:否（默认）
+    private boolean mIsDisplayInLauncher; //是否在Launcher中显示，默认false
 
 
     public boolean isOpenStatus() {
@@ -324,6 +326,10 @@ public final class MapState {
 
     public void setCruiseEnable(final boolean enable) {
         mIsCruiseEnable = enable;
+    }
+
+    public void setIsDisplayInLauncher(boolean mIsDisplayInLauncher) {
+        this.mIsDisplayInLauncher = mIsDisplayInLauncher;
     }
 
     public static class Builder {
@@ -639,10 +645,26 @@ public final class MapState {
             return this;
         }
 
+        /**
+         * setCruiseEnable
+         * @param enable enable
+         * @return Builder
+         */
         public Builder setCruiseEnable(final boolean enable) {
             mapState.setCruiseEnable(enable);
             return this;
         }
+
+        /**
+         * setIsDisplayInLauncher
+         * @param isDisplayInLauncher isDisplayInLauncher
+         * @return Builder
+         */
+        public Builder setIsDisplayInLauncher(final boolean isDisplayInLauncher) {
+            mapState.setIsDisplayInLauncher(isDisplayInLauncher);
+            return this;
+        }
+
 
         /**
          * build

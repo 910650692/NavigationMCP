@@ -130,6 +130,9 @@ final public class AMapStateUtils {
      * @param data data
      */
     private static void saveMapStateBoolean(final HashMap<String, Object> map, final JSONObject data) {
+        if (data.has("mIsDisplayInLauncher")) {
+            map.put(NaviStateCons.KEY_TBT_DISPLAY_IN_LAUNCHER, data.optBoolean("mIsDisplayInLauncher"));
+        }
         if (data.has("mIsCruiseEnable")) {
             map.put(NaviStateCons.KEY_IN_CRUISE_ENABLE, data.optBoolean("mIsCruiseEnable"));
         }

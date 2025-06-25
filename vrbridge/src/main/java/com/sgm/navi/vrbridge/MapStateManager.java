@@ -74,7 +74,7 @@ public final class MapStateManager {
      */
     public void init() {
         final boolean foregroundStatus = ProcessManager.isAppInForeground();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "MapStateInit, foreground: ", foregroundStatus);
         }
         updateForegroundStatus(foregroundStatus);
@@ -84,6 +84,7 @@ public final class MapStateManager {
         mBuilder.setViaPointsMaxCount(5);
         mBuilder.setListPage(false);
         mBuilder.setCruiseEnable(false);
+        mBuilder.setIsDisplayInLauncher(false);
 
         if (MapPackage.getInstance().isMapViewExist(MapType.MAIN_SCREEN_MAIN_MAP)) {
             mBuilder.setCurrZoomLevel((int) MapPackage.getInstance().getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP));
@@ -97,7 +98,7 @@ public final class MapStateManager {
         updateNaviStatus(mCurNaviStatus);
 
         final int muteMode = SettingPackage.getInstance().getConfigKeyMute();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "init muteMode: ", muteMode);
         }
         if (muteMode == 1) {
@@ -125,6 +126,16 @@ public final class MapStateManager {
         registerCallback();
     }
 
+    private final SettingPackage.VrTBTShowInLauncherListener mFloatWindowShowCallback
+            = new SettingPackage.VrTBTShowInLauncherListener() {
+        @Override
+        public void onVrTBTShowInLauncher(boolean isShow) {
+            Logger.d(IVrBridgeConstant.TAG, "onVrTBTShowInLauncher: ", isShow);
+            mBuilder.setIsDisplayInLauncher(isShow);
+            AMapStateUtils.saveMapState(mBuilder.build());
+        }
+    };
+
     private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
         @Override
         public void onNaviStatusChange(final String naviStatus) {
@@ -146,7 +157,7 @@ public final class MapStateManager {
 
         @Override
         public void onMapLevelChanged(final MapType mapTypeId, final float mapLevel) {
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.d(TAG, "onMapLevelChanged: ", mapLevel);
             }
             mBuilder.setCurrZoomLevel((int) mapLevel);
@@ -161,7 +172,7 @@ public final class MapStateManager {
 
         @Override
         public void onMapLoadSuccess(final MapType mapTypeId) {
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "onMapLoad: ", mapTypeId.name());
             }
             if (MapType.MAIN_SCREEN_MAIN_MAP == mapTypeId) {
@@ -300,7 +311,6 @@ public final class MapStateManager {
     };
 
 
-
     private final IGuidanceObserver mGuidanceObserver = new IGuidanceObserver() {
         @Override
         public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
@@ -332,7 +342,7 @@ public final class MapStateManager {
     private final ProcessManager.ProcessForegroundStatus mForeGroundCallback = new ProcessManager.ProcessForegroundStatus() {
         @Override
         public void isAppInForeground(final boolean appInForegroundStatus) {
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.i(IVrBridgeConstant.TAG, "appInForeground:", appInForegroundStatus);
             }
             updateForegroundStatus(appInForegroundStatus);
@@ -346,10 +356,10 @@ public final class MapStateManager {
      * @param foregroundStatus activity运行状态.
      */
     private void updateForegroundStatus(final boolean foregroundStatus) {
-        if(foregroundStatus){
+        if (foregroundStatus) {
             mBuilder.setOpenStatus(true);
             mBuilder.setFront(true);
-        }else {
+        } else {
             mBuilder.setOpenStatus(false);
             mBuilder.setFront(false);
         }
@@ -377,6 +387,7 @@ public final class MapStateManager {
         MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
         RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
         SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
+        SettingPackage.getInstance().registerVrTBTShowInLauncherListener(mFloatWindowShowCallback);
         AccountPackage.getInstance().registerCallBack(TAG, mAccountCallBack);
         PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
         NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);
@@ -388,6 +399,7 @@ public final class MapStateManager {
 
     /**
      * updateNaviStatus
+     *
      * @param naviStatus naviStatus
      */
     private void updateNaviStatus(final String naviStatus) {
@@ -418,6 +430,7 @@ public final class MapStateManager {
 
     /**
      * updateMapMode
+     *
      * @param mapMode mapMode
      */
     private void updateMapMode(final MapMode mapMode) {
@@ -440,6 +453,7 @@ public final class MapStateManager {
 
     /**
      * updateBroadcastMode
+     *
      * @param mode mode 1：经典简洁播报； 2：新手详细播报，默认态； 3：极简播报.
      */
     private void updateBroadcastMode(final int mode) {
@@ -460,6 +474,7 @@ public final class MapStateManager {
 
     /**
      * updateBroadcastMode
+     *
      * @param mode mode
      */
     private void updateBroadcastMode(final String mode) {
@@ -480,6 +495,7 @@ public final class MapStateManager {
 
     /**
      * updateRoadEvent
+     *
      * @param value value
      */
     private void updateRoadEvent(final String value) {
@@ -496,6 +512,7 @@ public final class MapStateManager {
 
     /**
      * updateRoadEvent
+     *
      * @param value value
      */
     private void updateRoadEvent(final boolean value) {
@@ -504,6 +521,7 @@ public final class MapStateManager {
 
     /**
      * updatePreference
+     *
      * @param routePreference routePreference
      */
     private void updatePreference(final String routePreference) {
@@ -556,6 +574,7 @@ public final class MapStateManager {
 
     /**
      * updateParallelRoadStatus
+     *
      * @param entity LocParallelInfoEntity
      */
     private void updateParallelRoadStatus(final LocParallelInfoEntity entity) {
@@ -602,7 +621,7 @@ public final class MapStateManager {
     /**
      * 更新搜索结果列表页面展示状态.
      *
-     * @param opened  true:打开  false:关闭
+     * @param opened true:打开  false:关闭
      */
     public void updateListPageState(final boolean opened) {
         mBuilder.setListPage(opened);
@@ -630,13 +649,14 @@ public final class MapStateManager {
 
     /**
      * 当前是否处于引导态.
+     *
      * @return boolean
      */
     public boolean isNaviStatus() {
         mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         final boolean isNavi = NaviStatus.NaviStatusType.NAVING.equals(mCurNaviStatus)
                 || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(mCurNaviStatus);
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "naviStatus: ", isNavi);
         }
         return isNavi;
@@ -681,7 +701,7 @@ public final class MapStateManager {
      * @return 是否需要保存当前指令， true:保存，当底图加载完成再继续执行指令
      * false:不保存，只执行打开应用操作
      */
-     public boolean openMapWhenBackground() {
+    public boolean openMapWhenBackground() {
         final int appRunStatus = ProcessManager.getAppRunStatus();
         boolean saveCommand = false;
         Logger.w(IVrBridgeConstant.TAG, "currentAppRunStatus: " + appRunStatus);

@@ -39,7 +39,7 @@ public final class SettingPackage implements SettingAdapterCallback {
     private final FavoriteManager mFavoriteManager;
     //是否当前上电内关闭的补能开关
     private boolean mIsCurCloseChargingPlan;
-
+    private VrTBTShowInLauncherListener vrTBTShowInLauncherListener;
     public static SettingPackage getInstance() {
         return SInstanceHolder.INSTANCE;
     }
@@ -1010,6 +1010,29 @@ public final class SettingPackage implements SettingAdapterCallback {
         getConfigKeyDriveWarn();
         getConfigKeyRoadWarn();
         getAutoRecord();
+    }
+
+    public void sendVrLauncherShow(final boolean isShow) {
+        if (vrTBTShowInLauncherListener != null) {
+            vrTBTShowInLauncherListener.onVrTBTShowInLauncher(isShow);
+        }
+    }
+
+    public void registerVrTBTShowInLauncherListener(VrTBTShowInLauncherListener listener) {
+        this.vrTBTShowInLauncherListener = listener;
+    }
+
+    public void unregisterVrTBTShowInLauncherListener() {
+        this.vrTBTShowInLauncherListener = null;
+    }
+
+    public interface VrTBTShowInLauncherListener {
+        /**
+         * 回调给语音控制TBT是否显示在Launcher界面
+         *
+         * @param isShow true: 显示; false: 不显示
+         */
+        void onVrTBTShowInLauncher(boolean isShow);
     }
 
     public interface SettingChangeCallback {
