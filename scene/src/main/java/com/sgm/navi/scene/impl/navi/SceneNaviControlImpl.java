@@ -443,8 +443,8 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
                 mNaviPackage.setCurrentNaviVolume(volume);
             } else {
                 changeMuteStatus();
+                return;
             }
-            return;
         }
         updateVariationVoice();
     }
