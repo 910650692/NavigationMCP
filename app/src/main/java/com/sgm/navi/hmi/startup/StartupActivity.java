@@ -3,7 +3,6 @@ package com.sgm.navi.hmi.startup;
 import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.view.View;
@@ -18,6 +17,7 @@ import androidx.core.view.WindowCompat;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
+import com.android.utils.process.ProcessStatus;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.BR;
@@ -45,11 +45,13 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if(ProcessManager.isAppInForeground()){
-            finish();
+    public boolean onCreateViewBefore() {
+        if (!ConvertUtils.equals(ProcessStatus.AppRunStatus.DESTROYED, ProcessManager.getAppRunStatus())) {
+            Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "app already in foreground");
+            mViewModel.startMapActivity();
+            return false;
         }
+        return super.onCreateViewBefore();
     }
 
     @Override
@@ -113,8 +115,9 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
             mRotateAnim.cancel();
             mRotateAnim = null;
         }
-        if (mFailedDialog.isShowing()) {
+        if (null != mFailedDialog) {
             mFailedDialog.cancel();
+            mFailedDialog = null;
         }
         PermissionUtils.getInstance().remove();
         FloatViewManager.getInstance().showAllCardWidgets();

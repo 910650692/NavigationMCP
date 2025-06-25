@@ -29,9 +29,10 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected String mScreenId;
     private String mLastClosedFragmentName;
     private final String LIFE_CYCLE_TAG = "activity_life_cycle";
+
     public BaseActivity() {
         super();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate before");
         }
         mStackManager = StackManager.getInstance();
@@ -42,15 +43,18 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     protected void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate start");
         }
         setImmersiveStatusBar();
         createViewModel();
+        boolean isBindView = onCreateViewBefore();
+        if (!isBindView) return;
+        bindContentView();
         onInitView();
         onInitObserver();
         onInitData();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate end");
         }
     }
@@ -58,8 +62,8 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("onConfigurationChanged",true);
-        if(Logger.openLog) {
+        outState.putBoolean("onConfigurationChanged", true);
+        if (Logger.openLog) {
             Logger.i(LIFE_CYCLE_TAG, "onSaveInstanceState");
         }
     }
@@ -68,7 +72,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         boolean onConfigurationChanged = savedInstanceState.getBoolean("onConfigurationChanged");
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(LIFE_CYCLE_TAG, "onRestoreInstanceState", onConfigurationChanged);
         }
     }
@@ -76,7 +80,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     protected void onResume() {
         super.onResume();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onResume");
         }
     }
@@ -84,7 +88,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     protected void onStart() {
         super.onStart();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStart");
         }
     }
@@ -92,7 +96,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     protected void onStop() {
         super.onStop();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStop");
         }
     }
@@ -100,7 +104,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDestroy");
         }
         mStackManager.removeBaseView(mScreenId, this);
@@ -118,7 +122,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void onBackPressed() {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(getClass().getSimpleName(), "阻止返回键");
         }
     }
@@ -261,8 +265,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
      * 创建ViewModel
      */
     private void createViewModel() {
-        mBinding = DataBindingUtil.setContentView(this, onLayoutId());
-        final int mViewModelId = onInitVariableId();
         mViewModel = initViewModel();
         if (mViewModel == null) {
             final Class modelClass;
@@ -276,9 +278,15 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
             mViewModel = (VM) createViewModel(modelClass);
         }
+    }
+
+    private void bindContentView() {
         if (ConvertUtils.isEmpty(mViewModel)) {
             return;
         }
+
+        final int mViewModelId = onInitVariableId();
+        mBinding = DataBindingUtil.setContentView(this, onLayoutId());
         mBinding.setVariable(mViewModelId, mViewModel);
         mBinding.setLifecycleOwner(this);
         getLifecycle().addObserver(mViewModel);

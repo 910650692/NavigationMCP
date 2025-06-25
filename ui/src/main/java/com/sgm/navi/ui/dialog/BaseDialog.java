@@ -88,16 +88,16 @@ public abstract class BaseDialog<V extends ViewDataBinding> extends Dialog {
 
     @Override
     public void hide() {
-        super.hide();
+        if (isShowing()) super.hide();
     }
 
     @Override
     public void dismiss() {
-        super.dismiss();
+        if (isShowing()) super.dismiss();
     }
 
     @Override
     public void cancel() {
-        super.cancel();
+        if (isShowing()) super.cancel();
     }
 }

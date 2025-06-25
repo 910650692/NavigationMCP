@@ -10,6 +10,10 @@ public interface IBaseView {
 
     }
 
+    default boolean onCreateViewBefore() {
+        return true;
+    }
+
     /**
      * Activity必须实现.
      *
@@ -53,12 +57,14 @@ public interface IBaseView {
     /**
      * onReStoreFragment
      */
-    default void onReStoreFragment(){}
+    default void onReStoreFragment() {
+    }
 
     /**
      * onReStoreFragment
      */
-    default void onGetFragmentData(){}
+    default void onGetFragmentData() {
+    }
 
     /**
      * Activity必须实现.
@@ -71,9 +77,9 @@ public interface IBaseView {
     /**
      * Activity必须实现.
      *
-     * @param fragment fragment
-     * @param bundle   参数
-     * @param isHideCurFragment   是否隐藏当前fragment
+     * @param fragment          fragment
+     * @param bundle            参数
+     * @param isHideCurFragment 是否隐藏当前fragment
      */
     void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment);
 
@@ -139,7 +145,7 @@ public interface IBaseView {
      * Activity 必须实现
      * 显示自车位view
      */
-    default void showParkingView(){
+    default void showParkingView() {
 
-    };
+    }
 }

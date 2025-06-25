@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -289,6 +290,18 @@ public final class StackManager {
         } else if (baseView instanceof BaseFragment<?, ?>) {
             final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
             return ConvertUtils.isContain(fragmentStack, (BaseFragment) baseView);
+        }
+        return false;
+    }
+
+    public boolean isContainActivity(final String screenId, final String className) {
+        if(ConvertUtils.isEmpty(className)) return false;
+        if(isActivityStackNull(screenId)) return false;
+        Stack<BaseActivity> activityStack = getBaseActivityStack(screenId);
+        for (BaseActivity activity : activityStack) {
+            if(ConvertUtils.isEmpty(activity)) continue;
+            Logger.d("StackManager", activity.getClass().getSimpleName());
+            if(ConvertUtils.equals(activity.getClass().getSimpleName(), className)) return true;
         }
         return false;
     }
