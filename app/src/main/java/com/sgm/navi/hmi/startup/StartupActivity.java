@@ -3,6 +3,7 @@ package com.sgm.navi.hmi.startup;
 import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.BR;
@@ -40,6 +42,14 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
     @Override
     public void onCreateBefore() {
         mScreenId = MapType.MAIN_SCREEN_MAIN_MAP.name();
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(ProcessManager.isAppInForeground()){
+            finish();
+        }
     }
 
     @Override
