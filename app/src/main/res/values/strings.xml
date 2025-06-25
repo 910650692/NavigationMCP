@@ -417,6 +417,7 @@
     <string name="setting_broadcast_voice_head">导航语音</string>
     <string name="setting_broadcast_voice_current_name">标准女声</string>
     <string name="setting_broadcast_voice_current_use">正在使用</string>
+    <string name="setting_broadcast_voice_current_download">已下载</string>
     <string name="setting_broadcast_voice_current_size">系统默认语音</string>
     <string name="setting_broadcast_voice_current_status">已下载</string>
     <string name="setting_broadcast_voice_operate_use">使用</string>
