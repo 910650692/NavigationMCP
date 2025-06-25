@@ -4,10 +4,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#997E7E7E">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1242"
+            android:layout_width="@dimen/dp_1200"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_shadow_system_ndlc_8155"
             android:layout_marginTop="@dimen/dp_426"
@@ -74,31 +75,27 @@
                 android:layout_marginBottom="@dimen/dp_48"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <com.sgm.navi.ui.view.SkinButton
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_commit"
                     android:layout_width="@dimen/dp_475"
                     android:layout_height="@dimen/dp_80"
-                    android:background="@drawable/setting_check_dialog_confirm_bg"
-                    android:text="@string/reminder_dialog_commit"
+                    android:gravity="center"
                     android:textColor="@color/setting_dialog_confirm"
-                    android:textSize="@dimen/sp_29" />
+                    android:textSize="@dimen/sp_29"
+                    android:text="@string/reminder_dialog_commit"
+                    android:background="@drawable/setting_check_dialog_confirm_bg"/>
 
-                <com.sgm.navi.ui.view.SkinView
-                    android:id="@+id/dialog_line"
-                    android:layout_width="@dimen/dp_2"
-                    android:layout_height="match_parent"
-                    android:visibility="invisible"
-                    android:background="@color/setting_line" />
 
-                <com.sgm.navi.ui.view.SkinButton
+                <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_cancel"
                     android:layout_width="@dimen/dp_475"
                     android:layout_height="@dimen/dp_80"
-                    android:background="@drawable/bg_shape_setting_dialog_cancel"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_29"
+                    android:layout_marginStart="@dimen/dp_32"
                     android:text="@string/reminder_dialog_cancel"
-                    android:layout_marginStart="32dp"
-                    android:textColor="@color/setting_dialog_cancel"
-                    android:textSize="@dimen/sp_29" />
+                    android:background="@drawable/bg_shape_setting_dialog_cancel"/>
 
             </com.sgm.navi.ui.view.SkinLinearLayout>
         </com.sgm.navi.ui.view.SkinConstraintLayout>
