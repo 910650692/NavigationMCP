@@ -105,15 +105,15 @@
                     android:layout_width="@dimen/dp_545"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_navi_tbt_bottom"
-                    android:paddingTop="@dimen/dp_40"
                     android:layout="@layout/scene_navi_via_list_view_stub"
+                    android:paddingTop="@dimen/dp_40"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
 
                 <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/scene_navi_scl_top"
                     android:layout_width="@dimen/dp_0"
-                    android:layout_height="@dimen/dp_0"/>
+                    android:layout_height="@dimen/dp_0" />
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <androidx.constraintlayout.widget.Barrier
@@ -180,10 +180,11 @@
                 android:id="@+id/scene_navi_preference"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_80"
+                android:layout_marginTop="@dimen/dp_m_43"
                 android:visibility="@{ViewModel.mNaviPreferenceVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/scl_top_container"
+                tools:visibility="visible" />
             <!--限速-->
             <com.sgm.navi.scene.ui.navi.SceneNaviSpeedView
                 android:id="@+id/scene_navi_speed"

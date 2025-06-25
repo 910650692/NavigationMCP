@@ -180,10 +180,11 @@
                 android:id="@+id/scene_navi_preference"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_80"
+                android:layout_marginTop="@dimen/dp_m_43"
                 android:visibility="@{ViewModel.mNaviPreferenceVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/scl_top_container"
+                tools:visibility="visible" />
             <!--限速-->
             <com.sgm.navi.scene.ui.navi.SceneNaviSpeedView
                 android:id="@+id/scene_navi_speed"
