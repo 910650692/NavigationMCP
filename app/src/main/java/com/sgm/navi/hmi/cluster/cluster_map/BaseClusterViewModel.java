@@ -128,4 +128,9 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
             }
         }
     }
+
+    public void registerClusterMap(){
+        Logger.d(TAG, "Registering cluster map");
+        mModel.registerClusterMap();
+    }
 }

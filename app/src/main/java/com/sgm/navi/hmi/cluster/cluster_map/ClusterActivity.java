@@ -45,6 +45,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     @Override
     public void onInitView() {
         Logger.d(TAG, "onInitView");
+        mViewModel.registerClusterMap();
     }
 
     @Override
@@ -95,6 +96,12 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
 
     public IBaseScreenMapView getMapView() {
         return mBinding.clusterMapview;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Logger.d(TAG, "onStart");
     }
 
     public SkinConstraintLayout getRootView() {

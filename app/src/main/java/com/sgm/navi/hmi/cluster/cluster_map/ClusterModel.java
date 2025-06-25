@@ -42,7 +42,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback ,SettingPackage.SettingChangeCallback{
     private static final String TAG = "ClusterModel";
     private static float MAP_ZOOM_LEVEL_DEFAULT = 17F;
-    private boolean isMapInitialized = false;
+    private boolean isInItMapView= false;
 
     public ClusterModel() {
 
@@ -51,15 +51,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.d(TAG, "start navi Service");
-        Logger.d(TAG, "StartService.getInstance().getSdkActivation()==",StartService.getInstance().getSdkActivation());
-        if (StartService.getInstance().getSdkActivation() == 0){
-            initClusterMapAndObservers("ClusterModel onCreate");
-        }else {
-            Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
-            ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
-            StartService.getInstance().registerSdkCallback(TAG, this);
-        }
+        Logger.d(TAG, "onCreate");
     }
 
     @Override
@@ -81,7 +73,9 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     @Override
     public void onSdkInitSuccess() {
         Logger.d(TAG, "Sdk init success");
-        initClusterMapAndObservers("ClusterModel onSdkInitSuccess");
+        if (!isInItMapView){
+            initClusterMapAndObservers("ClusterModel onSdkInitSuccess");
+        }
     }
 
     @Override
@@ -126,10 +120,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         }
     }
 
-    @Override
-    public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
-        Logger.i(TAG, "onRouteDrawLine:" + routeLineLayerParam.getMMapTypeId());
-    }
+
 
     @Override
     public void onNaviStart() {
@@ -224,31 +215,32 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     /**
      * 初始化 Cluster 地图及相关观察者回调
      */
-    private void initClusterMapAndObservers(String from) {
+    public void initClusterMapAndObservers(String from) {
         Logger.d(TAG, "sdk 成功",from);
-
-        // 检查是否已经初始化
-        if (isMapInitialized) {
-            Logger.d(TAG, "MapView 已经初始化过，跳过重复初始化");
-            return;
-        }
-
         boolean mapViewInitResult = MapPackage.getInstance().createMapView(MapType.CLUSTER_MAP);
         Logger.d(TAG, "mapViewInitResult: ==" , mapViewInitResult);
         if (!mapViewInitResult) return;
-
+        mViewModel.loadMapView();
+        isInItMapView = true;
         MapPackage.getInstance().registerCallback(getMapId(), this);
         RoutePackage.getInstance().registerRouteObserver(mViewModel.mScreenId, this);
         NaviPackage.getInstance().registerObserver(mViewModel.mScreenId, this);
         CruisePackage.getInstance().registerObserver(mViewModel.mScreenId, this);
         NavistatusAdapter.getInstance().registerCallback(this);
-
         // 监听设置包变化
         SettingPackage.getInstance().setSettingChangeCallback(getMapId().name(), this);
+    }
 
-        mViewModel.loadMapView();
-        // 标记为已初始化
-        isMapInitialized = true;
+    public void registerClusterMap() {
+        Logger.d(TAG, "registerClusterMap");
+        Logger.d(TAG, "StartService.getInstance().getSdkActivation()==",StartService.getInstance().getSdkActivation());
+        if (StartService.getInstance().getSdkActivation() == 0){
+            initClusterMapAndObservers("registerClusterMap");
+        }else {
+            Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
+            ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
+            StartService.getInstance().registerSdkCallback(TAG, this);
+        }
     }
 
 }
