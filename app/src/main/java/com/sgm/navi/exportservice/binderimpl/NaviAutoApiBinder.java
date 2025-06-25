@@ -137,7 +137,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     private ScheduledFuture mGuideStatusHolder;
     private int mTmcTotalDistance = 0;
     private int mTmcFinishDistance = 0;
-
+    private String DestName = "目的地";
     //当前引导面板状态
     private int mGuidePanelStatus;
 
@@ -1522,6 +1522,11 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         if (null == baseSearchPoi || null == baseSearchPoi.getPoint()) {
             Logger.e(TAG, "destination is empty, can't not planRoute");
             return;
+        }
+
+        if (ConvertUtils.isEmpty(baseSearchPoi.getName())) {
+            Logger.i(TAG, "无名称，使用默认名称");
+            baseSearchPoi.setName(DestName);
         }
 
         final BaseGeoPoint geoPoint = baseSearchPoi.getPoint();
