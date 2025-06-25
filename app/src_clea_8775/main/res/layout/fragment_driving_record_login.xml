@@ -238,7 +238,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/driving_record_no_history"
-                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textStyle="bold"
                         android:textSize="@dimen/sp_25" />
                     <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
@@ -246,7 +247,7 @@
                         android:layout_marginTop="@dimen/dp_20"
                         android:gravity="center"
                         android:text="@string/driving_record_login_details_tip"
-                        android:textColor="@color/setting_bg_login_detail"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_22" />
                 </com.sgm.navi.ui.view.SkinLinearLayout>
             </com.sgm.navi.ui.view.SkinRelativeLayout>
