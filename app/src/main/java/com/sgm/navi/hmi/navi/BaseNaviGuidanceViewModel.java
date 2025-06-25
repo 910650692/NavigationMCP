@@ -584,18 +584,15 @@ public class BaseNaviGuidanceViewModel extends
      * 更新via列表
      */
     public void updateViaList() {
-        // 延时500ms是为了等数据添加完成
-        ThreadManager.getInstance().postDelay(new Runnable() {
-            @Override
-            public void run() {
-                final List<NaviViaEntity> viaList = mModel.getViaList();
-                if (!ConvertUtils.isEmpty(viaList)) {
-                    mView.updateViaListState(viaList);
-                    mView.refreshViaInfo();
-                    mModel.updateViaListState(viaList);
-                }
+        final List<NaviViaEntity> viaList = mModel.getViaList();
+        if (!ConvertUtils.isEmpty(viaList)) {
+            if (mNaviViaListVisibility != null &&
+                    Boolean.TRUE.equals(mNaviViaListVisibility.get())) {
+                mView.updateViaListState(viaList);
             }
-        }, NumberUtils.NUM_500);
+            mView.refreshViaInfo();
+            mModel.updateViaListState(viaList);
+        }
     }
 
     /**

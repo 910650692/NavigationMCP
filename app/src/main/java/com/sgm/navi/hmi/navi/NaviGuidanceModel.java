@@ -116,6 +116,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private Runnable mOnClusterMapOpenOrClose;
     private Runnable mFirstDrawEndPoint;
     private Runnable mInitLazyView;
+    private Runnable mUpdateViaList;
     private volatile boolean mIsClusterOpen;
     private int mEndSearchId;
 
@@ -278,6 +279,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 drawEndPoint(mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP));
             }
         };
+        mUpdateViaList = new Runnable() {
+            @Override
+            public void run() {
+                if (mViewModel != null) {
+                    mViewModel.updateViaList();
+                }
+            }
+        };
     }
 
     private void releaseRunnable() {
@@ -286,6 +295,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ThreadManager.getInstance().removeHandleTask(mOnClusterMapOpenOrClose);
         ThreadManager.getInstance().removeHandleTask(mInitLazyView);
         ThreadManager.getInstance().removeHandleTask(mFirstDrawEndPoint);
+        ThreadManager.getInstance().removeHandleTask(mUpdateViaList);
     }
 
     @Override
@@ -617,14 +627,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
-    public void onRouteFail(final MapType mapTypeId, final String errorMsg) {
-        Logger.i(TAG, "onRouteFail");
-        mViewModel.updateViaList();
-    }
-
-    @Override
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
-
+        RouteWayID routeWayID = requestRouteResult.getMRouteWay();
+        Logger.i(TAG, "onRouteResult routeWayID = ", routeWayID);
+        if (routeWayID.equals(RouteWayID.ROUTE_WAY_ADD_VIA) ||
+                routeWayID.equals(RouteWayID.ROUTE_WAY_ADD_ALL_VIA) ||
+                routeWayID.equals(RouteWayID.ROUTE_WAY_DELETE_VIA) ||
+                routeWayID.equals(RouteWayID.ROUTE_WAY_SORT_VIA)) {
+            ThreadManager.getInstance().postUi(mUpdateViaList);
+        }
     }
 
     @Override
@@ -1190,7 +1201,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onRouteSuccess(String successMsg) {
         Logger.i(TAG, "onRouteSuccess");
-        mViewModel.updateViaList();
         // 如果是预览状态，还是进入预览
         if (mNaviPackage.getPreviewStatus()) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
