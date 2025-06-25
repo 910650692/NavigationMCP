@@ -716,6 +716,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
         mRequestRouteResults = requestRouteResult;
         mRouteLineInfos = requestRouteResult.getMRouteLineInfos();
+        if (!mRoutePackage.isRouteState()) {
+            return;
+        }
         if (mRouteLineInfos.size() <= NumberUtils.NUM_0) {
             return;
         }
@@ -777,6 +780,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         //todo 图层去设置全览
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        if (!mRoutePackage.isRouteState()) {
+            return;
+        }
         ThreadManager.getInstance().postDelay( () -> {
             if (RoutePackage.getInstance().isRouteState()) {
                 final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
@@ -925,6 +931,11 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mChargeStationReady = false;
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showProgressUI();
+        }
+        if (!mRoutePackage.isRouteState()) {
+            return;
+        }
+        if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.withoutSupplementPointsView();
             mViewModel.showNormalRouteUI(false);
         }
@@ -956,6 +967,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteSlected(final MapType mapTypeId, final int routeIndex, boolean isFirst) {
+        if (!mRoutePackage.isRouteState()) {
+            return;
+        }
         if (routeIndex == -1) {
             return;
         }
@@ -1019,6 +1033,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRouteChargeStationParam = routeChargeStationParam;
         if (routeChargeStationParam != null) {
              mRoutePackage.updateRouteChargeStation(MapType.MAIN_SCREEN_MAIN_MAP, routeChargeStationParam);
+        }
+
+        if (!mRoutePackage.isRouteState()) {
+            return;
         }
 
         //TODO CR
