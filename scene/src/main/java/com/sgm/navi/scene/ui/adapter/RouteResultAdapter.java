@@ -72,8 +72,8 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
     @Override
     public void onBindViewHolder(final Holder holder, final int position) {
         final int index = position;
-        setSelectStatus(holder, mCurrentIndex == position);
         RouteLineInfo routeLineInfo = mRouteBeanList.get(position);
+        setSelectStatus(holder, mCurrentIndex == position, routeLineInfo);
         if (routeLineInfo == null) {
             Logger.d("mRouteBeanList is null");
             return;
@@ -113,7 +113,7 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position);
         } else {
-            setSelectStatus(holder, mCurrentIndex == position);
+            setSelectStatus(holder, mCurrentIndex == position, mRouteBeanList.get(position));
         }
     }
 
@@ -144,7 +144,7 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
      * @param holder view
      * @param select 是否选中
      * */
-    private void setSelectStatus(final Holder holder, final boolean select) {
+    private void setSelectStatus(final Holder holder, final boolean select, final RouteLineInfo routeLineInfo) {
         int contextColor;
         if (select) {
             contextColor = R.color.bg_route_item_select;
@@ -172,7 +172,11 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
                 AppCache.getInstance().getMContext().getResources().getColor(select ? R.color.text_color_route_item_select : R.color.text_color_route_item_no_select));
         holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setTextColor(
                 AppCache.getInstance().getMContext().getResources().getColor(select ? R.color.text_color_route_item_select : R.color.text_color_route_item_no_select));
-
+        if (routeLineInfo.getMRemainPercent() < 20) {
+            holder.mRouteLineInfoResultItemBinding.routeItemElectricity.setTextColor(
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_route_restriction_text_error));
+            holder.mRouteLineInfoResultItemBinding.routeItemElectricityImg.setImageResource(R.drawable.img_electricity_empty_42);
+        }
     }
 
     public class Holder extends RecyclerView.ViewHolder {
