@@ -457,9 +457,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void setMapCenterInScreen(final Bundle bundle) {
         int type = -1;
         int searchKey = 0;
+        String fragment ="";
+
         if (bundle != null) {
             type = bundle.getInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, -1);
             searchKey = bundle.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON, -1);
+            fragment = bundle.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
         }
         Logger.i(TAG, "setMapCenterInScreen type:" , type);
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
@@ -468,11 +471,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             mModel.setMapCenterInScreen();
         }
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
-        // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
-        mScaleViewVisibility.set((type != -1 || searchKey == AutoMapConstant.SearchType.MAIN_SEARCH_ICON
+        // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺 来自主图搜索的地图移动 也显示比例尺
+        mScaleViewVisibility.set((type != -1
+                || searchKey == AutoMapConstant.SearchType.MAIN_SEARCH_ICON
                 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
-                || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
-                NaviStatus.NaviStatusType.NAVING.equals(state)) && (ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3));
+                || NaviStatus.NaviStatusType.ROUTING.equals(state)
+                || NaviStatus.NaviStatusType.NAVING.equals(state))
+                || AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT.equals(fragment)
+                && (ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3));
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
