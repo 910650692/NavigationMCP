@@ -1,5 +1,7 @@
 package com.sgm.navi.service.define.message;
 
+import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
+
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -26,5 +28,7 @@ public class MessageCenterInfo {
     private String msgContent;
     private Date msgTime;
     private int msgLenvel;
+
+    private OftenArrivedItemInfo oftenArrivedItemInfo;
 
 }

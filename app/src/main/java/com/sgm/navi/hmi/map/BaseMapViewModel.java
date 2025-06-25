@@ -201,6 +201,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.stopCruise();
     };
 
+    public void getOnlineForecastArrivedData(){
+        //猜你想去
+        mModel.getOnlineForecastArrivedData(AutoMapConstant.GuessPositionType.OTHER);
+    }
+
     //回自车位逻辑
     public Action backToSelfParking = () -> {
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
@@ -239,7 +244,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                     return;
                 }
 
-                mModel.getOnlineForecastArrivedData(AutoMapConstant.HomeCompanyType.HOME);
+                mModel.getOnlineForecastArrivedData(AutoMapConstant.GuessPositionType.HOME);
 
             } catch (Exception e) {
                 Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
@@ -261,7 +266,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 }
 
                 //判断是否存在预测数据
-                mModel.getOnlineForecastArrivedData(AutoMapConstant.HomeCompanyType.COMPANY);
+                mModel.getOnlineForecastArrivedData(AutoMapConstant.GuessPositionType.COMPANY);
 
             } catch (Exception e) {
                 Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
@@ -367,6 +372,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 addFragment(new MapDataFragment(), bundle);
             } else if (messageCenterInfo.getMsgType() == MessageCenterType.CONTINUE_NAVI) {
                 mModel.onContinueNaviClick();
+            } else if (messageCenterInfo.getMsgType() == MessageCenterType.GUESS_WANT_GO) {
+                OftenArrivedItemInfo oftenArrivedItemInfo = messageCenterInfo.getOftenArrivedItemInfo();
+                PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                        .setAddress(oftenArrivedItemInfo.getWstrAddress())
+                        .setName(oftenArrivedItemInfo.getWstrPoiName())
+                        .setPoint(oftenArrivedItemInfo.getStNaviCoord());
+                Logger.d(TAG, "start route geo: " + oftenArrivedItemInfo.getStNaviCoord().toString() + ", name: " + oftenArrivedItemInfo.getWstrPoiName());
+                startRoute(poiInfoEntity);
             }
         }
     };
@@ -844,7 +857,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mModel.managerMessage(new MessageCenterInfo(MessageCenterType.ROAD_LIMIT,
                         ResourceUtils.Companion.getInstance().getString(R.string.message_center_check), 0,
                         ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),
-                        "", new Date(), 0));
+                        "", new Date(), 0, null));
             }
         }
     }
@@ -883,7 +896,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             mModel.managerMessage(new MessageCenterInfo(MessageCenterType.MAP_UPDATE_15,
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_update), 0,
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_need_update),
-                    "", new Date(), 0));
+                    "", new Date(), 0, null));
         }
     }
 
@@ -896,7 +909,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_update), 0,
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_netless),
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_recommend_update),
-                    new Date(), 0));
+                    new Date(), 0, null));
         }
     }
 
@@ -908,13 +921,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 ResourceUtils.Companion.getInstance().getString(R.string.message_center_continue_navi), 0,
                 content,
                 "",
-                new Date(), 0));
+                new Date(), 0, null));
     }
 
     /**
      * @param messageCenterInfo 数据
      */
     public void onMessageInfoNotifyCallback(final MessageCenterInfo messageCenterInfo) {
+        Logger.d(TAG, "onMessageInfoNotifyCallback", messageCenterInfo.getMsgType());
         //数据  点击事件需要使用
         messageCenterEntity.set(messageCenterInfo);
         //显示整个view
@@ -958,6 +972,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             messageLineVisibility.set(false);
             messageLineHeightVisibility.set(false);
             messageCloseVisibility.set(false);
+        } else if(messageCenterInfo.getMsgType() == MessageCenterType.GUESS_WANT_GO){
+            messageCenterContentVisibility.set(true);
         }
     }
 

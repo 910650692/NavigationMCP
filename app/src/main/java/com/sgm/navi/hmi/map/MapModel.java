@@ -33,19 +33,25 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
+import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
+import com.sgm.navi.hmi.setting.SettingFragment;
+import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
+import com.sgm.navi.mapservice.bean.INaviConstant;
+import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
+import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
+import com.sgm.navi.service.define.message.MessageCenterType;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
+import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.account.AccountQRCodeLoginFragment;
 import com.sgm.navi.hmi.message.MessageCenterHelper;
 import com.sgm.navi.hmi.navi.AuthorizationRequestDialog;
 import com.sgm.navi.hmi.navi.ContinueNaviDialog;
-import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.navi.PhoneAddressDialog;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
-import com.sgm.navi.hmi.setting.SettingFragment;
-import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
 import com.sgm.navi.hmi.utils.AiWaysGestureManager;
-import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -53,8 +59,6 @@ import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
-import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
-import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.aos.RestrictedEndNumberParam;
 import com.sgm.navi.service.define.aos.RestrictedParam;
 import com.sgm.navi.service.define.aos.TrafficRestrictResponseParam;
@@ -62,7 +66,6 @@ import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
-import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
@@ -110,7 +113,6 @@ import com.sgm.navi.service.logicpaket.message.MessageCenterCallBack;
 import com.sgm.navi.service.logicpaket.message.MessageCenterManager;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
-import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.IPositionPackageCallback;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
@@ -133,7 +135,6 @@ import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
-import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
 import java.io.Serializable;
@@ -1105,25 +1106,43 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onForecastArrivedData(ForecastArrivedDataInfo data) {
         //判断是否有家或者公司的数据
-        if (AutoMapConstant.HomeCompanyType.HOME == mCompanyOrHomeType) {
-            OftenArrivedItemInfo mHomeInfo = data.getHome();
-            if (!ConvertUtils.isEmpty(mHomeInfo) && !ConvertUtils.isEmpty(mHomeInfo.getWstrAddress())) {
-                mViewModel.showForecastDialog(mCompanyOrHomeType, mHomeInfo);
-            } else {
-                mViewModel.toHomeFragment();
-            }
-        } else {
-            OftenArrivedItemInfo mCompanyInfo = data.getCompany();
-            if (!ConvertUtils.isEmpty(mCompanyInfo) && !ConvertUtils.isEmpty(mCompanyInfo.getWstrAddress())) {
-                mViewModel.showForecastDialog(mCompanyOrHomeType, mCompanyInfo);
-            } else {
-                mViewModel.toCompanyFragment();
-            }
+        switch (mCompanyOrHomeType){
+            case AutoMapConstant.GuessPositionType.OTHER:
+                if(data == null) return;
+                ArrayList<OftenArrivedItemInfo> mOthers = data.getOthers();
+                if (!ConvertUtils.isEmpty(mOthers)) {
+                    OftenArrivedItemInfo mOther = new OftenArrivedItemInfo();
+                    managerMessage(new MessageCenterInfo(MessageCenterType.GUESS_WANT_GO, "去这里", 0, mOther.getWstrPoiName(), "为你推荐", new Date(), 0, mOther));
+                    Logger.d(TAG, "onForecastArrivedData:" + GsonUtils.toJson(mOther));
+                } else {
+                    Logger.d(TAG, "onForecastArrivedData no data");
+                }
+                break;
+            case AutoMapConstant.GuessPositionType.HOME:
+                OftenArrivedItemInfo mHomeInfo = data.getHome();
+                if (!ConvertUtils.isEmpty(mHomeInfo) && !ConvertUtils.isEmpty(mHomeInfo.getWstrAddress())) {
+                    mViewModel.showForecastDialog(mCompanyOrHomeType, mHomeInfo);
+                } else {
+                    mViewModel.toHomeFragment();
+                }
+                break;
+            case AutoMapConstant.GuessPositionType.COMPANY:
+                OftenArrivedItemInfo mCompanyInfo = data.getCompany();
+                if (!ConvertUtils.isEmpty(mCompanyInfo) && !ConvertUtils.isEmpty(mCompanyInfo.getWstrAddress())) {
+                    mViewModel.showForecastDialog(mCompanyOrHomeType, mCompanyInfo);
+                } else {
+                    mViewModel.toCompanyFragment();
+                }
+                break;
+            default:
+                Logger.i(TAG, "onForecastArrivedData: mCompanyOrHomeType " + mCompanyOrHomeType);
+                break;
         }
     }
 
 
     public void getOnlineForecastArrivedData(int type) {
+        Logger.i(TAG, "getOnlineForecastArrivedData: type " + type);
         mCompanyOrHomeType = type;
         //登陆了才去预测数据
         if (AccountPackage.getInstance().reallyLogin()) {
@@ -1143,9 +1162,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
             mforCastPackage.getOnlineForecastArrivedData(param);
         } else {
-            if (AutoMapConstant.HomeCompanyType.HOME == type) {
+            if (AutoMapConstant.GuessPositionType.HOME == type) {
                 mViewModel.toHomeFragment();
-            } else {
+            } else if(AutoMapConstant.GuessPositionType.COMPANY == type) {
                 mViewModel.toCompanyFragment();
             }
         }

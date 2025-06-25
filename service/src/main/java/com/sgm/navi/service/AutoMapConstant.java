@@ -398,4 +398,13 @@ public interface AutoMapConstant {
         String LAST_LNG = "last_lng";
     }
 
+    @IntDef({GuessPositionType.OTHER,
+            GuessPositionType.HOME,
+            GuessPositionType.COMPANY})
+    @interface GuessPositionType {
+        int OTHER = 0; // 其他
+        int HOME = 1; // 家
+        int COMPANY = 2; // 公司
+    }
+
 }

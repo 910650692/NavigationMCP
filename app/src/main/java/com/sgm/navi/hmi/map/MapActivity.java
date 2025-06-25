@@ -128,6 +128,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.offlineMap15Day();
         mViewModel.offlineMap45Day();
         mViewModel.checkPopGuideLogin();
+        mViewModel.getOnlineForecastArrivedData();
         mOpenGuideRunnable = new Runnable() {
             @Override
             public void run() {
