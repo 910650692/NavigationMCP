@@ -1521,6 +1521,16 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             return null;
                         });
             }
+            if (mChildSelectIndex != -1 && mChildSelectIndex < childInfoList.size()) {
+                childInfoList.get(mChildSelectIndex).setChecked(1);
+                final ChildInfo childInfo = childInfoList.get(mChildSelectIndex);
+                mChildSelectInfo = new PoiInfoEntity()
+                        .setName(childInfo.getName())
+                        .setAddress(childInfo.getAddress())
+                        .setPid(childInfo.getPoiId())
+                        .setMChildInfoList(childInfo.getMGrandChildInfoList())
+                        .setPoint(childInfo.getLocation());
+            }
             scenicChildAdapter.setChildInfoList(childInfoList);
             mViewBinding.scenePoiDetailsNormalView.poiChildList.setLayoutManager(
                     new GridLayoutManager(getContext(), mSpanCount));

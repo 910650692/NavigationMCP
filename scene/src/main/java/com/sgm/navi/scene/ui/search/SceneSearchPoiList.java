@@ -400,6 +400,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), false);
             }
+            if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
+                Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+            } else {
+                mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+                mSearchLoadingDialog.show();
+            }
         });
         mViewBinding.searchFilterView.searchFilterCancel.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click reset: ");
@@ -413,6 +419,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mScreenViewModel.alongWaySearch(mSearchText);
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText);
+            }
+            if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
+                Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+            } else {
+                mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+                mSearchLoadingDialog.show();
             }
         });
         mViewBinding.searchTextBarView.csFilter.setOnClickListener(v -> {
