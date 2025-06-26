@@ -55,8 +55,8 @@ import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 算路服务.
@@ -126,11 +126,13 @@ public class RouteAdapterImpl implements IRouteApi {
         mLastRequestRouteResult = requestRouteResult;
         //设置共性参数 比如在线优先 ....
         //记录请求ID和屏幕ID以供返回结果使用
+        mAdapterImplHelper.initRouteResultLock();
         final long requestId = mRouteService.requestRoute(routeOption);
         mRequestRouteId = requestId;
-        final Hashtable<Long, RequestRouteResult> routeResultHashtable = mAdapterImplHelper.getRouteResultDataHashtable();
+        final ConcurrentHashMap<Long, RequestRouteResult> routeResultHashtable = mAdapterImplHelper.getRouteResultDataHashtable();
         routeResultHashtable.put(requestId, requestRouteResult);
         Logger.i(TAG, "route plane request id " + requestId);
+        mAdapterImplHelper.routeResultLockCountDown();
         return requestId;
     }
 
@@ -257,9 +259,11 @@ public class RouteAdapterImpl implements IRouteApi {
         routeLineLayerParam.getMRouteLinePoints().getMStartPoints().add(routeMsgPushInfo.getMStartPoint());
         routeLineLayerParam.getMRouteLinePoints().setMViaPoints(routeMsgPushInfo.getMViaPoints());
         requestRouteResult.setMLineLayerParam(routeLineLayerParam);
+        mAdapterImplHelper.initRouteResultLock();
         final long requestId =  mRouteService.requestRouteRestoration(routeRestorationOption);
-        final Hashtable<Long, RequestRouteResult> routeResultHashtable =  mAdapterImplHelper.getRouteResultDataHashtable();
+        final ConcurrentHashMap<Long, RequestRouteResult> routeResultHashtable =  mAdapterImplHelper.getRouteResultDataHashtable();
         routeResultHashtable.put(requestId, requestRouteResult);
+        mAdapterImplHelper.routeResultLockCountDown();
         Logger.i(TAG, "route plane request id " + requestId);
     }
 
@@ -427,10 +431,12 @@ public class RouteAdapterImpl implements IRouteApi {
         }
 
         // 发起路线重算
+        mAdapterImplHelper.initRouteResultLock();
         final long requestId = mRouteService.requestRoute(mLastRouteOption);
         mRequestRouteId = requestId;
-        final Hashtable<Long, RequestRouteResult> routeResultHashtable = mAdapterImplHelper.getRouteResultDataHashtable();
+        final ConcurrentHashMap<Long, RequestRouteResult> routeResultHashtable = mAdapterImplHelper.getRouteResultDataHashtable();
         routeResultHashtable.put(requestId, mLastRequestRouteResult);
+        mAdapterImplHelper.routeResultLockCountDown();
         Logger.i(TAG, "平行路切换requestSwitchParallelRoute switchRoadType:"+switchRoadType+" roadID:"+roadID+" flag:"+flag+" hwFlag:"+hwFlag+" requestId:"+requestId);
         return requestId;
     }

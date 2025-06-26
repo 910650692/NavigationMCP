@@ -1409,6 +1409,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             Logger.e(TAG, "out of bounds");
             return;
         }
+        routeLineLayerParam.setMSelectIndex(0);
+        mSelectRouteIndex.put(mapTypeId, 0);
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
@@ -1417,8 +1419,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 routeResultObserver.onRouteSlected(mapTypeId, 0, true);
             }
         }
-        routeLineLayerParam.setMSelectIndex(0);
-        mSelectRouteIndex.put(mapTypeId, 0);
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
             final RouteCurrentPathParam routeCurrentPathParam = requestRouteResult.getMRouteCurrentPathParam();
             routeCurrentPathParam.setMMapTypeId(mapTypeId);
@@ -1462,6 +1462,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             Logger.e(TAG, "out of bounds");
             return;
         }
+        routeLineLayerParam.setMSelectIndex(routeIndex);
+        mSelectRouteIndex.put(mapTypeId, routeIndex);
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
@@ -1470,9 +1472,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 routeResultObserver.onRouteSlected(mapTypeId, routeIndex, false);
             }
         }
-        routeLineLayerParam.setMSelectIndex(routeIndex);
         mLayerAdapter.setSelectedPathIndex(mapTypeId, routeIndex);
-        mSelectRouteIndex.put(mapTypeId, routeIndex);
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
             mNaviAdapter.setNaviPath(routeIndex, routeLineLayerParam);
         }

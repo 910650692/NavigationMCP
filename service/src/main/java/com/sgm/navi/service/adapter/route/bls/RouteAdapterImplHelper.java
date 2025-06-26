@@ -110,9 +110,11 @@ import com.sgm.navi.service.logicpaket.signal.SignalPackage;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * RouteService辅助类.
@@ -126,9 +128,9 @@ public class RouteAdapterImplHelper {
     private static final String TAG = MapDefaultFinalTag.ROUTE_SERVICE_TAG;
     private final RouteService mRouteService;
     /*** 该集合只存放算路结果回调 key = 哪个类请求的，value = requestResult，理论上集合的长度永远为1 **/
-    private final Hashtable<String, RouteResultObserver> mRouteResultObserverHashtable;
+    private final ConcurrentHashMap<String, RouteResultObserver> mRouteResultObserverHashtable;
     /*** 算路请求队列，会初始化一些的到结果前的一些参数 key = requestId，value = requestResult **/
-    private Hashtable<Long, RequestRouteResult> mRouteResultDataHashtable;
+    private ConcurrentHashMap<Long, RequestRouteResult> mRouteResultDataHashtable;
     private long mRequsetId = -1;
 
     private int mRouteStrategy;
@@ -136,10 +138,11 @@ public class RouteAdapterImplHelper {
     private UserAvoidInfo mUserAvoidInfo;
     private PoiInfoEntity mPoiInfoEntityEnd;
     private RequestRouteResult mRequestRouteResult;
+    private CountDownLatch mRouteResultLock;
 
     protected RouteAdapterImplHelper(final RouteService routeService, final BLAosService blAosService) {
-        mRouteResultObserverHashtable = new Hashtable<>();
-        mRouteResultDataHashtable = new Hashtable<>();
+        mRouteResultObserverHashtable = new ConcurrentHashMap<>();
+        mRouteResultDataHashtable = new ConcurrentHashMap<>();
         mRouteService = routeService;
         mUserAvoidInfo = new UserAvoidInfo();
     }
@@ -156,11 +159,25 @@ public class RouteAdapterImplHelper {
      *
      * @return 算路结果
      */
-    public Hashtable<Long, RequestRouteResult> getRouteResultDataHashtable() {
+    public ConcurrentHashMap<Long, RequestRouteResult> getRouteResultDataHashtable() {
         if (ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
-            mRouteResultDataHashtable = new Hashtable<>();
+            mRouteResultDataHashtable = new ConcurrentHashMap<>();
         }
         return mRouteResultDataHashtable;
+    }
+
+    /**
+     * 初始化同步锁
+     *
+     */
+    public void initRouteResultLock() {
+        mRouteResultLock = new CountDownLatch(1);
+    }
+
+    public void routeResultLockCountDown() {
+        if (mRouteResultLock != null) {
+            mRouteResultLock.countDown();
+        }
     }
 
     protected RouteInitParam getRouteServiceParam() {
@@ -655,6 +672,13 @@ public class RouteAdapterImplHelper {
 
             final long requestId = pathResultData.requestId;
             Logger.i(TAG, "route plane result id " + requestId);
+            if (mRouteResultLock != null) {
+                try {
+                    mRouteResultLock.await(500, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, requestId);
             Logger.i(TAG, "从请求队列中获取结果对象 " + requestRouteResult);
             if (null == requestRouteResult) {
@@ -702,6 +726,13 @@ public class RouteAdapterImplHelper {
             if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)) {
                 Logger.i(TAG, "Invalid callback");
                 return;
+            }
+            if (mRouteResultLock != null) {
+                try {
+                    mRouteResultLock.await(500, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, pathResultData.requestId);
