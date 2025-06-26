@@ -24,8 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHeight_default="wrap"
-            app:layout_constraintHeight_max="@dimen/dp_770"/>
+            app:layout_constraintHeight_default="wrap" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_record_null_along"
