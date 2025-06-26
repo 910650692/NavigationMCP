@@ -5,7 +5,7 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/transparent">
+        android:background="#5A000000">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="wrap_content"
@@ -50,8 +50,8 @@
                 android:layout_marginStart="@dimen/dp_28"
                 android:layout_marginEnd="@dimen/dp_54"
                 android:background="@drawable/img_loading_close"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_message"
                 app:layout_constraintTop_toTopOf="parent" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
