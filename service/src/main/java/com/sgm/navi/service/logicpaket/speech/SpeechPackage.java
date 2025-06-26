@@ -69,6 +69,12 @@ public class SpeechPackage implements ISpeechAdapterCallback {
         }
     }
 
+    public void synthesizeLast(String text) {
+        if (mSpeechAdapter != null) {
+            mSpeechAdapter.synthesizeLast(text);
+        }
+    }
+
     /*播报文本*/
     public void synthesize(boolean isNormalTTS, String text) {
         if (mSpeechAdapter != null) {

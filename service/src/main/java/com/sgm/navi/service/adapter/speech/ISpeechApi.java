@@ -19,5 +19,7 @@ public interface ISpeechApi {
 
     void synthesize(boolean isNormalTTS, String text);
 
+    void synthesize(String text);
+
     void stop();
 }

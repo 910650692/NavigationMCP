@@ -11,6 +11,7 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.speech.ISpeechAdapterCallback;
 import com.sgm.navi.service.adapter.speech.ISpeechApi;
 import com.sgm.navi.service.define.setting.SettingController;
+import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.greendao.setting.SettingManager;
 import com.sgm.navi.service.tts.NaviAudioPlayer;
 
@@ -30,6 +31,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
     private int mSampleRate = 0;
     public int playingRequestId = 0;
     private boolean mIsNormalTTS = true;
+    private int mBroadcastTtsId = NumberUtils.NUM_ERROR;
 
     public SpeechAdapterImpl() {
         mSpeechService = (SpeechSynthesizeService) ServiceMgr.getServiceMgrInstance()
@@ -91,6 +93,21 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
             if (null != mSpeechService) {
                 mIsNormalTTS = isNormalTTS;
                 playingRequestId = taskId;
+                mSpeechService.synthesize(text, false, taskId++);
+            }
+        }
+    }
+
+    @Override
+    public void synthesize(String text) {
+        Logger.i(TAG, "text：" + text);
+        if (!ConvertUtils.isEmpty(text)) {
+            if (null != mSpeechService) {
+                playingRequestId = taskId;
+                if (mBroadcastTtsId != NumberUtils.NUM_ERROR) {
+                    mSpeechService.stop(mBroadcastTtsId);
+                }
+                mBroadcastTtsId = taskId;
                 mSpeechService.synthesize(text, false, taskId++);
             }
         }

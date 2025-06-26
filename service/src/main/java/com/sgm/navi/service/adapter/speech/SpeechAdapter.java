@@ -67,6 +67,12 @@ public class SpeechAdapter {
         }
     }
 
+    public void synthesizeLast(String text) {
+        if (mSpeechApi != null) {
+            mSpeechApi.synthesize(text);
+        }
+    }
+
     public void stop() {
         if (mSpeechApi != null) {
             mSpeechApi.stop();

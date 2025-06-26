@@ -176,7 +176,7 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
             }
         }
         if (!TextUtils.isEmpty(tts) && !TextUtils.equals(mBroadcastTypeTts, tts)) {
-            SpeechPackage.getInstance().synthesize(tts);
+            SpeechPackage.getInstance().synthesizeLast(tts);
             mBroadcastTypeTts = tts;
         }
     }
