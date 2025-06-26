@@ -171,6 +171,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onResume();
         mViewModel.getCurrentCityLimit();
         delayRemoveLauncherActivity();
+        //地图应用后台时无法接收onConfigurationChanged深浅色模式切换回调
+        //界面可见时重新适配深浅色模式
+        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+                ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
     }
 
     @Override
