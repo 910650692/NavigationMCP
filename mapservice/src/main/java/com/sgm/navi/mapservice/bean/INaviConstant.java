@@ -13,9 +13,10 @@ public interface INaviConstant {
         int UNKNOWN = 0;
         int MAIN = 1; //主图
         int LAUNCHER_DESK = 2; //桌面底图
-        int LAUNCHER_WIDGET = 3; //桌面卡片
+        int WIDGET = 3; //预留的纯路口大图
         int HUD_WIDGET = 4; //HUD
-        int CLUSTER_WIDGET = 5; //HUD
+        int CLUSTER_WIDGET = 5; //仪表
+        int LAUNCHER_WIDGET = 6; //桌面卡片
     }
 
     //用于定义BaseRouteLine里的type.

@@ -130,45 +130,26 @@ public class EngineAdapterImpl implements IEngineApi {
         mEngineObserverList = null;
     }
 
+    /*
+     * 轻易不要改动 关系已对应好
+     * 一个mapId对应一个主屏一个鹰眼屏幕  主屏是单数 鹰眼是双数
+     * deviceId是01234...
+     * */
     @Override
     public int engineID(final MapType mapId) {
-        return switch (mapId) {
-            case MAIN_SCREEN_MAIN_MAP -> MapEngineID.MapEngineIdMain;
-            case LAUNCHER_DESK_MAP -> MapEngineID.MapEngineIdEx1;
-            case LAUNCHER_WIDGET_MAP -> MapEngineID.MapEngineIdEx2;
-            case HUD_MAP -> MapEngineID.MapEngineIdEx3;
-            case CLUSTER_MAP -> MapEngineID.MapEngineIdEx4;
-        };
+        return mapId.getMapType();
     }
 
+    /* 轻易不要改动 关系已对应好 */
     @Override
     public int eagleEyeEngineID(final MapType mapId) {
-        return switch (mapId) {
-            case MAIN_SCREEN_MAIN_MAP -> MapEngineID.MapEngineIdMainEagleEye;
-            case LAUNCHER_DESK_MAP -> MapEngineID.MapEngineIdEx1EagleEye;
-            case LAUNCHER_WIDGET_MAP -> MapEngineID.MapEngineIdEx2EagleEye;
-            case HUD_MAP -> MapEngineID.MapEngineIdEx3EagleEye;
-            case CLUSTER_MAP -> MapEngineID.MapEngineIdEx4EagleEye;
-        };
+        return mapId.getMapType() + 1;
     }
 
+    /* 轻易不要改动 关系已对应好 */
     @Override
     public int mapDeviceID(final MapType mapId) {
-        switch (mapId) {
-            case MAIN_SCREEN_MAIN_MAP:
-                return EGLDeviceID.EGLDeviceIDDefault;
-            case LAUNCHER_DESK_MAP:
-                return EGLDeviceID.EGLDeviceIDExternal1;
-            case LAUNCHER_WIDGET_MAP:
-                return EGLDeviceID.EGLDeviceIDExternal2;
-            case HUD_MAP:
-                return EGLDeviceID.EGLDeviceIDExternal3;
-            case CLUSTER_MAP:
-                return EGLDeviceID.EGLDeviceIDExternal4;
-            default:
-                break;
-        }
-        return EGLDeviceID.EGLDeviceIDDefault;
+        return (mapId.getMapType() - 1) / 2;
     }
 
 
