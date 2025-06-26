@@ -862,7 +862,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mViaList.addAll(tmpList);
         // 最后添加终点
         if (!ConvertUtils.isEmpty(allPoiParamList)) {
-            mViaList.add(NaviDataFormatHelper.getNaviViaEntity(allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo, false));
+            mViaList.add(NaviDataFormatHelper.getNaviViaEntity(
+                    allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo, true));
         }
         Logger.i(TAG, "mViaList-Size:", mViaList.size(), "tmSize:", tmpList.size());
         if (!ConvertUtils.isEmpty(mViaList)) {

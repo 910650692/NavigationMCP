@@ -35,6 +35,7 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.navi.FyChargingStation;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -47,6 +48,7 @@ import java.util.List;
 
 /**
  * 终点、途径点列表
+ *
  * @author sgm
  * @version $Revision.*$
  */
@@ -186,7 +188,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                 Logger.i(TAG, "onDelClick", "position:", position, "callBack is null :",
                         (mISceneCallback == null));
                 if (mISceneCallback != null) {
-                    Logger.i(TAG, "entity:", (entity == null? "null" : entity.getPid() +
+                    Logger.i(TAG, "entity:", (entity == null ? "null" : entity.getPid() +
                             ":" + entity.getName()));
                     mISceneCallback.deleteViaPoint(entity);
                     resetTimer();
@@ -231,14 +233,19 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
 
     /**
      * 更新途径点集合
+     *
      * @param list 新途径点集合
      */
     public void updateViaListState(final List<NaviViaEntity> list) {
-        if(ConvertUtils.isEmpty(list) || null == mScreenViewModel ||
+        if (ConvertUtils.isEmpty(list) || null == mScreenViewModel ||
                 null == mNaviViaListAdapter) return;
+        addBatteryLeftData(list);
         mNaviViaEntityList.clear();
         mNaviViaEntityList.addAll(list);
-        addBatteryLeftData();
+        // 如果是电车在当前页面不立即更新数据，因为有电量数据要更新，直接根据电车回调更新整体数据
+        if (OpenApiHelper.powerType() == 1 && this.isVisible()) {
+            return;
+        }
         notifyList();
     }
 
@@ -247,7 +254,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
      * @param entity entity
      */
     public void notifyDeleteViaPointResult(final boolean result, final NaviViaEntity entity) {
-        if(entity == null){
+        if (entity == null) {
             Logger.i(TAG, "result:", result, " entity == null");
             return;
         }
@@ -259,9 +266,10 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     }
 
     public void updateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
+        Logger.i("shisong", "电量变化回调");
         mElectVehicleETAInfoList.clear();
         mElectVehicleETAInfoList.addAll(infos);
-        addBatteryLeftData();
+        addBatteryLeftData(mNaviViaEntityList);
         notifyList();
     }
 
@@ -277,7 +285,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     /**
      * 添加电池剩余电量数据
      */
-    private void addBatteryLeftData() {
+    private void addBatteryLeftData(List<NaviViaEntity> list) {
         if (OpenApiHelper.powerType() != 1) {
             Logger.i(TAG, "非纯电车不更新电池剩余电量数据");
             return;
@@ -292,23 +300,37 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                 }
             }
             if (null != currentVehicleETAInfo) {
-                ArrayList<Long> batteryLeftList = new ArrayList<>(
+                // 手动添加的途经点和终点的电量信息
+                ArrayList<Long> batteryLeftUserAdd = new ArrayList<>(
                         currentVehicleETAInfo.getEnergySum());
-                if (ConvertUtils.isEmpty(batteryLeftList)) {
-                    return;
-                }
+                // 补能点的电量信息
+                ArrayList<FyChargingStation> chargeStationInfo =
+                        new ArrayList<>(currentVehicleETAInfo.getChargeStationInfo());
                 //单位转换千瓦时转为百分之一瓦时
                 long currentEnergy = (long) (SignalPackage.getInstance().getBatteryEnergy() *
                         100000);
                 long maxEnergy = (long) (SignalPackage.getInstance().getMaxBatteryEnergy() *
                         100000);
-                if (!ConvertUtils.isEmpty(mNaviViaEntityList)) {
-                    int size = Math.min(mNaviViaEntityList.size(), batteryLeftList.size());
-                    for (int i = 0; i < size; i++) {
-                        int chargeLeft = OpenApiHelper.
-                                calculateRemainingOrNeededEnergyPercent(
-                                        batteryLeftList.get(i), currentEnergy, maxEnergy);
-                        mNaviViaEntityList.get(i).setArriveBatteryLeft(chargeLeft);
+                int indexUserAdd = 0, indexCharge = 0;
+                if (!ConvertUtils.isEmpty(list)) {
+                    for (NaviViaEntity naviViaEntity : list) {
+                        if (naviViaEntity.isUserAdd() &&
+                                !ConvertUtils.isEmpty(batteryLeftUserAdd) &&
+                                indexUserAdd < batteryLeftUserAdd.size()) {
+                            int chargeLeft = OpenApiHelper.
+                                    calculateRemainingOrNeededEnergyPercent(
+                                            batteryLeftUserAdd.get(indexUserAdd++), currentEnergy,
+                                            maxEnergy);
+                            naviViaEntity.setArriveBatteryLeft(chargeLeft);
+                        } else if (!naviViaEntity.isUserAdd() &&
+                                !ConvertUtils.isEmpty(chargeStationInfo) &&
+                                indexCharge < chargeStationInfo.size()) {
+                            int chargeLeft = OpenApiHelper.
+                                    calculateRemainingOrNeededEnergyPercent(
+                                            chargeStationInfo.get(indexCharge++).
+                                                    getChargeEnrgySum(), currentEnergy, maxEnergy);
+                            naviViaEntity.setArriveBatteryLeft(chargeLeft);
+                        }
                     }
                 }
             }

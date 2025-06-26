@@ -34,6 +34,8 @@ import com.autonavi.gbl.guide.model.WeatherInfo;
 import com.autonavi.gbl.guide.observer.INaviObserver;
 import com.autonavi.gbl.guide.observer.ISoundPlayObserver;
 import com.autonavi.gbl.util.model.BinaryStream;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -491,15 +493,13 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onUpdateElecVehicleETAInfo(ArrayList<ElecVehicleETAInfo> elecVehicleETAInfo) {
         INaviObserver.super.onUpdateElecVehicleETAInfo(elecVehicleETAInfo);
-        Logger.i(TAG, "onUpdateElecVehicleETAInfo:",
-                ((ConvertUtils.isEmpty(elecVehicleETAInfo)) ? "无效信息" : elecVehicleETAInfo.size()));
         // 透出电动车ETA信息。透出电动车ETA信息，仅在线支持。一分钟回调一次
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    final List<FyElecVehicleETAInfo> desObj = GsonUtils.fromJson2List(elecVehicleETAInfo, FyElecVehicleETAInfo.class);
-                    Logger.i(TAG, "onUpdateElectVehicleETAInfo:",
-                            ((desObj == null) ? "desObj is null" : "size_" + desObj.size()));
+                    final List<FyElecVehicleETAInfo> desObj = new Gson().
+                            fromJson(GsonUtils.toJson(elecVehicleETAInfo),
+                                    new TypeToken<List<FyElecVehicleETAInfo>>(){}.getType());
                     guidanceObserver.onUpdateElectVehicleETAInfo(desObj);
                 }
             }

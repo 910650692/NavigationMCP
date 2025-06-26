@@ -835,13 +835,18 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Override
     public void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
         Logger.i(TAG, "onUpdateElectVehicleETAInfo:" + (infos != null ? infos.size() : 0));
-        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
-            for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
-                if (guidanceObserver != null) {
-                    guidanceObserver.onUpdateElectVehicleETAInfo(infos);
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                    for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                        if (guidanceObserver != null) {
+                            guidanceObserver.onUpdateElectVehicleETAInfo(infos);
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     @Override

@@ -316,6 +316,8 @@ public final class OpenApiHelper {
      */
     public static int calculateRemainingOrNeededEnergyPercent(long energyConsumption,
                                                               long currentEnergy, long maxEnergy) {
+        Logger.i(TAG, "calculateRemainingOrNeededEnergyPercent","energyConsumption: ",
+                energyConsumption, ", currentEnergy: ", currentEnergy, ", maxEnergy: " + maxEnergy);
         // 验证当前剩余电量是否足够到达目的地
         if (currentEnergy >= energyConsumption) {
             // 如果电量足够，计算到达目的地后的剩余电量百分比

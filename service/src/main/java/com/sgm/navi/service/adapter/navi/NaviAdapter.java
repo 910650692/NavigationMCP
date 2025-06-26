@@ -23,7 +23,6 @@ import com.sgm.navi.service.define.navi.NaviStartType;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.SoundInfoEntity;
-import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 

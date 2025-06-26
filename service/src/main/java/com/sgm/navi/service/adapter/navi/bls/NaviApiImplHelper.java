@@ -30,22 +30,21 @@ import com.autonavi.gbl.guide.model.guidecontrol.EmulatorParam;
 import com.autonavi.gbl.guide.model.guidecontrol.NaviParam;
 import com.autonavi.gbl.guide.model.guidecontrol.Param;
 import com.autonavi.gbl.guide.model.guidecontrol.Type;
+import com.autonavi.gbl.guide.model.guidecontrol.VehicleParam;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.calibration.CalibrationAdapter;
 import com.sgm.navi.service.adapter.navi.GuidanceObserver;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
-import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.cruise.CruiseParamEntity;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
-import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.NaviParamEntity;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
-import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.route.ChargingInfo;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -206,6 +205,7 @@ public class NaviApiImplHelper {
         setCrossParam();
         setCameraParameters();
         setCommonParameters();
+        setVehicleType();
         setElectInfoConfig();
     }
 
@@ -241,8 +241,21 @@ public class NaviApiImplHelper {
         final CommonParam commonParam = new CommonParam();
         commonParam.enableAuto = true;
         final Param param2 = new Param();
+        param2.type = Type.GuideParamCommon; // 公共参数配置
         param2.common = commonParam;
         mGuideService.setParam(param2);
+    }
+
+    private void setVehicleType() {
+        // 设置车辆类型
+        if (CalibrationAdapter.getInstance().powerType() == 1) {
+            final VehicleParam vehicleParam = new VehicleParam();
+            vehicleParam.type = 2;
+            final Param param = new Param();
+            param.type = Type.GuideParamVehicle;
+            param.vehicle = vehicleParam;
+            mGuideService.setParam(param);
+        }
     }
 
     public void setElectInfoConfig() {
