@@ -2,7 +2,7 @@
   "point_layer_item_style": {
     "normal_style": {
       "poi_marker_id": "layer_image_road_energy_empty",
-      "poi_marker_info": "{\"anchor\":5,\"x_ratio\":0.0,\"y_ratio\":1}"
+      "poi_marker_info": "{\"anchor\":6,\"x_ratio\":0.0,\"y_ratio\":1}"
     }
   }
 }
