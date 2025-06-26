@@ -1418,7 +1418,7 @@ public class RouteAdapterImplHelper {
             if (t == ruleIdList.size() - 1) {
                 ruleIds += ruleIdList.get(t) + "";
             } else {
-                ruleIds += ruleIdList.get(t) + "|";
+                ruleIds += ruleIdList.get(t) + ",";
             }
         }
         return ruleIds;
