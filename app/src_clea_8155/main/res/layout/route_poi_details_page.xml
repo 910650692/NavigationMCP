@@ -68,7 +68,8 @@
         <com.sgm.navi.ui.view.SkinScrollView
             android:id="@+id/poi_base_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_438"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dp_299"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sk_poi_name">
 
@@ -87,7 +88,7 @@
                     android:maxLines="2"
                     android:text="@{ViewModel.getRouteSearchAddress()}"
                     android:textColor="@color/text_route_defult"
-                    android:textSize="@dimen/sp_34"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号" />
@@ -101,7 +102,7 @@
                     android:maxLines="2"
                     android:text="@{ViewModel.getRouteSearchTimeAndDistance()}"
                     android:textColor="@color/text_route_detail_title"
-                    android:textSize="@dimen/sp_35"
+                    android:textSize="@dimen/sp_29"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
                     tools:text="5.2公里   30分钟" />
@@ -125,7 +126,7 @@
                     android:maxLines="1"
                     android:text="@{ViewModel.getRouteSearchElec()}"
                     android:textColor="@color/text_route_detail_title"
-                    android:textSize="@dimen/sp_35"
+                    android:textSize="@dimen/sp_29"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
                     tools:text="15%到达" />
@@ -156,7 +157,7 @@
                         android:visibility="@{ViewModel.getRouteSearchTypeVisibility() == 2 ? View.VISIBLE : View.GONE}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:visibility="visible" />
+                        tools:visibility="gone" />
 
                     <include
                         android:id="@+id/scene_poi_details_service_area_view"

@@ -161,7 +161,7 @@
         <ViewStub
             android:id="@+id/route_poi_details"
             android:layout="@layout/route_poi_details_page"
-            android:layout_width="@dimen/dp_698"
+            android:layout_width="@dimen/dp_614"
             android:layout_height="wrap_content"
             android:clickable="true"
             tools:visibility="gone"/>
