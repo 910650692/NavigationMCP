@@ -191,4 +191,6 @@ public interface CalibrationApi {
      * @return int
      */
     int vehicleWeight();
+
+    String getDeviceId();
 }

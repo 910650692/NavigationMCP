@@ -908,15 +908,15 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     private void switchClusterActivity(final boolean isOpen) {
         int secondeDid = 2; // 仪表的DisplayId
-        final DisplayManager displayManager = AppCache.getInstance().getMContext().getSystemService(DisplayManager.class);
-        if (BuildConfig.DEBUG && displayManager != null) {
-            for (Display display : displayManager.getDisplays()) {
-                if (display == null) {
-                    continue;
-                }
-                Logger.d(FsaConstant.FSA_TAG, "dispaly: " , display.getName() , ", id " , display.getDisplayId() , " :" , display);
-            }
-        }
+//        final DisplayManager displayManager = AppCache.getInstance().getMContext().getSystemService(DisplayManager.class);
+//        if (BuildConfig.DEBUG && displayManager != null) {
+//            for (Display display : displayManager.getDisplays()) {
+//                if (display == null) {
+//                    continue;
+//                }
+//                Logger.d(FsaConstant.FSA_TAG, "dispaly: " , display.getName() , ", id " , display.getDisplayId() , " :" , display);
+//            }
+//        }
 //        if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//CLEA平台 仪表的DisplayId=3
 //            secondeDid = 3;
 //        } // TODO 待仪表display3可用后解除注释

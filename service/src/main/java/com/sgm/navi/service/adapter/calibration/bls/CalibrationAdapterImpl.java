@@ -1,6 +1,7 @@
 package com.sgm.navi.service.adapter.calibration.bls;
 
 import com.android.utils.log.Logger;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.calibration.CalibrationApi;
@@ -10,11 +11,15 @@ import java.util.Map;
 
 import gm.calibrations.CalId;
 import gm.calibrations.CalibrationManager;
+import patac.manager.PatacServiceManager;
+import patac.manager.PatacServiceNotConnectedException;
+import patac.manager.vehicle.PatacVehicleManager;
 
 public class CalibrationAdapterImpl implements CalibrationApi {
     private static final String TAG = MapDefaultFinalTag.CALIBRATION_SERVICE_TAG;
 
     private final CalibrationManager mCalibrationManager;
+    private PatacServiceManager mPatacServiceManager;
 
     private int powerType;
     private int GMBrand;
@@ -50,6 +55,7 @@ public class CalibrationAdapterImpl implements CalibrationApi {
 
     public CalibrationAdapterImpl() {
         mCalibrationManager = new CalibrationManager();
+        mPatacServiceManager = PatacServiceManager.newInstance(AppCache.getInstance().getMContext());
     }
 
     @Override
@@ -287,5 +293,21 @@ public class CalibrationAdapterImpl implements CalibrationApi {
     public int vehicleWeight() {
         Logger.d(TAG, "s VEHICLE_WEIGHT: " + VEHICLE_WEIGHT);
         return VEHICLE_WEIGHT;
+    }
+
+    /**
+     * 用于加密Vin的获取devicesId
+     * @return id
+     */
+    @Override
+    public String getDeviceId() {
+        try {
+            final PatacVehicleManager vehicleManager
+                    = (PatacVehicleManager) mPatacServiceManager.getPatacManager(PatacServiceManager.PATAC_VEHICLE_SERVICE);
+            return vehicleManager.getVinId();
+        } catch (PatacServiceNotConnectedException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

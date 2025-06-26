@@ -1,5 +1,7 @@
 package com.sgm.navi.burypoint;
 
+import patac.manager.datatrack.PatacDataTrackManager;
+
 public class DataTrackUtils {
 
     private static final String TAG = DataTrackUtils.class.getSimpleName();
@@ -10,6 +12,7 @@ public class DataTrackUtils {
     public static final String TARGET_APP = "target_app";
     public static final String TARGET_SCREEN = "target_screen";
     public static final String TARGET_ACTIVITY = "target_activity";
+    private PatacDataTrackManager mPatacDataTrackManager = null;
 
     private DataTrackUtils() {
     }
@@ -22,6 +25,13 @@ public class DataTrackUtils {
         return DataTrackUtils.DataTrackUtilsHolder.INSTANCE;
     }
 
+    private PatacDataTrackManager getPatacDataTrackManager() {
+        if (mPatacDataTrackManager == null) {
+            mPatacDataTrackManager = PatacDataTrackManager.getInstance(BuryManager.getInstance().getContext());
+        }
+        return mPatacDataTrackManager;
+    }
+
     /**
      * 页面进入时埋点
      *
@@ -29,7 +39,7 @@ public class DataTrackUtils {
      * @param curActivity 当前页面的activity名字
      */
     public void pageEnter(String curScreen, String curActivity) {
-        BuryManager.getInstance().getPatacDataTrackManager().trackEnterPage(
+        getPatacDataTrackManager().trackEnterPage(
                 BuryManager.getInstance().getSid(),
                 BuryManager.getInstance().getSvid(),
                 BuryManager.getInstance().getAppId(),
@@ -47,7 +57,7 @@ public class DataTrackUtils {
      * @param curActivity 当前页面的activity名字
      */
     public void pageExit(String curScreen, String curActivity) {
-        BuryManager.getInstance().getPatacDataTrackManager().trackExitPage(
+        getPatacDataTrackManager().trackExitPage(
                 BuryManager.getInstance().getSid(),
                 BuryManager.getInstance().getSvid(),
                 BuryManager.getInstance().getAppId(),
@@ -67,7 +77,7 @@ public class DataTrackUtils {
      * @param tarActivity 目标页面的activity名字
      */
     public void trackJumpPage(String curScreen, String curActivity, String tarScreen, String tarActivity) {
-        BuryManager.getInstance().getPatacDataTrackManager().trackJumpPage(
+        getPatacDataTrackManager().trackJumpPage(
                 BuryManager.getInstance().getSid(),
                 BuryManager.getInstance().getSvid(),
                 BuryManager.getInstance().getAppId(),
@@ -100,7 +110,7 @@ public class DataTrackUtils {
      * @param tarActivity 目标页面的activity名字
      */
     public void trackJumpApp(String curScreen, String curActivity, String tarApp, String tarScreen, String tarActivity) {
-        BuryManager.getInstance().getPatacDataTrackManager().trackJumpApp(
+        getPatacDataTrackManager().trackJumpApp(
                 BuryManager.getInstance().getSid(),
                 BuryManager.getInstance().getSvid(),
                 BuryManager.getInstance().getAppId(),
@@ -137,7 +147,7 @@ public class DataTrackUtils {
      * @param properties  具体埋点数据，一个埋点事件根据需求需要一次上传完所有事件属性，其中key必须传字段编号：Gxxx，value传真实的值
      */
     public void track(String sid, String svid, String appid, String eventName, String curScreen, String curActivity, String properties) {
-        BuryManager.getInstance().getPatacDataTrackManager().track(
+        getPatacDataTrackManager().track(
                 eventName,
                 sid,
                 svid,
@@ -173,7 +183,7 @@ public class DataTrackUtils {
      *                   包含key和value，其中key必须传字段编号：Gxxx（请注意如果传为字段名称会造成后台脏数据，导致无法解析），value传真实的值
      */
     public void track(String eventName, String properties) {
-        BuryManager.getInstance().getPatacDataTrackManager().track(
+        getPatacDataTrackManager().track(
                 eventName,
                 BuryManager.getInstance().getSid(),
                 BuryManager.getInstance().getSvid(),

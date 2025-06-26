@@ -22,10 +22,6 @@ public final class CalibrationPackage {
         mCalibrationAdapter = CalibrationAdapter.getInstance();
     }
 
-    public void init() {
-        mCalibrationAdapter.init();
-    }
-
     /**
      * 动力类型标定
      * -1 无效值
@@ -433,5 +429,13 @@ public final class CalibrationPackage {
      */
     public int vehicleWeight() {
         return mCalibrationAdapter.vehicleWeight();
+    }
+
+    /**
+     * 用于加密Vin的获取devicesId
+     * @return id
+     */
+    public String getDeviceId() {
+        return mCalibrationAdapter.getDeviceId();
     }
 }

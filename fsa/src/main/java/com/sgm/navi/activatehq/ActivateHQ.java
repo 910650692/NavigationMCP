@@ -1,9 +1,10 @@
 package com.sgm.navi.activatehq;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.DevicesIdUtil;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.gm.cn.adassdk.AdasManager;
+import com.gm.cn.adassdk.UuidSubStatus;
 import com.sgm.navi.patacnetlib.NetQueryManager;
 import com.sgm.navi.patacnetlib.request.navibean.activate.CreateOrderRequest;
 import com.sgm.navi.patacnetlib.request.navibean.activate.QueryOrderRequest;
@@ -14,8 +15,7 @@ import com.sgm.navi.patacnetlib.response.activate.UuidResponse;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.greendao.CommonManager;
-import com.gm.cn.adassdk.AdasManager;
-import com.gm.cn.adassdk.UuidSubStatus;
+import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.Arrays;
 import java.util.concurrent.CancellationException;
@@ -45,7 +45,7 @@ public final class ActivateHQ {
     private final ScheduledExecutorService mNetRetryExecutor;
 
     private ActivateHQ() {
-        DEVICES_ID = DevicesIdUtil.getInstance().getDeviceId();
+        DEVICES_ID = CalibrationPackage.getInstance().getDeviceId();
         SYS_VERSION = "1.0";
         API_VERSION = "1.0";
         QUERY_ORDER_NUM = 0;

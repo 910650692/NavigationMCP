@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 
 import com.sgm.navi.burypoint.constant.BuryConstant;
 
-import patac.manager.datatrack.PatacDataTrackManager;
-
 public class BuryManager {
 
     private static final String TAG = "BuryManager";
@@ -16,7 +14,7 @@ public class BuryManager {
 
     private static final String APP_INIT_VERSION_NAME = "0.1";
     private static String mAppVersionName = APP_INIT_VERSION_NAME;
-    private PatacDataTrackManager mPatacDataTrackManager = null;
+
     private Context context;
     private boolean isCar = false;
 
@@ -35,11 +33,10 @@ public class BuryManager {
         this.isCar = isCar;
         if(!isCar) return;
         this.context = context;
-        mPatacDataTrackManager = PatacDataTrackManager.getInstance(context);
     }
 
-    public PatacDataTrackManager getPatacDataTrackManager() {
-        return mPatacDataTrackManager;
+    public Context getContext() {
+        return context;
     }
 
     public String getSid(){

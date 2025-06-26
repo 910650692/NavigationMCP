@@ -3,6 +3,8 @@ plugins {
 //    id 'com.google.devtools.ksp' version '1.8.0-1.0.9' apply false
 }
 
+String flavorType = "type"
+
 android {
     namespace 'com.sgm.navi.burypoint'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
@@ -29,6 +31,29 @@ android {
         pickFirst 'META-INF/DEPENDENCIES'
     }
 
+    flavorDimensions flavorType
+
+    productFlavors {
+        defaule {
+            dimension flavorType
+        }
+        buick {
+            dimension flavorType
+        }
+        cadi {
+            dimension flavorType
+        }
+        clea_8255 {
+            dimension flavorType
+        }
+        clea_local_8155 {
+            dimension flavorType
+        }
+        clea_8775 {
+            dimension flavorType
+        }
+    }
+
 }
 
 dependencies {
@@ -38,15 +63,10 @@ dependencies {
     implementation libs.appcompat
     annotationProcessor libs.android.aop
 
-    if (IS_PAD_RUN) {
-        implementation libs.gm.gb.framework
-    } else {
-        defauleCompileOnly libs.gm.gb.framework
-        buickCompileOnly libs.gm.gb.framework
-        cadiCompileOnly libs.gm.gb.framework
-        clea_8255CompileOnly libs.gm.clea.framework
-        clea_8775CompileOnly libs.gm.clea.framework
-        clea_local_8155CompileOnly libs.bosch.framework
-    }
-
+    defauleCompileOnly libs.gm.gb.framework
+    buickCompileOnly libs.gm.gb.framework
+    cadiCompileOnly libs.gm.gb.framework
+    clea_8255CompileOnly libs.gm.clea.framework
+    clea_8775CompileOnly libs.gm.clea.framework
+    clea_local_8155CompileOnly libs.bosch.framework
 }

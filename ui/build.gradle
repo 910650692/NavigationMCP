@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
 }
 
+String flavorType = "type"
+
 android {
     namespace 'com.sgm.navi.ui'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
@@ -33,6 +35,29 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+    }
+
+    flavorDimensions flavorType
+
+    productFlavors {
+        defaule {
+            dimension flavorType
+        }
+        buick {
+            dimension flavorType
+        }
+        cadi {
+            dimension flavorType
+        }
+        clea_8255 {
+            dimension flavorType
+        }
+        clea_local_8155 {
+            dimension flavorType
+        }
+        clea_8775 {
+            dimension flavorType
+        }
     }
 }
 

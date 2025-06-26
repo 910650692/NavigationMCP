@@ -6,12 +6,11 @@ import android.car.hardware.property.CarPropertyManager;
 import android.car.media.CarAudioManager;
 import android.content.Context;
 import android.hardware.automotive.vehicle.V2_0.VehicleArea;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.signal.SignalAdapterCallback;
@@ -259,10 +258,6 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void initSignal(final Context context) {
-        if (!DeviceUtils.isCar(context)) {
-            Logger.d(TAG, "initSignal not car");
-            return;
-        }
         Logger.d(TAG, "initSignal start");
         long start = System.currentTimeMillis();
         mWorkThread = new HandlerThread("can-thread");

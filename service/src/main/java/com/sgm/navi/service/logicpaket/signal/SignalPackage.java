@@ -5,7 +5,6 @@ import android.content.Context;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.adapter.signal.SignalAdapter;
 import com.sgm.navi.service.adapter.signal.SignalAdapterCallback;
 import com.sgm.navi.service.define.signal.RoadConditionGroup;
@@ -13,7 +12,6 @@ import com.sgm.navi.service.define.signal.SdNavigationStatusGroup;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.Hashtable;
-import java.util.Objects;
 
 public final class SignalPackage implements SignalAdapterCallback {
     public static final String TAG = SignalPackage.class.getSimpleName();
@@ -430,5 +428,4 @@ public final class SignalPackage implements SignalAdapterCallback {
     public void setVcuSpeedLimitArbitrationResultsAssured(int value) {
         mSignalAdapter.setVcuSpeedLimitArbitrationResultsAssured(value);
     }
-
 }

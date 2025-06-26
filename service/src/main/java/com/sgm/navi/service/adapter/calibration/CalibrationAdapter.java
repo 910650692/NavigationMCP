@@ -1,6 +1,8 @@
 package com.sgm.navi.service.adapter.calibration;
 
+import com.android.utils.DeviceUtils;
 import com.sgm.navi.service.AdapterConfig;
+import com.sgm.navi.service.AppCache;
 
 import java.util.Map;
 import java.util.Objects;
@@ -8,7 +10,7 @@ import java.util.Objects;
 public final class CalibrationAdapter {
     private static final String CALIBRATION_API_PKG = Objects.requireNonNull(CalibrationAdapter.class.getPackage()).getName();
     private static final String CALIBRATION_API_CLS = "CalibrationAdapterImpl";
-    private final CalibrationApi mCalibrationApi;
+    private CalibrationApi mCalibrationApi;
 
     public static CalibrationAdapter getInstance() {
         return CalibrationAdapter.SInstanceHolder.INSTANCE;
@@ -19,10 +21,10 @@ public final class CalibrationAdapter {
     }
 
     private CalibrationAdapter() {
+        if (!DeviceUtils.isCar(AppCache.getInstance().getMContext()))  {
+            return;
+        }
         mCalibrationApi = (CalibrationApi) AdapterConfig.getObject(CALIBRATION_API_PKG, CALIBRATION_API_CLS);
-    }
-
-    public void init() {
         mCalibrationApi.init();
     }
 
@@ -31,6 +33,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int powerType() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.powerType();
     }
 
@@ -39,6 +44,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int brand() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.brand();
     }
 
@@ -47,6 +55,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int model() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.model();
     }
 
@@ -55,6 +66,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean enableApplicationNavigation() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.enableApplicationNavigation();
     }
 
@@ -63,6 +77,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean laneLevelNavigatioFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.laneLevelNavigatioFuncEnable();
     }
 
@@ -71,6 +88,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean v2xMapDisplayFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.v2xMapDisplayFuncEnable();
     }
 
@@ -79,6 +99,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int speedLimitInformationSource() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.speedLimitInformationSource();
     }
 
@@ -87,6 +110,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int adasConfigurationInfomation() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.adasConfigurationInfomation();
     }
 
@@ -95,6 +121,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int adasConfigurationType() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.adasConfigurationType();
     }
 
@@ -103,6 +132,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean rearSeatTouchPanelFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.rearSeatTouchPanelFuncEnable();
     }
 
@@ -111,6 +143,9 @@ public final class CalibrationAdapter {
      * @return hudFuncEnable
      */
     public int hudFuncEnable() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.hudFuncEnable();
     }
 
@@ -119,6 +154,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean navigationDeflectionEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.navigationDeflectionEnable();
     }
 
@@ -127,6 +165,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int architecture() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.architecture();
     }
 
@@ -135,6 +176,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean navigationPreConditionDataProvideEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.navigationPreConditionDataProvideEnable();
     }
 
@@ -143,6 +187,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int navigaitonSupplier() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.navigaitonSupplier();
     }
 
@@ -151,6 +198,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int highVoltageBatteryPropulsionTotalRangeNavi() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.highVoltageBatteryPropulsionTotalRangeNavi();
     }
 
@@ -159,6 +209,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean poiSearchFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.poiSearchFuncEnable();
     }
 
@@ -167,6 +220,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean scenarioEngineFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.scenarioEngineFuncEnable();
     }
 
@@ -175,6 +231,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean globalSearchFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.globalSearchFuncEnable();
     }
 
@@ -183,6 +242,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean teamTravelFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.teamTravelFuncEnable();
     }
 
@@ -191,6 +253,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean bootAnimationReplacementFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.bootAnimationReplacementFuncEnable();
     }
 
@@ -199,6 +264,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean imeFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.imeFuncEnable();
     }
 
@@ -207,6 +275,9 @@ public final class CalibrationAdapter {
      * @return boolean
      */
     public boolean wallpaperThemeFuncEnable() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
         return mCalibrationApi.wallpaperThemeFuncEnable();
     }
 
@@ -215,6 +286,9 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int themeDefaultValue() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.themeDefaultValue();
     }
 
@@ -223,6 +297,9 @@ public final class CalibrationAdapter {
      * @return float[]
      */
     public float[] slopeUpCostlist() {
+        if (mCalibrationApi == null) {
+            return null;
+        }
         return mCalibrationApi.slopeUpCostlist();
     }
 
@@ -231,6 +308,9 @@ public final class CalibrationAdapter {
      * @return float[]
      */
     public float[] slopeDownCostlist() {
+        if (mCalibrationApi == null) {
+            return null;
+        }
         return mCalibrationApi.slopeDownCostlist();
     }
 
@@ -239,6 +319,9 @@ public final class CalibrationAdapter {
      * @return float[]
      */
     public float[] transAccessCostlist() {
+        if (mCalibrationApi == null) {
+            return null;
+        }
         return mCalibrationApi.transAccessCostlist();
     }
 
@@ -247,6 +330,9 @@ public final class CalibrationAdapter {
      * @return float[]
      */
     public float[] transDecessCostlist() {
+        if (mCalibrationApi == null) {
+            return null;
+        }
         return mCalibrationApi.transDecessCostlist();
     }
 
@@ -255,6 +341,9 @@ public final class CalibrationAdapter {
      * @return Map
      */
     public Map<Integer, Float> speedCostlist() {
+        if (mCalibrationApi == null) {
+            return null;
+        }
         return mCalibrationApi.speedCostlist();
     }
 
@@ -263,6 +352,9 @@ public final class CalibrationAdapter {
      * @return float[]
      */
     public float[] auxCostlist() {
+        if (mCalibrationApi == null) {
+            return null;
+        }
         return mCalibrationApi.auxCostlist();
     }
 
@@ -271,6 +363,16 @@ public final class CalibrationAdapter {
      * @return int
      */
     public int vehicleWeight() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
         return mCalibrationApi.vehicleWeight();
+    }
+
+    public String getDeviceId() {
+        if (mCalibrationApi == null) {
+            return "";
+        }
+        return mCalibrationApi.getDeviceId();
     }
 }

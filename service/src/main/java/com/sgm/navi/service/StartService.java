@@ -234,7 +234,6 @@ public class StartService {
 
     private void initOtherService() {
         Logger.i(TAG, "initOtherService start");
-        CalibrationPackage.getInstance().init();
         SearchPackage.getInstance().initSearchService();
         NaviPackage.getInstance().initNaviService();
         SettingPackage.getInstance().init();

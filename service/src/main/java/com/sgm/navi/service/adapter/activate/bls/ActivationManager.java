@@ -2,9 +2,7 @@ package com.sgm.navi.service.adapter.activate.bls;
 
 import android.os.SystemProperties;
 
-
 import com.android.utils.ConvertUtils;
-import com.android.utils.DevicesIdUtil;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.activation.ActivationModule;
 import com.autonavi.gbl.activation.model.ActivateReturnParam;
@@ -22,6 +20,7 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.greendao.CommonManager;
+import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.Arrays;
 import java.util.concurrent.CancellationException;
@@ -61,7 +60,7 @@ public final class ActivationManager {
     private ActivationManager() {
         resetVar();
         mActivationService = ActivationModule.getInstance();
-        DEVICES_ID = DevicesIdUtil.getInstance().getDeviceId();
+        DEVICES_ID = CalibrationPackage.getInstance().getDeviceId();
         Logger.d(TAG, "ActivationManager: devicesId = " + DEVICES_ID);
         Logger.d(TAG, "                  sysVersion = " + SYS_VERSION);
 
