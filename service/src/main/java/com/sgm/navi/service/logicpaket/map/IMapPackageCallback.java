@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 
 import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.map.MapMode;
+import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
@@ -49,4 +50,6 @@ public interface IMapPackageCallback {
     default void onVoiceOpenPage(MapType mapTypeId, Bundle bundle) {}
 
     default void onEGLScreenshot(MapType mapTypeId, byte[] bytes, MapScreenShotDataInfo info) {}
+
+    default void onNotifyMap(MapType mapTypeId, MapNotifyType eventType) {}
 }

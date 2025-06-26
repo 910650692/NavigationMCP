@@ -18,6 +18,7 @@ import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.bean.PreviewParams;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
+import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapStateStyle;
 import com.sgm.navi.service.define.map.MapType;
@@ -418,6 +419,17 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
                 @Override
                 public void accept(IMapPackageCallback callback) {
                     callback.onEGLScreenshot(mapTypeId, bytes, info);
+                }
+            });
+        }
+    }
+
+    public void onNotifyMap(MapType mapTypeId, MapNotifyType eventType) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onNotifyMap(mapTypeId, eventType);
                 }
             });
         }

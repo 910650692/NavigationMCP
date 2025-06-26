@@ -41,6 +41,7 @@ import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
+import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
@@ -540,6 +541,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
+    public void onNotifyMap(MapType mapTypeId, MapNotifyType eventType) {
+        Logger.i(TAG, "onNotifyMap: ", eventType);
+        if (Objects.requireNonNull(eventType) == MapNotifyType.REFRESH_SELF_PARKING_TIMER) {
+            startSelfParkingTimer();
+        }
+    }
+
+    @Override
     public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus currentImersiveStatus) {
         if (Logger.openLog) {
             Logger.d(TAG, "onImmersiveStatusChange: ", parkingViewExist(), ", currentImersiveStatus: ", currentImersiveStatus);
@@ -592,7 +601,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private boolean getTopFragment(Class<? extends Fragment> targetClass) {
         return mViewModel.getTopFragment(targetClass);
     }
-
 
     public boolean getBottomNaviVisibility() {
         return mViewModel.bottomNaviVisibility.get();
@@ -1116,7 +1124,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 if(data == null) return;
                 ArrayList<OftenArrivedItemInfo> mOthers = data.getOthers();
                 if (!ConvertUtils.isEmpty(mOthers)) {
-                    OftenArrivedItemInfo mOther = new OftenArrivedItemInfo();
+                    OftenArrivedItemInfo mOther = mOthers.get(0);
                     managerMessage(new MessageCenterInfo(MessageCenterType.GUESS_WANT_GO, "去这里", 0, mOther.getWstrPoiName(), "为你推荐", new Date(), 0, mOther));
                     Logger.d(TAG, "onForecastArrivedData:" + GsonUtils.toJson(mOther));
                 } else {
