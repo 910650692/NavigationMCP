@@ -1579,7 +1579,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onTrafficConditionAsk(final TrafficAskBean trafficAskBean, final RespCallback respCallback) {
         if(Logger.openLog) {
-            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: trafficAskBean = ", trafficAskBean);
+            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: trafficAskBean = ", trafficAskBean.toString());
         }
         return handleTrafficConditionAsk(trafficAskBean, respCallback);
     }
@@ -2081,6 +2081,10 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onMultiRoundExit(final String type) {
         Logger.d(IVrBridgeConstant.TAG, "onMultiRoundExit: type = " + type);
+        if (ConvertUtils.equals("CONFIRM_NO", type)) {
+            VoiceSearchManager.getInstance().sendClosePage();
+            return CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.CANCLE_SUCCESS);
+        }
         return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_THIS_FUNCTION);
     }
 

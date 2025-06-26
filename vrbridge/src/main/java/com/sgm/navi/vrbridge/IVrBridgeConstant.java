@@ -202,6 +202,8 @@ public interface IVrBridgeConstant {
     }
 
     interface ResponseString {
+        String CANCLE_SUCCESS = "取消成功";
+
         String ALREADY_IN = "当前已为";
         String IN_ALREADY = "已切换为";
 

@@ -53,6 +53,8 @@ public final class MapStateManager {
     private LocParallelInfoEntity mParallelInfo = null; //平行路信息
     private int mLocationInterval = 10; //语音定位信息最多10s更新一次
 
+    private boolean mMapStateInitiated = false; //地图状态是否已初始化
+
 
     private final MapState.Builder mBuilder;
 
@@ -124,17 +126,20 @@ public final class MapStateManager {
         AMapStateUtils.saveMapState(mBuilder.build());
 
         registerCallback();
+        mMapStateInitiated = true;
     }
 
-    private final SettingPackage.VrTBTShowInLauncherListener mFloatWindowShowCallback
-            = new SettingPackage.VrTBTShowInLauncherListener() {
-        @Override
-        public void onVrTBTShowInLauncher(boolean isShow) {
-            Logger.d(IVrBridgeConstant.TAG, "onVrTBTShowInLauncher: ", isShow);
-            mBuilder.setIsDisplayInLauncher(isShow);
-            AMapStateUtils.saveMapState(mBuilder.build());
+    public void vrSendLauncherShow(final boolean isShow) {
+        if (Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "vrSendLauncherShow: ", isShow);
         }
-    };
+        if (!mMapStateInitiated) {
+            Logger.w(IVrBridgeConstant.TAG, "MapStateManager not initiated");
+            return;
+        }
+        mBuilder.setIsDisplayInLauncher(isShow);
+        AMapStateUtils.saveMapState(mBuilder.build());
+    }
 
     private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
         @Override
@@ -390,7 +395,6 @@ public final class MapStateManager {
         MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
         RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
         SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
-        SettingPackage.getInstance().registerVrTBTShowInLauncherListener(mFloatWindowShowCallback);
         AccountPackage.getInstance().registerCallBack(TAG, mAccountCallBack);
         PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
         NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);

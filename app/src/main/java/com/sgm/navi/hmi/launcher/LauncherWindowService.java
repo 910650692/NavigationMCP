@@ -48,8 +48,8 @@ import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
-import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.base.StackManager;
+import com.sgm.navi.vrbridge.MapStateManager;
 
 /**
  * @author: QiuYaWei
@@ -264,7 +264,6 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     public void showOrHideFloatView(boolean isShow) {
         Logger.i(TAG, "showOrHideFloatView:" + isShow);
-        //SettingPackage.getInstance().sendVrLauncherShow(isShow);
         ThreadManager.getInstance().postUi(() -> {
             mIsOnShowing = isShow;
             if (!isInited) {
@@ -272,7 +271,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             } else if (!ConvertUtils.isNull(mView)) {
                 mView.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
                 mView.setFocusable(isShow);
-                changeUiTypeOnNaviStatusChanged();
+                if (isShow) {
+                    changeUiTypeOnNaviStatusChanged();
+                } else {
+                    MapStateManager.getInstance().vrSendLauncherShow(false);
+                }
             } else {
                 initView();
             }
@@ -336,8 +339,10 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         Logger.i(TAG, "changeUiTypeOnNaviStatusChanged", ConvertUtils.isNull(mBinding), ConvertUtils.isNull(mView));
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isNull(mBinding) && !ConvertUtils.isNull(mView)) {
-                mBinding.cardTbtView.setVisibility(isOnNavigating() ? View.VISIBLE : View.GONE);
-                mBinding.cardNaviView.setVisibility(isOnNavigating() ? View.GONE : View.VISIBLE);
+                final boolean isNavigating = isOnNavigating();
+                mBinding.cardTbtView.setVisibility(isNavigating ? View.VISIBLE : View.GONE);
+                mBinding.cardNaviView.setVisibility(isNavigating ? View.GONE : View.VISIBLE);
+                MapStateManager.getInstance().vrSendLauncherShow(isNavigating);
             }
         });
     }

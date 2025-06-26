@@ -1435,6 +1435,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
 
     @Override
     public void onDestroy() {
+        mViewModel.cancelTimer();
         removeAllViewStub(mRouteListPageStub);
         removeAllViewStub(mRouteDetailsListPageStub);
         removeAllViewStub(mRouteServiceListPageStub);

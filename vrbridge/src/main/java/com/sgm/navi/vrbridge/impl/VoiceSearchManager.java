@@ -1151,7 +1151,7 @@ public final class VoiceSearchManager {
     /**
      * 发送指令，关闭当前HMI界面，如设置家/公司、途径点选择等.
      */
-    private void sendClosePage() {
+    public void sendClosePage() {
         final Bundle bundle = new Bundle();
         bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.CLOSE_CURRENT_PAGE);
         MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
