@@ -69,7 +69,6 @@
             android:id="@+id/poi_base_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/dp_299"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sk_poi_name">
 
@@ -97,8 +96,7 @@
                     android:id="@+id/poi_distance_time"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_14"
                     android:maxLines="2"
                     android:text="@{ViewModel.getRouteSearchTimeAndDistance()}"
                     android:textColor="@color/text_route_detail_title"
@@ -121,7 +119,7 @@
                     android:id="@+id/poi_arrival_capacity"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_14"
                     android:layout_marginEnd="@dimen/dp_10"
                     android:maxLines="1"
                     android:text="@{ViewModel.getRouteSearchElec()}"
@@ -135,7 +133,7 @@
                     android:id="@+id/poi_content_layout"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_26"
                     app:layout_constraintStart_toStartOf="@+id/start_guideline"
                     app:layout_constraintTop_toBottomOf="@+id/poi_distance_time">
 
@@ -167,7 +165,7 @@
                         android:visibility="@{ViewModel.getRouteSearchTypeVisibility() == 3 ? View.VISIBLE : View.GONE}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:visibility="gone" />
+                        tools:visibility="visible" />
 
                 </com.sgm.navi.ui.view.SkinConstraintLayout>
 

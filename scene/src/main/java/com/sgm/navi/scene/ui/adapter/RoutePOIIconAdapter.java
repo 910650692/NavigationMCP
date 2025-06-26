@@ -67,22 +67,22 @@ public class RoutePOIIconAdapter extends RecyclerView.Adapter<RoutePOIIconAdapte
                 holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_gas);
                 break;
             case "200300":
-                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_wc);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_lavatory_black_42);
                 break;
             case "060400":
-                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_shopping);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_buy_black_42);
                 break;
             case "150904":
                 holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_parking);
                 break;
             case "011100":
-                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_charging);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_lightning_black_42);
                 break;
             case "010000":
-                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_car_service);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_maintenance_black_42);
                 break;
             case "050100":
-                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_food);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_gourmet_black_42);
                 break;
             default:
                 break;

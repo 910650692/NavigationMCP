@@ -9,15 +9,15 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_70"
-        android:layout_height="@dimen/dp_66"
-        android:gravity="center"
-        >
+        android:id="@+id/route_poi_layout_item"
+        android:layout_width="@dimen/dp_44"
+        android:layout_height="@dimen/dp_44"
+        android:gravity="center">
+
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/poi_service_area_img_lighting"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
-            android:src="@drawable/img_lightning_black_48"
-            />
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            android:src="@drawable/img_lightning_black_48" />
     </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>
