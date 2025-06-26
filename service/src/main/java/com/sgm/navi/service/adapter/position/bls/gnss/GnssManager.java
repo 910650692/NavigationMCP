@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 
 import androidx.annotation.NonNull;
@@ -35,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 /***GNSS数据管理类***/
-public class GnssManager implements LocationListener, IUsedSatelliteNumCallback {
+public class GnssManager implements LocationListener, IUsedSatelliteNumCallback, Handler.Callback {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     protected final LocationManager mLocationManager;
     protected GSVInstrument mGSVInstrument;
@@ -44,7 +45,9 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
     protected boolean mIsInited = false;
     protected Handler mGnssHandler;
     protected Handler mGsvHandler;
+    protected static Handler gpsReportHandler;
     private static int mUsedSatellite = 9;
+    private static final int GPS_REPORT_MSG_WHAT = 1;
     private LocMode mLocMode;
     private float mCarMeterSpeed = 0f;  //仪表车速 1hz 一秒一次
     private static final int TIME_OUT = 2;
@@ -59,6 +62,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
         mLocMode = locMode;
         mGnssHandler = new Handler(ThreadManager.getInstance().getLooper(LooperType.GNSS));
         mGsvHandler = new Handler(ThreadManager.getInstance().getLooper(LooperType.GSV));
+        gpsReportHandler = new Handler(ThreadManager.getInstance().getLooper(LooperType.GPSREPORT), this);
         mLocationListener = locationListener;
         mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         mGSVInstrument = new GSVInstrument(this);
@@ -76,7 +80,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
                 mIsInited = true;
                 boolean result = mLocationManager.registerGnssStatusCallback(mGSVInstrument, mGsvHandler);
                 registerGps();
-                mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(this::startGpsReport, 0, 1000, TimeUnit.MILLISECONDS);
+                gpsReportHandler.sendEmptyMessage(GPS_REPORT_MSG_WHAT);
                 Logger.i(TAG, " init registerGnssStatus：" + result);
             }
         } catch (Exception e) {
@@ -205,9 +209,10 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
 
     private void stopGpsReport() {
         Logger.i(TAG, "stopGpsReport");
-        if (mScheduledFuture != null) {
-            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+        if (gpsReportHandler != null) {
+            gpsReportHandler.removeCallbacksAndMessages(null);
         }
+        gpsReportHandler = null;
     }
 
     private void reportMeterSpeed() {
@@ -232,5 +237,15 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
     public void clearCount() {
         Logger.i(TAG, "clearCount");
         mTimeoutCount.set(0);
+    }
+
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        if (GPS_REPORT_MSG_WHAT == msg.what) {
+            startGpsReport();
+            if (gpsReportHandler.hasMessages(GPS_REPORT_MSG_WHAT)) gpsReportHandler.removeMessages(GPS_REPORT_MSG_WHAT);
+            gpsReportHandler.sendEmptyMessageDelayed(GPS_REPORT_MSG_WHAT, 1000);
+        }
+        return false;
     }
 }
