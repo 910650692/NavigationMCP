@@ -429,11 +429,16 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         if (!ConvertUtils.isEmpty(routeSupplementParams)) {
             for (RouteSupplementParams mRouteSupplementParam : routeSupplementParams) {
                final ArrayList<RouteSupplementInfo> routeSupplementInfos = mRouteSupplementParam.getMRouteSupplementInfos();
-                if (!ConvertUtils.isEmpty(routeSupplementInfos) && routeSupplementInfos.size() > NumberUtils.NUM_1) {
-                    for (int i = routeSupplementInfos.size() - 1; i > 0; i--) {
+                if (!ConvertUtils.isEmpty(routeSupplementInfos) ) {
+                    for (int i = routeSupplementInfos.size() - 1; i >= 0; i--) {
                         final RouteSupplementInfo currentRouteInfo = routeSupplementInfos.get(i);
-                        final RouteSupplementInfo previousRouteInfo = routeSupplementInfos.get(i - 1);
-                        currentRouteInfo.setMDistance(currentRouteInfo.getMDistance() - previousRouteInfo.getMDistance());
+                        if (i == 0) {
+                            currentRouteInfo.setMInterval(currentRouteInfo.getMDistance());
+                        } else {
+                            final RouteSupplementInfo previousRouteInfo = routeSupplementInfos.get(i - 1);
+                            currentRouteInfo.setMInterval(currentRouteInfo.getMDistance() - previousRouteInfo.getMDistance());
+                        }
+
                     }
                 }
             }
@@ -490,7 +495,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     /**
-     * 获取途经点充电站数据   //todo mViaList还没有充电站数据
+     * 获取途经点充电站数据
      * @param item
      * @return LayerItemRouteReplaceChargePoint
      */
@@ -619,7 +624,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     chargeInfo.setIndex(index);
                     final RouteChargeStationDetailInfo routeChargeStationDetailInfo = new RouteChargeStationDetailInfo();
                     routeChargeStationDetailInfo.setMChargeTime(routeSupplementInfo.getMChargeTime());
-                    routeChargeStationDetailInfo.setMInterval(routeSupplementInfo.getMDistance());
+                    routeChargeStationDetailInfo.setMInterval(routeSupplementInfo.getMInterval());
                     chargeInfo.setMRouteChargeStationInfo(routeChargeStationDetailInfo);
                 }
             } else {

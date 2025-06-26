@@ -14,6 +14,8 @@ public class RouteSupplementInfo implements Serializable {
     private int mType;
     //补能点距起点位置
     private int mDistance;
+    //补能点间隔
+    private int mInterval;
     //补能点距起点位置
     private String mUnitDistance;
     //poiID

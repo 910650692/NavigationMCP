@@ -47,7 +47,6 @@ import com.sgm.navi.service.adapter.layer.bls.texture.TexturePoolManager;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
-import com.sgm.navi.service.define.bean.PreviewParams;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEnergyKey;
@@ -498,14 +497,17 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         if (!ConvertUtils.isEmpty(info.getMViaPoints())) {
             int size = info.getMViaPoints().size();
             for (int t = 0; t < size; t++) {
-                RoutePoint point = new RoutePoint();
-                point.mIsDraw = info.getMViaPoints().get(t).isMIsDraw();
-                point.mPathId = info.getMViaPoints().get(t).getMPathId();
-                point.mType = info.getMViaPoints().get(t).getMType();
-                point.mPos = new Coord3DDouble(info.getMViaPoints().get(t).getMPos().getLon()
-                        , info.getMViaPoints().get(t).getMPos().getLat()
-                        , info.getMViaPoints().get(t).getMPos().getZ());
-                infos.mViaPoints.add(point);
+                com.sgm.navi.service.define.route.RoutePoint routePoint = info.getMViaPoints().get(t);
+                if (routePoint != null && routePoint.mAddressType != 1) {
+                    RoutePoint point = new RoutePoint();
+                    point.mIsDraw =routePoint.isMIsDraw();
+                    point.mPathId = routePoint.getMPathId();
+                    point.mType = routePoint.getMType();
+                    point.mPos = new Coord3DDouble(routePoint.getMPos().getLon()
+                        , routePoint.getMPos().getLat()
+                        , routePoint.getMPos().getZ());
+                    infos.mViaPoints.add(point);
+                }
             }
         }
         if (!ConvertUtils.isEmpty(info.getMEndPoints())) {
