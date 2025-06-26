@@ -945,8 +945,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
             final int poiType = getPoiType(mHomeCompanyType);
             closeCurrentFragment();
-            addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
-                    AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, searchResultEntity.getPoiList().get(0)));
+            Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
+                    AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, searchResultEntity.getPoiList().get(0));
+            bundle.putBoolean("IS_END", mIsEnd);
+            addPoiDetailsFragment((BaseFragment) fragment, bundle);
             return;
         }
         setMaxPageNum(searchResultEntity.getMaxPageNum());
