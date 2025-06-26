@@ -1494,7 +1494,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT,
                     layerItemSearchResult, false);
         }
-
+        showPreview(poiList);
     }
 
     /**
