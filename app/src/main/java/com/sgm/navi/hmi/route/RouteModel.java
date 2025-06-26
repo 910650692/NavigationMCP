@@ -498,6 +498,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * */
     public void showRestrictionView(final RouteRestrictionParam routeRestrictionParam) {
         mRestrictionLabel = true;
+        mRouteRestrictionParams = routeRestrictionParam;
         mRoutePackage.showRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP, routeRestrictionParam.getMReStrictedAreaResponseParam());
     }
 
@@ -856,6 +857,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteRestrictionInfo(final RouteRestrictionParam routeRestrictionParam) {
+        mRouteRestrictionParams = null;
         mRestirctionTaskId = mRoutePackage.requestRestirction(routeRestrictionParam.getMMapTypeId());
         mRouteRestrictionInfo = routeRestrictionParam.getMRouteRestrictionInfo();
         int currentIndex = getCurrentIndex();
@@ -881,7 +883,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (routeRestrictionParam.getMRestrictedArea().getMRequestId() == mRestirctionTaskId) {
             clearRestrictionView();
             showRestrictionView(routeRestrictionParam);
-            mRouteRestrictionParams = routeRestrictionParam;
         }
     }
 
@@ -1403,6 +1404,10 @@ public void setPoint() {
                             , routeSupplementParam.getMTotalDistance());
                 }
             }
+            if (mRouteRestrictionParams != null) {
+                showRestrictionView(mRouteRestrictionParams);
+            }
+
         }
     }
 
