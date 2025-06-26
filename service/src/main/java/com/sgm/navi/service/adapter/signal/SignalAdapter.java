@@ -137,14 +137,6 @@ public final class SignalAdapter {
         mSignalApi.setTrafficJamRoadAverageSpeedAvailability(value);
     }
 
-    public void setRoadConditionGroupFirst(RoadConditionGroup roadConditionGroup) {
-        mSignalApi.setRoadConditionGroupFirst(roadConditionGroup);
-    }
-
-    public void setRoadConditionGroupSecond(RoadConditionGroup roadConditionGroup) {
-        mSignalApi.setRoadConditionGroupSecond(roadConditionGroup);
-    }
-
     public void setRoadConditionGroup(RoadConditionGroup roadConditionGroup) {
         mSignalApi.setRoadConditionGroup(roadConditionGroup);
     }

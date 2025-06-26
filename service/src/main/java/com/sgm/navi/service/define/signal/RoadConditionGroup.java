@@ -12,8 +12,6 @@ public class RoadConditionGroup {
     private Integer remainTime;
     private Integer dataInvalid;
     private final Integer[] signalArray = new Integer[8];
-    private final Integer[] signalArrayFirst = new Integer[4];
-    private final Integer[] signalArraySecond = new Integer[4];
 
     public Integer[] toArray() {
         signalArray[0] = roadSegmentCount;
@@ -25,22 +23,6 @@ public class RoadConditionGroup {
         signalArray[6] = remainTime;
         signalArray[7] = dataInvalid;
         return signalArray;
-    }
-
-    public Integer[] toArrayFirst() {
-        signalArrayFirst[0] = roadSegmentCount;
-        signalArrayFirst[1] = roadSegmentIndex;
-        signalArrayFirst[2] = segmentLength;
-        signalArrayFirst[3] = segmentTime;
-        return signalArrayFirst;
-    }
-
-    public Integer[] toArraySecond() {
-        signalArraySecond[0] = segmentCondition;
-        signalArraySecond[1] = remainDistance;
-        signalArraySecond[2] = remainTime;
-        signalArraySecond[3] = dataInvalid;
-        return signalArraySecond;
     }
 
     public Integer getRoadSegmentCount() {

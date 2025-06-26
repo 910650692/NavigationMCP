@@ -216,7 +216,7 @@ public final class SignalPackage implements SignalAdapterCallback {
     /**
      * 电池最大电量
      *
-     * @return 单位wh
+     * @return 单位kwh
      */
     public float getMaxBatteryEnergy() {
         return mSignalAdapter.getMaxBatteryEnergy() / 1000;
@@ -388,13 +388,7 @@ public final class SignalPackage implements SignalAdapterCallback {
      * @param roadConditionGroup
      */
     public void setRoadConditionGroup(RoadConditionGroup roadConditionGroup) {
-        if (BuildConfig.DEBUG) Logger.d(TAG, roadConditionGroup);
-        if (Objects.equals(BuildConfig.FLAVOR, "clea_local_8155")) {
-            mSignalAdapter.setRoadConditionGroup(roadConditionGroup);
-        } else {
-            mSignalAdapter.setRoadConditionGroupFirst(roadConditionGroup);
-            mSignalAdapter.setRoadConditionGroupSecond(roadConditionGroup);
-        }
+        mSignalAdapter.setRoadConditionGroup(roadConditionGroup);
     }
 
     /**

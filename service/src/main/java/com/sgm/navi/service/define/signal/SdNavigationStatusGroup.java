@@ -1,16 +1,34 @@
 package com.sgm.navi.service.define.signal;
 
+import java.util.Arrays;
+
 public class SdNavigationStatusGroup {
-    private Integer naviStat; // 导航状态
-    private Integer naviStatCrntRdLvl; // 道路等级
-    private Integer naviStatCrntRdLvl_Inv; // 道路等级是否有效
-    private Integer naviStatCrntRdMpConf; // 绑路状态
-    private Integer naviStatDistToHDStrt; // 到可开启辅助驾驶起点的距离
-    private Integer naviStatDistToHDStrt_Inv; // HD起点距离是否有效
-    private Integer naviStatDistToViaPoint; // 途径点距离
-    private Integer naviStatDistToViaPoint_Inv; // 途径点距离是否有效
-    private Integer naviStatRmnDist; // 剩余距离
-    private Integer naviStatRmnDist_Inv; // 剩余距离是否有效
+    private Integer naviStat = 0; // 导航状态
+    private Integer naviStatCrntRdLvl = 0; // 道路等级
+    private Integer naviStatCrntRdLvl_Inv = 0; // 道路等级是否有效
+    private Integer naviStatCrntRdMpConf = 0; // 绑路状态
+    private Integer naviStatDistToHDStrt = 0; // 到可开启辅助驾驶起点的距离
+    private Integer naviStatDistToHDStrt_Inv = 0; // HD起点距离是否有效
+    private Integer naviStatDistToViaPoint = 0; // 途径点距离
+    private Integer naviStatDistToViaPoint_Inv = 0; // 途径点距离是否有效
+    private Integer naviStatRmnDist = 0; // 剩余距离
+    private Integer naviStatRmnDist_Inv = 0; // 剩余距离是否有效
+
+    private final Integer[] signalArray = new Integer[10];
+
+    public Integer[] toArray() {
+        signalArray[0] = naviStat;
+        signalArray[1] = naviStatCrntRdMpConf;
+        signalArray[2] = naviStatCrntRdLvl;
+        signalArray[3] = naviStatCrntRdLvl_Inv;
+        signalArray[4] = naviStatRmnDist;
+        signalArray[5] = naviStatRmnDist_Inv;
+        signalArray[6] = naviStatDistToViaPoint;
+        signalArray[7] = naviStatDistToViaPoint_Inv;
+        signalArray[8] = naviStatDistToHDStrt;
+        signalArray[9] = naviStatDistToHDStrt_Inv;
+        return signalArray;
+    }
 
     public Integer getNaviStat() {
         return naviStat;
@@ -94,17 +112,6 @@ public class SdNavigationStatusGroup {
 
     @Override
     public String toString() {
-        return "SdNavigationStatusGroup{" +
-                "naviStat=" + naviStat +
-                ", naviStatCrntRdLvl=" + naviStatCrntRdLvl +
-                ", naviStatCrntRdLvl_Inv=" + naviStatCrntRdLvl_Inv +
-                ", naviStatCrntRdMpConf=" + naviStatCrntRdMpConf +
-                ", naviStatDistToHDStrt=" + naviStatDistToHDStrt +
-                ", naviStatDistToHDStrt_Inv=" + naviStatDistToHDStrt_Inv +
-                ", naviStatDistToViaPoint=" + naviStatDistToViaPoint +
-                ", naviStatDistToViaPoint_Inv=" + naviStatDistToViaPoint_Inv +
-                ", naviStatRmnDist=" + naviStatRmnDist +
-                ", naviStatRmnDist_Inv=" + naviStatRmnDist_Inv +
-                '}';
+        return Arrays.toString(signalArray);
     }
 }

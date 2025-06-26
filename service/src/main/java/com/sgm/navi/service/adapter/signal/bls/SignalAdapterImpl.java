@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -25,6 +26,7 @@ import com.patac.vehicle.VehicleController;
 import com.patac.vehicle.VehicleStatusController;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import gm.powermode.PowerModeManager;
@@ -56,20 +58,6 @@ public class SignalAdapterImpl implements SignalApi {
      * 初始化回调函数
      */
     private void initCallback() {
-        PowertainController.getInstance().registerInfoEvBatteryCapacityListener(new PowertainController.InfoEvBatteryCapacityListener() {
-            @Override
-            public void onInfoEvBatteryCapacityChanged(Float value) {
-                Logger.d(TAG, "onInfoEvBatteryCapacityChanged: ", value);
-                maxBatteryEnergy = value;
-            }
-        });
-        PowertainController.getInstance().registerHighVoltageBatteryRemainingUsableEnergyListener(new PowertainController.HighVoltageBatteryRemainingUsableEnergyListener() {
-            @Override
-            public void onHighVoltageBatteryRemainingUsableEnergySignalChanged(Float value) {
-                Logger.d(TAG, "onHighVoltageBatteryRemainingUsableEnergySignalChanged: ", value);
-                mBatteryEnergy = value;
-            }
-        });
         PowertainController.getInstance().registerHighVoltageChargeSystemStatusListener(new PowertainController.HighVoltageChargeSystemStatusListener() {
             @Override
             public void onHighVoltageChargeSystemStatusChanged(Integer value) {
@@ -103,16 +91,6 @@ public class SignalAdapterImpl implements SignalApi {
                 }
             }
         });
-        PowertainController.getInstance().registerRangeRemainingListener(new PowertainController.RangeRemainingListener() {
-            @Override
-            public void onRangeRemainingSignalChanged(final Float value) {
-                Logger.d(TAG, "onRangeRemainingSignalChanged: " + value);
-                mRangeRemaining = value;
-                for (SignalAdapterCallback callback : mCallbacks) {
-                    callback.onRangeRemainingSignalChanged(value);
-                }
-            }
-        });
         PowertainController.getInstance().registerHighVoltageBatteryPropulsionRangeListener(
                 new PowertainController.HighVoltageBatteryPropulsionRangeListener() {
                     @Override
@@ -131,6 +109,32 @@ public class SignalAdapterImpl implements SignalApi {
             }
             return 0;
         });
+        if (VehicleController.isGBArch()) {
+            PowertainController.getInstance().registerInfoEvBatteryCapacityListener(new PowertainController.InfoEvBatteryCapacityListener() {
+                @Override
+                public void onInfoEvBatteryCapacityChanged(Float value) {
+                    Logger.d(TAG, "onInfoEvBatteryCapacityChanged: ", value);
+                    maxBatteryEnergy = value;
+                }
+            });
+            PowertainController.getInstance().registerHighVoltageBatteryRemainingUsableEnergyListener(new PowertainController.HighVoltageBatteryRemainingUsableEnergyListener() {
+                @Override
+                public void onHighVoltageBatteryRemainingUsableEnergySignalChanged(Float value) {
+                    Logger.d(TAG, "onHighVoltageBatteryRemainingUsableEnergySignalChanged: ", value);
+                    mBatteryEnergy = value;
+                }
+            });
+            PowertainController.getInstance().registerRangeRemainingListener(new PowertainController.RangeRemainingListener() {
+                @Override
+                public void onRangeRemainingSignalChanged(final Float value) {
+                    Logger.d(TAG, "onRangeRemainingSignalChanged: " + value);
+                    mRangeRemaining = value;
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onRangeRemainingSignalChanged(value);
+                    }
+                }
+            });
+        }
         if (!VehicleController.isCleaArch()) {
             Logger.i(TAG, "is not CleaArch");
             return;
@@ -255,7 +259,8 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void initSignal(final Context context) {
-        if (!checkVehicleEnvironment()) {
+        if (!DeviceUtils.isCar(context)) {
+            Logger.d(TAG, "initSignal not car");
             return;
         }
         Logger.d(TAG, "initSignal start");
@@ -278,12 +283,6 @@ public class SignalAdapterImpl implements SignalApi {
             Logger.d(TAG, "Car connect successfully in VehicleService constructor");
             initPropertyManager(mCar);
         }
-        initMaxBatteryEnergy();
-        initBatteryEnergy();
-        initChargeSystemStatus();
-        initOutsideTemperature();
-        initHighVoltageBatteryPropulsionRange();
-        initRangeRemaining();
         Logger.d(TAG, "initSignal end", (System.currentTimeMillis() - start)); // 100ms
     }
 
@@ -302,10 +301,10 @@ public class SignalAdapterImpl implements SignalApi {
         final VehicleController.Result<Float> result;
         try {
             result = PowertainController.getInstance().getHighVoltageBatteryRemainingUsableEnergy();
-            maxBatteryEnergy = result.getValue(-1f);
+            mBatteryEnergy = result.getValue(-1f);
         } catch (Exception e) {
             Logger.e(TAG, "initBatteryEnergy: " + e.getMessage());
-            maxBatteryEnergy = -1;
+            mBatteryEnergy = -1;
         }
     }
 
@@ -363,8 +362,13 @@ public class SignalAdapterImpl implements SignalApi {
         if (this.mPropertyManager == null) {
             Logger.d(TAG, "init CarPropertyManager");
             this.mPropertyManager = (CarPropertyManager) this.mCar.getCarManager("property");
-            mCarAudioManager = (CarAudioManager) car.getCarManager(Car.AUDIO_SERVICE);
-            initVolumeCallback();
+            initVolumeCallback(car);
+            initMaxBatteryEnergy();
+            initBatteryEnergy();
+            initChargeSystemStatus();
+            initOutsideTemperature();
+            initHighVoltageBatteryPropulsionRange();
+            initRangeRemaining();
             try {
                 registerDYN(190, 1);
             } catch (Exception e) {
@@ -649,7 +653,7 @@ public class SignalAdapterImpl implements SignalApi {
         Logger.d(TAG, "setNextChargingDestination: " + powerLevel + ", " + status + ", " + timeToArrival + ", " + distToArrival);
         final Integer[] nextChargingDestination = new Integer[]{distToArrival, status, timeToArrival, powerLevel};
         try {
-            mPropertyManager.setProperty(Integer[].class, VendorProperty.NEXT_CHARGING_DESTINATION_INFORMATION_1, 0, nextChargingDestination);
+            mPropertyManager.setProperty(Integer[].class, VendorProperty.NEXT_CHARGING_DESTINATION_INFORMATION_1, VehicleArea.GLOBAL, nextChargingDestination);
         } catch (Exception e) {
             Logger.e(TAG, "setNextChargingDestination: " + e.getMessage());
         }
@@ -672,7 +676,9 @@ public class SignalAdapterImpl implements SignalApi {
         return value;
     }
 
-    public void initVolumeCallback() {
+    //region 音量相关接口
+    public void initVolumeCallback(Car car) {
+        mCarAudioManager = (CarAudioManager) car.getCarManager(Car.AUDIO_SERVICE);
         mCarAudioManager.registerCarVolumeCallback(new CarAudioManager.CarVolumeCallback() {
             @Override
             public void onGroupVolumeChanged(int zoneId, int groupId, int flags) {
@@ -704,6 +710,7 @@ public class SignalAdapterImpl implements SignalApi {
         mCarAudioManager.setGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1, volume, 0);
     }
 
+    @Override
     public int getNaviVolume() {
         if (mCarAudioManager == null) {
             return -1;
@@ -712,14 +719,15 @@ public class SignalAdapterImpl implements SignalApi {
         Logger.d(TAG, groupVolume);
         return groupVolume;
     }
+    //endregion
 
+    //region clea can功能接口
     @Override
     public void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup) {
         Logger.d(TAG, sdNavigationStatusGroup);
         try {
-            Integer[] integers = new Integer[]{sdNavigationStatusGroup.getNaviStat()};
             mPropertyManager.setProperty(Integer[].class, PatacProperty.SD_NAVIGATION_STATUS_GROUP,
-                    VehicleArea.GLOBAL, integers);
+                    VehicleArea.GLOBAL, sdNavigationStatusGroup.toArray());
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -729,9 +737,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setNavigationOnAdasButtonSettingRequest(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.NAVIGATION_ON_ADAS_BUTTON_SETTING_REQUEST,
-                    VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.NAVIGATION_ON_ADAS_BUTTON_SETTING_REQUEST,
+                    VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -741,9 +748,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setNavigationOnAdasInfoNavigationStatus(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.NAVIGATION_ON_ADAS_INFO_NAVIGATION_STATUS,
-                    VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.NAVIGATION_ON_ADAS_INFO_NAVIGATION_STATUS,
+                    VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -753,9 +759,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setDistanceToTrafficJamRoad(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_TO_TRAFFIC_JAM_ROAD
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.DISTANCE_TO_TRAFFIC_JAM_ROAD
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -765,9 +770,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setDistanceToTrafficJamRoadAvailability(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_TO_TRAFFIC_JAM_ROAD_AVAILABILITY
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.DISTANCE_TO_TRAFFIC_JAM_ROAD_AVAILABILITY
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -777,9 +781,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setDistanceOnTrafficJamRoad(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -789,9 +792,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setDistanceOnTrafficJamRoadAvailability(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD_AVAILABILITY
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD_AVAILABILITY
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -801,9 +803,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setTrafficJamRoadAverageSpeed(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.TRAFFIC_JAM_ROAD_AVERAGE_SPEED
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.TRAFFIC_JAM_ROAD_AVERAGE_SPEED
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -813,41 +814,25 @@ public class SignalAdapterImpl implements SignalApi {
     public void setTrafficJamRoadAverageSpeedAvailability(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.TRAFFIC_JAM_ROAD_AVERAGE_SPEED_AVAILABILITY
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.TRAFFIC_JAM_ROAD_AVERAGE_SPEED_AVAILABILITY
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
-        }
-    }
-
-    @Override
-    public void setRoadConditionGroupFirst(RoadConditionGroup roadConditionGroup) {
-        try {
-//            int ROAD_CONDITION_GROUP_FIRST = 557928596;
-            mPropertyManager.setProperty(Integer[].class, 557928596
-                    , VehicleArea.GLOBAL, roadConditionGroup.toArrayFirst());
-        } catch (Exception e) {
-            Logger.e(TAG, e.getMessage());
-        }
-    }
-
-    @Override
-    public void setRoadConditionGroupSecond(RoadConditionGroup roadConditionGroup) {
-        try {
-//            int ROAD_CONDITION_GROUP_SECOND = 557928595;
-            mPropertyManager.setProperty(Integer[].class, 557928595
-                    , VehicleArea.GLOBAL, roadConditionGroup.toArraySecond());
-        } catch (Exception e) {
-//            Logger.e(TAG, e.getMessage());
         }
     }
 
     @Override
     public void setRoadConditionGroup(RoadConditionGroup roadConditionGroup) {
+        if (BuildConfig.DEBUG) Logger.d(TAG, roadConditionGroup);
+        int propertyId = 0;
+        if (Objects.equals(BuildConfig.FLAVOR, "clea_local_8155")) {
+            propertyId = 557928600;
+        } else {
+            propertyId = 557928590;
+        }
+        // PatacProperty.ROAD_CONDITION_GROUP
         try {
-//            int ROAD_CONDITION_GROUP = 557928600;
-            mPropertyManager.setProperty(Integer[].class, 557928600
+            mPropertyManager.setProperty(Integer[].class, propertyId
                     , VehicleArea.GLOBAL, roadConditionGroup.toArray());
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
@@ -858,9 +843,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setTotalDistanceFromStartToDestinationOnNavigation(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.TOTAL_DISTANCE_FROM_START_TO_DESTINATION_ON_NAVIGATION
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.TOTAL_DISTANCE_FROM_START_TO_DESTINATION_ON_NAVIGATION
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -870,9 +854,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setTotalPredictedTimeFromStartToDestinationOnNavigation(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.TOTAL_PREDICTED_TIME_FROM_START_TO_DESTINATION_ON_NAVIGATION
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.TOTAL_PREDICTED_TIME_FROM_START_TO_DESTINATION_ON_NAVIGATION
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -882,9 +865,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setRemainDistanceToChargingStation(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.REMAIN_DISTANCE_TO_CHARGING_STATION
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.REMAIN_DISTANCE_TO_CHARGING_STATION
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -894,9 +876,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setRemainTimeToChargingStationy(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.REMAIN_TIME_TO_CHARGING_STATION
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.REMAIN_TIME_TO_CHARGING_STATION
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -906,9 +887,8 @@ public class SignalAdapterImpl implements SignalApi {
     public void setVcuSpeedLimitArbitrationResults(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.VCU_SPEED_LIMIT_ARBITRATION_RESULTS
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.VCU_SPEED_LIMIT_ARBITRATION_RESULTS
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -918,27 +898,13 @@ public class SignalAdapterImpl implements SignalApi {
     public void setVcuSpeedLimitArbitrationResultsAssured(int value) {
         Logger.d(TAG, value);
         try {
-            Integer[] integers = new Integer[]{value};
-            mPropertyManager.setProperty(Integer[].class, PatacProperty.VCU_SPEED_LIMIT_ARBITRATION_RESULTS_ASSURED
-                    , VehicleArea.GLOBAL, integers);
+            mPropertyManager.setProperty(Integer.class, PatacProperty.VCU_SPEED_LIMIT_ARBITRATION_RESULTS_ASSURED
+                    , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
     }
-
-    /**
-     * 检查设备是否为GM车机
-     *
-     * @return boolean
-     */
-    private boolean checkVehicleEnvironment() {
-        if (!"gm".equals(Build.MANUFACTURER)) { // 设备制造商
-            Logger.w(TAG, "checkVehicleEnvironment: not vehicle environment");
-            return false;
-        } else {
-            return true;
-        }
-    }
+    //endregion
 
     /**
      * 状态转换

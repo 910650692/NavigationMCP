@@ -153,10 +153,6 @@ public interface SignalApi {
 
     void setTrafficJamRoadAverageSpeedAvailability(int value);
 
-    void setRoadConditionGroupFirst(RoadConditionGroup roadConditionGroup);
-
-    void setRoadConditionGroupSecond(RoadConditionGroup roadConditionGroup);
-
     void setRoadConditionGroup(RoadConditionGroup roadConditionGroup);
 
     void setTotalDistanceFromStartToDestinationOnNavigation(int value);
