@@ -16,6 +16,8 @@
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_34"
+        android:layout_marginTop="@dimen/dp_34"
         android:orientation="vertical">
 
         <com.sgm.navi.scene.ui.search.SceneSearchPoiList

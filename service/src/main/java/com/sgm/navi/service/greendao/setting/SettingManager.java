@@ -2,7 +2,9 @@ package com.sgm.navi.service.greendao.setting;
 
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.greendao.DaoMaster;
+import com.sgm.navi.service.logicpaket.engine.EnginePackage;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -48,6 +50,7 @@ public class SettingManager {
         final DaoMaster daoMaster = new DaoMaster(db);
         mSettingDao = daoMaster.newSession().getNaviSettingDao();
         mIsInit = true;
+        insertOrReplace(SettingController.KEY_SETTING_CHANNEL_ID, EnginePackage.getInstance().getChanelName());
     }
 
     /**

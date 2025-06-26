@@ -2,26 +2,15 @@ package com.sgm.navi;
 
 import android.app.Activity;
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.WorkerThread;
 
-import com.alibaba.android.arouter.launcher.ARouter;
-import com.android.utils.DeviceUtils;
-import com.android.utils.crash.AppCrashRecord;
 import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
 import com.android.utils.thread.ThreadManager;
-import com.sgm.navi.burypoint.BuryManager;
-import com.sgm.navi.flavor.BaseTestCarType;
-import com.sgm.navi.flavor.TestCarType;
-import com.sgm.navi.hmi.BuildConfig;
-import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.map.MapActivity;
-import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
 import com.sgm.navi.patacnetlib.PatacNetClient;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -34,33 +23,18 @@ import com.sgm.navi.ui.BaseApplication;
  * @date 2024/11/24
  */
 public class NaviApplication extends BaseApplication implements Application.ActivityLifecycleCallbacks {
-    private static final String TAG = "NaviApplication";
+    private static final String TAG = MapDefaultFinalTag.INIT_HMI_TAG;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.setDefaultTag(MapDefaultFinalTag.DEFAULT_TAG);
-        Log.e("NaviApp_Start", "isExternalStorageAvailable start");
-        if (!FileUtils.getInstance().isExternalStorageAvailable()) {
-            Log.e("NaviApp_Start", "isExternalStorageAvailable is false = killSelf");
+        Logger.e("NaviApp_Start", "isExternalStorageAvailable start");
+        if (!FileUtils.getInstance().checkExternalStorageAvailable()) {
+            Logger.e("NaviApp_Start", "isExternalStorageAvailable is false = killSelf");
             killSelf();
         }
         initComponent();
-    }
-
-    private void killSelf() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Log.e("NaviApp_Start", "isExternalStorageAvailable is false");
-                System.exit(1);
-            }
-        }).start();
     }
 
     @Override
@@ -83,51 +57,30 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         }
     }
 
+
+    private void killSelf() {
+        ThreadManager.getInstance().execute(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Logger.w(TAG, "killSelf exception", e.getMessage());
+            }
+            Logger.e("NaviApp_Start", "isExternalStorageAvailable is false");
+            System.exit(1);
+        });
+    }
+
     private void initComponent() {
         AppCache.getInstance().setMApplication(this);
         AppCache.getInstance().setMContext(getApplicationContext());
-        AppCache.getInstance().setMFlavor(BuildConfig.FLAVOR);
         registerActivityLifecycleCallbacks(NaviApplication.this);
-        BaseTestCarType testCarType = new TestCarType();
-        initARouter();
         ThreadManager.getInstance().execute(() -> {
-            initDataTrack();
             try {
                 PatacNetClient.getInstance().init(this); // 初始化网络适配器
             } catch (Exception e) {
                 //临时Catch方案，ND8775台架 install的包会crash
                 Logger.e(TAG, "PatacNetClient init failed: " + e.getMessage());
             }
-            if (!DeviceUtils.isCar(NaviApplication.this)) {
-                Thread.setDefaultUncaughtExceptionHandler(new AppCrashRecord(NaviApplication.this));
-            }
-            initOtherService();
         });
-    }
-
-    /**
-     * 初始化路由
-     */
-    private void initARouter() {
-        if (BuildConfig.DEBUG) {
-            ARouter.openLog();
-            ARouter.openDebug();
-        }
-        ARouter.init(this);
-    }
-
-    /**
-     * 初始化埋点SDK
-     */
-    private void initDataTrack() {
-        BuryManager.getInstance().initPatacDataTrackManager(getApplicationContext(), DeviceUtils.isCar(getApplicationContext()));
-    }
-
-    /***
-     * 初始化其它服务,运行在子线程
-     */
-    private void initOtherService() {
-        SplitScreenManager.getInstance().init();
-        LauncherWindowService.startService();
     }
 }

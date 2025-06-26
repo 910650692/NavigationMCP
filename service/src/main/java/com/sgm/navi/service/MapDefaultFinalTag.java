@@ -59,6 +59,8 @@ public interface MapDefaultFinalTag {
     String HUD_SERVICE_TAG = DEFAULT_TAG + "_Hud" + SERVICE_TAG;
     /*** HMI Tag **/
      String HMI_TAG = "_HMI";
+    /*** NaviApp_Init_Hmi **/
+    String INIT_HMI_TAG = DEFAULT_TAG + "_Init" + HMI_TAG;
     /*** NaviApp_Engine_HMI **/
      String ENGINE_HMI_TAG = DEFAULT_TAG + "_Engine" + HMI_TAG;
     /*** NaviApp_Map_HMI **/

@@ -16,7 +16,6 @@ import com.android.utils.thread.ThreadManager;
 public class UtilsManager {
     public static final void init(Context context) {
         Logger.switchLog(BuildConfig.DEBUG);
-        Logger.i("UtilsManager", "init");
         ThreadManager.getInstance().initThreadPool(context);
         FileUtils.getInstance().initFile(context);
         NetWorkUtils.Companion.getInstance().init(context);

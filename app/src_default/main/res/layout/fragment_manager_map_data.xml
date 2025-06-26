@@ -12,9 +12,10 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_1224"
-        android:layout_height="@dimen/dp_714"
-        android:background="@drawable/bg_setting_fragment"
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:clickable="true"
         android:orientation="vertical">
 
@@ -22,26 +23,26 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/rl_offline_top"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_134"
-            android:layout_marginStart="@dimen/dp_26">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginEnd="@dimen/dp_34"
+            android:layout_marginStart="@dimen/dp_22">
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_offline_map_back"
                 clickCommand="@{ViewModel.mBackMapDataView}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:src="@drawable/img_setting_back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinLinearLayout
-                android:layout_width="@dimen/dp_1000"
+                android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:orientation="horizontal"
-                android:layout_marginStart="@dimen/dp_40"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/iv_offline_map_back">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <!--正在下载-->
                 <com.sgm.navi.ui.view.SkinLinearLayout
@@ -49,7 +50,6 @@
                     android:layout_weight="1"
                     android:layout_height="fill_parent"
                     android:gravity="center"
-                    android:layout_marginStart="@dimen/dp_100"
                     android:orientation="horizontal">
 
                     <com.sgm.navi.ui.view.SkinLinearLayout
@@ -70,27 +70,27 @@
                             android:gravity="center"
                             android:text="@string/offline_manager_map_downloading"
                             android:textColor="@color/setting_bg_tab_text_select"
-                            android:textSize="@dimen/sp_34" />
+                            android:textSize="@dimen/sp_29" />
 
                         <com.sgm.navi.ui.view.SkinView
                             android:id="@+id/offline_all_data_line"
                             android:layout_width="@dimen/dp_78"
-                            android:layout_height="@dimen/dp_5"
-                            android:layout_marginTop="@dimen/dp_9"
+                            android:layout_height="@dimen/dp_4"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:background="@color/account_blue_text" />
 
                     </com.sgm.navi.ui.view.SkinLinearLayout>
 
                     <com.sgm.navi.ui.view.SkinTextView
-                        android:layout_width="@dimen/dp_40"
-                        android:layout_height="@dimen/dp_40"
+                        android:layout_width="@dimen/dp_35"
+                        android:layout_height="@dimen/dp_35"
                         android:text="@{String.valueOf(ViewModel.mAllDownloadingDataSize)}"
-                        android:layout_marginBottom="@dimen/dp_20"
                         android:layout_gravity="center"
                         android:gravity="center"
+                        android:layout_marginStart="@dimen/dp_27"
                         android:visibility="@{ViewModel.mAllDownloadingDataSize > 0 ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/setting_white"
-                        android:textSize="@dimen/sp_26"
+                        android:textSize="@dimen/sp_22"
                         android:background="@drawable/bg_end_point" />
 
                 </com.sgm.navi.ui.view.SkinLinearLayout>
@@ -115,13 +115,13 @@
                         android:gravity="center"
                         android:text="@string/offline_city_downloaded"
                         android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_34" />
+                        android:textSize="@dimen/sp_29" />
 
                     <com.sgm.navi.ui.view.SkinView
                         android:id="@+id/download_administration_line"
                         android:layout_width="@dimen/dp_78"
-                        android:layout_height="@dimen/dp_5"
-                        android:layout_marginTop="@dimen/dp_9"
+                        android:layout_height="@dimen/dp_4"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:background="@color/account_blue_text"
                         android:visibility="invisible" />
 
@@ -134,14 +134,14 @@
         <com.sgm.navi.ui.view.SkinNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_30"
-            android:scrollbars="none"
+            android:layout_marginBottom="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_36"
+            android:scrollbars="vertical"
             android:fillViewport="true">
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:layout_marginEnd="@dimen/dp_34"
+                android:layout_marginStart="@dimen/dp_34"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -153,16 +153,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{ViewModel.mDownloadingDataVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_30"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/download_status">
 
                     <com.sgm.navi.ui.view.SkinLinearLayout
                         android:id="@+id/download_status"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_90"
+                        android:layout_height="@dimen/dp_77"
                         android:gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/dp_16"
                         android:orientation="horizontal"
                         android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.GONE : View.VISIBLE}"
                         android:background="@drawable/bg_setting_checkbox"
@@ -185,16 +183,16 @@
 
                                 <com.sgm.navi.ui.view.SkinImageView
                                     android:id="@+id/img_download_all_start"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="@dimen/dp_36"
+                                    android:layout_height="@dimen/dp_36"
                                     android:src="@drawable/img_download_all_start"/>
 
                                 <com.sgm.navi.ui.view.SkinTextView
                                     android:id="@+id/tv_download_all_start"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="@dimen/sp_34"
-                                    android:layout_marginStart="@dimen/dp_16"
+                                    android:textSize="@dimen/sp_26"
+                                    android:layout_marginStart="@dimen/dp_7"
                                     android:textColor="@color/setting_bg_voice_text"
                                     android:text="@string/offline_all_city_start_download" />
 
@@ -210,16 +208,16 @@
 
                                 <com.sgm.navi.ui.view.SkinImageView
                                     android:id="@+id/img_download_all_suspend"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="@dimen/dp_36"
+                                    android:layout_height="@dimen/dp_36"
                                     android:src="@drawable/img_download_all_suspend"/>
 
                                 <com.sgm.navi.ui.view.SkinTextView
                                     android:id="@+id/tv_download_all_suspend"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="@dimen/sp_34"
-                                    android:layout_marginStart="@dimen/dp_16"
+                                    android:textSize="@dimen/sp_26"
+                                    android:layout_marginStart="@dimen/dp_7"
                                     android:textColor="@color/setting_bg_voice_text"
                                     android:text="@string/offline_all_city_suspend_download" />
 
@@ -232,7 +230,6 @@
                         android:id="@+id/rv_downloading_offline"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/dp_30"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/download_status" />
 
@@ -264,11 +261,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_71"
                         android:gravity="center"
-                        android:layout_marginTop="@dimen/dp_16"
                         android:text="@{ViewModel.mAllDownloadedDataSize}"
-                        android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.GONE : View.VISIBLE}"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30"
+                        android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.GONE : View.VISIBLE}"
                         android:background="@drawable/shape_bg_map_data"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/font_size"/>
@@ -278,7 +274,6 @@
                         android:id="@+id/rv_downloaded_offline"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/dp_40"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/downloaded_offline_layout" />
 

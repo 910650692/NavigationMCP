@@ -132,8 +132,19 @@ public class StartService {
                 Logger.e(TAG, "startEngine parseErrorCode failed engineActive = -1");
                 return;
             }
-            EnginePackage.getInstance().loadLibrary();
+            checkExternalStorageAvailable();
         });
+    }
+
+    private static void checkExternalStorageAvailable() {
+        boolean storageAvailable = FileUtils.getInstance().isStorageAreaAvailable();
+        if (storageAvailable) {
+            Logger.i(TAG, "分区挂载成功，开启SDK初始化流程");
+            EnginePackage.getInstance().loadLibrary();
+        } else {
+            Logger.i(TAG, "分区尚未加载成功，导致so文件无法被正常加载，等待分区挂载");
+            ThreadManager.getInstance().asyncDelay(StartService::checkExternalStorageAvailable, 2);
+        }
     }
 
     private boolean parseErrorCode() {
@@ -422,17 +433,15 @@ public class StartService {
         @Override
         public void onLoadLibraryFail(int code, String msg) {
             Logger.i(TAG, "分区尚未加载成功，导致so文件无法被正常加载");
-            ThreadManager.getInstance().asyncDelay(() -> EnginePackage.getInstance().loadLibrary(), 2);
+            ThreadManager.getInstance().asyncDelay(StartService::checkExternalStorageAvailable, 2);
         }
 
         @Override
         public void onLoadLibrarySuccess() {
             Logger.i(TAG, "分区挂载成功，开启SDK初始化流程");
             ThreadManager.getInstance().execute(() -> {
-                FileUtils.getInstance().initFile(AppCache.getInstance().getMContext());
                 SettingManager.getInstance().init();
                 CommonManager.getInstance().init();
-                SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_CHANNEL_ID, EnginePackage.getInstance().getChanelName());
                 EnginePackage.getInstance().initBaseLibs();
             });
         }

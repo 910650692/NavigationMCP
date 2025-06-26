@@ -16,6 +16,7 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.navi.GuidanceObserver;
@@ -624,17 +625,12 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             Logger.d(TAG, "onPlayRing 已静音 type:", type);
             return; // 静音开关
         }
-        if (TextUtils.equals("cadi", AppCache.getInstance().getMFlavor())) {
+        if (TextUtils.equals("cadi", BuildConfig.FLAVOR)) {
             //TODO 凯迪车型MediaPlayer导致ANR，待FW解决后放开
             Logger.d(TAG, "onPlayRing 凯迪车型MediaPlayer导致ANR，待FW解决后放开");
             return;
         }
-        ThreadManager.getInstance().postUi(new Runnable() {
-            @Override
-            public void run() {
-                NaviMediaPlayer.getInstance().playNaviWarningSound(type);
-            }
-        });
+        ThreadManager.getInstance().postUi(() -> NaviMediaPlayer.getInstance().playNaviWarningSound(type));
     }
 
     @Override

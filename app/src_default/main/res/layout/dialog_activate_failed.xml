@@ -68,9 +68,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/line">
-                <com.android.car.ui.FocusArea
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/dialog_confirm"
                         android:layout_width="@dimen/dp_0"
@@ -97,7 +94,6 @@
                         android:text="@string/activation_finish"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_36" />
-                </com.android.car.ui.FocusArea>
             </com.sgm.navi.ui.view.SkinLinearLayout>
         </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.sgm.navi.ui.view.SkinConstraintLayout>

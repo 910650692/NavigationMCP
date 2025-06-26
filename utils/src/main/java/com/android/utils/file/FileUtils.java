@@ -16,6 +16,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.PublicKey;
 
 /**
  * @Description TODO
@@ -31,19 +33,6 @@ import java.io.InputStream;
  */
 public class FileUtils {
     private static final String TAG = FileUtils.class.getSimpleName();
-
-    private static final int FILE_BUFFER = 1024;
-
-    private static final int QUANTITY_VALUE = 100;
-
-    private static final int DATA_BYTE = 2048;
-
-    private static final int LENGHT_LIMIT = 3;
-
-    public static String SD_PATH;
-    public static String SD_APP_PATH;
-    public static String APP_FILE_PATH;
-    public static String APP_CACHE_PATH;
     private Context mContext;
 
     private FileUtils() {
@@ -52,10 +41,6 @@ public class FileUtils {
 
     public void initFile(Context context) {
         this.mContext = context;
-        getEmulatedPhonePath();
-        getEmulatedSDPath();
-        getAPPCachePath();
-        getAppFilePath();
     }
 
     public boolean checkFile(String filepath) {
@@ -301,8 +286,8 @@ public class FileUtils {
     /**
      * 删除文件路径.
      *
-     * @param dir
-     * @return
+     * @param dir 文件路径
+     * @return 操作结果
      */
     private boolean deleteDir(File dir) {
         if (!checkFileDir(dir)) return true;
@@ -322,8 +307,8 @@ public class FileUtils {
     /**
      * 获取文件输入流.
      *
-     * @param filePath
-     * @return
+     * @param filePath 文件路径
+     * @return 文件的输入流
      */
     public byte[] getFileInputStream(String filePath) {
         byte[] buffer = null;
@@ -401,10 +386,10 @@ public class FileUtils {
     }
 
     /**
-     * 复制文件。targetFile为目标文件，file为源文件
+     * 复制文件
      *
-     * @param targetFile
-     * @param file
+     * @param targetFile 为目标文件
+     * @param file       为源文件
      */
     public void copyFile(File file, File targetFile) {
         if (targetFile.exists()) {
@@ -507,23 +492,23 @@ public class FileUtils {
      */
     public byte[] getAssetFileContent(String assetFileRelPath) {
         if (mContext == null) {
-            return null;
-        } else {
-            InputStream inputStream = null;
-            byte[] result = null;
-            try {
-                inputStream = mContext.getAssets().open(assetFileRelPath);
-                result = new byte[inputStream.available()];
-                inputStream.read(result);
-            } catch (IOException ioException) {
-                Logger.e("TAG", "读取本地文件异常 " + ioException.toString());
-            } finally {
-                safetyClose(inputStream);
+            return new byte[0]; // 返回空数组代替 null，避免空指针
+        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try (InputStream inputStream = mContext.getAssets().open(assetFileRelPath)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, length);
             }
-            return result;
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException ioException) {
+            Logger.e("TAG", "读取文件异常", ioException);
+            return new byte[0]; // 出错也返回空数组保持一致性
+        } finally {
+            safetyClose(byteArrayOutputStream);
         }
     }
-
 
     public boolean isAssetFile(String assetPath) {
         AssetManager assetManager = mContext.getAssets();
@@ -539,8 +524,8 @@ public class FileUtils {
         try {
             if (closeable == null) return;
             closeable.close();
-        } catch (IOException var2) {
-            var2.printStackTrace();
+        } catch (IOException exception) {
+            Logger.e(TAG, exception.getMessage());
         }
     }
 
@@ -582,67 +567,80 @@ public class FileUtils {
 
     /**
      * 应用内部缓存目录
-     *
-     * @return 内部沙箱位置：/data/user/0/your_package/cache
+     * <p>
+     * 内部沙箱位置：/data/user/0/your_package/cache
+     * </P>
      */
-    private void getAPPCachePath() {
-        APP_CACHE_PATH = mContext.getCacheDir().getAbsolutePath() + File.separator;
+    public String getAPPCachePath() {
+        String appCachePath = mContext.getCacheDir().getAbsolutePath() + File.separator;
+        Logger.i(TAG, "APP_CACHE_PATH", appCachePath);
+        return appCachePath;
     }
 
     /**
      * 应用内部缓存目录
-     *
-     * @return 内部沙箱位置：/data/data/0/your_package/files
+     * <p>
+     * 内部沙箱位置：/data/data/0/your_package/files
+     * </P>
      */
-    private void getAppFilePath() {
-        APP_FILE_PATH = mContext.getFilesDir().getAbsolutePath() + File.separator;
+    public String getAppFilePath() {
+        String appFilePath = mContext.getFilesDir().getAbsolutePath() + File.separator;
+        Logger.i(TAG, "APP_FILE_PATH", appFilePath);
+        return appFilePath;
     }
 
     /**
      * 应用外部缓存目录
      * <p>
      * 外部沙箱位置：sdcard/Android/data/your_package/files
-     * </>
-     *
+     * </P>
      */
-    private void getEmulatedPhonePath() {
-        boolean isAvailable = isExternalStorageAvailable();
-        boolean hasPermission = checkExternalStoragePermission(mContext);
-        Logger.i(TAG, "isAvailable:", isAvailable, " hasPermission:", hasPermission);
-        SD_APP_PATH = mContext.getExternalFilesDir(null) + File.separator;
+    public String getEmulatedPhonePath() {
+        String sdAppFilePath = mContext.getExternalFilesDir(null) + File.separator;
+        Logger.i(TAG, "SD_APP_FILE_PATH", sdAppFilePath);
+        return sdAppFilePath;
+    }
+
+    /**
+     * 外部存储位置
+     * <p>
+     * /storage/emulated/0
+     * </P>
+     */
+    public String getEmulatedSDPath() {
+        String sdCardPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
+        Logger.i(TAG, "SD_PATH", sdCardPath);
+        return sdCardPath;
+    }
+
+    public boolean isStorageAreaAvailable() {
+        boolean permission = checkExternalStoragePermission();
+        boolean storagePath = checkExternalStorageAvailable();
+        Logger.i(TAG, "storagePath hasPermission:", permission, "storagePath isAvailable:", storagePath);
+        return permission && storagePath;
     }
 
     /**
      * @return 是否有外部存储 true:有 false:没有
      */
-    public boolean isExternalStorageAvailable() {
+    public boolean checkExternalStorageAvailable() {
         String state = Environment.getExternalStorageState();
         if (!Environment.MEDIA_MOUNTED.equals(state)) {
+            Logger.i(TAG, "MNT partition was mounted fail");
             return false;
         }
-        Logger.d(TAG, "MNT partition was mounted successfully");
+        Logger.i(TAG, "MNT partition was mounted successfully");
         File file = mContext.getExternalFilesDir(null);
         return checkFileDir(file);
     }
 
     /**
-     * @param context context
      * @return 是否有权限访问外部存储
      */
-    private boolean checkExternalStoragePermission(Context context) {
-        int externalStoragePermissionCheck = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+    private boolean checkExternalStoragePermission() {
+        boolean externalStoragePermissionCheck = Environment.isExternalStorageManager();
         Logger.i(TAG, "externalStoragePermissionCheck:", externalStoragePermissionCheck);
-        return externalStoragePermissionCheck == PackageManager.PERMISSION_GRANTED;
-    }
-
-    /**
-     * 外部存储位置
-     *
-     * @return /storage/emulated/0
-     */
-    private void getEmulatedSDPath() {
-        SD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
+        return externalStoragePermissionCheck;
     }
 
     public static FileUtils getInstance() {

@@ -8,13 +8,6 @@ import com.android.utils.file.FileUtils;
 import java.io.File;
 
 public interface AutoMapConstant {
-    /*** 沙箱位置 **/
-    String SD_PATH = FileUtils.SD_APP_PATH;
-    /*** 地图文件缓存位置 sdcard/Android/data/your_package/files/AutoMap/ **/
-    String AUTO_MAP_PATH = SD_PATH + "AutoMap" + File.separator;
-    /*** 高德地图文件缓存位置 sdcard/Android/data/your_package/files/AutoMap/Gbl/**/
-    String GBL_MAP = AUTO_MAP_PATH + "Gbl" + File.separator;
-    String GM_LOG_ROOT_PATH = "/data/gmlogger/proclog/";
     float MAP_ZOOM_LEVEL_MAX = 20F;
     float MAP_ZOOM_LEVEL_MIN = 3F;
     float MAP_ZOOM_LEVEL_DEFAULT = 15F;

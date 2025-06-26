@@ -33,7 +33,7 @@ public class ThreadManager {
     }
 
     public void initThreadPool(Context context) {
-        mThreadPool = new ThreadPool(context);
+        mThreadPool = new ThreadPool(context).initPool();
         mThreadHandler = new ThreadHandlerPool();
         mThreadScheduled = new ThreadScheduledPool(context);
     }

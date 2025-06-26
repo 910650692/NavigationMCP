@@ -1,8 +1,21 @@
 package com.sgm.navi.service;
 
+import com.android.utils.file.FileUtils;
+
 import java.io.File;
 
 public interface GBLCacheFilePath extends AutoMapConstant {
+    /*** 外部沙箱位置 **/
+    String SD_PATH = FileUtils.getInstance().getEmulatedPhonePath();
+
+    /*** 地图文件缓存位置 sdcard/Android/data/your_package/files/AutoMap/ **/
+    String AUTO_MAP_PATH = SD_PATH + "AutoMap" + File.separator;
+
+    /*** 高德地图文件缓存位置 sdcard/Android/data/your_package/files/AutoMap/Gbl/**/
+    String GBL_MAP = AUTO_MAP_PATH + "Gbl" + File.separator;
+
+    String GM_LOG_ROOT_PATH = "/data/gmlogger/proclog/";
+
     /*** sdcard/Android/data/your_package/files/AutoMap/Gbl/libs/ **/
     public static final String DEBUG_LIBS_DIR = GBL_MAP + "libs" + File.separator;
 

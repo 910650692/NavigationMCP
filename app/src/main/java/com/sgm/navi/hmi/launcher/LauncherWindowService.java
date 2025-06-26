@@ -252,9 +252,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     public static void startService() {
         if (TextUtils.equals("buick", BuildConfig.FLAVOR)) return;
         Logger.i(TAG, "start service success!");
-        ThreadManager.getInstance().postUi(() -> {
-            InstanceHolder.instance.init();
-        });
+        InstanceHolder.instance.init();
     }
 
     public static void stopService() {

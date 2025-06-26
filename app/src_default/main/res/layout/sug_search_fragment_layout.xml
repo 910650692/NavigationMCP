@@ -15,6 +15,8 @@
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_34"
+        android:layout_marginStart="@dimen/dp_34"
         android:clickable="true"
         android:orientation="vertical">
 
@@ -22,6 +24,7 @@
             android:id="@+id/scene_sug_poi_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_130"
             app:layoutType="scene_sug_search_fragment" />
     </com.sgm.navi.ui.view.SkinLinearLayout>
 

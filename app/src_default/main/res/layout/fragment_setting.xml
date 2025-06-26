@@ -9,19 +9,19 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1282"
-        android:layout_height="@dimen/dp_772"
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
         android:clickable="true"
-        android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_shadow_navi_buick">
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/setting_close"
             clickCommand="@{ViewModel.mFinishSetting}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_26"
-            android:layout_marginTop="@dimen/dp_38"
+            android:layout_marginStart="@dimen/dp_22"
+            android:layout_marginTop="@dimen/dp_32"
             android:src="@drawable/img_setting_close"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -35,14 +35,15 @@
 
             <com.sgm.navi.scene.ui.setting.SceneVerticalTabLayout
                 android:id="@+id/tabLayout"
-                android:layout_width="@dimen/dp_223"
+                android:layout_width="@dimen/dp_190"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_101"
-                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_86"
+                android:layout_marginStart="@dimen/dp_34"
                 android:background="@null"
                 app:tabBackground="@drawable/bg_setting_tab"
                 app:tabGravity="fill"
                 app:tabMode="fixed"
+                style="@style/CustomTabLayout"
                 app:tabIndicatorHeight="0dp"
                 app:tabRippleColor="@null" />
 
@@ -50,17 +51,17 @@
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="match_parent"
                 android:background="@color/setting_line"
-                android:layout_marginTop="@dimen/dp_101"
+                android:layout_marginTop="@dimen/dp_86"
                 android:layout_marginBottom="@dimen/dp_40"
-                android:layout_marginStart="@dimen/dp_30"/>
+                android:layout_marginStart="@dimen/dp_26"/>
 
             <FrameLayout
                 android:id="@+id/fragment_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp_40"
-                android:layout_marginBottom="@dimen/dp_40"
-                android:layout_marginStart="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_34"
+                android:layout_marginBottom="@dimen/dp_34"
+                android:layout_marginStart="@dimen/dp_26"
                 android:layout_weight="1" />
 
         </com.sgm.navi.ui.view.SkinLinearLayout>

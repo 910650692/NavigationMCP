@@ -12,7 +12,6 @@ import lombok.Setter;
 public class AppCache {
     private Context mContext;
     private Application mApplication;
-    private String mFlavor;
 
     public static AppCache getInstance() {
         return AppCache.Helper.RA;

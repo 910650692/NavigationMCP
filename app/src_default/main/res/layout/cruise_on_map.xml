@@ -15,38 +15,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="false"
-        android:minWidth="@dimen/dp_638"
+        android:minWidth="@dimen/dp_577"
         android:orientation="vertical">
 
         <com.sgm.navi.scene.ui.navi.SceneNaviLanesView
             android:id="@+id/cruise_lanes_view"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_92"
-            android:layout_marginStart="@dimen/dp_466"
-            android:minWidth="@dimen/dp_484"
+            android:layout_height="@dimen/dp_87"
+            android:layout_marginStart="@dimen/dp_34"
+            android:minWidth="@dimen/dp_430"
             app:layout_constraintStart_toStartOf="parent"
             android:background="@drawable/bg_common_with_corner"
             android:clickable="true"
             android:focusable="false"
-            android:minHeight="@dimen/dp_92"
+            android:minHeight="@dimen/dp_87"
             android:visibility="@{ViewModel.cruiseLanesVisibility ? View.VISIBLE : View.INVISIBLE}" />
 
 
         <View
             android:id="@+id/view_bg"
             clickCommand="@{ViewModel.muteOrUnMute}"
-            android:layout_width="@dimen/dp_165"
-            android:layout_height="@dimen/dp_148"
-            android:layout_marginTop="@dimen/dp_362"
+            android:layout_width="@dimen/dp_140"
+            android:layout_height="@dimen/dp_124"
             android:background="@drawable/bg_common_with_corner"
             android:focusable="true"
+            android:layout_marginTop="@dimen/dp_695"
             app:layout_constraintStart_toStartOf="@id/cruise_lanes_view"
-            app:layout_constraintTop_toBottomOf="@id/cruise_lanes_view" />
+            app:layout_constraintTop_toBottomOf="@id/cruise_lanes_view"/>
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_voice"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:scaleType="centerInside"
             android:src="@drawable/cruise_broad_image_select"
             app:layout_constraintBottom_toTopOf="@id/tv_title"
@@ -59,9 +59,9 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_3"
             android:textColor="@color/cruise_title_color"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintBottom_toBottomOf="@id/view_bg"
             app:layout_constraintEnd_toEndOf="@id/view_bg"
             app:layout_constraintStart_toStartOf="@id/view_bg"
@@ -76,7 +76,7 @@
             android:gravity="center"
             android:minHeight="@dimen/dp_90"
             android:visibility="invisible"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
             android:paddingHorizontal="@dimen/dp_26"
             android:textColor="@color/common_title_purple_color"
             app:layout_constraintBottom_toBottomOf="@id/view_bg"

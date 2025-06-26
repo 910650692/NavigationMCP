@@ -9,50 +9,47 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1224"
-        android:layout_height="@dimen/dp_714"
-        android:background="@drawable/bg_setting_fragment">
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
-        <com.sgm.navi.ui.view.SkinLinearLayout
+        <com.sgm.navi.ui.view.SkinRelativeLayout
             android:id="@+id/near_offline_map_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_134"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_offline_map_back"
                 clickCommand="@{ViewModel.mCloseNearMapDataView}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_26"
-                android:src="@drawable/img_setting_back"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_22"
+                android:src="@drawable/img_setting_back"/>
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/offline_near_offline_data"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_414"
+                android:layout_centerInParent="true"
                 android:textColor="@color/setting_bg_tab_text_select"
-                android:textSize="@dimen/sp_38"
-                app:layout_constraintStart_toEndOf="@+id/iv_offline_map_back"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-
-        </com.sgm.navi.ui.view.SkinLinearLayout>
+                android:textSize="@dimen/sp_29"/>
+        </com.sgm.navi.ui.view.SkinRelativeLayout>
 
         <!--附件城市地图数据-->
         <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/rv_near_offline"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginEnd="@dimen/dp_34"
+            android:layout_marginBottom="@dimen/dp_34"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/near_offline_map_title" />

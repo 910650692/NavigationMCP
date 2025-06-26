@@ -14,7 +14,7 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         clickCommand="@{viewModel.rootClick}"
-        android:background="@drawable/bg_shadow_navi_buick"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:layout_width="@dimen/dp_698"
         android:layout_height="@dimen/dp_772"
         android:paddingVertical="@dimen/dp_29"

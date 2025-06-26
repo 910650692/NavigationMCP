@@ -14,21 +14,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ThreadFactoryPxy implements ThreadFactory {
     private static final String TAG = ThreadFactoryPxy.class.getSimpleName();
 
-    private AtomicInteger atomicInteger = new AtomicInteger();
+    private final AtomicInteger atomicInteger = new AtomicInteger();
 
-    private String mThreadName;
+    private final String mThreadName;
 
-    private String mGroupName;
+    private final int threadMaxNum;
 
-    private int threadMaxNum;
-
-    private Group group;
+    private final Group group;
 
     protected ThreadFactoryPxy(int maxNum, String threadName, String groupName) {
         threadMaxNum = maxNum;
-        mGroupName= groupName;
         mThreadName = threadName;
-        group = new Group(mGroupName);
+        group = new Group(groupName);
     }
 
     @Override

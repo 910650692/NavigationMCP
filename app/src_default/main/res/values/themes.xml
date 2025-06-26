@@ -1,8 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.NaviApp" parent="Base.Theme.NaviApp" >
-        <item name="android:font">@font/buick</item>
-    </style>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <style name="ClusterTheme" parent="BaseClusterTheme" >
         <item name="android:font">@font/buick</item>
+    </style>
+
+    <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabPaddingStart">0dp</item>
+        <item name="tabPaddingEnd">0dp</item>
+        <item name="tabPaddingTop">0dp</item>
+        <item name="tabPaddingBottom">0dp</item>
     </style>
 </resources>

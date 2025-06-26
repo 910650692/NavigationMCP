@@ -13,16 +13,17 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1282"
-        android:layout_height="@dimen/dp_772"
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
         android:clickable="true"
-        android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_shadow_navi_buick">
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/we_chat_title_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_138"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
@@ -30,7 +31,7 @@
                 clickCommand="@{ViewModel.mChatConnectBack}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_26"
+                android:layout_marginStart="@dimen/dp_22"
                 android:src="@drawable/img_setting_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/account_chat_connect"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_29"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -57,48 +58,48 @@
             app:layout_constraintTop_toBottomOf="@+id/we_chat_title_layout">
 
             <com.sgm.navi.ui.view.SkinLinearLayout
-                android:layout_width="@dimen/dp_260"
-                android:layout_height="@dimen/dp_310"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_80"
+                android:layout_width="@dimen/dp_221"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_123"
+                android:layout_marginStart="@dimen/dp_68"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/chat_content_img"
-                    android:layout_width="@dimen/dp_237"
-                    android:layout_height="@dimen/dp_237"
+                    android:layout_width="@dimen/dp_221"
+                    android:layout_height="@dimen/dp_221"
                     android:background="@drawable/bg_we_chat"
-                    android:padding="@dimen/dp_11"
+                    android:padding="@dimen/dp_10"
                     tools:visibility="gone"
                     android:visibility="@{ViewModel.mQRCodeVisible ? View.VISIBLE : View.GONE}" />
 
                 <com.sgm.navi.ui.view.SkinLinearLayout
-                    android:layout_width="@dimen/dp_260"
-                    android:layout_height="@dimen/dp_260"
+                    android:layout_width="@dimen/dp_221"
+                    android:layout_height="@dimen/dp_221"
                     android:orientation="vertical"
                     android:gravity="center"
                     android:visibility="@{ViewModel.mQRCodeLoadingVisible ? View.VISIBLE : View.GONE}">
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/account_qrcode_loading"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/dp_102"
+                        android:layout_height="@dimen/dp_102"
                         android:src="@drawable/img_setting_qr_loading"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_qr_code_loading"
-                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_marginTop="@dimen/dp_20"
                         android:textColor="@color/setting_bg_tab_text_unselect"
-                        android:textSize="@dimen/sp_30"/>
+                        android:textSize="@dimen/sp_26"/>
 
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                 <com.sgm.navi.ui.view.SkinLinearLayout
-                    android:layout_width="@dimen/dp_260"
-                    android:layout_height="@dimen/dp_260"
+                    android:layout_width="@dimen/dp_221"
+                    android:layout_height="@dimen/dp_221"
                     android:orientation="vertical"
                     android:gravity="center"
                     tools:visibility="gone"
@@ -108,16 +109,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_qr_code_load_failed"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                     <com.sgm.navi.ui.view.SkinButton
                         clickCommand="@{ViewModel.mRetry}"
-                        android:layout_width="@dimen/dp_200"
-                        android:layout_height="@dimen/dp_76"
-                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_width="@dimen/dp_225"
+                        android:layout_height="@dimen/dp_65"
+                        android:layout_marginTop="@dimen/dp_20"
                         android:text="@string/setting_qr_code_load_retry"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         android:textColor="@color/setting_white"
                         android:background="@drawable/bg_setting_preference_select"/>
                 </com.sgm.navi.ui.view.SkinLinearLayout>
@@ -127,20 +128,20 @@
                     android:layout_height="wrap_content"
                     android:text="@string/chat_connect_login_tip"
                     android:textColor="@color/setting_bg_tab_text_unselect"
-                    android:textSize="@dimen/sp_26"
-                    android:layout_marginTop="@dimen/dp_16" />
+                    android:textSize="@dimen/sp_22"
+                    android:layout_marginTop="@dimen/dp_26" />
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_161">
+                android:layout_marginTop="@dimen/dp_132"
+                android:layout_marginStart="@dimen/dp_77">
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/chat_content_img_tip"
-                    android:layout_width="@dimen/dp_464"
-                    android:layout_height="@dimen/dp_190"
+                    android:layout_width="@dimen/dp_395"
+                    android:layout_height="@dimen/dp_221"
                     android:src="@mipmap/icon_setting_wechat"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -151,9 +152,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/chat_connect_send_to_car"
-                    android:textSize="@dimen/sp_30"
+                    android:textSize="@dimen/sp_26"
                     android:textColor="@color/setting_bg_tab_text_unselect"
-                    android:layout_marginTop="@dimen/dp_31"
+                    android:layout_marginTop="@dimen/dp_34"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/chat_content_img_tip" />
@@ -161,9 +162,9 @@
                 <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:text="@string/chat_connect_tip"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_22"
                     android:textColor="@color/setting_car_number_tip"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -182,42 +183,44 @@
             <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_123"
+                android:layout_marginStart="@dimen/dp_68"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <com.sgm.navi.ui.view.SkinImageView
-                    android:layout_width="@dimen/dp_96"
-                    android:layout_height="@dimen/dp_96"
-                    android:layout_marginStart="@dimen/dp_118"
-                    android:src="@drawable/img_user_default"/>
+                    android:layout_width="@dimen/dp_82"
+                    android:layout_height="@dimen/dp_82"
+                    android:src="@drawable/img_default_user_icon"/>
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_34"
+                    android:textSize="@dimen/sp_29"
                     android:textColor="@color/black"
+                    android:gravity="center_vertical"
                     android:drawableStart="@drawable/img_wechat_unbind"
-                    android:layout_marginTop="@dimen/dp_14"
-                    android:layout_marginStart="@dimen/dp_60"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:drawablePadding="@dimen/dp_3"
                     android:text="@string/chat_connect_bind"/>
 
                 <com.sgm.navi.ui.view.SkinTextView
                     clickCommand="@{ViewModel.mHowToBind}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_34"
+                    android:textSize="@dimen/sp_29"
+                    android:layout_marginTop="@dimen/dp_7"
+                    android:layout_marginStart="@dimen/dp_30"
                     android:textColor="@color/setting_bg_tab_text_unselect"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginStart="@dimen/dp_122"
                     android:text="@string/chat_connect_no_bind"/>
 
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <com.sgm.navi.ui.view.SkinImageView
-                android:layout_width="@dimen/dp_750"
-                android:layout_height="@dimen/dp_477"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_122"
+                android:layout_width="@dimen/dp_638"
+                android:layout_height="@dimen/dp_456"
+                android:layout_marginTop="@dimen/dp_123"
+                android:layout_marginStart="@dimen/dp_77"
                 android:src="@mipmap/icon_wechat_bind"/>
         </com.sgm.navi.ui.view.SkinLinearLayout>
 

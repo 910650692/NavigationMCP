@@ -27,9 +27,6 @@ public class ThreadPool extends Pool {
     /*** 核心线程 **/
     private static int THREAD_POOL_CENTER_SIZE = 4;
 
-    /*** 最大线程数 **/
-    private static int THREAD_MAX_NUMBER = 16;
-
     /*** 队列最大值 **/
     private static final int QUEUE_NUM = 20;
 
@@ -38,19 +35,23 @@ public class ThreadPool extends Pool {
 
     private ThreadPoolExecutor mThreadPool;
 
-    private ThreadFactoryPxy mFactoryPxy;
-
-    private BlockingQueue<Runnable> mWorkQueue;
+    private Context mContext;
 
     protected ThreadPool(Context context) {
+        this.mContext = context;
         //取最优核心线程数
         if (CPU_NAM > THREAD_POOL_CENTER_SIZE) THREAD_POOL_CENTER_SIZE = CPU_NAM;
-        THREAD_MAX_NUMBER = THREAD_POOL_CENTER_SIZE * 10;
-        mWorkQueue = new LinkedBlockingQueue<>(QUEUE_NUM);
-        mFactoryPxy = new ThreadFactoryPxy(THREAD_MAX_NUMBER, Logger.getDefaultTag(), context.getPackageName());
-        mThreadPool = new ThreadPoolExecutor(THREAD_POOL_CENTER_SIZE,
-                THREAD_MAX_NUMBER,
-                KEEP_ALIVE_TIME, TimeUnit.SECONDS, mWorkQueue, mFactoryPxy);
+    }
+
+    protected ThreadPool initPool() {
+        if (null == mThreadPool) {
+            mThreadPool = new ThreadPoolExecutor(THREAD_POOL_CENTER_SIZE,
+                    THREAD_POOL_CENTER_SIZE * 10,
+                    KEEP_ALIVE_TIME, TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<>(QUEUE_NUM),
+                    new ThreadFactoryPxy(THREAD_POOL_CENTER_SIZE * 10, Logger.getDefaultTag(), mContext.getPackageName()));
+        }
+        return this;
     }
 
     protected boolean isShutdown() {
@@ -63,6 +64,7 @@ public class ThreadPool extends Pool {
         if (null == mThreadPool) return;
         mThreadPool.shutdown();
         mThreadPool = null;
+        mContext = null;
     }
 
     /**

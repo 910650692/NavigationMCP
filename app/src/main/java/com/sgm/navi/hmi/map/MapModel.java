@@ -32,6 +32,7 @@ import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.exportservice.ExportIntentParam;
+import com.sgm.navi.flavor.CarModelsFeature;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
@@ -668,7 +669,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapModelHelp.onNaviStatusChange(naviStatus);
         if (NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) && !mSettingPackage.getPrivacyStatus()) {
             //导航结束，判断当前隐私协议状态，如果为拒绝，退出应用
-            System.exit(0);
+            CarModelsFeature.getInstance().exitApp();
         }
     }
 

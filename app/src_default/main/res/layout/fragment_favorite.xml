@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:anedroid="http://schemas.android.com/tools">
 
     <data>
         <import type="android.view.View" />
@@ -50,7 +51,7 @@
                 clickCommand="@{ViewModel.mFavoriteSync}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_34"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_30"
                 android:visibility="gone"
@@ -75,49 +76,50 @@
                 <com.sgm.navi.ui.view.SkinRelativeLayout
                     android:id="@+id/rl_favorite_home"
                     clickCommand="@{ViewModel.mGoSettingHome}"
-                    android:layout_width="@dimen/dp_418"
-                    android:layout_height="@dimen/dp_130"
+                    android:layout_width="@dimen/dp_356"
+                    android:layout_height="@dimen/dp_111"
                     android:background="@drawable/bg_setting_voice"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/favorite_title">
 
                     <com.sgm.navi.ui.view.SkinImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/dp_49"
+                        android:layout_height="@dimen/dp_49"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/dp_14"
+                        android:layout_marginStart="@dimen/dp_12"
                         android:src="@drawable/img_favorite_home" />
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/favorite_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_96"
-                        android:layout_marginTop="@dimen/dp_22"
+                        android:layout_marginStart="@dimen/dp_82"
+                        android:layout_marginTop="@dimen/dp_19"
                         android:text="@string/favorite_home"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp_34" />
+                        android:textSize="@dimen/sp_29" />
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/favorite_home_name"
-                        android:layout_width="@dimen/dp_210"
+                        android:layout_width="@dimen/dp_190"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/favorite_home"
                         android:layout_marginTop="@dimen/dp_2"
-                        android:layout_marginStart="@dimen/dp_96"
+                        android:layout_marginStart="@dimen/dp_82"
                         android:text="@string/favorite_setting"
+                        android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30" />
+                        android:textSize="@dimen/sp_26" />
 
                     <com.sgm.navi.ui.view.SkinImageView
-                        clickCommand="@{ViewModel.mMoreHome}"
                         android:id="@+id/more_Home"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_24"
-                        android:layout_centerVertical="true"
+                        clickCommand="@{ViewModel.mMoreHome}"
+                        android:layout_width="@dimen/dp_69"
+                        android:layout_height="@dimen/dp_69"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/dp_20"
                         android:src="@drawable/img_favorite_more" />
                 </com.sgm.navi.ui.view.SkinRelativeLayout>
 
@@ -125,50 +127,51 @@
                 <com.sgm.navi.ui.view.SkinRelativeLayout
                     android:id="@+id/rl_favorite_company"
                     clickCommand="@{ViewModel.mGoSettingCompany}"
-                    android:layout_width="@dimen/dp_418"
-                    android:layout_height="@dimen/dp_130"
+                    android:layout_width="@dimen/dp_356"
+                    android:layout_height="@dimen/dp_111"
                     android:background="@drawable/bg_setting_voice"
-                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginStart="@dimen/dp_20"
                     app:layout_constraintLeft_toRightOf="@+id/rl_favorite_home"
                     app:layout_constraintTop_toBottomOf="@+id/favorite_title">
 
                     <com.sgm.navi.ui.view.SkinImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/dp_49"
+                        android:layout_height="@dimen/dp_49"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/dp_14"
+                        android:layout_marginStart="@dimen/dp_12"
                         android:src="@drawable/img_favorite_company" />
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/favorite_company"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_96"
-                        android:layout_marginTop="@dimen/dp_22"
+                        android:layout_marginStart="@dimen/dp_82"
+                        android:layout_marginTop="@dimen/dp_19"
                         android:text="@string/favorite_company"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp_34" />
+                        android:textSize="@dimen/sp_29" />
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/favorite_company_name"
-                        android:layout_width="@dimen/dp_210"
+                        android:layout_width="@dimen/dp_190"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/favorite_company"
-                        android:layout_marginStart="@dimen/dp_96"
+                        android:layout_marginStart="@dimen/dp_82"
                         android:layout_marginTop="@dimen/dp_2"
                         android:text="@string/favorite_setting"
+                        android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30" />
+                        android:textSize="@dimen/sp_26" />
 
                     <com.sgm.navi.ui.view.SkinImageView
-                        clickCommand="@{ViewModel.mMoreCompany}"
                         android:id="@+id/more_company"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_24"
-                        android:layout_centerVertical="true"
+                        clickCommand="@{ViewModel.mMoreCompany}"
+                        android:layout_width="@dimen/dp_69"
+                        android:layout_height="@dimen/dp_69"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/dp_20"
                         android:src="@drawable/img_favorite_more" />
                 </com.sgm.navi.ui.view.SkinRelativeLayout>
 
@@ -178,7 +181,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/dp_41"
+                    android:layout_marginTop="@dimen/dp_26"
                     android:background="@{ViewModel.mIsHomeCompanyDisplayed ? @drawable/img_setting_switch_on : @drawable/img_setting_switch_off}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rl_favorite_home" />
@@ -188,10 +191,11 @@
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_favorite_switch"
                     android:textColor="@color/color_black_70"
-                    android:textSize="@dimen/sp_30"
-                    android:layout_marginStart="@dimen/dp_24"
+                    android:textSize="@dimen/sp_26"
+                    android:layout_marginStart="@dimen/dp_20"
                     app:layout_constraintStart_toEndOf="@+id/switch_favorite"
-                    app:layout_constraintTop_toTopOf="@+id/switch_favorite" />
+                    app:layout_constraintTop_toTopOf="@+id/switch_favorite"
+                    app:layout_constraintBottom_toBottomOf="@+id/switch_favorite"/>
 
                 <!--常去地址-->
                 <com.sgm.navi.ui.view.SkinTextView
@@ -200,8 +204,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_frequent_address"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_34"
-                    android:layout_marginTop="@dimen/dp_40"
+                    android:textSize="@dimen/sp_29"
+                    android:layout_marginTop="@dimen/dp_27"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/switch_favorite" />
 
@@ -211,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:columnCount="2"
                     android:rowCount="2"
-                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_14"
                     android:useDefaultMargins="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -234,8 +238,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_title"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_34"
-                    android:layout_marginTop="@dimen/dp_28"
+                    android:textSize="@dimen/sp_29"
+                    android:layout_marginTop="@dimen/dp_34"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/frequent_address_container" />
 
@@ -244,13 +248,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="@{ViewModel.mAddVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginEnd="@dimen/dp_41"
+                    android:layout_marginEnd="@dimen/dp_35"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_favorite_title" >
+                    app:layout_constraintTop_toTopOf="@+id/tv_favorite_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_favorite_title">
 
                     <com.sgm.navi.ui.view.SkinImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
                         android:layout_gravity="center"
                         android:src="@drawable/img_favorite_add" />
 
@@ -260,18 +265,19 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/favorite_add"
-                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginStart="@dimen/dp_7"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30" />
+                        android:textSize="@dimen/sp_26" />
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                 <com.sgm.navi.ui.view.SkinLinearLayout
                     android:id="@+id/tv_favorite_switch"
-                    android:layout_width="@dimen/dp_579"
-                    android:layout_height="@dimen/dp_90"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_77"
                     android:gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_34"
                     android:orientation="horizontal"
+                    android:layout_marginEnd="@dimen/dp_34"
                     android:visibility="@{ViewModel.mIsEVCar ? View.VISIBLE : View.GONE}"
                     android:background="@drawable/bg_setting_checkbox"
                     app:layout_constraintStart_toStartOf="parent"
@@ -292,10 +298,10 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:button="@null"
-                            android:checked="true"
+                            android:checked="@{ViewModel.mFavoriteListChecked}"
                             android:background="@drawable/bg_setting_checkbox_selector"
                             android:gravity="center"
-                            android:textSize="@dimen/sp_34"
+                            android:textSize="@dimen/sp_29"
                             android:textColor="@drawable/color_setting_checkbox_selector"
                             android:text="@string/favorite_switch_common" />
 
@@ -307,8 +313,9 @@
                             android:layout_weight="1"
                             android:button="@null"
                             android:background="@drawable/bg_setting_checkbox_selector"
+                            android:checked="@{!ViewModel.mFavoriteListChecked}"
                             android:gravity="center"
-                            android:textSize="@dimen/sp_34"
+                            android:textSize="@dimen/sp_29"
                             android:textColor="@drawable/color_setting_checkbox_selector"
                             android:text="@string/favorite_switch_charge" />
                     </com.sgm.navi.ui.view.SkinRadioGroup>
@@ -322,7 +329,7 @@
                     android:layout_height="match_parent"
                     android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginBottom="@dimen/dp_90"
+                    android:layout_marginBottom="@dimen/dp_110"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -345,17 +352,17 @@
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_tip"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30"/>
+                        android:textSize="@dimen/sp_26"/>
 
                     <com.sgm.navi.ui.view.SkinTextView
                         clickCommand="@{ViewModel.mAddFavorite}"
                         android:layout_width="@dimen/dp_264"
-                        android:layout_height="@dimen/dp_83"
+                        android:layout_height="@dimen/dp_76"
                         android:gravity="center"
                         android:text="@string/favorite_add"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         android:textColor="@color/setting_white"
-                        android:layout_marginTop="@dimen/dp_28"
+                        android:layout_marginTop="@dimen/dp_24"
                         android:background="@drawable/bg_setting_preference_select"/>
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
@@ -375,7 +382,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_no_charging"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         android:layout_marginTop="@dimen/dp_20" />
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -383,17 +390,18 @@
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_no_charging_tip"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         android:layout_marginTop="@dimen/dp_10" />
 
                     <com.sgm.navi.ui.view.SkinTextView
+                        clickCommand="@{ViewModel.mSendSGMLogin}"
                         android:layout_width="@dimen/dp_264"
                         android:layout_height="@dimen/dp_80"
                         android:gravity="center"
                         android:text="@string/account_login"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/dp_28"
+                        android:layout_marginTop="@dimen/dp_24"
                         android:background="@drawable/bg_setting_preference_select"/>
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
@@ -413,7 +421,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_no_charging_data"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         android:layout_marginBottom="@dimen/dp_200"/>
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
@@ -433,7 +441,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_charging_request_fail"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30" />
+                        android:textSize="@dimen/sp_26" />
 
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -441,7 +449,7 @@
                         android:layout_height="@dimen/dp_83"
                         android:gravity="center"
                         android:text="@string/route_refresh"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         android:textColor="@color/white"
                         android:layout_marginTop="@dimen/dp_28"
                         android:background="@drawable/bg_setting_preference_select"/>
@@ -463,7 +471,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_charging_offline"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         android:layout_marginBottom="@dimen/dp_250" />
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
@@ -478,7 +486,7 @@
             android:orientation="horizontal"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_34"
             android:background="@drawable/bg_setting_top"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -498,7 +506,7 @@
                 android:text="@string/favorite_top"
                 android:layout_marginStart="@dimen/dp_136"
                 android:textColor="@color/color_black_70"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_29"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>

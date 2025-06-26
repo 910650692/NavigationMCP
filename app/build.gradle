@@ -16,10 +16,6 @@ androidAopConfig {
     cutInfoJson false
 }
 
-def generateTime() {
-    return new Date().format("yyyyMMdd_HHmmss")
-}
-
 android {
     namespace 'com.sgm.navi.hmi'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
@@ -140,6 +136,7 @@ android {
             keyPassword 'android'
         }
     }
+
     buildTypes {
         debug {
             debuggable true
@@ -173,18 +170,18 @@ android {
             println("打包凯迪车型资源")
         }
         clea_8255 {
-            java.srcDirs = ['src_clea_8255/main/java']
-            res.srcDirs = ['src_clea_8255/main/res']
+            java.srcDirs = ['src_clea_557/main/java']
+            res.srcDirs = ['src_clea_557/main/res']
             println("打包5578255车型资源")
         }
         clea_local_8155 {
-            java.srcDirs = ['src_clea_8155/main/java']
-            res.srcDirs = ['src_clea_8155/main/res']
+            java.srcDirs = ['src_clea_ndnc/main/java']
+            res.srcDirs = ['src_clea_ndnc/main/res']
             println("打包NDNC8155车型资源")
         }
         clea_8775 {
-            java.srcDirs = ['src_clea_8775/main/java']
-            res.srcDirs = ['src_clea_8775/main/res']
+            java.srcDirs = ['src_clea_ndnc/main/java']
+            res.srcDirs = ['src_clea_ndnc/main/res']
             println("打包NDNC8775车型资源")
         }
     }
@@ -218,9 +215,9 @@ android {
 
 dependencies {
     implementation libs.bundles.android.library
-    implementation libs.car.ui.lib
+    cadiImplementation libs.car.ui.lib
     debugImplementation(libs.leak.canary)
-    implementation files('src\\libs\\PatacLauncherManager.jar')
+    implementation files('src/libs/PatacLauncherManager.jar')
     testImplementation libs.bundles.test.junit
     androidTestImplementation libs.bundles.android.junit
     implementation libs.work.runtime
@@ -238,6 +235,10 @@ dependencies {
     implementation libs.arouter.api
     annotationProcessor libs.arouter.compiler
     implementation libs.sgmsystem.extendservice
+}
+
+static def generateTime() {
+    return new Date().format("yyyyMMdd_HHmmss")
 }
 
 static def getProductFlavorList(variant) {

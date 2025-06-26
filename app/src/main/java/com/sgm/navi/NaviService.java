@@ -23,6 +23,8 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.adas.AdasClient;
 import com.sgm.navi.broadcast.SteeringWheelButtonReceiver;
+import com.sgm.navi.flavor.BaseCarModelsFeature;
+import com.sgm.navi.flavor.CarModelsFeature;
 import com.sgm.navi.l2pp.PatacL2ppManager;
 import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.navisender.NaviSender;
@@ -40,14 +42,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @date 2024/12/1
  */
 public class NaviService extends Service {
-    private static final String TAG = MapDefaultFinalTag.INIT_SERVICE_TAG;
+    private static final String TAG = MapDefaultFinalTag.INIT_HMI_TAG;
     private static final String NOTIFICATION_ID = "102";
     private static final String NOTIFICATION_NAME = "NaviService";
     private static final int FOREGROUND_SERVICE_ID = 0x02;
     public static final String START_APPLICATION_KEY = "startMapView";
     private static OneTimeWorkRequest fsaInitWorkRequest;
     private static OneTimeWorkRequest vrBridgeWorkRequest;
-    private static AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+    private static OneTimeWorkRequest carModelsFeatureWorkRequest;
+    private static final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
     public NaviService() {
         initBroadcast();
@@ -56,6 +59,9 @@ public class NaviService extends Service {
                 .addTag("Fsa Init")
                 .build();
         vrBridgeWorkRequest = new OneTimeWorkRequest.Builder(VrBridgeInitWorker.class)
+                .addTag("VrBridge init")
+                .build();
+        carModelsFeatureWorkRequest = new OneTimeWorkRequest.Builder(CarModelsFeatureWork.class)
                 .addTag("VrBridge init")
                 .build();
     }
@@ -82,7 +88,7 @@ public class NaviService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.i(TAG, "onStartCommand");
         boolean sdkStatus = StartService.getInstance().checkSdkIsNeedInit();
-        Logger.i(TAG, "校验Sdk是否需要初始化sdkStatus：" , sdkStatus);
+        Logger.i(TAG, "校验Sdk是否需要初始化sdkStatus：", sdkStatus);
         if (sdkStatus) StartService.getInstance().startInitSdk();
         stopSelf();
         return super.onStartCommand(intent, flags, startId);
@@ -147,12 +153,30 @@ public class NaviService extends Service {
         }
     }
 
+    public static final class CarModelsFeatureWork extends Worker {
+        final BaseCarModelsFeature carModelsFeature;
+
+        public CarModelsFeatureWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+            super(context, workerParams);
+            Logger.i(TAG, "CarModelsFeatureWork constructor");
+            carModelsFeature = CarModelsFeature.getInstance();
+        }
+
+        @NonNull
+        @Override
+        public Result doWork() {
+            carModelsFeature.initComponent();
+            return Result.success();
+        }
+    }
+
     private static final StartService.ISdkInitCallback sdkInitCallback = new StartService.ISdkInitCallback() {
         @Override
         public void onSdkInitSuccess() {
             WorkManager.getInstance(AppCache.getInstance().getMContext())
                     .beginWith(fsaInitWorkRequest)
                     .then(vrBridgeWorkRequest)
+                    .then(carModelsFeatureWorkRequest)
                     .enqueue();
         }
 

@@ -11,8 +11,6 @@ import com.android.utils.ToastUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.autonavi.gbl.map.model.EGLDeviceID;
-import com.autonavi.gbl.map.model.MapEngineID;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.servicemanager.model.ALCGroup;
 import com.autonavi.gbl.servicemanager.model.ALCLogLevel;
@@ -22,7 +20,6 @@ import com.autonavi.gbl.servicemanager.model.ServiceManagerEnum;
 import com.autonavi.gbl.util.model.KeyValue;
 import com.autonavi.gbl.util.observer.IPlatformInterface;
 import com.sgm.navi.service.AppCache;
-import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.calibration.CalibrationAdapter;
@@ -34,7 +31,6 @@ import com.sgm.navi.service.define.engine.GaodeLogLevel;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.greendao.CommonManager;
-import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,10 +47,9 @@ import java.util.Locale;
 public class EngineAdapterImpl implements IEngineApi {
     private static final String TAG = MapDefaultFinalTag.ENGINE_SERVICE_TAG;
     private List<EngineObserver> mEngineObserverList;
-    private static final String ERR_MSG = "Error Massage : ";
     // TODO: 配置父子渠道包，每次更新aar包时都要核实一下
-    private final String mChanelName = "C13953968867";
-    private final String mGmcL2ChanelName = "C13953984967";
+    private static final String mChanelName = "C13953968867";
+    private static final String mGmcL2ChanelName = "C13953984967";
 
     public EngineAdapterImpl() {
         mEngineObserverList = new ArrayList<>();
@@ -62,11 +57,11 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public void loadLibrary() {
-        Logger.i(TAG, "load gbl xxx.so");
-        if (FileUtils.getInstance().isExternalStorageAvailable()) {
-            SdkSoLoadUtils.loadLibrary();
+        try {
+            Logger.i(TAG, "load gbl xxx.so");
+            System.loadLibrary("Gbl");
             onEngineObserver(10008);
-        } else {
+        } catch (UnsatisfiedLinkError e) {
             onEngineObserver(10007);
         }
     }
@@ -252,7 +247,7 @@ public class EngineAdapterImpl implements IEngineApi {
     private int initSDKParam() {
         final BLInitParam blInitParam = new BLInitParam();
         //样式、播报等相关配置存放路径
-        blInitParam.dataPath.cfgFilePath = AutoMapConstant.GBL_MAP;
+        blInitParam.dataPath.cfgFilePath = GBLCacheFilePath.GBL_MAP;
         //离线地图数据下载存放路径
         blInitParam.dataPath.offlinePath = GBLCacheFilePath.OFFLINE_DOWNLOAD_DIR;
         //离线地图3D数据下载存放路径
