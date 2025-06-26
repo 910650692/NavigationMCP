@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import com.android.utils.SpUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.hmi.BuildConfig;
@@ -78,7 +79,8 @@ public class TestWindow {
 
         mBinding = LayoutTestBinding.inflate(LayoutInflater.from(activity));
         Logger.d(TAG, "isDebug", BuildConfig.DEBUG);
-        mBinding.testNavLog.setChecked(BuildConfig.DEBUG);
+        mBinding.testNavLog.setChecked(BuildConfig.DEBUG ||
+                SpUtils.getInstance().getBoolean(SpUtils.SP_KEY_LOG_SWITCH, false));
         mBinding.testGaodeLog.setChecked(BuildConfig.DEBUG);
         mWindowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         initLayoutParams();

@@ -3,6 +3,7 @@ package com.android.utils.log;
 import android.util.Log;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.SpUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -51,8 +52,9 @@ public class LogUtils {
      * @param logSwitch log switch
      */
     protected static void switchLog(boolean logSwitch) {
+        SpUtils.getInstance().putBoolean(SpUtils.SP_KEY_LOG_SWITCH, logSwitch);
         /*** log开关：true 开、false 关 **/
-        LOG_LEVEL = logSwitch ? Log.DEBUG : Log.ASSERT;
+        LOG_LEVEL = logSwitch ? Log.DEBUG : Log.ERROR;
     }
 
     /**

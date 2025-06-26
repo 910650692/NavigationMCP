@@ -15,7 +15,6 @@ import com.android.utils.thread.ThreadManager;
  */
 public class UtilsManager {
     public static final void init(Context context) {
-        Logger.switchLog(BuildConfig.DEBUG);
         ThreadManager.getInstance().initThreadPool(context);
         FileUtils.getInstance().initFile(context);
         NetWorkUtils.Companion.getInstance().init(context);
@@ -24,6 +23,10 @@ public class UtilsManager {
         ScreenUtils.Companion.getInstance().init(context);
         ResourceUtils.Companion.getInstance().init(context);
         DeviceUtils.mApplication = context;
+        SpUtils.getInstance().init(context);
+        Logger.switchLog(BuildConfig.DEBUG ||
+                SpUtils.getInstance().getBoolean(SpUtils.SP_KEY_LOG_SWITCH, false));
+        Logger.i("UtilsManager", "init");
     }
 
     public static final void clearCache() {
