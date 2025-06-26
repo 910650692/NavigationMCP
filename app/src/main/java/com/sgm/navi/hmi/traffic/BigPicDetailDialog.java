@@ -1,8 +1,10 @@
 package com.sgm.navi.hmi.traffic;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -31,6 +33,17 @@ public class BigPicDetailDialog extends BaseFullScreenDialog<DialogTrafficBigPic
     @Override
     protected DialogTrafficBigPicBinding initLayout() {
         return DialogTrafficBigPicBinding.inflate(LayoutInflater.from(getContext()));
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.width = 1780;
+        layoutParams.height = 800;
+        layoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        layoutParams.y = 212;
+        getWindow().setAttributes(layoutParams);
     }
 
     @Override
