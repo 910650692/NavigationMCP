@@ -705,6 +705,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
         mAlongWaySearchClick = () -> {
             cancelTimer();
+            if (mModel.isMaxRouteParam()) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.add_via_failure));
+                return;
+            }
             addFragment(new MainAlongWaySearchFragment(), null);
         };
 

@@ -697,6 +697,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         return mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
     }
 
+    public boolean isMaxRouteParam() {
+        return mRoutePackage.isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP);
+    }
+
     /***
      * 是否是启终点
      * @param poiInfoEntity poi数据
