@@ -114,7 +114,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.cruiseLayout.setViewModel(mViewModel);
         final int powerType = mViewModel.powerType();
         // 油车
-        if (powerType == 0) {
+        if (powerType != 1) {
             mBinding.skIvBasicRouting.setImageResource(R.drawable.img_home_gas_station);
         } else {
             mBinding.skIvBasicRouting.setImageResource(R.drawable.img_basic_ic_gas_charging);
