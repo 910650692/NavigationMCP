@@ -545,7 +545,7 @@
 
     <string name="setting_others_about_help_no_data">暂未有数据</string>
     <string name="setting_others_about_help_remote_navi_tab">遥控导航</string>
-    <string name="setting_others_about_help_seamless_interconnection_tab">无感交互</string>
+    <string name="setting_others_about_help_seamless_interconnection_tab">无感互联</string>
     <string name="setting_others_about_help_find_car_tab">手机找车</string>
     <string name="setting_others_about_help_data_sync_tab">数据同步</string>
     <string name="setting_others_about_contact">联系方式</string>
