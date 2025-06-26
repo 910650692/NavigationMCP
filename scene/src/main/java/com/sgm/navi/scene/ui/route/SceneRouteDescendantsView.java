@@ -175,8 +175,10 @@ public class SceneRouteDescendantsView extends BaseSceneView<SceneRouteDescendan
                 mViewBinding.sceneRouteDescendantsTopView.setVisibility(View.VISIBLE);
                 mViewBinding.routeDescendantsText.setVisibility(View.GONE);
                 mViewBinding.routeDescendantsList.setVisibility(View.VISIBLE);
-                mRouteChildPoiAdapter.setChildInfoList(poiInfoEntity.getChildInfoList(), poiInfoEntity);
-                mRouteChildPoiAdapter.setSelected(0);
+                if (mRouteSecondaryPoiAdapter != null) {
+                    mRouteChildPoiAdapter.setChildInfoList(poiInfoEntity.getChildInfoList(), poiInfoEntity);
+                    mRouteChildPoiAdapter.setSelected(0);
+                }
                 break;
             case AutoMapConstant.ChildType.CHILD_HAS_GRAND:
                 mViewBinding.lyDescendantsView.setVisibility(View.VISIBLE);
