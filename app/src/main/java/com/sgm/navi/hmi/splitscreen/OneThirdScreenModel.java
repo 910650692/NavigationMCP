@@ -240,7 +240,7 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
         mNaviPackage.setPreviewStatus(true);
         mLayerPackage.setFollowMode(MAP_TYPE, false);
         mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
-        mRoutePackage.oneThirdScreeShowPreview(MAP_TYPE, getPreviewRect());
+        mRoutePackage.showPreview(MAP_TYPE);
     }
 
     public void closePreview() {

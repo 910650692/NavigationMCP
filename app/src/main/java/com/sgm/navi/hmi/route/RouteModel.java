@@ -810,8 +810,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             mViewModel.hideProgressUI(true);
         }
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
-        //todo 图层去设置全览
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         if (!mRoutePackage.isRouteState()) {
             return;
         }
@@ -1401,10 +1399,6 @@ public void setPoint() {
                             , routeSupplementParam.getMTotalDistance());
                 }
             }
-//            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex());
-//            if (!ConvertUtils.isEmpty(mRequestRouteResults.getMRouteRestAreaParam())) {
-//                onRouteRestAreaInfo(mRequestRouteResults.getMRouteRestAreaParam());
-//            }
         }
     }
 

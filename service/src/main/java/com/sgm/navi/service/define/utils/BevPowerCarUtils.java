@@ -5,6 +5,7 @@ import com.sgm.navi.service.define.bevpower.ElecCommonParameter;
 import com.sgm.navi.service.define.bevpower.ElecSpeedCostList;
 import com.sgm.navi.service.define.bevpower.PowertrainLoss;
 import com.google.gson.reflect.TypeToken;
+import com.sgm.navi.service.define.screen.ScreenType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class BevPowerCarUtils {
     //代价模型
     public boolean airConditioningOpen = true; //空调 true:1.0f false:0.5f---接口获取
     public float ferryRate = 0.2f; //轮渡消耗--写死
+    public ScreenType screenType = ScreenType.SCREEN_FULL; //屏幕属性
     public List<ElecSpeedCostList> elecSpeedCostLists = GsonUtils.fromJson2List("[{\"costValue\":17.5,\"speed\":20},{\"costValue\":37.5,\"speed\":60},{\"costValue\":67.5,\"speed\":80},{\"costValue\":94.5,\"speed\":100},{\"costValue\":134.5,\"speed\":120}]"
             , new TypeToken<ArrayList<ElecSpeedCostList>>(){}.getType()); //代价模型_速度 ---写死
     public List<PowertrainLoss> powertrainLoss =  GsonUtils.fromJson2List("[{\"costValue\":3.5,\"powerdemand\":7.0},{\"costValue\":8.5,\"powerdemand\":15.0}]"

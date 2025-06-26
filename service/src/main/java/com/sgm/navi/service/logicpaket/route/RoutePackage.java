@@ -1386,65 +1386,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public void showPreview(final MapType mapTypeId) {
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.setFollowMode(mapTypeId, false);
-            if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
-                return;
-            }
-            final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId)
-                    .getMLineLayerParam();
-            int routeScreenLeft = ResourceUtils.Companion.getInstance().
-                    getDimensionPixelSize(R.dimen.route_margin_screen_left);
-            int routeScreenRight = ResourceUtils.Companion.getInstance().
-                    getDimensionPixelSize(R.dimen.route_margin_screen_right);
-            int routeScreenTop = ResourceUtils.Companion.getInstance().
-                    getDimensionPixelSize(R.dimen.route_margin_screen_top);
-            int routeScreenBottom = ResourceUtils.Companion.getInstance().
-                    getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
-//            mMapPackage.showPreview(mapTypeId, true, routeScreenLeft, routeScreenTop,
-//                    routeScreenRight, routeScreenBottom, mLayerAdapter.getPathResultBound(mapTypeId,
-//                            routeLineLayerParam.getMPathInfoList()));
+            mLayerAdapter.showPreviewView(mapTypeId);
         });
     }
 
-    /**
-     * 导航页面路线全览
-     *
-     * @param mapTypeId 屏幕ID
-     */
-    public void naviShowPreview(final MapType mapTypeId) {
-        Logger.i(TAG, "naviShowPreview mapTypeId = " + mapTypeId);
-        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
-            return;
-        }
-        mLayerAdapter.showPreviewView(mapTypeId);
-//        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.
-//                get(mapTypeId).getMLineLayerParam();
-//        int screenLeft = ResourceUtils.Companion.getInstance().
-//                getDimensionPixelSize(R.dimen.margin_screen_left);
-//        int screenRight = ResourceUtils.Companion.getInstance().
-//                getDimensionPixelSize(R.dimen.margin_screen_right);
-//        int screenTop = ResourceUtils.Companion.getInstance().
-//                getDimensionPixelSize(R.dimen.margin_screen_top);
-//        int screenBottom = ResourceUtils.Companion.getInstance().
-//                getDimensionPixelSize(R.dimen.margin_screen_bottom);
-//        mMapPackage.showPreview(mapTypeId, true, screenLeft, screenTop, screenRight,
-//                screenBottom, mLayerAdapter.getPathResultBound(mapTypeId,
-//                        routeLineLayerParam.getMPathInfoList()));
-    }
-
-    /**
-     * 1/3屏页面路线全览
-     *
-     * @param mapTypeId 屏幕ID
-     */
-    public void oneThirdScreeShowPreview(final MapType mapTypeId, Rect rect) {
-        Logger.i(TAG, "oneThirdScreeShowPreview mapTypeId = " + mapTypeId);
-        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
-            return;
-        }
-        mLayerAdapter.showPreviewView(mapTypeId);
-//        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
-//        mMapPackage.showPreview(mapTypeId, true, rect.left, rect.top, rect.right, rect.bottom, mLayerAdapter.getPathResultBound(mapTypeId, routeLineLayerParam.getMPathInfoList()));
-    }
 
     /**
      * 切换路线

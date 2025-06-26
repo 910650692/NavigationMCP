@@ -1213,6 +1213,12 @@
     <dimen name="margin_screen_top">@dimen/dp_137</dimen>
     <dimen name="margin_screen_bottom">@dimen/dp_137</dimen>
 
+    <!--占位使用，分屏只有ND-->
+    <dimen name="margin_screen_left_one_to_three">@dimen/dp_0</dimen>
+    <dimen name="margin_screen_right_one_to_three">@dimen/dp_0</dimen>
+    <dimen name="margin_screen_top_one_to_three">@dimen/dp_0</dimen>
+    <dimen name="margin_screen_bottom_one_to_three">@dimen/dp_0</dimen>
+
     <!--算路全览的时候距离屏幕两边的距离-->
     <dimen name="route_margin_screen_left">@dimen/dp_1208</dimen>
     <dimen name="route_margin_screen_right">@dimen/dp_618</dimen>

@@ -166,7 +166,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         mLayerPackage.setFollowMode(MAP_TYPE, false);
         mLayerPackage.setPreviewMode(MAP_TYPE, true);
         mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
-        mRoutePackage.oneThirdScreeShowPreview(MAP_TYPE, getPreviewRect());
+        mRoutePackage.showPreview(MAP_TYPE);
     }
 
     public void closePreview() {

@@ -241,7 +241,7 @@ public final class OpenApiHelper {
         LAYER_PACKAGE.setFollowMode(mapTypeId, false);
         // 关闭自动比例尺
         NAVI_PACKAGE.closeDynamicLevel(mapTypeId);
-        ROUTE_PACKAGE.naviShowPreview(mapTypeId);
+        ROUTE_PACKAGE.showPreview(mapTypeId);
         LayerItemRouteEndPoint endPoint = NAVI_PACKAGE.getEndPoint();
         if (endPoint != null) {
             ROUTE_PACKAGE.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);

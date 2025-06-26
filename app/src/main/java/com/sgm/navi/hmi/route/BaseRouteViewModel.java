@@ -979,6 +979,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         if (index == 0) {
             //回到算路结果页需要全览路线
             ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        } else if (index == 3){
+            //进入充电站搜索列表，可能会打破全览，此处设置触碰态,用于回归路线页面做全览
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         }
         Logger.i(TAG, "getCurrentPageUI: " , index);
         return index;

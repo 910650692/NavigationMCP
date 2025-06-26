@@ -146,7 +146,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
                 goToCarPositionAndFollow();
             } else {
                 //固定全览状态下，移图后显示继续导航，点击回到全览视图
-                RoutePackage.getInstance().naviShowPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                RoutePackage.getInstance().showPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             }
             mSearchPackage.clearLabelMark();
             ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId,

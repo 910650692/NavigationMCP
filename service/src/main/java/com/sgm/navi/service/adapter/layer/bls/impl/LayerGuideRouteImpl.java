@@ -65,11 +65,15 @@ import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
 import com.sgm.navi.service.define.route.RouteLinePoints;
+import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.define.utils.BevPowerCarUtils;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapter> {
 
@@ -203,22 +207,58 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     /* 路线全览 */
     public void showPreviewView() {
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        boolean isNaving = currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING);
+        boolean isRoute = currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING) || currentNaviStatus.contains(NaviStatus.NaviStatusType.SELECT_ROUTE);
+        if (!isRoute && !isNaving) {
+            if (Logger.openLog) {
+                Logger.d(TAG, "have no path");
+            }
+            return;
+        }
         if (ConvertUtils.isEmpty(mPreviewParam)) {
             mPreviewParam = new PreviewParam();
             mPreviewParam.mapBound = getPathResultBound();
             mPreviewParam.bUseRect = true;
-            mPreviewParam.screenLeft = ResourceUtils.Companion.getInstance().
-                    getDimensionPixelSize(R.dimen.route_margin_screen_left);
-            mPreviewParam.screenTop = ResourceUtils.Companion.getInstance().
-                    getDimensionPixelSize(R.dimen.route_margin_screen_top);
-            mPreviewParam.screenRight = ResourceUtils.Companion.getInstance().
-                    getDimensionPixelSize(R.dimen.route_margin_screen_right);
-            mPreviewParam.screenBottom = ResourceUtils.Companion.getInstance().
-                    getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
             if (Logger.openLog) {
                 Logger.d(TAG, "mPreviewParam init");
             }
         }
+        int left;
+        int right;
+        int top;
+        int bottom;
+        ResourceUtils instance = ResourceUtils.Companion.getInstance();
+        ScreenType screenType = BevPowerCarUtils.getInstance().screenType;
+        //1/3只有导航态，2/3和整屏一致
+        switch (screenType) {
+            case SCREEN_1_3:
+                left = instance.getDimensionPixelSize(R.dimen.margin_screen_left_one_to_three);
+                right = instance.getDimensionPixelSize(R.dimen.margin_screen_right_one_to_three);
+                top = instance.getDimensionPixelSize(R.dimen.margin_screen_top_one_to_three);
+                bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom_one_to_three);
+                break;
+            default:
+                if (isNaving) {
+                    left = instance.getDimensionPixelSize(R.dimen.margin_screen_left);
+                    right = instance.getDimensionPixelSize(R.dimen.margin_screen_right);
+                    top = instance.getDimensionPixelSize(R.dimen.margin_screen_top);
+                    bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom);
+                } else {
+                    left = instance.getDimensionPixelSize(R.dimen.route_margin_screen_left);
+                    right = instance.getDimensionPixelSize(R.dimen.route_margin_screen_right);
+                    top = instance.getDimensionPixelSize(R.dimen.route_margin_screen_top);
+                    bottom = instance.getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
+                }
+                break;
+        }
+        Logger.d("song", left,right,top,bottom);
+
+        mPreviewParam.screenLeft = left;
+        mPreviewParam.screenTop = top;
+        mPreviewParam.screenRight = right;
+        mPreviewParam.screenBottom = bottom;
+
         if (null != getMapView()) {
             getMapView().showPreview(mPreviewParam, true, 500, -1);
             if (Logger.openLog) {
