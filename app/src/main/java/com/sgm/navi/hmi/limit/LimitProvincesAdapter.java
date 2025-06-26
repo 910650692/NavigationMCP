@@ -71,6 +71,13 @@ public class LimitProvincesAdapter extends RecyclerView.Adapter<LimitProvincesAd
         limitCitiesAdapter.setListener(mListener);
         holder.mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
         holder.mRecyclerView.setAdapter(limitCitiesAdapter);
+        if (mData.get(position).isShowCities()) {
+            holder.mIvContract.setImageResource(R.drawable.img_limit_up);
+            holder.mRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            holder.mIvContract.setImageResource(R.drawable.img_limit_under);
+            holder.mRecyclerView.setVisibility(View.GONE);
+        }
 
 
         holder.mIvContract.setOnClickListener(new View.OnClickListener() {
