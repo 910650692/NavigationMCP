@@ -566,7 +566,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     !naviPackage.getClusterFixOverViewStatus() && currentImersiveStatus ==
                     ImersiveStatus.IMERSIVE && !naviPackage.getPreviewStatus();
             if (isOpen) {
-                layerPackage.openDynamicLevel(mapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+                ThreadManager.getInstance().postDelay(() -> {
+                    layerPackage.openDynamicLevel(mapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+                }, 500);
             } else {
                 layerPackage.closeDynamicLevel(mapTypeId);
             }

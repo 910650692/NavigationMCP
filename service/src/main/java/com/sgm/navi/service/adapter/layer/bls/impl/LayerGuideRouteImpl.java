@@ -732,6 +732,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
     public void openDynamicLevel(DynamicLevelMode dynamicLevelMode) {
+        getLayerGuideRouteControl().resetDynamicLevel();
         switch (dynamicLevelMode) {
             case DYNAMIC_LEVEL_GUIDE -> {
                 getLayerGuideRouteControl().openDynamicLevel(true, DynamicLevelType.DynamicLevelGuide);
