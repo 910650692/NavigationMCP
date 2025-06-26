@@ -1313,6 +1313,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         switch (screenType) {
             case SCREEN_1_3 -> {
                 if (!(baseFragment instanceof SplitFragment)) {
+                    //todo 在其他页面切换到1/3屏 需要关闭页面，去掉图层
+//                    checkStatusCloseAllFragmentAndClearAllLabel();
                     addFragment(new SplitFragment(), null);
                 }
             }
@@ -1322,6 +1324,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 }
             }
         }
+    }
+
+    private void checkStatusCloseAllFragmentAndClearAllLabel() {
+        mModel.checkStatusCloseAllFragmentAndClearAllLabel();
     }
 
     public Action switchSr = () -> {

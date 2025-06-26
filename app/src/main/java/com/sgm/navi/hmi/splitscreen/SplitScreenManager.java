@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ScreenUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.utils.ScreenTypeUtils;
 import com.sgm.navi.service.AppCache;
@@ -18,6 +19,7 @@ import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.define.screen.ScreenType;
 import com.patac.sgmsystemextendservice.ISystemExtendServiceProxy;
 import com.patac.sgmsystemextendservicelib.PatacSESConstants;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -47,6 +49,7 @@ public class SplitScreenManager {
     private int mScreenDp;//单位dp, 屏幕可用宽度
     private final CopyOnWriteArrayList<OnScreenModeChangedListener> mListeners = new CopyOnWriteArrayList<>();
     private final int ONE_THIRD_WIDTH, TWO_THIRD_WIDTH;// 1/3, 2/3的阈值
+    private ScreenType screeTypeByUseDp;
     private final int OFFSET = 50;//误差偏移量
 
     private SplitScreenManager() {
@@ -95,10 +98,11 @@ public class SplitScreenManager {
     public void onConfigurationChanged() {
         Logger.i(TAG, "onConfigurationChanged");
         final Configuration configuration = AppCache.getInstance().getMContext().getResources().getConfiguration();
-        Logger.i(TAG, "onConfigurationChanged-delay", configuration.screenWidthDp);
-        if (mScreenDp != configuration.screenWidthDp) {
-            mScreenDp = configuration.screenWidthDp;
-            ScreenTypeUtils.setScreenType(getScreeTypeByUseDp());
+        Logger.d(TAG, "onConfigurationChanged-delay", GsonUtils.toJson(configuration));
+        mScreenDp = configuration.screenWidthDp;
+        screeTypeByUseDp = getScreeTypeByUseDp();
+        if (ScreenTypeUtils.getScreenType() != screeTypeByUseDp) {
+            ScreenTypeUtils.setScreenType(screeTypeByUseDp);
             notifyOnScreenSizeChanged();
         } else {
             Logger.w(TAG, "onConfigurationChanged, but not need update!");
@@ -280,7 +284,11 @@ public class SplitScreenManager {
         return null;
     }
 
-    private ScreenType getScreeTypeByUseDp() {
+    public void setmScreenDp(int screenDp) {
+        mScreenDp = screenDp;
+    }
+
+    public ScreenType getScreeTypeByUseDp() {
         Logger.d(TAG, "getScreeTypeByUseDp", mScreenDp, ONE_THIRD_WIDTH, TWO_THIRD_WIDTH);
         ScreenType screenType;
         if (0 < mScreenDp && mScreenDp <= ONE_THIRD_WIDTH + OFFSET) {

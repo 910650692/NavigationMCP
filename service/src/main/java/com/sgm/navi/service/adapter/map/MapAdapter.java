@@ -59,6 +59,10 @@ public class MapAdapter {
         mIMapApi.bindMapView(mapSurfaceView);
     }
 
+    public void changeMapViewParams(IBaseScreenMapView mapSurfaceView) {
+        mIMapApi.changeMapViewParams(mapSurfaceView);
+    }
+
     public void unBindMapView(IBaseScreenMapView mapView) {
         mIMapApi.unBindMapView(mapView);
     }

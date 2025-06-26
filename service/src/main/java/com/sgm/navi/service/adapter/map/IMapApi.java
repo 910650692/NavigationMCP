@@ -42,6 +42,13 @@ public interface IMapApi {
     void bindMapView(IBaseScreenMapView mapView);
 
     /**
+     * 绑定一个map
+     *
+     * @param mapView
+     */
+    void changeMapViewParams(IBaseScreenMapView mapView);
+
+    /**
      * 解绑一个map
      *
      * @param mapView

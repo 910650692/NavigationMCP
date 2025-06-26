@@ -69,6 +69,10 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         mMapAdapter.registerCallback(mapSurfaceView.provideMapTypeId(), this);
     }
 
+    public void changeMapViewParams(IBaseScreenMapView mapSurfaceView) {
+        mMapAdapter.changeMapViewParams(mapSurfaceView);
+    }
+
     public void unBindMapView(IBaseScreenMapView mapSurfaceView) {
         mMapAdapter.unBindMapView(mapSurfaceView);
         mMapAdapter.unregisterCallback(mapSurfaceView.provideMapTypeId(), this);

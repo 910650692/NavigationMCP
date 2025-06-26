@@ -2,6 +2,8 @@ package com.sgm.navi.service.adapter.map.bls;
 
 import android.graphics.Rect;
 
+import com.android.utils.ScreenUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.layer.model.BizLayerUtil;
@@ -19,6 +21,8 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.PointDataInfo;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.mfc.MfcController;
+import com.sgm.navi.service.define.screen.ScreenType;
+import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 
 import java.util.ArrayList;
 
@@ -59,6 +63,38 @@ public class MapAdapterImpl implements IMapApi {
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.getMapViewImpl(mapView.provideMapTypeId());
         mapSurfaceViewImp.changeMapViewParams(mapViewParams);
         mapView.bindMapView(mapSurfaceViewImp);
+    }
+
+    @Override
+    public void changeMapViewParams(IBaseScreenMapView mapView) {
+        ScreenType screenType = BevPowerCarUtils.getInstance().screenType;
+        if (screenType == ScreenType.SCREEN_FULL) {
+            return;
+        }
+        int mapViewWidth;
+        int mapViewHeight;
+        int screenWidth;
+        int screenHeight;
+        if (screenType == ScreenType.SCREEN_1_3) {
+            //平板 740 1179
+            //台架 正常 723 1066 异常 723 652
+            mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(723);
+            mapViewHeight = ScreenUtils.Companion.getInstance().dp2px(1066);
+            screenWidth = ScreenUtils.Companion.getInstance().dp2px(723);
+            screenHeight = ScreenUtils.Companion.getInstance().dp2px(1066);
+        } else {
+            //平板 1431 1179
+            //台架 1439 1066
+            mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
+            mapViewHeight = ScreenUtils.Companion.getInstance().dp2px(1066);
+            screenWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
+            screenHeight = ScreenUtils.Companion.getInstance().dp2px(1066);
+        }
+        Logger.d("song", mapViewWidth,mapViewHeight,screenWidth,screenHeight);
+        MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),mapViewWidth
+                , mapViewHeight, screenWidth, screenHeight, mapView.getScreenDensityDpi(), mapView.isOpenScreen());
+        MapViewImpl mapSurfaceViewImp = mapViewPoolManager.getMapViewImpl(mapView.provideMapTypeId());
+        mapSurfaceViewImp.changeMapViewParams(mapViewParams);
     }
 
     @Override

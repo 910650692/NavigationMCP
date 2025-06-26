@@ -1651,6 +1651,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onScreenModeChanged(ScreenType screenType, String jsonPath) {
+        mapPackage.changeMapViewParams(mViewModel.getMapView());
         mapVisibleAreaDataManager.loadData(jsonPath);
         mViewModel.onScreenModeChanged(screenType);
         //分屏后，由于地图加载先与分屏回调，故重新设置视口锚点。
@@ -1711,4 +1712,23 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
     }
 
+    public void checkStatusCloseAllFragmentAndClearAllLabel() {
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
+            return;
+        }
+        mViewModel.closeAllFragment();
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
+            RoutePackage.getInstance().abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
+            return;
+        }
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
+            RoutePackage.getInstance().clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
+            RoutePackage.getInstance().clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+            RoutePackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+            return;
+        }
+        searchPackage.clearPoiLabelMark();
+        searchPackage.clearLabelMark();
+    }
 }
