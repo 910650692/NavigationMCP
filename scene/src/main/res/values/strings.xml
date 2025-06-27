@@ -77,6 +77,7 @@
     <string name="navi_voice">静音</string>
     <string name="navi_mute">已静音</string>
     <string name="navi_broadcast">播报中</string>
+    <string name="navi_start_broadcast">为您提供导航播报</string>
     <string name="navi_more_setup">更多</string>
     <string name="navi_excepted">预计余</string>
     <string name="navi_energy_power">到达余</string>

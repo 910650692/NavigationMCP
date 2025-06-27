@@ -14,16 +14,19 @@ import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.scene.BaseSceneModel;
+import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.api.navi.ISceneNaviControl;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.ui.navi.SceneNaviControlView;
 import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
@@ -191,6 +194,11 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             setImmersiveStatus(ImersiveStatus.TOUCH);
             changeMuteStatus();
             updateSystemNaviVolume(mIsMute);
+            if (!mIsMute) {
+                final SoundInfoEntity soundInfo = new SoundInfoEntity();
+                soundInfo.setText(AppCache.getInstance().getMApplication().getString(R.string.navi_start_broadcast));
+                mNaviPackage.onPlayTTS(soundInfo);
+            }
         }
     }
 
