@@ -5,4 +5,5 @@
     <string name="setting_others_about_channel">渠道号</string>
     <string name="setting_others_about_data_version">数据版本号</string>
     <string name="setting_others_about_draw">互联网审图号:GS(2024)3947号|GS(2023)551号</string>
+    <string name="setting_guide_charging_station">充电桩</string>
 </resources>
