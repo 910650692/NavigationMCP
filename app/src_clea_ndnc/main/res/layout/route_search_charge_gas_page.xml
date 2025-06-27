@@ -196,7 +196,7 @@
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/skinView2"
             android:layout_width="@dimen/dp_613"
-            android:layout_height="@dimen/dp_781"
+            android:layout_height="@dimen/dp_811"
             android:layout_marginTop="@dimen/dp_m_48"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:paddingHorizontal="@dimen/dp_34"
@@ -208,23 +208,21 @@
             android:id="@+id/route_charge_info_scene_route_search_refresh"
             android:layout_width="@dimen/dp_613"
             android:layout_height="0dp"
-            android:layout_marginStart="@dimen/dp_34"
+            android:padding="@dimen/dp_30"
             app:layout_constraintBottom_toTopOf="@+id/route_charge_list_along_way_btn"
-            app:layout_constraintHeight_default="wrap"
-            app:layout_constraintHeight_max="@dimen/dp_781"
-            app:layout_constraintHeight_min="@dimen/dp_260"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/route_charge_list_info_info_bg_title"
-            app:layout_goneMarginBottom="@dimen/dp_34"
-            app:layout_goneMarginTop="@dimen/dp_34" />
+            app:layout_constraintEnd_toEndOf="@id/skinView2"
+            app:layout_constraintStart_toStartOf="@id/skinView2"
+            app:layout_constraintTop_toTopOf="@+id/skinView2" />
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_charge_list_along_way_btn"
             android:layout_width="@dimen/dp_613"
-            android:layout_height="@dimen/dp_77"
-            android:layout_marginBottom="@dimen/dp_44"
+            android:layout_height="@dimen/dp_100"
+            android:layout_marginBottom="@dimen/dp_68"
             android:visibility="@{ViewModel.getAlongTabSearchVisibility() ? View.VISIBLE: View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@+id/skinView2" />
+            app:layout_constraintBottom_toBottomOf="@+id/skinView2"
+            app:layout_constraintEnd_toEndOf="@+id/route_charge_info_scene_route_search_refresh"
+            app:layout_constraintStart_toStartOf="@+id/route_charge_info_scene_route_search_refresh" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_charge_list_along_way_suer"
