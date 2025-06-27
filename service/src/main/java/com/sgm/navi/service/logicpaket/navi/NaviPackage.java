@@ -71,10 +71,10 @@ import com.sgm.navi.service.tts.TTSPlayHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
@@ -94,14 +94,13 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private MapPackage mapPackage;
     private SpeechAdapter mSpeechAdapter;
     private SettingAdapter mSettingAdapter;
-    private Hashtable<String, IGuidanceObserver> mGuidanceObservers;
+    private final ConcurrentHashMap<String, IGuidanceObserver> mGuidanceObservers;
     private NavistatusAdapter mNavistatusAdapter;
     private final HistoryManager mManager;
     private RouteAdapter mRouteAdapter;
     private UserTrackAdapter mUserTrackAdapter;
     private SignalAdapter mSignalAdapter;
     private boolean mIsMute = false;
-    private boolean mIsNopOpen = false;
     private int mCurrentImmersiveStatus = -1;
     private boolean mIsPreview = false;
     @Getter
@@ -126,7 +125,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private LayerItemRouteEndPoint mEndPoint;
 
     private NaviPackage() {
-        mGuidanceObservers = new Hashtable<>();
+        mGuidanceObservers = new ConcurrentHashMap<>();
         mManager = HistoryManager.getInstance();
         mManager.init();
         mModelSaveEntity = new NaviModelSaveEntity();
