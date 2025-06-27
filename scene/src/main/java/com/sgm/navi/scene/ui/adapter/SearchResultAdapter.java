@@ -601,10 +601,16 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 }
                 binding.poiChargeSlowTotal.setText(slowTotal);
             }
-
-            binding.poiChargePrice.setText(
-                    resultHolder.mResultItemBinding.getRoot().getContext().getString(
-                            R.string.charge_price_simple, chargeInfo.getCurrentElePrice()));
+            if (!ConvertUtils.equals(chargeInfo.getCurrentElePrice(), "--")) {
+                binding.poiChargePrice.setText(
+                        resultHolder.mResultItemBinding.getRoot().getContext().getString(
+                                R.string.charge_price_simple, chargeInfo.getCurrentElePrice()));
+                binding.poiChargePrice.setVisibility(VISIBLE);
+                binding.poiCarChargePriceIcon.setVisibility(VISIBLE);
+            } else {
+                binding.poiChargePrice.setVisibility(GONE);
+                binding.poiCarChargePriceIcon.setVisibility(GONE);
+            }
             binding.getRoot().setVisibility(VISIBLE);
         }
     }
