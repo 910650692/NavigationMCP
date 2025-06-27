@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:gravity="center"
-            android:maxWidth="@dimen/dp_350"
+            android:maxWidth="@dimen/dp_320"
             android:maxLines="1"
             android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_29"
