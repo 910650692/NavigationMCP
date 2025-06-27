@@ -187,7 +187,9 @@
                 android:textSize="@dimen/sp_26"
                 android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="@id/tv_city"
-                app:layout_constraintTop_toBottomOf="@id/tv_other_city" />
+                app:layout_constraintTop_toBottomOf="@id/tv_other_city"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="@dimen/dp_34" />
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 

@@ -73,7 +73,7 @@ public class RoutePOIIconAdapter extends RecyclerView.Adapter<RoutePOIIconAdapte
                 holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_buy_black_42);
                 break;
             case "150904":
-                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_parking);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_details_parking);
                 break;
             case "011100":
                 holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_lightning_black_42);
