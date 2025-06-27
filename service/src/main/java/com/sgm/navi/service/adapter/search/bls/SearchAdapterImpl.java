@@ -990,12 +990,14 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     private void getGrandChildList(final KeywordSearchResultV2 result, final ChildInfo childInfo) {
         //子节点信息
-        final List<ChildInfo> grandChildInfos = Optional.ofNullable(result.poiList.get(0).childInfoList)
-                .orElse(new ArrayList<>())
-                .stream()
-                .map(this::mapSearchPoiChildInfo)
-                .collect(Collectors.toList());
-        childInfo.setMGrandChildInfoList(grandChildInfos);
+        if (!ConvertUtils.isEmpty(result.poiList)) {
+            final List<ChildInfo> grandChildInfos = Optional.ofNullable(result.poiList.get(0).childInfoList)
+                    .orElse(new ArrayList<>())
+                    .stream()
+                    .map(this::mapSearchPoiChildInfo)
+                    .collect(Collectors.toList());
+            childInfo.setMGrandChildInfoList(grandChildInfos);
+        }
     }
 
     /**

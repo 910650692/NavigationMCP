@@ -331,30 +331,21 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshScenicSpotView(final ResultHolder resultHolder) {
         final int pointTypeCode = mSearchPackage.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
-        View scenicSpotView = resultHolder.itemView.findViewById(R.id.scene_poi_item_scenic_spot_view);
-        ScenePoiItemScenicSpotViewBinding binding = null;
-        if (scenicSpotView == null) {
-            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_scenic_spot_view_stub);
-            if (stub != null) {
-                scenicSpotView = stub.inflate(); // 加载 GasStationView
-                binding = DataBindingUtil.bind(scenicSpotView);
-            }
-        }
+        ScenePoiItemScenicSpotViewBinding binding = resultHolder.getScenicSpotViewBinding();
         if (binding != null) {
             if (pointTypeCode == AutoMapConstant.PointTypeCode.OTHERS) {
                 binding.poiScenicSpotPrice.setVisibility(GONE);
                 binding.poiScenicSpotPriceIcon.setVisibility(GONE);
                 if (ConvertUtils.isEmpty(mPoiInfoEntity) || ConvertUtils.isEmpty(mPoiInfoEntity.getChildInfoList())) {
                     resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
+                } else {
+                    resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
                 }
             } else {
                 binding.poiScenicSpotPrice.setVisibility(VISIBLE);
                 binding.poiScenicSpotPriceIcon.setVisibility(VISIBLE);
                 resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(VISIBLE);
             }
-            binding.getRoot().setVisibility(VISIBLE);
-            binding.poiScenicSpotChildList.setVisibility(GONE);
-            binding.poiScenicSpotChildList.setAdapter(null);
             if (mPoiInfoEntity.getAverageCost() == -1 || mPoiInfoEntity.getAverageCost() == 0) {
                 binding.poiScenicSpotPrice.setVisibility(GONE);
                 binding.poiScenicSpotPriceIcon.setVisibility(GONE);
@@ -372,7 +363,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                                     mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
                                 }
                                 childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
-                                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
+                                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + childInfo.getMGrandChildInfoList());
                             })
                             .exceptionally(error -> {
                                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setGrandChildInfoList error:" + error);
@@ -423,6 +414,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     }
                     mLastParentSelectIndex = resultHolder.getAdapterPosition();
                 });
+            } else {
+                binding.poiScenicSpotChildList.setVisibility(GONE);
+                binding.poiScenicSpotChildList.setAdapter(null);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshScenicSpotView3：");
             }
             binding.getRoot().setVisibility(VISIBLE);
         }
@@ -522,15 +517,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshCateringView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshCateringView" + mPoiInfoEntity.getAverageCost());
-        View cateringView = resultHolder.itemView.findViewById(R.id.scene_poi_item_catering_view);
-        ScenePoiItemCateringViewBinding binding = null;
-        if (cateringView == null) {
-            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_catering_view_stub);
-            if (stub != null) {
-                cateringView = stub.inflate(); // 加载 GasStationView
-                binding = DataBindingUtil.bind(cateringView);
-            }
-        }
+        ScenePoiItemCateringViewBinding binding = resultHolder.getCateringViewBinding();
         if (binding != null) {
             binding.getRoot().setVisibility(VISIBLE);
             binding.poiCateringPrice.setText("");
@@ -559,25 +546,18 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      * @param resultHolder holder
      */
     private void refreshChargeStationView(final ResultHolder resultHolder) {
-        // 检查是否已经 inflate 过了
-        View chargeView = resultHolder.itemView.findViewById(R.id.scene_poi_item_gas_view);
-        ScenePoiItemChargeViewBinding binding = null;
-        if (chargeView == null) {
-            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_charge_view_stub);
-            if (stub != null) {
-                chargeView = stub.inflate(); // 加载 GasStationView
-                binding = DataBindingUtil.bind(chargeView);
-            }
-        }
+        ScenePoiItemChargeViewBinding binding = resultHolder.getChargeViewBinding();
         if (binding != null) {
             resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
             // 重置includeview中视图状态避免数据重用导致数据异常加载
             binding.poiChargeFastRoot.setVisibility(VISIBLE);
             binding.poiChargeSlowRoot.setVisibility(VISIBLE);
             binding.poiChargeFastFree.setText("");
+            binding.poiChargeFastFree.setVisibility(VISIBLE);
             binding.poiChargeFastTotal.setText("");
             binding.poiChargeFastTotal.setVisibility(VISIBLE);
             binding.poiChargeSlowFree.setText("");
+            binding.poiChargeSlowFree.setVisibility(VISIBLE);
             binding.poiChargeSlowTotal.setText("");
             binding.poiChargeSlowTotal.setVisibility(VISIBLE);
             final List<ChargeInfo> chargeInfos = mPoiInfoEntity.getChargeInfoList();
@@ -634,20 +614,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      * @param resultHolder holder
      */
     private void refreshGasStationView(final ResultHolder resultHolder) {
-        // 检查是否已经 inflate 过了
-        View gasView = resultHolder.itemView.findViewById(R.id.scene_poi_item_gas_view);
-        ScenePoiItemGasViewBinding binding = null;
-        if (gasView == null) {
-            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_gas_view_stub);
-            if (stub != null) {
-                gasView = stub.inflate(); // 加载 GasStationView
-                binding = DataBindingUtil.bind(gasView);
-            }
-        }
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshGasStationView");
-        if (gasView != null && binding != null) {
-            gasView.setVisibility(VISIBLE);
-
+        ScenePoiItemGasViewBinding binding = resultHolder.getGasViewBinding();
+        if (binding != null) {
             final List<GasStationInfo> gasStationInfos = mPoiInfoEntity.getStationList();
             for (GasStationInfo gasStationInfo : gasStationInfos) {
                 if (!gasStationInfo.getPrice().contains("升")) {
@@ -670,7 +638,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             } else {
                 resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(GONE);
             }
-            binding.poiGasOilList.setLayoutManager(new GridLayoutManager(gasView.getContext(), mSpanCount));
+            binding.poiGasOilList.setLayoutManager(new GridLayoutManager(resultHolder.itemView.getRootView().getContext(), mSpanCount));
             binding.poiGasOilList.setAdapter(gasStationAdapter);
 
         }
@@ -693,7 +661,67 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     public static class ResultHolder extends RecyclerView.ViewHolder {
         private final SearchResultItemBinding mResultItemBinding;
         private final WeakReference<SearchResultAdapter> mAdapterReference;
+        // 缓存 ScenePoiItemScenicSpotViewBinding
+        private ScenePoiItemScenicSpotViewBinding scenicSpotViewBinding;
+        private ScenePoiItemChargeViewBinding chargeViewBinding;
+        private ScenePoiItemCateringViewBinding cateringViewBinding;
+        private ScenePoiItemGasViewBinding gasViewBinding;
 
+        /**
+         * 获取 scenicSpotViewBinding，如果未初始化则 inflate 并绑定
+         */
+        public ScenePoiItemScenicSpotViewBinding getScenicSpotViewBinding() {
+            if (scenicSpotViewBinding == null) {
+                ViewStub stub = itemView.findViewById(R.id.scene_poi_item_scenic_spot_view_stub);
+                if (stub != null) {
+                    View view = stub.inflate(); // 加载 ViewStub
+                    scenicSpotViewBinding = DataBindingUtil.bind(view); // 绑定
+                }
+            }
+            return scenicSpotViewBinding;
+        }
+
+        /**
+         * 获取 ScenePoiItemChargeViewBinding，如果未初始化则 inflate 并绑定
+         */
+        public ScenePoiItemCateringViewBinding getCateringViewBinding() {
+            if (cateringViewBinding == null) {
+                ViewStub stub = itemView.findViewById(R.id.scene_poi_item_catering_view_stub);
+                if (stub != null) {
+                    View view = stub.inflate(); // 加载 ViewStub
+                    cateringViewBinding = DataBindingUtil.bind(view); // 绑定
+                }
+            }
+            return cateringViewBinding;
+        }
+
+        /**
+         * 获取 ScenePoiItemChargeViewBinding，如果未初始化则 inflate 并绑定
+         */
+        public ScenePoiItemChargeViewBinding getChargeViewBinding() {
+            if (scenicSpotViewBinding == null) {
+                ViewStub stub = itemView.findViewById(R.id.scene_poi_item_charge_view_stub);
+                if (stub != null) {
+                    View view = stub.inflate(); // 加载 ViewStub
+                    chargeViewBinding = DataBindingUtil.bind(view); // 绑定
+                }
+            }
+            return chargeViewBinding;
+        }
+
+        /**
+         * 获取 ScenePoiItemChargeViewBinding，如果未初始化则 inflate 并绑定
+         */
+        public ScenePoiItemGasViewBinding getGasViewBinding() {
+            if (gasViewBinding == null) {
+                ViewStub stub = itemView.findViewById(R.id.scene_poi_item_gas_view_stub);
+                if (stub != null) {
+                    View view = stub.inflate(); // 加载 ViewStub
+                    gasViewBinding = DataBindingUtil.bind(view); // 绑定
+                }
+            }
+            return gasViewBinding;
+        }
         public ResultHolder(final SearchResultItemBinding resultItemBinding,
                             final SearchResultAdapter adapter) {
             super(resultItemBinding.getRoot());
