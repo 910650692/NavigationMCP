@@ -58,6 +58,9 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
         if (mSearchPackage != null) {
             mSearchPackage.unRegisterCallBack(mCallbackId);
         }
+        if (null != mSettingPackage) {
+            mSettingPackage.unRegisterCallBack(CollectModel.class.getSimpleName());
+        }
     }
 
     @Override

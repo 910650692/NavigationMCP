@@ -393,7 +393,9 @@
     <string name="setting_guide_car_logo_brand">品牌</string>
     <string name="setting_guide_car_logo_speed">车速</string>
     <string name="setting_guide_auto_scale">自动比例尺</string>
+    <string name="setting_push_message_in_navi">导航中信息推送</string>
     <string name="setting_guide_auto_scale_des">比例尺智能缩放</string>
+    <string name="setting_push_message_in_navi_des">导航中油量过低、接近终点时，为您推荐加油站、终点停车场</string>
     <string name="setting_guide_auto_road_condition">实时路况</string>
     <string name="setting_guide_vehicle_guide">车道级导航</string>
     <string name="setting_guide_vehicle_guide_tip">自动切换至高清车道级导航</string>

@@ -589,12 +589,56 @@
                 </com.sgm.navi.ui.view.SkinLinearLayout>
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
+            <com.sgm.navi.ui.view.SkinLinearLayout
+                clickCommand="@{viewModel.mPushMessage}"
+                android:id="@+id/setting_push_message_in_navi"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_128"
+                android:layout_marginTop="@dimen/dp_26"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/setting_guide_auto_scale">
+
+                <com.sgm.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.mPushMessage}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@{viewModel.mIsPushMessage}"
+                    android:background="@android:color/transparent"
+                    android:button="@drawable/custom_thumb" />
+
+                <com.sgm.navi.ui.view.SkinLinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.sgm.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_push_message_in_navi"
+                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textSize="@dimen/sp_29" />
+
+                    <com.sgm.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_7"
+                        android:text="@string/setting_push_message_in_navi_des"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:textSize="@dimen/sp_26" />
+
+                </com.sgm.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+
             <com.sgm.navi.ui.view.SkinView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:background="@color/setting_line"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/setting_guide_auto_scale" />
+                app:layout_constraintTop_toBottomOf="@+id/setting_push_message_in_navi" />
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/setting_guide_offline_map"
@@ -605,7 +649,7 @@
                 android:textColor="@color/setting_bg_tab_text_select"
                 android:layout_marginTop="@dimen/dp_26"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/setting_guide_auto_scale" />
+                app:layout_constraintTop_toBottomOf="@+id/setting_push_message_in_navi" />
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mOpenOfflineData}"

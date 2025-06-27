@@ -46,6 +46,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     public MutableLiveData<Boolean> mIsFavoritePoint = new MutableLiveData<>(true);
     public MutableLiveData<Boolean> mIsChargingStation = new MutableLiveData<>(true);
     public MutableLiveData<Boolean> mIsAutoScale = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsPushMessage = new MutableLiveData<>(true);
     public MutableLiveData<Boolean> mIsMapTextSizeStandard = new MutableLiveData<>(true);
     public MutableLiveData<Boolean> mIsMapTextSizeLarge = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsCarLogoDefault = new MutableLiveData<>(true);
@@ -135,6 +136,13 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         sendBuryPointForSettingGuide(BuryConstant.GuideOption.AUTO_SCALE, value ? BuryConstant.Number.SECOND : BuryConstant.Number.ONE);
     };
 
+    // 导航中信息推送
+    public Action mPushMessage = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsPushMessage.getValue());
+        mIsPushMessage.setValue(value);
+        mModel.setPushMessage(value);
+    };
+
     public Action mModifyPlateNumber = () -> {
         if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
             ToastUtils.Companion.getInstance().showCustomToastView(
@@ -185,6 +193,9 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
                 break;
             case SettingController.KEY_SETTING_AUTO_SCALE:
                 mIsAutoScale.setValue(isTrue);
+                break;
+            case SettingController.KEY_SETTING_PUSH_MESSAGE:
+                mIsPushMessage.setValue(isTrue);
                 break;
             default:
                 break;

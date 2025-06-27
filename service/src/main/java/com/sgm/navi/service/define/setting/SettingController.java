@@ -56,6 +56,8 @@ public interface SettingController {
     String KEY_SETTING_CHARGING_STATION = "setting_charging_station";
     // 自动比例尺
     String KEY_SETTING_AUTO_SCALE = "setting_auto_scale";
+    // 导航中信息推送
+    String KEY_SETTING_PUSH_MESSAGE = "setting_push_message";
     // 地图文字大小
     String KEY_SETTING_TEXT_SIZE = "setting_text_size";
     String VALUE_NAVI_TEXT_SIZE_STANDARD = "setting_text_size_standard";

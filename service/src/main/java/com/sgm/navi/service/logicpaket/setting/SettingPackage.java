@@ -357,6 +357,32 @@ public final class SettingPackage implements SettingAdapterCallback {
     }
 
     /**
+     * 打开或者关闭导航中信息推送
+     *
+     * @param isOpen true 打开 false 关闭
+     */
+    public void setPushMessage(final boolean isOpen) {
+        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_PUSH_MESSAGE, String.valueOf(isOpen));
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+            callback.onSettingChanged(SettingController.KEY_SETTING_PUSH_MESSAGE, String.valueOf(isOpen));
+        }
+    }
+
+    /**
+     * 判断是否打开导航中信息推送
+     *
+     * @return true 打开 false 关闭
+     */
+    public boolean getPushMessage() {
+        String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_PUSH_MESSAGE);
+        if (TextUtils.isEmpty(value)) {
+            value = SettingController.VALUE_GENERIC_TRUE;
+            setPushMessage(true);
+        }
+        return Boolean.parseBoolean(value);
+    }
+
+    /**
      * 设置是否开启车道级导航
      *
      * @param isGuideVehicle true 打开 false 关闭

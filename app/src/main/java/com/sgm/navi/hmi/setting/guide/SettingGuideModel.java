@@ -44,6 +44,7 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
         getFavoritePoint();
         getChargingStation();
         getAutoScale();
+        getPushMessage();
         getVehicleNumber();
         getMapModeStatus();
         getMapViewTextSize();
@@ -122,6 +123,14 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
     public void getAutoScale() {
         final boolean autoScale = mSettingPackage.getAutoScale();
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_AUTO_SCALE, autoScale);
+    }
+
+    /**
+     * 判断是否打开导航中信息推送
+     */
+    public void getPushMessage() {
+        final boolean pushMessage = mSettingPackage.getPushMessage();
+        mViewModel.dualChoiceControl(SettingController.KEY_SETTING_PUSH_MESSAGE, pushMessage);
     }
 
     /**
@@ -207,6 +216,14 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
      */
     public void setAutoScale(final boolean isOpen) {
         mSettingPackage.setAutoScale(isOpen);
+    }
+
+    /**
+     * 设置导航中信息推送
+     * @param isOpen true 打开 false 关闭
+     */
+    public void setPushMessage(final boolean isOpen) {
+        mSettingPackage.setPushMessage(isOpen);
     }
 
     /**
