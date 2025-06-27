@@ -2,14 +2,12 @@ package com.sgm.navi.vrbridge.impl;
 
 import android.text.TextUtils;
 
+import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.baidu.oneos.protocol.bean.ArrivalBean;
 import com.baidu.oneos.protocol.bean.CallResponse;
 import com.baidu.oneos.protocol.callback.PoiCallback;
 import com.baidu.oneos.protocol.listener.NaviCommandListener;
-import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.service.define.route.RouteCurrentPathParam;
-import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 import com.sgm.navi.vrbridge.MapStateManager;
 import com.sgm.navi.vrbridge.VrBridgeManager;
@@ -81,10 +79,9 @@ public class NaviCommandImpl implements NaviCommandListener {
             Logger.w(IVrBridgeConstant.TAG, "alongSearch in no navigation");
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NAVI_BEFORE_PASSBY_ROUTE);
         }
-        final RouteCurrentPathParam pathParam = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (null != pathParam && !pathParam.isMIsOnlineRoute()) {
-            //离线算路不支持沿途搜
-            Logger.w(IVrBridgeConstant.TAG, "alongSearch in offline road");
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            //当前网络为离线状态，不支持沿途搜
+            Logger.w(IVrBridgeConstant.TAG, "alongSearch in offline");
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.OFFLINE_NOT_SUPPORT);
         }
 
