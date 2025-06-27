@@ -39,6 +39,7 @@ import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.route.RouteCurrentPathParam;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,7 @@ public class L2Adapter {
         l2NaviBean.setAheadIntersections(new ArrayList<>());
         l2NaviBean.setMixForks(new ArrayList<>());
         registerAdapterCallback();
+        mNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         mScheduler = Executors.newScheduledThreadPool(1);
         mScheduler.scheduleWithFixedDelay(mTask, 0, 1, TimeUnit.SECONDS);
     }
@@ -440,31 +442,12 @@ public class L2Adapter {
                 Logger.i(TAG, PREFIX + "引导状态 null");
                 return;
             }
-            if (mNaviStatus == null) {
-                mNaviStatus = naviStatus;
-            } else {
-                if (mNaviStatus.equals(naviStatus)) {
-                    return;
-                }
+            if (mNaviStatus.equals(naviStatus)) {
+                return;
             }
+            mNaviStatus = naviStatus;
             l2NaviBean.clear();
             mNaviEtaInfo = null;
-            L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
-            switch (naviStatus) {
-                case NaviStatus.NaviStatusType.NO_STATUS:
-                    vehiclePosition.setNaviStatus(0); //无效值或默认状态
-                    break;
-                case NaviStatus.NaviStatusType.ROUTING:
-                case NaviStatus.NaviStatusType.SELECT_ROUTE:
-                    vehiclePosition.setNaviStatus(2);
-                    break;
-                case NaviStatus.NaviStatusType.NAVING:
-                    vehiclePosition.setNaviStatus(1);
-                    break;
-                case NaviStatus.NaviStatusType.CRUISE:
-                    vehiclePosition.setNaviStatus(3);
-                    break;
-            }
             Logger.i(TAG, PREFIX + "引导状态", naviStatus);
         }
     };
@@ -653,6 +636,27 @@ public class L2Adapter {
         this.l2DriveObserver = null;
     }
 
+
+    private void setNaviStatus(String naviStatus) {
+        switch (naviStatus) {
+            case NaviStatus.NaviStatusType.ROUTING:
+            case NaviStatus.NaviStatusType.SELECT_ROUTE:
+                l2NaviBean.getVehiclePosition().setNaviStatus(2);
+                break;
+            case NaviStatus.NaviStatusType.NAVING:
+            case NaviStatus.NaviStatusType.LIGHT_NAVING:
+                l2NaviBean.getVehiclePosition().setNaviStatus(1);
+                break;
+            case NaviStatus.NaviStatusType.CRUISE:
+                l2NaviBean.getVehiclePosition().setNaviStatus(3);
+                break;
+            case NaviStatus.NaviStatusType.NO_STATUS:
+            default:
+                l2NaviBean.getVehiclePosition().setNaviStatus(0); //无效值或默认状态
+                break;
+        }
+    }
+
     /**
      * 执行动作.
      */
@@ -663,6 +667,25 @@ public class L2Adapter {
             if (mNaviEtaInfo != null) {
                 NaviAdapter.getInstance().queryAppointLanesInfo(mNaviEtaInfo.curSegIdx, mNaviEtaInfo.curLinkIdx);
             }
+            switch (mNaviStatus) {
+                case NaviStatus.NaviStatusType.NAVING:
+                case NaviStatus.NaviStatusType.LIGHT_NAVING:
+                    PathInfo pathInfo = getPathInfo();
+                    if (pathInfo != null) {
+                        boolean online = pathInfo.isOnline();
+                        l2NaviBean.getVehiclePosition().setNaviStatus(online ? 0x1 : 0x9);
+                    } else {
+                        l2NaviBean.getVehiclePosition().setNaviStatus(0x9);
+                    }
+                    break;
+                default:
+                    if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                        l2NaviBean.getVehiclePosition().setNaviStatus(0x9);
+                    } else {
+                        setNaviStatus(mNaviStatus);
+                    }
+            }
+            Logger.d(TAG, "l2++导航状态", l2NaviBean.getVehiclePosition().getNaviStatus());
 
             LinkInfo linkInfo = getCurLinkInfo();
             if (linkInfo != null) {
@@ -671,9 +694,6 @@ public class L2Adapter {
                 l2NaviBean.getCrossInfoData().setHasTrafficLight(trafficLightDis == 0xFFFF ? 0 : 1);
                 l2NaviBean.getCrossInfoData().setTrafficLightPosition(trafficLightDis);
                 Logger.i(TAG, PREFIX + "红绿灯距离: " + trafficLightDis); // 0xFFFF表示无红绿灯, 0表示红绿灯就在附近
-            }
-            if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                l2NaviBean.getVehiclePosition().setNaviStatus(0x9);
             }
             // 为防止并发问题，发送消息时暂停接口回调，防止修改l2NaviBean对象
             // unRegisterAdapterCallback();
