@@ -32,7 +32,7 @@
                 android:layout_height="@dimen/dp_898"
                 android:layout_marginTop="@dimen/dp_17"
                 android:layout_marginBottom="@dimen/dp_130"
-                android:background="@drawable/bg_search_main_tab_sw1225">
+                android:background="@drawable/bg_route_result">
 
                 <include
                     android:id="@+id/search_filter_view"
