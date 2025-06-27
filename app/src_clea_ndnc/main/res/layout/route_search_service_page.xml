@@ -83,11 +83,14 @@
         <com.sgm.navi.scene.ui.route.SceneRouteSearchRefreshListView
             android:id="@+id/route_detail_info_scene_route_search_refresh"
             android:layout_width="@dimen/dp_613"
-            android:layout_height="@dimen/dp_713"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_m_48"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:paddingHorizontal="@dimen/dp_34"
             android:paddingVertical="@dimen/dp_34"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintHeight_max="@dimen/dp_770"
+            app:layout_constraintHeight_min="@dimen/dp_566"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/route_service_list_info_info_bg_title" />
 
