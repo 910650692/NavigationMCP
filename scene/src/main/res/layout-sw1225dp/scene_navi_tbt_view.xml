@@ -77,7 +77,6 @@
             android:id="@+id/sv_exit"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_98"
-            android:layout_marginStart="@dimen/dp_17"
             app:layout_constraintBottom_toBottomOf="@id/gl_div"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_div" />
@@ -129,14 +128,13 @@
             android:id="@+id/stv_div_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_24"
             android:gravity="bottom"
             android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_73"
             app:layout_constraintBottom_toBottomOf="@id/gl_dis"
             app:layout_constraintStart_toEndOf="@id/siv_hud_sou3"
             app:layout_constraintTop_toTopOf="@id/gl_dis"
-            app:layout_goneMarginLeft="@dimen/dp_142"
+            app:layout_goneMarginLeft="@dimen/dp_90"
             tools:text="493" />
 
         <com.sgm.navi.ui.view.SkinTextView
