@@ -94,7 +94,7 @@
     <string name="st_quick_search_parking">停车场</string>
     <string name="st_quick_search_car_washing">洗车</string>
     <string name="st_quick_search_more">更多</string>
-    <string name="navi_arrived">已到达</string>
+    <string name="navi_arrived">已抵达</string>
     <string name="navi_via_count">等%d个途经点</string>
     <string name="navi_continue_navi">继续导航</string>
     <string name="navi_speed_suggest">建议车速</string>
