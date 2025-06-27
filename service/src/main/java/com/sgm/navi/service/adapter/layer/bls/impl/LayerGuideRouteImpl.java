@@ -921,6 +921,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeGuideLabel, true);
         getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaPoint).enableCollision(true);
         getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeWeather).enableCollision(true);
+        getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaChargeStationPoint).enableCollision(true);
     }
 
     /**
