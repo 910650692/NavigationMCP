@@ -22,6 +22,24 @@ public final class StackManager {
         mBaseFragmentStack = new HashMap<>();
     }
 
+    /**
+     * 获取fragment栈的大小.
+     *
+     * @param screenId 屏幕ID
+     * @return 栈大小
+     */
+    public int getFragmentSize(final String screenId) {
+        int size = 0;
+        if (ConvertUtils.isEmpty(mBaseFragmentStack)) {
+            return size;
+        }
+        final Stack<BaseFragment> fragments = mBaseFragmentStack.get(screenId);
+        if (ConvertUtils.isEmpty(fragments)) {
+            return size;
+        }
+        return fragments.size();
+    }
+
     /***
      *
      * @param screenId

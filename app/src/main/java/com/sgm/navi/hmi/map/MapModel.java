@@ -199,6 +199,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private ForecastPackage mforCastPackage;
     private final AccountPackage mAccountPackage;
     private NaviStatusPackage mNaviStatusPackage;
+    private StackManager stackManager;
     private boolean mLoadMapSuccess = true;  //只加载一次
     // 24小时对应的毫秒数：24 * 60 * 60 * 1000 = 86,400,000
     private final long MILLIS_IN_24_HOURS = 86400000;
@@ -241,6 +242,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         searchPackage.registerCallBack(mCallbackId, this);
         mAccountPackage = AccountPackage.getInstance();
         mNaviStatusPackage = NaviStatusPackage.getInstance();
+        stackManager = StackManager.getInstance();
         mapVisibleAreaDataManager = MapVisibleAreaDataManager.getInstance();
         addGestureListening();//添加收拾监听
         NavistatusAdapter.getInstance().registerCallback(this);
@@ -633,9 +635,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     private boolean parkingViewExist() {
-        return getBottomNaviVisibility() || getTopFragment(PoiDetailsFragment.class) &&
+        return getBottomNaviVisibility() || isOnlyExistTargetFragment(PoiDetailsFragment.class) &&
                 NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)
                 || getTopFragment(TrafficEventFragment.class);
+    }
+
+    private boolean isOnlyExistTargetFragment(Class<? extends Fragment> targetClass) {
+        return stackManager.getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) == 1 && getTopFragment(targetClass);
     }
 
     private boolean getTopFragment(Class<? extends Fragment> targetClass) {
@@ -647,18 +653,19 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     private void startSelfParkingTimer() {
+        if(Logger.openLog) Logger.d(TAG, "startSelfParkingTimer");
         cancelSelfParkingTimer();
         if (parkingViewExist()) {
             mSelfParkingTimer = ThreadManager.getInstance().asyncWithFixDelay(() -> {
                 cancelSelfParkingTimer();
                 if (parkingViewExist()) {
                     ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
-                    Logger.d("onFinish-startSelfParkingTimer-true");
+                    if(Logger.openLog) Logger.d("onFinish-startSelfParkingTimer-true");
                     if (getTopFragment(PoiDetailsFragment.class)) {
                         closeFragment(true);
                     }
                 }
-                Logger.d("onFinish-startSelfParkingTimer");
+                if(Logger.openLog) Logger.d("onFinish-startSelfParkingTimer");
             }, 15, 15);
         }
     }
@@ -951,7 +958,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void startCruise() {
         // 判断是否满足进入巡航的条件 1.是否有其它View正在显示 2.是否已开启巡航
-        if (!StackManager.getInstance().isFragmentStackNull(mViewModel.mScreenId)) {
+        if (!stackManager.isFragmentStackNull(mViewModel.mScreenId)) {
             Logger.i(TAG, "当前有正在显示的Fragment,开启巡航失败！");
             // 如果此刻已处于巡航态，结束巡航，静默结束
             if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
@@ -1098,7 +1105,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 Logger.i(TAG, "notifyAimPoiPushMessage ", GsonUtils.toJson(msg));
             }
             final PhoneAddressDialog phoneAddressDialog = new PhoneAddressDialog(
-                    StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
+                    stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
             phoneAddressDialog.setTitle(msg.getName());
             phoneAddressDialog.setDialogClickListener(new IBaseDialogClickListener() {
                 @Override
@@ -1575,7 +1582,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             return;
         }
         authorizationRequestDialog = new AuthorizationRequestDialog(
-                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
+                stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
         authorizationRequestDialog.setEndDate(endDate);
         authorizationRequestDialog.setDialogClickListener(new IBaseDialogClickListener() {
             @Override
@@ -1684,8 +1691,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 if ((gestureEvent == GestureEvent.THREE_GINGER_LEFT_SLIP)) {
                     Logger.d(TAG, "三指左滑=====||||");
                     ThreeFingerFlyingScreenManager.getInstance().triggerFlyingScreen(true);
-                    if (StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).isTaskRoot() && ProcessManager.isAppInForeground()){
-                        StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).moveTaskToBack(true);
+                    if (stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).isTaskRoot() && ProcessManager.isAppInForeground()){
+                        stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).moveTaskToBack(true);
                     }
                     return true;
                 } else if ((gestureEvent == GestureEvent.THREE_GINGER_RIGHT_SLIP)) {
