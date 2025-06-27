@@ -126,7 +126,7 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      */
     public void startTimer() {
         Logger.i(TAG, "startTimer:" , mCountTime);
-        startSchedule(DELAY_NO_TIME);
+        //startSchedule(DELAY_NO_TIME);
     }
 
     /***
@@ -134,7 +134,7 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      */
     public void pauseTimer() {
         Logger.i(TAG, "pauseTimer:" , mCountTime);
-        stopSchedule();
+        //stopSchedule();
     }
 
     /****
@@ -142,23 +142,23 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      */
     public void resumeTimer() {
         Logger.i(TAG, "resumeTimer:" , mCountTime);
-        startSchedule(DELAY_TIME_AFTER_RESUME);
+        //startSchedule(DELAY_TIME_AFTER_RESUME);
     }
 
     /***
      * 关闭定时器
      */
     public void closeTimer() {
-        stopSchedule();
-        mCountTime = TOTAL_TIME;
+        //stopSchedule();
+        //mCountTime = TOTAL_TIME;
     }
 
     /***
      * 重置定时器
      */
     public void resetTimer() {
-        stopSchedule();
-        mCountTime = TOTAL_TIME;
+        //stopSchedule();
+        //mCountTime = TOTAL_TIME;
     }
 
     abstract T initViewBinding(Context context);
