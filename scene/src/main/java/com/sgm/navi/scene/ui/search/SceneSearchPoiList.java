@@ -7,9 +7,11 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -907,6 +909,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
         if (mScreenViewModel.isAlongWaySearch()) {
             mViewBinding.routeRightTabListChargeScene.setVisibility(VISIBLE);
+            updateSearchContainerMarginBottom(true);
             if(!ConvertUtils.isEmpty(searchResultEntity.getKeyword())){
                 final String queryType = com.android.utils.ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
                 mViewBinding.routeRightTabListChargeScene.setSearchCharge(queryType.equals(searchResultEntity.getKeyword()));
@@ -914,6 +917,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.routeRightTabListChargeScene.registerRouteSelectObserver(TAG, this);
 
         } else {
+            updateSearchContainerMarginBottom(false);
             mViewBinding.routeRightTabListChargeScene.setVisibility(GONE);
         }
 
@@ -1312,5 +1316,15 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if(!ConvertUtils.isEmpty(mChildQuickList)){
             mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
         }
+    }
+
+    private void updateSearchContainerMarginBottom(boolean isAlongWay) {
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mViewBinding.searchContainer.getLayoutParams();
+        if (isAlongWay) {
+            lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_733);
+        } else {
+            lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_898);
+        }
+        mViewBinding.searchContainer.setLayoutParams(lp);
     }
 }
