@@ -450,6 +450,10 @@ public interface IVrBridgeConstant {
         String NOT_SUPPORT_SORT_TYPE = "不支持的排序类型";
         String SORT_RESULT_EMPTY = "排序搜索结果为空";
 
+        String NO_SUITABLE_VIA = "没有找到符合的途径点";
+        String CAN_NOT_DELETE_VIA = "不处于选路态或导航态，无法删除途径点";
+        String VIA_DELETE_HINT = "已删除途径点，正在重新规划路线";
+
     }
 
 }

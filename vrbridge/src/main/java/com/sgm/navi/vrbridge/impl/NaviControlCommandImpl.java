@@ -1659,7 +1659,32 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onPassByDelete: idx = ", idx);
         }
-        return responseNotSupport();
+
+        CallResponse viaResponse;
+        final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        if (NaviStatus.NaviStatusType.NAVING.equals(curStatus)
+                || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
+            final List<RouteParam> allPoint = RoutePackage.getInstance().getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+            if (allPoint.size() - 2 < idx) {
+                viaResponse = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_SUITABLE_VIA);
+            } else {
+                RouteParam viaParam = allPoint.get(idx);
+                if (null == viaParam || TextUtils.isEmpty(viaParam.getMPoiID())) {
+                    viaResponse = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_SUITABLE_VIA);
+                } else {
+                    final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+                    poiInfoEntity.setPid(viaParam.getPoiID());
+                    poiInfoEntity.setPoint(viaParam.getRealPos());
+                    RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                    viaResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.VIA_DELETE_HINT);
+                }
+            }
+        } else {
+            viaResponse = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.CAN_NOT_DELETE_VIA);
+        }
+
+        viaResponse.setNeedPlayMessage(true);
+        return viaResponse;
     }
 
     /**
