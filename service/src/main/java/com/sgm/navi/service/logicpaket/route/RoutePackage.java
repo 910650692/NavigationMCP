@@ -1514,7 +1514,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void clearRestArea(final MapType mapTypeId) {
-        ThreadManager.getInstance().execute(() -> mLayerAdapter.showRestArea(mapTypeId, null, -1));
+        try {
+            ThreadManager.getInstance().execute(() -> mLayerAdapter.showRestArea(mapTypeId, null, -1));
+        } catch (Exception e) {
+            Logger.e(TAG, "clear Rest Area: " + e.getMessage());
+        }
     }
 
     /**
