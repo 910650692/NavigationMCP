@@ -21,7 +21,6 @@
 
         <com.sgm.navi.ui.view.SkinEditText
             android:id="@+id/search_bar_edit_view"
-            android:paddingStart="0dp"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
@@ -34,9 +33,10 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:textCursorDrawable="@drawable/cursor_color"
-            android:textColor="@color/search_deep_text_day"
+            android:paddingStart="0dp"
+            android:textColor="@color/search_shallow_text_day"
             android:textColorHint="@color/search_shallow_text_day"
+            android:textCursorDrawable="@drawable/cursor_color"
             android:textSize="@dimen/sp_29"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_edit_clear"
