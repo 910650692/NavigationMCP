@@ -28,6 +28,8 @@
             tools:text="快充"
             android:textSize="@dimen/sp_26"
             android:gravity="center"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textColor="@drawable/custom_filter_item_text_bg_selector_day"
             app:layout_constraintEnd_toStartOf="@+id/filter_child_img"
             app:layout_constraintStart_toStartOf="parent"
