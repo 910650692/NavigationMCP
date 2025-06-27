@@ -454,6 +454,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment){
             mModel.goToCarPosition();
             mModel.setMapCenterInScreen();
+            mModel.refreshMapMode();
         }
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         boolean exist = StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),MainSearchFragment.class.getSimpleName());
@@ -483,6 +484,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment || baseFragment instanceof NaviGuidanceFragment){
             mModel.goToCarPosition();
             mModel.setMapCenterInScreen();
+            mModel.refreshMapMode();
         }
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺 来自主图搜索的地图移动 也显示比例尺
@@ -503,6 +505,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void resetMapCenterInScreen() {
         mView.setMapFocusable(true);
+        mModel.refreshMapMode();
         mModel.resetMapCenterInScreen();
         mScaleViewVisibility.set(true && ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3);
         mainBTNVisibility.set(true);

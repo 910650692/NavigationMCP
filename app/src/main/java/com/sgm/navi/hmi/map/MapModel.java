@@ -434,6 +434,29 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         setMapCenterInScreen();
         mViewModel.showOrHideSelfParkingView(false);
         stopCruise();
+        refreshMapMode();
+    }
+
+    public void refreshMapMode(){
+        String data = mSettingPackage.getValueFromDB(SettingController.SETTING_GUIDE_MAP_MODE);
+        MapMode currentMode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
+        MapMode mapViewMode = MapMode.UP_2D;
+        if (!TextUtils.isEmpty(data)) {
+            switch (data) {
+                case SettingController.VALUE_MAP_MODE_NORTH_2D:
+                    mapViewMode = MapMode.NORTH_2D;
+                    break;
+                case SettingController.VALUE_MAP_MODE_CAR_3D:
+                    mapViewMode = MapMode.UP_3D;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if(mapViewMode != currentMode) {
+            mapPackage.switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, mapViewMode, true);
+            mSettingPackage.setConfigKeyMapviewMode(mapViewMode.ordinal());
+        }
     }
 
     public void setFollowMode(MapType mapType, boolean bFollow){

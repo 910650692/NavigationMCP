@@ -121,6 +121,7 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
 
     /* 设置设置跟随模式、自由模式 */
     public int setFollowMode(boolean bFollow) {
+        if(Logger.openLog) Logger.d(TAG, "setFollowMode: " + bFollow);
         return getLayerCarControl().setFollowMode(bFollow);
     }
 
@@ -141,6 +142,7 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
      */
     public void setPreviewMode(boolean bPreview) {
         getLayerCarControl().setPreviewMode(bPreview);
+        if(Logger.openLog) Logger.d(TAG, "setPreviewMode bPreview " + bPreview);
     }
 
     /* 设置车标缩放系数和比例尺对应关系 */
