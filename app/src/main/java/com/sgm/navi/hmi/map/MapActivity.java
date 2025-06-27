@@ -132,7 +132,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.startListenMsg();
         mViewModel.offlineMap15Day();
         mViewModel.offlineMap45Day();
-        mViewModel.checkPopGuideLogin();
+        if (!mStackManager.isExistFragment(mScreenId, "AccountQRCodeLoginFragment")) {
+            mViewModel.checkPopGuideLogin();
+        }
         mViewModel.getOnlineForecastArrivedData();
         mOpenGuideRunnable = new Runnable() {
             @Override
