@@ -149,7 +149,6 @@
                 android:id="@+id/test_nav_log"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
                 android:checked="false"
                 android:text="nav日志开关"
                 android:textSize="@dimen/sp_25"
@@ -185,10 +184,39 @@
                 app:layout_constraintLeft_toRightOf="@+id/test_gaode_log"
                 app:layout_constraintTop_toTopOf="@+id/test_gaode_log" />
 
+            <com.sgm.navi.ui.view.SkinButton
+                android:id="@+id/test_copy_bllog"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@color/white"
+                android:text="@string/test_copy_bllog"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                android:gravity="left"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_gaode_log" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/test_copy_info"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_16"
+                android:background="@color/white"
+                android:layout_marginTop="@dimen/dp_10"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                android:text="复制信息"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_copy_bllog" />
+
             <com.sgm.navi.ui.view.SkinCheckBox
                 android:id="@+id/navi_record"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_54"
+                android:layout_height="@dimen/dp_48"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_10"
                 android:button="@null"
@@ -196,24 +224,25 @@
                 android:drawableStart="@drawable/switch_route_button"
                 android:gravity="top"
                 android:text="@string/test_start_record"
-                android:textSize="@dimen/sp_25"
+                android:textSize="@dimen/sp_20"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/test_gaode_log" />
+                app:layout_constraintTop_toBottomOf="@+id/test_copy_info"
+                />
 
             <com.sgm.navi.ui.view.SkinCheckBox
                 android:id="@+id/record_play"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_height="@dimen/dp_48"
                 android:layout_marginTop="@dimen/dp_10"
                 android:button="@null"
                 android:checked="false"
                 android:drawableStart="@drawable/switch_route_button"
                 android:gravity="top"
                 android:text="开始播放回放"
-                android:textSize="@dimen/sp_25"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/navi_record" />
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_copy_info"
+                />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </com.sgm.navi.ui.view.SkinConstraintLayout>

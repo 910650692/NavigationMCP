@@ -25,6 +25,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.PublicKey;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @Description TODO
@@ -419,6 +421,127 @@ public class FileUtils {
     }
 
     /**
+     * 拷贝单个文件
+     */
+    public boolean copyFileBuffered(File source, File target, FileUtils.FileListener listener) {
+        boolean result = false;
+        if (!target.exists()) {
+            FileInputStream in = null;
+            FileOutputStream out = null;
+            try {
+                in = new FileInputStream(source);
+                out = new FileOutputStream(target);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = in.read(buffer)) != -1) {
+                    if (listener == null) {
+                        Logger.i(TAG, "用户关闭了控制面板");
+                        break;
+                    } else if (listener.isCancelled()) {
+                        Logger.i(TAG, "用户取消了复制");
+                        break;
+                    }
+                    out.write(buffer, 0, length);
+                }
+                out.flush();
+                out.getFD().sync();
+                result = true;
+            } catch (IOException e) {
+                if (Logger.openLog) {
+                    Logger.d(TAG, "[copyFileBuffered] e = {?}", Log.getStackTraceString(e));
+                }
+            } finally {
+                safetyClose(in);
+                safetyClose(out);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 异步拷贝文件夹
+     * @param addTime 是否添加时间戳到目标路径
+     * @param fromPath 源路径
+     * @param toPath 目标路径
+     * @param listener 监听器，用于接收复制进度和状态（为空不执行）
+     */
+    public void copyFileDirectory(boolean addTime, String fromPath, String toPath, FileUtils.FileListener listener) {
+        try {
+            if (TextUtils.isEmpty(fromPath)) {
+                if (listener != null) {
+                    listener.onCopyInfo("源路径为空");
+                }
+                return;
+            }
+            // 源目录：（需确保应用有读取权限）
+            File sourceDir = new File(fromPath);
+            if (!sourceDir.exists() || !sourceDir.isDirectory()) {
+                if (listener != null) {
+                    listener.onCopyInfo("源目录不存在:" + fromPath);
+                }
+                return;
+            }
+            // 目标目录：（自动创建）
+            if (TextUtils.isEmpty(toPath)) {
+                if (listener != null) {
+                    listener.onCopyInfo("目标路径为空");
+                }
+                return;
+            }
+            File targetDir = null;
+            if (addTime) {
+                // 添加时间戳到目标路径
+                @SuppressLint("SimpleDateFormat")
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                targetDir = new File(toPath, sourceDir.getName() + timeStamp);
+            } else {
+                targetDir = new File(toPath, sourceDir.getName());
+            }
+            if (!targetDir.exists() && !targetDir.mkdirs()) {
+                if (listener != null) {
+                    listener.onCopyInfo("目标目录创建失败");
+                }
+                return;
+            }
+            // 拷贝所有文件
+            File[] files = sourceDir.listFiles();
+            if (files == null) {
+                if (listener != null) {
+                    listener.onCopyInfo("源目录无文件");
+                }
+                return;
+            }
+            for (File file : files) {
+                if (listener == null) {
+                    Logger.i(TAG, "用户关闭了控制面板");
+                    break;
+                } else if (listener.isCancelled()) {
+                    Logger.i(TAG, "用户取消了复制");
+                    listener.onCopyInfo("用户取消了复制");
+                    break;
+                }
+                if (file.isFile()) {
+                    listener.onCopyInfo(file.getName());
+                    File targetFile = new File(targetDir, file.getName());
+                    boolean result = copyFileBuffered(file, targetFile, listener);
+                } else if (file.isDirectory()) {
+                    // 递归拷贝子目录
+                    copyFileDirectory(false, file.getAbsolutePath(),
+                            new File(targetDir, file.getName()).getAbsolutePath(), listener);
+                }
+            }
+        } catch (Exception e) {
+            if (listener != null) {
+                listener.onCopyInfo("复制出错");
+            }
+            if (Logger.openLog) {
+                Logger.e(TAG, e.getMessage());
+            }
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 复制Asset文件夹到内存中.
      *
      * @param assetsRelPath          asset文件夹目录
@@ -649,5 +772,30 @@ public class FileUtils {
 
     private static final class Helper {
         private static final FileUtils fu = new FileUtils();
+    }
+
+    public interface FileListener {
+        /**
+         * 文件复制信息回调
+         *
+         * @param info
+         */
+        default void onCopyInfo(String info) {
+        }
+
+        /**
+         * 复制完成
+         */
+        default void onComplete() {
+        }
+
+        /**
+         * 是否取消复制
+         *
+         * @return true:取消复制，false:继续复制
+         */
+        default boolean isCancelled() {
+            return false;
+        }
     }
 }

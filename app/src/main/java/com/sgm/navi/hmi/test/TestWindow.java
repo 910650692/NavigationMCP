@@ -2,6 +2,7 @@ package com.sgm.navi.hmi.test;
 
 import static androidx.core.app.ActivityCompat.startActivityForResult;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,12 +21,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.android.utils.SpUtils;
+import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.LayoutTestBinding;
+import com.sgm.navi.hmi.utils.DeviceUtil;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.define.engine.GaodeLogLevel;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.engine.EnginePackage;
@@ -47,6 +52,11 @@ public class TestWindow {
     private LayoutTestBinding mBinding;
     private boolean isShowing;
     private static volatile TestWindow instance;
+    private boolean mIsCopying = false;
+    private boolean mIsCancel = false;
+    private FileUtils.FileListener mFileListener;
+    private String mUsbPath;
+    private long mLastClickTime = 0;
 
     private TestWindow() {
     }
@@ -87,6 +97,7 @@ public class TestWindow {
         initAction();
         initData();
         addViewToWindow();
+        initFileListener();
         mBinding.naviPosRecord.setChecked(PositionPackage.getInstance().isOpenLocLog());
     }
 
@@ -139,6 +150,8 @@ public class TestWindow {
         mWindowManager.removeView(mBinding.getRoot());
         isShowing = false;
         HudPackage.getInstance().unInitHudService();
+        mIsCopying = false;
+        mFileListener = null;
     }
 
     private void initAction() {
@@ -295,6 +308,93 @@ public class TestWindow {
                 }
             }
         });
+
+        mBinding.testCopyBllog.setOnClickListener(v -> {
+            if (mActivityRef.get() == null || mBinding == null) {
+                return;
+            }
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - mLastClickTime < 1000) {
+                // 防止快速点击
+                return;
+            }
+            mLastClickTime = currentTime;
+            mIsCopying = !mIsCopying;
+            if (mIsCopying) {
+                mIsCancel = false;
+                mBinding.testCopyBllog.setText(mActivityRef.get().getString(R.string.test_copy_cancel));
+                List<String> usbPaths = DeviceUtil.getUSBPath(mActivityRef.get());
+                if (usbPaths.isEmpty()) {
+                    mBinding.testCopyInfo.setText(mActivityRef.get().getString(R.string.test_no_usb));
+                    mIsCopying = false;
+                    mIsCancel = false;
+                    mBinding.testCopyBllog.setText(mActivityRef.get().getString(R.string.test_copy_bllog));
+                    return;
+                }
+                mUsbPath = usbPaths.get(0);
+                copyNaviLog();
+            } else {
+                mIsCancel = true;
+                mBinding.testCopyBllog.setText(mActivityRef.get().getString(R.string.test_copy_bllog));
+            }
+        });
+    }
+
+    private void initFileListener() {
+        mFileListener = new FileUtils.FileListener() {
+            @Override
+            public void onCopyInfo(String info) {
+                if (Logger.openLog) {
+                    Logger.d(TAG, "onCopyInfo:info = " + info);
+                }
+                if (mActivityRef.get() == null || mBinding == null) {
+                    return;
+                }
+                mActivityRef.get().runOnUiThread(() -> {
+                    mBinding.testCopyInfo.setText(info);
+                });
+            }
+
+            @Override
+            public void onComplete() {
+                mIsCopying = false;
+                mIsCancel = false;
+                Logger.d(TAG, "复制完成");
+                if (mActivityRef.get() == null || mBinding == null) {
+                    return;
+                }
+                mActivityRef.get().runOnUiThread(() -> {
+                    mBinding.testCopyInfo.setText(mActivityRef.get().getString(R.string.test_copy_complete));
+                    mBinding.testCopyBllog.setText(mActivityRef.get().getString(R.string.test_copy_bllog));
+                });
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return mIsCancel;
+            }
+        };
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void copyNaviLog() {
+        try {
+            ThreadManager.getInstance().execute(() -> {
+                FileUtils.getInstance().copyFileDirectory(true, GBLCacheFilePath.BLS_LOG, mUsbPath, mFileListener);
+                FileUtils.getInstance().copyFileDirectory(true, GBLCacheFilePath.GM_LOG_ROOT_PATH, mUsbPath, mFileListener);
+                if (mFileListener != null) {
+                    if (!mFileListener.isCancelled()) {
+                        mFileListener.onComplete();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            mBinding.testCopyInfo.setText("线程出错: " + e.getMessage());
+            if (Logger.openLog) {
+                Logger.e(TAG, e.getMessage());
+            }
+            e.printStackTrace();
+        }
     }
 
     private void toggleSelection(View view) {

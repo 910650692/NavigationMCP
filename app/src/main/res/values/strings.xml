@@ -62,6 +62,10 @@
     <string name="test_stop_record">停止录制回放</string>
     <string name="test_record_play">开始播放回放</string>
     <string name="test_record_stop">停止播放回放</string>
+    <string name="test_copy_bllog">复制高德日志到U盘</string>
+    <string name="test_copy_complete">复制完成</string>
+    <string name="test_copy_cancel">取消复制</string>
+    <string name="test_no_usb">没有找到U盘</string>
 
     <!-- 主图 -->
     <string name="map_go_setting">去设置</string>

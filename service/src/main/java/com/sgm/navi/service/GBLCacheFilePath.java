@@ -14,7 +14,7 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     /*** 高德地图文件缓存位置 sdcard/Android/data/your_package/files/AutoMap/Gbl/**/
     String GBL_MAP = AUTO_MAP_PATH + "Gbl" + File.separator;
 
-    String GM_LOG_ROOT_PATH = "/data/gmlogger/proclog/";
+    String GM_LOG_ROOT_PATH = "/data/gmlogger/";//proclog/
 
     /*** sdcard/Android/data/your_package/files/AutoMap/Gbl/libs/ **/
     public static final String DEBUG_LIBS_DIR = GBL_MAP + "libs" + File.separator;
