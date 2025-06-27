@@ -19,6 +19,7 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
+import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
 import com.sgm.navi.service.define.search.ChildInfo;
@@ -28,6 +29,7 @@ import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
@@ -50,6 +52,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     private final MapDataPackage mapDataPackage;
     private final RoutePackage mRoutePackage;
     private final LayerPackage mLayerPackage;
+    private final MapPackage mMapPackage;
     private int mTaskId;
     // 动力类型标定
     public MutableLiveData<Integer> mPowerType = new MutableLiveData<>();
@@ -69,6 +72,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         mapDataPackage = MapDataPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
+        mMapPackage = MapPackage.getInstance();
         mPowerType.setValue(-1);
     }
 
@@ -352,5 +356,12 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
 
     public void setRouteViaPointSelect(boolean isSelect,int index){
         mLayerPackage.setRouteViaPointSelectStatus(MapType.MAIN_SCREEN_MAIN_MAP,isSelect,index);
+    }
+
+    /**
+     *通知地图重新刷新回车位倒计时
+     */
+    public void NotifyMapTimer(){
+        mMapPackage.onNotifyMap(MapType.MAIN_SCREEN_MAIN_MAP, MapNotifyType.REFRESH_SELF_PARKING_TIMER);
     }
 }

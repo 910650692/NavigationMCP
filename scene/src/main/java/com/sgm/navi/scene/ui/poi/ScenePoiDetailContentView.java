@@ -1633,6 +1633,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mAnimator.cancel();
                 }
                 mViewBinding.noResultButton.setOnClickListener((view) -> {
+                    mScreenViewModel.NotifyMapTimer();
                     doSearch(mPoiInfoEntity);
 //                    mViewBinding.csPoiNoResult.setVisibility(View.GONE);
 //                    mViewBinding.skPoiName.setVisibility(View.VISIBLE);
