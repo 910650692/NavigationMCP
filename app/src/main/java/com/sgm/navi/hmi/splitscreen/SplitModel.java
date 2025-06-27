@@ -69,6 +69,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         mNextManeuverEntity = new NextManeuverEntity();
         lastCrossImgEntity = mNaviPackage.getLastCrossEntity();
 //        mCrossImgOnShowing = mNaviPackage.isMCrossImgIsOnShowing();
+        
     }
 
     @Override

@@ -23,7 +23,6 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.ActivityStartupBinding;
-import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.map.MapType;
@@ -92,7 +91,6 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
                 Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
             }
         });
-        FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 
     @Override
@@ -120,7 +118,6 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
             mFailedDialog = null;
         }
         PermissionUtils.getInstance().remove();
-        FloatViewManager.getInstance().showAllCardWidgets();
         super.onDestroy();
     }
 

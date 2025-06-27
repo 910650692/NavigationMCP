@@ -112,35 +112,39 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
      * @param locMode 定位工作模式结构体
      */
     public boolean initLocEngine(LocMode locMode) {
-        mLocMode = locMode;
-        PosWorkPath posWorkPath = new PosWorkPath();
-        String posRootDir = GBLCacheFilePath.POS_DIR + "pos";
-        String contextDir = posRootDir + "/context/";
-        FileUtils.getInstance().createDir(posRootDir, false);
-        FileUtils.getInstance().createDir(contextDir, false);
-        //posWorkPath.locPath = posLogDir;//该方法已废弃 统一通过BaseInitParam.logPath配置
-        posWorkPath.contextPath = contextDir;//存放定位上下文文件目录
-        LocModeType locModeType = LocationFuncSwitch.getLocModeType(locMode, mPositionConfig);
-        initLocation();
-        mPosService.setDefaultPos(new Coord3DDouble(locInfoBean.getLongitude(), locInfoBean.getLatitude(), locInfoBean.getAltitude()));
-        // 添加位置信息观察者
-        mPosService.addLocInfoObserver(this, 0);
-        //添加地图反馈观察者
-        mPosService.addMapMatchFeedbackObserver(this);
-        //l2++使用，用以获取道路等级及Link信息
-        mPosService.addGraspRoadResultObserver(this);
-        mPosParallelRoadController.addObserver();
-        // 定位服务初始化
-        int resultCode = mPosService.init(posWorkPath, locModeType);
-        Logger.d(TAG, "initLocEngine :" + resultCode + "\n" +
-                "contextDir：" + contextDir);
-        if (resultCode == 0) {
-            if (mH != null) {
-                mH.sendEmptyMessage(MSG_LOC_SAVE);
+        try {
+            mLocMode = locMode;
+            PosWorkPath posWorkPath = new PosWorkPath();
+            String posRootDir = GBLCacheFilePath.POS_DIR + "pos";
+            String contextDir = posRootDir + "/context/";
+            FileUtils.getInstance().createDir(posRootDir, false);
+            FileUtils.getInstance().createDir(contextDir, false);
+            //posWorkPath.locPath = posLogDir;//该方法已废弃 统一通过BaseInitParam.logPath配置
+            posWorkPath.contextPath = contextDir;//存放定位上下文文件目录
+            LocModeType locModeType = LocationFuncSwitch.getLocModeType(locMode, mPositionConfig);
+            initLocation();
+            mPosService.setDefaultPos(new Coord3DDouble(locInfoBean.getLongitude(), locInfoBean.getLatitude(), locInfoBean.getAltitude()));
+            // 添加位置信息观察者
+            mPosService.addLocInfoObserver(this, 0);
+            //添加地图反馈观察者
+            mPosService.addMapMatchFeedbackObserver(this);
+            //l2++使用，用以获取道路等级及Link信息
+            mPosService.addGraspRoadResultObserver(this);
+            mPosParallelRoadController.addObserver();
+            // 定位服务初始化
+            int resultCode = mPosService.init(posWorkPath, locModeType);
+            Logger.d(TAG, "initLocEngine :" + resultCode + "\n" +
+                    "contextDir：" + contextDir);
+            if (resultCode == 0) {
+                if (mH != null) {
+                    mH.sendEmptyMessage(MSG_LOC_SAVE);
+                }
+                // 信号记录功能开关
+                mPosService.signalRecordSwitch(mAutoNaviPosLogEnable, LocationFuncSwitch.getLocLogConf());
+                return true;
             }
-            // 信号记录功能开关
-            mPosService.signalRecordSwitch(mAutoNaviPosLogEnable, LocationFuncSwitch.getLocLogConf());
-            return true;
+        } catch (Exception e) {
+            Logger.e(TAG, "initLocEngine error:" + e.getMessage());
         }
         return false;
     }

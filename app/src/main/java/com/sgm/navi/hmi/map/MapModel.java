@@ -536,7 +536,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onMapClickPoi(MapType mapTypeId, PoiInfoEntity poiInfo) {
         stopCruise();
-        mViewModel.toPoiDetailFragment(poiInfo);
+        // 分屏状态下，1/3屏不支持点击
+        if (!SplitScreenManager.getInstance().isOneThirdScreen()) {
+            mViewModel.toPoiDetailFragment(poiInfo);
+        }
         //选路页面不显示回自车位
         Logger.i("onMapClickPoi", NaviStatusPackage.getInstance().getCurrentNaviStatus());
         if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
@@ -551,7 +554,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onReversePoiClick(MapType mapTypeId, PoiInfoEntity poiInfo) {
         stopCruise();
-        mViewModel.toPoiDetailFragment(poiInfo);
+        if (!SplitScreenManager.getInstance().isOneThirdScreen()) {
+            mViewModel.toPoiDetailFragment(poiInfo);
+        }
     }
 
     @Override

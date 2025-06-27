@@ -331,4 +331,8 @@ public class SplitScreenManager {
     public String getScreenJsonPath() {
         return currentJsonPath;
     }
+
+    public boolean isOneThirdScreen() {
+        return ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_1_3;
+    }
 }
