@@ -8,6 +8,7 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             style="@style/dialog_buick_parent"
+            android:background="@drawable/bg_shadow_system_ndlc_8155"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
