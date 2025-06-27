@@ -1210,6 +1210,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
     @Override
     public void onDestroy() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"onDestroy: " + mScreenViewModel);
+        if (mScreenViewModel != null) {
+            //切换桌面地图 应用重走声明周期  onDestroy中应该调用删除扎标方法
+            mScreenViewModel.clearLabelMarker();
+        }
         super.onDestroy();
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
     }
