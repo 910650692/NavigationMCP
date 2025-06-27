@@ -749,7 +749,13 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         isZoomIn = bZoomIn ? 0 : 1;
         if (callback != null) {
             ThreadManager.getInstance().postUi(() -> {
-                callback.onMapLevelChanged(mapType, getCurrentZoomLevel());
+                float level = getCurrentZoomLevel();
+                if (level < 12F) {
+                    getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, false);
+                } else {
+                    getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, true);
+                }
+                callback.onMapLevelChanged(mapType, level);
                 callback.onMapScaleChanged(mapType, getCurrentScale());
             });
         }
