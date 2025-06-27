@@ -201,14 +201,12 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             Logger.e(TAG, "更新终点扎标样式 data == null");
                             return;
                         }
-                        LayerPointItemType endPointType = data.getEndPointType();
-                        Logger.d(TAG, "更新终点扎标样式 endPointType " + endPointType);
-                        TextView text = rootView.findViewById(R.id.route_end_detail);
                         if (ConvertUtils.isEmpty(data)) {
                             Logger.e(TAG, "更新终点扎标信息 getEndPointInfo is null");
                             return;
                         }
                         Logger.d(TAG, "更新终点扎标信息 data " + data);
+                        final TextView text = rootView.findViewById(R.id.route_end_detail);
                         int restNum = data.getRestNum();
                         if (restNum > 0) {
                             final LayerPointItemType pointType = data.getEndPointType();

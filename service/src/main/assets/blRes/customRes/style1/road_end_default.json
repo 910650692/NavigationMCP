@@ -2,7 +2,7 @@
   "point_layer_item_style": {
     "normal_style": {
       "poi_marker_id": "layer_layout_route_end_default",
-      "poi_marker_info": "{\"anchor\":9,\"x_ratio\":0.5,\"y_ratio\":0.8}"
+      "poi_marker_info": "{\"anchor\":9,\"x_ratio\":0.5,\"y_ratio\":1}"
     }
   }
 }
