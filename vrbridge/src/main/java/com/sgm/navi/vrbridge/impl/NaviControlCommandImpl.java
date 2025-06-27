@@ -86,7 +86,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onMapSizeAdjust(final boolean zoomIn, final int size, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onMapSizeAdjust: zoomIn = ", zoomIn, ", size = ", size);
         }
 
@@ -107,14 +107,14 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     return CallResponse.createSuccessResponse();
                 } else if (levelSize == AutoMapConstant.MAP_ZOOM_LEVEL_MAX) {
                     //直接放到最大
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "Set map level max");
                     }
                     MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, levelSize);
                     callResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ZOOM_TO_MAX);
                 } else {
                     //默认flag提升
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "Amplify map level");
                     }
                     MapPackage.getInstance().amplifyLevel(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -129,13 +129,13 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     saveZoomCommand(false, size, respCallback);
                     return CallResponse.createSuccessResponse();
                 } else if (levelSize == AutoMapConstant.MAP_ZOOM_LEVEL_MIN) {
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "Set map level min");
                     }
                     MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, levelSize);
                     callResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ZOOM_TO_MIN);
                 } else {
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "Reduce map level");
                     }
                     MapPackage.getInstance().reduceLevel(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -143,7 +143,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 }
             }
         }
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "map state : ", MapState.getInstance().getCurrZoomLevel());
         }
         callResponse.setNeedPlayMessage(true);
@@ -163,7 +163,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             case Integer.MIN_VALUE -> AutoMapConstant.MAP_ZOOM_LEVEL_MIN;
             case 1 -> AutoMapConstant.MAP_ZOOM_LEVEL_CHANGE_FLAG;
             default -> {
-                if(Logger.openLog) {
+                if (Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "Error zoom action !");
                 }
                 yield -1.0f;
@@ -202,7 +202,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onRouteOverviewToggle(final boolean open, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onRouteOverviewToggle: open = ", open);
         }
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
@@ -251,7 +251,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     @Deprecated
     public CallResponse onClassicNaviToggle(final boolean open, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onClassicNaviToggle: open = ", open);
         }
         return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_LIGHT_NAVI);
@@ -268,7 +268,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     @Deprecated
     public CallResponse onFamiliarNaviToggle(final boolean open, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onFamiliarNaviToggle: open = ", open);
         }
         return responseNotSupport();
@@ -294,7 +294,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     @Deprecated
     public CallResponse onArNaviToggle(final boolean open, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onArNaviToggle: open = ", open);
         }
         return responseNotSupport();
@@ -310,7 +310,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     @Deprecated
     public CallResponse onNaviModeSwitch(final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onFamiliarNaviToggle:");
         }
         return responseNotSupport();
@@ -328,7 +328,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onNaviActionChange(final String action, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onNaviActionChange: action = ", action);
         }
 
@@ -336,13 +336,13 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         switch (action) {
             case IVrBridgeConstant.NavigationOperateType.START:
                 if (MapStateManager.getInstance().isNaviStatus()) {
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "Already in navigation state");
                     }
                     MapStateManager.getInstance().openMapWhenBackground();
                     callResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ALREADY_IN_NAVI);
                 } else if (MapStateManager.getInstance().inSelectRoute()) {
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "Selecting route page, start navigation");
                     }
                     callResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.LETS_GO);
@@ -350,7 +350,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.START_NAVIGATION);
                     MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
                 } else {
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "Haven't select route, keep listen");
                     }
                     callResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.WHERE_TO_GO);
@@ -358,13 +358,13 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 break;
             case IVrBridgeConstant.NavigationOperateType.STOP:
                 if (MapStateManager.getInstance().isNaviStatus()) {
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "Stop navigation successfully");
                     }
                     stopNavigation();
                     callResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.NAVI_END);
                 } else {
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "Already end navigation");
                     }
                     callResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.NOT_IN_NAVI);
@@ -372,7 +372,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 break;
             case IVrBridgeConstant.NavigationOperateType.CONTINUE:
                 final int sceneState = NaviPackage.getInstance().getCurrentImmersiveStatus();
-                if(Logger.openLog) {
+                if (Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "Continue navigation sceneState: ", sceneState);
                 }
                 if (sceneState == 0) {
@@ -385,7 +385,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 }
                 break;
             default:
-                if(Logger.openLog) {
+                if (Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "Error navi action");
                 }
                 callResponse = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_NAVI_COMMAND);
@@ -415,7 +415,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onEDogModeToggle(final boolean open, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onEDogModeToggle: open = ", open);
         }
         return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_VR_CTRL);
@@ -433,7 +433,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Deprecated
     public CallResponse onTrafficModeToggle(final boolean open, final RespCallback respCallback) {
         final boolean curTrafficMode = SettingPackage.getInstance().getConfigKeyRoadEvent();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onTrafficModeToggle open: ", open, ", curStatus: ", curTrafficMode);
         }
         MapStateManager.getInstance().openMapWhenBackground();
@@ -460,7 +460,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onRoadAssigned(final String road, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onRoadAssigned: road = ", road);
         }
         if (TextUtils.isEmpty(road)) {
@@ -520,7 +520,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     private void chooseRoadWhenSelect(final String roadName, final RespCallback respCallback) {
         if (null == roadName || roadName.isEmpty()) {
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "chooseRoad name are empty");
             }
             return;
@@ -553,7 +553,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         } catch (IndexOutOfBoundsException outOfBoundsException) {
             Logger.e(IVrBridgeConstant.TAG, "match road index error: " + outOfBoundsException.getMessage());
         }
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "assignRoad chooseRoute: ", chooseIndex);
         }
 
@@ -563,7 +563,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 final Map<MapType, Integer> indexMap = RoutePackage.getInstance().getSelectRouteIndex();
                 final Integer curSelectValue = indexMap.getOrDefault(MapType.MAIN_SCREEN_MAIN_MAP, -1);
                 final int mainIndex = null != curSelectValue ? curSelectValue : 0;
-                if(Logger.openLog) {
+                if (Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "assignRoad curSelect: ", mainIndex);
                 }
                 if (mainIndex == chooseIndex) {
@@ -673,7 +673,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onRoadNonAssigned(final String road, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onRoadNonAssigned: road = ", road);
         }
         final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
@@ -709,7 +709,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     private void avoidRoadWhenSelect(final String road, final RespCallback respCallback) {
         if (null == road || road.isEmpty()) {
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "avoidRoad name are empty");
             }
             return;
@@ -718,7 +718,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         final List<RouteLineInfo> routeLineList = MapStateManager.getInstance().getRouteList();
         try {
             final int size = routeLineList.size();
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "不走xxx路，size: ", size);
             }
             final List<Boolean> matchedStatusList = new ArrayList<>();
@@ -738,7 +738,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             final Map<MapType, Integer> indexMap = RoutePackage.getInstance().getSelectRouteIndex();
             final Integer curSelectValue = indexMap.getOrDefault(MapType.MAIN_SCREEN_MAIN_MAP, -1);
             final int curIndex = null != curSelectValue ? curSelectValue : 0;
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "afterProcess matchStatusSize: ", matchedStatusList.size()
                         + ", currentSelectIndex: " + curIndex);
             }
@@ -841,7 +841,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     @Deprecated
     public CallResponse onRouteRefresh(final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onRouteRefresh:");
         }
         if (MapStateManager.getInstance().isNaviStatus()) {
@@ -871,7 +871,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onRouteSwitch(final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onRouteSwitch:");
         }
         final RoutePreferenceID curRouteId = SettingPackage.getInstance().getRoutePreference();
@@ -923,7 +923,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onRouteChoose(final String type, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onRoadChoose: road = ", type);
         }
         final CallResponse callResponse;
@@ -962,7 +962,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 tts = IVrBridgeConstant.ResponseString.MAIN_ROUTE;
                 break;
             default:
-                if(Logger.openLog) {
+                if (Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "Go default case, no preference match currently, return !");
                 }
                 return CallResponse.createFailResponse(IVrBridgeConstant.RouteType.NOT_SUPPORT_TYPE);
@@ -970,7 +970,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
         MapStateManager.getInstance().openMapWhenBackground();
         final RoutePreferenceID curPrefer = SettingPackage.getInstance().getRoutePreference();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "curRoutePrefer: ", curPrefer, ", target: ", routeId);
         }
         if (routeId == curPrefer) {
@@ -996,7 +996,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onRouteChoose(final int index, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "Route Choose by index : road = ", index);
         }
         if (MapStateManager.getInstance().inSelectRoute()) {
@@ -1035,7 +1035,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onCommonPoiSet(final String sessionId, final String poiType, @NonNull final String poi, final PoiCallback poiCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onCommonPoiSet: sessionId = ", sessionId, ", poiType = ", poiType, ", poi = ", poi);
         }
         switch (poiType) {
@@ -1075,7 +1075,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onLocationAsk(final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onLocationAsk");
         }
         MapStateManager.getInstance().openMapWhenBackground();
@@ -1088,7 +1088,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.CANT_LOCATE_POS);
         } else {
             //搜索Poi详情
-            if(Logger.openLog) {
+            if (Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "ask location lon: ", lon, ", lat: ", lat);
             }
             final GeoPoint geoPoint = new GeoPoint(lon, lat);
@@ -1108,43 +1108,49 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onRoadChange(final String road, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onRoadChange: road = ", road);
         }
         CallResponse response = null;
         if (MapStateManager.getInstance().isNaviStatus()) {
             final LocParallelInfoEntity parallelInfo = MapStateManager.getInstance().getParallelInfo();
-            if (null != parallelInfo && parallelInfo.getStatus() == 1 && parallelInfo.getFlag() != 0) {
-                final int flag = parallelInfo.getFlag();
-                switch (road) {
-                    case IVrBridgeConstant.ParallelOption.MAIN:
-                        //切换到主路
-                        if (flag == 2) {
-                            response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.SWITCH_MAIN_ROAD);
-                            NaviPackage.getInstance().voiceChangeParallelRoad(MapType.MAIN_SCREEN_MAIN_MAP,
-                                    IVrBridgeConstant.ParallelOption.MAIN);
-                        } else {
-                            response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_MAIN_ROAD);
-                            MapStateManager.getInstance().openMapWhenBackground();
-                        }
-                        break;
-                    case IVrBridgeConstant.ParallelOption.SIDE:
-                        //切换到辅路
-                        if (flag == 1) {
-                            NaviPackage.getInstance().voiceChangeParallelRoad(MapType.MAIN_SCREEN_MAIN_MAP,
-                                    IVrBridgeConstant.ParallelOption.SIDE);
-                            response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.SWITCH_SUB_ROAD);
-                        } else {
-                            response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_SUB_ROAD);
-                            MapStateManager.getInstance().openMapWhenBackground();
-                        }
-                        break;
-                    default:
-                        return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NO_SUPPORT_OTHER_ROAD_OPTION);
+            if (null != parallelInfo && parallelInfo.getStatus() == 0) {
+                if (parallelInfo.getFlag() != 0) {
+                    final int flag = parallelInfo.getFlag();
+                    switch (road) {
+                        case IVrBridgeConstant.ParallelOption.MAIN:
+                            //切换到主路
+                            if (flag == 2) {
+                                response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.SWITCH_MAIN_ROAD);
+                                NaviPackage.getInstance().voiceChangeParallelRoad(MapType.MAIN_SCREEN_MAIN_MAP,
+                                        IVrBridgeConstant.ParallelOption.MAIN);
+                            } else {
+                                response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_MAIN_ROAD);
+                                MapStateManager.getInstance().openMapWhenBackground();
+                            }
+                            break;
+                        case IVrBridgeConstant.ParallelOption.SIDE:
+                            //切换到辅路
+                            if (flag == 1) {
+                                NaviPackage.getInstance().voiceChangeParallelRoad(MapType.MAIN_SCREEN_MAIN_MAP,
+                                        IVrBridgeConstant.ParallelOption.SIDE);
+                                response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.SWITCH_SUB_ROAD);
+                            } else {
+                                response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_SUB_ROAD);
+                                MapStateManager.getInstance().openMapWhenBackground();
+                            }
+                            break;
+                        default:
+                            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NO_SUPPORT_OTHER_ROAD_OPTION);
+                    }
+                } else {
+                    Logger.w(IVrBridgeConstant.TAG, "当前没有主辅路可切换");
+                    response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_ROAD_TO_SWITCH);
+                    MapStateManager.getInstance().openMapWhenBackground();
                 }
             } else {
-                Logger.w(IVrBridgeConstant.TAG, "not int parallel status");
-                response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_ROAD_TO_SWITCH);
+                Logger.w(IVrBridgeConstant.TAG, "平行路切换期间，不可进行切换操作");
+                response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.IN_PARALLEL_ROAD);
                 MapStateManager.getInstance().openMapWhenBackground();
             }
         } else {
@@ -1167,43 +1173,49 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onBridgeChange(final String bridge, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onBridgeChange: bridge = ", bridge);
         }
         CallResponse response = null;
         if (MapStateManager.getInstance().isNaviStatus()) {
             final LocParallelInfoEntity parallelInfo = MapStateManager.getInstance().getParallelInfo();
-            if (null != parallelInfo && parallelInfo.getStatus() == 1 && parallelInfo.getHwFlag() != 0) {
-                final int hwFlag = parallelInfo.getFlag();
-                switch (bridge) {
-                    case IVrBridgeConstant.ParallelOption.ON:
-                        //切换到高架上
-                        if (hwFlag == 2) {
-                            response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.SWITCH_MAIN_BRIDGE);
-                            NaviPackage.getInstance().voiceChangeParallelRoad(MapType.MAIN_SCREEN_MAIN_MAP,
-                                    IVrBridgeConstant.ParallelOption.ON);
-                        } else {
-                            response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_MAIN_BRIDGE);
-                            MapStateManager.getInstance().openMapWhenBackground();
-                        }
-                        break;
-                    case IVrBridgeConstant.ParallelOption.UNDER:
-                        //切换到高架下
-                        if (hwFlag == 1) {
-                            response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.SWITCH_SUB_BRIDGE);
-                            NaviPackage.getInstance().voiceChangeParallelRoad(MapType.MAIN_SCREEN_MAIN_MAP,
-                                    IVrBridgeConstant.ParallelOption.UNDER);
-                        } else {
-                            response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_SUB_BRIDGE);
-                            MapStateManager.getInstance().openMapWhenBackground();
-                        }
-                        break;
-                    default:
-                        return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NO_SUPPORT_OTHER_BRIDGE_OPTION);
+            if (null != parallelInfo && parallelInfo.getStatus() == 0) {
+                if (parallelInfo.getHwFlag() != 0) {
+                    final int hwFlag = parallelInfo.getFlag();
+                    switch (bridge) {
+                        case IVrBridgeConstant.ParallelOption.ON:
+                            //切换到高架上
+                            if (hwFlag == 2) {
+                                response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.SWITCH_MAIN_BRIDGE);
+                                NaviPackage.getInstance().voiceChangeParallelRoad(MapType.MAIN_SCREEN_MAIN_MAP,
+                                        IVrBridgeConstant.ParallelOption.ON);
+                            } else {
+                                response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_MAIN_BRIDGE);
+                                MapStateManager.getInstance().openMapWhenBackground();
+                            }
+                            break;
+                        case IVrBridgeConstant.ParallelOption.UNDER:
+                            //切换到高架下
+                            if (hwFlag == 1) {
+                                response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.SWITCH_SUB_BRIDGE);
+                                NaviPackage.getInstance().voiceChangeParallelRoad(MapType.MAIN_SCREEN_MAIN_MAP,
+                                        IVrBridgeConstant.ParallelOption.UNDER);
+                            } else {
+                                response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_SUB_BRIDGE);
+                                MapStateManager.getInstance().openMapWhenBackground();
+                            }
+                            break;
+                        default:
+                            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NO_SUPPORT_OTHER_BRIDGE_OPTION);
+                    }
+                } else {
+                    Logger.w(IVrBridgeConstant.TAG, "当前没有桥上桥下可切换");
+                    response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_BRIDGE_TO_SWITCH);
+                    MapStateManager.getInstance().openMapWhenBackground();
                 }
             } else {
-                Logger.w(IVrBridgeConstant.TAG, "not int parallel status");
-                response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_BRIDGE_TO_SWITCH);
+                Logger.w(IVrBridgeConstant.TAG, "上下桥切换期间，不可进行切换操作");
+                response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.IN_PARALLEL_BRIDGE);
                 MapStateManager.getInstance().openMapWhenBackground();
             }
         } else {
@@ -1225,7 +1237,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onForwardAsk(final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onForwardAsk:");
         }
         final boolean isInNavi = Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING);
@@ -1240,7 +1252,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onSpeedLimitAsk(final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onSpeedLimitAsk:");
         }
         final CallResponse response;
@@ -1269,7 +1281,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onTrafficLightAsk(final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onTrafficLightAsk:");
         }
         final CallResponse response;
@@ -1304,7 +1316,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onDistanceLeftAsk(@Nullable final String start, @Nullable final String arrival, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onDistanceLeftAsk: start = ", start, ", arrival = ", arrival);
         }
         if (TextUtils.isEmpty(arrival)) {
@@ -1470,7 +1482,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     final String time = pair.second;
                     builder.append(distance).append("，大约需要").append(time);
                     final String homeCompanyEta = builder.toString();
-                    if(Logger.openLog) {
+                    if (Logger.openLog) {
                         Logger.d(IVrBridgeConstant.TAG, "homeCompanyEta: ", homeCompanyEta);
                     }
                     final CallResponse successResponse = CallResponse.createSuccessResponse(homeCompanyEta);
@@ -1497,7 +1509,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onTimeLeftAsk(@Nullable final String start, @Nullable final String arrival, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onTimeLeftAsk: start = ", start, ", arrival = ", arrival);
         }
         if (TextUtils.isEmpty(arrival)) {
@@ -1578,7 +1590,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onTrafficConditionAsk(final TrafficAskBean trafficAskBean, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: trafficAskBean = ", trafficAskBean.toString());
         }
         return handleTrafficConditionAsk(trafficAskBean, respCallback);
@@ -1595,7 +1607,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onPassbyAdd(final String sessionId, final String poi, final String poiType, final PoiCallback poiCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onPassByAdd: sessionId = ", sessionId, ", poi = ", poi, ", poiType = ", poiType);
         }
         if (TextUtils.isEmpty(sessionId) || TextUtils.isEmpty(poi)) {
@@ -1628,7 +1640,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onPassbyDelete(final String sessionId, final PoiCallback poiCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onPassByDelete: sessionId = ", sessionId);
         }
         return responseNotSupport();
@@ -1644,7 +1656,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onPassbyDelete(final int idx, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onPassByDelete: idx = ", idx);
         }
         return responseNotSupport();
@@ -1661,7 +1673,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onBroadcastSwitch(final String mode, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onBroadcastSwitch: mode = ", mode);
         }
         MapStateManager.getInstance().openMapWhenBackground();
@@ -1685,14 +1697,14 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 tts = IVrBridgeConstant.ResponseString.MINIMALIST;
                 break;
             default:
-                if(Logger.openLog) {
+                if (Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "Go default case, no mode match ", mode, "  currently, return !");
                 }
                 return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_BROADCAST);
         }
 
         final int curBroadcastMode = SettingPackage.getInstance().getConfigKeyBroadcastMode();
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.i(IVrBridgeConstant.TAG, "curBroadcast: ", curBroadcastMode, ", target: ", broadcastMode);
         }
         if (broadcastMode == curBroadcastMode) {
@@ -1725,7 +1737,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
         final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
         final MapMode curMapMode = MapPackage.getInstance().getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onMapViewSwitch mode:", mode, ", tts:", tts, ", curMode:", curMapMode.name());
         }
 
@@ -1779,7 +1791,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 singleCommandInfo.setPoiName(mode);
                 mCommandParamList.add(singleCommandInfo);
             } else {
-                if(Logger.openLog) {
+                if (Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "Map view switch successfully !!! ");
                 }
                 MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode, true);
@@ -1804,7 +1816,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onFavoriteAdd(final String poi, final RespCallback respCallback) {
-        if(Logger.openLog) {
+        if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onFavoriteAdd: poi = ", poi);
         }
         if (TextUtils.isEmpty(poi)) {
@@ -1843,7 +1855,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.CANT_GET_LOCAL_INFO);
             } else {
                 //获取当前定位详情
-                if(Logger.openLog) {
+                if (Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "addFavorite currentLocation lon: ", lon, ", lat: ", lat);
                 }
                 final GeoPoint geoPoint = new GeoPoint(lon, lat);
@@ -1889,7 +1901,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     public CallResponse onFavoriteOpen(final RespCallback respCallback) {
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
         final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
-        Logger.d(IVrBridgeConstant.TAG, "onFavoriteOpen, inNavigation:" , inNavigation , ", saveCommand:" , saveCommand);
+        Logger.d(IVrBridgeConstant.TAG, "onFavoriteOpen, inNavigation:", inNavigation, ", saveCommand:", saveCommand);
         final boolean success;
         if (inNavigation) {
             success = false;
@@ -1933,7 +1945,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
         final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
-        Logger.d(IVrBridgeConstant.TAG, "onSearchListOpen, inNavigation:" , inNavigation , ", saveCommand:" , saveCommand);
+        Logger.d(IVrBridgeConstant.TAG, "onSearchListOpen, inNavigation:", inNavigation, ", saveCommand:", saveCommand);
         final boolean success;
         if (inNavigation) {
             success = false;

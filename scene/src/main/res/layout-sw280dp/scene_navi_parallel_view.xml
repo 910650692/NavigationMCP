@@ -34,7 +34,6 @@
             android:layout_height="@dimen/dp_302"
             android:focusable="false"
             android:background="@drawable/bg_shadow_navi_cadillac"
-            android:contentDescription="@string/navi_bridge_down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:background="@color/navi_color_FF595F_100" />
@@ -46,7 +45,6 @@
             android:layout_height="@dimen/dp_302"
             android:focusable="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:contentDescription="@string/navi_bridge_down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:background="@color/navi_color_FF595F_100" />
@@ -92,7 +90,6 @@
             android:layout_marginStart="@dimen/dp_m_82"
             android:focusable="false"
             android:background="@drawable/bg_shadow_navi_cadillac"
-            android:contentDescription="@string/navi_road_main"
             app:layout_constraintStart_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="@dimen/dp_0"
@@ -106,7 +103,6 @@
             android:layout_marginStart="@dimen/dp_m_82"
             android:focusable="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:contentDescription="@string/navi_road_main"
             app:layout_constraintStart_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="@dimen/dp_0"

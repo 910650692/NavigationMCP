@@ -282,6 +282,8 @@ public interface IVrBridgeConstant {
         String ALREADY_SUB_ROAD = "当前已在辅路";
         String NO_SUPPORT_OTHER_ROAD_OPTION = "不支持主路和辅路之外的选项";
         String NO_ROAD_TO_SWITCH = "当前没有主辅路可切换";
+        String IN_PARALLEL_ROAD = "正在切换主辅路，请稍后再试";
+        String IN_PARALLEL_BRIDGE = "正在切换上下桥，请稍后再试";
         String FIRST_NAVI_PLEASE = "先发起导航才能切换主辅路";
 
         String SWITCH_MAIN_BRIDGE = "已切换到桥上";

@@ -588,7 +588,7 @@ public final class MapStateManager {
         final int status = entity.getStatus();
         final int flag = entity.getFlag();
         final int hwFlag = entity.getHwFlag();
-        if (status == 1) {
+        if (status == 0) {
             switch (flag) {
                 case 1:
                     mBuilder.setParallelFlagMain(0);
@@ -617,7 +617,7 @@ public final class MapStateManager {
                     break;
             }
         } else {
-            //非平行路切换期间
+            //平行路切换期间,状态未知
             mBuilder.setParallelFlagMain(-1);
             mBuilder.setSwitchParallelFlag(false);
             mBuilder.setParallelBridge(-1);
