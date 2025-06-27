@@ -2086,14 +2086,17 @@ public class RouteAdapterImplHelper {
 
         @Override
         public void onRerouteInfo(BLRerouteRequestInfo info) {
+            initRouteResultLock();
             Logger.i(TAG, "平行路切换onRerouteInfo: ", info.errCode + "----" + info.requestId + "----" + info.option.getRouteType() + "----" + info.option.getRouteReqId());
             if (mRequsetId == -1 || info.requestId == 0 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
                 Logger.e(TAG, "have no this data");
+                routeResultLockCountDown();
                 return;
             }
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mRequsetId);
             if (ConvertUtils.isEmpty(requestRouteResult)) {
                 Logger.e(TAG, "onRerouteInfo: 请求参数已经被清空");
+                routeResultLockCountDown();
                 return;
             }
             requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
@@ -2127,6 +2130,7 @@ public class RouteAdapterImplHelper {
 //                    resultObserver.onReRoute();
 //                }
             }
+            routeResultLockCountDown();
         }
 
         @Override

@@ -961,7 +961,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (!mNaviStatusAdapter.isGuidanceActive()) {
             mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.ROUTING);
         }
-        mRouteAdapter.requestRouteRestoration(routeMsgPushInfo, mapTypeId);
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
@@ -970,6 +969,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 routeResultObserver.onRouteRequest();
             }
         }
+
+        RouteRequestParam routeRequestParam = new RouteRequestParam();
+        routeRequestParam.setMMapTypeId(mapTypeId);
+        final long requestId = mRouteAdapter.requestRoute(routeRequestParam, paramList);
+        mRequestId.put(routeRequestParam.getMMapTypeId(), requestId);
     }
 
     /**
