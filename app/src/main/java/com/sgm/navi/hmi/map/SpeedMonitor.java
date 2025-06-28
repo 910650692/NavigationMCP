@@ -47,10 +47,12 @@ public class SpeedMonitor implements ISpeedCallback {
 
     public void registerCallBack(CallBack callBack) {
         this.callBack = callBack;
+        Logger.i(TAG, "registerCallBack");
     }
 
     public void removeCallBack() {
         this.callBack = null;
+        Logger.i(TAG, "removeCallBack");
     }
 
     // 处理车速更新的方法 speed单位 km/h

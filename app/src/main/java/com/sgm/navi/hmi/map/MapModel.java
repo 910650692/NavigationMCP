@@ -34,6 +34,7 @@ import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.flavor.CarModelsFeature;
 import com.sgm.navi.hmi.BuildConfig;
+import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
 import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
@@ -223,7 +224,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         signalPackage = SignalPackage.getInstance();
         msgPushPackage = MsgPushPackage.getInstance();
         speedMonitor = new SpeedMonitor();
-        speedMonitor.registerCallBack(this);
         msgPushPackage.registerCallBack(TAG, this);
         naviPackage = NaviPackage.getInstance();
         mCalibrationPackage = CalibrationPackage.getInstance();
@@ -251,6 +251,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onCreate() {
         super.onCreate();
         SplitScreenManager.getInstance().registerListener(this, TAG);
+        speedMonitor.registerCallBack(this);
         mViewModel.initVisibleAreaPoint();
         Logger.d("MapViewModelonCreate1");
     }
@@ -581,6 +582,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (Logger.openLog) {
             Logger.d(TAG, "onImmersiveStatusChange: ", parkingViewExist(), ", currentImersiveStatus: ", currentImersiveStatus);
         }
+        showOrHideWidgetsOnImersiveStatusChanged(currentImersiveStatus);
         //是触控态的时候显示回车位   否则隐藏
 //        if (Boolean.FALSE.equals(mViewModel.bottomNaviVisibility.get())) return;
         if (ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_1_3 || parkingViewExist()) {
@@ -617,6 +619,16 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.NAVING) ||
                 TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
             mViewModel.showOrHideSelfParkingView(false);
+        }
+    }
+
+    /***
+     * 隐藏Widgets
+     * @param currentImersiveStatus
+     */
+    private void showOrHideWidgetsOnImersiveStatusChanged(ImersiveStatus currentImersiveStatus) {
+        if (currentImersiveStatus == ImersiveStatus.TOUCH) {
+            FloatViewManager.getInstance().hideAllCardWidgets(true);
         }
     }
 
