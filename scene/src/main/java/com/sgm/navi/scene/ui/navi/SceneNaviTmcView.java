@@ -44,12 +44,12 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     // 途径点信息
     private ArrayList<NaviEtaInfo.NaviTimeAndDist> mViaRemain;
     // 上一次显示的途径点信息
-    private ArrayList<NaviEtaInfo.NaviTimeAndDist> mLastViaRemain = new ArrayList<>();
+    private final ArrayList<NaviEtaInfo.NaviTimeAndDist> mLastViaRemain = new ArrayList<>();
     // 充电站信息
     private ArrayList<NaviEtaInfo.NaviTimeAndDist> mChargeStationRemain;
     private boolean mIsShowAutoAddChargeStation = true;
     // 上一次显示的途径点信息
-    private ArrayList<NaviEtaInfo.NaviTimeAndDist> mLastChargeStationRemain = new ArrayList<>();
+    private final ArrayList<NaviEtaInfo.NaviTimeAndDist> mLastChargeStationRemain = new ArrayList<>();
     // 途径点显示索引
     private static int mViaShowIndex = 0;
     // 途经点和充电站最多显示20个
@@ -248,14 +248,18 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                     hasPassedDistance, " mDistanceHasPassed :", mDistanceHasPassed, " width:",
                     width, " rateDistanceToView:", rateDistanceToView, " carPosition :", carPosition,
                     " mChargeStationRemain:",ConvertUtils.isEmpty(mChargeStationRemain) ? "null" : mChargeStationRemain.size(),
-                    " mViaRemain:",ConvertUtils.isEmpty(mViaRemain) ? "null" : mViaRemain.size());
+                    " mViaRemain:", ConvertUtils.isEmpty(mViaRemain) ? "null" : mViaRemain.size(),
+                    " AutoAdd:", mIsShowAutoAddChargeStation);
         }
         // 移动车标的Y坐标
         NaviUiUtil.setTranslation(mViewBinding.sivCar, carPosition, mIsHorizontal);
         ArrayList<Integer> chargeShowList = new ArrayList<>();
         // 绘制充电站
         if (mChargeStationRemain != null && !mChargeStationRemain.isEmpty() && mIsShowAutoAddChargeStation) {
-            StringBuilder logBuilder = new StringBuilder();
+            StringBuilder logBuilder = null;
+            if (Logger.openLog) {
+                logBuilder = new StringBuilder();
+            }
             int preVia = 0;
             for (int i = 0; i < mChargeStationRemain.size() && i < MAX_VIA_NUM; i++) {
                 final NaviEtaInfo.NaviTimeAndDist viaItem = mChargeStationRemain.get(i);
@@ -265,9 +269,13 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 } else {
                     via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
                 }
-                logBuilder.append(" ").append(mViaShowIndex + i).append(".via:").append(via);
+                if (Logger.openLog && logBuilder != null) {
+                    logBuilder.append(" ").append(mViaShowIndex + i).append(".via:").append(via);
+                }
                 via = getChargeCheckedVia(i, via);
-                logBuilder.append(".checkVia:").append(via);
+                if (Logger.openLog && logBuilder != null) {
+                    logBuilder.append(".checkVia:").append(via);
+                }
                 if (via == -1) {
                     continue;
                 }
@@ -289,22 +297,35 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                         showViaIcon(i, SceneCommonStruct.TmcViaPointType.ViaChargeType, via);
                     }
                 }
-                logBuilder.append(".show:").append(isShow);
+                if (Logger.openLog && logBuilder != null) {
+                    logBuilder.append(".show:").append(isShow);
+                }
             }
             if (mViaShowIndex != 0) {
-                Logger.d(TAG, "mViaShowIndex:", mViaShowIndex, logBuilder);
+                if (Logger.openLog) {
+                    Logger.d(TAG, "mViaShowIndex:", mViaShowIndex, logBuilder);
+                }
             }
         } else {
             // 不显示充电站
-            final int offsetIndex = mLastViaRemain == null ? 0 : mLastViaRemain.size();
-            for (int i = 0; i < mLastChargeStationRemain.size() && i < MAX_VIA_NUM; i++) {
-                hideViaIcon(offsetIndex + i);
+            int size = mLastChargeStationRemain.size();
+            if (Logger.openLog) {
+                Logger.d(TAG, "jcs mLastChargeStationRemain.size:", size);
+            }
+            if (size > 0) {
+                for (int i = 0; i < size && i < MAX_VIA_NUM; i++) {
+                    hideViaIcon(i);
+                }
+                mLastChargeStationRemain.clear();
             }
         }
 
         // 绘制途径点
         if (mViaRemain != null && !mViaRemain.isEmpty()) {
-            StringBuilder logBuilder = new StringBuilder();
+            StringBuilder logBuilder = null;
+            if (Logger.openLog) {
+                logBuilder = new StringBuilder();
+            }
             int preVia = 0;
             for (int i = 0; i < mViaRemain.size() && i < MAX_VIA_NUM; i++) {
                 final NaviEtaInfo.NaviTimeAndDist viaItem = mViaRemain.get(i);
@@ -315,7 +336,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 } else {
                     via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
                 }
-                logBuilder.append(" ").append(mViaShowIndex + i).append(".via:").append(via);
+                if (Logger.openLog && logBuilder != null) {
+                    logBuilder.append(" ").append(mViaShowIndex + i).append(".via:").append(via);
+                }
                 via = getRemainCheckedVia(i, via);
                 if (via == -1) {
                     continue;
@@ -324,7 +347,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                     //如果是途经点手动到达了，则不显示第一个途经点
                     continue;
                 }
-                logBuilder.append(".checkVia:").append(via);
+                if (Logger.openLog && logBuilder != null) {
+                    logBuilder.append(".checkVia:").append(via);
+                }
                 if ((via - preVia > VIA_WIDTH || preVia == 0) && (width - via > VIA_WIDTH)) {
                     boolean isOverlapping = false;
                     for (Integer item : chargeShowList) {
@@ -354,16 +379,23 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                         showViaIcon(mViaShowIndex + i, SceneCommonStruct.TmcViaPointType.ViaPointType, via);
                     }
                 }
-                logBuilder.append(".show:").append(isShow);
+                if (Logger.openLog && logBuilder != null) {
+                    logBuilder.append(".show:").append(isShow);
+                }
             }
             if (mViaShowIndex != 0) {
-                Logger.d(TAG, "ViaRemain mViaShowIndex:", mViaShowIndex, " size:",
-                        mViaRemain.size(), logBuilder);
+                if (Logger.openLog) {
+                    Logger.d(TAG, "ViaRemain mViaShowIndex:", mViaShowIndex, " size:", mViaRemain.size(), logBuilder);
+                }
             }
         } else {
+            final int offsetIndex = mChargeStationRemain == null ? 0 : mChargeStationRemain.size();
+            if (Logger.openLog) {
+                Logger.d(TAG, "offsetIndex:", offsetIndex, " mLastViaRemain.size:", mLastViaRemain.size());
+            }
             // 不显示途经点
             for (int i = 0; i < mLastViaRemain.size() && i < MAX_VIA_NUM; i++) {
-                hideViaIcon(i);
+                hideViaIcon(offsetIndex + i);
             }
         }
     }
@@ -442,7 +474,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         // 保存上一次显示的充电站信息
         mLastChargeStationRemain.clear();
         if (mChargeStationRemain != null && !mChargeStationRemain.isEmpty()) {
-            mLastChargeStationRemain.addAll(mLastChargeStationRemain);
+            mLastChargeStationRemain.addAll(mChargeStationRemain);
         }
         if (chargeStationRemain != null && mChargeStationRemain != null && chargeStationRemain.size() != mChargeStationRemain.size()) {
             Logger.i(TAG, "updateTmcVia ChargeStationRemain resetView");

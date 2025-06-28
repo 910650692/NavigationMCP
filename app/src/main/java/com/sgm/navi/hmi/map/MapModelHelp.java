@@ -179,7 +179,7 @@ public class MapModelHelp {
         BevPowerCarUtils.getInstance().initlialHVBattenergy = currentBattery;
         mNaviPackage.updateBatteryInfo();
         final double costTime = (System.currentTimeMillis() - startTime) / 1000f;
-        Logger.d(TAG, "uploadBattery", "costTime", costTime, "秒");
+        Logger.d(TAG, "uploadBattery", "costTime", costTime, "秒"," currentBattery:", currentBattery);
     }
 
     /***

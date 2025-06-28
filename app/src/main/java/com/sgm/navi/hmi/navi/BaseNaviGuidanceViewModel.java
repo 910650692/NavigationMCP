@@ -617,12 +617,12 @@ public class BaseNaviGuidanceViewModel extends
     }
 
     public void onUpdateViaList(boolean isShow) {
+        mView.onUpdateTMCLightBarAutoAdd(isShow);
         final List<NaviViaEntity> viaList = mModel.getViaList();
         if (!ConvertUtils.isEmpty(viaList)) {
             mView.updateViaListState(viaList);
             mModel.updateViaListState(viaList);
         }
-        mView.onUpdateTMCLightBarAutoAdd(isShow);
     }
 
     public void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
