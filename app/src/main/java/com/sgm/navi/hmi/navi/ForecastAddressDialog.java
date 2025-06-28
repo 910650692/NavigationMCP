@@ -84,9 +84,9 @@ public class ForecastAddressDialog extends BaseFullScreenDialog<DialogForecastAd
 
     private void setDialogView() {
         //todo flavor temp
-        if (BuildConfig.FLAVOR.equals("clea_local_8155")
-                || BuildConfig.FLAVOR.equals("clea_local_8255")
-                || BuildConfig.FLAVOR.equals("clea_local_8775")) {
+        if (BuildConfig.FLAVOR.equals("clea_8255")
+                || BuildConfig.FLAVOR.equals("clea_local_8155")
+                || BuildConfig.FLAVOR.equals("clea_8775")) {
             mViewBinding.forecastContent.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
             mViewBinding.forecastEdit.setVisibility(View.VISIBLE);
         }

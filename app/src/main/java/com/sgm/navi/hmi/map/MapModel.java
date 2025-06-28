@@ -1165,6 +1165,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     @Override
     public void onForecastArrivedData(ForecastArrivedDataInfo data) {
+        if(Logger.openLog) Logger.d(TAG, "onForecastArrivedData: " + GsonUtils.toJson(data) + ", mCompanyOrHomeType: " + mCompanyOrHomeType);
         //判断是否有家或者公司的数据
         switch (mCompanyOrHomeType){
             case AutoMapConstant.GuessPositionType.OTHER:
@@ -1173,13 +1174,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 if (!ConvertUtils.isEmpty(mOthers)) {
                     OftenArrivedItemInfo mOther = mOthers.get(0);
                     managerMessage(new MessageCenterInfo(MessageCenterType.GUESS_WANT_GO, "去这里", 0, mOther.getWstrPoiName(), "为你推荐", new Date(), 0, mOther));
-                    Logger.d(TAG, "onForecastArrivedData:" + GsonUtils.toJson(mOther));
-                } else {
-                    Logger.d(TAG, "onForecastArrivedData no data");
                 }
                 break;
             case AutoMapConstant.GuessPositionType.HOME:
-                OftenArrivedItemInfo mHomeInfo = data.getHome();
+                OftenArrivedItemInfo mHomeInfo = (data != null ? data.getHome() : null);
                 if (!ConvertUtils.isEmpty(mHomeInfo) && !ConvertUtils.isEmpty(mHomeInfo.getWstrAddress())) {
                     mViewModel.showForecastDialog(mCompanyOrHomeType, mHomeInfo);
                 } else {
@@ -1187,7 +1185,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 }
                 break;
             case AutoMapConstant.GuessPositionType.COMPANY:
-                OftenArrivedItemInfo mCompanyInfo = data.getCompany();
+                OftenArrivedItemInfo mCompanyInfo = (data != null ? data.getCompany() : null);
                 if (!ConvertUtils.isEmpty(mCompanyInfo) && !ConvertUtils.isEmpty(mCompanyInfo.getWstrAddress())) {
                     mViewModel.showForecastDialog(mCompanyOrHomeType, mCompanyInfo);
                 } else {
@@ -1195,7 +1193,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 }
                 break;
             default:
-                Logger.i(TAG, "onForecastArrivedData: mCompanyOrHomeType " + mCompanyOrHomeType);
                 break;
         }
     }

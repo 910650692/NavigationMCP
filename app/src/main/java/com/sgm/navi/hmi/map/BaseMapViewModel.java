@@ -239,6 +239,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             try {
                 PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
                 if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
+                    if (Logger.openLog) Logger.d(TAG, "hava data");
                     //直接进入导航到家
                     SearchPackage.getInstance().clearLabelMark();
                     startRoute(poiInfoEntity);
@@ -260,6 +261,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             try {
                 PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_COMPANY);
                 if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
+                    if (Logger.openLog) Logger.d(TAG, "hava data");
                     //直接进入导航到公司
                     SearchPackage.getInstance().clearLabelMark();
                     startRoute(poiInfoEntity);
