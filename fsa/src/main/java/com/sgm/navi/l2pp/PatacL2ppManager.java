@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.cls.core.ClsLink;
 import com.cls.core.Topic;
 import com.cls.core.subscription.v3.CreateTopicRequest;
@@ -46,8 +47,10 @@ import com.sgm.cls.sdk.uprotocol.cloudevent.datamodel.CloudEventAttributes;
 import com.sgm.cls.sdk.uprotocol.cloudevent.factory.CloudEventFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -67,6 +70,8 @@ public class PatacL2ppManager {
     private boolean mInitialized = false;
     private boolean mTbtTopic = false;
     private boolean mRouteTopic = false;
+    private String mTtsStr;
+    private ScheduledFuture mScheduledFuture;
 
     //region INSTANCE
     public static PatacL2ppManager getInstance() {
@@ -483,108 +488,124 @@ public class PatacL2ppManager {
             Context context = AppCache.getInstance().getMContext();
             switch (state) {
                 case SignalConst.L2_NOP.CLOSE_TO_NOA_AREA_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.close_to_noa_area_true));
+                    sendTTS(context.getString(R.string.close_to_noa_area_true));
                     break;
                 case SignalConst.L2_NOP.STATUS_ACTIVE_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.status_active_indication_on_true));
+                    sendTTS(context.getString(R.string.status_active_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.STATUS_NORMAL_TO_OVERRIDE_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.status_normal_to_override_indication_on_true));
+                    sendTTS(context.getString(R.string.status_normal_to_override_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.STATUS_OVERRIDE_TO_NORMAL_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.status_override_to_normal_indication_on_true));
+                    sendTTS(context.getString(R.string.status_override_to_normal_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.CLOSE_TO_TIGHT_CURVE_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.close_to_tight_curve_indication_on_true));
+                    sendTTS(context.getString(R.string.close_to_tight_curve_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.INTO_TIGHT_CURVE_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.into_tight_curve_indication_on_true));
+                    sendTTS(context.getString(R.string.into_tight_curve_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.TAKE_STEERING_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.take_steering_indication_on_true));
+                    sendTTS(context.getString(R.string.take_steering_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.MERGE_INTO_MAIN_ROAD_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.merge_into_main_road_true));
+                    sendTTS(context.getString(R.string.merge_into_main_road_true));
                     break;
                 case SignalConst.L2_NOP.LANE_CHANGING_TO_FOLLOW_ROUTE_LEFT:
-                    L2NopTts.sendTTS(context.getString(R.string.lane_changing_to_follow_route_left));
+                    sendTTS(context.getString(R.string.lane_changing_to_follow_route_left));
                     break;
                 case SignalConst.L2_NOP.LANE_CHANGING_TO_FOLLOW_ROUTE_RIGHT:
-                    L2NopTts.sendTTS(context.getString(R.string.lane_changing_to_follow_route_right));
+                    sendTTS(context.getString(R.string.lane_changing_to_follow_route_right));
                     break;
                 case SignalConst.L2_NOP.TEXT_TO_SPEECH_LANE_CHANGE_ABORT_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.text_to_speech_lane_change_abort_true));
+                    sendTTS(context.getString(R.string.text_to_speech_lane_change_abort_true));
                     break;
                 case SignalConst.L2_NOP.DISTANCE_TO_RAMP_2000M_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.distance_to_ramp_2000m_indication_on_true));
+                    sendTTS(context.getString(R.string.distance_to_ramp_2000m_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.DISTANCE_TO_RAMP_500M_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.distance_to_ramp_500m_indication_on_true));
+                    sendTTS(context.getString(R.string.distance_to_ramp_500m_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.COMPLICATED_ROAD_CONDITION_LANE_CHANGE_FAILED_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.complicated_road_condition_lane_change_failed_true), true);
+                    sendTTS(context.getString(R.string.complicated_road_condition_lane_change_failed_true), true);
                     break;
                 case SignalConst.L2_NOP.CHANGING_TO_FAST_LANE_LEFT:
-                    L2NopTts.sendTTS(context.getString(R.string.changing_to_fast_lane_left));
+                    sendTTS(context.getString(R.string.changing_to_fast_lane_left));
                     break;
                 case SignalConst.L2_NOP.CONFIRM_CHANGE_TO_FAST_LANE_LEFT:
-                    L2NopTts.sendTTS(context.getString(R.string.confirm_change_to_fast_lane_left));
+                    sendTTS(context.getString(R.string.confirm_change_to_fast_lane_left));
                     break;
                 case SignalConst.L2_NOP.CHANGING_TO_FAST_LANE_RIGHT:
-                    L2NopTts.sendTTS(context.getString(R.string.changing_to_fast_lane_right));
+                    sendTTS(context.getString(R.string.changing_to_fast_lane_right));
                     break;
                 case SignalConst.L2_NOP.CONFIRM_CHANGE_TO_FAST_LANE_RIGHT:
-                    L2NopTts.sendTTS(context.getString(R.string.confirm_change_to_fast_lane_right));
+                    sendTTS(context.getString(R.string.confirm_change_to_fast_lane_right));
                     break;
                 case SignalConst.L2_NOP.EXIT_RAMP_TO_NON_LIMITED_ACCESS_ROAD_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.exit_ramp_to_non_limited_access_road_true));
+                    sendTTS(context.getString(R.string.exit_ramp_to_non_limited_access_road_true));
                     break;
                 case SignalConst.L2_NOP.DISTANCE_TO_END_500M_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.distance_to_end_500m_indication_on_true));
+                    sendTTS(context.getString(R.string.distance_to_end_500m_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.FINISHED_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.finished_indication_on_true), true);
+                    sendTTS(context.getString(R.string.finished_indication_on_true), true);
                     break;
                 case SignalConst.L2_NOP.TAKE_VEHICLE_CONTROL_INDICATION_ON_TRUE:
-                    L2NopTts.sendTTS(context.getString(R.string.take_vehicle_control_indication_on_true));
+                    sendTTS(context.getString(R.string.take_vehicle_control_indication_on_true));
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_CONSTRUCTION:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_construction), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_construction), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_MAP_UNAVAILABLE:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_map_unavailable), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_map_unavailable), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_GPS_UNAVAILABLE:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_gps_unavailable), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_gps_unavailable), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_TRAFFIC_JAM:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_traffic_jam), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_traffic_jam), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_TIGHTCURVE:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_tightcurve), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_tightcurve), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_SPEEDOUTLIMIT:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_speedoutlimit), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_speedoutlimit), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_COMPLICATED_ROAD_CONDITION:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_complicated_road_condition), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_complicated_road_condition), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_UNAVAILABLE:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_unavailable), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_unavailable), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_TUNNEL:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_tunnel), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_tunnel), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_SERVICE_NAVIGATION_ON_ADAS_SYSTEM:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_service_navigation_on_adas_system), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_service_navigation_on_adas_system), true);
                     break;
                 case SignalConst.L2_NOP.DEACTIVATION_REASON_DRIVER_ACTION:
-                    L2NopTts.sendTTS(context.getString(R.string.deactivation_reason_driver_action), true);
+                    sendTTS(context.getString(R.string.deactivation_reason_driver_action), true);
                     break;
                 default:
                     Logger.w("not find state: " + state);
             }
         }
     };
+
+    private void sendTTS(final String tts) {
+        sendTTS(tts, false);
+    }
+
+    private void sendTTS(final String tts, final boolean highPriority) {
+        if (Objects.equals(mTtsStr, tts)) {
+            return;
+        }
+        mTtsStr = tts;
+        sendTTS(tts, highPriority);
+        if (mScheduledFuture != null) {
+            mScheduledFuture.cancel(true);
+        }
+        mScheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> mTtsStr = null, 5);
+    }
     //endregion
 }
