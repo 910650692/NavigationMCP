@@ -260,7 +260,7 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
     public void updateSceneVisible(final boolean isVisible) {
         Logger.i(TAG, "updateSceneVisible ", isVisible, " mScreenView.isVisible():",
                 mScreenView.isVisible());
-        if (mScreenView.isVisible() == isVisible) return;
+        //if (mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_LANES);
