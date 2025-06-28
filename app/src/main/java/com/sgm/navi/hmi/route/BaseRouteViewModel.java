@@ -1018,7 +1018,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         if (NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
             return;
         }
-        if (mModel.isRouteTips()) {
+        if (mModel.isRouteTips() && mModel.powerType() == 1) {
             Logger.d(TAG, "isRouteTips");
             return;
         }
