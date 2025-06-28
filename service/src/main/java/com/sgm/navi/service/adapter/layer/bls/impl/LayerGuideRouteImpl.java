@@ -301,7 +301,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         setMainMapPathDrawStyle(false, false, true);
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyRemainPoint, true);
         updatePaths();
-        showPreviewView();
     }
 
     /* 更新终点扎标数据 */
