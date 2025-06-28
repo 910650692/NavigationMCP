@@ -50,7 +50,7 @@ public class SplitScreenManager {
     private final CopyOnWriteArrayList<OnScreenModeChangedListener> mListeners = new CopyOnWriteArrayList<>();
     private final int ONE_THIRD_WIDTH, TWO_THIRD_WIDTH;// 1/3, 2/3的阈值
     private ScreenType screeTypeByUseDp;
-    private final int OFFSET = 50;//误差偏移量
+    private final int OFFSET = 100;//误差偏移量
 
     private SplitScreenManager() {
         SCREEN_FULL_WIDTH = ScreenUtils.Companion.getInstance().px2dp(
@@ -131,7 +131,6 @@ public class SplitScreenManager {
     }
 
     /***
-     * 当前位置：SR处于2/3右侧，导航左侧1/3
      * 导航切换到全屏
      */
     public void switchNaviToFullScreen() {

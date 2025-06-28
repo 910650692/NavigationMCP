@@ -103,7 +103,6 @@
             android:exported="true"
             android:launchMode="singleTop"
             android:resizeableActivity="true"
-            android:screenOrientation="landscape"
             tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -116,7 +115,6 @@
             android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
             android:resizeableActivity="true"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="DiscouragedApi" />
@@ -124,18 +122,16 @@
             android:name=".launcher.MapLauncherDeskActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape"
             tools:ignore="DiscouragedApi" />
         <activity
             android:name=".launcher.MapLauncherSmallCardActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape"
             tools:ignore="DiscouragedApi" />
 
         <activity android:name=".splitscreen.OneThirdScreenMapActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="landscape"
+            android:resizeableActivity="true"
             android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection"
             tools:ignore="DiscouragedApi" />
 

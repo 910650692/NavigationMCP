@@ -19,7 +19,6 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_434"
             android:layout_height="@dimen/dp_155"
-            android:layout_marginTop="@dimen/dp_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
             android:visibility="@{ViewModel.mTopNaviBarVisibility ? View.VISIBLE : View.GONE}"
@@ -66,7 +65,7 @@
             clickCommand="@{ViewModel.switchAiDriver}"
             android:layout_width="@dimen/dp_162"
             android:layout_height="@dimen/dp_192"
-            android:layout_marginBottom="@dimen/dp_34"
+            android:layout_marginBottom="@dimen/dp_130"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
             app:layout_constraintBottom_toBottomOf="parent">
