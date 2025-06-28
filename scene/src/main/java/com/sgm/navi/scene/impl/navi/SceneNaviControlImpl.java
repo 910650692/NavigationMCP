@@ -215,6 +215,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         isShowMoreSetup(true);
         mScreenView.changeOverViewControlLength(true);
         updateVariationVoice();
+        mMapPackage.setLockMapRollAngle(mMapTypeId, true);
         mNaviPackage.setFixedOverViewStatus(true);
         mImmersiveStatusScene.setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
     }

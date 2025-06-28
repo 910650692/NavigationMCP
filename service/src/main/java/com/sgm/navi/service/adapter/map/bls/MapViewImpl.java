@@ -314,7 +314,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     public void showPreview(PreviewParams previewParams) {
         PreviewParam preview = GsonUtils.convertToT(previewParams, PreviewParam.class);
         getMapview().showPreview(preview, true, 500, -1);
-        Logger.d(TAG, mapType, " showPreview");
+        if(Logger.openLog) Logger.d(TAG, "showPreview");
     }
 
     public void exitPreview() {

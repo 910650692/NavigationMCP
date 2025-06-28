@@ -141,8 +141,23 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
      * @param bPreview
      */
     public void setPreviewMode(boolean bPreview) {
-        getLayerCarControl().setPreviewMode(bPreview);
-        if(Logger.openLog) Logger.d(TAG, "setPreviewMode bPreview " + bPreview);
+        boolean isPreview = getLayerCarControl().getPreviewMode();
+        if(bPreview != isPreview){
+            getLayerCarControl().setPreviewMode(bPreview);
+        }
+        if(Logger.openLog) Logger.d(TAG, "setPreviewMode bPreview " + bPreview + " isPreview " + isPreview);
+    }
+
+    /**
+     * 设置地图是否锁定角度
+     * @param isLock
+     */
+    public void setLockMapRollAngle(boolean isLock){
+        boolean isLockMapRollAngle = getLayerCarControl().getLockMapRollAngle();
+        if(isLock != isLockMapRollAngle){
+            getLayerCarControl().setLockMapRollAngle(isLock);
+        }
+        if (Logger.openLog) Logger.d(TAG, "setLockMapRollAngle isLock " + isLock + " isLockMapRollAngle " + isLockMapRollAngle);
     }
 
     /* 设置车标缩放系数和比例尺对应关系 */

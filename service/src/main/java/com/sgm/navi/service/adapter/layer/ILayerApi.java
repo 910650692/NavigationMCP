@@ -219,6 +219,8 @@ public interface ILayerApi {
     /* 设置车标预览模式 */
     void setPreviewMode(MapType mapTypeId, boolean bPreview);
 
+    void setLockMapRollAngle(MapType mapTypeId, boolean isLock);
+
     /* 设置车标位置信息。通常用于单次设置车标位置，频次低 */
     void setCarPosition(MapType mapTypeId, GeoPoint geoPoint);
 

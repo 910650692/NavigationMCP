@@ -9,7 +9,6 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.layer.ILayerAdapterCallBack;
-import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.map.IMapAdapterCallback;
 import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.adapter.position.PositionAdapter;
@@ -26,6 +25,7 @@ import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.mfc.MfcController;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -41,6 +41,7 @@ import java.util.function.Consumer;
 public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
     private MapAdapter mMapAdapter;
+    private LayerPackage mLayerPackage;
     private final HashMap<MapType, List<IMapPackageCallback>> callbacks = new HashMap<>();
 
     private static final class Helper {
@@ -53,6 +54,7 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
 
     private MapPackage() {
         mMapAdapter = MapAdapter.getInstance();
+        mLayerPackage = LayerPackage.getInstance();
     }
 
     public void initMapService() {
@@ -203,9 +205,13 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         return mMapAdapter.getMapBound(mapTypeId);
     }
 
+    public void setLockMapRollAngle(MapType mapTypeId, boolean isLock){
+        mLayerPackage.setLockMapRollAngle(mapTypeId, isLock);
+    }
+
     public void showPreview(MapType mapTypeId, PreviewParams previewParams) {
         mMapAdapter.showPreview(mapTypeId, previewParams);
-        LayerAdapter.getInstance().setPreviewMode(mapTypeId, true);
+        mLayerPackage.setPreviewMode(mapTypeId, true);
     }
 
     /**
@@ -263,7 +269,8 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     }
 
     public void exitPreview(MapType mapTypeId) {
-        LayerAdapter.getInstance().setPreviewMode(mapTypeId, false);
+        mLayerPackage.setPreviewMode(mapTypeId, false);
+        mLayerPackage.setLockMapRollAngle(mapTypeId, false);
         mMapAdapter.exitPreview(mapTypeId);
     }
 

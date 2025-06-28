@@ -291,7 +291,7 @@ public final class OpenApiHelper {
         MapMode currentMapMode = MAP_PACKAGE.getCurrentMapMode(mapType);
         switch (currentMapMode) {
             case UP_2D, NORTH_2D:
-                MAP_PACKAGE.setZoomLevel(mapType, 14);
+                MAP_PACKAGE.setZoomLevel(mapType, 15);
                 break;
             case UP_3D:
                 MAP_PACKAGE.setZoomLevel(mapType, 17);

@@ -1390,6 +1390,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public void showPreview(final MapType mapTypeId) {
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.setFollowMode(mapTypeId, false);
+            mLayerAdapter.setPreviewMode(mapTypeId, true);
             mLayerAdapter.showPreviewView(mapTypeId);
         });
     }

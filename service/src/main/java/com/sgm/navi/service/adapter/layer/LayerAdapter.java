@@ -104,6 +104,10 @@ public class LayerAdapter {
         mLayerApi.setPreviewMode(mapTypeId, bPreview);
     }
 
+    public void setLockMapRollAngle(MapType mapTypeId, boolean isLock) {
+        mLayerApi.setLockMapRollAngle(mapTypeId, isLock);
+    }
+
     public int setFollowMode(MapType mapTypeId, boolean bFollow) {
         return mLayerApi.setFollowMode(mapTypeId, bFollow);
     }

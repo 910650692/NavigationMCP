@@ -121,6 +121,11 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     @Override
+    public void setLockMapRollAngle(MapType mapTypeId, boolean isLock) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerCar().setLockMapRollAngle(isLock);
+    }
+
+    @Override
     public void setCarPosition(MapType mapTypeId, GeoPoint geoPoint) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerCar().setCarPosition(geoPoint);
     }

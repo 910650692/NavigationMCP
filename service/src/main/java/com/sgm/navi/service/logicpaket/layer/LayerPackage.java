@@ -106,6 +106,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.setPreviewMode(mapTypeId, bPreview);
     }
 
+    public void setLockMapRollAngle(MapType mapTypeId, boolean isLock) {
+        mLayerAdapter.setLockMapRollAngle(mapTypeId, isLock);
+    }
+
     public void initCarLogoByFlavor(MapType mapTypeId, String flavor) {
         mLayerAdapter.initCarLogoByFlavor(mapTypeId, flavor);
     }

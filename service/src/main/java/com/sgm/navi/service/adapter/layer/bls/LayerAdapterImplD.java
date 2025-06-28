@@ -290,6 +290,11 @@ public class LayerAdapterImplD implements ILayerApi {
     }
 
     @Override
+    public void setLockMapRollAngle(MapType mapTypeId, boolean isLock) {
+        
+    }
+
+    @Override
     public void setCarPosition(MapType mapTypeId, GeoPoint geoPoint) {
 
     }
