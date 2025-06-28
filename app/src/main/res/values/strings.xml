@@ -431,7 +431,7 @@
     <string name="setting_broadcast_voice_recommend">高德标准语音</string>
     <string name="setting_broadcast_voice_has_update">有更新</string>
     <string name="setting_broadcast_voice_no_net">无网络连接，请检查网络后重试</string>
-    <string name="setting_others_account">绑定高德账号</string>
+    <string name="setting_others_account">登录高德账号</string>
     <string name="setting_others_account_detail">收藏夹/历史账号同步至车</string>
     <string name="setting_others_account_logout">退出绑定后需要重新扫码绑定</string>
     <string name="setting_others_account_logout_detail">将无法使用微信互联、手车互联</string>
