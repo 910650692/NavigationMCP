@@ -50,7 +50,14 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         super(bizService, mapView, context, mapType);
         getLayerSearchControl().setStyle(this);
         getLayerSearchControl().addClickObserver(this);
+        initBiztTypeCollision();
+    }
 
+    /**
+     * 开启图元碰撞
+     */
+    private void initBiztTypeCollision() {
+        getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiParkRoute).enableCollision(true);
     }
 
 
