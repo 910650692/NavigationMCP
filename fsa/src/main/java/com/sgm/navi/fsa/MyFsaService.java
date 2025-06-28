@@ -47,6 +47,7 @@ import com.sgm.navi.service.define.route.EvRangeOnRouteInfo;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.cruise.CruisePackage;
 import com.sgm.navi.service.logicpaket.cruise.ICruiseObserver;
@@ -755,26 +756,6 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         @Override
         public void onRouteResult(final RequestRouteResult requestRouteResult) {
             FsaNaviScene.getInstance().updateDestInfo(MyFsaService.this, requestRouteResult);
-            try {
-                final String elecRouteLabel = requestRouteResult.getMRouteLineInfos().get(0).getMElecRouteLabel();
-                if ("不可达".equals(elecRouteLabel)) {
-                    if (Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-                        if (mChargeStationSF != null) {
-                            return;
-                        }
-                        mChargeStationSF = ThreadManager.getInstance().asyncWithFixDelay(new Runnable() {
-                            @Override
-                            public void run() {
-                                Logger.d(TAG, "搜索充电站");
-                                mChargeStationTaskId = SearchPackage.getInstance().aroundSearch(1, "充电站",
-                                        PositionPackage.getInstance().currentGeo, "2000", true);
-                            }
-                        }, 0, 15, TimeUnit.SECONDS);
-                    }
-                }
-            } catch (NullPointerException e) {
-                Logger.e(TAG, e);
-            }
         }
 
         @Override
@@ -1124,17 +1105,27 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 if (mParkingLotSF != null) {
                     return;
                 }
-                mParkingLotSF = ThreadManager.getInstance().asyncWithFixDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        Logger.d(TAG, "搜索停车场");
-                        RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-                        if (endPoint != null) {
-                            mParkingLotTaskId = SearchPackage.getInstance().aroundSearch(1, "停车场",
-                                    endPoint.getRealPos(), "2000", true);
-                        }
+                mParkingLotSF = ThreadManager.getInstance().asyncWithFixDelay(() -> {
+                    Logger.d(TAG, "搜索停车场");
+                    RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+                    if (endPoint != null) {
+                        mParkingLotTaskId = SearchPackage.getInstance().aroundSearch(1, "停车场",
+                                endPoint.getRealPos(), "2000", true);
                     }
                 }, 0, 15, TimeUnit.SECONDS);
+            }
+            if (getRemainDistance() < 50 * 1000) {
+                String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+                if (Objects.equals(currentNaviStatus, NaviStatus.NaviStatusType.NAVING)) {
+                    if (mChargeStationSF != null) {
+                        return;
+                    }
+                    mChargeStationSF = ThreadManager.getInstance().asyncWithFixDelay(() -> {
+                        Logger.d(TAG, "搜索充电站");
+                        mChargeStationTaskId = SearchPackage.getInstance().aroundSearch(1, "充电站",
+                                PositionPackage.getInstance().currentGeo, "2000", true);
+                    }, 0, 15, TimeUnit.SECONDS);
+                }
             }
         }
 
@@ -1305,5 +1296,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
     public interface ExportEventCallBack {
         void onEventInform(final int eventId, final String eventStr);
+    }
+
+    private int getRemainDistance() {
+        return (int) (BevPowerCarUtils.getInstance().initlialHVBattenergy * BevPowerCarUtils.getInstance().batterToDistance);
     }
 }
