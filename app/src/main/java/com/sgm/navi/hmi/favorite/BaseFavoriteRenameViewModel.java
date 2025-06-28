@@ -3,11 +3,13 @@ package com.sgm.navi.hmi.favorite;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 
 public class BaseFavoriteRenameViewModel extends BaseViewModel<FavoriteRenameFragment, FavoriteRenameModel> {
+    public MutableLiveData<Boolean> mCloseViewVisibility = new MutableLiveData<>(false);
     public BaseFavoriteRenameViewModel(@NonNull Application application) {
         super(application);
     }
