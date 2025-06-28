@@ -5,7 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#997E7E7E">
+        android:background="@color/dialog_startup_exception_root">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1200"
