@@ -20,7 +20,7 @@
 
         <com.sgm.navi.ui.view.SkinView
             android:layout_width="@dimen/dp_1"
-            android:layout_height="@dimen/dp_62"
+            android:layout_height="@dimen/dp_40"
             android:layout_gravity="center"
             android:background="@color/setting_line"/>
 
