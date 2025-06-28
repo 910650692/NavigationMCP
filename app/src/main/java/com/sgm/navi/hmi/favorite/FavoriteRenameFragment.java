@@ -1,7 +1,10 @@
 package com.sgm.navi.hmi.favorite;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.sgm.navi.hmi.BR;
@@ -29,6 +32,21 @@ public class FavoriteRenameFragment extends BaseFragment<FragmentFavoriteRenameB
         mBinding.settingFavoriteRename.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 showSoftKeyboard();
+            }
+        });
+        
+        // 监听输入框内容变化，控制清除按钮的显示/隐藏
+        mBinding.settingFavoriteRename.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // 根据输入框内容是否为空来更新清除按钮的可见性
+                mBinding.clearText.setVisibility(s.toString().trim().isEmpty() ? View.GONE : View.VISIBLE);
             }
         });
     }

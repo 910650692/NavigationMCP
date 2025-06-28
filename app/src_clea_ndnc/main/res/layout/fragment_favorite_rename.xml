@@ -76,6 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_22"
             android:src="@drawable/img_off"
+            android:id="@+id/clear_text"
             app:layout_constraintBottom_toBottomOf="@+id/setting_favorite_rename"
             app:layout_constraintEnd_toEndOf="@+id/setting_favorite_rename"
             app:layout_constraintTop_toTopOf="@+id/setting_favorite_rename" />
