@@ -24,7 +24,7 @@
             android:paddingVertical="@dimen/dp_29"
             android:background="@drawable/bg_shadow_navi_buick"
             android:clickable="true"
-            android:visibility="@{ViewModel.getTabVisibility() == 2 &amp;&amp; ViewModel.getIncludePageVisibility() != 3 ? View.VISIBLE : View.GONE}"
+            android:visibility="@{ViewModel.getTabVisibility() == 2 ? View.VISIBLE : View.GONE}"
             android:layout_marginStart="@dimen/dp_660"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

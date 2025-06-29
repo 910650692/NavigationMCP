@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
@@ -92,6 +93,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private static final int REFRESH_TIME = 2 * 1000;
     private static final int START_NAVI_TIME = 3 * 1000;
 
+    private Integer mLastTab = 0;
     private ObservableField<Integer> mTabVisibility;
 
     public ObservableField<Integer> getTabVisibility() {
@@ -514,6 +516,21 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         super(application);
         mCurrentPageHistory.add("0");
         mIncludePageVisibility = new ObservableField<>(getCurrentPageUI());
+        mIncludePageVisibility.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                Integer currentVisibility = mIncludePageVisibility.get();
+                if (currentVisibility == null) {
+                    return;
+                }
+                if (currentVisibility == 1 || currentVisibility == 3) {
+                    mLastTab = mTabVisibility.get();
+                    mTabVisibility.set(0);
+                } else if (mLastTab != null && mLastTab != 0){
+                    mTabVisibility.set(mLastTab);
+                }
+            }
+        });
         //tab page
         mTabVisibility = new ObservableField<>(0);
         initRouteListPage();
