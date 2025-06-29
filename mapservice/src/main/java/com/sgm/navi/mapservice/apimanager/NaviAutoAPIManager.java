@@ -36,6 +36,7 @@ import com.sgm.navi.mapservice.common.INaviAutoStatusCallback;
 import com.sgm.navi.mapservice.util.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
@@ -76,21 +77,22 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         public void onInitSuccess() {
             try {
                 mBinder = updateBinder();
-                mBinder.asBinder().linkToDeath(mDeathRecipient, 0);
-                unRegisterBinderResultCallback();
-                registerBinderResultCallback();
-                onEngineInit(true);
-            } catch (RemoteException e) {
-                Logger.e(TAG, "onUpdateBinderCallback remoteException: " + e.getMessage());
+                if (null != mBinder) {
+                    mBinder.asBinder().linkToDeath(mDeathRecipient, 0);
+                    unRegisterBinderResultCallback();
+                    registerBinderResultCallback();
+                    onEngineInit(true);
+                } else {
+                    onEngineInit(false);
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "onUpdateBinderCallback remoteException",
+                        exception.getMessage(), Arrays.toString(exception.getStackTrace()));
             }
         }
 
         @Override
         public void onInitFailed() {
-            if (null != mBinder) {
-                mBinder.asBinder().unlinkToDeath(mDeathRecipient, 0);
-                mBinder = null;
-            }
             onEngineInit(false);
         }
     };
@@ -108,7 +110,9 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
     @Override
     protected INaviAutoApiBinder updateBinder() {
-        return BinderManager.getInstance().getNaviAutoBinder();
+        final INaviAutoApiBinder naviAutoApiBinder = BinderManager.getInstance().getNaviAutoBinder();
+        Logger.i(TAG, "getNaviAutoApiBinder", null != naviAutoApiBinder);
+        return naviAutoApiBinder;
     }
 
     @Override

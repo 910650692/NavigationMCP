@@ -5,11 +5,13 @@ import android.os.RemoteException;
 import com.sgm.navi.mapservice.IBinderPool;
 import com.sgm.navi.mapservice.IBinderPoolCallback;
 import com.sgm.navi.mapservice.apimanager.IEngineStatusCallback;
+import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.mapservice.common.INaviAutoApiBinder;
 import com.sgm.navi.mapservice.util.Logger;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public final class BinderManager {
 
@@ -115,7 +117,9 @@ public final class BinderManager {
     }
 
     private boolean isBonded() {
-        return mBinderPool != null && mBinderPool.asBinder().pingBinder();
+        final boolean bonded = null != mBinderPool && mBinderPool.asBinder().pingBinder();
+        Logger.d(INaviConstant.NAVI_COMMON_TAG, "BinderPool bonded", bonded);
+        return bonded;
     }
 
 
@@ -131,7 +135,8 @@ public final class BinderManager {
                 naviAutoApiBinder =  INaviAutoApiBinder.Stub.asInterface(mBinderPool.queryBinder(
                         MapSdk.getInstance().getPackageName(), BinderType.NAVI_AUTO_API.name()));
             } catch (RemoteException exception) {
-                Logger.e(TAG, "query naviAutoBinder error: " + exception.getMessage());
+                Logger.e(TAG, "query naviAutoBinder error", exception.getMessage(),
+                        Arrays.toString(exception.getStackTrace()));
             }
         }
 
