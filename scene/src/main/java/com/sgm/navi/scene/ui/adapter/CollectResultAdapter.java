@@ -215,13 +215,15 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
                 }
             } else {
                 //若是常用地址或者收到的点并且已经添加，直接return
-                if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
-                    if (!ConvertUtils.isEmpty(BehaviorPackage.getInstance().isFavorite(mPoiEntities.get(position)))) {
-                        return;
-                    }
-                } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COMMON) {
-                    if (BehaviorPackage.getInstance().isFrequentAddress(mPoiEntities.get(position))) {
-                        return;
+                if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
+                    if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
+                        if (!ConvertUtils.isEmpty(BehaviorPackage.getInstance().isFavorite(mPoiEntities.get(position)))) {
+                            return;
+                        }
+                    } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COMMON) {
+                        if (BehaviorPackage.getInstance().isFrequentAddress(mPoiEntities.get(position))) {
+                            return;
+                        }
                     }
                 }
             }
