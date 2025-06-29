@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:ellipsize="end"
-            android:maxWidth="@dimen/dp_400"
+            android:maxWidth="@dimen/dp_350"
             android:maxLines="1"
             android:text="@{sapaDetail.mTollName}"
             android:textColor="@color/navi_color_000000_100"
@@ -81,39 +81,6 @@
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/siv_toll_details_status_tag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_42"
-                android:background="@drawable/bg_poi_gas_price_bg"
-                android:gravity="center"
-                android:paddingHorizontal="@dimen/dp_12"
-                android:paddingVertical="@dimen/dp_6"
-                android:text="@{sapaDetail.mTollStatusTag}"
-                android:textColor="@color/navi_color_000000_50"
-                android:textSize="@dimen/sp_26"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="暂停营业" />
-
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/siv_toll_details_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:ellipsize="end"
-                android:maxWidth="@dimen/dp_350"
-                android:maxLines="1"
-                android:text="@{sapaDetail.mTollName}"
-                android:textColor="@color/navi_color_000000_100"
-                android:textSize="@dimen/sp_38"
-                app:layout_constraintBottom_toBottomOf="@+id/siv_toll_details_status_tag"
-                app:layout_constraintStart_toEndOf="@+id/siv_toll_details_status_tag"
-                app:layout_constraintTop_toTopOf="@+id/siv_toll_details_status_tag"
-                tools:text="收费站" />
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/siv_toll_details_distance"
