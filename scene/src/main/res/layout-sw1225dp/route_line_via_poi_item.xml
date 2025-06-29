@@ -95,7 +95,6 @@
                 android:id="@+id/skinImageView"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:layout_marginEnd="@dimen/dp_26"
                 android:src="@drawable/img_route_via_remove_via_sw1225"
                 app:layout_constraintBottom_toBottomOf="@+id/route_item_via_long_img"
                 app:layout_constraintEnd_toEndOf="parent"
