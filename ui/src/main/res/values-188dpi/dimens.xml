@@ -3995,6 +3995,6 @@
     <dimen name="one_third_screen_cross_pic_height">@dimen/dp_349</dimen>
     <dimen name="one_third_screen_car_logo_bottom">@dimen/dp_827</dimen>
     <!--桌面悬浮窗的位置-->
-    <dimen name="launcher_position_top">30px</dimen>
-    <dimen name="launcher_position_left">38px</dimen>
+    <dimen name="launcher_position_top">@dimen/dp_35</dimen>
+    <dimen name="launcher_position_left">@dimen/dp_34</dimen>mnm
 </resources>
