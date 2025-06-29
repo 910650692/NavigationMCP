@@ -27,6 +27,15 @@ public interface IBaseDialogClickListener {
     }
 
     /**
+     * 确定按钮点击监听
+     *
+     * @param phone phone
+     */
+    default void onCommitClick(String phone) {
+
+    }
+
+    /**
      * 取消按钮点击监听
      */
     default void onCancelClick() {

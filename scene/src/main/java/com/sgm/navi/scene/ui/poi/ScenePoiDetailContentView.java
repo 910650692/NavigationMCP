@@ -47,6 +47,7 @@ import com.sgm.navi.scene.ui.adapter.PoiDetailsScenicChildAdapter;
 import com.sgm.navi.scene.ui.adapter.RoutePOIGasStationAdapter;
 import com.sgm.navi.scene.ui.route.SceneRouteDescendantsView;
 import com.sgm.navi.scene.ui.search.SearchConfirmDialog;
+import com.sgm.navi.scene.ui.search.SearchPhoneDialog;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -68,6 +69,7 @@ import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.ui.view.SkinImageView;
 import com.sgm.navi.ui.view.SkinTextView;
@@ -762,7 +764,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_PHONE)
                 public void onClick(final View v) {
                     final String phone = mPoiInfoEntity.getPhone();
-                    final List<String> phoneString = new ArrayList<>();
+                    final ArrayList<String> phoneString = new ArrayList<>();
                     final StringBuffer phoneProp = new StringBuffer();
                     if (phone.contains(";")) {
                         final String[] split = phone.split(";");
@@ -773,30 +775,56 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     if (!ConvertUtils.isEmpty(phoneString) && !ConvertUtils.isEmpty(phoneString.get(0))) {
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone: " , phoneString.get(0));
                         phoneProp.append(phoneString.get(0));
-                        new SearchConfirmDialog.Build(getContext())
-                                .setDialogObserver(new IBaseDialogClickListener() {
-                                    @Override
-                                    public void onCommitClick() {
-                                        try {
-                                            //拨打电话
-                                            final Intent intent = new Intent();
-                                            intent.setAction(Intent.ACTION_DIAL);
-                                            intent.setData(Uri.parse("tel:" + phoneString.get(0)));
-                                            final Context context = getContext();
-                                            context.startActivity(intent);
-                                        } catch (Exception e){
-                                            ToastUtils.Companion.getInstance().showCustomToastView("唤起蓝牙电话失败");
-                                            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone error " + e.toString());
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelClick() {
-                                    }
-                                })
-                                .setContent(getContext().getString(R.string.text_dial_phone_content, phoneString.get(0)))
-                                .setConfirmTitle(getContext().getString(R.string.text_dial))
-                                .build().show();
+                        if(phoneString.size() > 1){
+                            new SearchPhoneDialog.Build(getContext()).setDialogObserver(new IBaseDialogClickListener() {
+                                @Override
+                                public void onCancelClick() {
+                                }
 
+                                @Override
+                                public void onCommitClick(String phone) {
+                                    try {
+                                        //拨打电话
+                                        final Intent intent = new Intent();
+                                        intent.setAction(Intent.ACTION_DIAL);
+                                        intent.setData(Uri.parse("tel:" + phone));
+                                        final Context context = getContext();
+                                        context.startActivity(intent);
+                                    } catch (Exception e){
+                                        ToastUtils.Companion.getInstance().showCustomToastView("唤起蓝牙电话失败");
+                                        Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone error " + e.toString());
+                                    }
+                                }
+                            })
+                            .setContent(phoneString)
+                            .setTitle(getContext().getString(R.string.text_dial_phone_title))
+                            .setConfirmTitle(getContext().getString(R.string.cancel))
+                            .build().show();
+                        }else{
+                            new SearchConfirmDialog.Build(getContext())
+                                    .setDialogObserver(new IBaseDialogClickListener() {
+                                        @Override
+                                        public void onCommitClick() {
+                                            try {
+                                                //拨打电话
+                                                final Intent intent = new Intent();
+                                                intent.setAction(Intent.ACTION_DIAL);
+                                                intent.setData(Uri.parse("tel:" + phoneString.get(0)));
+                                                final Context context = getContext();
+                                                context.startActivity(intent);
+                                            } catch (Exception e){
+                                                ToastUtils.Companion.getInstance().showCustomToastView("唤起蓝牙电话失败");
+                                                Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone error " + e.toString());
+                                            }
+                                        }
+                                        @Override
+                                        public void onCancelClick() {
+                                        }
+                                    })
+                                    .setContent(getContext().getString(R.string.text_dial_phone_content, phoneString.get(0)))
+                                    .setConfirmTitle(getContext().getString(R.string.text_dial))
+                                    .build().show();
+                        }
                     } else {
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone is null ");
                         phoneProp.append("");

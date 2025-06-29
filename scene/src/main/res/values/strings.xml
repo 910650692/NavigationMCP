@@ -320,6 +320,7 @@
     <string name="st_parking_item_recommended">推荐</string>
     <string name="st_distance_to_finish">距离终点%1$s</string>
     <string name="text_dial">拨打</string>
+    <string name="text_dial_phone_title">点击拨打以下电话:</string>
     <string name="text_dial_phone_content">是否拨打电话%s</string>
     <string name="remain_charge">%d%%到达</string>
     <string name="load_failed">加载失败</string>
