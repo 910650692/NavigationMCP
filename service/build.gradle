@@ -118,7 +118,9 @@ dependencies {
 
     defauleImplementation libs.gb.privacy
     buickImplementation libs.gb.privacy
-    clea_local_8155Implementation libs.gb.privacy
+    clea_local_8155Implementation(libs.ndnc.privacy){
+        exclude group: "com.patac.hmi.library", module: "net_basic_vcupro"
+    }
     clea_8255Implementation libs.ndnc.privacy
     cadiImplementation libs.cadi.privacy
     clea_8775Implementation libs.ndnc.privacy
