@@ -149,7 +149,7 @@ public class LayerAdapterImpl implements ILayerApi {
      */
     @Override
     public void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
-        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().drawRouteLine(routeResult);
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().drawRouteLine(mapTypeId, routeResult);
     }
 
     /* 途经点扎标设置是否选中 */

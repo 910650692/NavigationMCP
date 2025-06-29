@@ -285,7 +285,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      *
      * @param routeResult
      */
-    public void drawRouteLine(RequestRouteResult routeResult) {
+    public void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
         if (ConvertUtils.isEmpty(routeResult)) {
             Logger.e(TAG, "路线绘制参数为空，无法进行路线渲染");
             return;
@@ -301,6 +301,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         setMainMapPathDrawStyle(false, false, true);
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyRemainPoint, true);
         updatePaths();
+        //设置全览  只对主屏生效
+        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            showPreviewView();
+        }
     }
 
     /* 更新终点扎标数据 */
