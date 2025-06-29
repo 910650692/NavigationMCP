@@ -99,9 +99,9 @@
 
         <activity
             android:name=".startup.StartupActivity"
-            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection"
+            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection|orientation"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:resizeableActivity="true"
             tools:ignore="DiscouragedApi">
             <intent-filter>
@@ -112,9 +112,9 @@
         </activity>
         <activity
             android:name=".map.MapActivity"
-            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection"
+            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection|orientation"
             android:exported="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:resizeableActivity="true"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="DiscouragedApi" />

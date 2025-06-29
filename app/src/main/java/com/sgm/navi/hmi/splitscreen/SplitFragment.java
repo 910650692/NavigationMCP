@@ -14,6 +14,7 @@ import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.ui.base.BaseFragment;
 
 /**
@@ -38,7 +39,9 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
 
     @Override
     public void onInitView() {
-
+        if (!ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            closeFragment(true);
+        }
     }
 
     @Override
@@ -100,5 +103,13 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
 
     public Rect getPreviewRect() {
         return mPreviewRect;
+    }
+
+    private static final class InstanceHolder {
+        private static final SplitFragment instance = new SplitFragment();
+    }
+
+    public static SplitFragment getInstance() {
+        return SplitFragment.InstanceHolder.instance;
     }
 }

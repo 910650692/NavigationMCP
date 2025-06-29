@@ -23,9 +23,12 @@ import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.ActivityMapBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.LauncherWindowService;
+import com.sgm.navi.hmi.splitscreen.SRFloatWindowService;
+import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
 import com.sgm.navi.hmi.startup.StartupActivity;
-import com.sgm.navi.hmi.utils.ScreenTypeUtils;
+import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
@@ -39,6 +42,7 @@ import com.sgm.navi.service.define.route.RouteTMCParam;
 import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.ui.base.BaseActivity;
+import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
@@ -70,25 +74,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
-        FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
         mBinding.cruiseLayout.tvCurrentRoadName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
 
             }
         });
-        mBinding.main.post(() -> {
-            SplitScreenManager.getInstance().onConfigurationChanged();
-        });
-    }
-
-    private void delayRemoveLauncherActivity() {
-        final StartupActivity startupActivity = (StartupActivity) StackManager.getInstance().getActivityByClsName(mScreenId, StartupActivity.class);
-        if (!ConvertUtils.isNull(startupActivity)) {
-            startupActivity.finishNoPop();
-            StackManager.getInstance().removeBaseView(mScreenId, startupActivity);
-            Logger.i(TAG, "delayRemoveLauncherActivity");
-        }
     }
 
     @Override
@@ -172,8 +163,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onResume() {
         super.onResume();
         mViewModel.getCurrentCityLimit();
-        delayRemoveLauncherActivity();
-        //地图应用后台时无法接收onConfigurationChanged深浅色模式切换回调
         //界面可见时重新适配深浅色模式
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
@@ -239,12 +228,30 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (Logger.openLog) {
-            Logger.i(TAG, GsonUtils.toJson(newConfig));
+        if (mViewModel.isSupportSplitScreen()) {
+            Logger.d("screen_change_used", newConfig.screenWidthDp);
+            ScreenTypeUtils.getInstance().setScreenType(newConfig);
+            setSplitFragment();
         }
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
         recreate();
+    }
+
+    private void setSplitFragment() {
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            Logger.d("screen_change_used", "打开1/3屏幕布局");
+            addFragment(SplitFragment.getInstance(), null);
+        } else {
+            final BaseFragment baseFragment = mStackManager.getCurrentFragment(mScreenId);
+            Logger.d("screen_change_used", baseFragment.getClass().getSimpleName());
+            if (baseFragment instanceof SplitFragment) {
+                Logger.d("screen_change_used", "关闭1/3屏幕布局");
+                closeFragment(true);
+            } else {
+                Logger.d("screen_change_used", "不包含1/3屏幕布局");
+            }
+        }
     }
 
     // 更新当前的比例尺数值
@@ -356,11 +363,4 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         return super.dispatchTouchEvent(ev);
     }
 
-    public void setSelfParkingViewMarginStart(){
-        if(!mViewModel.showNdGoHomeView()) return;
-        SkinLinearLayout layout = mBinding.parkingMainTabBottom;
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) layout.getLayoutParams();
-        params.setMarginStart(ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_FULL ? ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_1143) : ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_758));
-        layout.setLayoutParams(params);
-    }
 }

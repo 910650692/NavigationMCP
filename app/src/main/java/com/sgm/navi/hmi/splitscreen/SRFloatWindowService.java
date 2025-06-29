@@ -285,7 +285,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
     }
 
     public void showOrHideFloatView(boolean isShow) {
-        Logger.i(TAG, "showOrHideFloatView:" + isShow);
+        Logger.i("screen_change_used", isShow);
         ThreadManager.getInstance().postUi(() -> {
             mIsOnShowing = isShow;
             if (!isInited) {

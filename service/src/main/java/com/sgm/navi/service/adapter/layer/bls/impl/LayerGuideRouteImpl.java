@@ -66,6 +66,7 @@ import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
 import com.sgm.navi.service.define.route.RouteLinePoints;
 import com.sgm.navi.service.define.screen.ScreenType;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
@@ -229,31 +230,25 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         int top;
         int bottom;
         ResourceUtils instance = ResourceUtils.Companion.getInstance();
-        ScreenType screenType = BevPowerCarUtils.getInstance().screenType;
-        //1/3只有导航态，2/3和整屏一致
-        switch (screenType) {
-            case SCREEN_1_3:
-                left = instance.getDimensionPixelSize(R.dimen.margin_screen_left_one_to_three);
-                right = instance.getDimensionPixelSize(R.dimen.margin_screen_right_one_to_three);
-                top = instance.getDimensionPixelSize(R.dimen.margin_screen_top_one_to_three);
-                bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom_one_to_three);
-                break;
-            default:
-                if (isNaving) {
-                    left = instance.getDimensionPixelSize(R.dimen.margin_screen_left);
-                    right = instance.getDimensionPixelSize(R.dimen.margin_screen_right);
-                    top = instance.getDimensionPixelSize(R.dimen.margin_screen_top);
-                    bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom);
-                } else {
-                    left = instance.getDimensionPixelSize(R.dimen.route_margin_screen_left);
-                    right = instance.getDimensionPixelSize(R.dimen.route_margin_screen_right);
-                    top = instance.getDimensionPixelSize(R.dimen.route_margin_screen_top);
-                    bottom = instance.getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
-                }
-                break;
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            left = instance.getDimensionPixelSize(R.dimen.margin_screen_left_one_to_three);
+            right = instance.getDimensionPixelSize(R.dimen.margin_screen_right_one_to_three);
+            top = instance.getDimensionPixelSize(R.dimen.margin_screen_top_one_to_three);
+            bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom_one_to_three);
+        } else {
+            if (isNaving) {
+                left = instance.getDimensionPixelSize(R.dimen.margin_screen_left);
+                right = instance.getDimensionPixelSize(R.dimen.margin_screen_right);
+                top = instance.getDimensionPixelSize(R.dimen.margin_screen_top);
+                bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom);
+            } else {
+                left = instance.getDimensionPixelSize(R.dimen.route_margin_screen_left);
+                right = instance.getDimensionPixelSize(R.dimen.route_margin_screen_right);
+                top = instance.getDimensionPixelSize(R.dimen.route_margin_screen_top);
+                bottom = instance.getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
+            }
         }
-        Logger.d("song", left,right,top,bottom);
-
+        Logger.d("screen_change_used", left,right,top,bottom);
         mPreviewParam.screenLeft = left;
         mPreviewParam.screenTop = top;
         mPreviewParam.screenRight = right;

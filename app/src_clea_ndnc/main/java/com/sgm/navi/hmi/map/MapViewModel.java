@@ -4,8 +4,10 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
-import com.sgm.navi.hmi.utils.ScreenTypeUtils;
+import com.sgm.navi.service.BuildConfig;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.ui.action.Action;
 
@@ -15,13 +17,24 @@ import com.sgm.navi.ui.action.Action;
  * @date 2024/11/26
  */
 public class MapViewModel extends BaseMapViewModel {
-    private static final String TAG = "NDLB---MapViewModel--8775";
+    private final String FULL_SCREEN_JSON_PATH = BuildConfig.MAP_SDK + "/nd_maparea.json";
+    private final String TWO_THIRD_JSON_PATH = BuildConfig.MAP_SDK + "/nd_2_3_maparea.json";
+    private final String ONE_THIRD_JSON_PATH = BuildConfig.MAP_SDK + "/nd_1_3_maparea.json";
     public MapViewModel(@NonNull Application application) {
         super(application);
     }
 
     public void initVisibleAreaPoint() {
-        mModel.loadVisibleAreaJson(SplitScreenManager.getInstance().getScreenJsonPath());
+        Logger.d("screen_change_used", "设置屏幕投影位置");
+        String json;
+        if (ScreenTypeUtils.getInstance().isFullScreen()) {
+            json = FULL_SCREEN_JSON_PATH;
+        } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen()) {
+            json = TWO_THIRD_JSON_PATH;
+        } else {
+            json = ONE_THIRD_JSON_PATH;
+        }
+        mModel.loadVisibleAreaJson(json);
     }
 
     public boolean showNdGoHomeView() {
@@ -33,10 +46,12 @@ public class MapViewModel extends BaseMapViewModel {
     }
 
     public Action switchSr = () -> {
-        if (ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_2_3) {
-            SplitScreenManager.getInstance().switchSRToFullScreen();
-        } else {
+        if (ScreenTypeUtils.getInstance().isFullScreen()) {
+            Logger.d("screen_change_used", "切换到2/3屏幕");
             SplitScreenManager.getInstance().switchSRToOneThirdScreen();
+        } else {
+            Logger.d("screen_change_used", "切换到全屏幕");
+            SplitScreenManager.getInstance().switchSRToFullScreen();
         }
     };
 

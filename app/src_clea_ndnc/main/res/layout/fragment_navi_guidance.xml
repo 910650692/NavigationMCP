@@ -23,10 +23,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.sgm.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
             <!--上部分的父布局-->
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_top_container"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_shadow_navi_buick_transparent"
                 android:paddingHorizontal="@dimen/dp_30"
@@ -213,17 +216,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
 
+            <com.sgm.navi.ui.view.SkinView
+                android:id="@+id/line_view_roads"
+                android:layout_width="@dimen/dp_609"
+                android:layout_height="@dimen/dp_1"
+                app:layout_constraintStart_toStartOf="parent"/>
             <!--当前路名-->
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_607"
                 android:background="@drawable/bg_shadow_navi_buick"
+                android:layout_marginEnd="@dimen/dp_141"
                 android:paddingHorizontal="@dimen/dp_29"
                 android:paddingVertical="@dimen/dp_29"
                 android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/scl_top_container">
+                app:layout_constraintStart_toEndOf="@id/line_view_roads"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <com.sgm.navi.scene.ui.navi.view.ButtonText
                     android:id="@+id/stv_navi_route_name"
@@ -292,16 +301,24 @@
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/line_views"
+            android:layout_width="@dimen/dp_609"
+            android:layout_height="@dimen/dp_1"
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <!--继续导航按钮-->
         <com.sgm.navi.scene.ui.navi.SceneNaviContinueView
             android:id="@+id/scene_navi_continue"
             android:layout_width="@dimen/dp_310"
             android:layout_height="@dimen/dp_92"
-            android:layout_marginStart="@dimen/dp_1186"
             android:layout_marginBottom="@dimen/dp_29"
+            android:layout_marginEnd="@dimen/dp_141"
             android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/line_views"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
 
         <com.sgm.navi.scene.ui.navi.GuidanceSimulationView
             android:id="@+id/navi_sim_view"

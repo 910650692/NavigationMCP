@@ -188,4 +188,8 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
         super.onConfigurationChanged(newConfig);
         recreate();
     }
+
+    public void finishThisActivity() {
+        finish();
+    }
 }

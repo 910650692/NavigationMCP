@@ -12,7 +12,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
-import com.sgm.navi.hmi.utils.ScreenTypeUtils;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.navi.TimerHelper;
@@ -346,7 +346,7 @@ public class BaseNaviGuidanceViewModel extends
     public void onNaviStop() {
         mView.onNaviStop();
         closeAllFragment();
-        if (ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_1_3) {
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
             addFragment(new SplitFragment(), null);
         }
     }

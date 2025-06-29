@@ -55,8 +55,7 @@ import com.sgm.navi.hmi.navi.PhoneAddressDialog;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
 import com.sgm.navi.hmi.utils.AiWaysGestureManager;
-import com.sgm.navi.hmi.utils.ScreenTypeUtils;
-import com.sgm.navi.mapservice.bean.INaviConstant;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -160,8 +159,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ImmersiveStatusScene.IImmersiveStatusCallBack, IAosRestrictedObserver, IPositionPackageCallback,
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack
-        , ForecastCallBack, SearchResultCallback, SplitScreenManager.OnScreenModeChangedListener,
-        INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver {
+        , ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver {
     private final MapPackage mapPackage;
     private final LayerPackage layerPackage;
     private final PositionPackage positionPackage;
@@ -176,7 +174,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private int mCurrentCityCode;
     private int mCompanyOrHomeType;
     private String mLicense = "";
-    private boolean mAvoidLimit = false;
     private String mFilename = "";
     private ScheduledFuture mSelfParkingTimer;//回车位倒计时
     private ScheduledFuture mCloseTmcTimer;//离线关闭TMC倒计时
@@ -251,10 +248,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onCreate() {
         super.onCreate();
-        SplitScreenManager.getInstance().registerListener(this, TAG);
         speedMonitor.registerCallBack(this);
         mViewModel.initVisibleAreaPoint();
-        Logger.d("MapViewModelonCreate1");
     }
 
     @Override
@@ -283,7 +278,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapPackage.unRegisterCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         layerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         NavistatusAdapter.getInstance().unRegisterCallback(this);
-        SplitScreenManager.getInstance().unRegisterListener(this, TAG);
         SettingUpdateObservable.getInstance().removeObserver(TAG, this);
         cancelSelfParkingTimer();
         cancelCloseTmcTimerWithoutNetwork();
@@ -313,10 +307,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void loadVisibleAreaJson(String jsonPath) {
-        Logger.d("loadVisibleAreaJson", "loadVisibleAreaJson:" , SplitScreenManager.getInstance().isInMultiWindow());
-        if (SplitScreenManager.getInstance().isInMultiWindow()) {
-            return;
-        }
         mapVisibleAreaDataManager.loadData(jsonPath);
     }
 
@@ -538,10 +528,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onMapClickPoi(MapType mapTypeId, PoiInfoEntity poiInfo) {
         stopCruise();
-        // 分屏状态下，1/3屏不支持点击
-        if (!SplitScreenManager.getInstance().isOneThirdScreen()) {
-            mViewModel.toPoiDetailFragment(poiInfo);
-        }
+        mViewModel.toPoiDetailFragment(poiInfo);
         //选路页面不显示回自车位
         Logger.i("onMapClickPoi", NaviStatusPackage.getInstance().getCurrentNaviStatus());
         if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
@@ -556,9 +543,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onReversePoiClick(MapType mapTypeId, PoiInfoEntity poiInfo) {
         stopCruise();
-        if (!SplitScreenManager.getInstance().isOneThirdScreen()) {
-            mViewModel.toPoiDetailFragment(poiInfo);
-        }
+        mViewModel.toPoiDetailFragment(poiInfo);
     }
 
     @Override
@@ -583,10 +568,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (Logger.openLog) {
             Logger.d(TAG, "onImmersiveStatusChange: ", parkingViewExist(), ", currentImersiveStatus: ", currentImersiveStatus);
         }
+        //todo 亚威
         showOrHideWidgetsOnImersiveStatusChanged(currentImersiveStatus);
-        //是触控态的时候显示回车位   否则隐藏
-//        if (Boolean.FALSE.equals(mViewModel.bottomNaviVisibility.get())) return;
-        if (ScreenTypeUtils.getScreenType() == ScreenType.SCREEN_1_3 || parkingViewExist()) {
+        //todo 主图的沉浸态触碰态只会处理 自车位置控件的显隐
+        if (parkingViewExist()) {
             if (currentImersiveStatus == ImersiveStatus.TOUCH) {
                 mViewModel.showOrHideSelfParkingView(true);
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
@@ -601,6 +586,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         }
 
+        //todo 后续全部删除，在各自模块做操作
         if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && mSettingPackage.getAutoScale()) {
             Logger.i(TAG, "锁定比例尺，触摸态关闭动态比例尺，沉浸态开启比例尺！");
             boolean isOpen = !naviPackage.getFixedOverViewStatus() &&
@@ -614,7 +600,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 layerPackage.closeDynamicLevel(mapTypeId);
             }
         }
-
+        //todo 后续全部删除，在各自模块做操作
         //导航中偶现 回车位出现问题
         if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.ROUTING) ||
                 TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.NAVING) ||
@@ -687,7 +673,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {
-        // TODO 现在是跟随系统主题变化，只有黑夜和白天
         mapPackage.updateUiStyle(mapTypeId, type);
     }
 
@@ -998,10 +983,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void stopCruise() {
-        // 判断是否已开启巡航，已开启再去关闭
         if (!TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
-//            Logger.i(TAG, "巡航未开启，无需关闭！");
-            // 如果巡航UI正在显示，关闭一下
             if (mViewModel.isCruiseUiVisible()) {
                 mViewModel.showOrHiddenCruise(false);
             }
@@ -1077,14 +1059,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onNaviInfo(NaviEtaInfo naviETAInfo) {
-        int scale = mapPackage.getCurrentZoomScale(MapType.MAIN_SCREEN_MAIN_MAP);
-        float size = mapPackage.getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP);
-        Logger.i(TAG, "onNaviInfo:", "scale:" , scale, "size:" , size);
     }
 
     @Override
     public void onNaviArrive(long traceId, int naviType) {
-        Logger.i(TAG, "onNaviArrive");
     }
 
     @Override
@@ -1339,7 +1317,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void isHoliday(boolean holiday) {
         //不是节假日 才弹出view
-        Logger.i("isHoliday", "----");
+        Logger.i("isHoliday", holiday);
         if (!holiday) {
             loadNdGoHomeView();
         }
@@ -1424,7 +1402,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      * @param messageCenterInfo 消息
      */
     public void managerMessage(MessageCenterInfo messageCenterInfo) {
-//        final MessageCenterInfo messageCenterInfo = messageCenterHelper.manageMessage(messageCenterType);
         if (messageCenterInfo != null) {
             ThreadManager.getInstance().postUi(() -> {
                 messageCenterManager.pushMessage(messageCenterInfo);
@@ -1497,9 +1474,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onMessageInfoNotifyCallback(final MessageCenterInfo messageCenterInfo) {
-        mViewModel.onMessageInfoNotifyCallback(messageCenterInfo);
-
-        sendBuryPointForPopup(messageCenterInfo != null ? messageCenterInfo.getMsgTitle() : "");
+        if (!ConvertUtils.isEmpty(messageCenterInfo)) {
+            mViewModel.onMessageInfoNotifyCallback(messageCenterInfo);
+            sendBuryPointForPopup(messageCenterInfo.getMsgTitle());
+        } else {
+            Logger.e(TAG, "messageCenterInfo is null");
+            sendBuryPointForPopup("");
+        }
     }
 
     @Override
@@ -1512,7 +1493,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (ConvertUtils.isEmpty(param)) {
             return;
         }
-        Logger.d(TAG, "onRouteTMCInfo： " , GsonUtils.toJson(param));
         mViewModel.setTMCView(param);
     }
 
@@ -1590,16 +1570,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
-    public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-
-    }
-
-    @Override
-    public void onSilentSearchResult(final int taskId, final int errorCode, final String message,
-                                     final SearchResultEntity searchResultEntity) {
-    }
-
-    @Override
     public void onMarkClickCallBack(final PoiInfoEntity poiInfoEntity) {
         SearchResultCallback.super.onMarkClickCallBack(poiInfoEntity);
         if (ConvertUtils.isEmpty(poiInfoEntity)) {
@@ -1611,10 +1581,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfoEntity);
         bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
         addPoiDetailsFragment(new PoiDetailsFragment(), bundle);
-    }
-
-    @Override
-    public void onVoicePoiSort(final MapType mapTypeId, final String sortValue) {
     }
 
     public boolean checkPopGuideLogin() {
@@ -1645,6 +1611,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         commonManager.insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
     }
 
+    // MFC功能，不准删除
     public void mfcChangeZoom(boolean zoom) {
         if (Boolean.TRUE.equals(zoom)) {
             mapPackage.amplifyLevel(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -1652,9 +1619,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             mapPackage.reduceLevel(MapType.MAIN_SCREEN_MAIN_MAP);
         }
     }
-
+    // MFC功能，不准删除
     public void mfcMoveMap(MfcController mfcController, int moveDis) {
-        Logger.d(TAG, MAP_TOUCH, " moveDis:" , moveDis);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         //触控态开始回车位倒计时
         startSelfParkingTimer();
@@ -1663,9 +1629,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapPackage.mfcMoveMap(MapType.MAIN_SCREEN_MAIN_MAP, mfcController, moveDis);
     }
 
+    //埋点使用，不准删除
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_WAKEUP)
     private void sendBuryPointForWakeup() {
-        //Empty body
     }
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_POPUP)
@@ -1701,16 +1667,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         });
     }
 
-    @Override
-    public void onScreenModeChanged(ScreenType screenType, String jsonPath) {
-        mapPackage.changeMapViewParams(mViewModel.getMapView());
-        mapVisibleAreaDataManager.loadData(jsonPath);
-        mViewModel.onScreenModeChanged(screenType);
-        //分屏后，由于地图加载先与分屏回调，故重新设置视口锚点。
-        setMapCenterInScreen();
-        mapPackage.goToCarPosition(MapType.MAIN_SCREEN_MAIN_MAP);
-    }
-
     /**
      * 主图加载完成后执行外部应用通过对外交互传递过来的指令.
      */
@@ -1724,16 +1680,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (null != mViewModel) {
             mViewModel.processPageIntent(intentPage);
         }
-    }
-
-    private void startCloseTmcTimerWithoutNetwork() {
-        cancelCloseTmcTimerWithoutNetwork();
-        mCloseTmcTimer = ThreadManager.getInstance().asyncDelayWithResult(() -> {
-            cancelCloseTmcTimerWithoutNetwork();
-            Logger.d("onFinish-startCloseTmcTimerWithoutNetwork-true");
-            mapPackage.setTrafficStatesWithoutNetwork(MapType.MAIN_SCREEN_MAIN_MAP, false);
-            Logger.d("onFinish-startCloseTmcTimerWithoutNetwork");
-        }, 300);
     }
 
     private void cancelCloseTmcTimerWithoutNetwork(){

@@ -48,7 +48,7 @@ import com.sgm.navi.hmi.search.searchresult.SearchResultFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
-import com.sgm.navi.hmi.utils.ScreenTypeUtils;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -142,7 +142,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         super(application);
         backToCcPVisibility = new ObservableBoolean(false);
         mainBTNVisibility = new ObservableBoolean(true);
-        mScaleViewVisibility = new ObservableBoolean(ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3);
+        mScaleViewVisibility = new ObservableBoolean(!ScreenTypeUtils.getInstance().isOneThirdScreen());
         naviHomeVisibility = new ObservableField<>(false);
         limitDriverVisibility = new ObservableField<>(false);
         limitEndNumVisibility = new ObservableField<>(false);
@@ -171,7 +171,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         cruiseLanesVisibility = new ObservableField<>(false);
         mGoHomeVisible = new ObservableField<>(false);
         sRVisible = new ObservableField<>(isSupportSplitScreen());
-        mIsFullScreen = new ObservableField<>(ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3);
+        mIsFullScreen = new ObservableField<>(ScreenTypeUtils.getInstance().isFullScreen());
     }
 
     @Override
@@ -183,7 +183,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void onCreate() {
         super.onCreate();
         mModel.checkContinueNavi(mView);
-        mView.setSelfParkingViewMarginStart();
     }
 
     @Override
@@ -496,7 +495,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || NaviStatus.NaviStatusType.ROUTING.equals(state)
                 || NaviStatus.NaviStatusType.NAVING.equals(state))
                 || AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT.equals(fragment)
-                && (ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3));
+                && (!ScreenTypeUtils.getInstance().isOneThirdScreen()));
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -509,7 +508,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mView.setMapFocusable(true);
         mModel.refreshMapMode();
         mModel.resetMapCenterInScreen();
-        mScaleViewVisibility.set(true && ScreenTypeUtils.getScreenType() != ScreenType.SCREEN_1_3);
+        mScaleViewVisibility.set(!ScreenTypeUtils.getInstance().isOneThirdScreen());
         mainBTNVisibility.set(true);
         bottomNaviVisibility.set(true);
         if (mModel.checkPopGuideLogin()) {
@@ -1303,34 +1302,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public boolean isSupportSplitScreen() {
         return false;
     }
-
-    public void onScreenModeChanged(ScreenType screenType) {
-        Logger.d(TAG, "onScreenModeChanged", screenType.name());
-        if (!isSupportSplitScreen()) {
-            Logger.w(TAG, "不支持分屏！");
-            return;
-        }
-        mScaleViewVisibility.set(screenType != ScreenType.SCREEN_1_3);
-        sRVisible.set(screenType != ScreenType.SCREEN_1_3);
-        mIsFullScreen.set(screenType == ScreenType.SCREEN_FULL);
-        mView.setSelfParkingViewMarginStart();
-        final BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(mScreenId);
-        switch (screenType) {
-            case SCREEN_1_3 -> {
-                if (!(baseFragment instanceof SplitFragment)) {
-                    //todo 在其他页面切换到1/3屏 需要关闭页面，去掉图层
-//                    checkStatusCloseAllFragmentAndClearAllLabel();
-                    addFragment(new SplitFragment(), null);
-                }
-            }
-            default -> {
-                if ((baseFragment instanceof SplitFragment)) {
-                    closeFragment(true);
-                }
-            }
-        }
-    }
-
     private void checkStatusCloseAllFragmentAndClearAllLabel() {
         mModel.checkStatusCloseAllFragmentAndClearAllLabel();
     }

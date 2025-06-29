@@ -22,6 +22,7 @@ import com.sgm.navi.service.define.map.PointDataInfo;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.mfc.MfcController;
 import com.sgm.navi.service.define.screen.ScreenType;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 
 import java.util.ArrayList;
@@ -56,9 +57,33 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public void bindMapView(IBaseScreenMapView mapView) {
+        int mapViewWidth;
+        int mapViewHeight;
+        int screenWidth;
+        int screenHeight;
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            //平板 740 1179
+            //台架 正常 723 1066 异常 723 652
+            mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(723);
+            mapViewHeight = 1440;
+            screenWidth = ScreenUtils.Companion.getInstance().dp2px(723);
+            screenHeight =  1440;
+        } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen()){
+            //平板 1431 1179
+            //台架 1439 1066
+            mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
+            mapViewHeight =  1440;
+            screenWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
+            screenHeight =  1440;
+        } else {
+            mapViewWidth = (int) mapView.getMapViewWidth();
+            mapViewHeight = (int) mapView.getMapViewHeight();
+            screenWidth = (int) mapView.getScreenWidth();
+            screenHeight = (int) mapView.getScreenHeight();
+        }
+        Logger.d("screen_change_used", mapViewWidth,mapViewHeight,screenWidth,screenHeight);
         MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),
-                mapView.getMapViewWidth(), mapView.getMapViewHeight(),
-                mapView.getScreenWidth(), mapView.getScreenHeight(),
+                mapViewWidth, mapViewHeight, screenWidth, screenHeight,
                 mapView.getScreenDensityDpi(), mapView.isOpenScreen());
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.getMapViewImpl(mapView.provideMapTypeId());
         mapSurfaceViewImp.changeMapViewParams(mapViewParams);
@@ -67,30 +92,29 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public void changeMapViewParams(IBaseScreenMapView mapView) {
-        ScreenType screenType = BevPowerCarUtils.getInstance().screenType;
-        if (screenType == ScreenType.SCREEN_FULL) {
+        if (ScreenTypeUtils.getInstance().isFullScreen()) {
             return;
         }
         int mapViewWidth;
         int mapViewHeight;
         int screenWidth;
         int screenHeight;
-        if (screenType == ScreenType.SCREEN_1_3) {
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
             //平板 740 1179
             //台架 正常 723 1066 异常 723 652
             mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(723);
-            mapViewHeight = ScreenUtils.Companion.getInstance().dp2px(1066);
+            mapViewHeight = 1440;
             screenWidth = ScreenUtils.Companion.getInstance().dp2px(723);
-            screenHeight = ScreenUtils.Companion.getInstance().dp2px(1066);
+            screenHeight = 1440;
         } else {
             //平板 1431 1179
             //台架 1439 1066
             mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
-            mapViewHeight = ScreenUtils.Companion.getInstance().dp2px(1066);
+            mapViewHeight = 1440;
             screenWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
-            screenHeight = ScreenUtils.Companion.getInstance().dp2px(1066);
+            screenHeight = 1440;
         }
-        Logger.d("song", mapViewWidth,mapViewHeight,screenWidth,screenHeight);
+        Logger.d("screen_change_used", mapViewWidth,mapViewHeight,screenWidth,screenHeight);
         MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),mapViewWidth
                 , mapViewHeight, screenWidth, screenHeight, mapView.getScreenDensityDpi(), mapView.isOpenScreen());
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.getMapViewImpl(mapView.provideMapTypeId());
