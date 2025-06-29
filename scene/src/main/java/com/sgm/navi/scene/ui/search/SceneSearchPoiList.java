@@ -293,43 +293,48 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         //滑动结束后，高亮对应item
         final RecyclerView.LayoutManager layoutManager = mViewBinding.recyclerSearchResult.getLayoutManager();
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
-        // 获取第一个可见item的位置
-        if (linearLayoutManager != null) {
-            final int firstVisiblePosition = linearLayoutManager.findFirstVisibleItemPosition();
-            // 获取最后一个可见item的位置
-            final int lastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition();
+        mViewBinding.recyclerSearchResult.post(new Runnable() {
+            @Override
+            public void run() {
+                // 获取第一个可见item的位置
+                if (linearLayoutManager != null) {
+                    final int firstVisiblePosition = linearLayoutManager.findFirstVisibleItemPosition();
+                    // 获取最后一个可见item的位置
+                    final int lastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition();
 
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "第一个可见位置: " + firstVisiblePosition);
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "最后一个可见位置: " + lastVisiblePosition);
-            if (mAdapter == null) {
-                return;
-            }
-            final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
-            if (firstVisiblePosition < 0 || firstVisiblePosition >= mAdapter.getItemCount()
-                    || lastVisiblePosition < 0 || lastVisiblePosition >= mAdapter.getItemCount()
-                    || firstVisiblePosition >= lastVisiblePosition) {
-                if (!ConvertUtils.isEmpty(poiInfoEntities)) {
-                    //首次进入可见位置均是-1，默认选中下标0-2的item
-                    final int size = Math.min(3, poiInfoEntities.size());
-                    for (int i = 0; i < poiInfoEntities.size(); i++) {
-                        final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
-                        poiInfoEntity.setMIsVisible(i <= size - 1);
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "第一个可见位置: " + firstVisiblePosition);
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "最后一个可见位置: " + lastVisiblePosition);
+                    if (mAdapter == null) {
+                        return;
                     }
-                    mScreenViewModel.updatePoiMarker(poiInfoEntities, 0);
-                }
-                return;
-            }
-            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
-                // 遍历所有可见的item
-                for (int i = 0; i < poiInfoEntities.size(); i++) {
+                    final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
+                    if (firstVisiblePosition < 0 || firstVisiblePosition >= mAdapter.getItemCount()
+                            || lastVisiblePosition < 0 || lastVisiblePosition >= mAdapter.getItemCount()
+                            || firstVisiblePosition >= lastVisiblePosition) {
+                        if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                            //首次进入可见位置均是-1，默认选中下标0-2的item
+                            final int size = Math.min(3, poiInfoEntities.size());
+                            for (int i = 0; i < poiInfoEntities.size(); i++) {
+                                final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
+                                poiInfoEntity.setMIsVisible(i <= size - 1);
+                            }
+                            mScreenViewModel.updatePoiMarker(poiInfoEntities, 0);
+                        }
+                        return;
+                    }
                     if (!ConvertUtils.isEmpty(poiInfoEntities)) {
-                        final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
-                        poiInfoEntity.setMIsVisible(i >= firstVisiblePosition && i <= lastVisiblePosition);
+                        // 遍历所有可见的item
+                        for (int i = 0; i < poiInfoEntities.size(); i++) {
+                            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                                final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
+                                poiInfoEntity.setMIsVisible(i >= firstVisiblePosition && i <= lastVisiblePosition);
+                            }
+                        }
+                        mScreenViewModel.updatePoiMarker(poiInfoEntities, 0);
                     }
                 }
-                mScreenViewModel.updatePoiMarker(poiInfoEntities, 0);
             }
-        }
+        });
 
     }
 
