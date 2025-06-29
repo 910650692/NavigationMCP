@@ -73,6 +73,9 @@ public class LayerPackage implements ILayerAdapterCallBack {
         if (!callbacks.get(mapTypeId).contains(callback)) {
             callbacks.get(mapTypeId).add(callback);
         }
+        if (callbacks.get(mapTypeId).size() == 1) {
+            mLayerAdapter.registerLayerClickObserver(mapTypeId, this);
+        }
     }
 
     public void unRegisterCallBack(MapType mapTypeId, ILayerPackageCallBack callBack) {
