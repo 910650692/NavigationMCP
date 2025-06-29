@@ -258,13 +258,14 @@
                 android:id="@+id/route_line_via_open_close"
                 clickCommand="@{ViewModel.getOpenCloseViaClick()}"
                 android:layout_width="@dimen/dp_200"
-                android:layout_height="@dimen/dp_30"
+                android:layout_height="@dimen/dp_84"
                 android:layout_marginStart="@dimen/dp_310"
+                android:layout_marginTop="@dimen/dp_n_32"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:focusable="true"
                 android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/route_line_cicle_end_bg" />
+                app:layout_constraintTop_toBottomOf="@+id/route_line_info_via_end_name" />
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/bg_lines"
@@ -273,10 +274,10 @@
                 android:background="@color/route_title_line_bg"
                 android:focusable="false"
                 android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
+                android:layout_marginBottom="@dimen/dp_15"
                 app:layout_constraintBottom_toBottomOf="@+id/route_line_via_open_close"
                 app:layout_constraintEnd_toEndOf="@+id/route_line_via_open_close"
-                app:layout_constraintStart_toStartOf="@+id/route_line_via_open_close"
-                app:layout_constraintTop_toTopOf="@+id/route_line_via_open_close" />
+                app:layout_constraintStart_toStartOf="@+id/route_line_via_open_close" />
 
             <com.sgm.navi.ui.view.SkinView
                 android:layout_width="match_parent"

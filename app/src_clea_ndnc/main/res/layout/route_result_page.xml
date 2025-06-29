@@ -226,15 +226,15 @@
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_line_via_open_close"
+                clickCommand="@{ViewModel.getOpenCloseViaClick()}"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_n_14"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginTop="@dimen/dp_n_20"
                 android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
-                app:layout_constraintTop_toBottomOf="@+id/route_line_cicle_end_bg" />
+                app:layout_constraintTop_toBottomOf="@+id/route_line_info_via_end_name" />
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/bg_lines"
-                clickCommand="@{ViewModel.getOpenCloseViaClick()}"
                 android:layout_width="@dimen/dp_200"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_2"
