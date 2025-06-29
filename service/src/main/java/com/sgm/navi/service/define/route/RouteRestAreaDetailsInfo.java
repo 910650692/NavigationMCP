@@ -1,14 +1,17 @@
 package com.sgm.navi.service.define.route;
 
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RouteRestAreaDetailsInfo  implements Serializable {
+public class RouteRestAreaDetailsInfo  implements Parcelable {
     private long mRemainDist;
     private long mRemainTime;
     private String mServiceName;
@@ -37,5 +40,41 @@ public class RouteRestAreaDetailsInfo  implements Serializable {
         this.mPos = posLiteObj;
         this.mSapaDetail = sapaDetailLiteObj;
         this.mIsAdded = isAddedObj;
+    }
+
+    protected RouteRestAreaDetailsInfo(Parcel in) {
+        mRemainDist = in.readLong();
+        mRemainTime = in.readLong();
+        mServiceName = in.readString();
+        mServicePOIID = in.readString();
+        mSapaDetail = in.readLong();
+        mIsAdded = in.readByte() != 0;
+    }
+
+    public static final Creator<RouteRestAreaDetailsInfo> CREATOR = new Creator<RouteRestAreaDetailsInfo>() {
+        @Override
+        public RouteRestAreaDetailsInfo createFromParcel(Parcel in) {
+            return new RouteRestAreaDetailsInfo(in);
+        }
+
+        @Override
+        public RouteRestAreaDetailsInfo[] newArray(int size) {
+            return new RouteRestAreaDetailsInfo[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeLong(mRemainDist);
+        dest.writeLong(mRemainTime);
+        dest.writeString(mServiceName);
+        dest.writeString(mServicePOIID);
+        dest.writeLong(mSapaDetail);
+        dest.writeByte((byte) (mIsAdded ? 1 : 0));
     }
 }

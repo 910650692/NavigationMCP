@@ -1186,7 +1186,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     public void onGetFragmentData() {
         final Bundle bundle = getArguments();
         assert bundle != null;
-        final RouteSpeechRequestParam param = (RouteSpeechRequestParam) bundle.getSerializable("speech_open_route");
+        final RouteSpeechRequestParam param = (RouteSpeechRequestParam) bundle.getParcelable("speech_open_route");
         if (!ConvertUtils.isEmpty(param)) {
             assert param != null;
             final PoiInfoEntity mEndPoiInfoEntity = param.getMEndPoiInfoEntity();
@@ -1198,7 +1198,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             return;
         }
 
-        final RouteMsgPushInfo routeMsgPushInfo = (RouteMsgPushInfo) bundle.getSerializable(
+        final RouteMsgPushInfo routeMsgPushInfo = (RouteMsgPushInfo) bundle.getParcelable(
                 AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MSG_PUSH_OPEN_ROUTE_TYPE);
         if (!ConvertUtils.isEmpty(routeMsgPushInfo)) {
             mViewModel.getTitle().set(routeMsgPushInfo.getMName());

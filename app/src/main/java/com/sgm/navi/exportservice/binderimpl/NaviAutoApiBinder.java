@@ -1554,7 +1554,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                 //打开算路界面
                 final Bundle bundle = new Bundle();
                 bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.ROUTING);
-                bundle.putSerializable(IVrBridgeConstant.VoiceIntentParams.ROUTE_REQUEST, requestParam);
+                bundle.putParcelable(IVrBridgeConstant.VoiceIntentParams.ROUTE_REQUEST, requestParam);
                 MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
             }
         } else {

@@ -6,14 +6,17 @@ package com.sgm.navi.service.define.aos;
  * Description: [交通事件-子事件]
  */
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class FyGSubTraEventDetail implements Serializable {
+public class FyGSubTraEventDetail implements Parcelable {
     public int criticism; // 事件被踩到次数
     public int layer;
     public String id;//事件id
@@ -45,5 +48,89 @@ public class FyGSubTraEventDetail implements Serializable {
     public String labelDesc;//标签描述信息
     public FyGTrifficSocolPicture socol_picture; // 后视境自动采集图片信息
     public FyGSubTraEventDetail() {
+    }
+
+    protected FyGSubTraEventDetail(Parcel in) {
+        criticism = in.readInt();
+        layer = in.readInt();
+        id = in.readString();
+        lastupdate = in.readString();
+        infoenddate = in.readString();
+        title = in.readString();
+        source = in.readInt();
+        layertag = in.readInt();
+        nick = in.readString();
+        head = in.readString();
+        infotimeseg = in.readString();
+        audiolen = in.readInt();
+        address = in.readString();
+        desc = in.readString();
+        lane = in.readString();
+        infostartdate = in.readString();
+        official = in.readInt();
+        expirytime = in.readString();
+        picurl = in.readString();
+        praise = in.readInt();
+        audio = in.readString();
+        createtime = in.readString();
+        fLon = in.readDouble();
+        fLat = in.readDouble();
+        iconstyle = in.readString();
+        eventname = in.readString();
+        engBrief = in.readString();
+        avatar = in.readString();
+        labelDesc = in.readString();
+        socol_picture = in.readParcelable(FyGTrifficSocolPicture.class.getClassLoader());
+    }
+
+    public static final Creator<FyGSubTraEventDetail> CREATOR = new Creator<FyGSubTraEventDetail>() {
+        @Override
+        public FyGSubTraEventDetail createFromParcel(Parcel in) {
+            return new FyGSubTraEventDetail(in);
+        }
+
+        @Override
+        public FyGSubTraEventDetail[] newArray(int size) {
+            return new FyGSubTraEventDetail[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(criticism);
+        dest.writeInt(layer);
+        dest.writeString(id);
+        dest.writeString(lastupdate);
+        dest.writeString(infoenddate);
+        dest.writeString(title);
+        dest.writeInt(source);
+        dest.writeInt(layertag);
+        dest.writeString(nick);
+        dest.writeString(head);
+        dest.writeString(infotimeseg);
+        dest.writeInt(audiolen);
+        dest.writeString(address);
+        dest.writeString(desc);
+        dest.writeString(lane);
+        dest.writeString(infostartdate);
+        dest.writeInt(official);
+        dest.writeString(expirytime);
+        dest.writeString(picurl);
+        dest.writeInt(praise);
+        dest.writeString(audio);
+        dest.writeString(createtime);
+        dest.writeDouble(fLon);
+        dest.writeDouble(fLat);
+        dest.writeString(iconstyle);
+        dest.writeString(eventname);
+        dest.writeString(engBrief);
+        dest.writeString(avatar);
+        dest.writeString(labelDesc);
+        dest.writeParcelable(socol_picture, flags);
     }
 }

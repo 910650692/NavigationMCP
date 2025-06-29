@@ -98,9 +98,9 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         }
 
         final RouteSupplementParams routeSupplementParams = (RouteSupplementParams)
-                bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT);
+                bundle.getParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT);
         final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
-                bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
+                bundle.getParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         if (routeChargeStationDetailInfo != null && routeSupplementParams != null) {
             mViewModel.setCurrentRouteSupplementParams(routeSupplementParams);
             showSupplementDetails(routeChargeStationDetailInfo);
@@ -122,7 +122,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
     protected void onNewIntent(final Bundle bundle) {
         super.onNewIntent(bundle);
         final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
-                bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
+                bundle.getParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         showSupplementDetails(routeChargeStationDetailInfo);
 
     }

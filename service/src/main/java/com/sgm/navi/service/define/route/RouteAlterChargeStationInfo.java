@@ -1,7 +1,11 @@
 package com.sgm.navi.service.define.route;
 
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
 import lombok.Getter;
@@ -9,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RouteAlterChargeStationInfo implements Serializable {
+public class RouteAlterChargeStationInfo implements Parcelable {
     private String mPoiId;
     private String mName;
     private Coord3DDouble mPos;
@@ -61,5 +65,49 @@ public class RouteAlterChargeStationInfo implements Serializable {
         this.mSlowPlugInfo = slowPlugInfoLiteObj;
         this.mPriceInfo = priceInfoLiteObj;
         this.mDetourInfo = detourInfoLiteObj;
+    }
+
+    protected RouteAlterChargeStationInfo(Parcel in) {
+        mPoiId = in.readString();
+        mName = in.readString();
+        mPos = in.readParcelable(Coord3DDouble.class.getClassLoader());
+        mRemainingCapacity = in.readInt();
+        mRemainingPercent = in.readDouble();
+        mChargeTime = in.readInt();
+        mChildType = in.readInt();
+        mTagInfos = in.createStringArrayList();
+        mPriceInfo = in.readParcelable(RouteAlterChargePriceInfo.class.getClassLoader());
+        mDistance = in.readInt();
+    }
+
+    public static final Creator<RouteAlterChargeStationInfo> CREATOR = new Creator<RouteAlterChargeStationInfo>() {
+        @Override
+        public RouteAlterChargeStationInfo createFromParcel(Parcel in) {
+            return new RouteAlterChargeStationInfo(in);
+        }
+
+        @Override
+        public RouteAlterChargeStationInfo[] newArray(int size) {
+            return new RouteAlterChargeStationInfo[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(mPoiId);
+        dest.writeString(mName);
+        dest.writeParcelable(mPos, flags);
+        dest.writeInt(mRemainingCapacity);
+        dest.writeDouble(mRemainingPercent);
+        dest.writeInt(mChargeTime);
+        dest.writeInt(mChildType);
+        dest.writeStringList(mTagInfos);
+        dest.writeParcelable(mPriceInfo, flags);
+        dest.writeInt(mDistance);
     }
 }

@@ -142,7 +142,6 @@ import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -771,8 +770,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.ROUTING:
                     //路线规划
-                    final Serializable serializable = bundle.getSerializable(IVrBridgeConstant.VoiceIntentParams.ROUTE_REQUEST);
-                    if (serializable instanceof RouteSpeechRequestParam param) {
+                    final Parcelable routingParcelable = bundle.getParcelable(IVrBridgeConstant.VoiceIntentParams.ROUTE_REQUEST);
+                    if (routingParcelable instanceof RouteSpeechRequestParam param) {
                         mViewModel.toRouteFragment(param);
                     }
                     break;
@@ -907,7 +906,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             routeSpeechRequestParam.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
             final Bundle bundle = new Bundle();
             bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.ROUTING);
-            bundle.putSerializable(IVrBridgeConstant.VoiceIntentParams.ROUTE_REQUEST, routeSpeechRequestParam);
+            bundle.putParcelable(IVrBridgeConstant.VoiceIntentParams.ROUTE_REQUEST, routeSpeechRequestParam);
             MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
             RoutePackage.getInstance().requestRouteFromSpeech(routeSpeechRequestParam);
         }
@@ -1132,7 +1131,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                      NaviStatus.NaviStatusType.LIGHT_NAVING:
                     Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ROUTE_FRAGMENT).navigation();
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MSG_PUSH_OPEN_ROUTE_TYPE, routeMsgPushInfo);
+                    bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MSG_PUSH_OPEN_ROUTE_TYPE, routeMsgPushInfo);
                     addFragment((BaseFragment) fragment, bundle);
                     break;
                 default:

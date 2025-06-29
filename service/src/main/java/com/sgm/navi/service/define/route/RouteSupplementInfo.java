@@ -1,15 +1,20 @@
 package com.sgm.navi.service.define.route;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
-import java.io.Serializable;
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RouteSupplementInfo implements Serializable {
+@NoArgsConstructor
+public class RouteSupplementInfo implements Parcelable {
     //补能点类别
     private int mType;
     //补能点距起点位置
@@ -30,4 +35,47 @@ public class RouteSupplementInfo implements Serializable {
     private RouteChargeStationDetailInfo mRouteChargeStationDetailInfo;
     //替换补能点信息
     private PoiInfoEntity mPoiInfoEntity;
+
+
+    protected RouteSupplementInfo(Parcel in) {
+        mType = in.readInt();
+        mDistance = in.readInt();
+        mInterval = in.readInt();
+        mUnitDistance = in.readString();
+        mPoiID = in.readString();
+        mName = in.readString();
+        mChargeTime = in.readInt();
+        mRouteChargeStationDetailInfo = in.readParcelable(RouteChargeStationDetailInfo.class.getClassLoader());
+        mPoiInfoEntity = in.readParcelable(PoiInfoEntity.class.getClassLoader());
+    }
+
+    public static final Creator<RouteSupplementInfo> CREATOR = new Creator<RouteSupplementInfo>() {
+        @Override
+        public RouteSupplementInfo createFromParcel(Parcel in) {
+            return new RouteSupplementInfo(in);
+        }
+
+        @Override
+        public RouteSupplementInfo[] newArray(int size) {
+            return new RouteSupplementInfo[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(mType);
+        dest.writeInt(mDistance);
+        dest.writeInt(mInterval);
+        dest.writeString(mUnitDistance);
+        dest.writeString(mPoiID);
+        dest.writeString(mName);
+        dest.writeInt(mChargeTime);
+        dest.writeParcelable(mRouteChargeStationDetailInfo, flags);
+        dest.writeParcelable(mPoiInfoEntity, flags);
+    }
 }

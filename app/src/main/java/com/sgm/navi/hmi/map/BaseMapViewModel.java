@@ -356,7 +356,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         public void call() {
             if (needInterceptor()) return;
             Bundle bundle = new Bundle();
-            bundle.putSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_DRIVER, routeRestrictionParam);
+            bundle.putParcelable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_DRIVER, routeRestrictionParam);
             addPoiDetailsFragment(new LimitDriveFragment(), bundle);
             closeAllFragmentsUntilTargetFragment(LimitCitySelectionFragment.class.getName());
         }
@@ -727,7 +727,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void toRouteFragment(RouteSpeechRequestParam param) {
         Bundle args = new Bundle();
-        args.putSerializable("speech_open_route", param);
+        args.putParcelable("speech_open_route", param);
         addFragment(new RouteFragment(), args);
     }
 

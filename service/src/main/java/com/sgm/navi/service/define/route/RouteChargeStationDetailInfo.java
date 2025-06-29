@@ -1,14 +1,18 @@
 package com.sgm.navi.service.define.route;
 
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+
+import androidx.annotation.NonNull;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RouteChargeStationDetailInfo implements Serializable {
+public class RouteChargeStationDetailInfo implements Parcelable {
     private int mSegmentIdx;
     private short mDirection;
     private Coord2DDouble mShow;
@@ -57,5 +61,53 @@ public class RouteChargeStationDetailInfo implements Serializable {
         this.mRemainingCapacity = remainingCapacityLiteObj;
         this.mRemainingPercent = remainingPercentLiteObj;
         this.mIndex = indexLiteObj;
+    }
+
+    protected RouteChargeStationDetailInfo(Parcel in) {
+        mSegmentIdx = in.readInt();
+        mDirection = (short) in.readInt();
+        mPoiID = in.readString();
+        mName = in.readString();
+        mBrandName = in.readString();
+        mMaxPower = in.readInt();
+        mChargePercent = (short) in.readInt();
+        mChargeTime = in.readInt();
+        mRemainingCapacity = in.readInt();
+        mRemainingPercent = in.readDouble();
+        mIndex = in.readInt();
+        mInterval = in.readInt();
+    }
+
+    public static final Creator<RouteChargeStationDetailInfo> CREATOR = new Creator<RouteChargeStationDetailInfo>() {
+        @Override
+        public RouteChargeStationDetailInfo createFromParcel(Parcel in) {
+            return new RouteChargeStationDetailInfo(in);
+        }
+
+        @Override
+        public RouteChargeStationDetailInfo[] newArray(int size) {
+            return new RouteChargeStationDetailInfo[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(mSegmentIdx);
+        dest.writeInt((int) mDirection);
+        dest.writeString(mPoiID);
+        dest.writeString(mName);
+        dest.writeString(mBrandName);
+        dest.writeInt(mMaxPower);
+        dest.writeInt((int) mChargePercent);
+        dest.writeInt(mChargeTime);
+        dest.writeInt(mRemainingCapacity);
+        dest.writeDouble(mRemainingPercent);
+        dest.writeInt(mIndex);
+        dest.writeInt(mInterval);
     }
 }

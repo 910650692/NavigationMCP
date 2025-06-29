@@ -83,7 +83,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
 
         //算路界面跳转
         final RouteRestrictionParam roundParam = (RouteRestrictionParam) bundle
-                .getSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_ROUND);
+                .getParcelable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_ROUND);
         if (roundParam != null) {
             LimitDriverHelper.getInstance().setNeedClearRestriction(false);
             LimitDriverHelper.getInstance().setRoundParam(roundParam);
@@ -96,7 +96,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
 
         //主图按钮跳转
         final RouteRestrictionParam routeRestrictionParam = (RouteRestrictionParam) bundle
-                .getSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_DRIVER);
+                .getParcelable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_DRIVER);
         if (routeRestrictionParam != null) {
             LimitDriverHelper.getInstance().setNeedClearRestriction(true);
             LimitDriverHelper.getInstance().setRoundParam(null);

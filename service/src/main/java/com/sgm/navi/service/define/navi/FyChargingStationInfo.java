@@ -1,6 +1,10 @@
 package com.sgm.navi.service.define.navi;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+
+import androidx.annotation.NonNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +14,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class FyChargingStationInfo implements Serializable {
+public class FyChargingStationInfo implements Parcelable {
     /***
      * 是否支持地锁 @range [ true: 支持 false: 不支持 ] @default false
      */
@@ -66,5 +70,51 @@ public class FyChargingStationInfo implements Serializable {
         this.num_fast = "";
         this.current_ele_price = "";
         this.current_ser_price = "";
+    }
+
+    protected FyChargingStationInfo(Parcel in) {
+        isSupportLock = in.readByte() != 0;
+        isSupportOrder = in.readByte() != 0;
+        slow_free = in.readString();
+        fast_free = in.readString();
+        slow_total = in.readString();
+        fast_total = in.readString();
+        cscf = in.readString();
+        num_slow = in.readString();
+        num_fast = in.readString();
+        current_ele_price = in.readString();
+        current_ser_price = in.readString();
+    }
+
+    public static final Creator<FyChargingStationInfo> CREATOR = new Creator<FyChargingStationInfo>() {
+        @Override
+        public FyChargingStationInfo createFromParcel(Parcel in) {
+            return new FyChargingStationInfo(in);
+        }
+
+        @Override
+        public FyChargingStationInfo[] newArray(int size) {
+            return new FyChargingStationInfo[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeByte((byte) (isSupportLock ? 1 : 0));
+        dest.writeByte((byte) (isSupportOrder ? 1 : 0));
+        dest.writeString(slow_free);
+        dest.writeString(fast_free);
+        dest.writeString(slow_total);
+        dest.writeString(fast_total);
+        dest.writeString(cscf);
+        dest.writeString(num_slow);
+        dest.writeString(num_fast);
+        dest.writeString(current_ele_price);
+        dest.writeString(current_ser_price);
     }
 }

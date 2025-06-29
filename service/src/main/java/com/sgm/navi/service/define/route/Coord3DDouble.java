@@ -1,8 +1,29 @@
 package com.sgm.navi.service.define.route;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Coord3DDouble implements Serializable {
+import androidx.annotation.NonNull;
+
+public class Coord3DDouble implements Parcelable {
+    protected Coord3DDouble(Parcel in) {
+        mLon = in.readDouble();
+        mLat = in.readDouble();
+        mZ = in.readDouble();
+    }
+
+    public static final Creator<Coord3DDouble> CREATOR = new Creator<Coord3DDouble>() {
+        @Override
+        public Coord3DDouble createFromParcel(Parcel in) {
+            return new Coord3DDouble(in);
+        }
+
+        @Override
+        public Coord3DDouble[] newArray(int size) {
+            return new Coord3DDouble[size];
+        }
+    };
+
     public double getLon() {
         return mLon;
     }
@@ -41,5 +62,17 @@ public class Coord3DDouble implements Serializable {
         this.mLon = lonLiteObj;
         this.mLat = latLiteObj;
         this.mZ = liteObj;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeDouble(mLon);
+        dest.writeDouble(mLat);
+        dest.writeDouble(mZ);
     }
 }

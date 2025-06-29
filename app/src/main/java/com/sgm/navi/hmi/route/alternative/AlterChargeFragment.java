@@ -69,7 +69,7 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
         }
         //City selection
         final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
-                bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
+                bundle.getParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         showAlterChargeStation(routeChargeStationDetailInfo);
     }
 
@@ -82,7 +82,7 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
     protected void onNewIntent(final Bundle bundle) {
         super.onNewIntent(bundle);
         final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
-                bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
+                bundle.getParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         showAlterChargeStation(routeChargeStationDetailInfo);
 
     }

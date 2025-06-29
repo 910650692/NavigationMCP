@@ -1,9 +1,16 @@
 package com.sgm.navi.service.define.mapdata;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
-public class ProvDataInfo implements Serializable {
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class ProvDataInfo implements Parcelable {
     // 行政编码
     private int mAdCode;
     // 行政区域类型
@@ -25,6 +32,28 @@ public class ProvDataInfo implements Serializable {
     // 模糊搜索 - 一级城市数据包对应的下载状态信息
     private CityDownLoadInfo mDownLoadInfo;
     private boolean mIsExpanded;
+
+    protected ProvDataInfo(Parcel in) {
+        mAdCode = in.readInt();
+        mAreaType = in.readInt();
+        mName = in.readString();
+        mJianPin = in.readString();
+        mPinYin = in.readString();
+        mUpperAdcode = in.readInt();
+        mIsExpanded = in.readByte() != 0;
+    }
+
+    public static final Creator<ProvDataInfo> CREATOR = new Creator<ProvDataInfo>() {
+        @Override
+        public ProvDataInfo createFromParcel(Parcel in) {
+            return new ProvDataInfo(in);
+        }
+
+        @Override
+        public ProvDataInfo[] newArray(int size) {
+            return new ProvDataInfo[size];
+        }
+    };
 
     public boolean isExpanded() {
         return mIsExpanded;
@@ -123,4 +152,19 @@ public class ProvDataInfo implements Serializable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(mAdCode);
+        dest.writeInt(mAreaType);
+        dest.writeString(mName);
+        dest.writeString(mJianPin);
+        dest.writeString(mPinYin);
+        dest.writeInt(mUpperAdcode);
+        dest.writeByte((byte) (mIsExpanded ? 1 : 0));
+    }
 }

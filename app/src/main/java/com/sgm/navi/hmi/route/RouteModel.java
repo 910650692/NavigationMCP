@@ -488,7 +488,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             return;
         }
         final Bundle bundle = new Bundle();
-        bundle.putSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_ROUND, mRouteRestrictionParams);
+        bundle.putParcelable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_ROUND, mRouteRestrictionParams);
         addPoiDetailsFragment(new LimitDriveFragment(), bundle);
         closeAllFragmentsUntilTargetFragment(LimitCitySelectionFragment.class.getName());
     }
@@ -1187,16 +1187,16 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 if (mViewModel != null && mViewModel.isNDCar()) {
                     final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT).navigation();
                     final Bundle chargeBundle = new Bundle();
-                    chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
+                    chargeBundle.putParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
                             routeSupplementInfos.get((int) item.getIndex()));
-                    chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT,
+                    chargeBundle.putParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT,
                             mRouteChargeStationParam.getMRouteSupplementParams().get(index));
                     closeAllFragmentsUntilTargetFragment("NewAlterChargeFragment");
                     addFragment((BaseFragment) chargeFragment, chargeBundle);
                 } else {
                     final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ALTER_CHARGE_FRAGMENT).navigation();
                     final Bundle chargeBundle = new Bundle();
-                    chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
+                    chargeBundle.putParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
                             routeSupplementInfos.get((int) item.getIndex()));
                     closeAllFragmentsUntilTargetFragment("AlterChargeFragment");
                     addFragment((BaseFragment) chargeFragment, chargeBundle);
@@ -1230,7 +1230,7 @@ public void jumpToSupplementPlan() {
     }
     final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT).navigation();
     final Bundle chargeBundle = new Bundle();
-    chargeBundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT, routeSupplementParam);
+    chargeBundle.putParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_SUPPLEMENT, routeSupplementParam);
     addPoiDetailsFragment((BaseFragment) chargeFragment, chargeBundle);
 }
 

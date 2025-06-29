@@ -1,13 +1,19 @@
 package com.sgm.navi.service.define.aos;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RestrictedAreaDetail implements Serializable {
+@NoArgsConstructor
+public class RestrictedAreaDetail implements Parcelable {
     private long mRequestId;
     private int mCityCode;           //1100
     private String mCityName;        //北京市
@@ -22,4 +28,56 @@ public class RestrictedAreaDetail implements Serializable {
     private String mSummary;          //二环路及以内道路（不含外侧辅路）
     private String mDesc;             //外地机动车禁行
     private String mOtherdesc;        //“”
+
+    protected RestrictedAreaDetail(Parcel in) {
+        mRequestId = in.readLong();
+        mCityCode = in.readInt();
+        mCityName = in.readString();
+        mTitle = in.readString();
+        mPolicyname = in.readString();
+        mRuleid = in.readInt();
+        mRing = in.readInt();
+        mEffect = in.readInt();
+        mLocal = in.readInt();
+        mVehicle = in.readInt();
+        mTime = in.readString();
+        mSummary = in.readString();
+        mDesc = in.readString();
+        mOtherdesc = in.readString();
+    }
+
+    public static final Creator<RestrictedAreaDetail> CREATOR = new Creator<RestrictedAreaDetail>() {
+        @Override
+        public RestrictedAreaDetail createFromParcel(Parcel in) {
+            return new RestrictedAreaDetail(in);
+        }
+
+        @Override
+        public RestrictedAreaDetail[] newArray(int size) {
+            return new RestrictedAreaDetail[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeLong(mRequestId);
+        dest.writeInt(mCityCode);
+        dest.writeString(mCityName);
+        dest.writeString(mTitle);
+        dest.writeString(mPolicyname);
+        dest.writeInt(mRuleid);
+        dest.writeInt(mRing);
+        dest.writeInt(mEffect);
+        dest.writeInt(mLocal);
+        dest.writeInt(mVehicle);
+        dest.writeString(mTime);
+        dest.writeString(mSummary);
+        dest.writeString(mDesc);
+        dest.writeString(mOtherdesc);
+    }
 }
