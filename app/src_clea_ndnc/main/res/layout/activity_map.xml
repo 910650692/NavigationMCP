@@ -390,16 +390,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_main_tab" />
 
+
+
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/root_guide_login"
+            android:visibility="@{ViewModel.mPopGuideLoginShow?View.VISIBLE:View.GONE}"
             android:layout_width="@dimen/dp_545"
             android:layout_height="@dimen/dp_271"
-            android:layout_marginTop="@dimen/dp_17"
+            android:layout_marginTop="@dimen/dp_188"
+            android:layout_marginStart="@dimen/dp_34"
             android:background="@drawable/bg_guide_login"
-            android:visibility="@{ViewModel.mPopGuideLoginShow?View.VISIBLE:View.GONE}"
-            app:layout_constraintStart_toStartOf="@id/search_main_tab"
-            app:layout_constraintTop_toBottomOf="@id/search_main_tab"
-            tools:visibility="gone">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_guide_login_title"
