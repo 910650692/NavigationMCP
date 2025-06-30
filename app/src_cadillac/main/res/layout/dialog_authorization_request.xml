@@ -94,7 +94,8 @@
                 <View
                     android:layout_width="@dimen/dp_2"
                     android:layout_height="match_parent"
-                    android:background="#4D818199" />
+                    android:background="#4D818199"
+                    android:visibility="invisible"/>
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_cancel"
