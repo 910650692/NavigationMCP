@@ -1,5 +1,8 @@
 package com.sgm.navi.scene.ui.adapter;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -20,6 +23,7 @@ import java.util.List;
 public class QuickFilterListAdapter extends RecyclerView.Adapter<QuickFilterListAdapter.Holder>{
     private final List<SearchChildCategoryLocalInfo> mSearchCategoryLocalInfos;
     private OnItemClickListener mItemClickListener;
+    private boolean iconVisible = false;
     @NonNull
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,6 +43,7 @@ public class QuickFilterListAdapter extends RecyclerView.Adapter<QuickFilterList
         }
         holder.binding.filterText.setText(searchCategoryLocalInfo.getName());
         holder.binding.filterRoot.setSelected(searchCategoryLocalInfo.getChecked() == 1);
+        holder.binding.qlIcon.setVisibility(iconVisible ? VISIBLE : GONE);
         holder.binding.getRoot().setOnClickListener(v -> {
             for (int i = 0; i < mSearchCategoryLocalInfos.size(); i++) {
                 mSearchCategoryLocalInfos.get(i).setChecked(i == position ? 1 : 0);
@@ -75,8 +80,12 @@ public class QuickFilterListAdapter extends RecyclerView.Adapter<QuickFilterList
         this.mItemClickListener = itemClickListener;
     }
 
+    public void setIconVisible(boolean visible){
+        iconVisible = visible;
+    }
+
     public static class Holder extends RecyclerView.ViewHolder {
-        private QuickFilterItemBinding binding;
+        private final QuickFilterItemBinding binding;
 
         public Holder(@NonNull QuickFilterItemBinding itemView) {
             super(itemView.getRoot());

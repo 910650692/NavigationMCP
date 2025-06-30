@@ -859,6 +859,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }else{
                 mAdapter.setQuickLabel("");
             }
+            mQuickFilterListAdapter.setIconVisible(false);
             mQuickFilterListAdapter.setLabelList(mChildQuickList);
         // 处理用户搜索意图,意图为加油站显示快筛列表
         }else if(searchResultEntity != null
@@ -873,6 +874,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             if(mCurrentSelectedQuick != -1){
                 refreshLocalInfoListCheckedState(2, mCurrentSelectedQuick + 1);
             }
+            mQuickFilterListAdapter.setIconVisible(true);
             mQuickFilterListAdapter.setLabelList(mChildQuickList);
         // 自营站返回
         }else if(searchResultEntity != null && searchResultEntity.getIsNetData()){

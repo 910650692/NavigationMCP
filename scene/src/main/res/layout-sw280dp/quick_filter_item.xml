@@ -16,6 +16,15 @@
         android:layout_height="@dimen/dp_76"
         android:background="@drawable/custom_filter_item_bg_selector_day"
         >
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/ql_icon"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:background="@drawable/icon_gas"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/filter_text"
             android:layout_width="wrap_content"
@@ -23,9 +32,11 @@
             tools:text="快充"
             android:textSize="@dimen/sp_30"
             android:gravity="center"
+            android:layout_marginStart="@dimen/dp_8"
+            app:layout_goneMarginStart="@dimen/dp_0"
             android:textColor="@color/custom_filter_item_text_bg_selector_day"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ql_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             />
