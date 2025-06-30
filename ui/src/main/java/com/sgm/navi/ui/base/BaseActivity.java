@@ -29,6 +29,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected String mScreenId;
     private String mLastClosedFragmentName;
     private final String LIFE_CYCLE_TAG = "activity_life_cycle";
+    public boolean isMapActivity = false;
 
     public BaseActivity() {
         super();

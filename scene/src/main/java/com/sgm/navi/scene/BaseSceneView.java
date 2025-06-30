@@ -86,21 +86,21 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
     }
 
     protected void addFragment(BaseFragment fragment, Bundle bundle) {
-        BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
+        BaseActivity activity = (BaseActivity) mStackManager.isContainMainActivity(mMapTypeId.name());
         if (activity != null) {
             activity.addFragment(fragment, bundle);
         }
     }
 
     protected void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment) {
-        BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
+        BaseActivity activity = (BaseActivity) mStackManager.isContainMainActivity(mMapTypeId.name());
         if (activity != null) {
             activity.addFragment(fragment, bundle, isHideCurFragment);
         }
     }
 
     protected void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
-        BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
+        BaseActivity activity = (BaseActivity) mStackManager.isContainMainActivity(mMapTypeId.name());
         if (activity != null) {
             activity.addPoiDetailsFragment(fragment, bundle);
         }

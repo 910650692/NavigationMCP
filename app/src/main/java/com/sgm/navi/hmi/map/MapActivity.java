@@ -67,6 +67,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     public void onCreateBefore() {
         mScreenId = MapType.MAIN_SCREEN_MAIN_MAP.name();
+        isMapActivity = true;
     }
 
     @Override

@@ -312,6 +312,17 @@ public final class StackManager {
         return false;
     }
 
+    public IBaseView isContainMainActivity(final String screenId) {
+        if (isActivityStackNull(screenId)) return null;
+        Stack<BaseActivity> activityStack = getBaseActivityStack(screenId);
+        for (BaseActivity activity : activityStack) {
+            if (ConvertUtils.isEmpty(activity)) continue;
+            Logger.d("StackManager", activity.isMapActivity);
+            if (activity.isMapActivity) return activity;
+        }
+        return null;
+    }
+
     public boolean isContainActivity(final String screenId, final String className) {
         if(ConvertUtils.isEmpty(className)) return false;
         if(isActivityStackNull(screenId)) return false;
