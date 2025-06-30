@@ -62,6 +62,7 @@
             android:layout_marginStart="@dimen/dp_247"
             android:layout_marginTop="@dimen/dp_69"
             android:text="@string/route_charge_gas_end"
+            app:select_text_color="@color/tab_list_route_tab_list_select"
             android:textColor="@color/tab_list_route_tab_list_unselect"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toStartOf="parent"
