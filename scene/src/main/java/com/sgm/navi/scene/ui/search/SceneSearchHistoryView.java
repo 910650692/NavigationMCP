@@ -123,6 +123,7 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
         mViewBinding.suggestResultListAlong.setAdapter(mSearchResultAdapter);
         mSearchHistoryAdapter = new SearchHistoryAdapter();
         mSearchHistoryAdapter.setMIsOnlyShowNaviRecord(true);
+        mSearchHistoryAdapter.setMIsHasFooter(true);
         mViewBinding.rcyRecordAlong.setAdapter(mSearchHistoryAdapter);
 
         getSearchKeywordRecord();
@@ -255,7 +256,13 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                 }
 
             }
+
+            @Override
+            public void onDeleteAllClick() {
+                onClickDeleteLayout();
+            }
         });
+
         mSearchResultAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
@@ -284,6 +291,31 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                 showCurrentFragment();
             }
         });
+    }
+
+    private void onClickDeleteLayout() {
+        new SearchConfirmDialog.Build(getContext())
+                .setDialogObserver(new IBaseDialogClickListener() {
+                    @Override
+                    public void onCommitClick() {
+                        //清空历史导航记录
+                        UserTrackPackage.getInstance().clearHistoryRoute();
+                        mSearchHistoryAdapter.notifyList(new ArrayList<>());
+                        mViewBinding.rcyRecordAlong.setVisibility(GONE);
+                        mViewBinding.tvRecordNullAlong.setVisibility(VISIBLE);
+                        ToastUtils.Companion.getInstance().showCustomToastView(
+                                ResourceUtils.Companion.getInstance().getString(R.string.ssh_cleared_history_record));
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+
+                    }
+                })
+                .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.dialog_title_tip))
+                .setContent(ResourceUtils.Companion.getInstance().getString(R.string.dialog_content_clear_record))
+                .setConfirmTitle(ResourceUtils.Companion.getInstance().getString(R.string.dsc_confirm))
+                .build().show();
     }
 
     /**
