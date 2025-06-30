@@ -69,6 +69,7 @@ import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.ui.view.SkinImageView;
@@ -1924,14 +1925,24 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         final String resultText = switch (poiType) {
                             case AutoMapConstant.PoiType.POI_HOME -> {
                                 commonName = 1;
-                                closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
-                                showCurrentFragment();
+                                if (StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), HOME_COMPANY_FRAGMENT)) {
+                                    closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
+                                    showCurrentFragment();
+                                } else {
+                                    //如果是语音触发，没有进入HomeCompanyFragment界面，则关闭当前页面
+                                    closeCurrentFragment();
+                                }
                                 yield "设置家成功";
                             }
                             case AutoMapConstant.PoiType.POI_COMPANY -> {
                                 commonName = 2;
-                                closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
-                                showCurrentFragment();
+                                if (StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), HOME_COMPANY_FRAGMENT)) {
+                                    closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
+                                    showCurrentFragment();
+                                } else {
+                                    //如果是语音触发，没有进入HomeCompanyFragment界面，则关闭当前页面
+                                    closeCurrentFragment();
+                                }
                                 yield "设置公司成功";
                             }
                             case AutoMapConstant.PoiType.POI_COMMON -> {
@@ -1939,8 +1950,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                 if (mScreenViewModel.isFrequentAddress(mPoiInfoEntity)) {
                                     yield "";
                                 } else {
-                                    closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
-                                    showCurrentFragment();
+                                    if (StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), HOME_COMPANY_FRAGMENT)) {
+                                        closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
+                                        showCurrentFragment();
+                                    } else {
+                                        //如果是语音触发，没有进入HomeCompanyFragment界面，则关闭当前页面
+                                        closeCurrentFragment();
+                                    }
                                     yield "添加成功";
                                 }
                             }
