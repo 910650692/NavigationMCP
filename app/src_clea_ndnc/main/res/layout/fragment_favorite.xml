@@ -481,21 +481,21 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_top"
-            android:layout_width="@dimen/dp_334"
-            android:layout_height="@dimen/dp_90"
+            android:layout_width="@dimen/dp_284"
+            android:layout_height="@dimen/dp_77"
             android:orientation="horizontal"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:layout_marginEnd="@dimen/dp_34"
+            android:layout_marginEnd="@dimen/dp_26"
             android:background="@drawable/bg_setting_top"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.sgm.navi.ui.view.SkinImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:src="@drawable/img_favorite_top"
-                android:layout_marginStart="@dimen/dp_62"
+                android:layout_marginStart="@dimen/dp_53"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -504,7 +504,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_top"
-                android:layout_marginStart="@dimen/dp_136"
+                android:layout_marginStart="@dimen/dp_116"
                 android:textColor="@color/color_black_70"
                 android:textSize="@dimen/sp_29"
                 app:layout_constraintStart_toStartOf="parent"
