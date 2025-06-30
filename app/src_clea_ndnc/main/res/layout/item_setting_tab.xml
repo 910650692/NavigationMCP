@@ -1,6 +1,6 @@
 <com.sgm.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/dp_190"
-    android:layout_height="@dimen/dp_87"
+    android:layout_height="@dimen/dp_86"
     android:orientation="horizontal"
     android:gravity="center_vertical">
 
@@ -15,10 +15,8 @@
     <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/tabText"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_87"
+        android:layout_height="@dimen/dp_86"
         android:layout_marginStart="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_24"
-        android:paddingBottom="@dimen/dp_24"
         android:text="@string/setting_tab_guide"
         android:textSize="@dimen/sp_29"
         android:gravity="center_vertical"
