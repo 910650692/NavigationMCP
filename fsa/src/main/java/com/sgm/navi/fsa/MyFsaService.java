@@ -434,7 +434,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private void updateMapDisplayStatus(boolean isOpen) {
         Logger.d(TAG, "updateMapDisplayStatus: " , isOpen);
         String json = buildMapDisplayJson(isOpen);
-        Logger.d(TAG, "Map display status changed: " , json);
+        //Logger.d(TAG, "Map display status changed: " , json);
         // 发送挖洞事件
         MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, json);
         try {
@@ -898,9 +898,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 //                Logger.d(FsaConstant.FSA_TAG, "dispaly: " , display.getName() , ", id " , display.getDisplayId() , " :" , display);
 //            }
 //        }
-//        if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//CLEA平台 仪表的DisplayId=3
-//            secondeDid = 3;
-//        } // TODO 待仪表display3可用后解除注释
+        if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//CLEA平台 仪表的DisplayId=3
+            secondeDid = 3;
+        }
         Logger.d(FsaConstant.FSA_TAG, "switchClusterActivity: " , isOpen , secondeDid);
         if (isOpen) {
             Logger.d(FsaConstant.FSA_TAG, "open ClusterActivity");
