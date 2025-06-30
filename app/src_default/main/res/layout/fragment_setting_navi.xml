@@ -52,7 +52,7 @@
                 app:layout_constraintStart_toStartOf="@id/setting_route_preference"
                 app:layout_constraintTop_toBottomOf="@id/setting_route_preference">
 
-                <com.sgm.navi.ui.view.SkinCheckBox
+                <com.sgm.navi.scene.ui.setting.DynamicCheckBox
                     clickCommand="@{viewModel.mAvoidLimitClick}"
                     android:id="@+id/navi_avoid_limit_check"
                     android:layout_width="wrap_content"
@@ -133,7 +133,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/navi_avoid_limit">
 
-                <com.sgm.navi.ui.view.SkinCheckBox
+                <com.sgm.navi.scene.ui.setting.DynamicCheckBox
                     clickCommand="@{viewModel.mVehicleGuide}"
                     android:id="@+id/switch_lane_level"
                     android:layout_width="wrap_content"
@@ -187,7 +187,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/navi_vehicle_guide">
 
-                <com.sgm.navi.ui.view.SkinCheckBox
+                <com.sgm.navi.scene.ui.setting.DynamicCheckBox
                     clickCommand="@{viewModel.mChargingPlan}"
                     android:id="@+id/switch_charging_plan"
                     android:layout_width="wrap_content"
@@ -556,7 +556,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/setting_guide_car_logo">
 
-                <com.sgm.navi.ui.view.SkinCheckBox
+                <com.sgm.navi.scene.ui.setting.DynamicCheckBox
                     clickCommand="@{viewModel.mAutoScale}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
