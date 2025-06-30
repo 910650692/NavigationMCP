@@ -367,7 +367,7 @@
     <string name="setting_guide_charging_plan_des">到达目的地有电量风险时，将自动规划含充电站的路线</string>
     <string name="setting_guide_car_number">沪AFY120</string>
     <string name="setting_guide_plate_number_first_tip">第一位只能输入字母</string>
-    <string name="setting_guide_plate_number_check_not_available">车牌校验未通过</string>
+    <string name="setting_guide_plate_number_check_not_available">请输入正确的车牌号</string>
     <string name="setting_guide_plate_number_my">我的爱车</string>
     <string name="setting_guide_plate_number_finish">完成</string>
     <string name="setting_guide_plate_number_text">车牌号码</string>
