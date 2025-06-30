@@ -1731,7 +1731,7 @@ public class RouteAdapterImplHelper {
                         dto.setMPntBegIdx(startIndex);
                         dto.setMPntCnt(linkInfo.getPoints().size());
                         dto.setMLaneNum((int) linkInfo.getLaneNum());
-                        dto.setMSpeedLimit((int) linkInfo.getSpeedLimit());
+//                        dto.setMSpeedLimit((int) linkInfo.getSpeedLimit());
                         dto.setMRoadOwnerShip(linkInfo.getOwnership());
                         startIndex += linkInfo.getPoints().size() - 1;
                         linksDTOS.add(dto);
@@ -1907,17 +1907,17 @@ public class RouteAdapterImplHelper {
                             if (segmentInfo.getLinkInfo(0) == null) {
                                 continue;
                             }
-                            final short speed = segmentInfo.getLinkInfo(0).getSpeed();
-                            if (t == 0) {
-                                maxSpeed = speed;
-                                minSpeed = speed;
-                            }
-                            if (speed >= maxSpeed) {
-                                maxSpeed = speed;
-                            }
-                            if (speed <= minSpeed) {
-                                minSpeed = speed;
-                            }
+//                            final short speed = segmentInfo.getLinkInfo(0).getSpeed();
+//                            if (t == 0) {
+//                                maxSpeed = speed;
+//                                minSpeed = speed;
+//                            }
+//                            if (speed >= maxSpeed) {
+//                                maxSpeed = speed;
+//                            }
+//                            if (speed <= minSpeed) {
+//                                minSpeed = speed;
+//                            }
                             final short laneNum = segmentInfo.getLinkInfo(0).getLaneNum();
                             if (t == 0) {
                                 maxLane = laneNum;
@@ -1931,8 +1931,8 @@ public class RouteAdapterImplHelper {
                             }
                         }
                     }
-                    dto.setMMinSpeedLimit(minSpeed);
-                    dto.setMMaxSpeedLimit(maxSpeed);
+//                    dto.setMMinSpeedLimit(minSpeed);
+//                    dto.setMMaxSpeedLimit(maxSpeed);
                     dto.setMMinLaneNum(minLane);
                     dto.setMMaxLaneNum(maxLane);
                     viaRoadsDTOS.add(dto);
