@@ -11,10 +11,10 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinFrameLayout
-        android:layout_width="@dimen/dp_545"
+        android:layout_width="@dimen/dp_613"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_search_main_tab"
-        android:clipToOutline="true"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:padding="@dimen/dp_34"
         android:layerType="hardware">
         <!--    <com.sgm.navi.scene.ui.search.MaxheightNestedScrollView-->
         <!--        android:layout_width="@dimen/dp_545"-->

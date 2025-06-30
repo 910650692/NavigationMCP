@@ -22,28 +22,28 @@
     <com.sgm.navi.ui.view.SwipeMenuLayout
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_134"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingEnd= "@dimen/dp_25">
+            android:paddingEnd="@dimen/dp_25">
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_25"
                 android:gravity="center"
                 android:minWidth="@dimen/dp_30"
                 android:text="@{layoutPosition}"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_26"
-                android:layout_marginStart="@dimen/dp_25"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"
                 tools:text="1" />
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
@@ -77,6 +77,7 @@
                 android:id="@+id/crl_poi_des"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/dp_27"
                 android:layout_marginStart="@dimen/dp_61"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -141,8 +142,8 @@
                 android:id="@+id/poi_to_navi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
