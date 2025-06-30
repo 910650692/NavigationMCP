@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.NaviService;
@@ -29,6 +30,7 @@ import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
@@ -37,6 +39,8 @@ import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.base.BaseModel;
 
 import com.sgm.navi.hmi.BuildConfig;
+
+import java.util.ArrayList;
 
 public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPackageCallback,
         IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback ,SettingPackage.SettingChangeCallback{
@@ -97,6 +101,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
             MapPackage.getInstance().goToCarPosition(mMapTypeId);
             // 根据主屏的车标模式设置车标模式     mLayerPackage.getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP)获取主图的车标样式
             LayerPackage.getInstance().setCarMode(mMapTypeId, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
+            Logger.d(TAG, "车标样式仪表获取主图的",LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
             LayerPackage.getInstance().initCarLogoByFlavor(mMapTypeId,  BuildConfig.FLAVOR);
             LayerPackage.getInstance().setFollowMode(mMapTypeId, true);
             MapPackage.getInstance().switchMapMode(MapType.CLUSTER_MAP, MapMode.UP_3D,false);
@@ -207,6 +212,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         }
         //设置车标模式
         LayerPackage.getInstance().setCarMode(MapType.CLUSTER_MAP, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
+        Logger.d(TAG, "车标样式仪表获取主图的onSettingChanged",LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
         LayerPackage.getInstance().initCarLogoByFlavor(MapType.CLUSTER_MAP,  BuildConfig.FLAVOR);
     }
 
@@ -243,4 +249,15 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         }
     }
 
+    @Override
+    public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
+        //偏航以后仪表没有重新算路
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        Logger.d(TAG, "onRouteDrawLine", "currentNaviStatus = ", currentNaviStatus);
+        if (!NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)
+                && !NaviStatus.NaviStatusType.LIGHT_NAVING.equals(currentNaviStatus)) {
+            return;
+        }
+        RoutePackage.getInstance().showRouteLine(getMapId());
+    }
 }

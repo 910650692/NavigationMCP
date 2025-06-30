@@ -150,4 +150,16 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
     public void onSettingChanged(String key, String value) {
 
     }
+
+    @Override
+    public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
+        //偏航以后HUD没有重新算路
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        Logger.d(TAG, "onRouteDrawLine", "currentNaviStatus = ", currentNaviStatus);
+        if (!NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)
+                && !NaviStatus.NaviStatusType.LIGHT_NAVING.equals(currentNaviStatus)) {
+            return;
+        }
+        RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
+    }
 }
