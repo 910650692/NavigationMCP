@@ -1,6 +1,7 @@
 package com.sgm.navi.hmi.setting;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
@@ -136,9 +137,26 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        FragmentManager manager = getChildFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        for (int i = 0; i < mFragmentMap.size(); i++) {
+            Fragment fragment = mFragmentMap.valueAt(i);
+            if (fragment != null && fragment.isAdded()) {
+                transaction.remove(fragment);
+            }
+        }
+        transaction.commitAllowingStateLoss();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        mFragmentMap.clear();
-        mFragmentMap = null;
+        mCurrentFragment = null;
+        if (mFragmentMap != null) {
+            mFragmentMap.clear();
+            mFragmentMap = null;
+        }
     }
 }
