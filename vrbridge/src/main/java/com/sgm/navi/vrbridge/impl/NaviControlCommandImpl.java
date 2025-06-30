@@ -1620,8 +1620,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             Logger.w(IVrBridgeConstant.TAG, "alongSearch in no navigation");
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NAVI_BEFORE_PASSBY_ROUTE);
         }
-        final RouteCurrentPathParam pathParam = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (null != pathParam && pathParam.isMIsOnlineRoute()) {
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
             //离线算路不支持沿途搜
             Logger.w(IVrBridgeConstant.TAG, "alongSearch in offline road");
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.OFFLINE_NOT_SUPPORT);
