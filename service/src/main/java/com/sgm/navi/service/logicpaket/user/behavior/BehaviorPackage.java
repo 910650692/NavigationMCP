@@ -289,6 +289,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
 
         //非常去地址添加成功后更新扎点
         if (type != 3 && !TextUtils.isEmpty(itemId)) {
+            poiInfo.getFavoriteInfo().setItemId(itemId);
             updateFavoriteMain(poiInfo, true);
         }
         Logger.d(TAG, "add favorite success " + itemId);
@@ -315,8 +316,10 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
             itemId = poiInfo.getFavoriteInfo().getItemId();
             deleteFavoriteData(itemId);
         }
+        Logger.d(TAG, "remove favorite " + itemId);
         //删除成功
         if (!TextUtils.isEmpty(itemId)) {
+            poiInfo.getFavoriteInfo().setItemId(itemId);
             updateFavoriteMain(poiInfo, false);
         }
         notifyFavoriteStatusChanged();

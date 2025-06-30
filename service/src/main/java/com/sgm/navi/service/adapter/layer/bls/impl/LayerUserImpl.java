@@ -94,10 +94,10 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
         if (!ConvertUtils.isEmpty(mSimpleFavoriteList)) {
             mSimpleFavoriteList.forEach((entity) -> {
                 BizUserFavoritePoint point = new BizUserFavoritePoint();
-                point.id = entity.getPid();
                 //FavoriteInfo 根据 mCommonName  1家，2公司，0普通收藏点）
                 FavoriteInfo favoriteInfo = entity.getFavoriteInfo();
                 if (!ConvertUtils.isEmpty(favoriteInfo)) {
+                    point.id = favoriteInfo.getItemId();
                     if (favoriteInfo.getCommonName() == 0) {
                         point.favoriteType = FavoriteType.FavoriteTypePoi;
                     } else if (favoriteInfo.getCommonName() == 1) {
@@ -125,8 +125,16 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
     }
 
     public void removeFavoriteMain(PoiInfoEntity poiInfoEntity) {
-        if (!ConvertUtils.isEmpty(poiInfoEntity.getPid())) {
-            getLayerUserControl().getUserLayer(BizUserType.BizUserTypeFavoriteMain).removeItem(poiInfoEntity.getPid());
+        if (!ConvertUtils.isEmpty(poiInfoEntity)){
+            FavoriteInfo favoriteInfo = poiInfoEntity.getFavoriteInfo();
+            if (!ConvertUtils.isEmpty(favoriteInfo)) {
+                Logger.d(TAG, "removeFavoriteMain remove id " + favoriteInfo.getItemId());
+                getLayerUserControl().getUserLayer(BizUserType.BizUserTypeFavoriteMain).removeItem(favoriteInfo.getItemId());
+            } else {
+                Logger.e(TAG, "favoriteInfo is null");
+            }
+        } else {
+            Logger.e(TAG, "poiInfoEntity is null");
         }
     }
 

@@ -95,6 +95,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
             Logger.i(TAG, "getHomeFavoriteInfo: " + simpleFavoriteList.size());
             for (int i = 0; i < simpleFavoriteList.size(); i++) {
                 Logger.i(TAG, "getHomeFavoriteInfo: " + i + "="
+                        + simpleFavoriteList.get(i).id + "; "
+                        + simpleFavoriteList.get(i).item_id + "; "
                         + simpleFavoriteList.get(i).address + "; "
                         + simpleFavoriteList.get(i).city_name + "; "
                         + simpleFavoriteList.get(i).type + "; "
