@@ -107,4 +107,9 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         updatePair.newStyle = style;
         return updatePair;
     }
+
+    //动态纹理图片资源是否来自卡片图片资源文件夹
+    public boolean isFromCardImagesRes(LayerItem item) {
+        return false;
+    }
 }

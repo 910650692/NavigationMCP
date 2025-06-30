@@ -36,13 +36,10 @@ public final class TextureStylePoolManager {
     protected String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
 
     private static final String JSON = ".json";
-    private static final String HTML = ".xml";
 
     private final ConcurrentHashMap<String, String> allStyleJson = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, String> allMarkerJson = new ConcurrentHashMap<>();
-
-    private final ConcurrentHashMap<String, String> allStyleHtml = new ConcurrentHashMap<>();
 
     public String getLayerStyleJson(MapType mapType, BaseLayer layer, LayerItem item, BaseStyleAdapter styleAdapter) {
         String styleJson = null;
@@ -64,78 +61,22 @@ public final class TextureStylePoolManager {
                             .append(File.separator)
                             .append(jsonPathName).toString();
                     styleJson = ParseJsonUtils.parseJsonFile(jsonFilePath);
-                    Logger.e(TAG, mapType + " 未配置样式,  图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                            + " 采用主屏 新建 自定义的样式配置文件 :" + jsonFilePath);
+                    Logger.e(TAG, mapType, " 未配置样式, 采用主屏 新建 自定义的样式配置文件  图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType() + " 配置文件 :" + jsonFilePath);
                 }
                 if (!TextUtils.isEmpty(styleJson)) {
                     allStyleJson.put(jsonPathName, styleJson);
-                    Logger.d(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                            + " 使用 新建 自定义的样式配置文件 :" + jsonFilePath);
+                    Logger.d(TAG, mapType, " 使用 新建 自定义的样式配置 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), " 配置文件 :" + jsonFilePath);
                 }
             } else {
-                Logger.d(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                        + " 使用 缓存 自定义的样式配置文件 ：" + jsonPathName);
+                Logger.d(TAG, mapType, " 使用 缓存 自定义的样式配置 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：" + item.getItemType(), " 配置文件 ：" + jsonPathName);
             }
         }
         if (styleAdapter.isNeedRefreshStyleJson(item)) {
             styleJson = styleAdapter.refreshStyleJson(item, styleJson);
-            Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                    + ";重新 刷新 样式配置 ");
+            Logger.e(TAG, mapType, " 重新 刷新 样式配置  图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType());
         }
         return styleJson;
     }
-
-//    public String getHtml(MapType mapType, String defaultHtmPathName, BaseLayer layer, LayerItem item, BaseStyleAdapter styleAdapter) {
-//        String styleHtml = null;
-//        String htmlPathName = styleAdapter.provideLayerItemStyleHtml(item);
-//        if (!TextUtils.isEmpty(htmlPathName)) {
-//            if (!htmlPathName.endsWith(HTML)) {
-//                htmlPathName = htmlPathName + HTML;
-//            }
-//            styleHtml = allStyleHtml.get(htmlPathName);
-//            if (TextUtils.isEmpty(styleHtml)) {
-//                String htmlFilePath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_STYLE_PATH)
-//                        .append(mapType.getMapType())
-//                        .append(File.separator)
-//                        .append(htmlPathName).toString();
-//                styleHtml = ParseJsonUtils.parseHtmlFile(htmlFilePath);
-//                if (TextUtils.isEmpty(styleHtml)) {
-//                    htmlFilePath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_STYLE_PATH)
-//                            .append(MapType.MAIN_SCREEN_MAIN_MAP.getMapType())
-//                            .append(File.separator)
-//                            .append(htmlPathName).toString();
-//                    styleHtml = ParseJsonUtils.parseHtmlFile(htmlFilePath);
-//                    Logger.e(TAG, mapType + " 未配置HTM样式,  图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-//                            + " 采用主屏 新建 自定义的HTM样式 :" + htmlFilePath);
-//
-//                }
-//                if (!TextUtils.isEmpty(styleHtml)) {
-//                    allStyleJson.put(htmlPathName, styleHtml);
-//                    Logger.d(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-//                            + " 使用 新建 自定义的HTM样式 :" + htmlFilePath);
-//                }
-//            } else {
-//                Logger.d(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-//                        + " 使用 缓存 自定义的HTM样式 ：" + htmlPathName);
-//            }
-//        } else {
-//            styleHtml = allStyleJson.get(defaultHtmPathName);
-//            if (TextUtils.isEmpty(styleHtml)) {
-//                String htmlFilePath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_LAYER_CARDS_PATH)
-//                        .append(defaultHtmPathName).toString();
-//                styleHtml = ParseJsonUtils.parseHtmlFile(htmlFilePath);
-//                if (!TextUtils.isEmpty(styleHtml)) {
-//                    allStyleJson.put(defaultHtmPathName, styleHtml);
-//                    Logger.d(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-//                            + " 使用 新建 默认的HTM样式 :" + htmlFilePath);
-//                }
-//            } else {
-//                Logger.d(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-//                        + " 使用 缓存 默认的HTM样式 ：" + defaultHtmPathName);
-//            }
-//        }
-//        return styleHtml;
-//    }
 
     public TextureMarkerInfo getMarkerInfo(MapType mapType, BaseLayer layer, LayerItem item, String markerInfoName) {
         String markerInfoJson = null;
@@ -155,20 +96,16 @@ public final class TextureStylePoolManager {
                                 .append(MapType.MAIN_SCREEN_MAIN_MAP.getMapType())
                                 .append(File.separator)
                                 .append(markerInfoName).toString();
-                        Logger.e(TAG, mapType + " 未配置样式,  图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                                + " 采用主屏 新建 自定义的markerInfo :" + markerInfoFilePath);
+                        Logger.e(TAG, mapType, " 未配置markerInfo样式,采用主屏 新建 自定义的markerInfo  图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：" + item.getItemType(), "markerInfo文件:" + markerInfoFilePath);
                     }
                     if (!TextUtils.isEmpty(markerInfoJson)) {
                         allStyleJson.put(markerInfoName, markerInfoJson);
-                        Logger.d(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                                + " 使用 新建 自定义的markerInfo :" + markerInfoFilePath);
+                        Logger.d(TAG, mapType, " 使用 新建 自定义的markerInfo  图层 :" + layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), " markerInfo文件:" + markerInfoFilePath);
                     } else {
-                        Logger.e(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                                + " 使用 失败 自定义的markerInfo :" + markerInfoFilePath);
+                        Logger.e(TAG, mapType, "使用 新建 自定义的markerInfo 出错   图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), " markerInfo文件 :" + markerInfoFilePath);
                     }
                 } else {
-                    Logger.d(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                            + " 使用 缓存 自定义的markerInfo ：" + markerInfoName);
+                    Logger.d(TAG, mapType, " 使用 缓存 自定义的markerInfo 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：" + item.getItemType(), " markerInfo文件：" + markerInfoName);
                 }
             }
         }
@@ -176,13 +113,11 @@ public final class TextureStylePoolManager {
         try {
             textureMarkerInfo = GsonUtils.fromJsonV2(markerInfoJson, TextureMarkerInfo.class);
         } catch (Exception exception) {
-            Logger.e(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                    + "   新建 默认的markerInfo 异常:" + exception.toString());
+            Logger.e(TAG, mapType, "新建 默认的markerInfo 异常; 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), "异常信息：" + exception.toString());
         } finally {
             if (textureMarkerInfo == null) {
                 textureMarkerInfo = new TextureMarkerInfo();
-                Logger.d(TAG, mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                        + " 使用 新建 默认的markerInfo :");
+                Logger.d(TAG, mapType, " 新建 默认的markerInfo 异常 ;使用 新建 默认的markerInfo ;图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType());
             }
         }
         return textureMarkerInfo;

@@ -84,9 +84,6 @@ public class LayerCarStyleAdapter extends BaseStyleAdapter {
             case BizCarType.BizCarTypeSearch:
             case BizCarType.BizCarTypeRoute: {
                 customUpdatePairs.add(createUpdateValuePair("speed_text_two", String.valueOf(speeds.get())));
-                customUpdatePairs.add(createUpdateStylePair("speed_text_three", "display: none;"));
-                customUpdatePairs.add(createUpdateStylePair("speed_text_two_os", "display: none;"));
-                customUpdatePairs.add(createUpdateStylePair("speed_text_three_os", "display: none;"));
                 break;
             }
         }

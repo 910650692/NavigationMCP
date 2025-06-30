@@ -1,0 +1,7 @@
+<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;width:201px;height:201px;">
+    <div id="div_km_h" style="display:flex;flex-direction:row;justify-content:center;align-items:center;padding-top:111px;padding-bottom:66px;width:201px;height:201px;position:absolute;top:0px;left:0px;bottom:0px;right:0px;">
+        <label id="km_h_text" style="font-size:12px;color:#000000;font-family:font_cn;" lines="1">km/h</label>
+        <label id="km_h_overspeed_text" style="font-size:12px;color:#d62727;font-family:font_cn;" lines="1">km/h</label>
+    </div>
+    <label id="speed_text_two" style="font-size:50px;color:#000000;font-family:AmapNumber-Bold;" lines="1">80</label>
+</div>
