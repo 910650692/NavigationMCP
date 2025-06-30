@@ -19,7 +19,7 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
  * @Author lww
  * @date 2025/1/25
  */
-public class BaseStartupViewModel extends BaseViewModel<StartupActivity, StartupModel> {
+public class BaseStartupViewModel extends BaseViewModel<StartupActivityRemove, StartupModel> {
     protected static final String TAG = "BaseStartupViewModel";
     /*** 查看用户是否同意过隐私协议 **/
     private boolean isFirstLauncher;

@@ -298,7 +298,7 @@ public class ScreenRecorder extends Service {
      */
     private void createNotificationChannel() {
         final Notification.Builder builder = new Notification.Builder(this.getApplicationContext()); //获取一个Notification构造器
-//        Intent nfIntent = new Intent(this, StartupActivity.class); //点击后跳转的界面，可以设置跳转数据
+//        Intent nfIntent = new Intent(this, StartupActivityRemove.class); //点击后跳转的界面，可以设置跳转数据
         final Intent nfIntent = new Intent(); //点击后跳转的界面，可以设置跳转数据
 
         builder.setContentIntent(PendingIntent.getActivity(this, 0, nfIntent, PendingIntent.FLAG_IMMUTABLE)) // 设置PendingIntent

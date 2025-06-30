@@ -35,7 +35,7 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
  * @Author lvww
  * @date 2024/11/24
  */
-public class StartupActivity extends BaseActivity<ActivityStartupBinding, StartupViewModel> {
+public class StartupActivityRemove extends BaseActivity<ActivityStartupBinding, StartupViewModel> {
     private Animation mRotateAnim;
     private ActivateFailedDialog mFailedDialog;
 
@@ -142,14 +142,14 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case PermissionUtils.REQUEST_PERMISSION_EXTERNAL_CODE:
-                Logger.i("StartupActivity", "所有文件修改权限申请结果");
+                Logger.i("StartupActivityRemove", "所有文件修改权限申请结果");
                 if (Environment.isExternalStorageManager())
                     PermissionUtils.getInstance().onRequestPermissionsResult(android.Manifest.permission.MANAGE_EXTERNAL_STORAGE, 0);
                 else
                     PermissionUtils.getInstance().onRequestPermissionsResult(Manifest.permission.MANAGE_EXTERNAL_STORAGE, -1);
                 break;
             case PermissionUtils.REQUEST_PERMISSION_OVERLAY_CODE:
-                Logger.i("StartupActivity", "悬浮窗申请结果");
+                Logger.i("StartupActivityRemove", "悬浮窗申请结果");
                 if (Settings.canDrawOverlays(this))
                     PermissionUtils.getInstance().onRequestPermissionsResult(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, 0);
                 else

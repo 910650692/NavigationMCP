@@ -42,6 +42,7 @@ import com.sgm.navi.hmi.mapdata.MapDataFragment;
 import com.sgm.navi.hmi.navi.AuthorizationRequestDialog;
 import com.sgm.navi.hmi.navi.ForecastAddressDialog;
 import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
+import com.sgm.navi.hmi.permission.ReminderDialog;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
 import com.sgm.navi.hmi.route.RouteFragment;
 import com.sgm.navi.hmi.search.mainsearch.MainSearchFragment;
@@ -86,6 +87,7 @@ import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseViewModel;
 import com.sgm.navi.ui.base.StackManager;
+import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
 import java.util.Date;
@@ -97,7 +99,11 @@ import java.util.concurrent.ScheduledFuture;
  * @date 2025/1/25
  */
 public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
+
     private static final String TAG = "BaseMapViewModel";
+    private boolean mFirstLaunch = false;
+    private boolean mInitSdkSuccess = false;
+
     public ObservableBoolean backToCcPVisibility;
     public ObservableBoolean mainBTNVisibility;
     public ObservableBoolean mScaleViewVisibility;
@@ -141,6 +147,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public BaseMapViewModel(@NonNull Application application) {
         super(application);
+
         backToCcPVisibility = new ObservableBoolean(false);
         mainBTNVisibility = new ObservableBoolean(true);
         mScaleViewVisibility = new ObservableBoolean(
@@ -175,6 +182,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mGoHomeVisible = new ObservableField<>(false);
         sRVisible = new ObservableField<>(isSupportSplitScreen() && !FloatViewManager.getInstance().isNaviDeskBg());
         mIsFullScreen = new ObservableField<>(ScreenTypeUtils.getInstance().isFullScreen());
+
+        mFirstLaunch = mModel.isFirstLauncher();
     }
 
     @Override
@@ -185,19 +194,86 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Override
     public void onCreate() {
         super.onCreate();
-        mModel.checkContinueNavi(mView);
+        checkPrivacyRights();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mModel.checkAuthorizationExpired();
+        if (mInitSdkSuccess) {
+            mModel.checkAuthorizationExpired();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
+
+    public boolean getSdkInitStatus() {
+        return mInitSdkSuccess;
+    }
+
+    private void checkPrivacyRights() {
+        Logger.i(TAG, "checkPrivacyRights");
+        if (mFirstLaunch) {
+            popAgreementDialog();
+        } else {
+            mModel.checkPermission();
+        }
+    }
+
+    /**
+     * 打开隐私权限弹窗
+     */
+    public void popAgreementDialog() {
+        ReminderDialog reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                mModel.updateFirstLauncherFlag();
+                mModel.checkPermission();
+            }
+
+            @Override
+            public void onCancelClick() {
+                StackManager.getInstance().exitApp();
+            }
+        });
+        reminderDialog.show();
+    }
+
+    /**
+     * 展示激活失败信息.
+     *
+     * @param msg 错误信息
+     */
+    public void showActivateFailedDialog(final String msg) {
+        mView.showActivateFailedDialog(msg);
+    }
+
+    /**
+     * 显示激活加载图片
+     *
+     * @param show 是否显示
+     */
+    public void showActivatingView(final boolean show) {
+        mView.showActivatingView(show);
+    }
+
+    /**
+     * 设置SDK激活状态
+     *
+     * @param successful true-初始化成功  false-失败
+     */
+    public void setSdkInitStatus(final boolean successful) {
+        mInitSdkSuccess = successful;
+        if (successful) {
+            mView.doAfterInitSdk();
+            mModel.checkContinueNavi(mView);
+            mModel.checkAuthorizationExpired();
+        }
+    }
+
 
     public Action intercept = () -> {
         // 拦截控件点击事件
@@ -1305,6 +1381,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public boolean isSupportSplitScreen() {
         return false;
     }
+
     private void checkStatusCloseAllFragmentAndClearAllLabel() {
         mModel.checkStatusCloseAllFragmentAndClearAllLabel();
     }

@@ -1,10 +1,17 @@
 package com.sgm.navi.hmi.map;
 
+import android.Manifest;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,11 +30,10 @@ import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.ActivityMapBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.LauncherWindowService;
-import com.sgm.navi.hmi.splitscreen.SRFloatWindowService;
+import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
-import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
-import com.sgm.navi.hmi.startup.StartupActivity;
-import com.sgm.navi.service.AppCache;
+import com.sgm.navi.hmi.startup.ActivateFailedDialog;
+import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
@@ -39,15 +45,12 @@ import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
-import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
-import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
-import com.sgm.navi.ui.view.SkinLinearLayout;
 
 import java.util.List;
 
@@ -57,8 +60,13 @@ import java.util.List;
  * @date 2024/12/01
  */
 public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> {
+
     private static final String TAG = "MapActivity";
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
+
+    private Animation mRotateAnim;
+    private ActivateFailedDialog mFailedDialog;
+
     private MainScreenMapView mapView;
     private MsgTopDialog mMsgTopDialog;
     private Runnable mOpenGuideRunnable;
@@ -75,10 +83,26 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
-        mBinding.cruiseLayout.tvCurrentRoadName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
+        mBinding.cruiseLayout.tvCurrentRoadName.setOnClickListener(view -> {
 
+        });
+
+        mRotateAnim = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
+        mRotateAnim.setDuration(2000);
+        mRotateAnim.setRepeatCount(Animation.INFINITE);
+        mRotateAnim.setInterpolator(new LinearInterpolator());
+        mBinding.mainImg.setVisibility(View.VISIBLE);
+
+        mFailedDialog = new ActivateFailedDialog(this);
+        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "重试激活");
+            }
+
+            @Override
+            public void onCancelClick() {
+                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
             }
         });
     }
@@ -100,41 +124,25 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     @Override
     public void onInitView() {
-        mViewModel.loadMapView(mBinding.mainMapview);
-        // 给限行设置点击事件
-        mBinding.includeLimit.setViewModel(mViewModel);
-        mBinding.cruiseLayout.setViewModel(mViewModel);
-        final int powerType = mViewModel.powerType();
-        // 油车
-        if (powerType != 1) {
-            mBinding.skIvBasicRouting.setImageResource(R.drawable.img_home_gas_station);
-        } else {
-            mBinding.skIvBasicRouting.setImageResource(R.drawable.img_basic_ic_gas_charging);
-        }
-        mBinding.includeMessageCenter.setViewModel(mViewModel);
+
     }
 
     @Override
     public void onInitObserver() {
-        addSceneGoHomeCallBack();
+
     }
 
     @Override
     public void onInitData() {
-        mViewModel.startListenMsg();
-        mViewModel.offlineMap15Day();
-        mViewModel.offlineMap45Day();
-        if (!mStackManager.isExistFragment(mScreenId, "AccountQRCodeLoginFragment")) {
-            mViewModel.checkPopGuideLogin();
+        Intent intent = getIntent();
+        if (intent != null && intent.getIntExtra(BuryConstant.EventName.AMAP_RETURN_DEFAULT, 0)
+                == BuryConstant.EventName.AMAP_RETURN_DEFAULT_CODE) {
+            sendBuryPointForReset();
         }
-        mViewModel.getOnlineForecastArrivedData();
-        mOpenGuideRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mViewModel.openGuideFragment();
-            }
-        };
-        ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
+    private void sendBuryPointForReset() {
     }
 
     @Override
@@ -163,10 +171,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onResume() {
         super.onResume();
-        mViewModel.getCurrentCityLimit();
-        //界面可见时重新适配深浅色模式
-        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
-                ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
+        if (mViewModel.getSdkInitStatus()) {
+            mViewModel.getCurrentCityLimit();
+            //界面可见时重新适配深浅色模式
+            mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+                    ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
+        }
     }
 
     @Override
@@ -180,14 +190,112 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_CLOSE)
     protected void onDestroy() {
         // 退出的时候主动保存一下最后的定位信息
-        mViewModel.saveLastLocationInfo();
-        Logger.i(TAG, "onDestroy");
-        ThreadManager.getInstance().removeHandleTask(mOpenGuideRunnable);
+        if (mViewModel.getSdkInitStatus()) {
+            mViewModel.saveLastLocationInfo();
+            ThreadManager.getInstance().removeHandleTask(mOpenGuideRunnable);
+        }
+
         if(mMsgTopDialog != null && mMsgTopDialog.isShowing()){
             mMsgTopDialog.dismiss();
             mMsgTopDialog = null;
         }
+        Logger.i(TAG, "onDestroy");
         super.onDestroy();
+    }
+
+    public void doAfterInitSdk() {
+        mBinding.mainStart.setVisibility(View.GONE);
+        //initData
+        mViewModel.loadMapView(mBinding.mainMapview);
+        // 给限行设置点击事件
+        mBinding.includeLimit.setViewModel(mViewModel);
+        mBinding.cruiseLayout.setViewModel(mViewModel);
+        final int powerType = mViewModel.powerType();
+        // 油车
+        if (powerType != 1) {
+            mBinding.skIvBasicRouting.setImageResource(R.drawable.img_home_gas_station);
+        } else {
+            mBinding.skIvBasicRouting.setImageResource(R.drawable.img_basic_ic_gas_charging);
+        }
+        mBinding.includeMessageCenter.setViewModel(mViewModel);
+
+        //initObserver
+        addSceneGoHomeCallBack();
+
+        //initData
+        mViewModel.startListenMsg();
+        mViewModel.offlineMap15Day();
+        mViewModel.offlineMap45Day();
+        if (!mStackManager.isExistFragment(mScreenId, "AccountQRCodeLoginFragment")) {
+            mViewModel.checkPopGuideLogin();
+        }
+        mViewModel.getOnlineForecastArrivedData();
+        mOpenGuideRunnable = () -> mViewModel.openGuideFragment();
+        ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionUtils.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PermissionUtils.REQUEST_PERMISSION_EXTERNAL_CODE:
+                Logger.i(TAG, "所有文件修改权限申请结果");
+                if (Environment.isExternalStorageManager()) {
+                    PermissionUtils.getInstance().onRequestPermissionsResult(android.Manifest.permission.MANAGE_EXTERNAL_STORAGE, 0);
+                } else {
+                    PermissionUtils.getInstance().onRequestPermissionsResult(Manifest.permission.MANAGE_EXTERNAL_STORAGE, -1);
+                }
+                break;
+            case PermissionUtils.REQUEST_PERMISSION_OVERLAY_CODE:
+                Logger.i(TAG, "悬浮窗申请结果");
+                if (Settings.canDrawOverlays(this)) {
+                    PermissionUtils.getInstance().onRequestPermissionsResult(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, 0);
+                } else {
+                    PermissionUtils.getInstance().onRequestPermissionsResult(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, -1);
+                }
+                break;
+        }
+    }
+
+    /**
+     * 控制激活动画
+     *
+     * @param show 是否显示
+     */
+    public void showActivatingView(final boolean show) {
+        if (show) {
+            mBinding.mainImg.setVisibility(View.GONE);
+            mBinding.activatingImg.setVisibility(View.VISIBLE);
+            mBinding.activatingTv.setVisibility(View.VISIBLE);
+            mBinding.activatingImg.startAnimation(mRotateAnim);
+        } else {
+            mBinding.mainImg.setVisibility(View.VISIBLE);
+            mBinding.activatingImg.setVisibility(View.GONE);
+            mBinding.activatingTv.setVisibility(View.GONE);
+            if (mRotateAnim != null) {
+                mRotateAnim.cancel();
+                mRotateAnim.reset();
+            }
+        }
+    }
+
+    /**
+     * 显示激活失败弹窗
+     *
+     * @param msg 错误信息
+     */
+    public void showActivateFailedDialog(final String msg) {
+        if (ConvertUtils.isEmpty(mFailedDialog) || mFailedDialog.isShowing()) {
+            Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "dialog null or showing");
+            return;
+        }
+        mFailedDialog.show();
     }
 
     @Override

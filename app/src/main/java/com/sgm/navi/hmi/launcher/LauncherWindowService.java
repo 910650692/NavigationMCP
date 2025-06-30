@@ -30,7 +30,6 @@ import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
 import com.sgm.navi.hmi.map.MapActivity;
-import com.sgm.navi.hmi.startup.StartupActivity;
 import com.sgm.navi.hmi.utils.CaptureScreenUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;
@@ -48,7 +47,6 @@ import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
-import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.vrbridge.MapStateManager;
 
 /**
@@ -235,12 +233,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
     public void openSelf(final int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
-        Class startCls = StartupActivity.class;
-        boolean isActivityExist = StackManager.getInstance().isActivityExist(MAP_TYPE.name(), MapActivity.class);
-        if (isActivityExist) {
-            startCls = MapActivity.class;
-        }
-        Logger.i(TAG, "isActivityExist:" + isActivityExist);
+        Class startCls = MapActivity.class;
         ExportIntentParam.setIntentPage(pageCode);
         Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
         final ActivityOptions options = ActivityOptions.makeBasic();

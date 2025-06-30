@@ -8,7 +8,7 @@
 
         <variable
             name="ViewModel"
-            type="com.sgm.navi.hmi.map.BaseMapViewModel" />
+            type="com.sgm.navi.hmi.map.MapViewModel" />
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

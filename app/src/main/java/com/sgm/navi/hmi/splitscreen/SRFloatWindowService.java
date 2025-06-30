@@ -28,7 +28,6 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
 import com.sgm.navi.hmi.map.MapActivity;
-import com.sgm.navi.hmi.startup.StartupActivity;
 import com.sgm.navi.hmi.utils.CaptureScreenUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;
@@ -45,7 +44,6 @@ import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
-import com.sgm.navi.ui.base.StackManager;
 
 /**
  * @author: QiuYaWei
@@ -258,12 +256,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
     public void openSelf(final int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
         ExportIntentParam.setIntentPage(pageCode);
-        Class startCls = StartupActivity.class;
-        boolean isActivityExist = StackManager.getInstance().isActivityExist(MAP_TYPE.name(), MapActivity.class);
-        if (isActivityExist) {
-            startCls = MapActivity.class;
-        }
-        Logger.i(TAG, "isActivityExist:" + isActivityExist);
+        Class startCls = MapActivity.class;
         final Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
         final ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);

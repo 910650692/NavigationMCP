@@ -11,7 +11,7 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 public class StartupExceptionDialog extends BaseFullScreenDialog<DialogStartupExceptionBinding> {
     private NetWorkUtils.NetworkObserver networkCall;
 
-    protected StartupExceptionDialog(Context context, IBaseDialogClickListener baseDialogClickListener) {
+    public StartupExceptionDialog(Context context, IBaseDialogClickListener baseDialogClickListener) {
         super(context);
         setDialogClickListener(baseDialogClickListener);
     }

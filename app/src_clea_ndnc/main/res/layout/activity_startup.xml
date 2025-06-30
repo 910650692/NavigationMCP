@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        tools:context=".startup.StartupActivity">
+        tools:context=".startup.StartupActivityRemove">
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/main_img"

@@ -11,11 +11,9 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.map.MapActivity;
-import com.sgm.navi.hmi.startup.StartupActivity;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.ui.base.StackManager;
 
 import java.util.Objects;
 
@@ -24,7 +22,6 @@ import java.util.Objects;
  */
 public class NaviMfcHardKeyReceiver extends BroadcastReceiver {
     private static final String TAG = NaviMfcHardKeyReceiver.class.getSimpleName();
-    private final MapType MAP_TYPE = MapType.MAIN_SCREEN_MAIN_MAP;
     public static final String HARD_KEY_NAVIGATION = "gm.intent.ACTION_BROADCAST_KEY_MFC_NAVIGATION";
 
     @Override
@@ -48,12 +45,7 @@ public class NaviMfcHardKeyReceiver extends BroadcastReceiver {
 
     public void openSelf(int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
-        Class startCls = StartupActivity.class;
-        boolean isActivityExist = StackManager.getInstance().isActivityExist(MAP_TYPE.name(), MapActivity.class);
-        if (isActivityExist) {
-            startCls = MapActivity.class;
-        }
-        Logger.i(TAG, "isActivityExist:" + isActivityExist);
+        Class startCls = MapActivity.class;
         Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
         final ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);

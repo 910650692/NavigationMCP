@@ -6,6 +6,7 @@ import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcelable;
@@ -14,6 +15,7 @@ import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -23,10 +25,12 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.NaviService;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -37,14 +41,19 @@ import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.IDeskBackgroundChangeListener;
 import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
+import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.setting.SettingFragment;
 import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
+import com.sgm.navi.hmi.startup.StartupExceptionDialog;
 import com.sgm.navi.mapservice.bean.INaviConstant;
+import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.message.MessageCenterType;
+import com.sgm.navi.service.logicpaket.activate.ActivatePackage;
+import com.sgm.navi.service.logicpaket.activate.IActivateObserver;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.sgm.navi.hmi.R;
@@ -142,6 +151,7 @@ import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -156,20 +166,24 @@ import java.util.concurrent.ScheduledFuture;
  * @Author lvww
  * @date 2024/11/26
  */
+
 public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCallback,
         ImmersiveStatusScene.IImmersiveStatusCallBack, IAosRestrictedObserver, IPositionPackageCallback,
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
-        MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack
-        , ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver
-        , IDeskBackgroundChangeListener {
-    private final MapPackage mapPackage;
-    private final LayerPackage layerPackage;
-    private final PositionPackage positionPackage;
-    private final MapDataPackage mapDataPackage;
-    private final HistoryManager mHistoryManager;
-    private final AosRestrictedPackage restrictedPackage;
+        MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack,
+        ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
+        IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback {
+
+    private CommonManager mCommonManager;
+    private final IActivateObserver mActObserver;
+
+    private MapPackage mapPackage;
+    private LayerPackage layerPackage;
+    private PositionPackage positionPackage;
+    private MapDataPackage mapDataPackage;
+    private HistoryManager mHistoryManager;
+    private AosRestrictedPackage restrictedPackage;
     private AiWaysGestureManager aiwaysGestureManager;
-    private CommonManager commonManager;
     private static final String TAG = "MapModel";
     private long limitQueryTaskId;
     private long limitEndNumberTaskId;
@@ -188,14 +202,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private MapModelHelp mapModelHelp;
     private MessageCenterManager messageCenterManager;
     private MessageCenterHelper messageCenterHelper;
-    private final CalibrationPackage mCalibrationPackage;
-    private final SettingPackage mSettingPackage;
-    private final RoutePackage mRoutePackage;
+    private CalibrationPackage mCalibrationPackage;
+    private SettingPackage mSettingPackage;
+    private RoutePackage mRoutePackage;
     private BehaviorPackage behaviorPackage;
     private SearchPackage searchPackage;
     private final String mCallbackId;
     private ForecastPackage mforCastPackage;
-    private final AccountPackage mAccountPackage;
+    private AccountPackage mAccountPackage;
     private NaviStatusPackage mNaviStatusPackage;
     private StackManager stackManager;
     private boolean mLoadMapSuccess = true;  //只加载一次
@@ -207,14 +221,46 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
+        mCommonManager = CommonManager.getInstance();
+        mCommonManager.init();
+        mActObserver = new IActivateObserver() {
+            @Override
+            public void onActivating() {
+                Logger.d(TAG, "onActivating...");
+                ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(true));
+            }
+
+            @Override
+            public void onNetActivateFailed(int failedCount) {
+
+            }
+
+            @Override
+            public void onActivated() {
+                ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(false));
+            }
+
+            @Override
+            public void onActivatedError(int errCode, String msg) {
+                Logger.e(TAG, "激活出现错误");
+                ThreadManager.getInstance().postUi(new Runnable() {
+                    @Override
+                    public void run() {
+                        mViewModel.showActivatingView(false);
+                        mViewModel.showActivateFailedDialog(msg);
+                    }
+                });
+            }
+        };
+    }
+
+    private void setPackageAfterSdkInit() {
         mapPackage = MapPackage.getInstance();
         layerPackage = LayerPackage.getInstance();
         positionPackage = PositionPackage.getInstance();
         mapDataPackage = MapDataPackage.getInstance();
         restrictedPackage = AosRestrictedPackage.getInstance();
         restrictedPackage.addRestrictedObserver(IAosRestrictedObserver.KEY_OBSERVER_LIMIT, this);
-        commonManager = CommonManager.getInstance();
-        commonManager.init();
         mHistoryManager = HistoryManager.getInstance();
         mHistoryManager.init();
         settingManager = SettingManager.getInstance();
@@ -245,14 +291,17 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         addGestureListening();//添加收拾监听
         NavistatusAdapter.getInstance().registerCallback(this);
         SettingUpdateObservable.getInstance().addObserver(TAG, this);
+
+        speedMonitor.registerCallBack(this);
+        mViewModel.initVisibleAreaPoint();
+        FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        speedMonitor.registerCallBack(this);
-        mViewModel.initVisibleAreaPoint();
-        FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
+        PermissionUtils.getInstance().setPermissionsObserver(this);
+        StartService.getInstance().registerSdkCallback(TAG, this);
     }
 
     @Override
@@ -263,7 +312,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onDestroy() {
         super.onDestroy();
-        FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
+        if (null == mapPackage) {
+            return;
+        }
+
         mapPackage.unBindMapView(mViewModel.getMapView());
         speedMonitor.removeCallBack();
         speedMonitor.unInit();
@@ -285,6 +337,106 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         SettingUpdateObservable.getInstance().removeObserver(TAG, this);
         cancelSelfParkingTimer();
         cancelCloseTmcTimerWithoutNetwork();
+        FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
+    }
+
+    @Override
+    public void onPermissionsSuccess() {
+        Logger.d(TAG, "权限都申请成功 开启引擎初始化");
+        if (isShowStartupException()) {
+            popStartupExceptionDialog();
+        } else {
+            startInitEngine();
+        }
+    }
+
+    @Override
+    public void onPermissionsFail() {
+        Logger.i(TAG, "权限申请失败无法进行下一步");
+        ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.permission_quest_fail));
+    }
+
+    @Override
+    public void onSdkInitSuccess() {
+        Logger.i(TAG, "onSdkInitSuccess");
+        ActivatePackage.getInstance().addActObserver(mActObserver);
+        StartService.getInstance().unregisterSdkCallback(this);
+        setPackageAfterSdkInit();
+        mViewModel.setSdkInitStatus(true);
+    }
+
+    @Override
+    public void onSdkInitFail(int initSdkResult, String msg) {
+        // 重试机制统一在NaviService中完成
+    }
+
+    public boolean isFirstLauncher() {
+        final boolean isFirstLauncher = TextUtils.isEmpty(
+                mCommonManager.getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH)
+        );
+        Logger.i(TAG, "isFirstLauncher:" + isFirstLauncher);
+        return isFirstLauncher;
+    }
+
+    /***
+     * 同意协议后把标志位置为一个非空的字符
+     */
+    public void updateFirstLauncherFlag() {
+        mCommonManager.insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "1");
+    }
+
+    public void checkPermission() {
+        Logger.i(TAG, "checkPermission");
+        if (PermissionUtils.getInstance().checkoutPermission()) {
+            if (isShowStartupException()) {
+                popStartupExceptionDialog();
+            } else {
+                startInitEngine();
+            }
+        } else {
+            PermissionUtils.getInstance().requestPermission();
+        }
+    }
+
+    public boolean isShowStartupException() {
+        boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
+        boolean isOfflineData = "1".equals(mCommonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
+        boolean isCache = false;  //目前默认false
+        Logger.d(TAG, "is net connect: " + isNetConnect + ", is offline data: " + isOfflineData + ", is cached: " + isCache);
+        return !(isNetConnect || isOfflineData || isCache);
+    }
+
+    private boolean isCached() {
+        final String[] dirPaths = {GBLCacheFilePath.BLS_LOG};
+        final File[] dirs = new File[dirPaths.length];
+        for (int i = 0; i < dirPaths.length; i++) {
+            dirs[i] = new File(dirPaths[i]);
+        }
+        return FileUtils.getTotalSizeOfDirectories(dirs) > 0;
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN_FAIL)
+    public void popStartupExceptionDialog() {
+        StartupExceptionDialog startupExceptionDialog = new StartupExceptionDialog(
+                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()),
+                new IBaseDialogClickListener() {
+                    @Override
+                    public void onNetWorkConnect() {
+                        startInitEngine();
+                    }
+
+                    @Override
+                    public void onExit() {
+                        StackManager.getInstance().exitApp();
+                    }
+                });
+        startupExceptionDialog.show();
+    }
+
+    public void startInitEngine() {
+        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
+        Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
+        ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
@@ -300,7 +452,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public void startListenMsg() {
         String uid = "";
-        String valueJson = commonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
+        String valueJson = mCommonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
         Logger.i(TAG, "getUserInfo valueJson = " , valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
             Logger.i(TAG, "Login = " , uid);
@@ -1294,17 +1446,17 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      * 地图是否15天未更新
      */
     public boolean offlineMap15Day() {
-        final String time = commonManager.getValueByKey(UserDataCode.SETTING_MESSAGE_MAP_CHECK);
+        final String time = mCommonManager.getValueByKey(UserDataCode.SETTING_MESSAGE_MAP_CHECK);
         if (!TextUtils.isEmpty(time)) {
             //超过15天
             final boolean after15Day = messageCenterHelper.isNotConnectedFor15Days(Long.parseLong(time));
             if (after15Day) {
-                commonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_MAP_CHECK, String.valueOf(System.currentTimeMillis()));
+                mCommonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_MAP_CHECK, String.valueOf(System.currentTimeMillis()));
                 Logger.i("offlineMap15Day", "+++");
                 return true;
             }
         } else {
-            commonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_MAP_CHECK, String.valueOf(System.currentTimeMillis()));
+            mCommonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_MAP_CHECK, String.valueOf(System.currentTimeMillis()));
             Logger.i("offlineMap15Day", "----");
         }
         return false;
@@ -1329,10 +1481,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private void loadNdGoHomeView() {
         if (mViewModel.showNdGoHomeView()) {
-            String key = commonManager.getValueByKey(UserDataCode.MAP_ND_GO_HOME_KEY);
+            String key = mCommonManager.getValueByKey(UserDataCode.MAP_ND_GO_HOME_KEY);
             String currentTime = TimeUtils.getInstance().getCurrentDate().replace("-", "");
             if (ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key, currentTime)) {
-                commonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY, currentTime);
+                mCommonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY, currentTime);
 
                 //是否在上班时间段内  在家附近
                 LocInfoBean locInfoBean = positionPackage.getLastCarLocation();
@@ -1384,16 +1536,16 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      * 是否显示限行
      */
     public boolean showSameDayLimit() {
-        final String limitTime = commonManager.getValueByKey(UserDataCode.SETTING_MESSAGE_LIMIT_TIME);
+        final String limitTime = mCommonManager.getValueByKey(UserDataCode.SETTING_MESSAGE_LIMIT_TIME);
         if (!TextUtils.isEmpty(limitTime)) {
             //在判断是否是同一天  同一天的也不显示
             final String currentDay = TimeUtils.convertYMD();
             if (!currentDay.equals(limitTime)) {
-                commonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_LIMIT_TIME, currentDay);
+                mCommonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_LIMIT_TIME, currentDay);
                 return true;
             }
         } else {
-            commonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_LIMIT_TIME, TimeUtils.convertYMD());
+            mCommonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_LIMIT_TIME, TimeUtils.convertYMD());
             return true;
         }
         return false;
@@ -1592,7 +1744,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             return false;
         }
 
-        String lastTimeStr = commonManager.getValueByKey(UserDataCode.GUIDE_LOGIN_LAST_TIME);
+        String lastTimeStr = mCommonManager.getValueByKey(UserDataCode.GUIDE_LOGIN_LAST_TIME);
         if (TextUtils.isEmpty(lastTimeStr)) {
             return true;
         }
@@ -1607,12 +1759,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void guideLoginClose() {
-        commonManager.insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, String.valueOf(System.currentTimeMillis()));
+        mCommonManager.insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, String.valueOf(System.currentTimeMillis()));
     }
 
     public void guideLoginCancel() {
         settingManager.insertOrReplace(SettingController.GUIDE_LOGIN_IS_CANCEL, "1");
-        commonManager.insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
+        mCommonManager.insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
     }
 
     // MFC功能，不准删除
