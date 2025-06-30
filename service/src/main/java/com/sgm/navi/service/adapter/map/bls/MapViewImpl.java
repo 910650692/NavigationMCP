@@ -357,6 +357,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 break;
         }
         int resultOk = getMapview().setMapMode(mapviewModeParam, true);
+        getMapview().resetTickCount(1);
         Logger.d(TAG, mapType, "setMapMode ", mapMode);
         return resultOk == Service.ErrorCodeOK;
     }
