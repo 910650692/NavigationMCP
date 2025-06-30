@@ -1294,9 +1294,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
         if (ConvertUtils.isEmpty(requestRouteResult)) return;
         mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
-        if(mapTypeId != MapType.CLUSTER_MAP && mapTypeId != MapType.HUD_MAP){
-            showPreview(mapTypeId);
-        }
     }
 
     /**

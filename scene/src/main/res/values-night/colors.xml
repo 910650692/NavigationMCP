@@ -48,6 +48,7 @@
     <color name="route_vai_remove_color">#D2D3D7</color>
     <color name="route_white">#FFFFFFFF</color>
     <color name="text_route_restriction_text_error">#FF9E171A</color>
+    <color name="bg_route_via_select">#1E1F26</color>
 
 
 

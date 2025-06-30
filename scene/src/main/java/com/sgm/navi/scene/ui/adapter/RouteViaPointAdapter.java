@@ -98,11 +98,13 @@ public class RouteViaPointAdapter extends RecyclerView.Adapter<RouteViaPointAdap
 
     public class Holder extends RecyclerView.ViewHolder {
         private RouteLineViaPoiItemBinding mRouteLineViaPoiItemBinding;
+        public View mRouteViaSelect;
 
         public Holder(final RouteLineViaPoiItemBinding routeLineViaPoiItemBinding) {
             super(routeLineViaPoiItemBinding.getRoot());
             this.mRouteLineViaPoiItemBinding = routeLineViaPoiItemBinding;
             routeLineViaPoiItemBinding.setHolder(this);
+            mRouteViaSelect = routeLineViaPoiItemBinding.routeViaSelect;
         }
     }
 

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.databinding.DataBindingUtil;
@@ -102,7 +103,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private final int mSpanCount = 2;//数据列数
     private final int mMaxWidthWithBatter= 322;
     private final int mMaxWidthWithoutBatter= 530;
-    private static final int SWIPE_THRESHOLD = 100;
+    private static final int SWIPE_THRESHOLD = 50;
     private static final int TIPS_DELAY = 8000;
     private RouteRequestLoadingDialog mRouteRequestLoadingDialog;
     private RouteSearchLoadingDialog mSearchLoadingDialog;
@@ -276,10 +277,23 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, final int direction) {
             }
 
+            @SuppressLint("UseCompatLoadingForDrawables")
+            @Override
+            public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                if (actionState != ItemTouchHelper.ACTION_STATE_IDLE && viewHolder instanceof RouteViaPointAdapter.Holder && getContext() != null) {
+                    ((RouteViaPointAdapter.Holder) viewHolder).mRouteViaSelect.setBackground(getContext()
+                            .getDrawable(com.sgm.navi.scene.R.drawable.bg_route_via_select));
+                }
+                super.onSelectedChanged(viewHolder, actionState);
+            }
+
             @Override
             public void clearView(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
-                if (mOriginalPosition == movePosition) {
+                if (viewHolder instanceof RouteViaPointAdapter.Holder) {
+                    ((RouteViaPointAdapter.Holder) viewHolder).mRouteViaSelect.setBackground(null);
+                }
+                if (mOriginalPosition == movePosition || mOriginalPosition == -1) {
                     Logger.d(TAG, "The position has not changed");
                     mOriginalPosition = -1;
                     return;

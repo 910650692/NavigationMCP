@@ -91,6 +91,7 @@
     <color name="route_select_color_nom">#26313336</color>
     <color name="route_select_color_sel">#000000</color>
     <color name="floating_search_item_night">#000000</color>
+    <color name="bg_route_via_select">#EEEDF1</color>
 
 
     <!--引导-->
