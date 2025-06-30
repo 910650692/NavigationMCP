@@ -381,7 +381,7 @@ public class TestWindow {
         try {
             ThreadManager.getInstance().execute(() -> {
                 FileUtils.getInstance().copyFileDirectory(true, GBLCacheFilePath.BLS_LOG, mUsbPath, mFileListener);
-                FileUtils.getInstance().copyFileDirectory(true, GBLCacheFilePath.GM_LOG_ROOT_PATH, mUsbPath, mFileListener);
+                //FileUtils.getInstance().copyFileDirectory(true, GBLCacheFilePath.GM_LOG_ROOT_PATH, mUsbPath, mFileListener);
                 if (mFileListener != null) {
                     if (!mFileListener.isCancelled()) {
                         mFileListener.onComplete();
