@@ -359,6 +359,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_40"
                         android:ellipsize="end"
+                        android:maxWidth="@dimen/dp_398"
                         android:maxLines="1"
                         android:text="@{ViewModel.getPreferText()}"
                         android:textColor="@color/text_route_defult"

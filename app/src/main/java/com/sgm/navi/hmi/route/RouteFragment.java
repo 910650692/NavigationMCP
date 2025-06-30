@@ -60,6 +60,7 @@ import com.sgm.navi.scene.ui.route.SceneRouteSearchRefreshListView;
 import com.sgm.navi.scene.ui.search.RouteRequestLoadingDialog;
 import com.sgm.navi.scene.ui.search.RouteSearchLoadingDialog;
 import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RouteLineInfo;
 import com.sgm.navi.service.define.route.RouteLineSegmentInfo;
@@ -510,9 +511,19 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         }
         ThreadManager.getInstance().postUi(() -> {
             if (batter) {
-                mRouteListPageView.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithBatter);
+                if (BuildConfig.FLAVOR.equals("cadi")) {
+                    mRouteListPageView.routeLineInfoTvPrefer.setMaxWidth(getResources()
+                            .getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_398));
+                } else {
+                    mRouteListPageView.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithBatter);
+                }
             } else {
-                mRouteListPageView.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithoutBatter);
+                if (BuildConfig.FLAVOR.equals("cadi")) {
+                    mRouteListPageView.routeLineInfoTvPrefer.setMaxWidth(getResources()
+                            .getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_678));
+                } else {
+                    mRouteListPageView.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithoutBatter);
+                }
             }
         });
     }
