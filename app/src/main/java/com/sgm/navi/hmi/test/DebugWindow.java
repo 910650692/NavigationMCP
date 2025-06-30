@@ -71,7 +71,9 @@ public class DebugWindow implements IPositionPackageCallback {
         if (mWindowManager != null && mBinding != null) {
             stopTimeUpdate();
             isShow = false;
-            mWindowManager.removeView(mBinding.getRoot());
+            if (mBinding.getRoot().getWindowToken() != null) {
+                mWindowManager.removeView(mBinding.getRoot());
+            }
         }
         PositionPackage.getInstance().setDrEnable(false);
     }
