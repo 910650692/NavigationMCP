@@ -99,7 +99,8 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
         final BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(mScreenId);
         if (!ConvertUtils.isNull(currentFragment) && ConvertUtils.equals(currentFragment.getClass().getName(), fragment.getClass().getName())) {
             if (!ConvertUtils.isNull(fragment)) {
-                fragment.setArguments(bundle);
+//                fragment.setArguments(bundle);
+                currentFragment.refreshFragment(bundle);
             }
         } else {
             mView.addFragment(fragment, bundle);

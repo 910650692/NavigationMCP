@@ -148,4 +148,6 @@ public interface IBaseView {
     default void showParkingView() {
 
     }
+
+    default void refreshFragment(Bundle bundle){}
 }

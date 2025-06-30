@@ -69,6 +69,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setHomeCompanyType(final int homeCompanyType) {
         this.mHomeCompanyType = homeCompanyType;
+        notifyDataSetChanged();
     }
     public void setOnItemClickListener(final ItemClickListener onItemClickListener) {
         this.mItemClickListener = onItemClickListener;

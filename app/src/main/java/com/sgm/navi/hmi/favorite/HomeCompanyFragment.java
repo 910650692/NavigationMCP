@@ -7,6 +7,7 @@ import android.view.View;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentHomeCompanyBinding;
@@ -55,6 +56,34 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
                 FavoriteHelper.getInstance().setHomeCompanyType(type);
                 mBinding.getRoot().setVisibility(View.GONE);
             }
+        });
+    }
+
+    @Override
+    public void refreshFragment(final Bundle bundle) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshFragment：" + mBinding + " ,: " + mViewModel + " ,: " + this);
+        if (bundle == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No valid arguments found.");
+            return;
+        }
+        final String sourceFragmentTag = bundle.getString(
+                AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
+        mKeyword = bundle.getString(AutoMapConstant.VoiceKeyWord.BUNDLE_VOICE_KEY_WORD);
+        final int searchType = bundle.getInt(
+                AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, 0);
+        // 1:家 2:公司 3:常用地址 0:收藏夹
+        mHomeCompany = bundle.getInt(
+                AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, -1);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "searchType:" + searchType + "homCompany:" +
+                mHomeCompany + "sourceFragmentTag:" + sourceFragmentTag + "keyword:" + mKeyword);
+
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.homeCompanyView.setViewVisibility(mHomeCompany);
+            if (!ConvertUtils.isEmpty(mKeyword)) {
+                mBinding.homeCompanyView.doKeyWordSearch(mKeyword);
+            }
+            mViewModel.setHomeCompanyType(mHomeCompany);
+            mBinding.sceneNestedScrollView.setHomeCompanyState(mHomeCompany);
         });
     }
 
