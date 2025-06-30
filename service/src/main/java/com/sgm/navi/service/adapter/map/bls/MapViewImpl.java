@@ -177,7 +177,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().getOperatorPosture().setMinZoomLevel(AutoMapConstant.MAP_ZOOM_LEVEL_MIN);
         // 设置地图比例尺范围.
         getMapview().getOperatorPosture().setMaxZoomLevel(AutoMapConstant.MAP_ZOOM_LEVEL_MAX);
-        getMapview().getOperatorPosture().setZoomLevel(AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT, true, true);
+        getMapview().getOperatorPosture().setZoomLevel(mapType == MapType.HUD_MAP ? AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT_HUD : AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT, true, true);
         // 开启惯性滑动
         getMapview().getOperatorGesture().enableSliding(true);
     }
@@ -199,7 +199,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         //开启POI标注
         getMapview().getOperatorBusiness().setLabelVisable(true);
         //开启TMC
-        getMapview().setControllerStatesOperator(MapControllerStatesType.MAP_CONTROLLER_ONOFF_TRAFFIC_STATE, 1, true);
+        getMapview().setControllerStatesOperator(MapControllerStatesType.MAP_CONTROLLER_ONOFF_TRAFFIC_STATE, mapType == MapType.HUD_MAP ? 0 : 1, true);
         //显示路网
         getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_LABLE_ROADNAME_ON, true);
         //显示3D建筑
