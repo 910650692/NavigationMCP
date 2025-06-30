@@ -25,6 +25,7 @@ import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.ActivityStartupBinding;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
@@ -45,7 +46,7 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
 
     @Override
     public boolean onCreateViewBefore() {
-        if (!ConvertUtils.equals(ProcessStatus.AppRunStatus.DESTROYED, ProcessManager.getAppRunStatus())) {
+        if (!StartService.getInstance().checkSdkIsNeedInit()) {
             Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "app already in foreground");
             mViewModel.startMapActivity();
             return false;
@@ -99,6 +100,15 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
         if (intent != null && intent.getIntExtra(BuryConstant.EventName.AMAP_RETURN_DEFAULT, 0)
                 == BuryConstant.EventName.AMAP_RETURN_DEFAULT_CODE) {
             sendBuryPointForReset();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!StartService.getInstance().checkSdkIsNeedInit()) {
+            Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "app already in foreground");
+            mViewModel.startMapActivity();
         }
     }
 
