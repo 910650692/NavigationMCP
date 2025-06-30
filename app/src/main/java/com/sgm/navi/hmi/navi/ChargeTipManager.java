@@ -59,6 +59,7 @@ public class ChargeTipManager {
     private final SpeechPackage mSpeechPackage;
     private final SearchPackage mSearchPackage;
     private final RoutePackage mRoutePackage;
+    private final SettingPackage mSettingPackage;
     private final CalibrationPackage mCalibrationPackage;
     //所有途经点集合
     private List<NaviViaEntity> mNaviViaEntityList;
@@ -102,6 +103,7 @@ public class ChargeTipManager {
         mSpeechPackage = SpeechPackage.getInstance();
         mSearchPackage = SearchPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
+        mSettingPackage = SettingPackage.getInstance();
         mCalibrationPackage = CalibrationPackage.getInstance();
     }
 
@@ -144,6 +146,13 @@ public class ChargeTipManager {
             return;
         }
         mIntervalCount = 0;
+        if (!mSettingPackage.getPushMessage()) {
+            //推送消息开关未打开
+            if (Logger.openLog) {
+                Logger.i(TAG, "PushMessage is not open");
+            }
+            return;
+        }
         mIsChargingPlanOpen = SettingPackage.getInstance().getChargingPlan();//补能规划开关
         boolean isCurClose = SettingPackage.getInstance().getCurCloseChargingPlan();//是否当前上电内关闭的补能开关
         //boolean isRouteTips = mRoutePackage.getRouteTips();//路径规划页是否已提醒电量低
