@@ -142,8 +142,8 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/dsc_confirm"
-            android:textSize="@dimen/sp_34"
-            android:textColor="@color/white"
+            android:textSize="@dimen/sp_46"
+            android:textColor="@color/white_always"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/skinScrollView" />
@@ -159,7 +159,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/dsc_reset"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/skinScrollView" />
