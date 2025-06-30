@@ -470,11 +470,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
             mViewBinding.skPoiName.setText(R.string.shc_my_point);
-            mViewBinding.poiDistanceTime.setVisibility(View.GONE);
-            mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
-            mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
-            mViewBinding.poiContentLayout.setVisibility(View.GONE);
-            mViewBinding.poiDetailsSubLine.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.VISIBLE);
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
             //点击地图弹出的poi详情页不需要展示子点扎标
@@ -1679,21 +1675,45 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * @param isShow 是否显示
      */
     private void showLoading(final boolean isShow) {
-        mViewBinding.csPoiNoResult.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        mViewBinding.ivLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        mViewBinding.noResultHint.setText(getContext().getString(R.string.address_loading));
-        mViewBinding.noResultButton.setVisibility(View.GONE);
-        if (mAnimator != null) {
-            if (isShow) {
-                mAnimator.start();
-            } else {
-                mAnimator.cancel();
-            }
+        if (mViewBinding == null) {
+            return;
         }
-        mViewBinding.skPoiName.setVisibility(isShow ? View.GONE : View.VISIBLE);
-        mViewBinding.poiDetailsScroll.setVisibility(isShow ? View.GONE : View.VISIBLE);
-        mViewBinding.poiTypeIcon.setVisibility(isShow ? View.GONE : View.VISIBLE);
-        mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(isShow ? View.GONE : View.VISIBLE);
+        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
+            mViewBinding.csPoiNoResult.setVisibility(View.GONE);
+            mViewBinding.skPoiName.setVisibility(View.VISIBLE);
+            mViewBinding.poiSecondAddress.setVisibility(View.VISIBLE);
+            mViewBinding.poiDetailsScroll.setVisibility(View.VISIBLE);
+            mViewBinding.poiTypeIcon.setVisibility(View.VISIBLE);
+            if (isShow) {
+                mViewBinding.poiSecondAddress.setText(getContext().getString(R.string.address_loading_my_car));
+            } else {
+                if (ConvertUtils.isEmpty(mPoiInfoEntity.getAddress())) {
+                    //地址为空时，显示地区名称
+                    CityDataInfo cityDataInfo = mScreenViewModel.getCityInfo(mPoiInfoEntity.getAdCode());
+                    if (!ConvertUtils.isEmpty(cityDataInfo)) {
+                        mViewBinding.poiSecondAddress.setText(cityDataInfo.getName());
+                    }
+                } else {
+                    mViewBinding.poiSecondAddress.setText(mPoiInfoEntity.getAddress());
+                }
+            }
+        } else {
+            mViewBinding.csPoiNoResult.setVisibility(isShow ? View.VISIBLE : View.GONE);
+            mViewBinding.ivLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
+            mViewBinding.noResultHint.setText(getContext().getString(R.string.address_loading));
+            mViewBinding.noResultButton.setVisibility(View.GONE);
+            if (mAnimator != null) {
+                if (isShow) {
+                    mAnimator.start();
+                } else {
+                    mAnimator.cancel();
+                }
+            }
+            mViewBinding.skPoiName.setVisibility(isShow ? View.GONE : View.VISIBLE);
+            mViewBinding.poiDetailsScroll.setVisibility(isShow ? View.GONE : View.VISIBLE);
+            mViewBinding.poiTypeIcon.setVisibility(isShow ? View.GONE : View.VISIBLE);
+            mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(isShow ? View.GONE : View.VISIBLE);
+        }
     }
 
     /**
@@ -1702,6 +1722,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      */
     public void doSearch(final PoiInfoEntity poiInfo) {
         Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch ");
+        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
+            mViewBinding.skPoiName.setText(R.string.shc_my_point);
+            mViewBinding.poiDistanceTime.setVisibility(View.GONE);
+            mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
+            mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
+            mViewBinding.poiContentLayout.setVisibility(View.GONE);
+            mViewBinding.poiDetailsSubLine.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setVisibility(View.VISIBLE);
+            mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsBottomView.stlFunction.setVisibility(View.GONE);
+        }
         showLoading(true);
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         ThreadManager.getInstance().postDelay(mTimeoutTask, 8000);
@@ -1724,15 +1756,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }else{
             mScreenViewModel.doSearchByNet(poiInfo);
         }
-        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
-            mViewBinding.skPoiName.setText(R.string.shc_my_point);
-            mViewBinding.poiDistanceTime.setVisibility(View.GONE);
-            mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
-            mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
-            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setVisibility(View.VISIBLE);
-            mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setVisibility(View.GONE);
-            mViewBinding.scenePoiDetailsBottomView.stlFunction.setVisibility(View.GONE);
-        }
+
     }
 
     public void setChildIndex(final int index) {

@@ -355,6 +355,7 @@
     <string name="cancel_num_tip">您已取消%s次，超过3次不可预约</string>
     <string name="travel_max_time">预计到达时间大于30分钟不支持预约</string>
     <string name="address_loading">地址获取中</string>
+    <string name="address_loading_my_car">地址获取中……</string>
     <string name="filter_select_more">(可多选)</string>
     <string name="filter_select_fast">快充</string>
     <string name="filter_select_free_park">免费停车</string>
