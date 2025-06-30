@@ -310,7 +310,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
             // 不显示充电站
             int size = mLastChargeStationRemain.size();
             if (Logger.openLog) {
-                Logger.d(TAG, "jcs mLastChargeStationRemain.size:", size);
+                Logger.d(TAG, "mLastChargeStationRemain.size:", size);
             }
             if (size > 0) {
                 for (int i = 0; i < size && i < MAX_VIA_NUM; i++) {
