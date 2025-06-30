@@ -245,7 +245,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             addFragment(SplitFragment.getInstance(), null);
         } else {
             final BaseFragment baseFragment = mStackManager.getCurrentFragment(mScreenId);
-            Logger.d("screen_change_used", baseFragment.getClass().getSimpleName());
             if (baseFragment instanceof SplitFragment) {
                 Logger.d("screen_change_used", "关闭1/3屏幕布局");
                 closeFragment(true);
