@@ -94,10 +94,10 @@
     </array>
 
     <array name="main_search_categories_phev_icons">
-        <item>@drawable/img_basic_ic_gas_station</item>
         <item>@drawable/img_basic_ic_gas_charging</item>
-        <item>@drawable/img_basic_ic_pull_up</item>
+        <item>@drawable/img_basic_ic_gas_station</item>
         <item>@drawable/img_basic_ic_gourmet</item>
+        <item>@drawable/img_basic_ic_pull_up</item>
         <item>@drawable/img_basic_ic_more</item>
     </array>
 </resources>

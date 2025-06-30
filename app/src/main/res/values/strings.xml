@@ -754,8 +754,8 @@
 
     <!--搜索主页快捷搜-->
     <string-array name="main_search_categories_name_phev">
-        <item>加油站</item>
         <item>充电站</item>
+        <item>加油站</item>
         <item>美食</item>
         <item>停车场</item>
         <item>更多</item>
