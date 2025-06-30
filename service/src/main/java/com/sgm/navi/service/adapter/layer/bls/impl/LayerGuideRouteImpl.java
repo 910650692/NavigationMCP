@@ -285,7 +285,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             Logger.e(TAG, "路线绘制参数为空，无法进行路线渲染");
             return;
         }
-        Logger.d(TAG, "drawRouteLine ");
+        Logger.d(TAG, "drawRouteLine ", mapTypeId, " isMAutoRouting " + routeResult.isMAutoRouting());
         //更新路线图层数据
         getStyleAdapter().updateRouteResult(routeResult);
         //设置路线信息
@@ -296,8 +296,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         setMainMapPathDrawStyle(false, false, true);
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyRemainPoint, true);
         updatePaths();
-        //设置全览  只对主屏生效
-        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+        //设置全览  只对主屏生效 偏航重算不全览
+        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP && !routeResult.isMAutoRouting()) {
             showPreviewView();
         }
     }

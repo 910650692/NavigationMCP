@@ -121,6 +121,7 @@ public class RouteAdapterImpl implements IRouteApi {
         requestRouteResult.setMRouteType(param.getMRoutePriorityType());
         requestRouteResult.setMRouteRequestCallBackType(param.getRouteRequestCallBackType());
         requestRouteResult.setMRestoration(false);
+        requestRouteResult.setMAutoRouting(false);
         final RouteOption routeOption = mAdapterImplHelper.getRequestParam(requestRouteResult, paramList);
         mLastRouteOption = routeOption;
         mLastRequestRouteResult = requestRouteResult;
@@ -254,6 +255,7 @@ public class RouteAdapterImpl implements IRouteApi {
         requestRouteResult.setMIsOnlineRoute(true);
         requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
         requestRouteResult.setMRestoration(true);
+        requestRouteResult.setMAutoRouting(false);
         final RouteLineLayerParam routeLineLayerParam = new RouteLineLayerParam();
         routeLineLayerParam.getMRouteLinePoints().getMEndPoints().add(routeMsgPushInfo.getMEndPoint());
         routeLineLayerParam.getMRouteLinePoints().getMStartPoints().add(routeMsgPushInfo.getMStartPoint());

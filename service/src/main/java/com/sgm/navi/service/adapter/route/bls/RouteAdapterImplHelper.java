@@ -2101,6 +2101,7 @@ public class RouteAdapterImplHelper {
             }
             requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
             requestRouteResult.setMFastNavi(true);
+            requestRouteResult.setMAutoRouting(true);
             if (info.option.getRouteType() == RouteType.RouteTypeYaw) {
                 Logger.i(TAG, "onReroute: 偏航引发的重算");
                 mRouteResultDataHashtable.put(info.requestId, requestRouteResult);
