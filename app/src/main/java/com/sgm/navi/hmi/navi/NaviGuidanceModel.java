@@ -117,6 +117,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private Runnable mFirstDrawEndPoint;
     private Runnable mInitLazyView;
     private Runnable mUpdateViaList;
+    private Runnable mShowPreView;
     private volatile boolean mIsClusterOpen;
     private int mEndSearchId;
 
@@ -287,6 +288,12 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 }
             }
         };
+        mShowPreView = new Runnable() {
+            @Override
+            public void run() {
+                openClusterOverView();
+            }
+        };
     }
 
     private void releaseRunnable() {
@@ -296,6 +303,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ThreadManager.getInstance().removeHandleTask(mInitLazyView);
         ThreadManager.getInstance().removeHandleTask(mFirstDrawEndPoint);
         ThreadManager.getInstance().removeHandleTask(mUpdateViaList);
+        ThreadManager.getInstance().removeHandleTask(mShowPreView);
     }
 
     @Override
@@ -340,11 +348,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     getMapTypeIdByName(mViewModel.mScreenId);
             mNaviPackage.addNaviRecord(true);
             mLayerPackage.setStartPointVisible(mapTypeId, false);
-            if (!openClusterOverView()) {
+            if (!mClusterMapOpenCloseManager.isClusterOpen()) {
                 mMapPackage.goToCarPosition(mapTypeId);
                 mLayerPackage.setFollowMode(mapTypeId, true);
                 mNaviPackage.setRouteEnergyEmptyPointVisible(MapType.MAIN_SCREEN_MAIN_MAP,
                         false);
+            } else {
+                mNaviPackage.setPreviewStatus(true);
+                ThreadManager.getInstance().postDelay(mShowPreView, NumberUtils.NUM_100);
             }
         }
     }
@@ -352,7 +363,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     /**
      * 开启由于仪表打开地图视图的全览
      */
-    private boolean openClusterOverView() {
+    private void openClusterOverView() {
         boolean isClusterMapOpen = mClusterMapOpenCloseManager.isClusterOpen();
         Logger.i(TAG, "openClusterOverView isClusterMapOpen = ", isClusterMapOpen);
         if (isClusterMapOpen) {
@@ -362,7 +373,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             }
             mNaviPackage.setClusterFixOverViewStatus(true);
         }
-        return isClusterMapOpen;
     }
 
     /**
