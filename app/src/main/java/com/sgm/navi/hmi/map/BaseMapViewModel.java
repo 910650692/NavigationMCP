@@ -35,6 +35,7 @@ import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.favorite.FavoriteHelper;
 import com.sgm.navi.hmi.favorite.HomeCompanyFragment;
 import com.sgm.navi.hmi.favorite.MapPointSearchFragment;
+import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.limit.LimitCitySelectionFragment;
 import com.sgm.navi.hmi.limit.LimitDriveFragment;
 import com.sgm.navi.hmi.mapdata.MapDataFragment;
@@ -142,7 +143,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         super(application);
         backToCcPVisibility = new ObservableBoolean(false);
         mainBTNVisibility = new ObservableBoolean(true);
-        mScaleViewVisibility = new ObservableBoolean(!ScreenTypeUtils.getInstance().isOneThirdScreen());
+        mScaleViewVisibility = new ObservableBoolean(
+                !ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().isNaviDeskBg()
+        );
         naviHomeVisibility = new ObservableField<>(false);
         limitDriverVisibility = new ObservableField<>(false);
         limitEndNumVisibility = new ObservableField<>(false);
@@ -153,7 +156,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         carModeImgId = new ObservableInt(R.drawable.img_car_mode_2d_north);
         cruiseVisibility = new ObservableField<>(false);
         muteVisibility = new ObservableField<>(true);
-        bottomNaviVisibility = new ObservableBoolean(true);
+        bottomNaviVisibility = new ObservableBoolean(!FloatViewManager.getInstance().isNaviDeskBg());
         backToParkingVisibility = new ObservableBoolean(false);
         messageCenterVisible = new ObservableBoolean(false);
         messageCenterEntity = new ObservableField<>();
@@ -170,7 +173,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mPopGuideLoginShow = new ObservableField<>(false);
         cruiseLanesVisibility = new ObservableField<>(false);
         mGoHomeVisible = new ObservableField<>(false);
-        sRVisible = new ObservableField<>(isSupportSplitScreen());
+        sRVisible = new ObservableField<>(isSupportSplitScreen() && !FloatViewManager.getInstance().isNaviDeskBg());
         mIsFullScreen = new ObservableField<>(ScreenTypeUtils.getInstance().isFullScreen());
     }
 
@@ -460,9 +463,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         boolean exist = StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),MainSearchFragment.class.getSimpleName());
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
-        mScaleViewVisibility.set(NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
+        mScaleViewVisibility.set((NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
-                NaviStatus.NaviStatusType.NAVING.equals(state) || exist);
+                NaviStatus.NaviStatusType.NAVING.equals(state) || exist) && !FloatViewManager.getInstance().isNaviDeskBg());
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -495,7 +498,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || NaviStatus.NaviStatusType.ROUTING.equals(state)
                 || NaviStatus.NaviStatusType.NAVING.equals(state))
                 || AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT.equals(fragment)
-                && (!ScreenTypeUtils.getInstance().isOneThirdScreen()));
+                && (!ScreenTypeUtils.getInstance().isOneThirdScreen()) && !FloatViewManager.getInstance().isNaviDeskBg());
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -508,9 +511,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mView.setMapFocusable(true);
         mModel.refreshMapMode();
         mModel.resetMapCenterInScreen();
-        mScaleViewVisibility.set(!ScreenTypeUtils.getInstance().isOneThirdScreen());
+        mScaleViewVisibility.set(!ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().isNaviDeskBg());
         mainBTNVisibility.set(true);
-        bottomNaviVisibility.set(true);
+        bottomNaviVisibility.set(!FloatViewManager.getInstance().isNaviDeskBg());
         if (mModel.checkPopGuideLogin()) {
             mPopGuideLoginShow.set(true);
         }
@@ -1075,7 +1078,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void showOrHiddenCruise(boolean isShow) {
         cruiseVisibility.set(isShow);
-        bottomNaviVisibility.set(!isShow && mainBTNVisibility.get());
+        bottomNaviVisibility.set(!isShow && mainBTNVisibility.get() && !FloatViewManager.getInstance().isNaviDeskBg());
     }
 
     /***
@@ -1333,5 +1336,16 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void openGuideFragment(){
         mModel.openGuideFragment();
+    }
+
+    /**
+     * 桌面背景模式切换后如果是导航桌面需要隐藏“缩放按钮”和“底部设置按钮”和“分屏按钮”
+     * @param desktopMode
+     */
+    public void onDeskBackgroundChange(FloatViewManager.DesktopMode desktopMode) {
+        boolean isOnCruise = ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.CRUISE);
+        bottomNaviVisibility.set(!isOnCruise && mainBTNVisibility.get() && !FloatViewManager.getInstance().isNaviDeskBg());
+        mScaleViewVisibility.set(!ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().isNaviDeskBg());
+        sRVisible.set(!FloatViewManager.getInstance().isNaviDeskBg() && isSupportSplitScreen());
     }
 }

@@ -35,6 +35,7 @@ import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.flavor.CarModelsFeature;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
+import com.sgm.navi.hmi.launcher.IDeskBackgroundChangeListener;
 import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
 import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
@@ -159,7 +160,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ImmersiveStatusScene.IImmersiveStatusCallBack, IAosRestrictedObserver, IPositionPackageCallback,
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack
-        , ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver {
+        , ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver
+        , IDeskBackgroundChangeListener {
     private final MapPackage mapPackage;
     private final LayerPackage layerPackage;
     private final PositionPackage positionPackage;
@@ -250,6 +252,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         super.onCreate();
         speedMonitor.registerCallBack(this);
         mViewModel.initVisibleAreaPoint();
+        FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
     }
 
     @Override
@@ -260,6 +263,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onDestroy() {
         super.onDestroy();
+        FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
         mapPackage.unBindMapView(mViewModel.getMapView());
         speedMonitor.removeCallBack();
         speedMonitor.unInit();
@@ -1728,5 +1732,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
         searchPackage.clearPoiLabelMark();
         searchPackage.clearLabelMark();
+    }
+
+    @Override
+    public void onDeskBackgroundChange(FloatViewManager.DesktopMode desktopMode) {
+        mViewModel.onDeskBackgroundChange(desktopMode);
     }
 }

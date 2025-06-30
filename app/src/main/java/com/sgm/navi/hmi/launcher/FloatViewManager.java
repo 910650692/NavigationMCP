@@ -24,6 +24,7 @@ import com.patac.launcher.ILauncherCallback;
 import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
 
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 
 public class FloatViewManager {
@@ -91,6 +92,7 @@ public class FloatViewManager {
             super.onChange(selfChange, uri);
             currentDeskMode = Settings.Global.getInt(mContentResolver, DESKTOP_MODE_KEY, DesktopMode.KANZI_MODE.getValue());
             Logger.i(TAG, "onChange", selfChange, currentDeskMode);
+            notifyDeskModeChanged();
         }
     };
 
@@ -105,6 +107,8 @@ public class FloatViewManager {
             Logger.i(TAG, "getDesktopMode", currentDeskMode);
         });
     }
+
+    private final CopyOnWriteArrayList<IDeskBackgroundChangeListener> mDeskBackgroundChangeListeners = new CopyOnWriteArrayList<>();
 
     private FloatViewManager() {
         mContentResolver = AppCache.getInstance().getMApplication().getContentResolver();
@@ -214,5 +218,37 @@ public class FloatViewManager {
         public int getValue() {
             return value;
         }
+    }
+
+    /***
+     * 判断当前桌面是否为导航桌面
+     * @return
+     */
+    public boolean isNaviDeskBg() {
+        return currentDeskMode == DesktopMode.NAVIGATION_MODE.getValue();
+    }
+
+    /***
+     * 获取当前桌面模式是否为壁纸桌面
+     * @return
+     */
+    public boolean isBiZhiDeskBg() {
+        return currentDeskMode == DesktopMode.WALLPAPER_MODE.getValue();
+    }
+
+    public void addDeskBackgroundChangeListener(IDeskBackgroundChangeListener listener) {
+        if (!ConvertUtils.isNull(listener)) {
+            mDeskBackgroundChangeListeners.add(listener);
+        }
+    }
+
+    public void removeDeskBackgroundChangeListener(IDeskBackgroundChangeListener listener) {
+        if (!ConvertUtils.isNull(listener)) {
+            mDeskBackgroundChangeListeners.remove(listener);
+        }
+    }
+
+    private void notifyDeskModeChanged() {
+        mDeskBackgroundChangeListeners.forEach(listener -> listener.onDeskBackgroundChange(DesktopMode.values()[currentDeskMode]));
     }
 }

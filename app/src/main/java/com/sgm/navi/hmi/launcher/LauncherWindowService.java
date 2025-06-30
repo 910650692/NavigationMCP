@@ -339,7 +339,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             if (!ConvertUtils.isNull(mBinding) && !ConvertUtils.isNull(mView)) {
                 final boolean isNavigating = isOnNavigating();
                 mBinding.cardTbtView.setVisibility(isNavigating ? View.VISIBLE : View.GONE);
-                mBinding.cardNaviView.setVisibility(isNavigating ? View.GONE : View.VISIBLE);
+                mBinding.cardNaviView.setVisibility((isNavigating || FloatViewManager.getInstance().isBiZhiDeskBg()) ? View.GONE : View.VISIBLE);
                 MapStateManager.getInstance().vrSendLauncherShow(isNavigating);
             }
         });
