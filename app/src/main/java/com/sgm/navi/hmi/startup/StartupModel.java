@@ -87,7 +87,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     public void onDestroy() {
         super.onDestroy();
         StartService.getInstance().unregisterSdkCallback(this);
-        ActivatePackage.getInstance().removeActObserver(mActObserver);
+        //ActivatePackage.getInstance().removeActObserver(mActObserver);
     }
 
     @Override
@@ -178,7 +178,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     @Override
     public void onSdkInitSuccess() {
         Logger.i(TAG, "onSdkInitSuccess");
-        ActivatePackage.getInstance().addActObserver(mActObserver);
+        //ActivatePackage.getInstance().addActObserver(mActObserver);
         StartService.getInstance().unregisterSdkCallback(this);
         mViewModel.startMapActivity();
     }
