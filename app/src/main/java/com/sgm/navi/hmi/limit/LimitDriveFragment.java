@@ -284,6 +284,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                 mBinding.layoutPolicy.setVisibility(View.VISIBLE);
                 if (restrictedArea.getMCityNames().size() > 1) {
                     mBinding.tvCity.setVisibility(View.GONE);
+                    mBinding.tvOtherCity.setVisibility(View.GONE);
                     mBinding.layoutMultiCity.setVisibility(View.VISIBLE);
                     mCitiesAdapter.setData(restrictedArea.getMCityNames());
                     mCitiesAdapter.setListener(new LimitDriverCitiesAdapter.ItemClickListener() {
@@ -311,6 +312,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                     });
                 } else {
                     mBinding.tvCity.setVisibility(View.VISIBLE);
+                    mBinding.tvOtherCity.setVisibility(View.VISIBLE);
                     mBinding.layoutMultiCity.setVisibility(View.GONE);
                     mBinding.tvCity.setText(restrictedArea.getMCityNames().get(0));
                 }

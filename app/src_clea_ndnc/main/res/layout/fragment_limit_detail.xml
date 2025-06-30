@@ -101,7 +101,7 @@
                 android:layout_width="@dimen/dp_501"
                 android:layout_height="@dimen/dp_49"
                 android:layout_marginStart="@dimen/dp_22"
-                android:layout_marginTop="@dimen/dp_135"
+                android:layout_marginTop="@dimen/dp_115"
                 android:visibility="visible"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -157,7 +157,7 @@
                 android:background="@drawable/bg_item_limit"
                 android:paddingHorizontal="@dimen/dp_46"
                 android:paddingVertical="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_108"
+                android:layout_marginTop="@dimen/dp_106"
                 android:layout_marginEnd="@dimen/dp_34"
                 android:text="@string/limit_other"
                 android:visibility="visible"
