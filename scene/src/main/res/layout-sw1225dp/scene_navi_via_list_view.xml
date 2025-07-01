@@ -17,14 +17,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:maxHeight="@dimen/dp_595">
+        android:maxHeight="@dimen/dp_1010">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginBottom="@dimen/dp_20"
-            app:layout_constraintBottom_toTopOf="@+id/sll_add_via">
+            app:layout_constraintBottom_toTopOf="@+id/sll_add_via"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/srv_add_via"
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHeight_max="@dimen/dp_373"
+                app:layout_constraintHeight_max="@dimen/dp_744"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
@@ -42,10 +42,10 @@
             clickCommand="@{naviViaList.skipAlongWayFragment}"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_90"
+            android:layout_marginHorizontal="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_20"
             android:background="@drawable/bg_route_start_navigation_button"
             android:gravity="center"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:layout_marginHorizontal="@dimen/dp_30"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent">
 
