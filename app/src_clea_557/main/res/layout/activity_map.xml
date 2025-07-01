@@ -427,6 +427,7 @@
         <include
             android:id="@+id/include_limit"
             layout="@layout/item_limit_tip"
+            app:viewModel="@{ViewModel}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_70"
@@ -437,6 +438,7 @@
         <include
             android:id="@+id/cruise_layout"
             layout="@layout/cruise_on_map"
+            app:viewModel="@{ViewModel}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
@@ -444,48 +446,47 @@
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_main_tab" />
-    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-    <!--启动页、权限、隐私、初始化-->
-    <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:id="@+id/main_start"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black">
-
-        <com.sgm.navi.ui.view.SkinImageView
-            android:id="@+id/main_img"
+        <!--启动页、权限、隐私、初始化-->
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/main_start"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/starting_bg"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:background="@color/black">
 
-        <com.sgm.navi.ui.view.SkinImageView
-            android:id="@+id/activating_img"
-            android:layout_width="@dimen/dp_225"
-            android:layout_height="@dimen/dp_225"
-            android:layout_marginBottom="@dimen/dp_67"
-            android:src="@drawable/icon_limit_loading"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/main_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/starting_bg"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/activating_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_30"
-            android:text="@string/activating"
-            android:textColor="@color/auto_color_ffffff"
-            android:textSize="@dimen/sp_36"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/activating_img"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/activating_img"
+                android:layout_width="@dimen/dp_225"
+                android:layout_height="@dimen/dp_225"
+                android:layout_marginBottom="@dimen/dp_67"
+                android:src="@drawable/icon_limit_loading"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/activating_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_30"
+                android:text="@string/activating"
+                android:textColor="@color/auto_color_ffffff"
+                android:textSize="@dimen/sp_36"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activating_img"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.sgm.navi.ui.view.SkinConstraintLayout>
-
 </layout>
