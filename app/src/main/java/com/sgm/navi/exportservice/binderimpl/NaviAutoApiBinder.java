@@ -42,6 +42,7 @@ import com.sgm.navi.mapservice.common.INaviAutoSpeedCallBack;
 import com.sgm.navi.mapservice.common.INaviAutoStatusCallback;
 import com.sgm.navi.mapservice.util.ExportConvertUtil;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
@@ -83,7 +84,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
 
-public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
+public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartService.ISdkInitCallback {
 
     private static final String TAG = NaviAutoApiBinder.class.getSimpleName();
     private static final String INNER_CLIENT = "default";
@@ -149,6 +150,26 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
 
     public NaviAutoApiBinder() {
+        StartService.getInstance().registerSdkCallback("", this);
+        if(!StartService.getInstance().checkSdkIsNeedInit()){
+            registerCallback();
+        }
+        mGuidePanelStatus = getGuidePanelStatus(TAG);
+        mReversePkgMap = new ConcurrentHashMap<>();
+        mReversePkgMap.put(DBA_CLIENT, 0L);
+        mReversePkgMap.put(ONSTAR_CLIENT, 0L);
+        mReversePkgMap.put(ADM_CLIENT, 0L);
+        mReversePkgMap.put(ADMHC_CLIENT, 0L);
+        mReversePkgMap.put(ADCU_CLIENT, 0L);
+        mReversePkgMap.put(GALLERY_CLIENT, 0L);
+    }
+
+    @Override
+    public void onSdkInitSuccess() {
+        registerCallback();
+    }
+
+    private void registerCallback(){
         initPositionCallback();
         initSearchCallback();
         initNaviStatusCallback();
@@ -162,15 +183,6 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);
         SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
         MyFsaService.getInstance().registerExportEventCallBack(mEventCallBack);
-        mGuidePanelStatus = getGuidePanelStatus(TAG);
-
-        mReversePkgMap = new ConcurrentHashMap<>();
-        mReversePkgMap.put(DBA_CLIENT, 0L);
-        mReversePkgMap.put(ONSTAR_CLIENT, 0L);
-        mReversePkgMap.put(ADM_CLIENT, 0L);
-        mReversePkgMap.put(ADMHC_CLIENT, 0L);
-        mReversePkgMap.put(ADCU_CLIENT, 0L);
-        mReversePkgMap.put(GALLERY_CLIENT, 0L);
     }
 
     /**
