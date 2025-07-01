@@ -15,17 +15,18 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/dp_29"
-        android:paddingHorizontal="@dimen/dp_29"
-        android:background="@drawable/bg_shadow_navi_buick">
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:paddingHorizontal="@dimen/dp_34"
+        android:paddingVertical="@dimen/dp_34">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_948"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_140"
             android:clickable="true"
-            tools:background="@color/navi_color_FF595F_100"
-            tools:layout_height="@dimen/dp_160"
-            tools:layout_width="@dimen/dp_1000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
 
             <com.sgm.navi.scene.ui.navi.view.ButtonText
@@ -57,10 +58,12 @@
                 clickCommand="@{naviLastMile.onClose}"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_31"
+                android:layout_marginEnd="@dimen/dp_31"
                 android:background="@drawable/img_off58"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/stv_send_request_info"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinTextView
