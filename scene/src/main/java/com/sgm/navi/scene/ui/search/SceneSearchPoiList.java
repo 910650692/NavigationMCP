@@ -112,6 +112,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private int mTaskId;
     private boolean mIsEnd = false;
     private List<SearchChildCategoryLocalInfo> mChildQuickList;
+    private String mQuickValue;
 
     public SceneSearchPoiList(@NonNull final Context context) {
         super(context);
@@ -620,11 +621,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     mSearchLoadingDialog = new SearchLoadingDialog(getContext());
                     mSearchLoadingDialog.show();
                 }
+                mPageNum = 1;
                 if(mCurrentSelectedQuick == position){
                     mCurrentSelectedQuick = -1;
                     if(!ConvertUtils.isNull(mAdapter)){
                         mAdapter.setQuickLabel("");
                     }
+                    mQuickValue = "";
                     mScreenViewModel.keywordSearch(mPageNum,mSearchText);
                     return;
                 }
@@ -638,6 +641,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter_hint));
                 }else{
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"value: "+info.getValue());
+                    mQuickValue = info.getValue();
                     if(info.getValue().contains("_")){
                         if("searchlist_charging_mode_fast".equals(info.getValue())){
                             refreshLocalInfoListCheckedState(1, 2);
@@ -783,8 +787,16 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         switch (mSearchType) {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
-                if(!ConvertUtils.isEmpty(getClassifyData())){
-                    mScreenViewModel.keywordSearch(pageNum, keyword, mResultEntity.getRetain(),getClassifyData(),false);
+                if(!ConvertUtils.isEmpty(getClassifyData()) || !ConvertUtils.isEmpty(mQuickValue)){
+                    if(!ConvertUtils.isEmpty(mQuickValue)){
+                        if(mQuickValue.contains("_")){
+                            mScreenViewModel.keywordSearch(mPageNum,mSearchText,mResultEntity.getRetain(),mQuickValue,false);
+                        }else{
+                            mScreenViewModel.keywordSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),mQuickValue,false);
+                        }
+                    }else{
+                        mScreenViewModel.keywordSearch(pageNum, keyword, mResultEntity.getRetain(),getClassifyData(),false);
+                    }
                 }else{
                     if (mCityCode != 0) {
                         mScreenViewModel.keywordSearch(pageNum, keyword, mCityCode, false, isReSearch);
@@ -950,6 +962,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
             mQuickFilterListAdapter.setLabelList(mChildQuickList);
         }else{
+            mQuickValue = "";
             mViewBinding.searchLabelFilter.setVisibility(GONE);
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
@@ -1011,7 +1024,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mResultEntity = searchResultEntity;
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySearchResult name: " + searchResultEntity.getKeyword());
         mSearchType = searchResultEntity.getSearchType();
-        if (!ConvertUtils.isEmpty(searchResultEntity.getPoiList()) && searchResultEntity.getPoiList().size() == 1) {
+        if (!ConvertUtils.isEmpty(searchResultEntity.getPoiList()) && searchResultEntity.getPoiList().size() == 1 && mPageNum == 1) {
             //只有一个搜索结果时，直接跳转结果界面
             final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
             final int poiType = getPoiType(mHomeCompanyType);
