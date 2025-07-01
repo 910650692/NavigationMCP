@@ -13,12 +13,14 @@ import com.autonavi.gbl.layer.SearchAlongWayLayerItem;
 import com.autonavi.gbl.layer.SearchChargeStationLayerItem;
 import com.autonavi.gbl.layer.model.BizChargeStationInfo;
 import com.autonavi.gbl.layer.model.BizSearchType;
+import com.autonavi.gbl.layer.model.SearchAlongWayExtraData;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.sgm.navi.service.R;
 import com.sgm.navi.service.define.layer.refix.LayerItemData;
 import com.sgm.navi.service.define.layer.refix.LayerItemSearchPoint;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
+import com.sgm.navi.service.define.layer.refix.LayerSearchAlongRouteType;
 import com.sgm.navi.service.define.search.ParkingInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
@@ -57,6 +59,18 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
                         Logger.d(TAG, "搜索列表可见数字扎标-index =" + index);
                         return KEY_SEARCH_LIST_INDEX + "_" + index;
+                    }
+                }
+            }
+            case BizSearchType.BizSearchTypePoiAlongRoute -> {
+                if (item instanceof SearchAlongWayLayerItem alongWayLayerItem) {
+                    int typeCode = alongWayLayerItem.getMTypeCode();
+                    Logger.d(TAG, "沿途搜类型 typeCode " + typeCode);
+                    switch (typeCode) {
+                        case LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE -> {
+                            Logger.d(TAG, "沿途搜-自定义充电站扎标");
+                            return KEY_SEARCH_POINT_ALONG_WAY_CHARGE;
+                        }
                     }
                 }
             }
@@ -343,6 +357,35 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     public List<CustomUpdatePair> updateTextureUpdatePair(LayerItem item) {
         List<CustomUpdatePair> customUpdatePairs = new ArrayList<>();
         switch (item.getBusinessType()) {
+            case BizSearchType.BizSearchTypePoiAlongRoute:
+                if (item instanceof SearchAlongWayLayerItem chargeItem) {
+                    SearchAlongWayExtraData extraData = chargeItem.getMExtraData();
+                    if (ConvertUtils.isNull(extraData) || ConvertUtils.isNull(extraData.chargeStationInfo)) {
+                        Logger.e(TAG, "charge station is null");
+                        return customUpdatePairs;
+                    }
+                    final BizChargeStationInfo chargeStation = extraData.chargeStationInfo;
+                    final int fastTotal = chargeStation.fastTotal;
+                    final int fastFree = chargeStation.fastFree;
+                    final int slowTotal = chargeStation.slowTotal;
+                    final int slowFree = chargeStation.slowFree;
+                    final int index = getLayerItemIndex(item);
+                    customUpdatePairs.add(createUpdateValuePair("id_position", String.valueOf(index + 1)));
+                    if (fastTotal == 0) {
+                        customUpdatePairs.add(createUpdateStylePair("div_fast", "display:none;"));
+                    } else {
+                        customUpdatePairs.add(createUpdateValuePair("id_fast", "快"+fastFree + "/" + fastTotal));
+                    }
+                    if (slowTotal == 0) {
+                        customUpdatePairs.add(createUpdateStylePair("div_slow", "display:none;"));
+                    } else {
+                        customUpdatePairs.add(createUpdateValuePair("id_slow", "慢"+slowFree + "/" + slowTotal));
+                    }
+                    if (fastTotal == 0 && slowTotal == 0) {
+                        customUpdatePairs.add(createUpdateStylePair("search_charge_label", "display:none;"));
+                    }
+                }
+                break;
             case BizSearchType.BizSearchTypeChargeStation: {
                 //TODO判断是否已经预约
                 SearchChargeStationLayerItem searchChargeItem = (SearchChargeStationLayerItem) item;
@@ -384,6 +427,10 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             }
         }
         return customUpdatePairs;
+    }
+
+    public boolean isFromCardImagesRes(LayerItem item) {
+        return item.getBusinessType() == BizSearchType.BizSearchTypePoiAlongRoute;
     }
 
 }

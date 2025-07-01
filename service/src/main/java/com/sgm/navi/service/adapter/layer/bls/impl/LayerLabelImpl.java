@@ -9,6 +9,7 @@ import com.autonavi.gbl.layer.model.BizLabelType;
 import com.autonavi.gbl.layer.model.BizPopPointBusinessInfo;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.sgm.navi.service.adapter.layer.bls.style.LayerLabelStyleAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemLabelResult;
@@ -32,7 +33,7 @@ public class LayerLabelImpl extends BaseLayerImpl<LayerLabelStyleAdapter> {
     }
 
     @Override
-    protected void dispatchItemClickEvent(LayerItem item) {
+    protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
         switch (item.getBusinessType()) {
             case BizLabelType.BizLabelTypeRoutePopSearchPoint: {
                 dispatchRoutePointEndPark();

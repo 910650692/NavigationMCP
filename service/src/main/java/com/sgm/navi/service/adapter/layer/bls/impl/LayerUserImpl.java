@@ -11,6 +11,7 @@ import com.autonavi.gbl.layer.model.BizUserFavoritePoint;
 import com.autonavi.gbl.layer.model.BizUserType;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.autonavi.gbl.user.behavior.model.FavoriteType;
 import com.autonavi.gbl.user.usertrack.model.GpsTrackDepthInfo;
 import com.autonavi.gbl.user.usertrack.model.GpsTrackPoint;
@@ -204,7 +205,7 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
     }
 
     @Override
-    protected void dispatchItemClickEvent(LayerItem item) {
+    protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
         switch (item.getBusinessType()) {
             case BizUserType.BizUserTypeFavoriteMain: {
                 if ((item instanceof FavoritePointLayerItem) && getCallBack() != null) {

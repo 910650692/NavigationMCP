@@ -1,0 +1,30 @@
+<div style="width:auto;height:auto;">
+    <div
+        style="flex-direction:row;justify-content:center;align-items:center;width:auto;height:auto;background-image:layer_image_search_along_way_charge_bg.9.png;"
+        id="search_charge_label">
+        <div
+            style="flex-direction:row;justify-content:center;align-items:center;width:48px;height:48px;background-image:layer_image_charge_index_bg.png;"
+            id="div_position">
+            <label style="font-size:32px;color:#ffffff;font-family:font_cn;" id="id_position"
+                lines="1">10
+            </label>
+        </div>
+        <div
+            style="flex-direction:row;justify-content:center;align-items:center;width:auto;height:auto; margin-left:10px;"
+            id="div_fast">
+            <label style="font-size:30px;color:#FFE34335;font-family:font_cn;" id="id_fast"
+                lines="1">快6/6
+            </label>
+        </div>
+        <div
+            style="flex-direction:row;justify-content:center;align-items:center;margin-left:10px;width:auto;height:auto;"
+            id="div_slow">
+            <label style="font-size:30px;color:#FF4ABA59;font-family:font_cn;" id="id_slow"
+                lines="1">慢4/4
+            </label>
+        </div>
+        <image
+            style="flex-direction:row;justify-content:center;align-items:center;margin-left:10px;width:56px;height:56px;"
+            id="icon_add_click" src="layer_image_charge_add.png" />
+    </div>
+</div>

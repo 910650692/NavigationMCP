@@ -25,6 +25,7 @@ import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.model.PointD;
 import com.autonavi.gbl.map.model.PreviewParam;
 import com.sgm.navi.service.R;
+import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.sgm.navi.service.adapter.layer.bls.style.LayerSearchStyleAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemSearchResult;
@@ -128,33 +129,39 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     }
 
     @Override
-    protected void dispatchItemClickEvent(LayerItem item) {
+    protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
         int index = 0;
         LayerPointItemType type = LayerPointItemType.NULL;
-        switch (item.getBusinessType()) {
-            // 搜索图层内容点击
-            case BizSearchType.BizSearchTypePoiParentPoint -> {
-                index = Integer.parseInt(item.getID());
-                type = LayerPointItemType.SEARCH_PARENT_POINT;
-            }
-            case BizSearchType.BizSearchTypePoiChildPoint -> {
-                index = Integer.parseInt(item.getID());
-                type = LayerPointItemType.SEARCH_CHILD_POINT;
-            }
-            case BizSearchType.BizSearchTypePoiParkRoute -> {
-                index = Integer.parseInt(item.getID());
-                type = LayerPointItemType.SEARCH_PARENT_PARK;
-            }
-            case BizSearchType.BizSearchTypeChargeStation -> {
-                index = Integer.parseInt(item.getID());
-                type = LayerPointItemType.SEARCH_PARENT_CHARGE_STATION;
-            }
-            case BizSearchType.BizSearchTypePoiAlongRoute -> {
-                index = Integer.parseInt(item.getID());
-                type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE;
-            }
-            default -> {
-                // TODO 扩展新的需求
+        if (clickViewIds != null && "icon_add_click".equals(clickViewIds.poiMarkerClickViewId)) {
+            Logger.d(TAG, "icon_add_click");
+            index = Integer.parseInt(item.getID());
+            type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD;
+        } else {
+            switch (item.getBusinessType()) {
+                // 搜索图层内容点击
+                case BizSearchType.BizSearchTypePoiParentPoint -> {
+                    index = Integer.parseInt(item.getID());
+                    type = LayerPointItemType.SEARCH_PARENT_POINT;
+                }
+                case BizSearchType.BizSearchTypePoiChildPoint -> {
+                    index = Integer.parseInt(item.getID());
+                    type = LayerPointItemType.SEARCH_CHILD_POINT;
+                }
+                case BizSearchType.BizSearchTypePoiParkRoute -> {
+                    index = Integer.parseInt(item.getID());
+                    type = LayerPointItemType.SEARCH_PARENT_PARK;
+                }
+                case BizSearchType.BizSearchTypeChargeStation -> {
+                    index = Integer.parseInt(item.getID());
+                    type = LayerPointItemType.SEARCH_PARENT_CHARGE_STATION;
+                }
+                case BizSearchType.BizSearchTypePoiAlongRoute -> {
+                    index = Integer.parseInt(item.getID());
+                    type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE;
+                }
+                default -> {
+                    // TODO 扩展新的需求
+                }
             }
         }
         Logger.d(TAG, "dispatchItemClickEvent type = " + type + " ; index = " + index);

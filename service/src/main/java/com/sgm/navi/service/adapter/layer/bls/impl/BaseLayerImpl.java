@@ -150,12 +150,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public void onNotifyClick(BaseLayer layer, LayerItem item, ClickViewIdInfo clickViewIds) {
-        ThreadManager.getInstance().postUi(new Runnable() {
-            @Override
-            public void run() {
-                dispatchItemClickEvent(item);
-            }
-        });
+        ThreadManager.getInstance().postUi(() -> dispatchItemClickEvent(item, clickViewIds));
     }
 
     @Override
@@ -181,7 +176,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     }
 
-    protected void dispatchItemClickEvent(LayerItem item) {
+    protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
 
     }
 

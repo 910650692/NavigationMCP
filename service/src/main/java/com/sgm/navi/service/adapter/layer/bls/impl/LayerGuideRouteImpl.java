@@ -38,6 +38,7 @@ import com.autonavi.gbl.layer.model.RouteDrawStyle;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.RoutePathLayer;
+import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.autonavi.gbl.map.layer.model.RouteLayerScene;
 import com.autonavi.gbl.map.model.PreviewParam;
 import com.autonavi.gbl.route.model.WeatherLabelItem;
@@ -104,7 +105,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     }
 
     @Override
-    protected void dispatchItemClickEvent(LayerItem item) {
+    protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
         dispatchItemClick(item);
     }
 

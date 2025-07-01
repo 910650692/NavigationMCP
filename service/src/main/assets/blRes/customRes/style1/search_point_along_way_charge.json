@@ -1,13 +1,7 @@
 {
   "point_layer_item_style": {
-    "focus_style": {
-      "bubble_marker_info": "marker_info_search_alongroute_name",
-      "poi_marker_id": "along_route_normal_simple_focus.xml",
-      "poi_marker_info": "marker_info_along_route_normal_simple_focus",
-      "bubble_marker_id": "search_alongroute_name.xml"
-    },
     "normal_style": {
-      "poi_marker_id": "along_route_normal_simple.xml",
+      "poi_marker_id": "search_charge_station_route_label.xml",
       "poi_marker_info": "marker_info_along_route_normal_simple"
     }
   }
