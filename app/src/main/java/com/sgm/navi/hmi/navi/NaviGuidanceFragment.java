@@ -73,6 +73,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private SceneNaviSapaDetailView mSceneNaviSapaDetailView;
     private SceneNaviSapaView mSceneNaviSapaView;
     private PhoneStateListener mPhoneStateListener;
+    private int mBroadCastModeBeforeCall = NumberUtils.NUM_ERROR;
+    private int mBroadCastModeAfterCall = NumberUtils.NUM_ERROR;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,11 +84,28 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             public void onCallStateChanged(int state, String phoneNumber) {
                 super.onCallStateChanged(state, phoneNumber);
                 if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                    // 接通后
                     Logger.i(TAG, "电话通话状态 OFFHOOK");
                     int broadcastMode = SettingPackage.getInstance().getConfigKeyBroadcastMode();
+                    mBroadCastModeBeforeCall = broadcastMode;
                     if (broadcastMode != NaviConstant.BroadcastType.BROADCAST_CONCISE) {
                         switchBroadcastMode(NaviConstant.BroadcastType.BROADCAST_CONCISE);
                     }
+                } else if (state == TelephonyManager.CALL_STATE_IDLE) {
+                    // 挂断后
+                    Logger.i(TAG, "电话通话状态 IDLE");
+                    mBroadCastModeAfterCall = SettingPackage.getInstance().
+                            getConfigKeyBroadcastMode();
+                    // 通话中手动切换了模式
+                    if (mBroadCastModeAfterCall != NaviConstant.BroadcastType.BROADCAST_CONCISE) {
+                        return;
+                        // 通话中没有切换模式
+                    }
+                    if (mBroadCastModeBeforeCall == NaviConstant.BroadcastType.BROADCAST_CONCISE) {
+                        // 如果通话前是简洁模式，则不切换
+                        return;
+                    }
+                    switchBroadcastMode(mBroadCastModeBeforeCall);
                 }
             }
         };
