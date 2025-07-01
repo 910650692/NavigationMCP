@@ -85,7 +85,7 @@
         <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_26"
             android:text="@string/setting_broadcast_voice_current_download"
             android:textSize="@dimen/sp_22"
             android:textColor="@color/setting_bg_tab_text_select"
@@ -101,8 +101,9 @@
             android:text="@{model.getUnpackDataSize()}"
             android:textSize="@dimen/sp_22"
             android:textColor="@color/setting_bg_tab_text_unselect"
-            visibility="@{model.isUsed() ? View.GONE : View.VISIBLE}"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:visibility="visible"
+            android:layout_marginEnd="@dimen/dp_14"
+            app:layout_goneMarginEnd="@dimen/dp_112"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/recommend_voice_operate"/>
