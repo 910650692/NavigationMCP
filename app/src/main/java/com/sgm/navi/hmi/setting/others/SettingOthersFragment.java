@@ -15,6 +15,7 @@ import com.sgm.navi.hmi.databinding.FragmentSettingOthersBinding;
 import com.sgm.navi.hmi.setting.SettingCheckDialog;
 import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.greendao.CommonManager;
+import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
@@ -209,6 +210,8 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                         mViewModel.resetSetting();
                         mViewModel.setResetSettingDialogShown(false);
                         CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
+                        CommonManager.getInstance().insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "");
+                        SettingPackage.getInstance().setPrivacyStatus(false);
                         restartApp();
                     }
 

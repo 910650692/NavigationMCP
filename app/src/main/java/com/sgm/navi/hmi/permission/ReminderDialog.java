@@ -1,12 +1,20 @@
 package com.sgm.navi.hmi.permission;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import androidx.core.widget.NestedScrollView;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.R;
@@ -20,6 +28,9 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
  * @date 2024/12/31
  */
 public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBinding> {
+
+    private WebView mWebView;
+
     public ReminderDialog(Context context, IBaseDialogClickListener baseDialogClickListener) {
         super(context);
         setDialogClickListener(baseDialogClickListener);
@@ -33,6 +44,9 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mWebView = mViewBinding.reminderDetail.reminderWebView;
+        configureWebView();
+
         setCancelable(false);
         mViewBinding.reminderIndex.reminderTermsService.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,13 +54,26 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
             public void onClick(View v) {
                 showOrHideDetail(true);
                 mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_service_title);
-                mViewBinding.reminderDetail.reminderContent.setText(R.string.reminder_page_service_content);
+
+                boolean isDarkMode = isDarkModeEnabled();
+                Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
+                String serviceTermsUrl = isDarkMode ?
+                        getContext().getString(R.string.service_terms_url_dark) :
+                        getContext().getString(R.string.service_terms_url_light);
+
+                mWebView.loadUrl(serviceTermsUrl);
             }
         });
         mViewBinding.reminderIndex.reminderPagePrivacy.setOnClickListener(v -> {
             showOrHideDetail(true);
             mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_privacy_title);
-            mViewBinding.reminderDetail.reminderContent.setText(R.string.reminder_page_privacy_content);
+
+            boolean isDarkMode = isDarkModeEnabled();
+            Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
+            String privacyPolicyUrl = isDarkMode ?
+                    getContext().getString(R.string.privacy_policy_url_dark) :
+                    getContext().getString(R.string.privacy_policy_url_light);
+            mWebView.loadUrl(privacyPolicyUrl);
         });
         mViewBinding.reminderIndex.dialogCommit.setOnClickListener(v -> {
             if (mDialogClickListener != null) {
@@ -73,14 +100,8 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
         } else {
             mViewBinding.reminderIndex.reminderRootIndex.setVisibility(View.VISIBLE);
             mViewBinding.reminderDetail.reminderRootDetail.setVisibility(View.INVISIBLE);
-            resetScrollPosition();
-        }
-    }
-
-    private void resetScrollPosition() {
-        NestedScrollView scrollView = (NestedScrollView) mViewBinding.reminderDetail.reminderContent.getParent();
-        if (!ConvertUtils.isNull(scrollView)) {
-            scrollView.scrollTo(0, 0);
+            mWebView.stopLoading();
+            mWebView.setVisibility(View.GONE);
         }
     }
 
@@ -88,5 +109,56 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         setDialogClickListener(null);
+    }
+
+    private void configureWebView() {
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setForceDark(WebSettings.FORCE_DARK_ON);
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Logger.d("ReminderDialog", "shouldOverrideUrlLoading: ", request.getUrl().toString());
+                view.loadUrl(request.getUrl().toString());
+                return true;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                view.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+
+                String darkModeCSS = "javascript:(function() {" +
+                        "var style = document.createElement('style');" +
+                        "style.type = 'text/css';" +
+                        "style.innerHTML = 'body { background-color: #121212; color: #ffffff; }';" +
+                        "document.head.appendChild(style);" +
+                        "})()";
+
+                if (isDarkModeEnabled()) {
+                    view.evaluateJavascript(darkModeCSS, null);
+                }
+                view.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Logger.d("ReminderDialog", "deprecate shouldOverrideUrlLoading: ", url);
+                view.loadUrl(url);
+                return true;
+            }
+        });
+    }
+
+    private boolean isDarkModeEnabled() {
+        return (getContext().getResources().getConfiguration().uiMode &
+                Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
     }
 }

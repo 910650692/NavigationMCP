@@ -33,29 +33,16 @@
             app:layout_constraintStart_toEndOf="@id/reminder_iv_back"
             app:layout_constraintTop_toTopOf="@id/reminder_iv_back" />
 
-        <androidx.core.widget.NestedScrollView
+        <WebView
+            android:id="@+id/reminder_web_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0"
-            android:scrollbars="vertical"
-            android:scrollbarStyle="outsideInset"
-            android:scrollbarThumbVertical="@drawable/custom_scrollbar_thumb"
-            android:layout_marginHorizontal="@dimen/dp_100"
-            android:layout_marginTop="@dimen/dp_21"
-            android:layout_marginBottom="@dimen/dp_60"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="@dimen/dp_588"
+            android:layout_marginHorizontal="@dimen/dp_160"
+            android:layout_marginTop="@dimen/dp_164"
+            android:layout_marginBottom="@dimen/dp_48"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reminder_title">
-
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/reminder_content"
-                style="@style/dialog_buick_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:lineSpacingExtra="@dimen/dp_1"
-                android:text="@string/reminder_user_terms_personal_info" />
-
-        </androidx.core.widget.NestedScrollView>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 
