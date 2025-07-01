@@ -111,6 +111,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     // 记录当前全览状态 true：进入 false：退出
     private boolean isPreview = false;
 
+    private boolean isSplit = false;
+
     private int isZoomIn = -1;
 
     private IMapAdapterCallback callback;
@@ -305,6 +307,30 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     public void setMapViewTextSize(float f) {
         getMapview().getOperatorBusiness().setMapTextScale(f);
+    }
+
+    public void isSplitScreen(boolean isSplit) {
+        this.isSplit = isSplit;
+    }
+
+    /**
+     * 设置是否锁住手势双指捏合缩放
+     * @param isLock
+     */
+    public void setLockMapPinchZoom(boolean isLock){
+        if(getMapview() != null){
+            getMapview().getOperatorGesture().lockMapPinchZoom(isLock);
+        }
+    }
+
+    /**
+     * 设置是否锁住手势移动
+     * @param isLock
+     */
+    public void setLockMapMove(boolean isLock){
+        if(getMapview() != null){
+            getMapview().getOperatorGesture().lockMapMove(isLock);
+        }
     }
 
     public float getCurrentZoomLevel() {
@@ -650,6 +676,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     @Override
     public void onLongPress(long engineId, long px, long py) {
+        if(isSplit) return;
         PoiInfoEntity poiInfo = new PoiInfoEntity();
         poiInfo.setPoiType(AutoMapConstant.SearchType.GEO_SEARCH);
         poiInfo.setPoint(getGeoPointFromScreenPosition(px, py));

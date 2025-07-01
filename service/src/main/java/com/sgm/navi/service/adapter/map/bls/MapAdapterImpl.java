@@ -206,6 +206,20 @@ public class MapAdapterImpl implements IMapApi {
         mapViewPoolManager.getMapViewImpl(mapTypeId).setMapViewTextSize(f);
     }
 
+    public void isSplitScreen(MapType mapTypeId, boolean isSplit) {
+        mapViewPoolManager.getMapViewImpl(mapTypeId).isSplitScreen(isSplit);
+    }
+
+    @Override
+    public void setLockMapPinchZoom(MapType mapTypeId, boolean isLock) {
+        mapViewPoolManager.getMapViewImpl(mapTypeId).setLockMapPinchZoom(isLock);
+    }
+
+    @Override
+    public void setLockMapMove(MapType mapTypeId, boolean isLock) {
+        mapViewPoolManager.getMapViewImpl(mapTypeId).setLockMapMove(isLock);
+    }
+
     @Override
     public MapMode getCurrentMapMode(MapType mapTypeId) {
         return mapViewPoolManager.getMapViewImpl(mapTypeId).getMapMode();

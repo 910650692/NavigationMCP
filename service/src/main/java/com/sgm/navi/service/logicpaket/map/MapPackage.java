@@ -242,8 +242,20 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         return mMapAdapter.getMapBound(mapTypeId);
     }
 
+    public void isSplitScreen(MapType mapTypeId, boolean isSplit) {
+        mMapAdapter.isSplitScreen(mapTypeId, isSplit);
+    }
+
     public void setLockMapRollAngle(MapType mapTypeId, boolean isLock){
         mLayerPackage.setLockMapRollAngle(mapTypeId, isLock);
+    }
+
+    public void setLockMapPinchZoom(MapType mapTypeId, boolean isLock) {
+        mMapAdapter.setLockMapPinchZoom(mapTypeId, isLock);
+    }
+
+    public void setLockMapMove(MapType mapTypeId, boolean isLock) {
+        mMapAdapter.setLockMapMove(mapTypeId, isLock);
     }
 
     public void showPreview(MapType mapTypeId, PreviewParams previewParams, DynamicLevelMode dynamicLevelMode) {

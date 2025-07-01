@@ -718,6 +718,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void showOrHideSelfParkingView(boolean visible) {
+        if(ScreenTypeUtils.getInstance().isOneThirdScreen()) return;
         backToParkingVisibility.set(visible);
     }
 
@@ -1541,5 +1542,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                         isSupportSplitScreen()
         );
         mIsFullScreen.set(ScreenTypeUtils.getInstance().isFullScreen());
+    }
+
+    public void toSetCarPosition(){
+        //如果切1/3屏时，自车位置按钮显示，则隐藏
+        if(ScreenTypeUtils.getInstance().isOneThirdScreen() && backToParkingVisibility.get()){
+            backToParkingVisibility.set(false);
+        }
+        mModel.setMapCenterInScreen();
+        mModel.goToCarPosition();
     }
 }

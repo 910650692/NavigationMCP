@@ -118,6 +118,7 @@ public interface IMapApi {
 
     void setMapViewTextSize(MapType mapTypeId, float f);
 
+    void isSplitScreen(MapType mapTypeId, boolean isSplit);
 
     MapMode getCurrentMapMode(MapType mapTypeId);
 
@@ -142,6 +143,12 @@ public interface IMapApi {
 
     /*退出全览*/
     void exitPreview(MapType mapTypeId);
+
+    /*锁定地图缩放*/
+    void setLockMapPinchZoom(MapType mapTypeId, boolean isLock);
+
+    /*锁定地图移动*/
+    void setLockMapMove(MapType mapTypeId, boolean isLock);
 
     /*更新UI样式，暂时只适配了黑夜、白天*/
     void updateUiStyle(MapType mapTypeId, ThemeType uiMode);

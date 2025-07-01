@@ -52,6 +52,7 @@ import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.message.MessageCenterType;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.logicpaket.activate.ActivatePackage;
 import com.sgm.navi.service.logicpaket.activate.IActivateObserver;
 import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
@@ -788,8 +789,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
         //todo 亚威
         showOrHideWidgetsOnImersiveStatusChanged(currentImersiveStatus);
-        //todo 主图的沉浸态触碰态只会处理 自车位置控件的显隐
-        if (parkingViewExist()) {
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen() || parkingViewExist()) {
             if (currentImersiveStatus == ImersiveStatus.TOUCH) {
                 mViewModel.showOrHideSelfParkingView(true);
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
@@ -804,7 +804,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         }
 
-        //todo 后续全部删除，在各自模块做操作
         if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && mSettingPackage.getAutoScale()) {
             Logger.i(TAG, "锁定比例尺，触摸态关闭动态比例尺，沉浸态开启比例尺！");
             boolean isOpen = !naviPackage.getFixedOverViewStatus() &&
@@ -818,7 +817,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 layerPackage.closeDynamicLevel(mapTypeId);
             }
         }
-        //todo 后续全部删除，在各自模块做操作
         //导航中偶现 回车位出现问题
         if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.ROUTING) ||
                 TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.NAVING) ||

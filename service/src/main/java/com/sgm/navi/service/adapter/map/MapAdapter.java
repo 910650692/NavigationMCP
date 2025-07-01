@@ -141,6 +141,10 @@ public class MapAdapter {
         mIMapApi.setMapViewTextSize(mapTypeId, f);
     }
 
+    public void isSplitScreen(MapType mapTypeId, boolean isSplit) {
+        mIMapApi.isSplitScreen(mapTypeId, isSplit);
+    }
+
     /**
      * 用于循环切换底图视角
      * @param mapTypeId current MapType
@@ -163,6 +167,14 @@ public class MapAdapter {
             }
         };
         return mIMapApi.setMapMode(mapTypeId, mapMode);
+    }
+
+    public void setLockMapPinchZoom(MapType mapTypeId, boolean isLock) {
+        mIMapApi.setLockMapPinchZoom(mapTypeId, isLock);
+    }
+
+    public void setLockMapMove(MapType mapTypeId, boolean isLock) {
+        mIMapApi.setLockMapMove(mapTypeId, isLock);
     }
 
     public MapMode getCurrentMapMode(MapType mapTypeId) {

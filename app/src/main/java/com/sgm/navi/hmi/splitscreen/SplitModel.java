@@ -68,11 +68,13 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
         mNaviStatus = mNaviStatusAdapter.getCurrentNaviStatus();
         mImmersiveStatus = ImmersiveStatusScene.getInstance().getCurrentImersiveStatus(MAP_TYPE);
+        lockMapSomeActions(true);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        lockMapSomeActions(false);
         ImmersiveStatusScene.getInstance().unRegisterCallback(CALLBACK_KEY);
         mNaviPackage.unregisterObserver(CALLBACK_KEY);
         mMapPackage.unRegisterCallback(MAP_TYPE, this);
@@ -193,6 +195,16 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     @Override
     public void onDeskBackgroundChange(FloatViewManager.DesktopMode desktopMode) {
         mViewModel.updateUiStateAfterDeskBackgroundChanged(desktopMode);
+    }
+
+    /**
+     * 1/3屏状态  不支持缩放 不支持点击  支持移图
+     */
+    public void lockMapSomeActions(boolean isSplit) {
+        Logger.d("ForTest", "lockMapSomeActions: " + isSplit);
+        mMapPackage.isSplitScreen(MapType.MAIN_SCREEN_MAIN_MAP, isSplit);
+        mMapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, !isSplit);
+        mMapPackage.setLockMapPinchZoom(MapType.MAIN_SCREEN_MAIN_MAP, isSplit);
     }
 
     public void exitPreviewIfNeeded() {

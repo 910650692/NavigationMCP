@@ -392,6 +392,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mViewModel.notifyScreenSizeChanged();
             mViewModel.onNaviStatusChange();
             setSplitFragment();
+            mViewModel.toSetCarPosition();
         }
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
