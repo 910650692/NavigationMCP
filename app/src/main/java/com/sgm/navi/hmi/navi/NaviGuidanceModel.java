@@ -346,7 +346,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mIsShowAutoAdd = true;
             final MapType mapTypeId = MapTypeManager.getInstance().
                     getMapTypeIdByName(mViewModel.mScreenId);
-            mNaviPackage.addNaviRecord(true);
+            mNaviPackage.addNaviRecord(false);
             mLayerPackage.setStartPointVisible(mapTypeId, false);
             if (!mClusterMapOpenCloseManager.isClusterOpen()) {
                 mMapPackage.goToCarPosition(mapTypeId);

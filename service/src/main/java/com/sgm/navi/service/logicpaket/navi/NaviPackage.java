@@ -242,7 +242,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 Logger.i(TAG, "isCompleted= ");
                 return;
             }
-            addNaviRecord(false);
+            addNaviRecord(true);
         }
     }
 
@@ -272,6 +272,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     /***
      * 添加导航记录
+     * 非手动结束，到达目的地结束，下电结束之外的异常结束都会被认为是未完成导航
      * @param isCompleted 是否完成导航 由于逻辑调整，现对此做出解释，默认插入时都为true，只有在接收下电信号时如果距离大于1KM则为false
      **/
     public void addNaviRecord(final boolean isCompleted) {
@@ -345,6 +346,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 historyRouteItemBean.setToPoi(endPoiItemBean);
                 mUserTrackAdapter.addHistoryRoute(historyRouteItemBean);
             }
+        } else if (isCompleted) {
+            // 下电后不再弹出继续导航
+            mManager.updateUncompletedNavi();
         }
     }
 
@@ -583,6 +587,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 }
             }
         });
+        mManager.updateUncompletedNavi();
     }
 
     @Override

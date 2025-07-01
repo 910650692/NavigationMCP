@@ -74,21 +74,21 @@ public class HistoryManager {
 
     /**
      * 更新数据
-     * @param info save info
+     * @param info update info
      */
     private void update(final History info) {
-        final History unique = mSearchHistoryDao.queryBuilder()
-                .where(HistoryDao.Properties.MId.eq(info.getMId()))
-                .unique();
-        unique.setMKeyWord(info.getMKeyWord());
-        unique.setMPoiId(info.getMPoiId());
-        unique.setMStartPoint(info.getMStartPoint());
-        unique.setMEndPoint(info.getMEndPoint());
-        unique.setMStartPoiName(info.getMStartPoiName());
-        unique.setMEndPoiName(info.getMEndPoiName());
-        unique.setMType(info.getMType());
-        unique.setMUpdateTime(info.getMUpdateTime());
-        mSearchHistoryDao.update(unique);
+        if (ConvertUtils.isNull(info)) {
+            Logger.i(TAG, "update info is null");
+            return;
+        }
+        if (mSearchHistoryDao == null) {
+            Logger.i(TAG, "mSearchHistoryDao is null");
+            return;
+        }
+        if (Logger.openLog) {
+            Logger.d(TAG, "update name:" + (info != null ? info.getMEndPoiName() : "info==null"));
+        }
+        mSearchHistoryDao.update(info);
     }
 
     /**
@@ -214,6 +214,26 @@ public class HistoryManager {
             return histories.get(0);
         } else {
             return null; //没有找到数据
+        }
+    }
+
+    /**
+     * 导航结束更新未完成的导航状态
+     * 将所有未完成的导航记录标记为已完成
+     */
+    public void updateUncompletedNavi() {
+        final List<History> histories = mSearchHistoryDao.queryBuilder()
+                .where(HistoryDao.Properties.MIsCompleted.eq(false))
+                .list();
+        if (ConvertUtils.isEmpty(histories)) {
+            Logger.d(TAG, "No uncompleted navigation found to update.");
+        }
+        for (int i = 0; i < histories.size(); i++) {
+            History history = histories.get(i);
+            if (!ConvertUtils.isEmpty(history)) {
+                history.setMIsCompleted(true); // 设置为已完成
+                mManager.update(history);
+            }
         }
     }
 
