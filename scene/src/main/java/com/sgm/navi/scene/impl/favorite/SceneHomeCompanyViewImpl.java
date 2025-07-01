@@ -9,6 +9,7 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
+import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.StackManager;
 
 /**
@@ -37,7 +38,10 @@ public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyVie
 
     @Override
     public void closeSearch() {
-        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(mMapTypeId.name());
+        if (baseFragment != null) {
+            baseFragment.closeFragment(true);
+        }
     }
 
     @Override
