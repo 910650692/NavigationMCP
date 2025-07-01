@@ -1315,14 +1315,15 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      * @return CallResponse
      */
     @Override
-    public CallResponse onDistanceLeftAsk(@Nullable final String start, @Nullable final String arrival, final RespCallback respCallback) {
+    public CallResponse onDistanceLeftAsk(@Nullable final String start, @Nullable String arrival, final RespCallback respCallback) {
         if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onDistanceLeftAsk: start = ", start, ", arrival = ", arrival);
         }
-        if (TextUtils.isEmpty(arrival)) {
-            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NO_EMPTY_DEST);
-        }
 
+        if (TextUtils.isEmpty(arrival)) {
+            //当前SDK语音询问"还有多久到"start和arrival都为null，默认设置为DESTINATION.
+            arrival = IVrBridgeConstant.PoiType.DESTINATION;
+        }
         final CallResponse response;
         switch (arrival) {
             case IVrBridgeConstant.PoiType.DESTINATION:
