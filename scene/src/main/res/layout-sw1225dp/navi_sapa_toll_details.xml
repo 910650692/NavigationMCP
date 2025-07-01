@@ -12,6 +12,7 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        clickCommand="@{sapaDetail.rootClick}"
         android:layout_width="@dimen/dp_613"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_shadow_navi_buick">

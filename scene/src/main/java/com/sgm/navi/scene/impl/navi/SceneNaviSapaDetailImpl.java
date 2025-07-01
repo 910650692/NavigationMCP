@@ -1,5 +1,7 @@
 package com.sgm.navi.scene.impl.navi;
 
+import android.util.Log;
+
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
@@ -28,6 +30,7 @@ import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
+import com.sgm.navi.ui.action.Action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -660,5 +663,14 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                     mCurrentPoiInfoEntity, true);
         }
         updateSceneVisible(false);
+    }
+
+
+    // 防止点击穿透
+    private final Action mRootClick = () -> {
+    };
+
+    public Action getRootClick() {
+        return mRootClick;
     }
 }
