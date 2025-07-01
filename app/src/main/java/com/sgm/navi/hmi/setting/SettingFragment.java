@@ -27,7 +27,7 @@ import java.lang.ref.WeakReference;
 
 public class SettingFragment extends BaseFragment<FragmentSettingBinding, SettingViewModel> {
 
-    private SparseArray<Fragment> mFragmentMap = new SparseArray<>();
+    private SparseArray<Fragment> mFragmentMap;
     private Fragment mCurrentFragment;
 
     @Override
@@ -106,6 +106,9 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
         if (mCurrentFragment != null) {
             transaction.hide(mCurrentFragment);
         }
+        if (mFragmentMap == null) {
+            mFragmentMap = new SparseArray<>();
+        }
         Fragment target = mFragmentMap.get(position);
         if (target == null) {
             switch (position) {
@@ -129,6 +132,8 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
             }
             mFragmentMap.put(position, target);
             transaction.add(R.id.fragment_container, target);
+        } else if (!target.isAdded()) {
+            transaction.add(R.id.fragment_container, target);
         } else {
             transaction.show(target);
         }
@@ -137,26 +142,34 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        showFragment(mBinding.tabLayout.getSelectedTabPosition());
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         FragmentManager manager = getChildFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        for (int i = 0; i < mFragmentMap.size(); i++) {
-            Fragment fragment = mFragmentMap.valueAt(i);
-            if (fragment != null && fragment.isAdded()) {
-                transaction.remove(fragment);
+        if (mFragmentMap != null) {
+            for (int i = 0; i < mFragmentMap.size(); i++) {
+                Fragment fragment = mFragmentMap.valueAt(i);
+                if (fragment != null && fragment.isAdded()) {
+                    transaction.remove(fragment);
+                }
             }
         }
         transaction.commitAllowingStateLoss();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
         mCurrentFragment = null;
         if (mFragmentMap != null) {
             mFragmentMap.clear();
             mFragmentMap = null;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }
