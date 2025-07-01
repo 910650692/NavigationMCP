@@ -107,8 +107,6 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
             }
             updateSceneVisible(true);
         }
-        Logger.i(TAG, "ConvertUtils.isEmpty(naviEtaInfo.viaRemain) = ",
-                ConvertUtils.isEmpty(naviEtaInfo.viaRemain));
     }
 
     /**

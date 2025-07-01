@@ -111,8 +111,6 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
      */
     @Override
     public void onUpdateNaviInfo(final ArrayList<NaviInfo> naviInfoList) {
-        Logger.i(TAG, "onUpdateNaviInfo naviInfoList size:",
-                (ConvertUtils.isEmpty(naviInfoList) ? 0 : naviInfoList.size()));
         mHelper.mNaviInfo = ConvertUtils.isEmpty(naviInfoList) ? null : naviInfoList.get(0);
         NaviAdapter.getInstance().setNaviInfoList(NaviDataFormatHelper.
                 forMatNaviInfoEntity(naviInfoList));

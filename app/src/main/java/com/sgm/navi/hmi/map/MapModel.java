@@ -1214,14 +1214,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
-    public void onNaviInfo(NaviEtaInfo naviETAInfo) {
-    }
-
-    @Override
-    public void onNaviArrive(long traceId, int naviType) {
-    }
-
-    @Override
     public void onNaviStop() {
         Logger.i(TAG, "onNaviStop:");
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
