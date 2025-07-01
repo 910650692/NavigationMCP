@@ -811,6 +811,42 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * 算路终点周边搜索，需要传入指定的经纬度和搜索半径和是否静默搜索
+     *
+     * @param page    页数
+     * @param keyword 搜索关键词
+     * @param geoPoint 经纬度
+     * @param  range 搜索半径
+     * @param isSilentSearch 是否静默搜索
+     * @return taskId
+     */
+    public int routeTerminalAroundSearch(final int page, final String keyword, final GeoPoint geoPoint,
+                            final String range, final boolean isSilentSearch) {
+        if (keyword == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute nearby search: keyword is null.");
+            return -1;
+        }
+        final GeoPoint userLoc = new GeoPoint();
+        userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .isSilentSearch(isSilentSearch)
+                .keyword(keyword)
+                .page(page)
+                .queryType(AutoMapConstant.SearchQueryType.AROUND)
+                .searchType(AutoMapConstant.SearchType.ROUTE_TERMINAL_PARK_SEARCH)
+                .userLoc(userLoc)
+                .poiLoc(geoPoint)
+                .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
+                .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
+                .range(range)
+                .build();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing around search with range.");
+        return mSearchAdapter.aroundSearch(requestParameterBuilder);
+    }
+
+    /**
      * 周边筛选搜索2.0
      *
      * @param keyword      关键字

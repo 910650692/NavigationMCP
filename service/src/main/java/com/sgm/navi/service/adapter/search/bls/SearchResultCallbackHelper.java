@@ -90,6 +90,9 @@ public class SearchResultCallbackHelper {
             case AutoMapConstant.SearchType.PID_LIST_SEARCH:
                 resultList = handlePoiListSearch(requestParameterBuilder, result);
                 break;
+            case AutoMapConstant.SearchType.ROUTE_TERMINAL_PARK_SEARCH:
+                resultList = handleRouteTerminalParkSearch(requestParameterBuilder, result);
+                break;
             default:
                 Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Unknown search type: " + requestParameterBuilder.getSearchType());
                 return;
@@ -119,6 +122,25 @@ public class SearchResultCallbackHelper {
             return null;
         }
         return SearchResultMapper.getInstance().mapFromKeywordSearchResultV2(requestParameterBuilder, keywordResult);
+    }
+
+    /**
+     * 关键字搜索回调分发
+     * @param requestParameterBuilder 请求参数
+     * @param result 回调数据
+     * @return SearchResultEntity
+     * @param <T> 泛型参数
+     */
+    private <T> SearchResultEntity handleRouteTerminalParkSearch(final SearchRequestParameter requestParameterBuilder, final T result) {
+        if (!(result instanceof KeywordSearchResultV2 keywordResult)) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Invalid result type for keyword search");
+            return null;
+        }
+        return new SearchResultEntity()
+                .setSearchType(requestParameterBuilder.getSearchType())
+                .setKeyword(requestParameterBuilder.getKeyword())
+                .setPoiList(new ArrayList<>())
+                .setTotal(keywordResult.total);
     }
 
     /**

@@ -821,7 +821,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         ThreadManager.getInstance().postDelay( () -> {
             if (RoutePackage.getInstance().isRouteState()) {
                 final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
-                mParkSearchId = mSearchPackage.aroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
+                mParkSearchId = mSearchPackage.routeTerminalAroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
             }
         }, 2000);
     }
@@ -1286,7 +1286,7 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
             return;
         }
         if (mParkSearchId == taskId) {
-            if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()
+            if (searchResultEntity != null && searchResultEntity.getMTotal() > 0
                     && mRoutePackage.isRouteState()) {
                 PoiInfoEntity endPoiEntity = mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP);
                 if (endPoiEntity != null && endPoiEntity.getPointTypeCode() != null && endPoiEntity.getPointTypeCode().startsWith("1509")) {
