@@ -1,6 +1,7 @@
 package com.sgm.navi.service.adapter.user.account.bls;
 
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
@@ -26,20 +27,19 @@ import com.sgm.navi.service.define.user.account.AccessTokenParam;
 
 public class AccountAdapterImpl implements IAccountApi {
     private AccountService mAccountService;
-    private final AccountAdapterImplHelper mAdapterImplHelper;
+    private AccountAdapterImplHelper mAdapterImplHelper;
 
     public AccountAdapterImpl() {
-        mAccountService = (AccountService) ServiceMgr.getServiceMgrInstance()
-                .getBLService(SingleServiceID.AccountSingleServiceID);
-        Logger.i("lvww", mAccountService);
-        mAdapterImplHelper = new AccountAdapterImplHelper(mAccountService);
+
     }
 
+    @SuppressLint("SuspiciousIndentation")
     @Override
     public void initAccountService() {
-        if(null == mAccountService)
-        mAccountService = (AccountService) ServiceMgr.getServiceMgrInstance()
-                .getBLService(SingleServiceID.AccountSingleServiceID);
+        if (null == mAccountService)
+            mAccountService = (AccountService) ServiceMgr.getServiceMgrInstance()
+                    .getBLService(SingleServiceID.AccountSingleServiceID);
+        mAdapterImplHelper = new AccountAdapterImplHelper(mAccountService);
         mAdapterImplHelper.initAccountService();
     }
 
@@ -79,7 +79,7 @@ public class AccountAdapterImpl implements IAccountApi {
             loginVerifyReq.skipNew = true;
             return mAccountService.executeRequest(loginVerifyReq);
         } else {
-            return  -1;
+            return -1;
         }
     }
 
@@ -92,12 +92,13 @@ public class AccountAdapterImpl implements IAccountApi {
             final AccountCheckRequest checkReq = new AccountCheckRequest();
             return mAccountService.executeRequest(checkReq);
         } else {
-            return  -1;
+            return -1;
         }
     }
 
     /**
      * 账号注册
+     *
      * @return -1 表示注册失败，其他表示注册成功
      */
     @Override
@@ -115,7 +116,8 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 手机验证码登录
-     * @param codeInput 验证码
+     *
+     * @param codeInput   验证码
      * @param mobileInput 手机号
      * @return -1 表示登录失败，其他表示登录成功
      */
@@ -134,6 +136,7 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 获取登录二维码
+     *
      * @return -1 表示获取二维码失败，其他表示获取二维码成功
      */
     @Override
@@ -141,7 +144,7 @@ public class AccountAdapterImpl implements IAccountApi {
         if (mAccountService != null) {
             final QRCodeLoginRequest qrReq = new QRCodeLoginRequest();
             qrReq.codeType = qrType;
-            return  mAccountService.executeRequest(qrReq);
+            return mAccountService.executeRequest(qrReq);
         } else {
             return -1;
         }
@@ -149,7 +152,7 @@ public class AccountAdapterImpl implements IAccountApi {
 
     @Override
     public int qrCodeLoginConfirmRequest(final String qrCodeId) {
-        if (mAccountService != null){
+        if (mAccountService != null) {
             final QRCodeLoginConfirmRequest req = new QRCodeLoginConfirmRequest();
             req.qrcodeId = qrCodeId;
             return mAccountService.executeRequest(req);
@@ -161,6 +164,7 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 获取账号信息
+     *
      * @return -1 表示获取账号信息失败，其他表示获取账号信息成功
      */
     @Override
@@ -176,6 +180,7 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 获取用户头像
+     *
      * @return -1 表示获取用户头像失败，其他表示获取用户头像成功
      */
     @Override
@@ -190,6 +195,7 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 退出登录请求
+     *
      * @return -1 表示退出登录失败，其他表示退出登录成功
      */
     @Override
@@ -204,6 +210,7 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 请求注销账号
+     *
      * @return -1 表示注销账号失败，其他表示注销账号成功
      */
     @Override

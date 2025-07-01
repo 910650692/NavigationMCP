@@ -1,7 +1,10 @@
 package com.sgm.navi.service.adapter.cruise.bls;
 
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.guide.GuideService;
 import com.autonavi.gbl.guide.model.NaviType;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.cruise.CruiseObserver;
 import com.sgm.navi.service.adapter.cruise.ICruiseApi;
@@ -18,14 +21,17 @@ public class CruiseAdapterApiImpl extends BaseGuideAdapterApiImpl implements ICr
     private CruiseApiImplHelper cruiseApiImplHelper;
     //引导id,唯一标识
     private long mNaviId;
+    private GuideService mGuideService;
 
     public CruiseAdapterApiImpl() {
         super();
-        cruiseApiImplHelper = new CruiseApiImplHelper(getGuideService());
     }
 
     @Override
     public void initCruise() {
+        GuideService mGuideService = (GuideService) ServiceMgr.getServiceMgrInstance()
+                .getBLService(SingleServiceID.GuideSingleServiceID);
+        cruiseApiImplHelper = new CruiseApiImplHelper(mGuideService);
         cruiseApiImplHelper.initCruise();
         Logger.d(TAG, "CruiseAdapterApiImpl initNaviService: ");
     }
@@ -38,12 +44,12 @@ public class CruiseAdapterApiImpl extends BaseGuideAdapterApiImpl implements ICr
     @Override
     public boolean startCruise() {
         mNaviId = NaviConstant.NAVI_CRUISE_ID;
-        return getGuideService().startNavi(mNaviId, NaviType.NaviTypeCruise);
+        return mGuideService.startNavi(mNaviId, NaviType.NaviTypeCruise);
     }
 
     @Override
     public boolean stopCruise() {
-        boolean b = getGuideService().stopNavi(mNaviId);
+        boolean b = mGuideService.stopNavi(mNaviId);
         Logger.i(TAG, "CruiseAdapterApiImpl stopNavigation: " + mNaviId + ",stopNavi：" + b);
         return b;
     }

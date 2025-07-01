@@ -32,9 +32,6 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
     private final List<ForecastAdapterCallback> mCallBacks = new ArrayList<>();
 
     public ForecastAdapterImpl() {
-        mForecastService = (ForcastService) ServiceMgr.getServiceMgrInstance().
-                getBLService(SingleServiceID.ForcastSingleServiceID);
-        Logger.i(TAG, "lvww", mForecastService);
 
     }
 

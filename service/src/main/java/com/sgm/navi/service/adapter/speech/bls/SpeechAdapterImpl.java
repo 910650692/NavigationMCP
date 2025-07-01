@@ -34,9 +34,6 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
     private int mBroadcastTtsId = NumberUtils.NUM_ERROR;
 
     public SpeechAdapterImpl() {
-        mSpeechService = (SpeechSynthesizeService) ServiceMgr.getServiceMgrInstance()
-                .getBLService(SingleServiceID.SpeechSynthesizeSingleServiceID);
-        Logger.i(TAG, "lvww", mSpeechService);
         mSpeechAdapterCallback = new CopyOnWriteArrayList<>();
     }
 

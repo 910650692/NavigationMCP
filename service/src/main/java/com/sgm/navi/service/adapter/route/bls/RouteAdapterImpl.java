@@ -77,9 +77,11 @@ public class RouteAdapterImpl implements IRouteApi {
     private long mRequestRouteId = -1;
 
     public RouteAdapterImpl() {
-        mRouteService = (RouteService) ServiceMgr.getServiceMgrInstance()
-                .getBLService(SingleServiceID.RouteSingleServiceID);
-        Logger.i(TAG, "lvww", mRouteService);
+
+    }
+
+    @Override
+    public void initRouteService() {
         final SceneModuleService sceneModuleService = (SceneModuleService) ServiceMgr
                 .getServiceMgrInstance().getBLService(SingleServiceID.SceneModuleSingleServiceID);
         // 统一初始化场景组件服务
@@ -88,13 +90,10 @@ public class RouteAdapterImpl implements IRouteApi {
         if (sceneModuleService != null) {
             sceneModuleService.init(param);
         }
-        mAdapterImplHelper = new RouteAdapterImplHelper(new BLAosService());
-    }
 
-    @Override
-    public void initRouteService() {
         if(null == mRouteService) mRouteService = (RouteService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.RouteSingleServiceID);
+        mAdapterImplHelper = new RouteAdapterImplHelper(new BLAosService());
         mAdapterImplHelper.initRouteService();
     }
 

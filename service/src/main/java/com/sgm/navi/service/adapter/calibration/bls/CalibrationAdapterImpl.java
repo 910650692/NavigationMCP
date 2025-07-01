@@ -54,9 +54,6 @@ public class CalibrationAdapterImpl implements CalibrationApi {
     private int VEHICLE_WEIGHT;
 
     public CalibrationAdapterImpl() {
-        mCalibrationManager = new CalibrationManager();
-        mPatacServiceManager = PatacServiceManager.newInstance(AppCache.getInstance().getMContext());
-        Logger.i(TAG, "lvww", mCalibrationManager, mPatacServiceManager);
     }
 
     @Override

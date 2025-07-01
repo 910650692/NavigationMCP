@@ -96,15 +96,12 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
 
 
     public PositionBlsStrategy(Context context) {
-        mPosService = (PosService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.PosSingleServiceID);
-        Logger.i(TAG, "lvww", mPosService);
         this.mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         MountAngleManager.MountAngleInfo mountAngleInfo = MountAngleManager.getInstance().getMountAngleInfo();
         this.mPositionConfig = new PositionConfig().setRoll(mountAngleInfo.roll)
                 .setYaw(mountAngleInfo.yaw)
                 .setPitch(mountAngleInfo.pitch);
         mH = new Handler(ThreadManager.getInstance().getLooper(LooperType.LocInfoUpdate), this);
-        mPosParallelRoadController = new PosParallelRoadController(mPosService, callbacks);
     }
 
     /**

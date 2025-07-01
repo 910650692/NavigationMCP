@@ -33,20 +33,15 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
     public VoiceAdapterImpl() {
         callbacks = new Hashtable<>();
         recommendVoiceList = new HashMap<>();
-        voiceService = (VoiceService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.VoiceDataSingleServiceID);
-        Logger.d(TAG, "lvww", voiceService);
 
     }
     @Override
     public void initService() {
         Logger.d(TAG, "initService");
-
         if(voiceService == null){
             Logger.e("voiceService is null");
             voiceService = (VoiceService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.VoiceDataSingleServiceID);
-
         }
-
         VoiceInitConfig config = new VoiceInitConfig();
         config.flytekStoredPath = GBLCacheFilePath.VOICE_FLY_PATH;
         config.mitStoredPath = GBLCacheFilePath.VOICE_MIT_PATH;

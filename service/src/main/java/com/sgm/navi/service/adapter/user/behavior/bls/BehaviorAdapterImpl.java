@@ -33,18 +33,14 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
     private SyncSdkService mSyncSdkService;
 
     public BehaviorAdapterImpl() {
-        mBehaviorService = (BehaviorService) ServiceMgr.getServiceMgrInstance()
-                .getBLService(SingleServiceID.BehaviorSingleServiceID);
-        Logger.i(TAG, "lvww", mBehaviorService);
-
-        mSyncSdkService = (SyncSdkService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.SyncSdkSingleServiceID);
-        mAdapterImplHelper = new BehaviorAdapterImplHelper(mBehaviorService, mSyncSdkService);
     }
 
     @Override
     public void initBehaviorService() {
         if(null == mBehaviorService) mBehaviorService = (BehaviorService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.BehaviorSingleServiceID);
+        mSyncSdkService = (SyncSdkService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.SyncSdkSingleServiceID);
+        mAdapterImplHelper = new BehaviorAdapterImplHelper(mBehaviorService, mSyncSdkService);
         mAdapterImplHelper.initBehaviorService();
     }
 

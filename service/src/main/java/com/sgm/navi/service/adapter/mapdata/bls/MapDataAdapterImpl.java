@@ -22,10 +22,6 @@ public class MapDataAdapterImpl implements IMapDataApi {
     private MapDataObserversHelper mMapDataObserversHelper;
 
     public MapDataAdapterImpl() {
-        mMapDataService = (MapDataService) ServiceMgr.getServiceMgrInstance()
-                .getBLService(SingleServiceID.MapDataSingleServiceID);
-        Logger.i(TAG, "lvww", mMapDataService);
-
         mMapDataObserversHelper = new MapDataObserversHelper();
     }
 

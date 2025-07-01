@@ -32,8 +32,6 @@ public class ForCastApiImpl implements IForCastApi, IForcastServiceObserver {
     private ForcastService mForcastService;
 
     public ForCastApiImpl() {
-        mForcastService = (ForcastService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.ForcastSingleServiceID);
-        Logger.i(TAG, "lvww", mForcastService);
     }
 
     @Override

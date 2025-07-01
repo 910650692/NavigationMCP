@@ -70,8 +70,7 @@ public class NaviApiImplHelper {
     private RouteLineLayerParam mRouteLineLayerParam;
     private int mainIndex;
 
-    protected NaviApiImplHelper(final GuideService guideService) {
-        this.mGuideService = guideService;
+    protected NaviApiImplHelper() {
         mGuidanceObservers = new Hashtable<>();
         mNaviObserver = new GuidanceCallback(mGuidanceObservers, this);
     }

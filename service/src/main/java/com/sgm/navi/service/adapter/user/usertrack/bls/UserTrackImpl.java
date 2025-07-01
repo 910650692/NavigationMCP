@@ -20,14 +20,10 @@ import java.util.ArrayList;
 
 public class UserTrackImpl implements IUserTrackApi {
     private static final String TAG = MapDefaultFinalTag.USER_TRACK_SERVICE_TAG;
-    private final UserTrackImplHelper mAdapterImplHelper;
+    private UserTrackImplHelper mAdapterImplHelper;
     private UserTrackService mUserTrackService;
 
     public UserTrackImpl() {
-        mUserTrackService = (UserTrackService) ServiceMgr.getServiceMgrInstance()
-                .getBLService(SingleServiceID.UserTrackSingleServiceID);
-        mAdapterImplHelper = new UserTrackImplHelper(mUserTrackService);
-        Logger.i(TAG, "lvww", mUserTrackService);
 
     }
 
@@ -36,6 +32,7 @@ public class UserTrackImpl implements IUserTrackApi {
         if(null == mUserTrackService)
             mUserTrackService = (UserTrackService) ServiceMgr.getServiceMgrInstance()
                     .getBLService(SingleServiceID.UserTrackSingleServiceID);
+        mAdapterImplHelper = new UserTrackImplHelper(mUserTrackService);
         mAdapterImplHelper.initUserTrackService();
     }
 

@@ -26,8 +26,6 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
 
     public SettingAdapterImpl() {
         mSettingHashtable = new Hashtable<>();
-        mBehaviorService = (BehaviorService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.BehaviorSingleServiceID);
-        Logger.i(TAG, "lvww", mBehaviorService);
     }
 
     @Override

@@ -2,12 +2,15 @@ package com.sgm.navi.service.adapter.navi.bls;
 
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.option.PathInfo;
+import com.autonavi.gbl.guide.GuideService;
 import com.autonavi.gbl.guide.model.NaviPath;
 import com.autonavi.gbl.guide.model.NaviType;
 import com.autonavi.gbl.guide.model.QueryLanesInfo;
 import com.autonavi.gbl.guide.model.guidecontrol.Param;
 import com.autonavi.gbl.guide.model.guidecontrol.Type;
 import com.autonavi.gbl.guide.model.guidecontrol.ElecVehicleCharge;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.GuidanceObserver;
 import com.sgm.navi.service.adapter.navi.INaviApi;
@@ -30,17 +33,21 @@ import java.util.List;
  */
 public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INaviApi {
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_API_IMPL;
-    private final NaviApiImplHelper mNaviApiImplHelper;
+    private NaviApiImplHelper mNaviApiImplHelper;
     //引导id,唯一标识
     private long mNaviId;
 
+    private GuideService mGuideService;
+
     public NaviAdapterApiImpl() {
         super();
-        mNaviApiImplHelper = new NaviApiImplHelper(getGuideService());
+        mNaviApiImplHelper = new NaviApiImplHelper();
     }
 
     @Override
     public void initNaviService() {
+        mGuideService = (GuideService) ServiceMgr.getServiceMgrInstance()
+                .getBLService(SingleServiceID.GuideSingleServiceID);
         mNaviApiImplHelper.initNaviService();
         Logger.d(TAG, "NaviAdapterApiImpl initNaviService-----");
     }
@@ -57,15 +64,15 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
         boolean startNaviSuccess = false;
         if (!vecPaths.isEmpty()) {
             mNaviApiImplHelper.initGuideParam();
-            final boolean setNaviPathSuccess = getGuideService().setNaviPath(naviPath);
+            final boolean setNaviPathSuccess = mGuideService.setNaviPath(naviPath);
             Logger.i(TAG, "NaviAdapterApiImpl setNaviPath: " + setNaviPathSuccess);
             if (naviStartType == NaviStartType.NAVI_TYPE_GPS) {
                 mNaviId = NaviConstant.NAVI_ID;
-                startNaviSuccess = getGuideService().startNavi(mNaviId, NaviType.NaviTypeGPS);
+                startNaviSuccess = mGuideService.startNavi(mNaviId, NaviType.NaviTypeGPS);
             } else {
                 mNaviId = NaviConstant.NAVI_SIM_ID;
 
-                startNaviSuccess = getGuideService().startNavi(mNaviId, NaviType.NaviTypeSimulation);
+                startNaviSuccess = mGuideService.startNavi(mNaviId, NaviType.NaviTypeSimulation);
             }
             Logger.i(TAG, "NaviAdapterApiImpl startNavi: " + startNaviSuccess + ",mNaviId：" + mNaviId);
         } else {
@@ -89,7 +96,7 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
 
     @Override
     public boolean stopNavigation() {
-        final boolean b = getGuideService().stopNavi(mNaviId);
+        final boolean b = mGuideService.stopNavi(mNaviId);
         Logger.i(TAG, "NaviAdapterApiImpl stopNavi: ", b, ",mNaviId：", mNaviId);
         return b;
     }
@@ -102,7 +109,7 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     @Override
     public void unInitNaviService() {
         mNaviApiImplHelper.unit();
-        getGuideService().unInit();
+        mGuideService.unInit();
     }
 
     @Override
@@ -134,7 +141,7 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     @Override
     public void queryAppointLanesInfo(final int segmentIdx, final int linkIdx) {
         final QueryLanesInfo queryLanesInfo = new QueryLanesInfo(segmentIdx, linkIdx, -1);
-        getGuideService().queryAppointLanesInfo(queryLanesInfo);
+        mGuideService.queryAppointLanesInfo(queryLanesInfo);
     }
 
     @Override
@@ -151,7 +158,7 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
         final ElecVehicleCharge elecVehicleCharge = new ElecVehicleCharge();
         elecVehicleCharge.vehicleCharge = currentVehicleCharge;
         param.elecVehicle = elecVehicleCharge;
-        final boolean isSuccess = getGuideService().setParam(param);
+        final boolean isSuccess = mGuideService.setParam(param);
         Logger.i(TAG, "updateBatteryInfo:", isSuccess, "currentVehicleCharge:",
                 currentVehicleCharge);
     }
