@@ -1468,10 +1468,10 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             return -1;
         }
 
-        Logger.i(TAG, clientPkg, "reverseGeoSearch", baseGeoPoint);
         final Long temp = mReversePkgMap.getOrDefault(clientPkg, 0L);
         final long lastCallMills = null != temp ? temp : 0L;
         final long currentMillis = System.currentTimeMillis();
+        Logger.i(TAG, clientPkg, "reverseGeoSearch", lastCallMills, currentMillis);
 
         if (GALLERY_CLIENT.equals(clientPkg) || currentMillis - lastCallMills > REVERSE_INTERVAL) {
             //如果是图库应用或距上一次调用间隔大于30s
