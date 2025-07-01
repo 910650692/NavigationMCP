@@ -12,13 +12,16 @@
     </data>
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/hud"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
         tools:context=".hud.HudActivity">
         <com.sgm.navi.service.define.map.HUDMapView
             android:id="@+id/hud_mapview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:visibility="visible" />
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
