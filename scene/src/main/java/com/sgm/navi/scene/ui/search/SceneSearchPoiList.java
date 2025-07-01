@@ -72,9 +72,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private FilterListAdapter mFilterOneAdapter;
     private FilterListAdapter mFilterTwoAdapter;
     private FilterListAdapter mFilterThreeAdapter;
+    private FilterListAdapter mFilterFourAdapter;
     private FilterChildListAdapter mFilterOneChildAdapter;
     private FilterChildListAdapter mFilterTwoChildAdapter;
     private FilterChildListAdapter mFilterThreeChildAdapter;
+    private FilterChildListAdapter mFilterFourChildAdapter;
     private QuickFilterListAdapter mQuickFilterListAdapter;
     private int maxPageNum = 1;
     private int mPageNum = 1;
@@ -96,6 +98,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private int mCurrentSelectedIndex2 = -1;
     //第三个一级菜单当前正在被选中的二级菜单下标
     private int mCurrentSelectedIndex3 = -1;
+    //第四个一级菜单当前正在被选中的二级菜单下标
+    private int mCurrentSelectedIndex4 = -1;
     private int mCurrentSelectedQuick = -1;
     private int mHomeCompanyType;
     private int mRange = 5000;
@@ -171,6 +175,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchFilterView.searchFilterList3.setAdapter(mFilterThreeAdapter);
         mViewBinding.searchFilterView.searchFilterList3.addItemDecoration(itemDecoration);
 
+        mViewBinding.searchFilterView.searchFilterList4.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        mFilterFourAdapter = new FilterListAdapter();
+        mViewBinding.searchFilterView.searchFilterList4.setAdapter(mFilterFourAdapter);
+        mViewBinding.searchFilterView.searchFilterList4.addItemDecoration(itemDecoration);
+
         final RecyclerView.ItemDecoration gridDecoration = new GridSpacingItemDecoration(getContext(),
                 mSpanCount, mChildVerticalSpacing, mChildHorizontalSpacing, false);
         mViewBinding.searchFilterView.searchFilterList1Child.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
@@ -187,6 +196,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mFilterThreeChildAdapter = new FilterChildListAdapter();
         mViewBinding.searchFilterView.searchFilterList3Child.setAdapter(mFilterThreeChildAdapter);
         mViewBinding.searchFilterView.searchFilterList3Child.addItemDecoration(gridDecoration);
+
+        mViewBinding.searchFilterView.searchFilterList4Child.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
+        mFilterFourChildAdapter = new FilterChildListAdapter();
+        mViewBinding.searchFilterView.searchFilterList4Child.setAdapter(mFilterFourChildAdapter);
+        mViewBinding.searchFilterView.searchFilterList4Child.addItemDecoration(gridDecoration);
 
         // 快筛adapter
         final RecyclerView.ItemDecoration quickItemDecoration = new HorizontalSpaceItemDecoration(mQuickLabelHorizontalSpacing);
@@ -484,6 +498,16 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         mFilterThreeAdapter.setMCurrentExpandName("");
                         mFilterThreeAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
                         mFilterThreeChildAdapter.setCategoryList(null);
+                    } else if (i == 3) {
+                        if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
+                            mViewBinding.searchFilterView.searchFilterTitle4.setVisibility(GONE);
+                            mViewBinding.searchFilterView.searchFilterList4.setVisibility(GONE);
+                        }
+                        mViewBinding.searchFilterView.searchFilterTitle4.setText(searchCategoryLocalInfo.getName());
+                        mFilterFourAdapter.setMIsExpand(false);
+                        mFilterFourAdapter.setMCurrentExpandName("");
+                        mFilterFourAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
+                        mFilterFourChildAdapter.setCategoryList(null);
                     }
                 }
             }
@@ -561,6 +585,30 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mFilterThreeChildAdapter.setCategoryList(childList);
             }
         });
+
+        mFilterFourAdapter.setFilterItemClickListener(new IOnFilterItemClickListener() {
+            @Override
+            public void onItemClick(final int position) {
+                mCurrentSelectedIndex4 = position;
+                refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex4);
+                mFilterFourChildAdapter.setCategoryList(null);
+                if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                    mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+                } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                    mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+                } else {
+                    mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+                }
+            }
+
+            @Override
+            public void onChildListExpandCollapse(final List<SearchChildCategoryLocalInfo> childList, final int position) {
+                mCurrentSelectedIndex4 = position;
+                refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex4);
+                mFilterFourChildAdapter.setCategoryList(childList);
+            }
+        });
+
         mQuickFilterListAdapter.setItemClickListener(new QuickFilterListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(List<SearchChildCategoryLocalInfo> list,int position) {
@@ -633,6 +681,18 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
         mFilterThreeChildAdapter.setFilterItemClickListener(position -> {
             refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
+            mFilterOneAdapter.notifyDataSetChanged();
+            if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
+            } else if(mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH){
+                mScreenViewModel.alongWaySearch(mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+            } else {
+                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+            }
+        });
+
+        mFilterFourChildAdapter.setFilterItemClickListener(position -> {
+            refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex4);
             mFilterOneAdapter.notifyDataSetChanged();
             if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                 mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true, mPoiInfoEntity);
