@@ -75,8 +75,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/dp_22"
-                    android:src="@drawable/img_plate_number_clear"
-                    android:visibility="visible" />
+                    android:src="@drawable/img_off58"
+                    android:visibility="gone" />
 
             </com.sgm.navi.ui.view.SkinRelativeLayout>
 
