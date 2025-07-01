@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.sgm.navi.scene.databinding.NaviSceneNearProvideStationGasBinding;
 import com.sgm.navi.scene.util.HandCardType;
 import com.sgm.navi.service.define.search.GasStationInfo;
@@ -58,6 +59,7 @@ public class GasCardView extends CardView<NaviSceneNearProvideStationGasBinding>
             return;
         }
         final PoiInfoEntity poiInfo = dataList.get(0);
+        mPoiInfo = poiInfo;
         final List<GasStationInfo> gasInfos = poiInfo.getStationList();
         mBinding.tvTitle.setText(poiInfo.getName());
         mBinding.tvTitleUnexpand.setText(poiInfo.getName());
@@ -111,5 +113,15 @@ public class GasCardView extends CardView<NaviSceneNearProvideStationGasBinding>
             mBinding.clGasExpand.setVisibility(View.GONE);
             mBinding.clGasUnexpand.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void updateDistance(String distance) {
+        Logger.i(TAG, "distance: ", distance);
+        if (ConvertUtils.isNull(mBinding)) {
+            Logger.i(TAG, "binding is null");
+            return;
+        }
+        mBinding.tvDistance.setText(distance);
     }
 }

@@ -13,10 +13,12 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
+import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.ui.view.SkinConstraintLayout;
 import com.sgm.navi.ui.view.SwipeDeleteLayout;
 
@@ -36,22 +38,22 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
     private final MapType mapType = MapType.MAIN_SCREEN_MAIN_MAP;
     protected T mBinding;
     protected HandCardType mType;
-    protected final long TOTAL_TIME = 8;// 单位：秒
-    protected final long INTERVAL_TIME = 1; // 单位：秒
-    private final long DELAY_TIME_AFTER_RESUME = 2;// 单位：秒
-    private final long DELAY_NO_TIME = 0;
-    protected long mCountTime = TOTAL_TIME;
+    protected final long INTERVAL_TIME = 5; // 单位：秒
+    private final long DELAY_TIME = 5;// 单位：秒
     protected OnCardChangeListener mListener;
-    private RoutePackage mRoutePackage;
+    private final RoutePackage mRoutePackage;
+    private final SearchPackage mSearchPackage;
     // 切换路线，需要算路，这个是算路请求ID
     private long mChangeDestinationId;
     protected ArrayList<PoiInfoEntity> mList = new ArrayList<>();
     protected ScheduledFuture scheduledFuture;
+    protected PoiInfoEntity mPoiInfo;
 
     public CardView(@NonNull Context context, final OnCardChangeListener listener, final List<PoiInfoEntity> list, HandCardType type) {
         super(context);
         Logger.i(TAG, "view create success", "type:" , type.name());
         mRoutePackage = RoutePackage.getInstance();
+        mSearchPackage = SearchPackage.getInstance();
         this.mListener = listener;
         this.mList.clear();
         this.mList.addAll(list);
@@ -125,40 +127,35 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      * 开启定时器
      */
     public void startTimer() {
-        Logger.i(TAG, "startTimer:" , mCountTime);
-        //startSchedule(DELAY_NO_TIME);
+        startSchedule(DELAY_TIME);
     }
 
     /***
      * 暂停定时器
      */
     public void pauseTimer() {
-        Logger.i(TAG, "pauseTimer:" , mCountTime);
-        //stopSchedule();
+        stopSchedule();
     }
 
     /****
      * 恢复定时器
      */
     public void resumeTimer() {
-        Logger.i(TAG, "resumeTimer:" , mCountTime);
-        //startSchedule(DELAY_TIME_AFTER_RESUME);
+        startSchedule(DELAY_TIME);
     }
 
     /***
      * 关闭定时器
      */
     public void closeTimer() {
-        //stopSchedule();
-        //mCountTime = TOTAL_TIME;
+        stopSchedule();
     }
 
     /***
      * 重置定时器
      */
     public void resetTimer() {
-        //stopSchedule();
-        //mCountTime = TOTAL_TIME;
+        stopSchedule();
     }
 
     abstract T initViewBinding(Context context);
@@ -211,17 +208,13 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
 
     private void startSchedule(final long delayTime) {
         try {
-            scheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
-                mCountTime --;
-                onTimerEnd();
-            }, delayTime, INTERVAL_TIME);
+            scheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(this::updateDistanceSchedule, delayTime, INTERVAL_TIME);
         } catch (Exception e) {
             Logger.e(TAG, "startSchedule failed:" + e.getMessage());
         }
     }
 
     private void stopSchedule() {
-        Logger.i(TAG, "stopSchedule", "remainTime:" , mCountTime);
         try {
             if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
                 final boolean cancelResult = scheduledFuture.cancel(true);
@@ -234,13 +227,22 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
         }
     }
 
-    private void onTimerEnd() {
-        if (mCountTime <= 0) {
-            Logger.i(TAG, "onTimerEnd-Success!");
-            stopSchedule();
-            if (!ConvertUtils.isNull(mListener)) {
-                mListener.onTimerFinished(mType);
-            }
+    private void updateDistanceSchedule() {
+        if (ConvertUtils.isNull(mPoiInfo)) {
+            Logger.i(TAG, "mPoiInfo is null");
+            return;
         }
+        GeoPoint geoPoint = mPoiInfo.getPoint();
+        if (geoPoint == null) {
+            Logger.i(TAG, "geoPoint is null");
+            return;
+        }
+        String distance = mSearchPackage.calcStraightDistance(geoPoint);
+        ThreadManager.getInstance().postUi(() -> {
+            updateDistance(distance);
+        });
+    }
+
+    protected void updateDistance(String distance) {
     }
 }

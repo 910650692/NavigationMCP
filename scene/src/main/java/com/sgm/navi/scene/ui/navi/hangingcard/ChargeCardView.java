@@ -60,6 +60,7 @@ public class ChargeCardView extends CardView<NaviSceneNearProvideStationChargeBi
             return;
         }
         final PoiInfoEntity poiInfo = dataList.get(0);
+        mPoiInfo = poiInfo;
         final List<ChargeInfo> chargeInfos = poiInfo.getChargeInfoList();
         mBinding.tvTitle.setText(poiInfo.getName());
         mBinding.tvTitleUnexpand.setText(poiInfo.getName());
@@ -130,5 +131,15 @@ public class ChargeCardView extends CardView<NaviSceneNearProvideStationChargeBi
             mBinding.clChargeExpand.setVisibility(View.GONE);
             mBinding.clChargeUnexpand.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void updateDistance(String distance) {
+        Logger.i(TAG, "distance: ", distance);
+        if (ConvertUtils.isNull(mBinding)) {
+            Logger.i(TAG, "binding is null");
+            return;
+        }
+        mBinding.tvDistance.setText(distance);
     }
 }

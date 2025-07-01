@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.sgm.navi.scene.databinding.NaviSceneNearProvideStationParkBinding;
 import com.sgm.navi.scene.util.HandCardType;
 import com.sgm.navi.service.define.search.ParkingInfo;
@@ -57,6 +58,7 @@ public class ParkCardView extends CardView<NaviSceneNearProvideStationParkBindin
             return;
         }
         final PoiInfoEntity poiInfo = dataList.get(0);
+        mPoiInfo = poiInfo;
         mBinding.tvTitle.setText(poiInfo.getName());
         mBinding.tvTitleUnexpand.setText(poiInfo.getName());
         mBinding.tvDistance.setText(poiInfo.getDistance());
@@ -89,5 +91,15 @@ public class ParkCardView extends CardView<NaviSceneNearProvideStationParkBindin
             mBinding.clParkExpand.setVisibility(View.GONE);
             mBinding.clParkUnexpand.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void updateDistance(String distance) {
+        Logger.i(TAG, "distance: ", distance);
+        if (ConvertUtils.isNull(mBinding)) {
+            Logger.i(TAG, "binding is null");
+            return;
+        }
+        mBinding.tvDistance.setText(distance);
     }
 }

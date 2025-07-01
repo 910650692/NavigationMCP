@@ -95,21 +95,16 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
     }
 
     @Override
-    public void startCountdown() {
-        //悬挂卡收缩态不进行倒计时
-    }
-
-    @Override
     public void hide() {
         super.hide();
         // 隐藏的时候停止倒计时
-        //pauseTimer();
+        pauseTimer();
     }
 
     @Override
     public void show() {
         super.show();
-        //resumeTimer();
+        resumeTimer();
     }
 
     private void pauseTimer() {
