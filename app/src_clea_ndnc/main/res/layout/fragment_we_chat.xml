@@ -55,7 +55,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="@{ViewModel.mIsBind ? View.GONE : View.VISIBLE}"
-            app:layout_constraintTop_toBottomOf="@+id/we_chat_title_layout">
+            app:layout_constraintTop_toBottomOf="@+id/we_chat_title_layout"
+            tools:visibility="gone">
 
             <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="@dimen/dp_221"
@@ -182,7 +183,7 @@
             <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_123"
+                android:layout_marginTop="@dimen/dp_132"
                 android:layout_marginStart="@dimen/dp_68"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -218,7 +219,7 @@
             <com.sgm.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_638"
                 android:layout_height="@dimen/dp_456"
-                android:layout_marginTop="@dimen/dp_123"
+                android:layout_marginTop="@dimen/dp_100"
                 android:layout_marginStart="@dimen/dp_77"
                 android:src="@mipmap/icon_wechat_bind"/>
         </com.sgm.navi.ui.view.SkinLinearLayout>
