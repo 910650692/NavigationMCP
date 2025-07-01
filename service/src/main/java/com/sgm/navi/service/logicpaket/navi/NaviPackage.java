@@ -712,7 +712,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             Logger.i(TAG, "onNaviSAPAInfo sapaInfoEntity is null");
             return;
         }
-        Logger.i(TAG, "onNaviSAPAInfo entity = " + sapaInfoEntity.toString());
+        //Logger.i(TAG, "onNaviSAPAInfo entity = " + sapaInfoEntity.toString());
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {

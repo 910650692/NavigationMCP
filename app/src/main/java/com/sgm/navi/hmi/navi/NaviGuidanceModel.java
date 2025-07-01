@@ -557,7 +557,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo is null");
             return;
         }
-        Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo = " + naviTmcInfo.toString());
         mNaviPackage.setTmcData(naviTmcInfo);
         mViewModel.onUpdateTMCLightBar(naviTmcInfo, mIsShowAutoAdd);
     }
@@ -952,8 +951,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
-        Logger.i(TAG, "skipNaviSapaDetailScene type:", type, " sapaInfoEntity:",
-                sapaInfoEntity.toString());
+        //Logger.i(TAG, "skipNaviSapaDetailScene type:", type, " sapaInfoEntity:", sapaInfoEntity.toString());
         mViewModel.skipNaviSapaDetailScene(type, sapaInfoEntity);
     }
 

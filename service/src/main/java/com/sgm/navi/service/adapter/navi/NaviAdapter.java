@@ -215,9 +215,6 @@ public final class NaviAdapter {
      * @param naviTmcInfo NaviTmcInfo
      */
     public void setTmcData(final NaviTmcInfo naviTmcInfo) {
-        if (Logger.openLog) {
-            Logger.i(TAG, "setTmcData = ", naviTmcInfo.toString());
-        }
         mNaviTmcInfo = naviTmcInfo;
     }
 

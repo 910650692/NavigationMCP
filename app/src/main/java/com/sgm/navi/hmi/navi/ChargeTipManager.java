@@ -389,7 +389,7 @@ public class ChargeTipManager {
             // 回调出的数据转换List
             try {
                 JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
-                Logger.i(TAG, "jsonObject:", jsonObject.toString());
+                //Logger.i(TAG, "jsonObject:", jsonObject.toString());
                 JSONArray jsonArray = jsonObject.getJSONArray("resultList");
                 String userId = AccountPackage.getInstance().getUserId();
                 for (int i = 0; i < jsonArray.length(); i++) {
