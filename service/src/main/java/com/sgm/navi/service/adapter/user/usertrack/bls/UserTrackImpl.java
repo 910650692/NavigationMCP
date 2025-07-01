@@ -21,16 +21,21 @@ import java.util.ArrayList;
 public class UserTrackImpl implements IUserTrackApi {
     private static final String TAG = MapDefaultFinalTag.USER_TRACK_SERVICE_TAG;
     private final UserTrackImplHelper mAdapterImplHelper;
-    private final UserTrackService mUserTrackService;
+    private UserTrackService mUserTrackService;
 
     public UserTrackImpl() {
         mUserTrackService = (UserTrackService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.UserTrackSingleServiceID);
         mAdapterImplHelper = new UserTrackImplHelper(mUserTrackService);
+        Logger.i(TAG, "lvww", mUserTrackService);
+
     }
 
     @Override
     public void initUserTrackService() {
+        if(null == mUserTrackService)
+            mUserTrackService = (UserTrackService) ServiceMgr.getServiceMgrInstance()
+                    .getBLService(SingleServiceID.UserTrackSingleServiceID);
         mAdapterImplHelper.initUserTrackService();
     }
 

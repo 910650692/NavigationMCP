@@ -119,7 +119,7 @@ public class NaviService extends Service {
 
         public FsaInitWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
             super(context, workerParams);
-            Logger.i(TAG, "FsaInitWorker constructor");
+            Logger.d(TAG, "FsaInitWorker constructor");
         }
 
         @NonNull

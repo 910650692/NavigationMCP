@@ -28,17 +28,22 @@ import java.util.List;
 
 public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserver {
     private static final String TAG = MapDefaultFinalTag.FORECAST_SERVICE_TAG;
-    private final ForcastService mForecastService;
+    private ForcastService mForecastService;
     private final List<ForecastAdapterCallback> mCallBacks = new ArrayList<>();
 
     public ForecastAdapterImpl() {
         mForecastService = (ForcastService) ServiceMgr.getServiceMgrInstance().
                 getBLService(SingleServiceID.ForcastSingleServiceID);
+        Logger.i(TAG, "lvww", mForecastService);
+
     }
 
     @Override
     public void initService() {
         Logger.d("initService start.");
+        if(null == mForecastService)
+            mForecastService = (ForcastService) ServiceMgr.getServiceMgrInstance().
+                    getBLService(SingleServiceID.ForcastSingleServiceID);
         final ForcastInitParam param = new ForcastInitParam();
         param.stCurTime = TimeUtil.getLocalTime2(); // 当前时间 com.autonavi.gbl.util.model.DateTime
         param.dbPath = GBLCacheFilePath.FORECAST_PATH;// 预测数据库文件保存目录路径

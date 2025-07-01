@@ -11,6 +11,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.user.account.AccountService;
 import com.autonavi.gbl.user.account.model.AccountCheckResult;
 import com.autonavi.gbl.user.account.model.AccountLogoutResult;
@@ -26,6 +27,7 @@ import com.autonavi.gbl.user.account.model.QRCodeLoginResult;
 import com.autonavi.gbl.user.account.model.VerificationCodeResult;
 import com.autonavi.gbl.user.account.observer.IAccountServiceObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
@@ -41,7 +43,7 @@ import java.util.Hashtable;
 
 public class AccountAdapterImplHelper implements IAccountServiceObserver {
     private static final String TAG = MapDefaultFinalTag.ACCOUNT_SERVICE_TAG;
-    private final AccountService mAccountService;
+    private AccountService mAccountService;
     private final AccountManager mAccountManager;
     private final Hashtable<String, AccountAdapterCallBack> mAccountResultHashtable;
     private String mEmail;
@@ -53,6 +55,9 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     }
 
     protected void initAccountService() {
+        if(null == mAccountService)
+            mAccountService = (AccountService) ServiceMgr.getServiceMgrInstance()
+                    .getBLService(SingleServiceID.AccountSingleServiceID);
         // 构造初始化参数
         final AccountServiceParam param = new AccountServiceParam();
         param.dataPath = GBLCacheFilePath.ACCOUNT_PATH;

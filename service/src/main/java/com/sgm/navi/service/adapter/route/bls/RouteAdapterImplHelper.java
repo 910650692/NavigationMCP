@@ -46,7 +46,9 @@ import com.autonavi.gbl.route.observer.INaviRerouteObserver;
 import com.autonavi.gbl.route.observer.IRouteAlternativeChargeStationObserver;
 import com.autonavi.gbl.route.observer.IRouteResultObserver;
 import com.autonavi.gbl.route.observer.IRouteWeatherObserver;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.route.RouteResultObserver;
@@ -126,7 +128,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class RouteAdapterImplHelper {
     private static final String TAG = MapDefaultFinalTag.ROUTE_SERVICE_TAG;
-    private final RouteService mRouteService;
+    private RouteService mRouteService;
     /*** 该集合只存放算路结果回调 key = 哪个类请求的，value = requestResult，理论上集合的长度永远为1 **/
     private final ConcurrentHashMap<String, RouteResultObserver> mRouteResultObserverHashtable;
     /*** 算路请求队列，会初始化一些的到结果前的一些参数 key = requestId，value = requestResult **/
@@ -140,14 +142,15 @@ public class RouteAdapterImplHelper {
     private RequestRouteResult mRequestRouteResult;
     private CountDownLatch mRouteResultLock;
 
-    protected RouteAdapterImplHelper(final RouteService routeService, final BLAosService blAosService) {
+    protected RouteAdapterImplHelper(final BLAosService blAosService) {
         mRouteResultObserverHashtable = new ConcurrentHashMap<>();
         mRouteResultDataHashtable = new ConcurrentHashMap<>();
-        mRouteService = routeService;
         mUserAvoidInfo = new UserAvoidInfo();
     }
 
     protected void initRouteService() {
+        if(null == mRouteService) mRouteService = (RouteService) ServiceMgr.getServiceMgrInstance()
+                .getBLService(SingleServiceID.RouteSingleServiceID);
         mRouteService.init(getRouteServiceParam());
         mRouteService.addRouteResultObserver(mRouteResultObserver);
         mRouteService.addRouteWeatherObserver(mRouteWeatherObserver);

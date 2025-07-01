@@ -291,7 +291,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     @Override
     public void onReceiveRequest(final int functionId, final String payload) {
-        Logger.i(FsaConstant.FSA_TAG, "onReceiveRequest payload==" , FsaIdString.event2String(payload) , " - functionId==" , functionId);
+        Logger.d(FsaConstant.FSA_TAG, "onReceiveRequest payload==" , FsaIdString.event2String(payload) , " - functionId==" , functionId);
         if (FsaConstant.FsaMethod.ID_REQUEST_MSG == functionId) {
             Logger.i(FsaConstant.FSA_TAG, "received method request: payload = " , payload , " - " , FsaIdString.event2String(payload));
             // checkStyle 方法太长故进行分割

@@ -36,11 +36,15 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
     public SpeechAdapterImpl() {
         mSpeechService = (SpeechSynthesizeService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.SpeechSynthesizeSingleServiceID);
+        Logger.i(TAG, "lvww", mSpeechService);
         mSpeechAdapterCallback = new CopyOnWriteArrayList<>();
     }
 
     @Override
     public void init() {
+        if(null == mSpeechService)
+            mSpeechService = (SpeechSynthesizeService) ServiceMgr.getServiceMgrInstance()
+                .getBLService(SingleServiceID.SpeechSynthesizeSingleServiceID);
         mInitResult = mSpeechService.init(this);
         String path = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PATH);
         if (mInitResult == 0 && path != null && !path.isEmpty()) {

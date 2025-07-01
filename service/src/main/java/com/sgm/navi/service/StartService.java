@@ -72,7 +72,7 @@ public class StartService {
     }
 
     public void registerSdkCallback(String key, ISdkInitCallback callback) {
-        Logger.d(TAG, "call path name : ", key);
+        Logger.i(TAG, "call path name : ", key);
         ConvertUtils.push(sdkInitCallbacks, callback);
     }
 
@@ -205,24 +205,23 @@ public class StartService {
         if (mEHPService == null) {
             mEHPService = (EHPService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.EHPSingleServiceID);
             if (mEHPService == null) {
-                Logger.d(TAG, "mEHPService == null");
+                Logger.i(TAG, "mEHPService == null");
                 return;
             }
         }
         EHPInitParam ehpInitParam = new EHPInitParam();
         boolean result = mEHPService.init(ehpInitParam);
-        Logger.d(TAG, "initEhpService result = ", result);
+        Logger.i(TAG, "initEhpService result = ", result);
     }
 
     private void initPositionService() {
         boolean iniPositionResult = PositionPackage.getInstance().init();
-        if (!iniPositionResult) {
-            // 理论上定位服务初始化失败不能影响后边逻辑，没有定位只是位置显示不正确
-            Logger.i(TAG, "Position service init fail");
-            conformFailCallback(30002, "定位服务初始化失败"); // 需要从json中读取，暂时先写死
-        } else {
+        if (iniPositionResult) {
             Logger.i(TAG, "Position service init success");
             PositionPackage.getInstance().startPosition();
+        } else {
+            // 理论上定位服务初始化失败不能影响后边逻辑，没有定位只是位置显示不正确
+            Logger.i(TAG, "Position service init fail");
         }
     }
 
@@ -327,66 +326,66 @@ public class StartService {
         String errorCodeJson = jsonObject.getJSONObject("error_code").toString();
         Map<Integer, String> mErrorCode = formJsonCode(errorCodeJson);
         errorCode.setErrorCode(mErrorCode);
-        Logger.i(TAG, "Current mErrorCode: ", mErrorCode);
+        Logger.d(TAG, "Current mErrorCode: ", mErrorCode);
         String engineCodeJson = jsonObject.getJSONObject("engine_code").toString();
         Map<Integer, String> engineErrorCode = formJsonCode(engineCodeJson);
         errorCode.setEngineCode(engineErrorCode);
-        Logger.i(TAG, "Current engineErrorCode: ", engineErrorCode);
+        Logger.d(TAG, "Current engineErrorCode: ", engineErrorCode);
 
         String activationCode = jsonObject.getJSONObject("activation_code").toString();
         Map<Integer, String> activationErrorCode = formJsonCode(activationCode);
         errorCode.setActivateCode(activationErrorCode);
-        Logger.i(TAG, "Current activationErrorCode: ", activationErrorCode);
+        Logger.d(TAG, "Current activationErrorCode: ", activationErrorCode);
 
         String positionCode = jsonObject.getJSONObject("position_code").toString();
         Map<Integer, String> positionErrorCode = formJsonCode(positionCode);
         errorCode.setPositionCode(positionErrorCode);
-        Logger.i(TAG, "Current positionErrorCode: ", positionErrorCode);
+        Logger.d(TAG, "Current positionErrorCode: ", positionErrorCode);
 
         String mapCodeJson = jsonObject.getJSONObject("map_code").toString();
         Map<Integer, String> mapErrorCode = formJsonCode(mapCodeJson);
         errorCode.setMapCode(mapErrorCode);
-        Logger.i(TAG, "Current mapErrorCode: ", mapErrorCode);
+        Logger.d(TAG, "Current mapErrorCode: ", mapErrorCode);
 
         String layerCodeJson = jsonObject.getJSONObject("layer_code").toString();
         Map<Integer, String> layerErrorCode = formJsonCode(layerCodeJson);
         errorCode.setLayerCode(layerErrorCode);
-        Logger.i(TAG, "Current layerErrorCode: ", layerErrorCode);
+        Logger.d(TAG, "Current layerErrorCode: ", layerErrorCode);
 
         String searchCodeJson = jsonObject.getJSONObject("search_code").toString();
         Map<Integer, String> searchErrorCode = formJsonCode(searchCodeJson);
         errorCode.setSearchCode(searchErrorCode);
-        Logger.i(TAG, "Current searchErrorCode: ", searchErrorCode);
+        Logger.d(TAG, "Current searchErrorCode: ", searchErrorCode);
 
         String routeCodeJson = jsonObject.getJSONObject("route_code").toString();
         Map<Integer, String> routeErrorCode = formJsonCode(routeCodeJson);
         errorCode.setRouteCode(routeErrorCode);
-        Logger.i(TAG, "Current routeCodeJson: ", routeCodeJson);
+        Logger.d(TAG, "Current routeCodeJson: ", routeCodeJson);
 
         String naviCodeJson = jsonObject.getJSONObject("navi_code").toString();
         Map<Integer, String> naviErrorCode = formJsonCode(naviCodeJson);
         errorCode.setNaviCode(naviErrorCode);
-        Logger.i(TAG, "Current naviErrorCode: ", naviErrorCode);
+        Logger.d(TAG, "Current naviErrorCode: ", naviErrorCode);
 
         String settingCodeJson = jsonObject.getJSONObject("setting_code").toString();
         Map<Integer, String> settingErrorCode = formJsonCode(settingCodeJson);
         errorCode.setSettingCode(settingErrorCode);
-        Logger.i(TAG, "Current settingErrorCode: ", settingErrorCode);
+        Logger.d(TAG, "Current settingErrorCode: ", settingErrorCode);
 
         String mapDataCodeJson = jsonObject.getJSONObject("map_data_code").toString();
         Map<Integer, String> mapDataErrorCode = formJsonCode(mapDataCodeJson);
         errorCode.setMapDataCode(mapDataErrorCode);
-        Logger.i(TAG, "Current mapDataErrorCode: ", mapDataErrorCode);
+        Logger.d(TAG, "Current mapDataErrorCode: ", mapDataErrorCode);
 
         String accountCodeJson = jsonObject.getJSONObject("account_code").toString();
         Map<Integer, String> accountErrorCode = formJsonCode(accountCodeJson);
         errorCode.setAccountCode(accountErrorCode);
-        Logger.i(TAG, "Current accountErrorCode: ", accountErrorCode);
+        Logger.d(TAG, "Current accountErrorCode: ", accountErrorCode);
 
         String forCastCodeJson = jsonObject.getJSONObject("for_cast_code").toString();
         Map<Integer, String> forCastErrorCode = formJsonCode(forCastCodeJson);
         errorCode.setForCastCode(forCastErrorCode);
-        Logger.i(TAG, "Current forCastErrorCode: ", forCastErrorCode);
+        Logger.d(TAG, "Current forCastErrorCode: ", forCastErrorCode);
     }
 
     private Map<Integer, String> formJsonCode(String json) throws JSONException {
@@ -420,7 +419,7 @@ public class StartService {
 
         @Override
         public void onActivated() {
-            Logger.d(TAG, "onActivated in startService...");
+            Logger.i(TAG, "onActivated in startService...");
             getInstance().checkActivation();
         }
 
@@ -439,7 +438,7 @@ public class StartService {
 
         @Override
         public void onLoadLibrarySuccess() {
-            Logger.i(TAG, "分区挂载成功，开启SDK初始化流程");
+            Logger.i(TAG, "SO库加载成功，开启SDK初始化流程");
             ThreadManager.getInstance().execute(() -> {
                 SettingManager.getInstance().init();
                 CommonManager.getInstance().init();

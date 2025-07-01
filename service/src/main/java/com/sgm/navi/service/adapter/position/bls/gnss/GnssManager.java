@@ -81,7 +81,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback,
                 boolean result = mLocationManager.registerGnssStatusCallback(mGSVInstrument, mGsvHandler);
                 registerGps();
                 gpsReportHandler.sendEmptyMessage(GPS_REPORT_MSG_WHAT);
-                Logger.i(TAG, " init registerGnssStatus：" + result);
+                Logger.d(TAG, " init registerGnssStatus：" + result);
             }
         } catch (Exception e) {
             Logger.e(TAG, "Error starting location updates", e);
@@ -104,7 +104,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback,
 
     @SuppressLint("MissingPermission")
     public void retryRequestLocationUpdates() {
-        Logger.i(TAG, " retryRequestLocationUpdates isInit：" + mIsInited);
+        Logger.d(TAG, " retryRequestLocationUpdates isInit：" + mIsInited);
         try {
             mLocGnss = null;
             clearCount();
@@ -191,7 +191,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback,
     }
 
     private void startGpsReport() {
-        Logger.i(TAG, "startGpsReport " + mTimeoutCount.get());
+        Logger.d(TAG, "startGpsReport " + mTimeoutCount.get());
         reportMeterSpeed();
         if (mTimeoutCount.get() < TIME_OUT) {
             if (mLocGnss != null) {
@@ -235,7 +235,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback,
     }
 
     public void clearCount() {
-        Logger.i(TAG, "clearCount");
+        Logger.d(TAG, "clearCount");
         mTimeoutCount.set(0);
     }
 

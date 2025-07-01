@@ -401,7 +401,7 @@ public class SignalAdapterImpl implements SignalApi {
                         return;
                     }
                     Integer value = (Integer) carPropertyValue.getValue();
-                    Logger.i(TAG, "value", value);
+                    Logger.d(TAG, "value", value);
                     int ttsValue = -1;
                     switch (value) {
                         case 0x3:
@@ -483,7 +483,7 @@ public class SignalAdapterImpl implements SignalApi {
                     return;
                 }
                 Boolean value = (Boolean) carPropertyValue.getValue();
-                Logger.i(TAG, ttsValue + " value: " + value);
+                Logger.d(TAG, ttsValue + " value: " + value);
                 if (value) {
                     for (SignalAdapterCallback callback : mCallbacks) {
                         callback.onNaviOnADASStateChanged(ttsValue);

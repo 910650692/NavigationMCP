@@ -112,7 +112,7 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
 
     @Override
     public void onSpeedChanged(float speed) {
-        Logger.i(TAG, "Current speed: " + speed);
+        Logger.d(TAG, "Current speed: " + speed);
         if (mLocSigFusionManager != null) {
             mLocSigFusionManager.onMeterSpeedChanged(speed);
         }

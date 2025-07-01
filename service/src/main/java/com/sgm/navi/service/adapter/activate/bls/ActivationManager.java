@@ -52,7 +52,7 @@ public final class ActivationManager {
 
 
     private IActivateHelper mActivateListener;
-    private final ActivationModule mActivationService;
+    private ActivationModule mActivationService;
     private boolean mIsInit = false;
 
     public boolean testFlag = false;
@@ -230,6 +230,7 @@ public final class ActivationManager {
         // 激活文件保存路径
         actInitParam.szUserDataFileDir = GBLCacheFilePath.ACTIVATE_USER_DATA;
 
+        if(null == mActivationService) mActivationService = ActivationModule.getInstance();
         final int initResult = mActivationService.init(actInitParam);
         Logger.i(TAG, "initActivateParam: initResult = " + initResult);
         final boolean initSuccess = ConvertUtils.equals(0, initResult);

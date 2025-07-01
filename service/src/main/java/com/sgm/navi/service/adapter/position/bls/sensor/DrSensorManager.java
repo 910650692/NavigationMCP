@@ -120,14 +120,14 @@ public class DrSensorManager implements SensorEventListener {
                     mDirectChannel.configure(mAccelerometer, SensorDirectChannel.RATE_NORMAL);
                 }
             }
-            Logger.i(TAG, ",mIsSupported：" + mIsSupported);
+            Logger.d(TAG, ",mIsSupported：" + mIsSupported);
         } catch (Exception e) {
             Logger.e(TAG, "Exception：" + e.toString());
         }
     }
 
     private void startSensorReport() {
-        Logger.i(TAG, " startTimerTask :" + mIsGyroReady.get() + ",mIsAccReady.get()：" + mIsAccReady.get() + ",mCarSpeed " + mCarSpeed + ",mTemperatureCount：" + mTemperatureCount.get());
+        Logger.d(TAG, " startTimerTask :" + mIsGyroReady.get() + ",mIsAccReady.get()：" + mIsAccReady.get() + ",mCarSpeed " + mCarSpeed + ",mTemperatureCount：" + mTemperatureCount.get());
         if (mIsGyroReady.get() == 1) {
             setLocGyroInfo();
         }
@@ -239,7 +239,7 @@ public class DrSensorManager implements SensorEventListener {
             if (values != null) {
                 if (valuesLength != values.length) {
                     valuesLength = values.length;
-                    Logger.i(TAG, "values.length：" + valuesLength + ",values：" + values[0] + "," + values[1] + "," + values[2]);
+                    Logger.d(TAG, "values.length：" + valuesLength + ",values：" + values[0] + "," + values[1] + "," + values[2]);
                 }
                 if (values.length >= 3) {
                     float x = values[mAngleInfo.x];

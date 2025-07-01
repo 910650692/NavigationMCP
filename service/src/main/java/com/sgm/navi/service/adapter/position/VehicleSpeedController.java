@@ -23,7 +23,7 @@ public class VehicleSpeedController {
 
     public VehicleSpeedController(Context context, ISpeedCallback callback) {
         try {
-            Logger.i(TAG, "VehicleSpeedController");
+            Logger.d(TAG, "VehicleSpeedController");
             // 初始化 Car API
             car = Car.createCar(context);
             if (car != null) {
@@ -48,7 +48,7 @@ public class VehicleSpeedController {
         }
         // 注册监听器
         boolean result = carPropertyManager.registerCallback(speedCallback, VehiclePropertyIds.PERF_VEHICLE_SPEED, 10);
-        Logger.i(TAG, "result: " + result);
+        Logger.d(TAG, "result: " + result);
     }
 
     private final CarPropertyEventCallback speedCallback = new CarPropertyEventCallback() {
@@ -74,7 +74,7 @@ public class VehicleSpeedController {
      */
     private void onSpeedChanged(float speed) {
         // 更新 UI 或处理车速数据
-        Logger.i(TAG, "Current speed: " + speed + " m/s");
+        Logger.d(TAG, "Current speed: " + speed + " m/s");
         if (mISpeedCallback != null) {
             mISpeedCallback.onPulseSpeedChanged((float) (speed * MPS_TO_KPH_FACTOR));
         }

@@ -26,7 +26,7 @@ public class GSVInstrument extends GnssStatus.Callback {
 
     @Override
     public void onSatelliteStatusChanged(GnssStatus status) {
-        Logger.i(TAG, "SatelliteStatus ");
+        Logger.d(TAG, "SatelliteStatus ");
         if (status == null) {
             return;
         }

@@ -281,7 +281,7 @@ public class NaviSceneManager implements INaviSceneEvent {
      * @param naviScene 卡片
      */
     public void addNaviScene(final NaviSceneId id, final NaviSceneBase naviScene) {
-        Logger.i(TAG, "addNaviScene", "id -> " , id.name(), "naviScene：" , naviScene.getSceneName() ,
+        Logger.d(TAG, "addNaviScene", "id -> " , id.name(), "naviScene：" , naviScene.getSceneName() ,
                 " mIsCanAddScene -> " , mIsCanAddScene);
         // 因为launcher巡航等页面会复用navi的scene所以这里只能在navi页面起来后才能添加scene
         if (!mIsCanAddScene || naviScene.getCategory() != NumberUtils.NUM_1) {

@@ -1,9 +1,12 @@
 package com.sgm.navi.service.adapter.cruise.bls;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.guide.GuideService;
 import com.autonavi.gbl.guide.observer.ICruiseObserver;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.cruise.CruiseObserver;
 
@@ -23,11 +26,15 @@ public class CruiseApiImplHelper {
 
     protected CruiseApiImplHelper(GuideService guideService) {
         this.mGuideService = guideService;
+        Logger.i(TAG, "lvww", mGuideService);
         mCruiseObservers = new Hashtable<>();
         cruiseObserver = new CruiseCallback(mCruiseObservers);
     }
 
     protected void initCruise() {
+        if(null == mGuideService)
+            mGuideService = (GuideService) ServiceMgr.getServiceMgrInstance()
+                .getBLService(SingleServiceID.GuideSingleServiceID);
         mGuideService.addCruiseObserver(cruiseObserver);
     }
 

@@ -417,7 +417,7 @@ public class EngineAdapterImpl implements IEngineApi {
         commonManager.init();
         AccountProfileInfo info = new AccountProfileInfo();
         final String valueJson = commonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
-        Logger.i("getUserInfo valueJson = " + valueJson);
+        Logger.d("getUserInfo valueJson = " + valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
             info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
             uid = info.getUid();

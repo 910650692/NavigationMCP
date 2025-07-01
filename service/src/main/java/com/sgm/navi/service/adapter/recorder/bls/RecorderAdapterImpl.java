@@ -32,6 +32,7 @@ public class RecorderAdapterImpl implements IRecorderApi, IPlayerObserver {
         Logger.d("Recording init start.");
         // 获取录制回放服务（一级服务）
         mRecorderSrv = (RecorderService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.RecorderSingleServiceID);
+        Logger.i(TAG, "lvww", mRecorderSrv);
 
         // 获取录制服务
         mRecorder = mRecorderSrv.getRecorder();

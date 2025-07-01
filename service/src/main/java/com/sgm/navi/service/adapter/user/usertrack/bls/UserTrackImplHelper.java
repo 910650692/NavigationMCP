@@ -6,6 +6,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.user.model.BehaviorDataType;
 import com.autonavi.gbl.user.syncsdk.model.SyncMode;
 import com.autonavi.gbl.user.usertrack.UserTrackService;
@@ -17,6 +18,7 @@ import com.autonavi.gbl.user.usertrack.model.SearchHistoryItem;
 import com.autonavi.gbl.user.usertrack.observer.IGpsInfoGetter;
 import com.autonavi.gbl.user.usertrack.observer.IUserTrackObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.user.usertrack.UserTrackAdapterCallBack;
@@ -42,7 +44,7 @@ import java.util.List;
 public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
     private static final String TAG = MapDefaultFinalTag.USER_TRACK_SERVICE_TAG;
     private final Hashtable<String, UserTrackAdapterCallBack> mUserTrackResultHashtable;
-    private final UserTrackService mUserTrackService;
+    private UserTrackService mUserTrackService;
     private final HistoryManager mHistoryManager;
     private final ArrayList<DrivingRecordDataBean> mGuideDataBeans = new ArrayList<>();
     private final ArrayList<DrivingRecordDataBean> mCruiseDataBeans = new ArrayList<>();
@@ -88,6 +90,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
      * 初始化服务
      */
     public void initUserTrackService() {
+        if(null == mUserTrackService)
+            mUserTrackService = (UserTrackService) ServiceMgr.getServiceMgrInstance()
+                    .getBLService(SingleServiceID.UserTrackSingleServiceID);
         //初始化参数待配置
         mUserTrackService.init(this);
         // 添加轨迹服务观察者

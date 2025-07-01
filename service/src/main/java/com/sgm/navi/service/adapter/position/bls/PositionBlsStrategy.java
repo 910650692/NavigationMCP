@@ -97,6 +97,7 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
 
     public PositionBlsStrategy(Context context) {
         mPosService = (PosService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.PosSingleServiceID);
+        Logger.i(TAG, "lvww", mPosService);
         this.mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         MountAngleManager.MountAngleInfo mountAngleInfo = MountAngleManager.getInstance().getMountAngleInfo();
         this.mPositionConfig = new PositionConfig().setRoll(mountAngleInfo.roll)
@@ -114,6 +115,10 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
     public boolean initLocEngine(LocMode locMode) {
         try {
             mLocMode = locMode;
+            if(null == mPosService){
+                mPosService = (PosService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.PosSingleServiceID);
+                mPosParallelRoadController = new PosParallelRoadController(mPosService, callbacks);
+            }
             PosWorkPath posWorkPath = new PosWorkPath();
             String posRootDir = GBLCacheFilePath.POS_DIR + "pos";
             String contextDir = posRootDir + "/context/";

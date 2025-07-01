@@ -28,7 +28,9 @@ import com.autonavi.gbl.data.observer.IDataListObserver;
 import com.autonavi.gbl.data.observer.IDownloadObserver;
 import com.autonavi.gbl.data.observer.IErrorDataObserver;
 import com.autonavi.gbl.data.observer.IMergedStatusInfoObserver;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.errorcode.common.Service;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.adapter.mapdata.MapDataAdapterCallBack;
 import com.sgm.navi.service.define.bean.AdMapPointBean;
@@ -64,14 +66,16 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
     private String mZeroStr = "0";
     private String mOneStr = "1";
 
-    protected MapDataObserversHelper(final MapDataService mapDataService) {
+    protected MapDataObserversHelper() {
         mapDataResultObserverHashtable = new Hashtable<>();
-        mMapDataService = mapDataService;
         mCommonManager = CommonManager.getInstance();
         mCommonManager.init();
     }
 
     protected void initMapDataService() {
+        if (null == mMapDataService)
+            mMapDataService = (MapDataService) ServiceMgr.getServiceMgrInstance()
+                    .getBLService(SingleServiceID.MapDataSingleServiceID);
         final InitConfig config = new InitConfig();
         //下载路径，设置后没用
         config.strStoredPath = "";

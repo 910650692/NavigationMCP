@@ -22,16 +22,20 @@ import java.util.Hashtable;
 public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver {
     private static final String TAG = MapDefaultFinalTag.SETTING_SERVICE_TAG;
     private final Hashtable<String, SettingAdapterCallback> mSettingHashtable;
-    private final BehaviorService mBehaviorService;
+    private BehaviorService mBehaviorService;
 
     public SettingAdapterImpl() {
         mSettingHashtable = new Hashtable<>();
         mBehaviorService = (BehaviorService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.BehaviorSingleServiceID);
+        Logger.i(TAG, "lvww", mBehaviorService);
     }
 
     @Override
     public void initSetting() {
         final BehaviorServiceParam behaviorServiceParam = new BehaviorServiceParam();
+        if(null == mBehaviorService)
+            mBehaviorService = (BehaviorService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.BehaviorSingleServiceID);
+
         mBehaviorService.init(behaviorServiceParam);
         mBehaviorService.addObserver(this);
     }

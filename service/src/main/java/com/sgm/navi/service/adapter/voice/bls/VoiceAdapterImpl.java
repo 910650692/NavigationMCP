@@ -27,13 +27,15 @@ import java.util.Hashtable;
 public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListObserver, IImageObserver, IDownloadObserver {
     private static final String TAG = VoiceAdapterImpl.class.getSimpleName();
     private final Hashtable<String, VoiceAdapterCallback> callbacks;
-    private final VoiceService voiceService;
+    private VoiceService voiceService;
     HashMap<Integer, VoiceInfo> recommendVoiceList;
 
     public VoiceAdapterImpl() {
         callbacks = new Hashtable<>();
         recommendVoiceList = new HashMap<>();
         voiceService = (VoiceService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.VoiceDataSingleServiceID);
+        Logger.d(TAG, "lvww", voiceService);
+
     }
     @Override
     public void initService() {
@@ -41,7 +43,8 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
 
         if(voiceService == null){
             Logger.e("voiceService is null");
-            return;
+            voiceService = (VoiceService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.VoiceDataSingleServiceID);
+
         }
 
         VoiceInitConfig config = new VoiceInitConfig();

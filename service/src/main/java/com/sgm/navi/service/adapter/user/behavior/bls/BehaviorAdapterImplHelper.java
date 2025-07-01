@@ -4,6 +4,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.user.behavior.BehaviorService;
 import com.autonavi.gbl.user.behavior.model.BehaviorServiceParam;
 import com.autonavi.gbl.user.behavior.model.ConfigKey;
@@ -16,6 +17,7 @@ import com.autonavi.gbl.user.syncsdk.model.SyncMode;
 import com.autonavi.gbl.user.syncsdk.model.SyncSdkServiceParam;
 import com.autonavi.gbl.user.syncsdk.observer.ISyncSDKServiceObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.user.behavior.BehaviorAdapterCallBack;
@@ -52,7 +54,8 @@ public class BehaviorAdapterImplHelper implements IBehaviorServiceObserver, ISyn
         final int behavior = mSyncSdkService.init(param);
         Logger.i(TAG, "initSyncSdkService: behavior = " + behavior);
         mSyncSdkService.addObserver(this);
-
+        if(null == mBehaviorService) mBehaviorService = (BehaviorService) ServiceMgr.getServiceMgrInstance()
+                .getBLService(SingleServiceID.BehaviorSingleServiceID);
         // 2，构造 数据收藏初始化参数
         final BehaviorServiceParam behaviorServiceParam = new BehaviorServiceParam();
         //初始化
@@ -119,7 +122,7 @@ public class BehaviorAdapterImplHelper implements IBehaviorServiceObserver, ISyn
 
     @Override
     public void notify(final int eventType, final int exCode) {
-        Logger.i(TAG, "notify: eventType = " + eventType + " exCode = " + exCode);
+        Logger.d(TAG, "notify: eventType = " + eventType + " exCode = " + exCode);
         if (eventType == UserDataCode.SYNC_SDK_EVENT_DATA_UPDATED) {
             // 同步事件处理  收藏业务同步结果回调接口
             if (ConvertUtils.isEmpty(mAccountResultHashtable)) {

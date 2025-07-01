@@ -29,10 +29,11 @@ import java.util.ArrayList;
  */
 public class ForCastApiImpl implements IForCastApi, IForcastServiceObserver {
     private static final String TAG = MapDefaultFinalTag.FOR_CAST_SERVICE_TAG;
-    private final ForcastService mForcastService;
+    private ForcastService mForcastService;
 
     public ForCastApiImpl() {
         mForcastService = (ForcastService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.ForcastSingleServiceID);
+        Logger.i(TAG, "lvww", mForcastService);
     }
 
     @Override
@@ -128,6 +129,8 @@ public class ForCastApiImpl implements IForCastApi, IForcastServiceObserver {
     }
 
     private int initService() {
+        if(null == mForcastService)
+            mForcastService = (ForcastService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.ForcastSingleServiceID);
         ForcastInitParam forcastInitParam = new ForcastInitParam();
         forcastInitParam.stCurTime = TimeUtil.getLocalTime2(); // 当前时间 com.autonavi.gbl.util.model.DateTime
         forcastInitParam.dbPath = GBLCacheFilePath.BEHAVIOR_WSTR_DB_FILE_DIR; // 预测数据库文件保存目录路径

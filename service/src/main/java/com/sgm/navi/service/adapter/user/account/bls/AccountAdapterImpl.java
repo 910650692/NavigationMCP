@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.user.account.bls;
 
 import android.accounts.Account;
 
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.user.account.AccountService;
 import com.autonavi.gbl.user.account.model.AccountCheckRequest;
@@ -24,17 +25,21 @@ import com.sgm.navi.service.define.user.account.AccessTokenParam;
 
 
 public class AccountAdapterImpl implements IAccountApi {
-    private final AccountService mAccountService;
+    private AccountService mAccountService;
     private final AccountAdapterImplHelper mAdapterImplHelper;
 
     public AccountAdapterImpl() {
         mAccountService = (AccountService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.AccountSingleServiceID);
+        Logger.i("lvww", mAccountService);
         mAdapterImplHelper = new AccountAdapterImplHelper(mAccountService);
     }
 
     @Override
     public void initAccountService() {
+        if(null == mAccountService)
+        mAccountService = (AccountService) ServiceMgr.getServiceMgrInstance()
+                .getBLService(SingleServiceID.AccountSingleServiceID);
         mAdapterImplHelper.initAccountService();
     }
 

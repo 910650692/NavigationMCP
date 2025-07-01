@@ -1,5 +1,6 @@
 package com.sgm.navi.service.adapter.mapdata.bls;
 
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.data.MapDataService;
 import com.autonavi.gbl.data.model.DownLoadMode;
 import com.autonavi.gbl.data.observer.IDownloadObserver;
@@ -23,11 +24,16 @@ public class MapDataAdapterImpl implements IMapDataApi {
     public MapDataAdapterImpl() {
         mMapDataService = (MapDataService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.MapDataSingleServiceID);
-        mMapDataObserversHelper = new MapDataObserversHelper(mMapDataService);
+        Logger.i(TAG, "lvww", mMapDataService);
+
+        mMapDataObserversHelper = new MapDataObserversHelper();
     }
 
     @Override
     public void init() {
+        if (null == mMapDataService)
+            mMapDataService = (MapDataService) ServiceMgr.getServiceMgrInstance()
+                    .getBLService(SingleServiceID.MapDataSingleServiceID);
         mMapDataObserversHelper.initMapDataService();
     }
 

@@ -18,7 +18,7 @@ import patac.manager.vehicle.PatacVehicleManager;
 public class CalibrationAdapterImpl implements CalibrationApi {
     private static final String TAG = MapDefaultFinalTag.CALIBRATION_SERVICE_TAG;
 
-    private final CalibrationManager mCalibrationManager;
+    private CalibrationManager mCalibrationManager;
     private PatacServiceManager mPatacServiceManager;
 
     private int powerType;
@@ -56,11 +56,18 @@ public class CalibrationAdapterImpl implements CalibrationApi {
     public CalibrationAdapterImpl() {
         mCalibrationManager = new CalibrationManager();
         mPatacServiceManager = PatacServiceManager.newInstance(AppCache.getInstance().getMContext());
+        Logger.i(TAG, "lvww", mCalibrationManager, mPatacServiceManager);
     }
 
     @Override
     public void init() {
         Logger.d(TAG, "init start");
+        if(null == mCalibrationManager){
+            mCalibrationManager = new CalibrationManager();
+        }
+        if(null == mPatacServiceManager){
+            mPatacServiceManager = PatacServiceManager.newInstance(AppCache.getInstance().getMContext());
+        }
         final boolean isPetrol = mCalibrationManager.getBoolean(CalId.VEHICLE_FUEL_TYPE_PETROL, false);
         final boolean isElectric = mCalibrationManager.getBoolean(CalId.VEHICLE_FUEL_TYPE_ELECTRIC, false);
         final boolean isHybrid = mCalibrationManager.getBoolean(CalId.VEHICLE_FUEL_TYPE_HYBRID, false);
