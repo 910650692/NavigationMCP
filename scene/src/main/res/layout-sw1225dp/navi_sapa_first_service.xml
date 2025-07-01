@@ -237,7 +237,7 @@
 
         <com.sgm.navi.ui.view.SkinView
             clickCommand="@{() -> naviSapa.onClick(1)}"
-            android:layout_width="@dimen/dp_545"
+            android:layout_width="@dimen/dp_226"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
