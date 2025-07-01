@@ -75,7 +75,7 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
             return 0;
         }
         if (mIsCollapse) {
-            return Math.min(mSearchCategoryLocalInfos.size(), 6);
+            return Math.min(mSearchCategoryLocalInfos.size(), 9);
         }
         return mSearchCategoryLocalInfos.size() + 1;
     }
@@ -100,7 +100,7 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder localInfo is null");
             return;
         }
-        if (mIsCollapse && position == 5 && mSearchCategoryLocalInfos.size() > 6) {
+        if (mIsCollapse && position == 8 && mSearchCategoryLocalInfos.size() > 9) {
             holder.mfilterItemBinding.filterChildImg.setVisibility(View.VISIBLE);
             holder.mfilterItemBinding.filterChildText.setVisibility(View.GONE);
             holder.mfilterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
