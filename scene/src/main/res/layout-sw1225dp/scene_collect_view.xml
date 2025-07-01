@@ -102,7 +102,9 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"
+                tools:layout_editor_absoluteX="34dp">
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/tv_no_favorite"
