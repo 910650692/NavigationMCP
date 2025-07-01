@@ -158,9 +158,12 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
             Logger.i(TAG, GsonUtils.toJson(searchResultEntity.getPoiList()));
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH ||
                     searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
-                final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
-                if (!ConvertUtils.isEmpty(poiInfoEntity)) {
-                    mViewModel.showChargeStationDetail(poiInfoEntity);
+                final ArrayList<PoiInfoEntity> poiInfoEntities = (ArrayList<PoiInfoEntity>) searchResultEntity.getPoiList();
+                if (poiInfoEntities != null && !poiInfoEntities.isEmpty()) {
+                    final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
+                    if (!ConvertUtils.isEmpty(poiInfoEntity) && mViewModel != null) {
+                        mViewModel.showChargeStationDetail(poiInfoEntity);
+                    }
                 }
             }
         } else if (mSupplementListTaskId == taskId) {
