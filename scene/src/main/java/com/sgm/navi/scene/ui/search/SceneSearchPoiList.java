@@ -111,6 +111,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private SearchResultEntity mSearchResultEntity;
     private int mTaskId;
     private boolean mIsEnd = false;
+
+    private ViewGroup mSearchContainer;
     private List<SearchChildCategoryLocalInfo> mChildQuickList;
     private String mQuickValue;
 
@@ -150,7 +152,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         setupChildListActions();
         mSearchLoadingDialog = new SearchLoadingDialog(getContext());
         mCurrentSelectedQuick = -1;
+        mSearchContainer = mViewBinding.searchContainer;
     }
+
 
     /**
      * 初始化 RecyclerView
@@ -989,7 +993,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
         if (mScreenViewModel.isAlongWaySearch()) {
             mViewBinding.routeRightTabListChargeScene.setVisibility(VISIBLE);
-//            updateSearchContainerMarginBottom(true);
+            updateSearchContainerMarginBottom(true);
             if(!ConvertUtils.isEmpty(searchResultEntity.getKeyword())){
                 final String queryType = com.android.utils.ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
                 mViewBinding.routeRightTabListChargeScene.setSearchCharge(queryType.equals(searchResultEntity.getKeyword()));
@@ -997,7 +1001,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.routeRightTabListChargeScene.registerRouteSelectObserver(TAG, this);
 
         } else {
-//            updateSearchContainerMarginBottom(false);
+            updateSearchContainerMarginBottom(false);
             mViewBinding.routeRightTabListChargeScene.setVisibility(GONE);
         }
 
@@ -1399,12 +1403,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     private void updateSearchContainerMarginBottom(boolean isAlongWay) {
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mViewBinding.searchContainer.getLayoutParams();
-        if (isAlongWay) {
-            lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_733);
-        } else {
-            lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_898);
+        if (mSearchContainer != null) {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mSearchContainer.getLayoutParams();
+            if (isAlongWay) {
+                lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_733);
+            } else {
+                lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_898);
+            }
+            mSearchContainer.setLayoutParams(lp);
         }
-        mViewBinding.searchContainer.setLayoutParams(lp);
     }
 }
