@@ -141,10 +141,10 @@
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
                     android:layout_marginStart="@dimen/dp_7"
-                    android:layout_marginBottom="@dimen/dp_10"
-                    android:src="@drawable/img_navi_parking"
+                    android:src="@drawable/img_navi_parking_sw1225"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/tv_title_unexpand"
