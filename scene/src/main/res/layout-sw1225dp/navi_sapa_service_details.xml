@@ -46,9 +46,10 @@
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/siv_service_details_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_20"
                 android:ellipsize="end"
                 android:maxWidth="@dimen/dp_400"
                 android:maxLines="1"
@@ -56,6 +57,7 @@
                 android:textColor="@color/navi_color_000000_100"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintBottom_toBottomOf="@+id/siv_service_details_status_tag"
+                app:layout_constraintEnd_toStartOf="@+id/siv_service_exit"
                 app:layout_constraintStart_toEndOf="@+id/siv_service_details_status_tag"
                 app:layout_constraintTop_toTopOf="@+id/siv_service_details_status_tag"
                 tools:text="商城服务区" />
