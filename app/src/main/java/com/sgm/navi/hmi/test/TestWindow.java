@@ -91,7 +91,8 @@ public class TestWindow {
         Logger.d(TAG, "isDebug", BuildConfig.DEBUG);
         mBinding.testNavLog.setChecked(BuildConfig.DEBUG ||
                 SpUtils.getInstance().getBoolean(SpUtils.SP_KEY_LOG_SWITCH, false));
-        mBinding.testGaodeLog.setChecked(BuildConfig.DEBUG);
+        mBinding.testGaodeLog.setChecked(BuildConfig.DEBUG ||
+                SpUtils.getInstance().getBoolean(SpUtils.SP_KEY_GAO_DE_LOG_SWITCH, false));
         mWindowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         initLayoutParams();
         initAction();

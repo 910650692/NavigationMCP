@@ -3,10 +3,13 @@ package com.android.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.android.utils.log.Logger;
+
 public class SpUtils {
     private static Context mApplication;
     private static final String SP_NAME = "navi_app_sp";
     public static final String SP_KEY_LOG_SWITCH = "log_switch";
+    public static final String SP_KEY_GAO_DE_LOG_SWITCH = "gao_de_log_switch";
     private static SharedPreferences sp;
 
     public SharedPreferences getSp() {

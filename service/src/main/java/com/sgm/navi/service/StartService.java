@@ -1,6 +1,7 @@
 package com.sgm.navi.service;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.SpUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.file.ParseJsonUtils;
 import com.android.utils.log.Logger;
@@ -11,6 +12,7 @@ import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.define.code.CodeManager;
 import com.sgm.navi.service.define.code.ErrorCode;
+import com.sgm.navi.service.define.engine.GaodeLogLevel;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.greendao.setting.SettingManager;
@@ -455,6 +457,9 @@ public class StartService {
         public void onInitEngineSuccess() {
             Logger.i(TAG, "Engine init success.....");
             getInstance().initSdkService();
+            EnginePackage.getInstance().switchLog(SpUtils.getInstance().
+                    getBoolean(SpUtils.SP_KEY_GAO_DE_LOG_SWITCH, false) ?
+                    GaodeLogLevel.LOG_DEBUG : GaodeLogLevel.LOG_NONE);
         }
 
         @Override

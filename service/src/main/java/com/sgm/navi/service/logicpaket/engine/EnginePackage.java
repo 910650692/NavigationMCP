@@ -1,6 +1,7 @@
 package com.sgm.navi.service.logicpaket.engine;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.SpUtils;
 import com.sgm.navi.service.adapter.engine.EngineAdapter;
 import com.sgm.navi.service.adapter.engine.EngineObserver;
 import com.sgm.navi.service.define.engine.GaodeLogLevel;
@@ -72,6 +73,7 @@ public class EnginePackage implements EngineObserver {
     }
 
     public void switchLog(GaodeLogLevel logLevel) {
+        SpUtils.getInstance().putBoolean(SpUtils.SP_KEY_GAO_DE_LOG_SWITCH, logLevel.getCode() != 0);
         mEngineAdapter.switchLog(logLevel);
     }
 
