@@ -497,7 +497,8 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/activating_img"
-                app:layout_constraintEnd_toEndOf="pare
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
