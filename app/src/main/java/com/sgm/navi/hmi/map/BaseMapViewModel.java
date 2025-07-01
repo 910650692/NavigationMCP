@@ -467,9 +467,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 OftenArrivedItemInfo oftenArrivedItemInfo = messageCenterInfo.getOftenArrivedItemInfo();
                 PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                         .setAddress(oftenArrivedItemInfo.getWstrAddress())
-                        .setName(oftenArrivedItemInfo.getWstrPoiName())
-                        .setPoint(oftenArrivedItemInfo.getStNaviCoord());
-                Logger.d(TAG, "start route geo: " + oftenArrivedItemInfo.getStNaviCoord().toString() + ", name: " + oftenArrivedItemInfo.getWstrPoiName());
+                        .setName(oftenArrivedItemInfo.getWstrPoiName());
+                if(oftenArrivedItemInfo.getStNaviCoord().getLat() != NumberUtils.NUM_0 && oftenArrivedItemInfo.getStNaviCoord().getLon() != NumberUtils.NUM_0 ){
+                    poiInfoEntity.setPoint(new GeoPoint(oftenArrivedItemInfo.getStNaviCoord().getLat(), oftenArrivedItemInfo.getStNaviCoord().getLon()));
+                }else{
+                    poiInfoEntity.setPoint(new GeoPoint(oftenArrivedItemInfo.getStDisplayCoord().getLat(), oftenArrivedItemInfo.getStDisplayCoord().getLon()));
+                }
                 startRoute(poiInfoEntity);
             }
         }
@@ -541,7 +544,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void setMapCenterInScreen() {
         Logger.i(TAG, "setMapCenterInScreen");
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment){
+        if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment || baseFragment instanceof NaviGuidanceFragment){
             mModel.goToCarPosition();
             mModel.setMapCenterInScreen();
             mModel.refreshMapMode();
