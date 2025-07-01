@@ -26,6 +26,6 @@ public class MainScreenMapView extends FullScreenMapView {
 
     @Override
     public boolean isOpenScreen() {
-        return false;
+        return true;
     }
 }
