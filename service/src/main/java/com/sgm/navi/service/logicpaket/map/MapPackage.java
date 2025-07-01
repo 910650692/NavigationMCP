@@ -29,8 +29,8 @@ import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
@@ -42,7 +42,7 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
     private MapAdapter mMapAdapter;
     private LayerPackage mLayerPackage;
-    private final HashMap<MapType, List<IMapPackageCallback>> callbacks = new HashMap<>();
+    private final ConcurrentHashMap<MapType, List<IMapPackageCallback>> callbacks = new ConcurrentHashMap<>();
 
     private static final class Helper {
         private static final MapPackage ep = new MapPackage();
