@@ -902,7 +902,7 @@ public final class SceneEnumRes {
                         R.drawable.img_cruise_lane_24_day);
             case LaneActionTidal:
                 return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_25_day);
+                        R.drawable.img_optimal_lane_25_day);
             case LaneActionEmptyNoAction:
                 return new AutoUIDrawable(
                         R.drawable.img_disable_lane_22_day);
