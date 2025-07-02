@@ -372,11 +372,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 final Bundle bundle = new Bundle();
                 bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
                 final int powerType = powerType();
-                // 油车
-                if (powerType == 0) {
-                    bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "加油站");
-                } else {
+                // 电车
+                if (powerType == 1) {
                     bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "充电站");
+                } else {
+                    //油车 混动
+                    bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "加油站");
                 }
                 bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
                 addFragment(new SearchResultFragment(), bundle);

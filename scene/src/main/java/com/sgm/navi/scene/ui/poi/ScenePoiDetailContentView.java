@@ -470,6 +470,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
             mViewBinding.skPoiName.setText(R.string.shc_my_point);
+            mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
+            mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
             mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.VISIBLE);
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
@@ -1686,6 +1688,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
             mViewBinding.csPoiNoResult.setVisibility(View.GONE);
+            mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
+            mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
             mViewBinding.skPoiName.setVisibility(View.VISIBLE);
             mViewBinding.poiSecondAddress.setVisibility(View.VISIBLE);
             mViewBinding.poiDetailsScroll.setVisibility(View.VISIBLE);
@@ -2091,7 +2095,16 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     public void setPowerType(final int powerType){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: "+powerType);
-        mScreenViewModel.mPowerType.setValue(powerType);
+        mScreenViewModel.mPowerType.setValue(1);
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
+                    mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
+                    mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     /**

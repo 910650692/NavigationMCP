@@ -115,7 +115,6 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
         mBinding.scenePoiDetailContentView.doSearch(poiInfoEntity);
         mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
-        mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
         mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
         mBinding.scenePoiDetailContentView.setLabelName(labelName);
     }
