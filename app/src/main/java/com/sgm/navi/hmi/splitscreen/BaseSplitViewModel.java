@@ -14,19 +14,17 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.exportservice.ExportIntentParam;
+import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.mapservice.bean.INaviConstant;
+import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
-import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.calibration.PowerType;
-import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
-import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
-import com.sgm.navi.service.define.navi.NextManeuverEntity;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
@@ -41,7 +39,6 @@ import java.util.concurrent.ScheduledFuture;
  */
 public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel> {
     private static final String TAG = "BaseSplitViewModel";
-
 
     public BaseSplitViewModel(@NonNull Application application) {
         super(application);
@@ -58,7 +55,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public ObservableField<Integer> mNaviVoicePic = new ObservableField<>(com.sgm.navi.scene.R.drawable.img_mute_broadcast_black_58);
     public ObservableField<Boolean> mCrossImageVisibility = new ObservableField<>(false);
     public ObservableField<Boolean> mIsGasCar = new ObservableField<>(false);// true代表油车
-    public ObservableField<Boolean> mIsOnTouch = new ObservableField<>(false);
+    public ObservableField<Boolean> mIsOnTouch = new ObservableField<>(false);// 继续导航按钮
     public ObservableField<Boolean> mIsOnShowPreview = new ObservableField<>(false);
     public ObservableField<Boolean> mLanesVisibility = new ObservableField<>(false);
     public ObservableField<Boolean> mNextManeuverVisible = new ObservableField<>(false);
@@ -69,38 +66,21 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     // 全览后开启倒计时，8秒退出全览
     private ScheduledFuture previewScheduledFuture;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mTopNaviBarVisibility.set(mModel.isOnNavigating() ? false : true);
-        mNaviActionBarVisibility.set((mModel.isOnNavigating() && isOnImmersive()) ? true : false);
-        mNaviBroadIsMute.set(mModel.isMute());
-        mNaviVoicePic.set(mModel.isMute() ? com.sgm.navi.scene.R.drawable.img_mute_broadcast_black_58 : com.sgm.navi.scene.R.drawable.img_navi_broadcast);
-        mIsGasCar.set(mModel.getPowerType() == PowerType.E_VEHICLE_ENERGY_FUEL);
-        mIsOnTouch.set(!isOnImmersive() && mModel.isOnNavigating());
-        if (mModel.isOnNavigating()) {
-            onNaviInfo(mModel.getCurrentNaviEtaInfo());
-        }
-    }
-
     public void initView() {
         if (ConvertUtils.isNull(mView)) return;
-        mTopNaviBarVisibility.set(mModel.isOnNavigating() ? false : true);
-        mNaviActionBarVisibility.set((mModel.isOnNavigating() && isOnImmersive()) ? true : false);
+        mTopNaviBarVisibility.set(!mModel.isOnNavigating());
+        mNaviActionBarVisibility.set(mModel.isOnNavigating() && mModel.isOnImmersive());
         mNaviBroadIsMute.set(mModel.isMute());
-        mNaviVoicePic.set(mModel.isMute() ? com.sgm.navi.scene.R.drawable.img_mute_broadcast_black_58 : com.sgm.navi.scene.R.drawable.img_navi_broadcast);
+        mNaviVoicePic.set(mModel.isMute() ? R.drawable.img_mute_broadcast_black_58 : R.drawable.img_navi_broadcast);
         mIsGasCar.set(mModel.getPowerType() == PowerType.E_VEHICLE_ENERGY_FUEL);
-        mIsOnTouch.set(!isOnImmersive() && mModel.isOnNavigating());
+        mIsOnTouch.set(mModel.isOnTouch());
         if (mModel.isOnNavigating()) {
             onNaviInfo(mModel.getCurrentNaviEtaInfo());
         }
+        if (mModel.isOnTouch()) {
+            startImmersiveSchedule();
+        }
     }
-
-
-    /*-------------Action--------------*/
-    public Action testCloseActivity = () -> {
-        closeFragment(true);
-    };
 
     /***
      * 回家
@@ -160,18 +140,10 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      *
      */
     public Action showOrClosePreview = () -> {
-        Logger.i(TAG, "showOrClosePreview:" + mIsOnShowPreview.get());
-        if (mIsOnShowPreview.get()) {
-            mModel.closePreview();
-            mIsOnShowPreview.set(false);
-        } else {
-            mModel.showPreview();
-            mIsOnShowPreview.set(true);
-            startPreviewSchedule();
-        }
+        mModel.showOrClosePreview();
     };
 
-    private void startPreviewSchedule() {
+    public void startPreviewSchedule() {
         try {
             stopPreviewSchedule();
             previewScheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
@@ -185,7 +157,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         }
     }
 
-    private void stopPreviewSchedule() {
+    public void stopPreviewSchedule() {
         try {
             if (!ConvertUtils.isNull(previewScheduledFuture) && !previewScheduledFuture.isDone()) {
                 boolean cancelResult = previewScheduledFuture.cancel(true);
@@ -227,13 +199,6 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         }
     }
 
-    public void onNaviStop() {
-        Logger.d(TAG, "onNaviStop");
-        mTopNaviBarVisibility.set(true);
-        mNaviActionBarVisibility.set(false);
-        mIsOnTouch.set(false);
-    }
-
     public void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
         if (ConvertUtils.isNull(mView)) return;
         mView.onLaneInfo(isShowLane, laneInfoEntity);
@@ -268,20 +233,11 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
 
-    public void onImmersiveStatusChange(ImersiveStatus lastImersiveStatus) {
-        stopImmersiveSchedule();
-        mIsOnTouch.set(lastImersiveStatus == ImersiveStatus.TOUCH && mModel.isOnNavigating());
-        mIsOnShowPreview.set(lastImersiveStatus == ImersiveStatus.TOUCH && mModel.isOnNavigating());
-        if (!isOnImmersive()) {
-            startImmersiveSchedule();
-        }
-    }
-
     private void startImmersiveSchedule() {
         try {
             stopImmersiveSchedule();
             immersiveScheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
-                if (!isOnImmersive()) {
+                if (mModel.isOnTouch()) {
                     mModel.openOrCloseImmersive(true);
                 }
             }, TOTAL_TIME);
@@ -303,26 +259,6 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         }
     }
 
-    public void onManeuverInfo(NaviManeuverInfo info) {
-        mView.onManeuverInfo(info);
-    }
-
-    public void showNextManeuver(boolean isSuccess, NextManeuverEntity mNextManeuverEntity) {
-        if (isSuccess) {
-            mNextManeuverVisible.set(mView.onNextManeuverInfo(mNextManeuverEntity));
-        } else {
-            mNextManeuverVisible.set(false);
-        }
-    }
-
-    public boolean isOnNaviGating() {
-        return mModel.isOnNavigating();
-    }
-
-    public void onConfigurationChanged(ThemeType type) {
-        mModel.onConfigurationChanged(type);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -334,7 +270,31 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         return mView.getPreviewRect();
     }
 
-    private boolean isOnImmersive() {
-        return ImmersiveStatusScene.getInstance().getCurrentImersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP) == ImersiveStatus.IMERSIVE;
+    /***
+     * 沉浸式状态改变后更新UI状态
+     */
+    public void updateUiStateAfterImmersiveChanged(ImersiveStatus currentImersiveStatus) {
+        mIsOnTouch.set(currentImersiveStatus == ImersiveStatus.TOUCH);
+        if (currentImersiveStatus == ImersiveStatus.TOUCH) {
+            startImmersiveSchedule();
+        } else {
+            stopImmersiveSchedule();
+        }
+    }
+
+    /***
+     * 导航状态改变后更新UI状态
+     */
+    public void updateUiStateAfterNaviStatusChanged(String naviStatus) {
+        Logger.d(TAG, "updateUiStateAfterNaviStatusChanged:" + naviStatus);
+        mNaviActionBarVisibility.set(naviStatus.equals(NaviStatus.NaviStatusType.NAVING));
+        mTopNaviBarVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.NAVING));
+    }
+
+    /***
+     * 桌面背景改变后更新UI状态
+     */
+    public void updateUiStateAfterDeskBackgroundChanged(FloatViewManager.DesktopMode desktopMode) {
+
     }
 }

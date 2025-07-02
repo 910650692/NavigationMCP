@@ -65,7 +65,7 @@
             clickCommand="@{ViewModel.switchAiDriver}"
             android:layout_width="@dimen/dp_162"
             android:layout_height="@dimen/dp_192"
-            android:layout_marginBottom="@dimen/dp_62"
+            android:layout_marginBottom="@dimen/dp_96"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
             app:layout_constraintBottom_toBottomOf="parent">
