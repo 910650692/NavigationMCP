@@ -364,6 +364,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onPermissionsFail() {
         Logger.i(TAG, "权限申请失败无法进行下一步");
         ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.permission_quest_fail));
+        System.exit(0);
     }
 
     @Override
