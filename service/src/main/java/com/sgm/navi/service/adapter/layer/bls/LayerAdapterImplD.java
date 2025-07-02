@@ -115,6 +115,11 @@ public class LayerAdapterImplD implements ILayerApi {
     }
 
     @Override
+    public void clearRestrictPolyline(MapType mapTypeId) {
+
+    }
+
+    @Override
     public boolean switchSelectedPath(MapType mapTypeId, int index) {
         return true;
     }

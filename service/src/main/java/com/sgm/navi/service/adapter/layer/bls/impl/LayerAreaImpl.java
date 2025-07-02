@@ -35,6 +35,13 @@ public class LayerAreaImpl extends BaseLayerImpl<LayerAreaStyleAdapter> {
     }
 
     /**
+     * 清除限行线
+     */
+    public void clearRestrictPolyline() {
+        getLayerAreaControl().clearAllItems(BizAreaType.BizAreaTypeRestrictPolyline);
+    }
+
+    /**
      * 绘制限行区域
      */
     public void showLimitRestrictionView(ArrayList<GRestrictCity> cities, int position) {

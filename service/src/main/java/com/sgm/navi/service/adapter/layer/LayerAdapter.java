@@ -251,6 +251,10 @@ public class LayerAdapter {
         mLayerApi.showRestrictionView(mapTypeId, object, position);
     }
 
+    public void clearRestrictPolyline(MapType mapTypeId) {
+        mLayerApi.clearRestrictPolyline(mapTypeId);
+    }
+
     public void registerLayerClickObserver(MapType mapTypeId, ILayerAdapterCallBack observer) {
         mLayerApi.registerLayerClickObserver(mapTypeId, observer);
     }

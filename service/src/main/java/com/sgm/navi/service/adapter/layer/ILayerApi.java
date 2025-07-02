@@ -79,6 +79,9 @@ public interface ILayerApi {
     /* 展示限行区域 */
     void showRestrictionView(MapType mapTypeId, Object object, int position);
 
+    /* 清除限行线 */
+    void clearRestrictPolyline(MapType mapTypeId);
+
     /* 切换路线 */
     boolean switchSelectedPath(MapType mapTypeId, int index);
 

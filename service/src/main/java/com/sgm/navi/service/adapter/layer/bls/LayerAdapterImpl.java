@@ -301,6 +301,15 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     /**
+     * 清除限行线
+     * @param mapTypeId
+     */
+    @Override
+    public void clearRestrictPolyline(MapType mapTypeId) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerArea().clearRestrictPolyline();
+    }
+
+    /**
      * 切换路线
      *
      * @param mapTypeId
