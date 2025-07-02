@@ -1164,7 +1164,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                         && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(getCurrentIndex()).getMRouteRestAreaDetailsInfos())) {
                     final PoiInfoEntity poiEntryFromService = getPoiEntryFromService(
                             mRouteRestAreaInfos.get(getCurrentIndex()).getMRouteRestAreaDetailsInfos().get((int) (item.getIndex())));
-                    getSearchDetailsMode(poiEntryFromService);
+                    mViewModel.enterToDetails(poiEntryFromService);
                 }
                 break;
             case ROUTE_POINT_VIA_CHARGE_STATION:
