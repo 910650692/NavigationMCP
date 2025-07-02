@@ -147,6 +147,7 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
      * @param voiceInfo
      */
     public void toUseAllTask(final VoiceInfo voiceInfo){
+        Logger.e(TAG, "toUseAllTask: " + voiceInfo.getId());
         mIsDefaultVoiceUsed.setValue(false);
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, String.valueOf(voiceInfo.getId()));
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, voiceInfo.getImageUrl());

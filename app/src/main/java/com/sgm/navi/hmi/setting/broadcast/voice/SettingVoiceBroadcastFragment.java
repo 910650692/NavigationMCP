@@ -1,5 +1,7 @@
 package com.sgm.navi.hmi.setting.broadcast.voice;
 
+import android.util.Log;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.utils.log.Logger;
@@ -23,6 +25,8 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
     private static final String TAG = SettingVoiceBroadcastFragment.class.getSimpleName();
 
     private SettingVoiceBroadcastAdapter mSettingVoiceBroadcastAdapter;
+    private int mVoiceId;
+    private boolean mIsUsingAllTask;
 
     @Override
     public int onLayoutId() {
@@ -109,7 +113,9 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
      * @param index
      */
     public void setSingleChoice(final int index) {
+        Logger.d(TAG, "setSingleChoice: ", index);
         mSettingVoiceBroadcastAdapter.setSingleChoice(index);
+        mIsUsingAllTask = false;
     }
 
     /**
@@ -131,7 +137,12 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
 
     @Override
     public void toUseAllTask(final VoiceInfo voiceInfo) {
-        mViewModel.toUseAllTask(voiceInfo);
+        Logger.d(TAG, "toUseAllTask: ", mIsUsingAllTask, voiceInfo.getId());
+        if (!mIsUsingAllTask && mVoiceId != voiceInfo.getId()) {
+            mIsUsingAllTask = true;
+            mVoiceId = voiceInfo.getId();
+            mViewModel.toUseAllTask(voiceInfo);
+        }
     }
 
     /**
