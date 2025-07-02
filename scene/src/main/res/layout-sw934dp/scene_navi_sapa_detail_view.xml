@@ -11,7 +11,10 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:enabled="true"
+        android:clickable="true"
+        >
 
         <include android:id="@+id/sapa_service_detail"
             android:visibility="@{sapaDetail.mViewType == 0 ? View.VISIBLE : View.GONE}"
