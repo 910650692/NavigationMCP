@@ -13,7 +13,7 @@
             android:id="@+id/iv_close"
             android:layout_width="@dimen/dp_49"
             android:layout_height="@dimen/dp_49"
-            android:src="@drawable/img_basic_ic_back"
+            android:src="@drawable/img_back_58"
             android:layout_marginStart="@dimen/dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
