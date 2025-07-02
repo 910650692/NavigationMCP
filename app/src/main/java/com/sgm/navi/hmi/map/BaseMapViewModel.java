@@ -799,7 +799,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
         args.putBoolean(IVrBridgeConstant.VoiceIntentParams.IS_END, isEnd);
-        addFragment(new SearchResultFragment(), args);
+        addPoiDetailsFragment(new SearchResultFragment(), args);
     }
 
     public void toSearchAroundFragment(String keyword, final int radius, PoiInfoEntity endPoint) {
