@@ -83,6 +83,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
+        mBinding.cruiseLayout.tvCurrentRoadName.setSoundEffectsEnabled(false);
         mBinding.cruiseLayout.tvCurrentRoadName.setOnClickListener(view -> {
 
         });
