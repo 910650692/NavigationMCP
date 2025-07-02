@@ -430,7 +430,14 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     }
 
     public boolean isFromCardImagesRes(LayerItem item) {
-        return item.getBusinessType() == BizSearchType.BizSearchTypePoiAlongRoute;
+        if (item.getBusinessType() == BizSearchType.BizSearchTypePoiAlongRoute) {
+            if (item instanceof SearchAlongWayLayerItem alongWayLayerItem) {
+               final int typeCode = alongWayLayerItem.getMTypeCode();
+                Logger.d(TAG, "沿途搜类型 typeCode " + typeCode);
+                return typeCode == LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE;
+            }
+        }
+        return false;
     }
 
 }
