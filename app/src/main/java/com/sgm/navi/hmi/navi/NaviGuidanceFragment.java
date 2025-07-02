@@ -55,6 +55,7 @@ import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
@@ -692,6 +693,11 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                 @Override
                 public void run() {
                     showNaviContent();
+                    if (mViewModel != null &&
+                            Boolean.FALSE.equals(mViewModel.mNaviViaListVisibility.get()) &&
+                            NaviPackage.getInstance().getPreviewStatus()) {
+                        OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                    }
                 }
             });
         }
@@ -707,7 +713,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                     mSceneNaviControlMoreView.updateBroadcast();
                     mSceneNaviControlMoreView.updateCarModel();
                 }
-                OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             } else {
                 Logger.i(TAG, "onHiddenChanged mViewModel is null");
             }

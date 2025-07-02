@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import com.autonavi.gbl.guide.model.CrossType;
 import com.sgm.navi.service.AdapterConfig;
 import com.sgm.navi.service.define.bean.GeoPoint;
-import com.sgm.navi.service.define.bean.PreviewParams;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.sgm.navi.service.define.layer.refix.CarModeType;

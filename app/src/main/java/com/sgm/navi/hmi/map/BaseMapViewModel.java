@@ -78,6 +78,7 @@ import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
@@ -574,7 +575,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
         Logger.i(TAG, "setMapCenterInScreen type:" , type);
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment || baseFragment instanceof NaviGuidanceFragment){
+        if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment ||
+                ((baseFragment instanceof NaviGuidanceFragment) &&
+                        !NaviPackage.getInstance().getPreviewStatus()) ){
             mModel.goToCarPosition();
             mModel.setMapCenterInScreen();
             mModel.refreshMapMode();
