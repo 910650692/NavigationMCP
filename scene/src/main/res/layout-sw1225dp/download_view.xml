@@ -26,9 +26,9 @@
             android:id="@+id/status_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/setting_white"
             android:text="@string/offline_item_city_status"
-            android:textSize="@dimen/sp_26" />
+            android:textColor="@color/setting_white"
+            android:textSize="@dimen/sp_22" />
 
     </com.sgm.navi.ui.view.SkinLinearLayout>
 
