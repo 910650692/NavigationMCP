@@ -218,13 +218,11 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             }
             return;
         }
-        if (ConvertUtils.isEmpty(mPreviewParam)) {
-            mPreviewParam = new PreviewParam();
-            mPreviewParam.mapBound = getPathResultBound();
-            mPreviewParam.bUseRect = true;
-            if (Logger.openLog) {
-                Logger.d(TAG, "mPreviewParam init");
-            }
+        mPreviewParam = new PreviewParam();
+        mPreviewParam.mapBound = getPathResultBound();
+        mPreviewParam.bUseRect = true;
+        if (Logger.openLog) {
+            Logger.d(TAG, "mPreviewParam init");
         }
         int left;
         int right;
@@ -940,7 +938,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, "clearPaths");
         getLayerGuideRouteControl().clearPaths();
         getLayerRoadFacilityControl().clearAllItems();
-        mPreviewParam = null;
     }
 
     /**
