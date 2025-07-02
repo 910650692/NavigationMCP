@@ -18,6 +18,7 @@ import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
+import com.sgm.navi.service.define.layer.refix.CarModeType;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
@@ -47,6 +48,12 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     private static final String TAG = "ClusterModel";
     private static float MAP_ZOOM_LEVEL_DEFAULT = 17F;
     private boolean isInItMapView= false;
+
+    private final static String VALUE_NAVI_CAR_LOGO_DEFAULT = "setting_car_logo_default";
+    private final static String VALUE_NAVI_CAR_LOGO_BRAND = "setting_car_logo_brand";
+    private final static String VALUE_NAVI_CAR_LOGO_SPEED = "setting_car_logo_speed";
+    private final static String KEY_SETTING_TEXT_SIZE = "setting_text_size";
+    private final static String KEY_SETTING_CAR_LOGO = "setting_car_logo";
 
     public ClusterModel() {
 
@@ -122,6 +129,8 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
                 Logger.d(TAG, "导航中显示导航路线");
                 RoutePackage.getInstance().showRouteLine(getMapId());
             }
+            //mapview加载完成,隐藏占位图
+            //mViewModel.setHideLoadingPage();
         }
     }
 
@@ -203,18 +212,28 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     @Override
     public void onSettingChanged(String key, String value) {
         Logger.d(TAG, "onSettingChanged:" + key + "-:-" + value);
-        //设置地图大小
-        boolean mapViewTextSize = SettingPackage.getInstance().getMapViewTextSize();
-        if (mapViewTextSize){
-            MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1f);
-        }else {
-            MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.8f);
+        // 处理地图文字大小设置
+        if (KEY_SETTING_TEXT_SIZE.equals(key)) {
+            boolean mapViewTextSize = SettingPackage.getInstance().getMapViewTextSize();
+            float textSize = mapViewTextSize ? 1.0f : 1.8f;
+            MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, textSize);
+        }else if (KEY_SETTING_CAR_LOGO.equals(key)) {// 处理车标样式设置
+            CarModeType carMode;
+            if (VALUE_NAVI_CAR_LOGO_DEFAULT.equals(value)) {
+                carMode = CarModeType.CAR_MODE_DEFAULT;
+            } else if (VALUE_NAVI_CAR_LOGO_BRAND.equals(value)) {
+                carMode = CarModeType.CAR_MODEL_BRAND;
+                LayerPackage.getInstance().initCarLogoByFlavor(MapType.CLUSTER_MAP, BuildConfig.FLAVOR);
+            } else if (VALUE_NAVI_CAR_LOGO_SPEED.equals(value)) {
+                carMode = CarModeType.CAR_MODEL_SPEED;
+            } else {
+                carMode = LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP);
+            }
+            Logger.d(TAG, "车标样式仪表获取", carMode);
+            LayerPackage.getInstance().setCarMode(MapType.CLUSTER_MAP, carMode);
         }
-        //设置车标模式
-        LayerPackage.getInstance().setCarMode(MapType.CLUSTER_MAP, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
-        Logger.d(TAG, "车标样式仪表获取主图的onSettingChanged",LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
-        LayerPackage.getInstance().initCarLogoByFlavor(MapType.CLUSTER_MAP,  BuildConfig.FLAVOR);
     }
+
 
 
 
