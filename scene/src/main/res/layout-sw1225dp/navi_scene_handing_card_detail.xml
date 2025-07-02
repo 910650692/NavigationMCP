@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_551"
+        android:layout_height="@dimen/dp_543"
         android:background="@drawable/bg_shadow_navi_buick_transparent"
         android:clickable="true"
         android:padding="@dimen/dp_30">
