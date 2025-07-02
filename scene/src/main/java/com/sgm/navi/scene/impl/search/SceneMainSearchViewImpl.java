@@ -3,6 +3,7 @@ package com.sgm.navi.scene.impl.search;
 import com.sgm.navi.scene.BaseSceneModel;
 import com.sgm.navi.scene.api.search.ISceneMainSearchView;
 import com.sgm.navi.scene.ui.search.SceneMainSearchTopPartView;
+import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.StackManager;
 
 public class SceneMainSearchViewImpl extends BaseSceneModel<SceneMainSearchTopPartView> implements ISceneMainSearchView {
@@ -12,7 +13,10 @@ public class SceneMainSearchViewImpl extends BaseSceneModel<SceneMainSearchTopPa
 
     @Override
     public void closeSearch() {
-        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(mMapTypeId.name());
+        if (baseFragment != null) {
+            baseFragment.closeFragment(true);
+        }
     }
 
     @Override

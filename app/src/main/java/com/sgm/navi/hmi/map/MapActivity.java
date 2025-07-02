@@ -48,6 +48,7 @@ import com.sgm.navi.service.define.route.RouteTMCParam;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
@@ -178,6 +179,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                     ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
         }
+        FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
     }
 
     @Override
