@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.BaseSceneView;
 import com.sgm.navi.scene.databinding.TerminalParkingResultViewBinding;
 import com.sgm.navi.scene.impl.search.SceneTerminalViewImpl;
@@ -20,6 +21,10 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.sgm.navi.service.logicpaket.search.SearchPackage;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author baipeng0904
@@ -137,6 +142,33 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
         }
         if (mAdapter != null) {
             mAdapter.notifyList(searchResultEntity);
+            setMinDistancePark(searchResultEntity.getPoiList());
         }
+    }
+
+    private void setMinDistancePark(List<PoiInfoEntity> poiList) {
+        mViewBinding.recyclerSearchResult.post(new Runnable() {
+            @Override
+            public void run() {
+                PoiInfoEntity minPoi = poiList.get(0);
+                int index = 0;
+                for (int i = 1; i < poiList.size(); i++) {
+                    int curParkDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(poiList.get(i).getMPoint());
+                    int minParkDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(minPoi.getMPoint());
+                    if(curParkDistance < minParkDistance){
+                        minPoi = poiList.get(i);
+                        index = i;
+                    }
+                }
+                mAdapter.updateSelectedPosition(index);
+                layoutManager.scrollToPositionWithOffset(index, 0);
+                PoiInfoEntity finalMinPoi = minPoi;
+                int finalIndex = index;
+                // 延迟1s在去选中下标，等待图层渲染完毕
+                ThreadManager.getInstance().postDelay(() -> {
+                    mScreenViewModel.setSelectIndex(finalMinPoi, finalIndex);
+                },1000);
+            }
+        });
     }
 }

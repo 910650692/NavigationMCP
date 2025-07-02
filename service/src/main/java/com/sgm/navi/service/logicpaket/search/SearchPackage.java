@@ -1932,6 +1932,21 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * 计算两点之间的直线距离.
+     *
+     * @param endPoint 终点.
+     * @return 距离.
+     */
+    public int calcStraightDistanceWithInt(final GeoPoint endPoint) {
+        final GeoPoint startPoint = new GeoPoint();
+        startPoint.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        startPoint.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "calcStraightDistance : startPoint = ", startPoint.getLat(),
+                startPoint.getLon(), "; endPoint = ", endPoint.getLat(), endPoint.getLon());
+        return (int) Math.round(mLayerAdapter.calcStraightDistance(startPoint, endPoint));
+    }
+
+    /**
      * 格式化距离数组.
      * @param distance 原始距离数据
      * @return 解析后的距离文本
