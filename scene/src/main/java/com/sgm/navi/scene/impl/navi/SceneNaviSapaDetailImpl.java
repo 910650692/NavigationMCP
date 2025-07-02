@@ -107,7 +107,6 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     // 将服务区的poiId存在本地
     private String mServicePoiId = null;
 
-    private int mGasStationSearchId = -1;
     private int mSapaSearchId = -1;
 
     // 当前的poi信息 （用于添加途经点）
@@ -117,6 +116,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     // 当前的poi类型（用于添加途经点）
     private int mCurrentPoiType = -1;
     private int powerType;
+    private Runnable mRefreshGasStationInfoRunnable;
 
     public SceneNaviSapaDetailImpl(final SceneNaviSapaDetailView screenView) {
         super(screenView);
@@ -165,6 +165,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ThreadManager.getInstance().removeHandleTask(mRefreshGasStationInfoRunnable);
         SearchPackage.getInstance().unRegisterCallBack("SceneNaviSapaDetailImpl");
     }
 
@@ -187,8 +188,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
      * @param sapaInfoEntity 实体类
      */
     public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
-        Logger.i(TAG, "skipNaviSapaDetailScene" + ", type = ", type,
-                ", sapaInfoEntity = ", sapaInfoEntity);
+        Logger.i(TAG, "skipNaviSapaDetailScene", ", type = ", type);
         if (sapaInfoEntity == null) {
             Logger.e(TAG, "sapaInfoEntity is null");
             return;
@@ -250,20 +250,9 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
      */
     private void doServiceSearch(final SapaInfoEntity.SAPAItem sapaItem) {
         if (sapaItem != null) {
-            final long detail = sapaItem.getSapaDetail();
             final String poiId = sapaItem.getServicePOIID();
-            // 代表有加油站 进行沿途搜索
-            if (DataHelper.getNthBit(detail, 0) == 1) {
-                final List<String> poiIds = new ArrayList<>();
-                poiIds.add(poiId);
-                // 搜索服务区加油站详情
-                mGasStationSearchId = SearchPackage.getInstance().doLineDeepInfoSearch(
-                        ResourceUtils.Companion.getInstance().
-                                getString(R.string.navi_via), poiIds);
-                Logger.i(TAG, "加油站详情搜索 taskId = ", mGasStationSearchId);
-            }
             // 进行PoiId搜索 为了途经点添加功能
-            mSapaSearchId = SearchPackage.getInstance().poiIdSearch(poiId);
+            mSapaSearchId = SearchPackage.getInstance().poiIdSearch(poiId, true);
             Logger.i(TAG, "doServiceSearch  mSapaSearchId = ", mSapaSearchId);
         } else {
             Logger.e(TAG, "sapaItem is null");
@@ -288,12 +277,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         }
         PoiInfoEntity poiInfo = null;
         if (!ConvertUtils.isEmpty(poiList)) {
-            for (PoiInfoEntity poiInfoEntity : poiList) {
-                if (mServicePoiId.equals(poiInfoEntity.getPid())) {
-                    poiInfo = poiInfoEntity;
-                    break;
-                }
-            }
+            poiInfo = poiList.get(0);
         }
         if (poiInfo == null) {
             Logger.i(TAG, "refreshGasStationInfo poiInfo is null");
@@ -603,31 +587,21 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
      * @param searchResultEntity 搜索结果 {@link SearchResultEntity}，包含具体的搜索结果数据
      */
     @Override
-    public void onSearchResult(final int taskId, final int errorCode, final String message,
-                               final SearchResultEntity searchResultEntity) {
-        Logger.i(TAG, "onSearchResult taskId = ", taskId,
-                ", errorCode = ", errorCode, ", message = ", message);
-        if (searchResultEntity == null) {
-            Logger.i(TAG, "onSearchResult searchResultEntity is null");
-            return;
-        }
-        Logger.i(TAG, "onSearchResult searchResultEntity = ",
-                searchResultEntity.toString());
+    public void onSilentSearchResult(int taskId, int errorCode, String message,
+                                     SearchResultEntity searchResultEntity) {
         // 如果当前的搜索id与回调的taskId相同，表示是当前的搜索结果
-        if (mGasStationSearchId == taskId) {
-            ThreadManager.getInstance().postUi(new Runnable() {
+        if (mSapaSearchId == taskId) {
+            mRefreshGasStationInfoRunnable = new Runnable() {
                 @Override
                 public void run() {
                     try {
                         refreshGasStationInfo(searchResultEntity);
                     } catch (Exception e) {
-                        Logger.e(TAG, "onSearchResult Exception occurred",
-                                e.getMessage());
+                        Logger.e(TAG, "refreshGasStationInfo error:", e.getMessage());
                     }
                 }
-            });
-        }
-        if (mSapaSearchId == taskId) {
+            };
+            ThreadManager.getInstance().postUi(mRefreshGasStationInfoRunnable);
             refreshViaData(searchResultEntity);
         }
     }
@@ -642,8 +616,6 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         }
         mCurrentPoiInfoEntity = searchResultEntity.getPoiList().get(0);
         mCurrentPoiType = searchResultEntity.getPoiType();
-        Logger.i(TAG, "refreshViaData mCurrentPoiInfoEntity = ",
-                mCurrentPoiInfoEntity.toString(), ", mCurrentPoiType = ", mCurrentPoiType);
     }
 
     /**
