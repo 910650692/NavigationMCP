@@ -3988,15 +3988,15 @@
     <dimen name="control_view_normal_width">455dp</dimen>
     <dimen name="control_view_short_width">302dp</dimen>
     <!--动态tbt布局-->
-    <dimen name="navi_tbt_height">@dimen/dp_119</dimen>
-    <dimen name="navi_tbt_height_short">@dimen/dp_101</dimen>
-    <dimen name="navi_tbt_with">@dimen/dp_640</dimen>
+    <dimen name="navi_tbt_height">119dp</dimen>
+    <dimen name="navi_tbt_height_short">101dp</dimen>
+    <dimen name="navi_tbt_with">640dp</dimen>
     <!--1/3屏路口大图高度-->
-    <dimen name="one_third_screen_cross_pic_height">@dimen/dp_349</dimen>
-    <dimen name="one_third_screen_car_logo_bottom">@dimen/dp_827</dimen>
+    <dimen name="one_third_screen_cross_pic_height">349dp</dimen>
+    <dimen name="one_third_screen_car_logo_bottom">827dp</dimen>
     <!--桌面悬浮窗的位置-->
-    <dimen name="launcher_position_top">@dimen/dp_35</dimen>
-    <dimen name="launcher_position_left">@dimen/dp_34</dimen>mnm
+    <dimen name="launcher_position_top">35dp</dimen>
+    <dimen name="launcher_position_left">34dp</dimen>
 
     <dimen name="navi_cadillac_cluster_navi_text_size">52px</dimen>
     <dimen name="navi_cadillac_cluster_navi_unit_size">44px</dimen>
