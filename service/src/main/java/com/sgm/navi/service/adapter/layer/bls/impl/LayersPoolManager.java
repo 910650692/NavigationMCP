@@ -1,6 +1,7 @@
 package com.sgm.navi.service.adapter.layer.bls.impl;
 
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.map.MapView;
@@ -59,7 +60,9 @@ public final class LayersPoolManager implements ILayerAdapterCallBack {
     }
 
     public boolean unInitLayer(MapType mapType) {
-        layersPools.get(mapType).removeClickCallback();
+        if (!ConvertUtils.isEmpty(layersPools.get(mapType))) {
+            layersPools.get(mapType).removeClickCallback();
+        }
         layersPools.remove(mapType);
         return false;
     }
