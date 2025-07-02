@@ -206,11 +206,11 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                     @Override
                     @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
                     public void onCommitClick() {
+                        CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
+                        CommonManager.getInstance().insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "");
                         mViewModel.clearAll();
                         mViewModel.resetSetting();
                         mViewModel.setResetSettingDialogShown(false);
-                        CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
-                        CommonManager.getInstance().insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "");
                         SettingPackage.getInstance().setPrivacyStatus(false);
                         restartApp();
                     }
@@ -257,16 +257,21 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
      * 重启应用
      */
     private void restartApp() {
-        final Intent i = requireContext().getPackageManager()
-                .getLaunchIntentForPackage(requireContext().getPackageName());
-        if (i != null) {
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra(BuryConstant.EventName.AMAP_RETURN_DEFAULT, BuryConstant.EventName.AMAP_RETURN_DEFAULT_CODE);
-            startActivity(i);
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(0);
-        }
+        ThreadManager.getInstance().postDelay(new Runnable() {
+            @Override
+            public void run() {
+                final Intent i = requireContext().getPackageManager()
+                        .getLaunchIntentForPackage(requireContext().getPackageName());
+                if (i != null) {
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.putExtra(BuryConstant.EventName.AMAP_RETURN_DEFAULT, BuryConstant.EventName.AMAP_RETURN_DEFAULT_CODE);
+                    startActivity(i);
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                    System.exit(0);
+                }
+            }
+        }, 500);
     }
 
     /**
