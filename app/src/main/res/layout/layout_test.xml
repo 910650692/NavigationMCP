@@ -243,6 +243,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/test_copy_info"
                 />
+
+            <com.sgm.navi.scene.ui.navi.GuidanceSimulationView
+                android:id="@+id/navi_sim_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navi_record"/>
+
         </com.sgm.navi.ui.view.SkinConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </com.sgm.navi.ui.view.SkinConstraintLayout>
