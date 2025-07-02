@@ -59,9 +59,9 @@
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:textCursorDrawable="@drawable/shape_edittext_cursor"
                     android:textColor="@color/black"
-                    android:textColorHint="@color/black"
+                    android:textColorHint="@color/color_black_70"
+                    android:textCursorDrawable="@drawable/shape_edittext_cursor"
                     android:textSize="@dimen/sp_29">
 
                     <requestFocus />
