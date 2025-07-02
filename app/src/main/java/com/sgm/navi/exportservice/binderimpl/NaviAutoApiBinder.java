@@ -94,6 +94,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
     private static final String ADMHC_CLIENT = "com.sgm.hmi.lvmapa.admhc";
     private static final String ADCU_CLIENT = "com.sgm.hmi.lvmapa.adcu";
     private static final String GALLERY_CLIENT = "com.patac.hmi.gallery";
+    private static final int LOCATION_INTERVAL = 5000;
     private static final int REVERSE_INTERVAL = 30 * 1000;
 
 
@@ -122,6 +123,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
     //收到定位改变后发起逆地理搜索获取DistrictInfo
     private int mDistrictSearchId;
     private BaseLocationInfo mLocationInfo;
+    private long mLocationCallbackMillis = 0L;
     private BaseDistrictInfo mDistrictInfo = null;
     private ScheduledFuture mDistrictIntervalFuture;
     private int mGeoSearchInterval = 0;
@@ -198,16 +200,19 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     return;
                 }
 
-                //对外分发位置信息改变
                 final String locationData = GsonUtils.toJson(locationInfo);
                 mLocationInfo = GsonUtils.fromJson(locationData, BaseLocationInfo.class);
-                Logger.d(TAG, "onLocationInfo: " + locationData);
-                dispatchLocationInfo();
 
-                //收到定位消息后通过逆地理搜索获取DistrictInfo和最近Poi详细信息
-                Logger.d(TAG, "onLocationInfo: mGeoSearchInterval = " + mGeoSearchInterval);
-                final GeoPoint geoPoint = new GeoPoint(locationInfo.getLongitude(), locationInfo.getLatitude());
-                initDistrict(geoPoint);
+                if (null != mLocationInfo && System.currentTimeMillis() - mLocationCallbackMillis > LOCATION_INTERVAL) {
+                    //对外分发定位信息
+                    mLocationCallbackMillis = System.currentTimeMillis();
+                    dispatchLocationInfo();
+                    //收到定位消息后通过逆地理搜索获取DistrictInfo和最近Poi详细信息
+                    if (null == mDistrictInfo || mGeoSearchInterval <= 0) {
+                        final GeoPoint geoPoint = new GeoPoint(locationInfo.getLongitude(), locationInfo.getLatitude());
+                        initDistrict(geoPoint);
+                    }
+                }
             }
 
             @Override
@@ -244,8 +249,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException e) {
-            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeLocationCallback();
         }
@@ -345,7 +350,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException exception) {
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
             Logger.w(TAG, exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeLocationCallback();
@@ -472,7 +477,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException exception) {
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
             Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeSearchCallback();
@@ -513,7 +518,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException exception) {
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
             Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeSearchCallback();
@@ -553,8 +558,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException e) {
-            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeSearchCallback();
         }
@@ -593,8 +598,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                         }
                     }
                 }
-            } catch (IllegalStateException statusException) {
-                Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+            } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+                Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
             } finally {
                 closeNaviStatusCallback();
             }
@@ -627,8 +632,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException statusException) {
-            Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeRouteCallback();
         }
@@ -659,13 +664,13 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     Logger.e(TAG, "already in route callback broadcast, can't process tbt");
                     return;
                 }
+                final BaseRouteResult baseRouteResult = convertToBaseResult(requestRouteResult);
+                if (null == baseRouteResult) {
+                    return;
+                }
                 try {
                     mInRouteCallBack = true;
                     Logger.d(TAG, "onRouteResult inCallback");
-                    final BaseRouteResult baseRouteResult = convertToBaseResult(requestRouteResult);
-                    if (null == baseRouteResult) {
-                        return;
-                    }
                     final int count = mRouteCallbackList.beginBroadcast();
                     final String routeResultStr = GsonUtils.toJson(baseRouteResult);
                     for (int i = 0; i < count; i++) {
@@ -682,8 +687,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                             }
                         }
                     }
-                } catch (IllegalStateException e) {
-                    Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+                } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+                    Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
                 } finally {
                     closeRouteCallback();
                 }
@@ -712,7 +717,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                             }
                         }
                     }
-                } catch (IllegalStateException exception) {
+                } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
                     Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
                 } finally {
                     closeRouteCallback();
@@ -806,8 +811,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException e) {
-            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closePoiInformCallback();
         }
@@ -1004,8 +1009,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException e) {
-            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeNavigationList();
         }
@@ -1041,8 +1046,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException e) {
-            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeSpeedStatusCallback();
         }
@@ -1076,8 +1081,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException statusException) {
-            Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeNaviStatusCallback();
         }
@@ -1100,8 +1105,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException statusException) {
-            Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeNaviStatusCallback();
             closeScheduleTask();
@@ -1133,8 +1138,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException statusException) {
-            Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeCountDownLightCallback();
         }
@@ -1174,8 +1179,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException e) {
-            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeNavigationList();
         }
@@ -1204,8 +1209,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException e) {
-            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeNavigationList();
         }
@@ -1272,8 +1277,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     }
                 }
             }
-        } catch (IllegalStateException statusException) {
-            Logger.e(statusException.getMessage() + Arrays.toString(statusException.getStackTrace()));
+        } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
+            Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
             closeNaviStatusCallback();
         }
