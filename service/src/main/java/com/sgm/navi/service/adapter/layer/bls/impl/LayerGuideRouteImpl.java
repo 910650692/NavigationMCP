@@ -956,7 +956,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, "showRestArea pathInfoList" + pathInfoList + " index" + index);
 
         PathInfo pathInfo = (PathInfo) pathInfoList.get(index);
-        ArrayList<RestAreaInfo> restAreas = pathInfo.getRestAreas(0, 100);
+        ArrayList<RestAreaInfo> restAreas = pathInfo.getRestAreas(0, 255);
         for (RestAreaInfo info : restAreas) {
             BizRouteRestAreaInfo bizRouteRestAreaInfo = new BizRouteRestAreaInfo();
             bizRouteRestAreaInfo.restAreaLabelInfo = info;

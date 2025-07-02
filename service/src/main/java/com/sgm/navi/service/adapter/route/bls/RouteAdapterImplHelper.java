@@ -912,7 +912,7 @@ public class RouteAdapterImplHelper {
         routeRestAreaParam.setMPathInfoList(pathInfoList);
         final ArrayList<RouteRestAreaInfo> routeRestAreaInfos = new ArrayList<>();
         final RouteRestAreaInfo routeRestAreaInfo = new RouteRestAreaInfo();
-        final ArrayList<RestAreaInfo> restAreas = pathInfoList.get(index).getRestAreas(0, 100);
+        final ArrayList<RestAreaInfo> restAreas = pathInfoList.get(index).getRestAreas(0, 255);
         final List<RouteRestAreaDetailsInfo> routeRestAreaDetailsInfos = new ArrayList<>();
         for (RestAreaInfo info : restAreas) {
             final RouteRestAreaDetailsInfo routeRestAreaDetailsInfo = getRouteRestAreaDetailsInfo(info);
