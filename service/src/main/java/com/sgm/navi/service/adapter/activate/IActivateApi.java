@@ -1,5 +1,12 @@
 package com.sgm.navi.service.adapter.activate;
 
+import com.sgm.navi.patacnetlib.NetQueryManager;
+import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
+import com.sgm.navi.patacnetlib.response.activate.UuidResponse;
+import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.service.adapter.activate.bls.ActivationManager;
+import com.sgm.navi.service.greendao.CommonManager;
+
 public interface IActivateApi {
 
     /**
@@ -35,4 +42,12 @@ public interface IActivateApi {
      * 反初始化
      */
     void unInit();
+
+    String getAppKeyFromDB();
+
+    void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack);
+
+    String getUuidFromDB();
+
+    void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack);
 }

@@ -112,8 +112,11 @@ public final class ActivateHQ {
                 }
                 UUID = response.getMVin();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, UUID);
-                mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
-                readyCreateOrder();
+                //todo adas要测试，直接传下单成功与uuid
+                mAdasManager.setUUID(UUID, UuidSubStatus.Subscribed);
+                Logger.d(TAG, "！！！！！成功发送UUID到ADAS服务 : " , UUID);
+                //mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
+                //readyCreateOrder();
             }
 
             @Override

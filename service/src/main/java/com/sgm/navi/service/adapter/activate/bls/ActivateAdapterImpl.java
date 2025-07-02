@@ -3,7 +3,10 @@ package com.sgm.navi.service.adapter.activate.bls;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.patacnetlib.NetQueryManager;
+import com.sgm.navi.patacnetlib.request.navibean.activate.AppKeyRequest;
+import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
 import com.sgm.navi.patacnetlib.response.activate.QueryOrderResponse;
+import com.sgm.navi.patacnetlib.response.activate.UuidResponse;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.activate.ActivateObserver;
@@ -211,6 +214,23 @@ public class ActivateAdapterImpl implements IActivateApi {
         for (ActivateObserver observer : mActObserverList) {
             observer.onActivatedError(errCode, msg);
         }
+    }
+
+    @Override
+    public String getAppKeyFromDB() {
+        return CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY);
+    }
+    @Override
+    public void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack) {
+        ActivationManager.getInstance().getAppKeyFromNet(callBack);
+    }
+    @Override
+    public String getUuidFromDB() {
+        return CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
+    }
+    @Override
+    public void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
+        ActivationManager.getInstance().getUuidFromNet(callBack);
     }
 
     /**

@@ -1,5 +1,9 @@
 package com.sgm.navi.service.adapter.activate;
 
+import com.sgm.navi.patacnetlib.NetQueryManager;
+import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
+import com.sgm.navi.patacnetlib.response.activate.UuidResponse;
+
 public interface ActivateObserver {
 
     /**
@@ -25,5 +29,13 @@ public interface ActivateObserver {
      * @param errCode 错误码
      */
     void onActivatedError(int errCode, String msg);
+
+    String getAppKeyFromDB();
+
+    void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack);
+
+    String getUuidFromDB();
+
+    void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack);
 
 }

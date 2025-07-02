@@ -1,5 +1,8 @@
 package com.sgm.navi.service.logicpaket.activate;
 
+import com.sgm.navi.patacnetlib.NetQueryManager;
+import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
+import com.sgm.navi.patacnetlib.response.activate.UuidResponse;
 import com.sgm.navi.service.adapter.activate.ActivateAdapter;
 import com.sgm.navi.service.adapter.activate.ActivateObserver;
 
@@ -92,6 +95,26 @@ public final class ActivatePackage implements ActivateObserver {
                 actObserver.onActivatedError(errCode, msg);
             }
         }
+    }
+
+    @Override
+    public String getAppKeyFromDB() {
+        return mActivateAdapter.getAppKeyFromDB();
+    }
+
+    @Override
+    public void getAppKeyFromNet(NetQueryManager.INetResultCallBack<AppKeyResponse> callBack) {
+        mActivateAdapter.getAppKeyFromNet(callBack);
+    }
+
+    @Override
+    public String getUuidFromDB() {
+        return mActivateAdapter.getUuidFromDB();
+    }
+
+    @Override
+    public void getUuidFromNet(NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
+        mActivateAdapter.getUuidFromNet(callBack);
     }
 
     /**

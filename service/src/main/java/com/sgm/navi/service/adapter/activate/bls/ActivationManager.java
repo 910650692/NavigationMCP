@@ -144,8 +144,7 @@ public final class ActivationManager {
             return;
         }
 
-        final AppKeyRequest req = new AppKeyRequest(API_VERSION);
-        NetQueryManager.getInstance().queryAppKey(req, new NetQueryManager.INetResultCallBack<AppKeyResponse>() {
+        getAppKeyFromNet(new NetQueryManager.INetResultCallBack<AppKeyResponse>() {
             @Override
             public void onSuccess(final AppKeyResponse response) {
                 Logger.d(TAG, response.toString());
@@ -162,6 +161,11 @@ public final class ActivationManager {
                 mActivateListener.onNetFailed();
             }
         });
+    }
+
+    public void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack) {
+        final AppKeyRequest req = new AppKeyRequest(API_VERSION);
+        NetQueryManager.getInstance().queryAppKey(req, callBack);
     }
 
     /**
@@ -183,10 +187,7 @@ public final class ActivationManager {
             return;
         }
 
-        final UuidRequest uuidRequest = new UuidRequest(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
-        Logger.d(TAG, "uuid req : " + uuidRequest);
-
-        NetQueryManager.getInstance().queryUuid(uuidRequest, new NetQueryManager.INetResultCallBack<UuidResponse>() {
+        getUuidFromNet(new NetQueryManager.INetResultCallBack<UuidResponse>() {
             @Override
             public void onSuccess(final UuidResponse response) {
                 Logger.d(TAG, response.toString());
@@ -201,7 +202,12 @@ public final class ActivationManager {
                 mActivateListener.onNetFailed();
             }
         });
+    }
 
+    public void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
+        final UuidRequest uuidRequest = new UuidRequest(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
+        Logger.d(TAG, "uuid req : " + uuidRequest);
+        NetQueryManager.getInstance().queryUuid(uuidRequest, callBack);
     }
 
     /**
@@ -230,7 +236,7 @@ public final class ActivationManager {
         // 激活文件保存路径
         actInitParam.szUserDataFileDir = GBLCacheFilePath.ACTIVATE_USER_DATA;
 
-        if(null == mActivationService) mActivationService = ActivationModule.getInstance();
+        if (null == mActivationService) mActivationService = ActivationModule.getInstance();
         final int initResult = mActivationService.init(actInitParam);
         Logger.i(TAG, "initActivateParam: initResult = " + initResult);
         final boolean initSuccess = ConvertUtils.equals(0, initResult);

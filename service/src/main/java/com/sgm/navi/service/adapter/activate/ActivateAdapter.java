@@ -1,5 +1,8 @@
 package com.sgm.navi.service.adapter.activate;
 
+import com.sgm.navi.patacnetlib.NetQueryManager;
+import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
+import com.sgm.navi.patacnetlib.response.activate.UuidResponse;
 import com.sgm.navi.service.AdapterConfig;
 
 public final class ActivateAdapter {
@@ -63,6 +66,22 @@ public final class ActivateAdapter {
      */
     public void addActivateObserver(final ActivateObserver observer) {
         mActivateApi.addActivateObserver(observer);
+    }
+
+    public String getAppKeyFromDB() {
+        return mActivateApi.getAppKeyFromDB();
+    }
+
+    public void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack) {
+        mActivateApi.getAppKeyFromNet(callBack);
+    }
+
+    public String getUuidFromDB() {
+        return mActivateApi.getUuidFromDB();
+    }
+
+    public void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
+        mActivateApi.getUuidFromNet(callBack);
     }
 
 }
