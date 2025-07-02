@@ -18,6 +18,7 @@ import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 
@@ -204,6 +205,10 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         Logger.i(TAG, "mRoadCrossInfo:", mRoadCrossInfo, " mMapTypeId:", mMapTypeId);
         LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
         layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            Logger.d(TAG, "1/3屏不显示路口大图！");
+            return;
+        }
         if (!mLayerPackage.showCross(mMapTypeId, layerItemCrossEntity)) {
             if (mRoadCrossInfo != null) {
                 onCrossImageInfo(false, mRoadCrossInfo);

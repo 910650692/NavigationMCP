@@ -330,7 +330,7 @@
             android:layout_width="@dimen/dp_196"
             android:layout_height="@dimen/dp_196"
             android:layout_marginEnd="@dimen/dp_34"
-            android:layout_marginBottom="@dimen/dp_147"
+            android:layout_marginBottom="@dimen/dp_130"
             app:layout_goneMarginBottom="@dimen/dp_0"
             android:gravity="center"
             android:textSize="@dimen/sp_30"

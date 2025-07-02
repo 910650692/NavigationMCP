@@ -180,7 +180,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mPopGuideLoginShow = new ObservableField<>(false);
         cruiseLanesVisibility = new ObservableField<>(false);
         mGoHomeVisible = new ObservableField<>(false);
-        sRVisible = new ObservableField<>(isSupportSplitScreen() && !FloatViewManager.getInstance().isNaviDeskBg());
+        sRVisible = new ObservableField<>(
+                isSupportSplitScreen() && !FloatViewManager.getInstance().isNaviDeskBg() && !ScreenTypeUtils.getInstance().isOneThirdScreen()
+        );
         mIsFullScreen = new ObservableField<>(ScreenTypeUtils.getInstance().isFullScreen());
 
         mFirstLaunch = mModel.isFirstLauncher();
@@ -195,6 +197,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void onCreate() {
         super.onCreate();
         checkPrivacyRights();
+        sRVisible.set(
+                isSupportSplitScreen() && !FloatViewManager.getInstance().isNaviDeskBg() && !ScreenTypeUtils.getInstance().isOneThirdScreen()
+        );
+        mScaleViewVisibility = new ObservableBoolean(
+                isSupportSplitScreen() && !ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().isNaviDeskBg()
+        );
+        mIsFullScreen.set(ScreenTypeUtils.getInstance().isFullScreen());
     }
 
     @Override
@@ -541,7 +550,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set((NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
-                NaviStatus.NaviStatusType.NAVING.equals(state) || exist) && !FloatViewManager.getInstance().isNaviDeskBg());
+                NaviStatus.NaviStatusType.NAVING.equals(state) || exist) && !FloatViewManager.getInstance().isNaviDeskBg() && (!ScreenTypeUtils.getInstance().isOneThirdScreen()));
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -1015,8 +1024,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         Logger.d(TAG, "onMessageInfoNotifyCallback", messageCenterInfo.getMsgType());
         //数据  点击事件需要使用
         messageCenterEntity.set(messageCenterInfo);
-        //显示整个view
-        messageCenterVisible.set(true);
+        //显示整个view, 1/3屏除外
+        messageCenterVisible.set(true && !ScreenTypeUtils.getInstance().isOneThirdScreen());
         //最左边操作标题
         messageCenterOperate.set(messageCenterInfo.getMsgOperate());
         //标题

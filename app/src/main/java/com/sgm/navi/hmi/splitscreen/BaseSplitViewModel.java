@@ -13,6 +13,7 @@ import androidx.databinding.ObservableField;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -61,7 +62,6 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public ObservableField<Boolean> mIsOnShowPreview = new ObservableField<>(false);
     public ObservableField<Boolean> mLanesVisibility = new ObservableField<>(false);
     public ObservableField<Boolean> mNextManeuverVisible = new ObservableField<>(false);
-    private boolean mIsSetCrossRect = false; // 是否设置过路口大图显示区域
     // 触摸态后开启倒计时，8秒后进入沉浸态
     private final long INTERVAL = 1;
     private final long TOTAL_TIME = 8;
@@ -80,8 +80,19 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         mIsOnTouch.set(!isOnImmersive() && mModel.isOnNavigating());
         if (mModel.isOnNavigating()) {
             onNaviInfo(mModel.getCurrentNaviEtaInfo());
-            onCrossImageInfo(mModel.getCrossIsShowing());
-            mModel.showOrHideCross(mModel.getLastCrossEntity());
+        }
+    }
+
+    public void initView() {
+        if (ConvertUtils.isNull(mView)) return;
+        mTopNaviBarVisibility.set(mModel.isOnNavigating() ? false : true);
+        mNaviActionBarVisibility.set((mModel.isOnNavigating() && isOnImmersive()) ? true : false);
+        mNaviBroadIsMute.set(mModel.isMute());
+        mNaviVoicePic.set(mModel.isMute() ? com.sgm.navi.scene.R.drawable.img_mute_broadcast_black_58 : com.sgm.navi.scene.R.drawable.img_navi_broadcast);
+        mIsGasCar.set(mModel.getPowerType() == PowerType.E_VEHICLE_ENERGY_FUEL);
+        mIsOnTouch.set(!isOnImmersive() && mModel.isOnNavigating());
+        if (mModel.isOnNavigating()) {
+            onNaviInfo(mModel.getCurrentNaviEtaInfo());
         }
     }
 
@@ -128,11 +139,11 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     };
 
     /***
-     * 切到智能驾驶
+     * 切到智能驾驶，交换位置和大小
      */
     public Action switchAiDriver = () -> {
         Logger.i(TAG, "switchAiDriver");
-        SplitScreenManager.getInstance().switchSRToFullScreen();
+        SplitScreenManager.getInstance().switchPositionAndSize();
     };
 
     /***
@@ -214,9 +225,6 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         if (!ConvertUtils.isNull(naviETAInfo)) {
             mView.onNaviInfo(naviETAInfo);
         }
-        if (!mIsSetCrossRect) {
-            mView.setCrossRect();
-        }
     }
 
     public void onNaviStop() {
@@ -246,6 +254,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
+        ExportIntentParam.setIntentPage(pageCode);
         Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
         ActivityOptions options = ActivityOptions.makeBasic();
         options.setLaunchDisplayId(0);
@@ -292,15 +301,6 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         } catch (Exception e) {
             Logger.i(TAG, "stopImmersiveSchedule failed:" + e.getMessage());
         }
-    }
-
-    public void onCrossImageInfo(boolean isShow) {
-        mCrossImageVisibility.set(isShow);
-    }
-
-    public void setCrossRect(Rect rect) {
-        mIsSetCrossRect = true;
-        mModel.setCrossRect(rect);
     }
 
     public void onManeuverInfo(NaviManeuverInfo info) {

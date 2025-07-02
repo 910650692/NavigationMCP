@@ -61,15 +61,22 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         mMapPackage = MapPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
-        mNaviPackage.registerObserver(CALLBACK_KEY, this);
         mNaviStatusAdapter = NavistatusAdapter.getInstance();
         mRoutePackage = RoutePackage.getInstance();
         mCalibrationPackage = CalibrationPackage.getInstance();
-        ImmersiveStatusScene.getInstance().registerCallback(CALLBACK_KEY, this);
         mNextManeuverEntity = new NextManeuverEntity();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mNaviPackage.registerObserver(CALLBACK_KEY, this);
+        ImmersiveStatusScene.getInstance().registerCallback(CALLBACK_KEY, this);
         lastCrossImgEntity = mNaviPackage.getLastCrossEntity();
-//        mCrossImgOnShowing = mNaviPackage.isMCrossImgIsOnShowing();
-        
+        // 隐藏路口大图
+        if (!ConvertUtils.isNull(mNaviPackage.getLastCrossEntity())) {
+            mLayerPackage.hideCross(MapType.MAIN_SCREEN_MAIN_MAP, mNaviPackage.getLastCrossEntity().getType());
+        }
     }
 
     @Override
@@ -193,13 +200,6 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     }
 
     @Override
-    public void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
-        IGuidanceObserver.super.onCrossImageInfo(isShowImage, naviImageInfo);
-        mCrossImgOnShowing = isShowImage;
-        showOrHideCross(naviImageInfo);
-    }
-
-    @Override
     public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus lastImersiveStatus) {
         Logger.i(TAG, "onImmersiveStatusChange", "mapTypeId:" , mapTypeId.name(), "lastImersiveStatus:" , lastImersiveStatus.name());
         if (mapTypeId == MAP_TYPE) {
@@ -245,30 +245,6 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         return mNaviPackage.getCurrentNaviEtaInfo();
     }
 
-    public void setCrossRect(Rect rect) {
-        mNaviPackage.setRoadCrossRect(MAP_TYPE, rect);
-    }
-
-    public boolean getCrossIsShowing() {
-        return mCrossImgOnShowing;
-    }
-
-    public void showOrHideCross(CrossImageEntity currentEntity) {
-        Logger.i(TAG, "showOrHideCross", "mCrossImgOnShowing:" , mCrossImgOnShowing);
-        if (ConvertUtils.isNull(mViewModel)) return;
-        mViewModel.onCrossImageInfo(mCrossImgOnShowing);
-        if (mCrossImgOnShowing) {
-            LayerItemCrossEntity entity = new LayerItemCrossEntity();
-            entity.setCrossImageEntity(currentEntity);
-            final boolean isSuccess = mLayerPackage.showCross(MAP_TYPE, entity);
-            mViewModel.showNextManeuver(isSuccess, mNextManeuverEntity);
-        } else {
-            if (!ConvertUtils.isNull(lastCrossImgEntity)) {
-                mLayerPackage.hideCross(MAP_TYPE, lastCrossImgEntity.getType());
-            }
-        }
-        lastCrossImgEntity = currentEntity;
-    }
 
     public void onConfigurationChanged(ThemeType type) {
         mapAdapter.updateUiStyle(MAP_TYPE, type);

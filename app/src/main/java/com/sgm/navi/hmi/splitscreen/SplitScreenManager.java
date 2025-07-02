@@ -55,6 +55,13 @@ public class SplitScreenManager {
         );
     }
 
+    /**
+     * 交换位置和大小，即导航切到2/3右侧，SR切到1/3左侧
+     */
+    public void switchPositionAndSize() {
+        switchSplitScreen(2, "");
+    }
+
     /***
      * 导航1/3屏，点击切换智能驾驶App到全屏
      */

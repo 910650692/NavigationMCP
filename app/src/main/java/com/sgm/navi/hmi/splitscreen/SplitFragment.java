@@ -41,6 +41,8 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
     public void onInitView() {
         if (!ScreenTypeUtils.getInstance().isOneThirdScreen()) {
             closeFragment(true);
+        } else {
+            mViewModel.initView();
         }
     }
 
@@ -72,24 +74,6 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
                 Logger.i(TAG, "calculatePreviewRect-Success!", "mPreviewRect:" + mPreviewRect);
             });
         }
-    }
-
-    /***
-     * 设置路口大图显示区域
-     */
-    public void setCrossRect() {
-        mBinding.sceneNaviTbt.post(() -> {
-            Rect rectTbt = new Rect();
-            mBinding.sceneNaviTbt.getGlobalVisibleRect(rectTbt);
-            // 这个高度和xml里面保持一致
-            float dpHeight = getResources().getDimension(com.sgm.navi.ui.R.dimen.one_third_screen_cross_pic_height);
-            int crossHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpHeight, getResources().getDisplayMetrics());
-            final int tbtHeight = DeviceUtils.isCar(getContext()) ? mBinding.sceneNaviTbt.getHeight() : 0;
-            Logger.d(TAG, "rectTbt:" + rectTbt.toShortString(), "height:" + mBinding.sceneNaviTbt.getHeight());
-            Rect rectCross = new Rect(rectTbt.left, rectTbt.bottom + tbtHeight, rectTbt.right, rectTbt.bottom + crossHeight + tbtHeight);
-            Logger.d(TAG, "CrossRect:" + rectCross.toShortString());
-            mViewModel.setCrossRect(rectCross);
-        });
     }
 
     public void onManeuverInfo(NaviManeuverInfo nextManeuverEntity) {

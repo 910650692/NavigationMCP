@@ -65,7 +65,7 @@
             clickCommand="@{ViewModel.switchAiDriver}"
             android:layout_width="@dimen/dp_162"
             android:layout_height="@dimen/dp_192"
-            android:layout_marginBottom="@dimen/dp_130"
+            android:layout_marginBottom="@dimen/dp_62"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -284,7 +284,6 @@
             android:id="@+id/ll_guidance_board"
             android:layout_width="@dimen/dp_613"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155_transparent"
             android:orientation="vertical"
             android:padding="@dimen/dp_34"
