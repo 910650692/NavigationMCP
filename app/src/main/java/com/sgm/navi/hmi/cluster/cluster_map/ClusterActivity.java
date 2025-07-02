@@ -1,11 +1,14 @@
 package com.sgm.navi.hmi.cluster.cluster_map;
 
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
@@ -46,6 +49,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     public void onInitView() {
         Logger.d(TAG, "onInitView");
         mViewModel.registerClusterMap();
+        initViewTheme();
     }
 
     @Override
@@ -59,7 +63,8 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         Logger.d(TAG, "onResume");
         getRootView().setVisibility(VISIBLE);
         mViewModel.remainingMileageConstraintLayoutVisibility.set(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING));
-        mViewModel.routeNameConstraintLayoutVisibility.set(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING));
+        mViewModel.routeNameConstraintLayoutVisibility.set(false);
+        //initViewTheme();
     }
 
     @Override
@@ -84,6 +89,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Logger.d(TAG, "onConfigurationChanged");
+        initViewTheme();
         updateMapThemeType();
     }
 
@@ -110,8 +116,25 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
 
     public void bindMapView() {
         mBinding.clusterMapview.post(() -> {
+            Logger.d(TAG, "bindMapView");
             MapPackage.getInstance().bindMapView(mBinding.clusterMapview);
             LayerAdapter.getInstance().initLayer(MapType.CLUSTER_MAP);
         });
+    }
+    public void setDayShowHide(boolean isShow){
+        mBinding.stvArrivalDay.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+
+    public void initViewTheme(){
+        int cluster_unit_transparent_sixty = ContextCompat.getColor(this, com.sgm.navi.ui.R.color.cluster_unit_transparent_sixty);
+        int cluster_title_transparent_ninety = ContextCompat.getColor(this, com.sgm.navi.ui.R.color.cluster_title_transparent_ninety);
+        Drawable cluster_title_view_bg = ContextCompat.getDrawable(this, R.drawable.cluster_title_view_bg);
+        mBinding.stvArriveTime.setTextColor(cluster_title_transparent_ninety);
+        mBinding.stvArrivalDay.setTextColor(cluster_title_transparent_ninety);
+        mBinding.stvArriveDefault.setTextColor(cluster_unit_transparent_sixty);
+        mBinding.remainingMileage.setTextColor(cluster_title_transparent_ninety);
+        mBinding.remainingMileageUtil.setTextColor(cluster_unit_transparent_sixty);
+        mBinding.remainingMileageConstraintLayout.setBackgroundDrawable(cluster_title_view_bg);
     }
 }

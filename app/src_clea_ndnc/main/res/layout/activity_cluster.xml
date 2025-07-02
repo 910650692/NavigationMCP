@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".cluster.cluster_map.ClusterActivity">
+
         <com.sgm.navi.service.define.map.ClusterMapView
             android:id="@+id/cluster_mapview"
             android:layout_width="match_parent"
@@ -49,28 +50,29 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/remainingMileageConstraintLayout"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_54"
-            android:layout_marginBottom="@dimen/dp_102"
-            android:layout_marginStart="@dimen/dp_138"
-            android:paddingHorizontal="@dimen/dp_16"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/navi_nd_cluster_navi_margin_Bottom_parent"
+            android:layout_marginStart="@dimen/navi_nd_cluster_navi_margin_left_parent"
+            android:paddingHorizontal="@dimen/navi_nd_cluster_navi_padding_horizontal"
             android:visibility="@{ViewModel.remainingMileageConstraintLayoutVisibility ? View.VISIBLE : View.GONE}"
-            android:paddingVertical="@dimen/dp_10"
+            android:paddingVertical="@dimen/navi_nd_cluster_navi_padding_vertical"
             android:background="@drawable/cluster_title_view_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-        <com.sgm.navi.ui.view.SkinTextView
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stvArriveTime"
                 android:layout_width="wrap_content"
                 android:text="@{ViewModel.arriveTimeField}"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginStart="@dimen/navi_nd_cluster_navi_margin_left_child"
                 android:textStyle="bold"
                 android:textColor="@color/cluster_title_transparent_ninety"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/navi_nd_cluster_navi_text_size"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/remaining_mileage_util"
                 tools:text="9:00"
                 />
             <com.sgm.navi.ui.view.SkinTextView
@@ -78,11 +80,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/cluster_title_transparent_ninety"
-                android:textSize="@dimen/sp_26"
-                android:textStyle="bold"
+                android:textSize="@dimen/sp_20"
+                android:visibility="gone"
                 android:text="@{ViewModel.arrivalDayField}"
-                android:translationY="@dimen/dp_26"
-                app:layout_constraintBottom_toTopOf="@id/stvArriveTime"
+                app:layout_constraintTop_toTopOf="@id/stvArriveTime"
                 app:layout_constraintStart_toEndOf="@id/stvArriveTime"
                 tools:text="+2"
                 />
@@ -93,7 +94,7 @@
                 android:gravity="center"
                 android:text="@string/rg_arrive_word"
                 android:textColor="@color/cluster_unit_transparent_sixty"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/navi_nd_cluster_navi_unit_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/stv_arrival_day"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -105,14 +106,13 @@
                 android:layout_height="wrap_content"
                 android:text="@{ViewModel.mRemainInfoNumber}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/stv_arrive_default"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:clickable="false"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:layout_marginStart="@dimen/dp_28"
                 android:textColor="@color/cluster_title_transparent_ninety"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/navi_nd_cluster_navi_text_size"
                 tools:text="22699" />
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/remaining_mileage_util"
@@ -125,7 +125,7 @@
                 android:clickable="false"
                 android:gravity="center"
                 android:textColor="@color/cluster_unit_transparent_sixty"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/navi_nd_cluster_navi_unit_size"
                 tools:text="公里" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.sgm.navi.ui.view.SkinConstraintLayout>

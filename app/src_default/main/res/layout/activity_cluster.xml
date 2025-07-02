@@ -66,11 +66,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textStyle="bold"
+                android:layout_marginStart="@dimen/dp_28"
                 android:textColor="@color/cluster_title_transparent_ninety"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/remaining_mileage_util"
                 tools:text="9:00"
                 />
             <com.sgm.navi.ui.view.SkinTextView
@@ -105,12 +106,11 @@
                 android:layout_height="wrap_content"
                 android:text="@{ViewModel.mRemainInfoNumber}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/stv_arrive_default"
                 app:layout_constraintTop_toTopOf="parent"
                 android:clickable="false"
                 android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
                 android:textStyle="bold"
-                android:layout_marginStart="@dimen/dp_28"
                 android:textColor="@color/cluster_title_transparent_ninety"
                 android:textSize="@dimen/sp_26"
                 tools:text="22699" />

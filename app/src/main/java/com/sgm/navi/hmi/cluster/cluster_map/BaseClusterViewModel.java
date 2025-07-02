@@ -86,7 +86,13 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
             if (!TextUtils.isEmpty(mArriveTime)) {
                 arriveTimeField.set(ConvertUtils.digitToBold(mArriveTime).toString());
             }
-            arrivalDayField.set(mArriveDay);
+            if (!TextUtils.isEmpty(mArriveDay)){
+                arrivalDayField.set(mArriveDay);
+                mView.setDayShowHide(true);
+            }else {
+                mView.setDayShowHide(false);
+            }
+
         String mRemainInfoString = ConvertUtils.digitToBold(mRemainInfo).toString();
         if (!TextUtils.isEmpty(mRemainInfoString)) {
             Pattern pattern = Pattern.compile("(\\d+(\\.\\d+)?)(公里|米)");
