@@ -34,7 +34,7 @@
             android:inputType="text"
             android:maxLines="1"
             android:paddingStart="0dp"
-            android:textColor="@color/search_shallow_text_day"
+            android:textColor="@color/search_deep_text_day"
             android:textColorHint="@color/search_shallow_text_day"
             android:textCursorDrawable="@drawable/cursor_color"
             android:textSize="@dimen/sp_29"
