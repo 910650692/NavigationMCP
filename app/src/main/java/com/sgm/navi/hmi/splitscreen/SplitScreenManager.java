@@ -4,23 +4,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.Configuration;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ScreenUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.AppCache;
-import com.sgm.navi.service.BuildConfig;
-import com.sgm.navi.service.define.screen.ScreenType;
 import com.patac.sgmsystemextendservice.ISystemExtendServiceProxy;
 import com.patac.sgmsystemextendservicelib.PatacSESConstants;
-
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author: QiuYaWei
@@ -45,9 +36,9 @@ public class SplitScreenManager {
      * 当前导航全屏，SR未显示
      * .导航全屏，把SR切换到1/3屏
      */
-    public void switchSRToOneThirdScreen() {
+    public void switchSRToOneThirdScreen(int taskId) {
         enterSplitScreen(
-                PatacSESConstants.SPLIT_SCREEN_NAVI_MAP,
+                taskId,
                 PatacSESConstants.SPLIT_POSITION_RIGHT,
                 PatacSESConstants.SPLIT_SIZE_2,
                 PatacSESConstants.SPLIT_SCREEN_SR,
@@ -132,18 +123,18 @@ public class SplitScreenManager {
     /***
      * 进入分屏
      * 说明：由应用侧主动触发的分屏
-     * @param pkg 最终分屏左侧应用的包名
+     * @param taskId 最终分屏左侧应用的包名
      * @param position 最终左侧应用的位置，0代表左边，1代表右边
      * @param size 最终左侧应用的大小，0代表2/3，1代表1/3
      * @param secondPkg 最终右侧应用的包名
      * @param extra 预留字段，传空字符串即可
      */
-    public void enterSplitScreen(String pkg, int position, int size, String secondPkg, String extra) {
+    public void enterSplitScreen(int taskId, int position, int size, String secondPkg, String extra) {
         try {
-            Logger.i("screen_change_used", "enterSplitScreen-start", pkg, position, size, secondPkg, secondPkg);
+            Logger.i("screen_change_used", "enterSplitScreen-start", taskId, position, size, secondPkg, secondPkg);
             if (isServiceConnect && !ConvertUtils.isNull(mBinder)) {
                 try {
-                    mBinder.enterISplitScreen(pkg, position, size, secondPkg, extra);
+                    mBinder.enterISplitScreenById(taskId, position, size, secondPkg, extra);
                 } catch (RemoteException e) {
                     Logger.e("screen_change_used", e.getMessage());
                 }
@@ -151,7 +142,7 @@ public class SplitScreenManager {
                 Logger.e("screen_change_used", "service disconnect or mBinder is null!");
             }
         } catch (Exception e) {
-            Logger.e("screen_change_used", "enterSplitScreen-failed", pkg, position, size, secondPkg, secondPkg);
+            Logger.e("screen_change_used", "enterSplitScreen-failed", taskId, position, size, secondPkg, secondPkg);
         }
     }
 
