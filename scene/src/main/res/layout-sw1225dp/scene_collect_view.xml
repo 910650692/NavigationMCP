@@ -28,7 +28,7 @@
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/dp_138">
+            android:layout_marginTop="@dimen/dp_128">
 
             <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/tv_favorite_switch"
