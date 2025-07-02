@@ -86,13 +86,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_34"
+                android:layout_marginBottom="@dimen/dp_20"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHeight_default="wrap"
-                app:layout_constraintHeight_max="@dimen/dp_770"
+                app:layout_constraintHeight_max="@dimen/dp_839"
                 app:layout_constraintHeight_min="@dimen/dp_544"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"
-                app:layout_goneMarginTop="@dimen/dp_24" />
+                app:layout_goneMarginTop="@dimen/dp_20" />
 
             <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_no_favorite"
