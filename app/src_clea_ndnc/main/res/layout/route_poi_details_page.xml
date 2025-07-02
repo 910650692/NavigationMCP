@@ -65,12 +65,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.sgm.navi.ui.view.SkinScrollView
+        <com.sgm.navi.scene.ui.search.MaxHeightScrollView
             android:id="@+id/poi_base_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars="none"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sk_poi_name">
+            app:layout_constraintTop_toBottomOf="@+id/sk_poi_name"
+            app:maxHeight="@dimen/dp_762">
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
@@ -171,7 +173,7 @@
 
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        </com.sgm.navi.ui.view.SkinScrollView>
+        </com.sgm.navi.scene.ui.search.MaxHeightScrollView>
 
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
