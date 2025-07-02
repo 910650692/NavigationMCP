@@ -1408,7 +1408,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             if (isAlongWay) {
                 lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_733);
             } else {
-                lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_898);
+                lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
             }
             mSearchContainer.setLayoutParams(lp);
         }

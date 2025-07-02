@@ -29,7 +29,7 @@
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/search_container"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_898"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_17"
                 android:layout_marginBottom="@dimen/dp_130"
                 android:background="@drawable/bg_route_result">
@@ -63,7 +63,7 @@
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_result_no_data"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_607"
                     android:gravity="center"
                     android:text="@string/search_result_no_data"
                     android:textColor="@color/search_quick_tab_view_color"
@@ -92,7 +92,10 @@
                     android:layout_marginBottom="@dimen/dp_17"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_label_filter"
-                    tools:layout_editor_absoluteX="1dp">
+                    tools:layout_editor_absoluteX="1dp"
+                    app:layout_constraintHeight_default="wrap"
+                    app:layout_constraintHeight_min="@dimen/dp_607"
+                    app:layout_constraintHeight_max="@dimen/dp_898">
 
                     <com.sgm.navi.ui.view.SkinRecyclerView
                         android:id="@+id/recycler_search_result"
