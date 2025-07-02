@@ -29,7 +29,7 @@ public class CruiseAdapterApiImpl extends BaseGuideAdapterApiImpl implements ICr
 
     @Override
     public void initCruise() {
-        GuideService mGuideService = (GuideService) ServiceMgr.getServiceMgrInstance()
+        mGuideService = (GuideService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.GuideSingleServiceID);
         cruiseApiImplHelper = new CruiseApiImplHelper(mGuideService);
         cruiseApiImplHelper.initCruise();
