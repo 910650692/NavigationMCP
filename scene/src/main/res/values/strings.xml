@@ -126,7 +126,8 @@
     <string name="left_charge_station_low">剩余里程充电站较少</string>
     <string name="navi_along_way_search">沿途搜</string>
     <string name="navi_map_mode_switch_fail">视角切换失败，%s无法切换</string>
-    <string name="navi_broadcast_switch">已切换为%s</string>
+    <!--这里的唯不可修改为“为”，需要读音为第二声 bug：1075422-->
+    <string name="navi_broadcast_switch">已切换唯%s</string>
     <string name="quick_charge">快</string>
     <string name="slow_charge">慢</string>
     <string name="slash">/</string>
