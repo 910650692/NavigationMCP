@@ -69,6 +69,15 @@
                     android:textColor="@color/color_black_70"
                     android:textSize="@dimen/sp_26" />
             </com.sgm.navi.ui.view.SkinLinearLayout>
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_close"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="gone"
+                android:src="@drawable/img_basic_close"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"/>
         </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
