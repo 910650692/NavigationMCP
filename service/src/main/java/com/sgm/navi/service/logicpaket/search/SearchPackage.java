@@ -1692,6 +1692,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "clearLabelMark");
         sMarkerInfoMap.clear();
         mLayerAdapter.clearAllSearchLayerItems(MapType.MAIN_SCREEN_MAIN_MAP);
+        mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     /**
@@ -1700,6 +1701,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public void clearPoiLabelMark() {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "clearPoiLabelMark");
         mLayerAdapter.clearSearchPOILayerItems(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_LABEL);
+        mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     /**
