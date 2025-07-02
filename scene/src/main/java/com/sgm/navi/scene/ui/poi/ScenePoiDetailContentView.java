@@ -617,7 +617,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                 mEtaInfo = etaInfo;
                                 mViewBinding.poiDistanceTime.setText(MessageFormat.format("{0} {1}",
                                         distance, etaInfo.getTravelTime()));
-                                final int leftCharge = Math.max(-99, etaInfo.getLeftCharge());
+                                final int leftCharge = etaInfo.getLeftCharge();
                                 if (!ConvertUtils.isEmpty(leftCharge)) {
                                     //50%以上电量，显示满电量图片，20-50%电量，显示半电量图片
                                     //0-20电量，显示低电量图片，文本变红
@@ -640,8 +640,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                                 ResourceUtils.Companion.getInstance().getColor(R.color.navi_color_C73333_100));
                                     }
                                 }
-                                mViewBinding.poiArrivalCapacity.setText(getContext().getString(
-                                        R.string.remain_charge, leftCharge));
+                                if(leftCharge<=0){
+                                    int chargeTime = (int) Math.abs(leftCharge)/100 + 1;
+                                    mViewBinding.poiArrivalCapacity.setText(getContext().getString(
+                                            R.string.remain_charge_travel, chargeTime));
+                                }else{
+                                    mViewBinding.poiArrivalCapacity.setText(getContext().getString(
+                                            R.string.remain_charge, leftCharge));
+                                }
                             }
                         }
                     });

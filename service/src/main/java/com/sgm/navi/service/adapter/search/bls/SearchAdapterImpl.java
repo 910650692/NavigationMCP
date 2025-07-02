@@ -507,7 +507,6 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                                         - response.route_list.get(0).path.get(0).distance)
                                         / (maxBattery * BevPowerCarUtils.getInstance().batterToDistance));
                 int chargeLeftPercent = (int) (chargeLeft * 100);
-                chargeLeftPercent = Math.max(0, chargeLeftPercent);
                 final ETAInfo etaInfo = new ETAInfo()
                         .setDistance(response.route_list.get(0).path.get(0).distance)
                         .setTravelTime(TimeUtils.switchHourAndMimuteFromSecond(AppCache.getInstance().getMContext(),

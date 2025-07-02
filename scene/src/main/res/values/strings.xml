@@ -323,6 +323,7 @@
     <string name="text_dial_phone_title">点击拨打以下电话:</string>
     <string name="text_dial_phone_content">是否拨打电话%s</string>
     <string name="remain_charge">%d%%到达</string>
+    <string name="remain_charge_travel">预计充电%d次</string>
     <string name="load_failed">加载失败</string>
     <string name="reload">点击重试</string>
     <string name="go_first">先去这里</string>
