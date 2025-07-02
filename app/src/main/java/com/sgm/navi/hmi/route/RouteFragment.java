@@ -1296,8 +1296,10 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             return;
         }
         if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
-            mRouteRequestLoadingDialog = new RouteRequestLoadingDialog(context);
-            mRouteRequestLoadingDialog.setOnCloseClickListener(mViewModel);
+            if (mRouteRequestLoadingDialog == null) {
+                mRouteRequestLoadingDialog = new RouteRequestLoadingDialog(context);
+                mRouteRequestLoadingDialog.setOnCloseClickListener(mViewModel);
+            }
             if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
                 mRouteRequestLoadingDialog.show();
             }
@@ -1336,7 +1338,9 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             return;
         }
         if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
-            mSearchLoadingDialog = new RouteSearchLoadingDialog(context);
+            if (mSearchLoadingDialog == null) {
+                mSearchLoadingDialog = new RouteSearchLoadingDialog(context);
+            }
             if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
                 mSearchLoadingDialog.show();
             }
