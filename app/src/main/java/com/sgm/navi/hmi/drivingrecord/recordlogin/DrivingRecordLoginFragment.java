@@ -1,10 +1,15 @@
 package com.sgm.navi.hmi.drivingrecord.recordlogin;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
@@ -98,8 +103,11 @@ public class DrivingRecordLoginFragment extends BaseFragment<FragmentDrivingReco
      */
     public void updateQRCode(final Bitmap bitmap) {
         ThreadManager.getInstance().postUi(() -> {
-            mBinding.codeImg.setImageBitmap(bitmap);
-            mBinding.qrcodeImg.setImageBitmap(bitmap);
+            RoundedBitmapDrawable roundedBitmapDrawable =
+                    getRoundedBitmapDrawable(getContext(), bitmap, 20);
+
+            mBinding.codeImg.setImageDrawable(roundedBitmapDrawable);
+            mBinding.qrcodeImg.setImageDrawable(roundedBitmapDrawable);
 
         });
     }
@@ -221,4 +229,14 @@ public class DrivingRecordLoginFragment extends BaseFragment<FragmentDrivingReco
         return Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
     }
 
+    /**
+     * 将bitmap添加圆角
+     * @return drawable
+     */
+    public static RoundedBitmapDrawable getRoundedBitmapDrawable(Context context, Bitmap bitmap, float cornerRadius) {
+        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+        drawable.setCornerRadius(cornerRadius);
+        drawable.setAntiAlias(true);
+        return drawable;
+    }
 }
