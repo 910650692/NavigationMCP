@@ -921,6 +921,8 @@ public class SignalAdapterImpl implements SignalApi {
                 return 4;
             case PowerModeManager.STATE_PROPULSION: // SLEEP
                 return 5;
+            case PowerModeManager.STATE_HMIINACTIVE: // HMIINACTIVE
+                return 6;
             default:
                 return -1;
         }
