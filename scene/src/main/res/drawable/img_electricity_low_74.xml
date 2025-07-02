@@ -1,0 +1,24 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="74dp"
+    android:height="74dp"
+    android:viewportWidth="74"
+    android:viewportHeight="74">
+  <path
+      android:pathData="M23.564,20.844C24.098,20.279 24.504,20.162 24.941,20.162L49.059,20.162C49.496,20.162 49.902,20.279 50.192,20.502L50.436,57.976C49.902,58.541 49.496,58.658 49.059,58.658L24.941,58.658C24.504,58.658 24.098,58.541 23.808,58.318Z"
+      android:strokeWidth="3.27697262"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/img_electricity_low_74_color"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M31.975,18.524L31.975,16.114C31.975,14.783 33.1,13.704 34.488,13.704L39.512,13.704C40.9,13.704 42.025,14.783 42.025,16.114L42.025,18.524L31.975,18.524Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/img_electricity_low_74_color"
+      android:fillType="nonZero"
+      android:strokeColor="#00000000"/>
+  <path
+      android:pathData="M26.951,55.476l0,-2.741l20.099,-0l0,2.741z"
+      android:strokeWidth="1"
+      android:fillColor="@color/img_electricity_low_74_color"
+      android:fillType="evenOdd"
+      android:strokeColor="#00000000"/>
+</vector>

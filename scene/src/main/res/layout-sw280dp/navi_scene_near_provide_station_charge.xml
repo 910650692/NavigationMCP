@@ -47,7 +47,7 @@
                         android:layout_height="@dimen/dp_74"
                         android:layout_marginStart="@dimen/dp_12"
                         android:focusable="false"
-                        android:src="@drawable/img_electricity_low_42"
+                        android:src="@drawable/img_electricity_low_74"
                         app:layout_constraintBottom_toBottomOf="@id/view_bg"
                         app:layout_constraintStart_toStartOf="@id/view_bg"
                         app:layout_constraintTop_toTopOf="@id/view_bg" />
@@ -148,7 +148,7 @@
                         android:layout_height="@dimen/dp_74"
                         android:layout_marginStart="@dimen/dp_12"
                         android:layout_marginBottom="@dimen/dp_12"
-                        android:src="@drawable/img_electricity_low_42"
+                        android:src="@drawable/img_electricity_low_74"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 

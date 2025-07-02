@@ -152,6 +152,9 @@
     <color name="card_tense_color">#C73333</color>
     <color name="card_item_bg_color">#FF2C2F38</color>
 
+    <color name="img_end_point_74_fill_color">#D2D3D7</color>
+    <color name="img_electricity_low_74_color">#9E171A</color>
+
     <!--通用-->
     <color name="common_bg_color">#1E2027</color>
     <color name="common_bg_shadow_color">#66151414</color>

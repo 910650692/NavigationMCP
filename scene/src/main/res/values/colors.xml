@@ -248,6 +248,9 @@
     <color name="card_tense_color">#C73333</color>
     <color name="card_item_bg_color">#408C889B</color>
 
+    <color name="img_end_point_74_fill_color">#4B535D</color>
+    <color name="img_electricity_low_74_color">#C73333</color>
+
     <!--通用-->
     <color name="common_bg_color">#F8F8FA</color>
     <color name="common_bg_shadow_color">#408C889B</color>
