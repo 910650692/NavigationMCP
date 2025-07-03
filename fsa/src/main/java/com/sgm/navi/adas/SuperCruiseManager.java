@@ -3,6 +3,7 @@ package com.sgm.navi.adas;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.fsa.BuildConfig;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.navi.CameraInfoEntity;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
@@ -385,7 +386,7 @@ public final class SuperCruiseManager {
         superCruiseJson.setEffectiveSpeedType(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedType()));
         superCruiseJson.setSpeedCategory(String.valueOf(mSpeedLimitBuilder.getSpeedCategory()));
         final String json = GsonUtils.toJson(superCruiseJson);
-        JsonLog.saveJsonToCache(json, "sc.json");
+        if (BuildConfig.DEBUG) JsonLog.saveJsonToCache(json, "sc.json");
         Logger.d(TAG, "sendData: " , json);
 //        JsonLog.print(TAG, json);
     }

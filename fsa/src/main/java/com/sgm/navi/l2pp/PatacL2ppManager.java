@@ -30,6 +30,7 @@ import com.cls.vehicle.adas.map.v1.MpilotSDRouteSegments;
 import com.cls.vehicle.adas.map.v1.MpilotSDRouteViaRoad;
 import com.cls.vehicle.adas.map.v1.ParkingLotInfoList;
 import com.sgm.navi.adas.JsonLog;
+import com.sgm.navi.fsa.BuildConfig;
 import com.sgm.navi.fsa.R;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.navi.L2NaviBean;
@@ -171,7 +172,7 @@ public class PatacL2ppManager {
             }
             Logger.d(TAG, "send tbt data: " , l2NaviBean);
             String json = GsonUtils.toJson(l2NaviBean);
-            JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
+            if (BuildConfig.DEBUG) JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
             MpilotNavigationInformation.Builder mpilotNavigationInformation = MpilotNavigationInformation.newBuilder();
 
             MpilotNavigationBoardSign.Builder mpilotNavigationBoardSign = MpilotNavigationBoardSign.newBuilder();
@@ -291,7 +292,7 @@ public class PatacL2ppManager {
             Logger.d(TAG, "send route data: ");
 //            JsonLogger.print("send route data", json);
             String json = GsonUtils.toJson(routeL2Data);
-            JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
+            if (BuildConfig.DEBUG) JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
             MpilotSDRouteList.Builder mpilotSDRouteList = MpilotSDRouteList.newBuilder();
             MpilotSDRoute.Builder mpilotSdRoute = MpilotSDRoute.newBuilder();
             mpilotSdRoute.setSdkVersion(routeL2Data.getMSdkVersion());

@@ -597,7 +597,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
         final FsaServiceEvent event = (FsaServiceEvent) mService.eventHandler.getEventById(functionId);
         event.setOutputPayload(info.getBytes(StandardCharsets.UTF_8));
-        JsonLog.saveJsonToCache(info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
+        if (BuildConfig.DEBUG) JsonLog.saveJsonToCache(info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
         if (functionId == FsaConstant.FsaFunction.ID_ENLARGE_ICON || functionId == FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP) {
             Logger.d(FsaConstant.FSA_TAG, "sendEvent: ",functionId, "-" , FsaIdString.function2String(functionId));
         } else if (functionId == FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD) {//三指飞屏
