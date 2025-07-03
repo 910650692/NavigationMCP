@@ -13,6 +13,7 @@ import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
@@ -146,7 +147,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
                 goToCarPositionAndFollow();
             } else {
                 //固定全览状态下，移图后显示继续导航，点击回到全览视图
-                RoutePackage.getInstance().showPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                RoutePackage.getInstance().showPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
             }
             mSearchPackage.clearLabelMark();
             ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId,

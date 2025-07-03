@@ -15,6 +15,7 @@ import com.sgm.navi.service.adapter.position.PositionAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.bean.PreviewParams;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapNotifyType;
@@ -245,9 +246,15 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         mLayerPackage.setLockMapRollAngle(mapTypeId, isLock);
     }
 
-    public void showPreview(MapType mapTypeId, PreviewParams previewParams) {
+    public void showPreview(MapType mapTypeId, PreviewParams previewParams, DynamicLevelMode dynamicLevelMode) {
+        Logger.d(TAG, "showPreview");
+        mLayerPackage.setFollowMode(mapTypeId, false);
+        //锁住动态比例尺
+        mLayerPackage.setDynamicLevelLock(mapTypeId, dynamicLevelMode, true);
+        //锁住旋转角
+        setLockMapRollAngle(mapTypeId, true);
+        //全览
         mMapAdapter.showPreview(mapTypeId, previewParams);
-        mLayerPackage.setPreviewMode(mapTypeId, true);
     }
 
     /**
@@ -261,7 +268,7 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
      * @param screenBottom
      * @param mapBound
      */
-    public void showPreview(MapType mapTypeId, boolean isRouteLine, int screenLeft, int screenTop, int screenRight, int screenBottom, PreviewParams.RectDouble mapBound) {
+    public void showPreview(MapType mapTypeId, boolean isRouteLine, int screenLeft, int screenTop, int screenRight, int screenBottom, PreviewParams.RectDouble mapBound, DynamicLevelMode dynamicLevelMode) {
         PreviewParams previewParams = new PreviewParams();
         previewParams.setMapBound(mapBound);
         previewParams.setbUseRect(true);
@@ -270,7 +277,7 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         previewParams.setScreenTop(screenTop);
         previewParams.setScreenRight(screenRight);
         previewParams.setScreenBottom(screenBottom);
-        showPreview(mapTypeId, previewParams);
+        showPreview(mapTypeId, previewParams, dynamicLevelMode);
         if (mapBound != null) {
             Logger.i(TAG, "mapBound: " + mapBound.toString());
         } else {
@@ -278,7 +285,7 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         }
     }
 
-    public void showPreview(MapType mapTypeId, boolean isRouteLine, int screenLeft, int screenTop, int screenRight, int screenBottom, List<PreviewParams.PointD> points) {
+    public void showPreview(MapType mapTypeId, boolean isRouteLine, int screenLeft, int screenTop, int screenRight, int screenBottom, List<PreviewParams.PointD> points, DynamicLevelMode dynamicLevelMode) {
         PreviewParams previewParams = new PreviewParams();
         previewParams.setPoints(points);
         previewParams.setbUseRect(false);
@@ -287,16 +294,16 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         previewParams.setScreenTop(screenTop);
         previewParams.setScreenRight(screenRight);
         previewParams.setScreenBottom(screenBottom);
-        showPreview(mapTypeId, previewParams);
+        showPreview(mapTypeId, previewParams, dynamicLevelMode);
         Logger.d(TAG, "points size " + points.size());
     }
 
-    public void showPreview(MapType mapTypeId, boolean isRouteLine, PreviewParams.RectDouble mapBound) {
+    public void showPreview(MapType mapTypeId, boolean isRouteLine, PreviewParams.RectDouble mapBound, DynamicLevelMode dynamicLevelMode) {
         PreviewParams previewParams = new PreviewParams();
         previewParams.setMapBound(mapBound);
         previewParams.setbUseRect(true);
         previewParams.setRouteLine(isRouteLine);
-        showPreview(mapTypeId, previewParams);
+        showPreview(mapTypeId, previewParams, dynamicLevelMode);
         if (mapBound != null) {
             Logger.i(TAG, "mapBound: " + mapBound.toString());
         } else {
@@ -304,9 +311,11 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         }
     }
 
-    public void exitPreview(MapType mapTypeId) {
-        mLayerPackage.setPreviewMode(mapTypeId, false);
-        mLayerPackage.setLockMapRollAngle(mapTypeId, false);
+    public void exitPreview(MapType mapTypeId, DynamicLevelMode dynamicLevelMode) {
+        Logger.d(TAG, "exitPreview");
+        mLayerPackage.setFollowMode(mapTypeId, true);
+        mLayerPackage.setDynamicLevelLock(mapTypeId, dynamicLevelMode, false);
+        setLockMapRollAngle(mapTypeId, false);
         mMapAdapter.exitPreview(mapTypeId);
     }
 

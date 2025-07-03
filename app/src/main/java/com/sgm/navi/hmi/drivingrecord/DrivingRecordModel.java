@@ -7,6 +7,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.service.define.bean.PreviewParams;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
@@ -157,7 +158,7 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
                 final LayerItemUserTrackDepth layerItemUserTrackDepth = new LayerItemUserTrackDepth();
                 layerItemUserTrackDepth.setGpsTrackDepthBean(depInfo);
                 LayerPackage.getInstance().addLayerItemOfUserTrackDepth(MapType.MAIN_SCREEN_MAIN_MAP, layerItemUserTrackDepth, false);
-                MapPackage.getInstance().showPreview(MapType.MAIN_SCREEN_MAIN_MAP, true, 1350, 170, 500, 20, getTrackBound(depInfo.getTrackPoints()));
+                MapPackage.getInstance().showPreview(MapType.MAIN_SCREEN_MAIN_MAP, true, 1350, 170, 500, 20, getTrackBound(depInfo.getTrackPoints()), DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
                 mUserTrackPackage.setIsNeedShowDialog(false);
             }
         }

@@ -238,18 +238,14 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
         mPreviewIsOnShowing = true;
         openOrCloseImmersive(false);
         mNaviPackage.setPreviewStatus(true);
-        mLayerPackage.setFollowMode(MAP_TYPE, false);
-        mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
-        mRoutePackage.showPreview(MAP_TYPE);
+        mRoutePackage.showPreview(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
 
     public void closePreview() {
         mPreviewIsOnShowing = false;
         openOrCloseImmersive(true);
         mNaviPackage.setPreviewStatus(false);
-        mLayerPackage.setFollowMode(MAP_TYPE, true);
-        mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, false);
-        mMapPackage.exitPreview(MAP_TYPE);
+        mMapPackage.exitPreview(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
 
     public void muteOrUnMute() {

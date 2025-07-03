@@ -31,6 +31,7 @@ import com.sgm.navi.service.adapter.search.SearchAdapter;
 import com.sgm.navi.service.define.aos.RestrictedParam;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
@@ -1385,10 +1386,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      *
      * @param mapTypeId 屏幕ID
      */
-    public void showPreview(final MapType mapTypeId) {
+    public void showPreview(final MapType mapTypeId, DynamicLevelMode dynamicLevelMode) {
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.setFollowMode(mapTypeId, false);
-            mLayerAdapter.setPreviewMode(mapTypeId, true);
+            mLayerAdapter.setDynamicLevelLock(mapTypeId, dynamicLevelMode, true);
+            mLayerAdapter.setLockMapRollAngle(mapTypeId, true);
             mLayerAdapter.showPreviewView(mapTypeId);
         });
     }

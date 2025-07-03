@@ -12,6 +12,7 @@ import com.sgm.navi.service.define.aos.RestrictedEndNumberParam;
 import com.sgm.navi.service.define.aos.RestrictedParam;
 import com.sgm.navi.service.define.aos.TrafficRestrictResponseParam;
 import com.sgm.navi.service.define.bean.PreviewParams;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RouteRestrictionParam;
 import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
@@ -95,7 +96,7 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
                 && index < param.getMRestrictedArea().getMPointList().size() ) {
             points = param.getMRestrictedArea().getMPointList().get(index);
         }
-        mMapPackage.showPreview(mapTypeId, false, 1200, 210, 600, 140, points);
+        mMapPackage.showPreview(mapTypeId, false, 1200, 210, 600, 140, points, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
 
     @Override

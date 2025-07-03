@@ -27,6 +27,7 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapStateStyle;
@@ -1275,7 +1276,7 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
     }
     if (currentImersiveStatus == ImersiveStatus.IMERSIVE) {
         if (mCurrentImersiveStatus != currentImersiveStatus) {
-            mRoutePackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            mRoutePackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
         }
     } else {
         if (!ConvertUtils.isEmpty(mViewModel)) {

@@ -30,6 +30,7 @@ import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.bean.PreviewParams;
 import com.sgm.navi.service.define.code.UserDataCode;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
@@ -1461,7 +1462,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .collect(Collectors.toList());
         if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
-            mMapPackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, false, 1350, 210, 600, 140, points);
+            mMapPackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, false, 1350, 210, 600, 140, points, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
         } else {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointPreview");
             if (!ConvertUtils.isEmpty(poiList.get(0).getPoint())) {
@@ -1483,7 +1484,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .collect(Collectors.toList());
         if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
-            mMapPackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, false, 1350, 210, 600, 140, points);
+            mMapPackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, false, 1350, 210, 600, 140, points, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
         }
     }
 
@@ -1698,7 +1699,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (mNaviPackage.getFixedOverViewStatus()) {
             return;
         }
-        mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+        mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
 
     /**
@@ -1710,7 +1711,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (mNaviPackage.getFixedOverViewStatus()) {
             return;
         }
-        mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+        mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
 
     /**
