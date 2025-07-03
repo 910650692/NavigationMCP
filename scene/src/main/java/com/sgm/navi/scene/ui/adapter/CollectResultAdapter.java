@@ -141,7 +141,9 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
                         .getDrawable(R.drawable.img_addq_58));
             }
-
+            if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
+                holder.mResultItemBinding.llActionContainer.setVisibility(View.GONE); //隐藏左滑按钮
+            }
         } else {
             if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
                 if (mPoiEntities.get(position).getAddress().isEmpty()) {
