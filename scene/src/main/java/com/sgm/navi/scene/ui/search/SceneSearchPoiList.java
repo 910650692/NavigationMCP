@@ -944,9 +944,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 || isFilterShell(searchResultEntity.getLocalInfoList()))){
             mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
             mChildQuickList = mapCustomGasLabel(searchResultEntity.getLocalInfoList(),searchResultEntity);
-            for (int i = 0; i < mChildQuickList.size(); i++) {
-                mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
-            }
             if(mCurrentSelectedQuick != -1){
                 refreshLocalInfoListCheckedState(2, mCurrentSelectedQuick + 1);
             }
