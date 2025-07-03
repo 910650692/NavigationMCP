@@ -1943,4 +1943,74 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     private static final class Helper {
         private static final RoutePackage EP = new RoutePackage();
     }
+
+    //------------算路沿途搜***************************************************/
+
+    private boolean mRouteAlongSearch = false;
+    private PoiInfoEntity mRouteAlongInfo = null;
+    private List<RouteParam> mGasChargeAlongList = new ArrayList<>();
+
+    public void setGasChargeAlongList(List<RouteParam> gasChargeAlongList) {
+        mGasChargeAlongList.clear();
+        mGasChargeAlongList.addAll(gasChargeAlongList);
+    }
+
+    public List<RouteParam> getGasChargeAlongList() {
+        return mGasChargeAlongList;
+    }
+
+    public void setRouteAlongInfo(PoiInfoEntity routeAlongInfo) {
+        mRouteAlongInfo = routeAlongInfo;
+    }
+
+    public PoiInfoEntity getRouteAlongInfo() {
+        return mRouteAlongInfo;
+    }
+
+    public void setRouteAlongSearch(boolean routeAlongSearch) {
+        Logger.d(TAG, "setRouteAlongSearch: " + routeAlongSearch);
+        mRouteAlongSearch = routeAlongSearch;
+    }
+
+    public boolean isRouteAlongSearch() {
+        return mRouteAlongSearch;
+    }
+
+    /**
+     * 获取当前转化后的路线信息
+     *
+     * @param mapTypeId 屏幕Id
+     * @return 算路信息
+     */
+    public RouteLineInfo getSelectLineInfo(final MapType mapTypeId) {
+        RequestRouteResult requestRouteResult = mRequestRouteResults.get(mapTypeId);
+        Integer index = mSelectRouteIndex.get(mapTypeId);
+        if (requestRouteResult == null || index == null || index == -1) {
+            return null;
+        }
+        return requestRouteResult.getMRouteLineInfos().get(index);
+
+    }
+
+    /**
+     * 判断是否是路线上的点
+     *
+     * @param mapTypeId     屏幕Id
+     * @param poiInfoEntity 点信息
+     * @return 返回是否
+     */
+    public boolean isBelongRouteAlong(final MapType mapTypeId, final PoiInfoEntity poiInfoEntity) {
+        if (ConvertUtils.isEmpty(poiInfoEntity) || mGasChargeAlongList == null) {
+            return false;
+        }
+        for (RouteParam routeParam : mGasChargeAlongList) {
+            if (isTheSamePoi(routeParam, poiInfoEntity)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    //------------算路沿途搜***************************************************/
 }

@@ -114,6 +114,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private ETAInfo mEtaInfo;
     private ValueAnimator mAnimator;
     private float mAngelTemp = 0;
+    private PoiInfoEntity mJumpPoiInfo;
+    private RoutePackage mRoutePackage = RoutePackage.getInstance();
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -185,14 +187,25 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd) {
             if (mViaAddType) {
-                if(RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
+                if(mRoutePackage.isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "handleRouteClick isMaxRouteParam");
                     return;
                 }
-                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
+                if (mRoutePackage.isRouteAlongSearch() && mJumpPoiInfo != null) {
+                    mScreenViewModel.closeFragment();
+                    mRoutePackage.setRouteAlongInfo(mJumpPoiInfo);
+                    return;
+                }
+
+                mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                         poiInfo);
             } else {
-                RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
+                if (mRoutePackage.isRouteAlongSearch() && mJumpPoiInfo != null) {
+                    mScreenViewModel.closeFragment();
+                    mRoutePackage.setRouteAlongInfo(mJumpPoiInfo);
+                    return;
+                }
+                mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                         poiInfo, true);
             }
 
@@ -200,7 +213,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " , poiInfo.getPoint().getLon()
                     + " ,lat" + poiInfo.getPoint().getLat());
             if (mIsEnd) {
-                ThreadManager.getInstance().execute(() -> RoutePackage.getInstance().requestChangeEnd(mMapTypeId, poiInfo));
+                ThreadManager.getInstance().execute(() -> mRoutePackage.requestChangeEnd(mMapTypeId, poiInfo));
             } else {
                 openRouteFragment(poiInfo);
             }
@@ -1832,26 +1845,50 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     } else {
                         poiInfo = mPoiInfoEntity;
                     }
-                    if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
-                        mViaAddType = false;
-                        if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
-                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
+                    if (mRoutePackage.isRouteAlongSearch()) {
+                        if (mRoutePackage.isBelongRouteAlong(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
+                            mViaAddType = false;
+                            if (mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
+                                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
+                            } else {
+                                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(1.0f);
+                            }
+                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_delete);
                         } else {
-                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(1.0f);
+                            mViaAddType = true;
+                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_add);
+                            // 达到最大途径点禁止点击并置灰
+                            if(mRoutePackage.isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
+                                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
+                                mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setAlpha(0.5f);
+                            }else{
+                                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(1);
+                                mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setAlpha(1);
+                            }
                         }
-                        mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_delete);
                     } else {
-                        mViaAddType = true;
-                        mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_add);
-                        // 达到最大途径点禁止点击并置灰
-                        if(RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
-                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
-                            mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setAlpha(0.5f);
-                        }else{
-                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(1);
-                            mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setAlpha(1);
+                        if (mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
+                            mViaAddType = false;
+                            if (mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
+                                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
+                            } else {
+                                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(1.0f);
+                            }
+                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_delete);
+                        } else {
+                            mViaAddType = true;
+                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_add);
+                            // 达到最大途径点禁止点击并置灰
+                            if(mRoutePackage.isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
+                                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
+                                mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setAlpha(0.5f);
+                            }else{
+                                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(1);
+                                mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setAlpha(1);
+                            }
                         }
                     }
+
 
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(GONE);
                     mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setVisibility(GONE);
@@ -2027,7 +2064,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     }
                     break;
                 case AutoMapConstant.PoiType.POI_DELETE_AROUND:
-                    RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
+                    mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                             mPoiInfoEntity, true);
                     break;
                 case AutoMapConstant.PoiType.POI_MAP_CAR_CLICK:
@@ -2039,18 +2076,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         });
         mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setOnClickListener((view) -> {
             if (mGrandChildSelectInfo != null) {
-                if (SearchPackage.getInstance().isAlongWaySearch() && !RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
-                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
+                if (SearchPackage.getInstance().isAlongWaySearch() && !mRoutePackage.isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
+                    mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                             mGrandChildSelectInfo, 0);
                 }
             } else if (mChildSelectInfo != null) {
-                if (SearchPackage.getInstance().isAlongWaySearch() && !RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
-                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
+                if (SearchPackage.getInstance().isAlongWaySearch() && !mRoutePackage.isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
+                    mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                             mChildSelectInfo, 0);
                 }
             } else {
-                if (SearchPackage.getInstance().isAlongWaySearch() && !RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
-                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
+                if (SearchPackage.getInstance().isAlongWaySearch() && !mRoutePackage.isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
+                    mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                             mPoiInfoEntity, 0);
                 }
             }
@@ -2131,6 +2168,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"setViaIndexSelect: ",index,"isSelect: ", isSelect);
             mScreenViewModel.setRouteViaPointSelect(isSelect,index);
         }
+    }
+
+    public void setJumpPoiInfo(PoiInfoEntity poiInfo) {
+        mJumpPoiInfo = poiInfo;
     }
 
 }

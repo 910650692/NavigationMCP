@@ -14,12 +14,14 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
@@ -47,6 +49,7 @@ import com.sgm.navi.scene.databinding.ScenePoiDetailsServiceAreaViewBinding;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
+import com.sgm.navi.scene.impl.search.SearchFragmentFactory;
 import com.sgm.navi.scene.ui.adapter.RoutePOIGasStationAdapter;
 import com.sgm.navi.scene.ui.adapter.RoutePOIIconAdapter;
 import com.sgm.navi.scene.ui.adapter.RouteViaPointAdapter;
@@ -674,6 +677,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     //------------服务区列表***************************************************/
 
     //------------充电&加油列表***************************************************/
+    private boolean mOpenChargeGasList = false;
     /**
      *
      * 初始化服务区列表页面
@@ -692,13 +696,24 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
 
     }
 
+    public void goSearchView(String keyWord) {
+        final Fragment fragment;
+        fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
+                .navigation();
+        Bundle bundle = SearchFragmentFactory.createKeywordFragment(
+                AutoMapConstant.SourceFragment.FRAGMENT_ROUTE,
+                AutoMapConstant.SearchType.ALONG_WAY_SEARCH, keyWord, null);
+        addFragment((BaseFragment) fragment, bundle, true);
+        mOpenChargeGasList = true;
+    }
+
     /**
      * 设置终点图片
      *
      */
-    public void setSearchCharge(boolean isCharge) {
-        mRouteChargeGasListPageView.routeRightTabListChargeScene.setSearchCharge(isCharge);
-    }
+//    public void setSearchCharge(boolean isCharge) {
+//        mRouteChargeGasListPageView.routeRightTabListChargeScene.setSearchCharge(isCharge);
+//    }
 
     /***
      * 展示充电站列表
@@ -1279,6 +1294,10 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 mRouteListPageView.routeLineInfoSceneRoutePerference.resetPreference();
             } else {
                 Logger.e(TAG, ROUTE_ERROR);
+            }
+            if (mOpenChargeGasList && mViewModel != null) {
+                mViewModel.getChargeCancelClick().call();
+                mOpenChargeGasList = false;
             }
         }
     }

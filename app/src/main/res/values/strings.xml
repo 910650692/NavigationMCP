@@ -174,7 +174,7 @@
     <string name="route_error_add_start_end">无法移除起点和终点</string>
     <string name="route_error_no_service_data">无服务区数据</string>
     <string name="route_error_no_request_data">数据异常，无法进行路线规划</string>
-    <string name="route_error_via_max">最多只能添加5个途径点</string>
+    <string name="route_error_via_max">途经点添加失败：最多只能添加5个途径点</string>
     <string name="route_error_wearher">无法获取天气信息</string>
     <string name="route_trip_title">立即打开</string>
     <string name="route_trip_elec_not_arrive">电量预计不可达，是否打开补能规划？</string>

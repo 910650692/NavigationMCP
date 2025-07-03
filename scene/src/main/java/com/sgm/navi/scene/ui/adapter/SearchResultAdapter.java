@@ -77,6 +77,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private int mLastParentSelectIndex;
     private boolean isFirstRefresh = true;
     private String mLabelName = "";
+    private List<RouteParam> mGasChargeAlongList = new ArrayList<>();
     public void setOnItemClickListener(final OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
@@ -98,6 +99,23 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         mSearchPackage = SearchPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
         mLabelName = "";
+    }
+
+    public void updateAlongList(final List<RouteParam> gasChargeAlongList) {
+        mGasChargeAlongList.clear();
+        mGasChargeAlongList.addAll(gasChargeAlongList);
+    }
+
+    public void updateAlongList(final List<RouteParam> gasChargeAlongList, final int index) {
+        mGasChargeAlongList.clear();
+        mGasChargeAlongList.addAll(gasChargeAlongList);
+        notifyItemChanged(index);
+    }
+
+    public void poiDetailsUpdate(final List<RouteParam> gasChargeAlongList) {
+        mGasChargeAlongList.clear();
+        mGasChargeAlongList.addAll(gasChargeAlongList);
+        notifyDataSetChanged();
     }
 
     /**
@@ -191,7 +209,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
             holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_add));
-            if (mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
+            if (isBelongSamePoi(mGasChargeAlongList, mPoiEntities.get(position))) {
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
                         ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_added));

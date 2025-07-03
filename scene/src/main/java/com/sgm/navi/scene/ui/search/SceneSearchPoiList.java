@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -45,21 +48,31 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
 import com.sgm.navi.service.define.mapdata.ProvDataInfo;
+import com.sgm.navi.service.define.route.EvRangeOnRouteInfo;
+import com.sgm.navi.service.define.route.RouteLineInfo;
+import com.sgm.navi.service.define.route.RouteParam;
+import com.sgm.navi.service.define.route.RoutePoiType;
 import com.sgm.navi.service.define.search.FavoriteInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchCategoryLocalInfo;
 import com.sgm.navi.service.define.search.SearchChildCategoryLocalInfo;
 import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.view.SkinConstraintLayout;
+import com.sgm.navi.ui.view.SkinTextView;
 import com.sgm.navi.ui.view.refresh.RefreshListener;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding, SceneSearchPoiListImpl>
@@ -115,6 +128,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private ViewGroup mSearchContainer;
     private List<SearchChildCategoryLocalInfo> mChildQuickList;
     private String mQuickValue;
+    private RoutePackage mRoutePackage;
 
     public SceneSearchPoiList(@NonNull final Context context) {
         super(context);
@@ -153,6 +167,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mSearchLoadingDialog = new SearchLoadingDialog(getContext());
         mCurrentSelectedQuick = -1;
         mSearchContainer = mViewBinding.searchContainer;
+        mRoutePackage = RoutePackage.getInstance();
     }
 
 
@@ -214,6 +229,20 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchLabelFilter.setAdapter(mQuickFilterListAdapter);
         mViewBinding.searchLabelFilter.addItemDecoration(quickItemDecoration);
 
+        mViewBinding.routeChargeListAlongWayCancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mScreenViewModel.closeSearch();
+            }
+        });
+
+        mViewBinding.routeChargeListAlongWaySure.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startAllRequest();
+            }
+        });
+
         mAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
@@ -273,15 +302,20 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     mScreenViewModel.clearLabelMarker();
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd) {
-                        if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
-                            RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                        if ((mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
+                                || mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) && mRouteAround) {
+                            routeClickEvent(poiInfoEntity, position);
+                            return;
+                        }
+                        if (mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                            mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
                         } else {
-                            RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                            mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                         }
 
                     } else {
                         if (mIsEnd) {
-                            ThreadManager.getInstance().execute(() -> RoutePackage.getInstance().requestChangeEnd(mMapTypeId, poiInfoEntity));
+                            ThreadManager.getInstance().execute(() -> mRoutePackage.requestChangeEnd(mMapTypeId, poiInfoEntity));
                         } else {
                             SearchPackage.getInstance().clearLabelMark();
                             final Fragment fragment = (Fragment) ARouter.getInstance()
@@ -412,10 +446,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      */
     private void setupFilterNormalActions() {
         mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
+        updateChargeList();
         mViewBinding.searchFilterView.searchFilterConfirm.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click confirm: ");
             mCurrentSelectedQuick = -1;
             mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
+            updateChargeList();
             mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
             mIsFilterViewShow = false;
             mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
@@ -436,6 +472,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchFilterView.searchFilterCancel.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click reset: ");
             mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
+            updateChargeList();
             mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
             mIsFilterViewShow = false;
             mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
@@ -461,6 +498,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
             if (!mIsFilterViewShow) {
                 mViewBinding.searchFilterView.searchFilterRoot.setVisibility(VISIBLE);
+                mViewBinding.routeChargeListAlongWaySure.setVisibility(View.GONE);
+                mViewBinding.routeChargeListAlongWayCancel.setVisibility(View.GONE);
                 mViewBinding.pullRefreshLayout.setVisibility(GONE);
                 mViewBinding.searchResultNoData.setVisibility(GONE);
                 mViewBinding.searchLabelFilter.setVisibility(GONE);
@@ -995,6 +1034,27 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 final String queryType = com.android.utils.ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
                 mViewBinding.routeRightTabListChargeScene.setSearchCharge(queryType.equals(searchResultEntity.getKeyword()));
             }
+            if ((mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
+                    || mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) && mRouteAround) {
+                updateRouteList();
+                if (mAdapter != null) {
+                    mAdapter.updateAlongList(mGasChargeAlongList);
+                }
+                List<PoiInfoEntity> poiInfoEntities = searchResultEntity.getPoiList();
+                mRoutePackage.setRouteAlongSearch(true);
+                if (mRoutePackage.isRouteTips()) {
+                    clearRouteChargePoiUi();
+                    updateChargeProgress();
+
+                    //初始化进度条扎点
+                    for (PoiInfoEntity poiInfoEntity : poiInfoEntities) {
+                        if (isBelongAlongList(poiInfoEntity)) {
+                            addRouteChargePoiUi(poiInfoEntity, (float) (poiInfoEntity.getSort_distance()) / mRouteTotalDistance);
+                        }
+                    }
+                }
+
+            }
             mViewBinding.routeRightTabListChargeScene.registerRouteSelectObserver(TAG, this);
 
         } else {
@@ -1259,6 +1319,21 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     public void onTabListGasChargeClick(final int tabIndex) {
         mScreenViewModel.onTabListGasChargeClick(mResultEntity.getKeyword(), tabIndex);
         mViewBinding.routeRightTabListChargeScene.updateUi();
+        if (mViewBinding.routeChargeListAlongWaySure == null || mViewBinding.routeChargeListAlongWayCancel == null
+                || mViewBinding.layoutRouteChargeProgress == null) {
+            Logger.e(TAG, "view is null");
+            return;
+        }
+        if (tabIndex != 0) {
+            mSearchType = AutoMapConstant.SearchType.AROUND_SEARCH;
+            mViewBinding.routeChargeListAlongWaySure.setVisibility(View.GONE);
+            mViewBinding.routeChargeListAlongWayCancel.setVisibility(View.GONE);
+            mViewBinding.layoutRouteChargeProgress.setVisibility(View.GONE);
+            mRoutePackage.setRouteAlongSearch(false);
+        } else {
+            mSearchType = AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH;
+        }
+
     }
 
     /**
@@ -1387,6 +1462,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
     private void hideFilterPage(){
         mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
+        updateChargeList();
         mIsFilterViewShow = false;
         mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
         if(ConvertUtils.isEmpty(mResultEntity.getPoiList())){
@@ -1410,4 +1486,428 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mSearchContainer.setLayoutParams(lp);
         }
     }
+
+
+    //------------算路沿途搜***************************************************/
+    private boolean mRouteAround = false;
+    private List<RouteParam> mGasChargeAlongList = new ArrayList<>();
+    private List<RouteParam> mRouteGasChargeAlongList = new ArrayList<>();
+    private Map<PoiInfoEntity, View> mRouteChargeProgressViews;
+    private List<Integer> mChargePoiDistanceList = new ArrayList<>();
+    private long mRouteTotalDistance;
+    private long mExhaustDistance;
+    private long mRouteExhaustDistance;
+
+    public void setRouteAround(boolean routeAround) {
+        mRouteAround = routeAround;
+    }
+
+    public void updateChargeProgress() {
+        if (mViewBinding.layoutRouteChargeProgress != null && mViewBinding.routeChargeTotalMileage != null
+                && mViewBinding.routeChargeExhaustionPoint != null && mViewBinding.routeChargeExhaustionText != null
+                && mViewBinding.routeChargeProgress != null) {
+            if (mRoutePackage.isRouteTips() && mRouteAround) {
+                final RouteLineInfo routeLineInfo = mRoutePackage.getSelectLineInfo(MapType.MAIN_SCREEN_MAIN_MAP);
+                if (getCurrentIndex() == null || routeLineInfo == null) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "routeLineInfo is null");
+                    return;
+                }
+                mViewBinding.routeChargeTotalMileage.setText(TimeUtils.getInstance().getDistanceMsg(routeLineInfo.getMDistance()));
+                final EvRangeOnRouteInfo evRangeOnRouteInfo = getRangeOnRouteInfo(getCurrentIndex());
+                mRouteTotalDistance = routeLineInfo.getMDistance();
+                if (evRangeOnRouteInfo == null || evRangeOnRouteInfo.isMCanArrived()) {
+                    mViewBinding.routeChargeExhaustionPoint.setVisibility(View.GONE);
+                    mViewBinding.routeChargeExhaustionText.setVisibility(View.GONE);
+                    mViewBinding.routeChargeProgress.setProgress(100);
+                    mExhaustDistance = mRouteTotalDistance;
+                    mRouteExhaustDistance = mRouteTotalDistance;
+                } else {
+                    mViewBinding.routeChargeExhaustionPoint.setVisibility(View.VISIBLE);
+                    mViewBinding.routeChargeExhaustionText.setVisibility(View.VISIBLE);
+                    mExhaustDistance = mRouteTotalDistance - evRangeOnRouteInfo.getMRemainRangeDistance();
+                    mRouteExhaustDistance = mExhaustDistance;
+                    final int progress = Math.round(((float) (mExhaustDistance) / mRouteTotalDistance) * 100);
+                    mViewBinding.routeChargeProgress.setProgress(progress);
+                    updateRouteChargeExhaustUi(progress / 100.0f);
+                }
+                mViewBinding.layoutRouteChargeProgress.setVisibility(View.VISIBLE);
+            } else {
+                mViewBinding.layoutRouteChargeProgress.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /***
+     * 更新路径
+     * @param progress 百分比
+     */
+    public void updateRouteChargeExhaustUi(final float progress) {
+        if (null == mViewBinding.routeChargeExhaustionPoint) {
+            Logger.e(TAG, "mRouteChargeGasListPageView = null");
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+            final ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mViewBinding.routeChargeExhaustionPoint.getLayoutParams();
+            layoutParams.horizontalBias = progress;
+            mViewBinding.routeChargeExhaustionPoint.setLayoutParams(layoutParams);
+        });
+    }
+
+    /**
+     * 同时添加多个途径带点
+     * */
+    public void startAllRequest() {
+        if (mGasChargeAlongList.size() > 5) {
+            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.add_via_failure));
+            return;
+        }
+        mRoutePackage.requestManyVia(MapType.MAIN_SCREEN_MAIN_MAP, mGasChargeAlongList);
+    }
+
+    public void routeClickEvent(final PoiInfoEntity poiInfoEntity) {
+        if (isBelongAlongList(poiInfoEntity)) {
+            gasChargeRemoveMode(poiInfoEntity);
+        } else {
+            gasChargeAddMode(poiInfoEntity);
+        }
+        if (mAdapter != null) {
+            mAdapter.poiDetailsUpdate(mGasChargeAlongList);
+        }
+    }
+
+    public void routeClickEvent(final PoiInfoEntity poiInfoEntity, final int position) {
+        if (isBelongAlongList(poiInfoEntity)) {
+            gasChargeRemoveMode(poiInfoEntity);
+        } else {
+            gasChargeAddMode(poiInfoEntity);
+        }
+        if (mAdapter != null) {
+            mAdapter.updateAlongList(mGasChargeAlongList, position);
+        }
+    }
+
+    public void updateRouteList() {
+        mGasChargeAlongList.clear();
+        mRouteGasChargeAlongList.clear();
+        final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (allPoiParamList.size() >= 2) {
+            allPoiParamList.remove(0);
+            allPoiParamList.remove(allPoiParamList.size() - 1);
+        } else {
+            Logger.e(TAG, "ERROR VIA LIST");
+            return;
+        }
+        mGasChargeAlongList.addAll(allPoiParamList);
+        mRoutePackage.setGasChargeAlongList(mGasChargeAlongList);
+        mRouteGasChargeAlongList.addAll(allPoiParamList);
+        updateChargeList();
+
+    }
+
+    /**
+     * 充电站本地添加
+     * @param poiInfoEntity  请求参数
+     * */
+    public void gasChargeAddMode(final PoiInfoEntity poiInfoEntity) {
+        if (mGasChargeAlongList.size() >= 5) {
+            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.add_via_failure));
+            return;
+        }
+        if (mRoutePackage.isRouteTips()) {
+            //绘制充电站在进度条上的扎点
+            addRouteChargePoiUi(poiInfoEntity, (float) (poiInfoEntity.getSort_distance()) / mRouteTotalDistance);
+        }
+        mGasChargeAlongList.add(mRoutePackage.getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY));
+        mRoutePackage.setGasChargeAlongList(mGasChargeAlongList);
+        updateChargeList();
+    }
+
+    /***
+     * 添加充电站内容
+     */
+    public void updateExhaustDistance() {
+        if (mExhaustDistance == mRouteTotalDistance) {
+            return;
+        }
+        mExhaustDistance = mRouteExhaustDistance;
+        boolean foundSmaller;
+        int farthestDistance = 0;
+        do {
+            //没有添加充电站
+            if (mChargePoiDistanceList == null && mChargePoiDistanceList.isEmpty()) {
+                break;
+            }
+            foundSmaller = false;
+            int maxValueSmallerThanX = farthestDistance;
+
+            for (int value : mChargePoiDistanceList) {
+                if (value < mExhaustDistance && value > maxValueSmallerThanX) {
+                    maxValueSmallerThanX = value;
+                }
+            }
+
+            if (maxValueSmallerThanX != farthestDistance) {
+                mExhaustDistance = (long) (maxValueSmallerThanX + BevPowerCarUtils.getInstance().arrivingPercent
+                        * BevPowerCarUtils.getInstance().batterToDistance);
+                foundSmaller = true;
+            }
+            //添加充电站都远于能量耗尽点
+            if (maxValueSmallerThanX == 0) {
+                mExhaustDistance = mRouteExhaustDistance;
+            }
+            farthestDistance = maxValueSmallerThanX;
+
+        } while (foundSmaller);
+
+        //算路能耗距离更远
+        mExhaustDistance = Math.max(mExhaustDistance, mRouteExhaustDistance);
+        mViewBinding.routeChargeExhaustionPoint.setVisibility(View.VISIBLE);
+        mViewBinding.routeChargeExhaustionText.setVisibility(View.VISIBLE);
+        int progress = Math.round(((float) (mExhaustDistance) / mRouteTotalDistance) * 100);
+        if (progress >= 100) {
+            mViewBinding.routeChargeExhaustionPoint.setVisibility(View.GONE);
+            mViewBinding.routeChargeExhaustionText.setVisibility(View.GONE);
+            progress = 100;
+        }
+        mViewBinding.routeChargeProgress.setProgress(progress);
+        updateRouteChargeExhaustUi(progress / 100.0f);
+    }
+
+
+    /**
+     * 充电站本地移除
+     * @param poiInfoEntity  请求参数
+     * */
+    public void gasChargeRemoveMode(final PoiInfoEntity poiInfoEntity) {
+        if (mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.route_error_add_start_end));
+            return;
+        }
+        if (!mRoutePackage.isRouteTips()) {
+            RouteParam routeParams = new RouteParam();
+            for (RouteParam routeParam : mGasChargeAlongList) {
+                if (mRoutePackage.isTheSamePoi(routeParam, poiInfoEntity)) {
+                    routeParams = routeParam;
+                    break;
+                }
+            }
+            mGasChargeAlongList.remove(routeParams);
+            mRoutePackage.setGasChargeAlongList(mGasChargeAlongList);
+
+            updateChargeList();
+            return;
+        }
+        PoiInfoEntity addPoiInfo = null;
+        if (mRouteChargeProgressViews != null && !mRouteChargeProgressViews.isEmpty()) {
+            for (PoiInfoEntity poiInfo : mRouteChargeProgressViews.keySet()) {
+                if (isTheSamePoi(poiInfo, poiInfoEntity)) {
+                    addPoiInfo = poiInfo;
+                    break;
+                }
+            }
+        }
+        if (addPoiInfo == null) {
+            Logger.e(TAG, " addPoiInfo is null");
+            return;
+        }
+        RouteParam routeParams = new RouteParam();
+        for (RouteParam routeParam : mGasChargeAlongList) {
+            if (mRoutePackage.isTheSamePoi(routeParam, addPoiInfo)) {
+                routeParams = routeParam;
+                break;
+            }
+        }
+        removeRouteChargePoiUi(addPoiInfo);
+        final int index = mChargePoiDistanceList.indexOf(addPoiInfo.getSort_distance());
+        if (index == -1) {
+            Logger.d(TAG, "mChargePoiDistanceList: " + mChargePoiDistanceList + " distance:" + addPoiInfo.getSort_distance());
+            return;
+        }
+        mChargePoiDistanceList.remove(index);
+        updateExhaustDistance();
+        mGasChargeAlongList.remove(routeParams);
+        mRoutePackage.setGasChargeAlongList(mGasChargeAlongList);
+
+        updateChargeList();
+    }
+
+    /***
+     * 设置充电UI
+     * @param poiInfoEntity POI数据
+     * @param progress 百分比
+     */
+    public void addRouteChargePoiUi(final PoiInfoEntity poiInfoEntity, final float progress) {
+        if (null == mViewBinding.routeChargeProgressIcons) {
+            Logger.e(TAG, "mRouteChargeGasListPageView = null");
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+            final SkinConstraintLayout routeChargeProgressLayout = mViewBinding.routeChargeProgressIcons;
+            final LayoutInflater inflater = LayoutInflater.from(getContext());
+            final View customViewItem = inflater.inflate(R.layout.item_route_charge_progress, routeChargeProgressLayout, false);
+            customViewItem.setId(View.generateViewId());
+            final SkinTextView distanceText = customViewItem.findViewById(R.id.tv_route_charge);
+            distanceText.setText(poiInfoEntity.getDistance().replace("公里", "km").replace("米","m"));
+            if (mRouteChargeProgressViews == null) {
+                mRouteChargeProgressViews = new ConcurrentHashMap<>();
+            }
+            routeChargeProgressLayout.addView(customViewItem);
+
+            final ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(routeChargeProgressLayout);
+            constraintSet.connect(customViewItem.getId(), ConstraintSet.START, routeChargeProgressLayout.getId(), ConstraintSet.START);
+            constraintSet.connect(customViewItem.getId(), ConstraintSet.END, routeChargeProgressLayout.getId(), ConstraintSet.END);
+            constraintSet.connect(customViewItem.getId(), ConstraintSet.TOP, routeChargeProgressLayout.getId(), ConstraintSet.TOP);
+            constraintSet.setHorizontalBias(customViewItem.getId(), progress);
+            constraintSet.applyTo(routeChargeProgressLayout);
+            mRouteChargeProgressViews.put(poiInfoEntity, customViewItem);
+        });
+        mChargePoiDistanceList.add(poiInfoEntity.getSort_distance());
+        updateExhaustDistance();
+    }
+
+    /***
+     * 移除充电UI
+     * @param poiInfoEntity POI数据
+     */
+    public void removeRouteChargePoiUi(final PoiInfoEntity poiInfoEntity) {
+        if (null == mViewBinding.routeChargeProgressIcons) {
+            Logger.e(TAG, "routeChargeProgressIcons = null");
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+            if (mRouteChargeProgressViews != null) {
+                final View view = mRouteChargeProgressViews.get(poiInfoEntity);
+                if (view != null) {
+                    mViewBinding.routeChargeProgressIcons.removeView(view);
+                }
+                mRouteChargeProgressViews.remove(poiInfoEntity);
+            }
+        });
+    }
+
+    /***
+     * 清除所有充电UI
+     */
+    public void clearRouteChargePoiUi() {
+        ThreadManager.getInstance().postUi(() -> {
+            if (mRouteChargeProgressViews != null && !mRouteChargeProgressViews.isEmpty()) {
+                for (PoiInfoEntity poiInfoEntity : mRouteChargeProgressViews.keySet()) {
+                    final View view = mRouteChargeProgressViews.get(poiInfoEntity);
+                    if (view != null && !ConvertUtils.isEmpty(mViewBinding.routeChargeProgressIcons)) {
+                        mViewBinding.routeChargeProgressIcons.removeView(view);
+                    }
+                    mRouteChargeProgressViews.remove(poiInfoEntity);
+                }
+            }
+        });
+    }
+
+    public boolean isBelongAlongList(final PoiInfoEntity poiInfoEntity) {
+        if (ConvertUtils.isEmpty(poiInfoEntity)) {
+            return false;
+        }
+        if (mGasChargeAlongList == null || mGasChargeAlongList.isEmpty()) {
+            return false;
+        }
+        for (RouteParam routeParam : mGasChargeAlongList) {
+            if (mRoutePackage.isTheSamePoi(routeParam, poiInfoEntity)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断两个点是否一样
+     * @param firstRouteParam  第一参数
+     * @param secondRouteParam 第二个参数
+     * */
+    public boolean isTheSamePoi(final RouteParam firstRouteParam, final RouteParam secondRouteParam) {
+        if (ConvertUtils.isEmpty(firstRouteParam) || ConvertUtils.isEmpty(secondRouteParam)
+                || ConvertUtils.isEmpty(firstRouteParam.getRealPos())
+                || ConvertUtils.isEmpty(secondRouteParam.getRealPos())) {
+            return false;
+        }
+        return (!ConvertUtils.isEmpty(firstRouteParam.getPoiID()) && Objects.equals(firstRouteParam.getPoiID(), secondRouteParam.getPoiID()))
+                || (firstRouteParam.getRealPos().getLat() == secondRouteParam.getRealPos().getLat()
+                && firstRouteParam.getRealPos().getLon() == secondRouteParam.getRealPos().getLon());
+    }
+
+    /**
+     * 判断两个点是否一样
+     * @param firstRouteParam  第一参数
+     * @param secondRouteParam 第二个参数
+     * */
+    public boolean isTheSamePoi(final PoiInfoEntity firstRouteParam, final PoiInfoEntity secondRouteParam) {
+        if (ConvertUtils.isEmpty(firstRouteParam) || ConvertUtils.isEmpty(secondRouteParam)
+                || ConvertUtils.isEmpty(firstRouteParam.getPoint())
+                || ConvertUtils.isEmpty(secondRouteParam.getPoint())) {
+            return false;
+        }
+        return (!ConvertUtils.isEmpty(firstRouteParam.getPid()) && Objects.equals(firstRouteParam.getPid(), secondRouteParam.getPid()))
+                || (firstRouteParam.getPoint().getLat() == secondRouteParam.getPoint().getLat()
+                && firstRouteParam.getPoint().getLon() == secondRouteParam.getPoint().getLon());
+    }
+
+    /***
+     * 获取能量耗尽点信息
+     * @param index 路线索引
+     * @return 能量耗尽点信息
+     */
+    public EvRangeOnRouteInfo getRangeOnRouteInfo(final int index) {
+        if (index == -1 || mRoutePackage.getEvRangeOnRouteInfos() == null
+                || mRoutePackage.getEvRangeOnRouteInfos().isEmpty() || index >= mRoutePackage.getEvRangeOnRouteInfos().size()) {
+            Logger.d(TAG, "Index out of bounds ");
+            return null;
+        }
+
+        return mRoutePackage.getEvRangeOnRouteInfos().get(index);
+    }
+
+    /**
+     * 获取选中的路线信息
+     * @return 路线信息
+     * */
+    public Integer getCurrentIndex() {
+        return mRoutePackage.getSelectRouteIndex().get(MapType.MAIN_SCREEN_MAIN_MAP);
+    }
+
+    /***
+     * 更新充电列表
+     */
+    public void updateChargeList() {
+        boolean isSame = true;
+        if (mGasChargeAlongList.size() != mRouteGasChargeAlongList.size()) {
+            isSame = false;
+        } else {
+            for (RouteParam fristRouteParam : mGasChargeAlongList) {
+                boolean hasSame = false;
+                for (RouteParam secondRouteParam : mRouteGasChargeAlongList) {
+                    if (isTheSamePoi(fristRouteParam, secondRouteParam)) {
+                        hasSame = true;
+                        break;
+                    }
+                }
+                if (!hasSame) {
+                    isSame = false;
+                    break;
+                }
+            }
+        }
+        if (mViewBinding.routeChargeListAlongWaySure == null || mViewBinding.routeChargeListAlongWayCancel == null) {
+            return;
+        }
+        if (isSame) {
+            mViewBinding.routeChargeListAlongWaySure.setVisibility(View.GONE);
+            mViewBinding.routeChargeListAlongWayCancel.setVisibility(View.GONE);
+        } else {
+            mViewBinding.routeChargeListAlongWaySure.setVisibility(View.VISIBLE);
+            mViewBinding.routeChargeListAlongWayCancel.setVisibility(View.VISIBLE);
+        }
+    }
+
+    //------------算路沿途搜***************************************************/
+
 }

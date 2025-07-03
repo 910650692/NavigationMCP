@@ -1906,9 +1906,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         switch (tabIndex) {
             case 0:
                 if (isChecked) {
-                    mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
-                    mModel.getSearchListChargeAndShow(mSearchKeyWord, 0);
-                    mView.setSearchCharge(true);
+//                    mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
+//                    mModel.getSearchListChargeAndShow(mSearchKeyWord, 0);
+                    mView.goSearchView(mSearchKeyWord);
                 } else {
                     hideRouteSearchDetailsUI();
                     hideRouteSearchListUI();
@@ -1937,9 +1937,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 break;
             case 3:
                 if (isChecked) {
-                    mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
-                    mModel.getSearchListChargeAndShow(mGasSearchKeyWord, 0);
-                    mView.setSearchCharge(false);
+//                    mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
+//                    mModel.getSearchListChargeAndShow(mGasSearchKeyWord, 0);
+                    mView.goSearchView(mGasSearchKeyWord);
                 } else {
                     hideRouteSearchDetailsUI();
                     hideRouteSearchListUI();
@@ -1955,11 +1955,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     @Override
     public void onTabListGasChargeClick(final int tabIndex) {
         if (mSearchListType == 0) {
-            mModel.getSearchListChargeAndShow(mSearchKeyWord, tabIndex);
-            mView.setSearchCharge(true);
+            mView.goSearchView(mSearchKeyWord);
         } else if (mSearchListType == 1) {
-            mModel.getSearchListChargeAndShow(mGasSearchKeyWord, tabIndex);
-            mView.setSearchCharge(false);
+            mView.goSearchView(mGasSearchKeyWord);
         }
     }
 
@@ -1967,17 +1965,17 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private Action mTabChargingClick = () -> {
         cancelTimer();
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        mView.clearSceneTabUI(!mIsChargingSelect);
         if (Boolean.FALSE.equals(mIsChargingSelect)) {
-            mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
-            mModel.getSearchListChargeAndShow(mSearchKeyWord, 0);
-            mView.setSearchCharge(true);
+//            mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
+//            mModel.getSearchListChargeAndShow(mSearchKeyWord, 0);
+            mView.goSearchView(mSearchKeyWord);
         } else {
             hideRouteSearchDetailsUI();
             hideRouteSearchListUI();
             mModel.clearSearchLabel();
         }
         mIsChargingSelect = !mIsChargingSelect;
-        mView.clearSceneTabUI(mIsChargingSelect);
     };
 
     public Action getTabChargingClick() {
@@ -1988,17 +1986,17 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private Action mTabGasClick = () -> {
         cancelTimer();
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        mView.clearSceneGasTabUI(!mIsGasSelect);
         if (Boolean.FALSE.equals(mIsGasSelect)) {
-            mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
-            mModel.getSearchListChargeAndShow(mGasSearchKeyWord, 0);
-            mView.setSearchCharge(false);
+//            mView.changePage(RoutePageLevel.ROUTE_CHARGE_GAS_LIST);
+//            mModel.getSearchListChargeAndShow(mGasSearchKeyWord, 0);
+            mView.goSearchView(mGasSearchKeyWord);
         } else {
             hideRouteSearchDetailsUI();
             hideRouteSearchListUI();
             mModel.clearSearchLabel();
         }
         mIsGasSelect = !mIsGasSelect;
-        mView.clearSceneGasTabUI(mIsGasSelect);
     };
 
     public Action getTabGasClick() {

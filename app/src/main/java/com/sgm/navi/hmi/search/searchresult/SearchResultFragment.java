@@ -17,7 +17,10 @@ import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.ui.base.BaseFragment;
+
+import java.util.Objects;
 
 @Route(path = RoutePath.Search.SEARCH_RESULT_FRAGMENT)
 public class SearchResultFragment extends BaseFragment<FragmentSearchResultBinding, SearchResultViewModel> {
@@ -91,6 +94,7 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         mBinding.scenePoiList.setRange(range);
         mBinding.scenePoiList.setCityCode(cityCode);
         mBinding.scenePoiList.setEditText(searchType, keyword);
+        mBinding.scenePoiList.setRouteAround(Objects.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_ROUTE));
         if (searchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
             mViewModel.registerRouteCallback();
         }
@@ -127,6 +131,13 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         if (!hidden) {
             updateShowState(true);
             mBinding.scenePoiList.reloadPoiMarker(getLastClosedFragmentName());
+            if (mViewModel.isRouteAlongSearch()) {
+                PoiInfoEntity infoEntity = mViewModel.getRouteAlongInfo();
+                if (infoEntity != null) {
+                    mBinding.scenePoiList.routeClickEvent(infoEntity);
+                }
+            }
+
         } else {
             updateShowState(false);
         }
@@ -174,6 +185,7 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         super.onDestroy();
         updateShowState(false);
         mBinding.scenePoiList.clear();
+        RoutePackage.getInstance().setRouteAlongSearch(false);
     }
 
     @Override

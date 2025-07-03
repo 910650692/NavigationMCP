@@ -11,9 +11,115 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:focusable="false"
         android:layout_height="match_parent">
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/layout_route_charge_progress"
+            android:layout_width="@dimen/dp_1222"
+            android:layout_height="@dimen/dp_254"
+            android:layout_marginStart="@dimen/dp_840"
+            android:background="@drawable/bg_shadow_navi_cadillac"
+            android:clickable="true"
+            android:focusable="false"
+            android:paddingHorizontal="@dimen/dp_51"
+            android:paddingVertical="@dimen/dp_51"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+                android:id="@+id/route_charge_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="@dimen/dp_1016"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_46"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:max="100"
+                android:progressDrawable="@drawable/img_route_charge_progress_bar"
+                android:soundEffectsEnabled="false"
+                android:splitTrack="false"
+                android:thumb="@android:color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/route_charge_start"
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_52"
+                android:layout_marginStart="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_24"
+                android:focusable="false"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_route_logo_2d"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/route_charge_progress_icons"
+                android:layout_width="@dimen/dp_1016"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                app:layout_constraintEnd_toEndOf="@+id/route_charge_progress"
+                app:layout_constraintStart_toStartOf="@+id/route_charge_progress"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/route_charge_exhaustion_point"
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_52"
+                android:layout_marginStart="@dimen/dp_60"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginEnd="@dimen/dp_56"
+                android:focusable="false"
+                android:src="@drawable/img_route_charge_exhaustion_point"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/route_charge_exhaustion_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:focusable="false"
+                android:text="@string/route_expected_battery_depletion"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_32"
+                app:layout_constraintEnd_toEndOf="@+id/route_charge_exhaustion_point"
+                app:layout_constraintStart_toStartOf="@+id/route_charge_exhaustion_point"
+                app:layout_constraintTop_toBottomOf="@+id/route_charge_exhaustion_point" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/route_charge_end"
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_52"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginEnd="@dimen/dp_32"
+                android:focusable="false"
+                android:src="@drawable/img_route_charge_end_point"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/route_charge_total_mileage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_3"
+                android:layout_marginEnd="@dimen/dp_40"
+                android:focusable="false"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_32"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/route_charge_end" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/root_view"
@@ -97,7 +203,7 @@
                 <com.sgm.navi.ui.view.PullToRefreshLayout
                     android:id="@+id/pull_refresh_layout"
                     app:layout_constraintTop_toBottomOf="@+id/search_label_filter"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/route_charge_list_along_way_sure"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_width="@dimen/dp_820"
@@ -110,6 +216,39 @@
                         android:focusable="false"
                         android:layout_height="match_parent" />
                 </com.sgm.navi.ui.view.PullToRefreshLayout>
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/route_charge_list_along_way_sure"
+                    android:layout_width="@dimen/dp_342"
+                    android:layout_height="@dimen/dp_120"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="@string/dsc_confirm"
+                    android:textColor="@color/text_route_button_title"
+                    android:textSize="@dimen/sp_42"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/route_charge_list_along_way_cancel"
+                    android:layout_width="@dimen/dp_342"
+                    android:layout_height="@dimen/dp_120"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="@string/dsc_cancel"
+                    android:textColor="@color/text_route_defult"
+                    android:textSize="@dimen/sp_42"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         </com.sgm.navi.ui.view.SkinLinearLayout>

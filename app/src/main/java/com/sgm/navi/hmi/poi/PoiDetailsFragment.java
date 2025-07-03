@@ -18,6 +18,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.ui.base.BaseFragment;
 
 /**
@@ -47,6 +48,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
 
     @Override
     public void onInitData() {
+        RoutePackage.getInstance().setRouteAlongInfo(null);
     }
 
     @Override
@@ -89,6 +91,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
             mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
             mBinding.scenePoiDetailContentView.setViaIndexSelect(true,mViaIndex);
+            mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
             if (isOpenFromNavi == 1) {
                 mBinding.scenePoiDetailContentView.setNaviControl(true);
             }
@@ -117,6 +120,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
         mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
         mBinding.scenePoiDetailContentView.setLabelName(labelName);
+        mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
     }
 
     @Override
@@ -134,6 +138,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
                 final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
                 mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
                 mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity, true);
+                mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
             }
             mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
             if(mViewModel.calcDistanceBetweenPoints()){

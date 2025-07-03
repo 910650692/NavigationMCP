@@ -231,4 +231,13 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
         mSearchPackage.clearLabelMark();
         mSearchPackage.createPoiMarker(searchResultEntity.getPoiList(),0);
     }
+
+
+    public PoiInfoEntity getRouteAlongInfo() {
+        return mRoutePackage.getRouteAlongInfo();
+    }
+
+    public boolean isRouteAlongSearch() {
+        return mRoutePackage.isRouteAlongSearch();
+    }
 }

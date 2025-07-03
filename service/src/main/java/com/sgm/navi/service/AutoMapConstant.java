@@ -307,6 +307,7 @@ public interface AutoMapConstant {
             SourceFragment.FRAGMENT_OFFLINE,
     })
     @interface SourceFragment {
+        String FRAGMENT_ROUTE = "fragment_route";
         String MAIN_SEARCH_FRAGMENT = "scene_main_search_fragment";
         String SUG_SEARCH_FRAGMENT = "scene_sug_search_fragment";
         String SEARCH_RESULT_FRAGMENT = "scene_search_result_fragment";

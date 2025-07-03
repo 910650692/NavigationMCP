@@ -175,4 +175,12 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     public void notifyNetSearchResultError(int taskId,String message){
         mView.notifySearchResultByNetError(taskId,message);
     }
+
+    public PoiInfoEntity getRouteAlongInfo() {
+        return mModel.getRouteAlongInfo();
+    }
+
+    public boolean isRouteAlongSearch() {
+        return mModel.isRouteAlongSearch();
+    }
 }
