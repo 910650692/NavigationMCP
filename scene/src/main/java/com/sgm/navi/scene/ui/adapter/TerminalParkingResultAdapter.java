@@ -23,6 +23,7 @@ import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.databinding.TerminalParkingItemBinding;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.search.ParkingInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
@@ -44,6 +45,7 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
     public static final int LESS = 3;
     public static final int BUSY = 4;
     public static final int FULL = 5;
+    private GeoPoint mEndPoint;
 
     static {
         BUSY_STATUS_MAP.put(IDLE, "充足");
@@ -59,6 +61,10 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
 
     public TerminalParkingResultAdapter() {
         this.mPoiEntities = new ArrayList<>();
+    }
+
+    public void setEndPoint(GeoPoint point){
+        mEndPoint = point;
     }
 
     /**
@@ -138,10 +144,9 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
             holder.mTerminalParkingItemBinding.sktvParkingItemSufficientNum.setVisibility(VISIBLE);
             holder.mTerminalParkingItemBinding.sktvParkingItemSufficientNum.setText(getBusStatusString(position));
         }
-
         // 当前位置显示
         holder.mTerminalParkingItemBinding.sktvParkingItemDistance.setText(
-                AppCache.getInstance().getMContext().getString(R.string.st_distance_to_finish, poiEntity.getDistance()));
+                AppCache.getInstance().getMContext().getString(R.string.st_distance_to_finish, SearchPackage.getInstance().calcStraightDistance(poiEntity.getMPoint(),mEndPoint)));
         if (!ConvertUtils.isEmpty(poiEntity) && !ConvertUtils.isEmpty(poiEntity.getMPoint())) {
             holder.mTerminalParkingItemBinding.textNavi.setText(SearchPackage.getInstance().calcStraightDistance(poiEntity.getMPoint()));
         }

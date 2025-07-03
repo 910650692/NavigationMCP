@@ -76,6 +76,9 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
      */
     public void aroundSearch(final GeoPoint geoPoint) {
         mScreenViewModel.aroundSearch("停车场", geoPoint);
+        if(!ConvertUtils.isNull(mAdapter)){
+            mAdapter.setEndPoint(geoPoint);
+        }
     }
 
     /**
