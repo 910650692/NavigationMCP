@@ -762,6 +762,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.setRouteResultListUI(mRouteLineInfos);
         }
+        if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.ROUTING) ) {
+            NaviStatusPackage.getInstance().setNaviStatus(NaviStatus.NaviStatusType.SELECT_ROUTE);
+        }
         showUIOnlineOffline(requestRouteResult.isMIsOnlineRoute());
         RouteParam endRouteParam = mRoutePackage.getEndPoint(requestRouteResult.getMMapTypeId());
         if (endRouteParam == null) {

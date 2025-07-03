@@ -256,9 +256,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             }
             callBackToSpeech(requestRouteResult.getMMapTypeId());
         }
-        if (!mNaviStatusAdapter.isGuidanceActive()) {
-            mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.SELECT_ROUTE);
-        }
 
     }
 
