@@ -129,6 +129,10 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
         }
         mLastClickTime = currentTime;
         requestReRoute();
+        notifySceneStateChange(false);
+        if (mCallBack != null) {
+            mCallBack.skipNaviControlScene();
+        }
     }
 
     /**
