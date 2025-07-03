@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -26,6 +27,7 @@
             android:layout_marginTop="@dimen/dp_17"
             android:paddingVertical="@dimen/dp_17"
             android:minHeight="@dimen/dp_499"
+            android:layout_marginBottom="@dimen/dp_130"
             android:background="@drawable/bg_search_main_tab">
 
             <com.sgm.navi.ui.view.SkinRecyclerView
@@ -34,11 +36,18 @@
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
             <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/recycler_search_history"
-                android:scrollbars="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="0dp"
+                android:scrollbars="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintHeight_max="@dimen/dp_898"
+                app:layout_constraintHeight_min="@dimen/dp_579"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="1dp" />
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/recycler_no_hint"
                 android:layout_width="wrap_content"
