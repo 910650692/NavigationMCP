@@ -18,6 +18,7 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.launcher.LauncherWindowService;
+import com.sgm.navi.hmi.poi.PoiDetailsFragment;
 import com.sgm.navi.hmi.search.alongway.MainAlongWaySearchFragment;
 import com.sgm.navi.hmi.search.searchresult.SearchResultFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
@@ -1227,13 +1228,39 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
-        Logger.i(TAG, "onRouteItemClick result = ", result.toString(), " type = ", type);
-        if (type == LayerPointItemType.ROUTE_PATH) {
-            long pathId = result.getIndex();
-            onRouteClick(pathId);
-        } else if (type == LayerPointItemType.ROUTE_GUIDE_LABEL) {
-            long pathId = result.getEventID();
-            onRouteClick(pathId);
+        if (Logger.openLog) {
+            Logger.i(TAG, "onRouteItemClick result = ", result.toString(), " type = ", type);
+        }
+        if (ConvertUtils.isEmpty(result)) {
+            Logger.e(TAG, "onRouteItemClick result is null");
+            return;
+        }
+        long pathId;
+        switch (type) {
+            case ROUTE_POINT_VIA:
+            case ROUTE_POINT_VIA_CHARGE:
+                final PoiInfoEntity poiInfo = new PoiInfoEntity();
+                poiInfo.setPoint(new GeoPoint(result.getLog(), result.getLat()));
+                final Bundle poiBundle = new Bundle();
+                poiBundle.putParcelable(
+                        AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfo);
+                poiBundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE,
+                        AutoMapConstant.PoiType.POI_MAP_CLICK);
+                poiBundle.putInt(NaviConstant.KEY_NO_HIDE_FRAGMENT, NumberUtils.NUM_1);
+                final PoiDetailsFragment poiFragment = new PoiDetailsFragment();
+                addPoiDetailsFragment(poiFragment, poiBundle);
+                hideNaviContent();
+                break;
+            case ROUTE_PATH:
+                pathId = result.getIndex();
+                onRouteClick(pathId);
+                break;
+            case ROUTE_GUIDE_LABEL:
+                pathId = result.getEventID();
+                onRouteClick(pathId);
+                break;
+            default:
+                break;
         }
     }
 

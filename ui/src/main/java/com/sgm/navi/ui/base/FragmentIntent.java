@@ -134,9 +134,15 @@ public class FragmentIntent {
                 STACKMANAGER.removeBaseView(screenId, (IBaseView) existingFragment);
             }
             if (!STACKMANAGER.isFragmentStackNull(screenId)) {
+                int isHide = 0;
+                if (!ConvertUtils.isEmpty(bundle)) {
+                    isHide = bundle.getInt("no_hide_fragment", 0);
+                }
                 //如果查找是否存在栈顶的其他Fragment，如果有则隐藏
                 final BaseFragment currentFragment = STACKMANAGER.getCurrentFragment(screenId);
-                if(currentFragment.isAdded() && currentFragment.getParentFragmentManager() == fragmentManager) {
+                if(currentFragment.isAdded() &&
+                        currentFragment.getParentFragmentManager() == fragmentManager &&
+                        isHide == 0) {
                     transaction.hide(currentFragment);
                 }
             }

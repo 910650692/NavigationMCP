@@ -10,6 +10,7 @@ public interface NaviConstant {
     long NAVI_SIM_ID = 1;//模拟导航ID
     long NAVI_CRUISE_ID = 2;//巡航ID
     String KEY_NAVI_MODEL = "NaviGuidanceModel";
+    String KEY_NO_HIDE_FRAGMENT = "no_hide_fragment";
     String NAVI_CONTROL = "NAVI_CONTROL";
     String VIA_POSITION = "VIA_POSITION";
     // 导航转向图标宽度信息
