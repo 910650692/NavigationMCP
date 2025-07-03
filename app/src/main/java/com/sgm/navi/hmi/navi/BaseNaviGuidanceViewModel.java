@@ -12,6 +12,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
+import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -36,6 +37,7 @@ import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.tts.NaviMediaPlayer;
 import com.sgm.navi.ui.BuildConfig;
@@ -97,12 +99,13 @@ public class BaseNaviGuidanceViewModel extends
     private HashMap<NaviSceneId, Integer> mSceneStatus;
     private boolean mIsOverView;
     private boolean mIsFixedOverView;
+    private boolean mIsRoadNameCanShow;
 
     public BaseNaviGuidanceViewModel(@NonNull final Application application) {
         super(application);
         mNaviViaInfoVisibility = new ObservableField<>(false);
         mNaviLastMileVisibility = new ObservableField<>(false);
-        mNaviRouteNameVisibility = new ObservableField<>(true);
+        mNaviRouteNameVisibility = new ObservableField<>(false);
         mNaviParallelVisibility = new ObservableField<>(false);
         mNaviLanesVisibility = new ObservableField<>(false);
         mNaviViaListVisibility = new ObservableField<>(false);
@@ -336,6 +339,10 @@ public class BaseNaviGuidanceViewModel extends
      */
     private void updateRouteName(final NaviEtaInfo naviEtaInfo) {
         if (!TextUtils.isEmpty(naviEtaInfo.getCurRouteName())) {
+            if (!mIsRoadNameCanShow) {
+                mIsRoadNameCanShow = true;
+                showRoadName();
+            }
             mView.updateRouteName(naviEtaInfo.getCurRouteName());
         }
     }
@@ -432,9 +439,15 @@ public class BaseNaviGuidanceViewModel extends
                 NaviPackage.getInstance().getFixedOverViewStatus(),
                 " currentImersiveStatus:", currentImersiveStatus);
         mView.onImmersiveStatusChange(currentImersiveStatus);
+        showRoadName();
+    }
+
+    private void showRoadName() {
+        ImersiveStatus currentImersiveStatus = ImmersiveStatusScene.getInstance().
+                getCurrentImersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP);
         // 1036921 继续导航显示的时候不显示当前道路名称
         mNaviRouteNameVisibility.set((currentImersiveStatus == ImersiveStatus.IMERSIVE) &&
-                Boolean.FALSE.equals(mNaviContinueVisibility.get()));
+                Boolean.FALSE.equals(mNaviContinueVisibility.get()) && mIsRoadNameCanShow);
     }
 
     /**
