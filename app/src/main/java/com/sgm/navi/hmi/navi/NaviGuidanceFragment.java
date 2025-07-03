@@ -8,7 +8,10 @@ import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_ETA;
 import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TBT;
 import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TMC;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -76,6 +79,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private PhoneStateListener mPhoneStateListener;
     private int mBroadCastModeBeforeCall = NumberUtils.NUM_ERROR;
     private int mBroadCastModeAfterCall = NumberUtils.NUM_ERROR;
+    private BroadcastReceiver mTimeFormatReceiver;
+    private boolean mIsBroadcastRegistered;
+    private boolean mIs24HourFormat;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,6 +121,35 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (telephonyManager != null) {
             telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
+        mTimeFormatReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (Intent.ACTION_TIME_CHANGED.equals(intent.getAction()) ||
+                        Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) {
+                    Logger.d(TAG, "onReceive ACTION_TIME_CHANGED or ACTION_LOCALE_CHANGED");
+                    boolean is24Hour = getTimeFormatIs24Hour();
+                    if (is24Hour != mIs24HourFormat) {
+                        if (mBinding != null && mBinding.sceneNaviEta != null) {
+                            mBinding.sceneNaviEta.refreshArriveTime();
+                        }
+                        mIs24HourFormat = is24Hour;
+                    }
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
+        requireContext().registerReceiver(mTimeFormatReceiver, filter);
+        mIsBroadcastRegistered = true;
+    }
+
+    private boolean getTimeFormatIs24Hour() {
+        String timeFormat = android.provider.Settings.System.getString(
+                requireContext().getContentResolver(),
+                android.provider.Settings.System.TIME_12_24
+        );
+        return "24".equals(timeFormat);
     }
 
     private void switchBroadcastMode(int mode) {
@@ -233,6 +268,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         }
         mViewModel.setDefultPlateNumberAndAvoidLimitSave();
         mViewModel.initShowScene(NAVI_SCENE_CONTROL, NAVI_SCENE_TBT, NAVI_SCENE_ETA, NAVI_SCENE_TMC);
+        mIs24HourFormat = getTimeFormatIs24Hour();
     }
 
     @Override
@@ -243,6 +279,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mViewModel.restoreNavigation();
             restoreSceneStatus();
         }
+        mIs24HourFormat = getTimeFormatIs24Hour();
     }
 
     private void restoreLazySceneStatus() {
@@ -861,6 +898,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         }
         mPhoneStateListener = null;
         mSceneCallback = null;
+        if (mIsBroadcastRegistered) {
+            requireContext().unregisterReceiver(mTimeFormatReceiver);
+            mIsBroadcastRegistered = false;
+        }
     }
 
     public void setViaListVisibility(boolean isVisible) {

@@ -171,4 +171,10 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
             mScreenViewModel.onCrossImageShow(isRealNeedShow);
         }
     }
+
+    public void refreshArriveTime() {
+        if (null != mScreenViewModel) {
+            mScreenViewModel.refreshArriveTime();
+        }
+    }
 }

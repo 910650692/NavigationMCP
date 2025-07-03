@@ -23,6 +23,7 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
+import com.sgm.navi.service.define.utils.NumberUtils;
 
 import java.util.Objects;
 
@@ -58,6 +59,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
     public ObservableField<Boolean> mGroupNextVisible;
     private boolean mIsCrossImageShow;
     private boolean mIsNextManeuverShow;
+    private int mTime = NumberUtils.NUM_ERROR;
 
     public SceneNaviEtaImpl(final SceneNaviEtaView screenView) {
         super(screenView);
@@ -325,11 +327,22 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
             return;
         }
         mArriveDay = TimeUtils.getArriveDay(time);
+        mTime = time;
         mArriveTime = TimeUtils.getArriveTime(mScreenView.getContext(), time);
         mRemainInfo = TimeUtils.getRemainInfo(mScreenView.getContext(), distance, time);
         // 到达或者剩余信息有变化才更新界面
         if (!Objects.equals(mLastArriveTime, mArriveTime) || !Objects.equals(mLastRemainInfo, mRemainInfo)) {
             showArriveInfo();
+        }
+    }
+
+    public void refreshArriveTime() {
+        if (mTime > 0) {
+            mArriveTime = TimeUtils.getArriveTime(mScreenView.getContext(), mTime);
+            if (!TextUtils.isEmpty(mArriveTime)) {
+                mScreenView.setTextNaviEtaRouteArrivalDefault(
+                        new AutoUIString(ConvertUtils.digitToBold(mArriveTime)));
+            }
         }
     }
 
