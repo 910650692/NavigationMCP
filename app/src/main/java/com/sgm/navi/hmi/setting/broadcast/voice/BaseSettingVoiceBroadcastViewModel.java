@@ -77,7 +77,9 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
             mModel.setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH, ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name) +"语音设置成功");
             mView.setCurrentVoice();
             mView.unSelectAllVoices();
-
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance()
+                            .getString(R.string.setting_broadcast_voice_current_name) + "语音设置成功");
             sendBuryPointForSetVoice(ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
         }
     };

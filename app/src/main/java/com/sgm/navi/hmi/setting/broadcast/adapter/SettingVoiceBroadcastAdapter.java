@@ -118,11 +118,6 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
     public void onBindViewHolder(final @NonNull SettingVoiceBroadcastAdapter.Holder holder, final int position) {
        VoiceInfo voiceInfo = mVoiceInfoList.get(position);
         holder.mVoiceBroadcastBinding.setModel(voiceInfo);
-
-
-
-
-
         holder.mVoiceBroadcastBinding.recommendVoiceProgress.setProgressDrawable(
                 ResourceUtils.Companion.getInstance().getDrawable(R.drawable.progress_bar_style));
 
