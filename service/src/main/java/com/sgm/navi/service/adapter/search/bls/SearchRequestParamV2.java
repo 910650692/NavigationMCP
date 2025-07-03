@@ -1,6 +1,8 @@
 package com.sgm.navi.service.adapter.search.bls;
 
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
@@ -58,6 +60,7 @@ public final class SearchRequestParamV2 {
      * @param searchRequestInfo SearchRequestParameter
      * @return SearchSuggestionParam
      */
+    @SuppressLint("WrongConstant")
     public SearchSuggestionParam convertToSearchSuggestionParamV2(final SearchRequestParameter searchRequestInfo) {
         final SearchSuggestionParam param = new SearchSuggestionParam();
         param.keyword = searchRequestInfo.getKeyword();
@@ -66,7 +69,7 @@ public final class SearchRequestParamV2 {
         param.type = 0;
         param.offlineParam.resultMaxCount = DEFAULT_RESULT_MAX_COUNT;
         param.switchParam.needVirtualTip = true;
-        param.dataType = SearchDataType.Poi;
+        param.dataType = SearchDataType.Poi | SearchDataType.Bus | SearchDataType.BusLine;
         param.userLoc.lon = searchRequestInfo.getUserLoc().getLon();
         param.userLoc.lat = searchRequestInfo.getUserLoc().getLat();
         param.switchParam.needAdcode = true;
