@@ -36,7 +36,9 @@ public class ForecastPackage implements ForecastAdapterCallback {
      * @param callBack 回调
      */
     public void registerCallBack(final ForecastCallBack callBack) {
-        mCallBacks.add(callBack);
+        if (!mCallBacks.contains(callBack)) {
+            mCallBacks.add(callBack);
+        }
     }
 
     public void unregisterCallBack(final ForecastCallBack callBack) {
