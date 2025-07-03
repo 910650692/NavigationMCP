@@ -4100,4 +4100,6 @@
     <dimen name="dp_3997">2284dp</dimen>
     <dimen name="dp_3998">2284.57dp</dimen>
     <dimen name="dp_3999">2285.14dp</dimen>
+
+    <dimen name="dp_toast_margin_start">500dp</dimen>
 </resources>
