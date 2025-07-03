@@ -185,8 +185,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 isSupportSplitScreen() && !FloatViewManager.getInstance().isNaviDeskBg() && !ScreenTypeUtils.getInstance().isOneThirdScreen()
         );
         mIsFullScreen = new ObservableField<>(ScreenTypeUtils.getInstance().isFullScreen());
-
-        mFirstLaunch = mModel.isFirstLauncher();
     }
 
     @Override
@@ -225,7 +223,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     private void checkPrivacyRights() {
-        Logger.i(TAG, "checkPrivacyRights");
+        mFirstLaunch = mModel.isFirstLauncher();
+        Logger.i(TAG, "checkPrivacyRights: ", mFirstLaunch);
         if (mFirstLaunch) {
             popAgreementDialog();
         } else {
