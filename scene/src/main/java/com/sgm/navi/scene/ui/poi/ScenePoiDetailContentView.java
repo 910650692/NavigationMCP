@@ -1942,7 +1942,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setAlpha(mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty() ? 1.0f : 0.5f);
                 mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setIsClickChangeColor(false);
                 mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_collect_add);
-                mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(View.VISIBLE);
+                mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(View.GONE);
                 mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setVisibility(GONE);
                 mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setVisibility(GONE);
                 break;
