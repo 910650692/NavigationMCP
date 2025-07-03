@@ -193,7 +193,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Override
     public void onCreate() {
         super.onCreate();
-        checkPrivacyRights();
+        checkAgreementRights();
         sRVisible.set(
                 isSupportSplitScreen() && !FloatViewManager.getInstance().isNaviDeskBg() && !ScreenTypeUtils.getInstance().isOneThirdScreen()
         );
@@ -220,7 +220,16 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return mInitSdkSuccess;
     }
 
-    private void checkPrivacyRights() {
+    private void checkAgreementRights(){
+        Logger.i(TAG, "checkAgreementRights");
+        if (!mModel.isAllowSGMAgreement()) {
+            mModel.showSGMAgreement(true);
+        } else {
+            checkPrivacyRights();
+        }
+    }
+
+    public void checkPrivacyRights() {
         mFirstLaunch = mModel.isFirstLauncher();
         Logger.i(TAG, "checkPrivacyRights: ", mFirstLaunch);
         if (mFirstLaunch) {
@@ -654,11 +663,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         PoiInfoEntity poiInfoEntity ;
         if (home) {
             poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
-        }else {
+        } else {
             poiInfoEntity = getFavoritePoiInfo(PoiType.POI_COMPANY);
         }
-        if(!ConvertUtils.isEmpty(poiInfoEntity)){
-           return poiInfoEntity.getMPoint();
+        if (!ConvertUtils.isEmpty(poiInfoEntity)) {
+            return poiInfoEntity.getMPoint();
         }
         return null;
     }

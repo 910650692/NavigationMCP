@@ -54,6 +54,7 @@ import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.logicpaket.activate.ActivatePackage;
 import com.sgm.navi.service.logicpaket.activate.IActivateObserver;
+import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.sgm.navi.hmi.R;
@@ -298,6 +299,18 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         super.onCreate();
         PermissionUtils.getInstance().setPermissionsObserver(this);
         StartService.getInstance().registerSdkCallback(TAG, this);
+        AgreementPackage.getInstance().init();
+        AgreementPackage.getInstance().setAgreementCallback("StartupModel",
+                new AgreementPackage.AgreementCallback() {
+                    @Override
+                    public void agreementCallback(boolean isSGMAgreed) {
+                        if (isSGMAgreed) {
+                            mViewModel.checkPrivacyRights();
+                        } else {
+                            StackManager.getInstance().exitApp();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -334,6 +347,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         cancelSelfParkingTimer();
         cancelCloseTmcTimerWithoutNetwork();
         FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
+        AgreementPackage.getInstance().unRegisterAgreementCallback("StartupModel");
     }
 
     @Override
@@ -364,6 +378,33 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onSdkInitFail(int initSdkResult, String msg) {
         // 重试机制统一在NaviService中完成
+    }
+
+    /**
+     * 设置是否同意了SGM协议.
+     *
+     * @param state 是否同意协议.
+     */
+    public void allowSGMAgreement(boolean state) {
+        AgreementPackage.getInstance().allowSGMAgreement(state);
+    }
+
+    /**
+     * 获取是否同意了SGM协议.
+     *
+     * @return  是否同意协议.
+     */
+    public boolean isAllowSGMAgreement() {
+        return AgreementPackage.getInstance().isAllowSGMAgreement();
+    }
+
+    /**
+     * 打开SGM协议弹窗.
+     *
+     * @return 是否同意协议.
+     */
+    public boolean showSGMAgreement(boolean show) {
+        return AgreementPackage.getInstance().showSGMAgreement(show);
     }
 
     public boolean isFirstLauncher() {
