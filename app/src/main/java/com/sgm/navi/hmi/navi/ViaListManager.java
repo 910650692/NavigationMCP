@@ -93,7 +93,7 @@ public class ViaListManager {
         List<String> viaIdList = new ArrayList<>();
         for (int i = 0; i < viaList.size(); i++) {
             NaviViaEntity naviViaEntity = viaList.get(i);
-            if (naviViaEntity != null && naviViaEntity.isUserAdd()) {
+            if (naviViaEntity != null && naviViaEntity.isUserAdd() && !naviViaEntity.isEndPoi()) {
                 viaIdList.add(naviViaEntity.getPid());
             }
         }

@@ -730,7 +730,7 @@ public final class NaviDataFormatHelper {
      * @param obj        obj
      * @return entity
      */
-    public static NaviViaEntity getNaviViaEntity(final RouteParam routeParam, final Object obj, boolean isUserAdd) {
+    public static NaviViaEntity getNaviViaEntity(final RouteParam routeParam, final Object obj, boolean isUserAdd, boolean isEndPoi) {
         final NaviViaEntity naviViaEntity = new NaviViaEntity();
         String name = routeParam.getName();
         Logger.i(TAG, "getNaviViaEntity: ", name);
@@ -740,6 +740,7 @@ public final class NaviDataFormatHelper {
         naviViaEntity.setPid(routeParam.getPoiID());
         naviViaEntity.setChargeInfo(routeParam.getChargeInfo());
         naviViaEntity.setIsUserAdd(isUserAdd);
+        naviViaEntity.setIsEndPoi(isEndPoi);
         if (obj != null) {
             if (obj instanceof NaviEtaInfo) {
                 final NaviEtaInfo naviEtaInfo = (NaviEtaInfo) obj;

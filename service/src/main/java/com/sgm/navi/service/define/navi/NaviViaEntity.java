@@ -17,6 +17,7 @@ public class NaviViaEntity {
     //到达剩余电量（百分比）非实时有数据，不能直接使用
     private int mArriveBatteryLeft = NumberUtils.NUM_ERROR;
     private boolean mIsUserAdd;//是否手动添加的途经点
+    boolean mIsEndPoi; // 是否是终点POI
 
     public String getArriveDay() {
         return mArriveDay;
@@ -95,6 +96,14 @@ public class NaviViaEntity {
 
     public void setIsUserAdd(boolean isUserAdd) {
         this.mIsUserAdd = isUserAdd;
+    }
+
+    public boolean isEndPoi() {
+        return mIsEndPoi;
+    }
+
+    public void setIsEndPoi(boolean isEndPoi) {
+        this.mIsEndPoi = isEndPoi;
     }
 
     @Override

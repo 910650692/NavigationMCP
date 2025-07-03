@@ -854,14 +854,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 Logger.i(TAG, "allPoiParamList viaRemain:", viaRemain.size());
                 Logger.i(TAG, "allPoiParamList index:", index);
                 if (viaRemain.size() > index) {
-                    tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, viaRemain.get(index), true));
+                    tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, viaRemain.get(index), true, false));
                 } else {
                     // 因为有时候是静态的 mNaviEtaInfo.viaRemain数据不会实时刷新，所以就算没有导航数据也要添加
-                    tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null, true));
+                    tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null, true, false));
                     mIsNeedUpdateViaList = true;
                 }
             } else {
-                tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null, true));
+                tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null, true, false));
                 mIsNeedUpdateViaList = true;
             }
         }
@@ -873,7 +873,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         // 最后添加终点
         if (!ConvertUtils.isEmpty(allPoiParamList)) {
             mViaList.add(NaviDataFormatHelper.getNaviViaEntity(
-                    allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo, true));
+                    allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo, true, true));
         }
         Logger.i(TAG, "mViaList-Size:", mViaList.size(), "tmSize:", tmpList.size());
         if (!ConvertUtils.isEmpty(mViaList)) {
