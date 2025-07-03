@@ -366,10 +366,10 @@
             app:viewModel="@{ViewModel}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_417"
+            android:layout_marginStart="@dimen/dp_17"
             android:layout_marginTop="@dimen/dp_85"
             app:layout_constraintStart_toEndOf="@id/search_main_tab"
-            app:layout_goneMarginStart="@dimen/dp_417"
+            app:layout_goneMarginStart="@dimen/dp_600"
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
