@@ -228,7 +228,6 @@ public class SceneNaviPreferenceView extends NaviSceneBase
             if (ConvertUtils.isEmpty(callBack)) {
                 continue;
             }
-            mScreenViewModel.closeScene();
             callBack.onRoutePreferenceChange(getPreferText(routePreference), isFirstChange);
         }
         if (!firstCommendText.isEmpty() && !secondCommendText.isEmpty()) {

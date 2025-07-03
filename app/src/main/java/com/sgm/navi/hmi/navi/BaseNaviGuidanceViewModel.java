@@ -496,7 +496,6 @@ public class BaseNaviGuidanceViewModel extends
     public void onRoutePreferenceChange(final String text, final boolean isFirstChange) {
         Logger.d(TAG, "text：", text, ",isFirstChange：", isFirstChange);
         if (!isFirstChange) {
-            mNaviPreferenceVisibility.set(false);
             mModel.onRoutePreferenceChange();
         }
     }

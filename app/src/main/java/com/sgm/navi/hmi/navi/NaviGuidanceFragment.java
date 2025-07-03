@@ -40,6 +40,7 @@ import com.sgm.navi.scene.ui.navi.SceneNaviSapaDetailView;
 import com.sgm.navi.scene.ui.navi.SceneNaviSapaView;
 import com.sgm.navi.scene.ui.navi.SceneNaviViaDetailView;
 import com.sgm.navi.scene.ui.navi.SceneNaviViaListView;
+import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
@@ -942,6 +943,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (mSceneNaviControlMoreView != null &&
                 mSceneNaviControlMoreView.getVisibility() == VISIBLE) {
             mSceneNaviControlMoreView.updateSceneVisible(false);
+        }
+        if (mBinding != null && mBinding.sceneNaviPreference.getVisibility() == VISIBLE) {
+            NaviSceneManager.getInstance().notifySceneStateChange(
+                    INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SCENE_PREFERENCE);
         }
     }
 
