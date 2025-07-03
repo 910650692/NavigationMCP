@@ -18,6 +18,7 @@ import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.navi.GuidanceObserver;
 import com.sgm.navi.service.adapter.navi.NaviAdapter;
@@ -83,7 +84,7 @@ import lombok.Getter;
  * @author sgm
  * @version $Revision.*$
  */
-public final class NaviPackage implements GuidanceObserver, SignalAdapterCallback {
+public final class NaviPackage implements GuidanceObserver, SignalAdapterCallback, StartService.ISdkInitCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
     @Getter
     private CrossImageEntity lastCrossEntity;
@@ -125,10 +126,17 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private LayerItemRouteEndPoint mEndPoint;
 
     private NaviPackage() {
+        StartService.getInstance().registerSdkCallback(TAG, this);
         mGuidanceObservers = new ConcurrentHashMap<>();
         mManager = HistoryManager.getInstance();
         mManager.init();
         mModelSaveEntity = new NaviModelSaveEntity();
+    }
+
+    @Override
+    public void onSdkInitSuccess() {
+        mSettingAdapter.setConfigKeyMute(NumberUtils.NUM_0);
+        StartService.getInstance().unregisterSdkCallback(this);
     }
 
     /**

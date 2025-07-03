@@ -89,6 +89,7 @@ public interface MapDefaultFinalTag {
      String SCENE_TAG = "_Scene";
     /*** NaviApp_Navi_Scene **/
      String NAVI_SCENE_TAG = DEFAULT_TAG + "_Navi" + SCENE_TAG;
+     String NAVI_SCENE_MANAGER = NAVI_SCENE_TAG + "_Manager";
      String NAVI_SCENE_PREFERENCE = NAVI_SCENE_TAG + "_Preference";
      String NAVI_SCENE_VIA_LIST = NAVI_SCENE_TAG + "_ViaList";
      String NAVI_SCENE_VIA_LIST_IMPL= NAVI_SCENE_VIA_LIST + "_Impl";

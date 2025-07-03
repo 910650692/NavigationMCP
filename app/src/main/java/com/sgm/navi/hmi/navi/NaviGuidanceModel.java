@@ -538,7 +538,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onNaviStop() {
         mNaviPackage.setEndPoint(null);
-        mSettingPackage.setConfigKeyMute(0);
         closeNavi();
     }
 
@@ -1373,6 +1372,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void closeNavi() {
         Logger.i(TAG, "closeNavi");
+        mSettingPackage.setConfigKeyMute(NumberUtils.NUM_0);
         mViewModel.onNaviStop();
         mRoutePackage.removeAllRouteInfo(MapType.MAIN_SCREEN_MAIN_MAP);
     }

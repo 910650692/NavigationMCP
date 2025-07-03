@@ -21,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @date 2025/3/20
  */
 public class NaviSceneManager implements INaviSceneEvent {
-    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_MANAGER;
     /*** 所有的Scene **/
     private final ConcurrentMap<NaviSceneId, NaviSceneBase> sceneViewList;
     /*** 正在显示的Scene **/

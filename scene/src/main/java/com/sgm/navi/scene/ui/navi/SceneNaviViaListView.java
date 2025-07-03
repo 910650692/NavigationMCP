@@ -266,7 +266,6 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     }
 
     public void updateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
-        Logger.i("shisong", "电量变化回调");
         mElectVehicleETAInfoList.clear();
         mElectVehicleETAInfoList.addAll(infos);
         addBatteryLeftData(mNaviViaEntityList);
