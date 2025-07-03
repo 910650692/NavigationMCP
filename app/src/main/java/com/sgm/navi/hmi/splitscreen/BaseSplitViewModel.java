@@ -50,6 +50,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     }
 
     public ObservableField<Boolean> mTopNaviBarVisibility = new ObservableField<>(false);
+    // 导航态按钮组
     public ObservableField<Boolean> mNaviActionBarVisibility = new ObservableField<>(false);
     public ObservableField<Boolean> mNaviBroadIsMute = new ObservableField<>(false);
     public ObservableField<Integer> mNaviVoicePic = new ObservableField<>(com.sgm.navi.scene.R.drawable.img_mute_broadcast_black_58);
@@ -60,7 +61,6 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public ObservableField<Boolean> mLanesVisibility = new ObservableField<>(false);
     public ObservableField<Boolean> mNextManeuverVisible = new ObservableField<>(false);
     // 触摸态后开启倒计时，8秒后进入沉浸态
-    private final long INTERVAL = 1;
     private final long TOTAL_TIME = 8;
     private ScheduledFuture immersiveScheduledFuture;
     // 全览后开启倒计时，8秒退出全览
@@ -69,15 +69,15 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public void initView() {
         if (ConvertUtils.isNull(mView)) return;
         mTopNaviBarVisibility.set(!mModel.isOnNavigating());
-        mNaviActionBarVisibility.set(mModel.isOnNavigating() && mModel.isOnImmersive());
+        mNaviActionBarVisibility.set(mModel.isOnNavigating());
         mNaviBroadIsMute.set(mModel.isMute());
         mNaviVoicePic.set(mModel.isMute() ? R.drawable.img_mute_broadcast_black_58 : R.drawable.img_navi_broadcast);
         mIsGasCar.set(mModel.getPowerType() == PowerType.E_VEHICLE_ENERGY_FUEL);
-        mIsOnTouch.set(mModel.isOnTouch());
+        mIsOnTouch.set(mModel.isOnTouch() && mModel.isOnNavigating());
         if (mModel.isOnNavigating()) {
             onNaviInfo(mModel.getCurrentNaviEtaInfo());
         }
-        if (mModel.isOnTouch()) {
+        if (mModel.isOnTouch() && mModel.isOnNavigating()) {
             startImmersiveSchedule();
         }
     }
@@ -167,6 +167,8 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
             }
         } catch (Exception e) {
             Logger.e(TAG, "stopPreviewSchedule failed:" + e.getMessage());
+        } finally {
+            previewScheduledFuture = null;
         }
     }
 
@@ -188,12 +190,12 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public Action naviContinue = () -> {
         Logger.i(TAG, "naviContinue");
         mModel.openOrCloseImmersive(true);
+        // 如果处于全览要退出全览
+        mModel.exitPreviewIfNeeded();
     };
 
     public void onNaviInfo(NaviEtaInfo naviETAInfo) {
         if (ConvertUtils.isNull(mView)) return;
-        mTopNaviBarVisibility.set(false);
-        mNaviActionBarVisibility.set(true);
         if (!ConvertUtils.isNull(naviETAInfo)) {
             mView.onNaviInfo(naviETAInfo);
         }
@@ -256,6 +258,8 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
             }
         } catch (Exception e) {
             Logger.i(TAG, "stopImmersiveSchedule failed:" + e.getMessage());
+        } finally {
+            immersiveScheduledFuture = null;
         }
     }
 
@@ -274,7 +278,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      * 沉浸式状态改变后更新UI状态
      */
     public void updateUiStateAfterImmersiveChanged(ImersiveStatus currentImersiveStatus) {
-        mIsOnTouch.set(currentImersiveStatus == ImersiveStatus.TOUCH);
+        mIsOnTouch.set(currentImersiveStatus == ImersiveStatus.TOUCH && mModel.isOnTouch());
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
             startImmersiveSchedule();
         } else {

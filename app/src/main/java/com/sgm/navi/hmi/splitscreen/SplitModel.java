@@ -2,7 +2,6 @@ package com.sgm.navi.hmi.splitscreen;
 
 import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
@@ -12,7 +11,6 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
-import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
@@ -24,6 +22,7 @@ import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.ui.base.BaseModel;
 
@@ -112,23 +111,13 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
 
     public void showPreview() {
         Logger.i(TAG, "showPreview");
-        mPreviewIsOnShowing = true;
-        mNaviPackage.setPreviewStatus(true);
-        mLayerPackage.setFollowMode(MAP_TYPE, false);
-        mLayerPackage.setPreviewMode(MAP_TYPE, true);
-        mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
-        mRoutePackage.showPreview(MAP_TYPE);
+        OpenApiHelper.enterPreview(MAP_TYPE);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MAP_TYPE, ImersiveStatus.TOUCH);
         mViewModel.startPreviewSchedule();
     }
 
     public void closePreview() {
-        mPreviewIsOnShowing = false;
-        mNaviPackage.setPreviewStatus(false);
-        mLayerPackage.setFollowMode(MAP_TYPE, true);
-        mLayerPackage.setPreviewMode(MAP_TYPE, false);
-        mLayerPackage.setDynamicLevelLock(MAP_TYPE, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, false);
-        mMapPackage.exitPreview(MAP_TYPE);
+        OpenApiHelper.exitPreview(MAP_TYPE);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MAP_TYPE, ImersiveStatus.IMERSIVE);
         mViewModel.stopPreviewSchedule();
     }
@@ -147,9 +136,13 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
 
     @Override
     public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus lastImersiveStatus) {
-        mImmersiveStatus = lastImersiveStatus;
-        // 更新UI状态仅当触摸态发生变化的时候
-        mViewModel.updateUiStateAfterImmersiveChanged(lastImersiveStatus);
+        if (mImmersiveStatus != lastImersiveStatus) {
+            mImmersiveStatus = lastImersiveStatus;
+            // 更新UI状态仅当触摸态发生变化的时候
+            mViewModel.updateUiStateAfterImmersiveChanged(lastImersiveStatus);
+        } else {
+            Logger.w(TAG, "onImmersiveStatusChange-状态未改变，无需处理！");
+        }
     }
 
     public void openOrCloseImmersive(boolean isOpenImmersive) {
@@ -200,5 +193,11 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     @Override
     public void onDeskBackgroundChange(FloatViewManager.DesktopMode desktopMode) {
         mViewModel.updateUiStateAfterDeskBackgroundChanged(desktopMode);
+    }
+
+    public void exitPreviewIfNeeded() {
+        if (mNaviPackage.getPreviewStatus()) {
+            closePreview();
+        }
     }
 }
