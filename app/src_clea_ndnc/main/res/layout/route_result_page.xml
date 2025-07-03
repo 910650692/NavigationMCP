@@ -267,7 +267,7 @@
             android:id="@+id/ly_secondary_poi"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_660"
+            android:layout_marginStart="@dimen/dp_570"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:clickable="true"
             android:maxWidth="@dimen/dp_1052"
