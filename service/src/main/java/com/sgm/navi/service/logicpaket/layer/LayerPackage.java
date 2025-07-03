@@ -252,6 +252,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.removeFavoriteMain(mapTypeId, poiInfoEntity);
     }
 
+    public void hideOrShowFavoriteMain(MapType mapTypeId, boolean isShow) {
+        mLayerAdapter.hideOrShowFavoriteMain(mapTypeId, isShow);
+    }
+
     public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
         mLayerAdapter.setFavoriteVisible(mapTypeId, visible);
     }

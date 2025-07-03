@@ -335,6 +335,11 @@ public class LayerAdapterImplD implements ILayerApi {
     }
 
     @Override
+    public void hideOrShowFavoriteMain(MapType mapTypeId, boolean isShow) {
+
+    }
+
+    @Override
     public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
 
     }

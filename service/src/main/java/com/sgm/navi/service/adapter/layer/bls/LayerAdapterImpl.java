@@ -477,6 +477,11 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     @Override
+    public void hideOrShowFavoriteMain(MapType mapTypeId, boolean isShow) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerUser().hideOrShowFavoriteMain(isShow);
+    }
+
+    @Override
     public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerUser().setFavoriteVisible(visible);
     }

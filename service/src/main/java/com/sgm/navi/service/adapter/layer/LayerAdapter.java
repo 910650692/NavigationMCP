@@ -369,6 +369,10 @@ public class LayerAdapter {
         mLayerApi.removeFavoriteMain(mapTypeId, poiInfoEntity);
     }
 
+    public void hideOrShowFavoriteMain(MapType mapTypeId, boolean isShow) {
+        mLayerApi.hideOrShowFavoriteMain(mapTypeId, isShow);
+    }
+
     public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
         mLayerApi.setFavoriteVisible(mapTypeId, visible);
     }

@@ -139,6 +139,11 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
         }
     }
 
+    public void hideOrShowFavoriteMain(boolean isShow){
+        getLayerUserControl().setVisible(BizUserType.BizUserTypeFavoriteMain, isShow);
+        Logger.d(TAG,"hideFavoriteToMain");
+    }
+
 //    public void cleanFavoriteToMain(){
 //        getLayerUserControl().clearAllItems(BizUserType.BizUserTypeFavoriteMain);
 //        getLayerUserControl().setVisible(BizUserType.BizUserTypeFavoriteMain,false);

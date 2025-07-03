@@ -264,6 +264,12 @@ public interface ILayerApi {
      */
     void removeFavoriteMain(MapType mapTypeId, PoiInfoEntity poiInfoEntity);
 
+    /**
+     * 显示隐藏收藏点(家、公司、普通收藏点)
+     * @param mapTypeId
+     * @param isShow
+     */
+    void hideOrShowFavoriteMain(MapType mapTypeId, boolean isShow);
 
     /**
      * 显示隐藏收藏点

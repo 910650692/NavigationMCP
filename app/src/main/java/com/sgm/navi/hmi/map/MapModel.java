@@ -914,6 +914,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onNaviStatusChange(String naviStatus) {
         mViewModel.onNaviStatusChange();
         mapModelHelp.onNaviStatusChange(naviStatus);
+        Logger.i(TAG, "onNaviStatusChange:" , naviStatus);
+        layerPackage.hideOrShowFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP, NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) || NaviStatus.NaviStatusType.CRUISE.equals(naviStatus));
         if (NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) && !mSettingPackage.getPrivacyStatus()) {
             //导航结束，判断当前隐私协议状态，如果为拒绝，退出应用
             CarModelsFeature.getInstance().exitApp();
