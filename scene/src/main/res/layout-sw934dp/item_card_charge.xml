@@ -78,7 +78,7 @@
                 android:background="@drawable/bg_common_item_block"
                 android:paddingHorizontal="@dimen/dp_12"
                 android:paddingVertical="@dimen/dp_6"
-                android:text="服务区"
+                android:text="@string/navi_along_service"
                 android:visibility="gone"
                 android:textColor="@color/common_sub_title_color"
                 android:textSize="@dimen/sp_26" />
@@ -171,7 +171,19 @@
                 android:background="@drawable/bg_common_item_block"
                 android:paddingHorizontal="@dimen/dp_12"
                 android:paddingVertical="@dimen/dp_6"
-                android:text="充足"
+                android:text="@string/chong_zu"
+                android:textColor="@color/common_title_purple_color"
+                android:textSize="@dimen/sp_26" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_sum2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_18"
+                android:background="@drawable/bg_common_item_block"
+                android:paddingHorizontal="@dimen/dp_12"
+                android:paddingVertical="@dimen/dp_6"
+                android:text="@string/chong_zu"
                 android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_26" />
         </LinearLayout>

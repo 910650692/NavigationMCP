@@ -102,6 +102,22 @@ public class CardManager {
         return false;
     }
 
+    /***
+     * 判断POI是否服务区
+     * @return true 代表是服务区
+     */
+    public boolean judgePoiIsService(final PoiInfoEntity poiInfo) {
+        if (!ConvertUtils.isNull(poiInfo)) {
+            if(!ConvertUtils.isEmpty(poiInfo.getPoiTag()) &&
+                    poiInfo.getPoiTag().contains(AppCache.getInstance().getMContext().getString(R.string.navi_along_service))){
+                return true;
+            }
+            return !ConvertUtils.isEmpty(poiInfo.getName()) &&
+                    poiInfo.getName().contains(AppCache.getInstance().getMContext().getString(R.string.navi_along_service));
+        }
+        return false;
+    }
+
     private static final class InstanceHolder {
         private static final CardManager instance = new CardManager();
     }

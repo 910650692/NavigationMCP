@@ -89,7 +89,7 @@
                 android:background="@drawable/bg_common_item_block"
                 android:paddingHorizontal="@dimen/dp_12"
                 android:paddingVertical="@dimen/dp_6"
-                android:text="服务区"
+                android:text="@string/navi_along_service"
                 android:textColor="@color/common_sub_title_color"
                 android:textSize="@dimen/sp_26"
                 android:visibility="gone" />
