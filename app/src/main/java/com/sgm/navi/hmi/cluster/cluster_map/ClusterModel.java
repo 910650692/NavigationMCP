@@ -41,8 +41,6 @@ import com.sgm.navi.ui.base.BaseModel;
 
 import com.sgm.navi.hmi.BuildConfig;
 
-import java.util.ArrayList;
-
 public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPackageCallback,
         IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback ,SettingPackage.SettingChangeCallback{
     private static final String TAG = "ClusterModel";
@@ -148,9 +146,6 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         if (mViewModel == null) return;
         if (!checkNaviInfoPanelLegal(naviETAInfo)) return;
         mViewModel.updateEta(naviETAInfo);
-        if (!TextUtils.isEmpty(naviETAInfo.getCurRouteName())) {
-            mViewModel.updateRouteName(naviETAInfo.getCurRouteName());
-        }
     }
 
     @Override

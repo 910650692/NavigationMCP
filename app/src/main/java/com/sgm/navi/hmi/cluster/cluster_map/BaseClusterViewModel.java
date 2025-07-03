@@ -13,19 +13,15 @@ import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
-import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.ui.base.BaseViewModel;
-import com.sgm.navi.ui.base.StackManager;
-import com.sgm.navi.utils.ActivityCloseManager;
-import com.sgm.navi.utils.OnCloseActivityListener;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, ClusterModel> implements OnCloseActivityListener {
+public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, ClusterModel>{
     private static final String TAG = "BaseClusterViewModel";
     public ObservableField<String> arriveTimeField; // 到达时间
     public ObservableField<String> arrivalDayField; // 到达天数
@@ -41,7 +37,6 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
     public BaseClusterViewModel(@NonNull Application application) {
         super(application);
         Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "BaseClusterViewModel initialized");
-        ActivityCloseManager.getInstance().addOnCloseListener(this);
         arriveTimeField = new ObservableField<>();
         arrivalDayField = new ObservableField<>();
         remainingMileageField = new ObservableField<>();
@@ -60,7 +55,6 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
     public void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy called");
-        ActivityCloseManager.getInstance().removeOnCloseListener(this);
         LayerPackage.getInstance().unInitLayer(mView.getMapView().provideMapTypeId());
         MapPackage.getInstance().unBindMapView(mView.getMapView());
         MapPackage.getInstance().destroyMapView(mView.getMapView().provideMapTypeId());
@@ -121,18 +115,7 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
     }
 
     public void updateNaviStatus(boolean isVisible) {
-        routeNameConstraintLayoutVisibility.set(false);
         remainingMileageConstraintLayoutVisibility.set(isVisible);
-    }
-    @Override
-    public void onClose(boolean isCluster) {
-        if (isCluster){
-            //mView.finish();
-            if (StackManager.getInstance().getCurrentActivity(MapType.CLUSTER_MAP.name()).isTaskRoot()){
-                mView.getRootView().setVisibility(GONE);
-                mView.moveTaskToBack(true);
-            }
-        }
     }
 
     public void registerClusterMap(){

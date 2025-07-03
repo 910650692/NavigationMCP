@@ -26,8 +26,10 @@ import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.view.SkinConstraintLayout;
+import com.sgm.navi.utils.ActivityCloseManager;
+import com.sgm.navi.utils.OnCloseActivityListener;
 
-public class ClusterActivity extends BaseActivity<ActivityClusterBinding, ClusterViewModel> {
+public class ClusterActivity extends BaseActivity<ActivityClusterBinding, ClusterViewModel> implements OnCloseActivityListener{
     private static final String TAG = "ClusterActivityTAG";
 
     @Override
@@ -48,6 +50,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     @Override
     public void onInitView() {
         Logger.d(TAG, "onInitView");
+        ActivityCloseManager.getInstance().addOnCloseListener(this);
         mViewModel.registerClusterMap();
         initViewTheme();
     }
@@ -63,8 +66,6 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         Logger.d(TAG, "onResume");
         getRootView().setVisibility(VISIBLE);
         mViewModel.remainingMileageConstraintLayoutVisibility.set(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING));
-        mViewModel.routeNameConstraintLayoutVisibility.set(false);
-        //initViewTheme();
     }
 
     @Override
@@ -83,6 +84,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     protected void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy");
+        ActivityCloseManager.getInstance().removeOnCloseListener(this);
     }
 
     @Override
@@ -136,5 +138,15 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         mBinding.remainingMileage.setTextColor(cluster_title_transparent_ninety);
         mBinding.remainingMileageUtil.setTextColor(cluster_unit_transparent_sixty);
         mBinding.remainingMileageConstraintLayout.setBackgroundDrawable(cluster_title_view_bg);
+    }
+
+    @Override
+    public void onClose(boolean isCluster) {
+        if (isCluster){
+            Logger.d(TAG, "ClusterActivity onClose");
+            getRootView().setVisibility(GONE);
+            //finishAndRemoveTask();
+            moveTaskToBack(true);
+        }
     }
 }

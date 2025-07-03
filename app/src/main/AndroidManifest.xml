@@ -82,7 +82,7 @@
             android:exported="true"
             android:configChanges="uiMode|locale|layoutDirection"
             android:screenOrientation="landscape"
-            android:taskAffinity=""
+            android:taskAffinity="com.sgm.navi.hmi.cluster.cluster_map"
             android:launchMode="singleInstance"
             android:theme="@style/ClusterTheme"
             android:excludeFromRecents="true">
@@ -97,9 +97,9 @@
             android:configChanges="uiMode|locale|layoutDirection"
             android:excludeFromRecents="true"
             android:exported="true"
+            android:taskAffinity="com.sgm.navi.hmi.hud"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape"
-            android:taskAffinity="">
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="com.sgm.navi.hmi.hud.HudActivity" />
                 <category android:name="android.intent.category.DEFAULT" />

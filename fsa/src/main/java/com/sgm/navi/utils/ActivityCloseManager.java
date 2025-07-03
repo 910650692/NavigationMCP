@@ -36,12 +36,12 @@ public class ActivityCloseManager {//自己的activity关闭接口方法
      */
     public void triggerClose(boolean isCluster) {
         if (!listeners.isEmpty()) {
-            Logger.d(TAG, "triggerClose: 正在触发关闭");
+            Logger.d(TAG, "triggerClose ActivityCloseManager: 正在触发关闭");
             for (OnCloseActivityListener listener : listeners) {
                 listener.onClose(isCluster);
             }
         } else {
-            Logger.w(TAG, "triggerClose: 未设置监听器");
+            Logger.w(TAG, "triggerClose ActivityCloseManager: 未设置监听器");
         }
     }
 }
