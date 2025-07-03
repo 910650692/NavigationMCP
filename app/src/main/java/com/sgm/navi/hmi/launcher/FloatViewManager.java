@@ -150,6 +150,10 @@ public class FloatViewManager {
     public void showAllCardWidgets() {
         ThreadManager.getInstance().execute(() -> {
             try {
+                if (!isNaviDeskBg()) {
+                    Logger.d(TAG, "showAllCardWidgets", "当前桌面背景不是导航桌面背景,不需要显示！");
+                    return;
+                }
                 if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
                     mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER);
                     Logger.i(TAG, "showAllCardWidgets-Success!");
@@ -163,6 +167,10 @@ public class FloatViewManager {
     public void hideAllCardWidgets(boolean isNeedStartTimer) {
         ThreadManager.getInstance().execute(() -> {
             Logger.i(TAG, "hideAllCardWidgets", isNeedStartTimer);
+            if (!isNaviDeskBg()) {
+                Logger.d(TAG, "hideAllCardWidgets", "当前桌面背景不是导航桌面背景,不需要隐藏！");
+                return;
+            }
             stopTimer();
             try {
                 if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {

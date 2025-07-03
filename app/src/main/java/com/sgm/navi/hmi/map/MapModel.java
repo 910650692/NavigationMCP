@@ -373,6 +373,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         StartService.getInstance().unregisterSdkCallback(this);
         setPackageAfterSdkInit();
         mViewModel.setSdkInitStatus(true);
+        FloatViewManager.getInstance().showAllCardWidgets();
     }
 
     @Override
@@ -465,6 +466,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     @Override
                     public void onExit() {
                         StackManager.getInstance().exitApp();
+                        FloatViewManager.getInstance().showAllCardWidgets();
                     }
                 });
         startupExceptionDialog.show();

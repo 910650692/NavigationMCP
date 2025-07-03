@@ -253,9 +253,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             @Override
             public void onCancelClick() {
                 StackManager.getInstance().exitApp();
+                FloatViewManager.getInstance().showAllCardWidgets();
             }
         });
         reminderDialog.show();
+        FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 
     /**
