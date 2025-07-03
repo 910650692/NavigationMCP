@@ -621,17 +621,28 @@ public final class SearchResultMapper {
      */
     public SearchResultEntity mapFromGeoSearchResult(final SearchRequestParameter requestParameterBuilder, final SearchNearestResult result) {
         final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
-
+        final GeoPoint poiPoint = new GeoPoint(requestParameterBuilder.getPoiLoc().getLon(), requestParameterBuilder.getPoiLoc().getLat());
+        searchResultEntity.setPoiType(result.iPoiType);
         if (result.poi_list == null || result.poi_list.isEmpty()) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "GeoSearchResult poi_list is empty.");
             searchResultEntity.setPoiList(Collections.emptyList());
             searchResultEntity.setSearchType(AutoMapConstant.SearchType.GEO_SEARCH);
+            PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+            poiInfoEntity.setPoint(poiPoint)
+                    .setName(result.desc)
+                    .setAddress(result.pos);
+            if (ConvertUtils.equals("基础功能包", result.pos) || ConvertUtils.isEmpty(result.pos)) {
+                poiInfoEntity.setAddress(result.city);
+            }
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "GeoSearchResult desc: " + result.desc
+                    + " ,pos: " + result.pos
+                    + " ,city: " + result.city);
+            searchResultEntity.setPoiList(Collections.singletonList(poiInfoEntity));
             return searchResultEntity;
         }
-        searchResultEntity.setPoiType(result.iPoiType);
+
         // 获取第一个 POI 信息
         final NearestPoi poiItem = result.poi_list.get(0);
-        final GeoPoint poiPoint = new GeoPoint(requestParameterBuilder.getPoiLoc().getLon(), requestParameterBuilder.getPoiLoc().getLat());
 
         // 构建 CityInfo
         final CityInfo cityInfo = buildCityInfo(result, poiPoint);
