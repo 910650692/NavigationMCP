@@ -431,6 +431,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchTextBarView.searchBarTextView.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setupSearchActions: " + mSearchType);
             if (mSearchType == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
+                // 筛选页退出不直接返回上一级
+                if(mIsFilterViewShow){
+                    return;
+                }
                 if (mIsOpenFromNavi) {
                     mScreenViewModel.closeSearchOpenFromNavi();
                 } else {
