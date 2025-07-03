@@ -1283,6 +1283,12 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        mViewModel.cancelTimer();
+    }
+
     /***
      * 算路请求弹框展示
      */
