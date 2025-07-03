@@ -32,11 +32,12 @@
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_num"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_46"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_25"
+                android:layout_marginStart="@dimen/dp_7"
                 android:gravity="center"
-                android:minWidth="@dimen/dp_30"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:text="@{layoutPosition}"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_26"
