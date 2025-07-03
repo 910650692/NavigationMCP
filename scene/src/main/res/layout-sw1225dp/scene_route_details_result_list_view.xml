@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:ellipsize="end"
-            android:maxWidth="@dimen/dp_533"
+            android:maxWidth="@dimen/dp_445"
             android:maxLines="1"
             android:textColor="@color/floating_search_item_night"
             android:textSize="@dimen/sp_29"
