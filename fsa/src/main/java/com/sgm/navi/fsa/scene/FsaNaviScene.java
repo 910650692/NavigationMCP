@@ -72,7 +72,8 @@ public final class FsaNaviScene {
     private LaneLineInfo mLaneLineInfo;
     private float mDrivePercent;
     private float mCurrentSpeed;
-
+    private int mRoadSpeed = 0;
+    private int mCameraSpeed = 0;
     public static FsaNaviScene getInstance() {
         return FsaNaviSceneHolder.INSTANCE;
     }
@@ -290,11 +291,10 @@ public final class FsaNaviScene {
             fsaService.sendEvent(FsaConstant.FsaFunction.ID_FORWARD_CAMERA, GsonUtils.toJson(cameraList));
         }
 
+        //这里判断一下速度
         final SpeedLimitSignData speedLimitSignData = new SpeedLimitSignData();
-        speedLimitSignData.setSpeedLimit(cameraInfo.getSpeed());
-        speedLimitSignData.setAssured(true);
-        speedLimitSignData.setMapMatch(cameraInfo.isMatch());
-        fsaService.sendEvent(FsaConstant.FsaFunction.ID_WHOLE_SPEED_LIMIT, GsonUtils.toJson(speedLimitSignData));
+        mCameraSpeed = speedLimitSignData.getSpeedLimit();
+        sendMinSpeedLimit(fsaService,"CAMERA");
     }
 
     /**
@@ -890,10 +890,37 @@ public final class FsaNaviScene {
      * @param speed      int
      */
     public void updateSpeedLimitSignData(final MyFsaService fsaService, final int speed) {
+        mRoadSpeed = speed;
+        sendMinSpeedLimit(fsaService,"ROAD");
+    }
+    private SpeedLimitSignData speedLimitSignData;
+    private void sendMinSpeedLimit(final MyFsaService fsaService,String  tag) {
+        int sendSpeed = 0;
+        if (mRoadSpeed > 0 && mCameraSpeed > 0) {
+            sendSpeed = Math.min(mRoadSpeed, mCameraSpeed);
+        } else if (mRoadSpeed >= 0) {
+            sendSpeed = mRoadSpeed;
+        } else if (mCameraSpeed >= 0) {
+            sendSpeed = mCameraSpeed;
+        } else {
+            // 两个值都无效，发送限速无效标识
+            sendSpeed = 0;
+        }
         final SpeedLimitSignData speedLimitSignData = new SpeedLimitSignData();
-        speedLimitSignData.setSpeedLimit(speed);
+        speedLimitSignData.setSpeedLimit(sendSpeed);
+        Logger.d("|||限速：" + sendSpeed + "  摄像头：" + mCameraSpeed);
         speedLimitSignData.setAssured(true);
-        speedLimitSignData.setMapMatch(false);
+        if (tag.equals("CAMERA")){
+            speedLimitSignData.setMapMatch(speedLimitSignData.isMapMatch());
+        }else if (tag.equals("ROAD")){
+            speedLimitSignData.setMapMatch(false);
+        }
+        if (speedLimitSignData.equals(this.speedLimitSignData)){
+            Logger.d("|||限速数据未改变");
+            return;
+        }
+        this.speedLimitSignData = speedLimitSignData;
+        Logger.d("SpeedLimitSignData" , speedLimitSignData.toString());
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_WHOLE_SPEED_LIMIT, GsonUtils.toJson(speedLimitSignData));
     }
 

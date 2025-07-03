@@ -1,5 +1,9 @@
 package com.sgm.navi.fsa.bean;
 
+import androidx.annotation.Nullable;
+
+import java.util.Objects;
+
 public class SpeedLimitSignData {
     private boolean isMapMatch;
     private boolean isAssured;
@@ -45,5 +49,18 @@ public class SpeedLimitSignData {
                 ", isAssured=" + isAssured +
                 ", speedLimit=" + speedLimit +
                 '}';
+    }
+
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj){
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()){
+            return false;
+        }
+        SpeedLimitSignData other = (SpeedLimitSignData) obj;
+        return Objects.equals(isMapMatch, other.isMapMatch)  && Objects.equals(isAssured, other.isAssured) && Objects.equals(speedLimit, other.speedLimit);
     }
 }
