@@ -505,12 +505,13 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     private void showViaIcon(final View view,
                              final SceneCommonStruct.TmcViaPointType tmcViaPointType,
                              final int viaY) {
-        if (view instanceof SkinTextView stv) {
-            if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaPointType
-                    && !CalibConst.Model.NDLB.equals(CalibrationPackage.getInstance().modelName())) {//todo flavor temp
-                stv.setText(getContext().getText(R.string.navi_via_item_pass));
-            } else if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaChargeType) {
-                stv.setText(getContext().getText(R.string.navi_via_item_charge));
+        if (!CalibConst.Model.NDLB.equals(CalibrationPackage.getInstance().modelName())) {
+            if (view instanceof SkinTextView stv) {
+                if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaPointType) {//todo flavor temp
+                    stv.setText(getContext().getText(R.string.navi_via_item_pass));
+                } else if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaChargeType) {
+                    stv.setText(getContext().getText(R.string.navi_via_item_charge));
+                }
             }
         }
         NaviUiUtil.showView(view);
