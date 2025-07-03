@@ -152,7 +152,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 resultHolder.resultItemBinding.sllCollect.setVisibility(View.INVISIBLE);
                 resultHolder.resultItemBinding.searchIcon.setVisibility(View.VISIBLE);
                 resultHolder.resultItemBinding.poiIcon.setVisibility(View.GONE);
-                resultHolder.resultItemBinding.stvDelete.setVisibility(View.GONE);
+                resultHolder.resultItemBinding.stvDelete.setVisibility(View.VISIBLE);
                 resultHolder.resultItemBinding.searchIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.search_poi_icon));
             } else {
                 if (mIsShowIndex) {
