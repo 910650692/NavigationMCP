@@ -1413,6 +1413,18 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                         }
                     }
                     break;
+                case MotionEvent.ACTION_MOVE:
+                    float moveX = touchEvent.getX();
+                    float moveY = touchEvent.getY();
+                    float distance = (float) Math.hypot(moveX - mDownX, moveY - mDownY);
+                    if (distance > MOVE_THRESHOLD) {
+                        // 认为是滑动操作
+                        if (mViewModel != null) {
+                            mViewModel.onMapSwipe();
+                        }
+                    }
+                default:
+                    break;
             }
         }
     }

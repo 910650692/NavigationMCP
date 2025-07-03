@@ -256,4 +256,13 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
             mScreenViewModel.switchBroadcastMode(broadcastMode);
         }
     }
+
+    public void updateSceneVisible(boolean b) {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.notifySceneStateChange(b);
+            if (mISceneCallback != null) {
+                mISceneCallback.skipNaviControlScene();
+            }
+        }
+    }
 }

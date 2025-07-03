@@ -898,6 +898,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                 mSceneNaviViaListView.getVisibility() == VISIBLE) {
             mSceneNaviViaListView.updateSceneVisible(false);
         }
+        if (mSceneNaviControlMoreView != null &&
+                mSceneNaviControlMoreView.getVisibility() == VISIBLE) {
+            mSceneNaviControlMoreView.updateSceneVisible(false);
+        }
     }
 
     public void onNaviInfoByViaArrived(NaviEtaInfo naviEtaInfo) {
@@ -916,5 +920,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         }
         mBinding.sceneNaviSclTop.setClickable(isClickable);
         mBinding.sceneNaviSclTop.setEnabled(isClickable);
+    }
+
+    public void onMapSwipe() {
+        if (mSceneNaviControlMoreView != null &&
+                mSceneNaviControlMoreView.getVisibility() == VISIBLE) {
+            mSceneNaviControlMoreView.updateSceneVisible(false);
+        }
     }
 }

@@ -844,4 +844,10 @@ public class BaseNaviGuidanceViewModel extends
         }
         return false;
     }
+
+    public void onMapSwipe() {
+        if (mView != null) {
+            mView.onMapSwipe();
+        }
+    }
 }
