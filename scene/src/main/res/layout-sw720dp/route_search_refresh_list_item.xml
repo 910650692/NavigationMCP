@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+        <variable
+            name="model"
+            type="com.sgm.navi.service.define.route.RouteLineInfo" />
+
+        <variable
+            name="holder"
+            type="com.sgm.navi.scene.ui.adapter.RouteSearchRefreshAdapter.Holder" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_545"
+        android:layout_height="wrap_content">
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/item_root_view_service"
+            android:layout_width="@dimen/dp_545"
+            android:layout_height="@dimen/dp_134"
+            android:paddingStart="@dimen/dp_26"
+            android:paddingEnd="@dimen/dp_26"
+            tools:visibility="visible">
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/route_item_service_num"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="10"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_26"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/route_item_service_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_26"
+                android:layout_marginTop="@dimen/dp_27"
+                android:ellipsize="end"
+                android:maxWidth="@dimen/dp_380"
+                android:maxLines="1"
+                android:textColor="@color/floating_search_item_night"
+                android:textSize="@dimen/sp_29"
+                app:layout_constraintStart_toEndOf="@+id/route_item_service_num"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="临港服务区临港服务区临港服务区临港服务区临港服务区" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/route_item_service_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_27"
+                android:ellipsize="end"
+                android:maxWidth="@dimen/dp_390"
+                android:maxLines="1"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/route_item_service_name"
+                tools:text="198km | 临港服务区临港服务区临港服务区临港服务区临港服务区" />
+
+            <com.sgm.navi.ui.view.SkinView
+                android:id="@+id/route_item_service_add_bg"
+                android:layout_width="@dimen/dp_77"
+                android:layout_height="@dimen/dp_90"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/route_item_service_add_img"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:src="@drawable/img_route_search_add"
+                app:layout_constraintEnd_toEndOf="@+id/route_item_service_add_bg"
+                app:layout_constraintStart_toStartOf="@+id/route_item_service_add_bg"
+                app:layout_constraintTop_toTopOf="@+id/route_item_service_add_bg" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/route_item_service_add_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="@+id/route_item_service_add_bg"
+                app:layout_constraintEnd_toEndOf="@+id/route_item_service_add_bg"
+                app:layout_constraintStart_toStartOf="@+id/route_item_service_add_bg"
+                tools:text="已添加" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+</layout>

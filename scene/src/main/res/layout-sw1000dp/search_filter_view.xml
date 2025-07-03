@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/search_filter_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.sgm.navi.ui.view.SkinScrollView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_550"
+            android:layout_marginTop="@dimen/dp_34"
+            android:layout_marginBottom="@dimen/dp_134"
+            android:paddingHorizontal="@dimen/dp_34"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/search_filter_title1"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/search_color_ffffff"
+                    android:textSize="@dimen/sp_29"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="位置距离" />
+
+                <com.sgm.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/search_filter_list1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_title1"
+                    app:layout_goneMarginTop="@dimen/dp_40" />
+
+                <com.sgm.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/search_filter_list1_child"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list1" />
+
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/search_filter_title2"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_26"
+                    android:maxLines="1"
+                    android:textColor="@color/search_color_ffffff"
+                    android:textSize="@dimen/sp_29"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list1_child"
+                    tools:text="全部分类" />
+
+                <com.sgm.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/search_filter_list2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_title2"
+                    app:layout_goneMarginTop="@dimen/dp_40" />
+
+                <com.sgm.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/search_filter_list2_child"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list2" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/search_filter_title3"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_26"
+                    android:maxLines="1"
+                    android:textColor="@color/search_color_ffffff"
+                    android:textSize="@dimen/sp_29"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list2_child"
+                    tools:text="推荐排序" />
+
+                <com.sgm.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/search_filter_list3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_title3"
+                    app:layout_goneMarginTop="@dimen/dp_40" />
+
+                <com.sgm.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/search_filter_list3_child"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list3" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/search_filter_title4"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_26"
+                    android:maxLines="1"
+                    android:textColor="@color/search_color_ffffff"
+                    android:textSize="@dimen/sp_29"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list3_child"
+                    tools:text="更多" />
+
+                <com.sgm.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/search_filter_list4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_title4"
+                    app:layout_goneMarginTop="@dimen/dp_40" />
+
+                <com.sgm.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/search_filter_list4_child"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list4" />
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        </com.sgm.navi.ui.view.SkinScrollView>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/search_filter_confirm"
+            android:layout_width="@dimen/dp_228"
+            android:layout_height="@dimen/dp_77"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_26"
+            android:layout_marginBottom="@dimen/dp_34"
+            android:background="@drawable/bg_confirm"
+            android:gravity="center"
+            android:text="@string/dsc_confirm"
+            android:textColor="@color/search_main_tab_bg_fff"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/search_filter_cancel"
+            android:layout_width="@dimen/dp_228"
+            android:layout_height="@dimen/dp_77"
+            android:layout_marginTop="@dimen/dp_26"
+            android:layout_marginEnd="@dimen/dp_34"
+            android:layout_marginBottom="@dimen/dp_34"
+            android:background="@drawable/bg_cancel"
+            android:gravity="center"
+            android:text="@string/dsc_reset"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

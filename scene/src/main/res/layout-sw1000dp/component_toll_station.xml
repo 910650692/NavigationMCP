@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@drawable/bg_navi_toll_station_first"
+    tools:layout_height="@dimen/dp_180"
+    tools:layout_width="@dimen/dp_800">
+
+    <com.sgm.navi.ui.view.SkinImageView
+        android:id="@+id/siv_toll_icon"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_24"
+        android:src="@drawable/img_toll_station"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.sgm.navi.ui.view.SkinTextView
+        android:id="@+id/stv_toll_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_6"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:text="枫泾收费站"
+        android:textColor="@color/navi_color_FFFFFF_100"
+        android:textSize="@dimen/sp_38"
+        app:layout_constraintBottom_toBottomOf="@id/siv_toll_icon"
+        app:layout_constraintStart_toEndOf="@id/siv_toll_icon"
+        app:layout_constraintTop_toTopOf="@id/siv_toll_icon" />
+
+    <com.sgm.navi.ui.view.SkinTextView
+        android:id="@+id/stv_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_18"
+        android:includeFontPadding="false"
+        android:text="28公里"
+        android:textColor="@color/navi_color_FFFFFF_80"
+        android:textSize="@dimen/sp_38"
+        app:layout_constraintStart_toStartOf="@id/siv_toll_icon"
+        app:layout_constraintTop_toBottomOf="@id/siv_toll_icon" />
+
+    <com.sgm.navi.ui.view.SkinImageView
+        android:id="@+id/siv_toll_icon_etc"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_marginStart="@dimen/dp_2"
+        android:src="@drawable/img_toll_station_etc"
+        app:layout_constraintBottom_toBottomOf="@id/stv_distance"
+        app:layout_constraintStart_toEndOf="@id/stv_distance"
+        app:layout_constraintTop_toTopOf="@id/stv_distance" />
+
+    <com.sgm.navi.ui.view.SkinImageView
+        android:id="@+id/siv_toll_icon_zf"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:src="@drawable/img_toll_station_zf"
+        app:layout_constraintBottom_toBottomOf="@id/siv_toll_icon_etc"
+        app:layout_constraintStart_toEndOf="@id/siv_toll_icon_etc"
+        app:layout_constraintTop_toTopOf="@id/siv_toll_icon_etc" />
+
+    <com.sgm.navi.ui.view.SkinImageView
+        android:id="@+id/siv_toll_icon_pss"
+        android:layout_width="@dimen/dp_46"
+        android:layout_height="@dimen/dp_46"
+        android:layout_marginTop="@dimen/dp_28"
+        android:layout_marginEnd="@dimen/dp_28"
+        android:src="@drawable/img_navi_sapa_pass"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</com.sgm.navi.ui.view.SkinConstraintLayout>

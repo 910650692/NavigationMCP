@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_search_top_view"
+        android:layout_width="@dimen/dp_545"
+        android:layout_height="@dimen/dp_95"
+        android:background="@drawable/bg_search_main_tab">
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/iv_close"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:src="@drawable/img_back_58"
+            android:layout_marginStart="@dimen/dp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinEditText
+            android:id="@+id/search_bar_edit_view"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:background="@null"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="@string/offline_search_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="0dp"
+            android:textColor="@color/search_deep_text_day"
+            android:textColorHint="@color/search_shallow_text_day"
+            android:textCursorDrawable="@drawable/cursor_color"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_edit_clear"
+            app:layout_constraintStart_toEndOf="@+id/iv_close"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠">
+
+            <requestFocus />
+        </com.sgm.navi.ui.view.SkinEditText>
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/iv_edit_clear"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginEnd="@dimen/dp_22"
+            android:src="@drawable/img_off58"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

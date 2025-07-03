@@ -349,8 +349,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (mViewModel.isSupportSplitScreen()) {
             Logger.d("screen_change_used", newConfig.screenWidthDp);
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
-            //todo 暂时禁止，待分屏成功时放开，做1/3屏UI适配时开发自己打开
-            //setSplitFragment();
+            setSplitFragment();
         }
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);

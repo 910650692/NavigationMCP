@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="holder"
+            type="com.sgm.navi.scene.ui.adapter.FilterChildListAdapter.Holder" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/charge_station_root"
+        android:layout_width="@dimen/dp_272"
+        android:layout_height="@dimen/dp_182"
+        android:background="@drawable/bg_charge_item">
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/charge_station_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:gravity="center"
+            android:textColor="@color/search_color_ffffff"
+            android:textSize="@dimen/sp_34"
+            app:layout_constraintEnd_toStartOf="@+id/charge_station_detail"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="车位号:A34" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/charge_station_detail"
+            android:layout_width="@dimen/dp_42"
+            android:layout_height="@dimen/dp_42"
+            android:background="@drawable/img_under_the_48"
+            app:layout_constraintBottom_toBottomOf="@+id/charge_station_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/charge_station_title"
+            app:layout_constraintTop_toTopOf="@+id/charge_station_title" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/charge_station_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/bg_favorite_top"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingEnd="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_5"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintEnd_toStartOf="@+id/charge_station_status"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/charge_station_title"
+            tools:text="快" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/charge_station_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/bg_favorite_top"
+            android:paddingStart="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingEnd="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_5"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/charge_station_type"
+            app:layout_constraintTop_toBottomOf="@+id/charge_station_title"
+            tools:text="已约" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/charge_station_appointment"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_52"
+            android:background="@drawable/bg_charge_text"
+            android:gravity="center"
+            android:text="@string/charge_appointment"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/charge_station_unlock"
+            android:layout_width="@dimen/dp_124"
+            android:layout_height="@dimen/dp_52"
+            android:background="@drawable/bg_charge_unlock"
+            android:gravity="center"
+            android:text="@string/charge_unlock"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="gone" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/charge_station_cancel"
+            android:layout_width="@dimen/dp_148"
+            android:layout_height="@dimen/dp_52"
+            android:background="@drawable/bg_charge_cancel"
+            android:gravity="center"
+            android:text="@string/charge_cancel_appointment"
+            android:textColor="@color/text_route_defult"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/charge_station_unlock"
+            tools:visibility="gone" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/charge_station_detail_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_103"
+            android:layout_marginTop="@dimen/dp_13"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/charge_station_title">
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_103">
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/charge_station_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="设备号:xxxxxxx" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/charge_station_equip_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/charge_station_id"
+                    tools:text="直流设备:国标211" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/charge_station_power_current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/charge_station_equip_type"
+                    tools:text="150KW/250A" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/charge_station_volt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/charge_station_power_current"
+                    tools:text="200V-750V" />
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ScenePoiDetailContentView"
+            type="com.sgm.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/poi_service_area_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:id="@+id/poi_sub_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/route_line_color" />
+
+        <com.sgm.navi.ui.view.SkinRecyclerView
+            android:id="@+id/poi_service_area_facility"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            app:layout_constraintTop_toBottomOf="@+id/poi_sub_line"
+            android:layout_marginTop="@dimen/dp_25"
+            android:background="@drawable/bg_charge_appointment"/>
+
+        <com.sgm.navi.ui.view.SkinLinearLayout
+            android:id="@+id/poi_service_area_oil"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_44"
+            android:paddingEnd="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_24"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_service_area_facility"
+            android:background="@drawable/bg_charge_appointment">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/poi_service_area_img_gas_station"
+                android:layout_width="@dimen/dp_27"
+                android:layout_height="@dimen/dp_27"
+                android:layout_marginStart="@dimen/dp_8"
+                android:src="@mipmap/img_gas_station" />
+
+            <com.sgm.navi.ui.view.SkinRecyclerView
+                android:id="@+id/route_poidetail_gas_station"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_44"
+                android:layout_marginStart="@dimen/dp_28"/>
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+
+        <com.sgm.navi.ui.view.SkinLinearLayout
+            android:id="@+id/poi_service_area_hours_layout"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_service_area_oil">
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_service_area_hours"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_26"
+                android:text="营业时间: 09:00 -- 21:00"/>
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/poi_business_icon"
+                android:layout_width="@dimen/dp_38"
+                android:layout_height="@dimen/dp_38"
+                android:visibility="gone"
+                android:src="@drawable/img_under_the_48" />
+
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/poi_service_area_phone"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_service_area_hours_layout"
+            tools:text="电        话: 021-888888" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/poi_phone_icon"
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"
+            android:visibility="gone"
+            android:src="@drawable/img_under_the_48"
+            app:layout_constraintStart_toEndOf="@+id/poi_service_area_phone"
+            app:layout_constraintTop_toTopOf="@+id/poi_service_area_phone"/>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

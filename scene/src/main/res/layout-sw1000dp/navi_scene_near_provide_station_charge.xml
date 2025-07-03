@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <com.sgm.navi.ui.view.SwipeDeleteLayout
+        android:id="@+id/swipeDeleteView"
+        android:layout_width="@dimen/dp_545"
+        android:layout_height="@dimen/dp_89"
+        android:background="@drawable/bg_scene_charge_tip"
+        android:clickable="true">
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/cl_charge_expand"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+                <View
+                    android:id="@+id/view_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_icon"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:src="@drawable/img_electricity_low_74"
+                    app:layout_constraintBottom_toBottomOf="@id/view_bg"
+                    app:layout_constraintStart_toStartOf="@id/view_bg"
+                    app:layout_constraintTop_toTopOf="@id/view_bg" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="@dimen/dp_350"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/traffic_title_color"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintStart_toEndOf="@id/iv_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/layout_charge_desc"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="国家电网务区充电站充电充电…" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_sub_title"
+                    android:layout_width="@dimen/dp_80"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:layout_marginEnd="@dimen/dp_7"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/traffic_title_color"
+                    android:textSize="@dimen/sp_22"
+                    android:text="@string/navi_along_service"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/iv_icon"
+                    tools:text="服务区" />
+
+                <include
+                    android:id="@+id/layout_charge_desc"
+                    layout="@layout/layout_scene_charge_station_desc"
+                    android:layout_width="@dimen/dp_350"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_sub_title" />
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_navi_icon"
+                    android:layout_width="@dimen/dp_36"
+                    android:layout_height="@dimen/dp_36"
+                    android:src="@drawable/img_navigation_black_58"
+                    app:layout_constraintBottom_toTopOf="@id/tv_distance"
+                    app:layout_constraintEnd_toEndOf="@id/tv_distance"
+                    app:layout_constraintStart_toStartOf="@id/tv_distance"
+                    app:layout_constraintTop_toTopOf="@id/view_bg"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:layout_marginEnd="@dimen/dp_26"
+                    android:minWidth="@dimen/dp_88"
+                    android:textColor="@color/traffic_sub_title_color"
+                    android:textSize="@dimen/sp_22"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@id/view_bg"
+                    app:layout_constraintEnd_toEndOf="@id/view_bg"
+                    app:layout_constraintTop_toBottomOf="@id/iv_navi_icon"
+                    tools:text="7.2公里" />
+
+                <View
+                    android:id="@+id/view_navi_now"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_distance"
+                    app:layout_constraintEnd_toEndOf="@id/tv_distance"
+                    app:layout_constraintStart_toStartOf="@id/tv_distance"
+                    app:layout_constraintTop_toTopOf="@id/iv_navi_icon" />
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/cl_charge_unexpand"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_icon_unexpand"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:src="@drawable/img_electricity_low_74"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_title_unexpand"
+                    android:layout_width="@dimen/dp_350"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_7"
+                    android:layout_marginBottom="@dimen/dp_18"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/traffic_title_color"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintStart_toEndOf="@id/iv_icon_unexpand"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:text="国家电网务区充电站充电充电…" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_sub_title_unexpand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_14"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/traffic_title_color"
+                    android:textSize="@dimen/sp_22"
+                    android:visibility="gone"
+                    android:text="@string/navi_along_service"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_title_unexpand"
+                    tools:text="服务区" />
+
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        <include layout="@layout/handup_delete_view" />
+
+    </com.sgm.navi.ui.view.SwipeDeleteLayout>
+</layout>

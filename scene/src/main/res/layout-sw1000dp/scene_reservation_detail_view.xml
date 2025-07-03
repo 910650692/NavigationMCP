@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ScenePoiChargingStationReservationView"
+            type="com.sgm.navi.scene.impl.poi.ScenePoiChargingStationReservationViewImpl" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_640"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_poi_main_tab"
+        android:maxHeight="@dimen/dp_714"
+        android:paddingBottom="@dimen/dp_40">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/dp_40" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_end="@dimen/dp_40" />
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_type_text"
+                android:layout_width="@dimen/dp_88"
+                android:layout_height="@dimen/dp_46"
+                android:background="@drawable/custom_info_bg_selector_day"
+                android:gravity="center"
+                android:text="@string/cooperate"
+                android:textColor="@color/navi_color_2461EA_100"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sk_poi_name" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/sk_poi_name"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_40"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/poi_details_bottom_ff_00"
+                android:textSize="@dimen/sp_42"
+                app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
+                app:layout_constraintStart_toEndOf="@+id/poi_type_text"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/poi_type_icon"
+                clickCommand="@{ScenePoiChargingStationReservationView.closeFragment}"
+                android:layout_width="@dimen/dp_68"
+                android:layout_height="@dimen/dp_68"
+                android:src="@drawable/icon_poi_details_close"
+                app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/sk_poi_name" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_second_address"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:maxLines="2"
+                android:textColor="@color/search_top_line_view_99383839"
+                android:textSize="@dimen/sp_36"
+                app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+                app:layout_constraintStart_toStartOf="@+id/start_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/sk_poi_name"
+                tools:text="世纪大道1号" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_distance_time"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:maxLines="2"
+                android:textColor="@color/poi_details_bottom_ff_00"
+                android:textSize="@dimen/sp_34"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
+                tools:text="5.2公里   30分钟" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_arrival_capacity"
+                android:layout_width="@dimen/dp_42"
+                android:layout_height="@dimen/dp_42"
+                android:src="@drawable/img_electricity_medium_48"
+                app:layout_constraintBottom_toBottomOf="@+id/poi_arrival_capacity"
+                app:layout_constraintEnd_toStartOf="@+id/poi_arrival_capacity"
+                app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
+                app:layout_constraintTop_toTopOf="@+id/poi_arrival_capacity" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_arrival_capacity"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:maxLines="1"
+                android:textColor="@color/poi_details_bottom_ff_00"
+                android:textSize="@dimen/sp_34"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
+                tools:text="15%到达" />
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/charge_reservation_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_30"
+                android:paddingBottom="@dimen/dp_16"
+                android:background="@drawable/bg_charge_price_item"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/poi_distance_time">
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/charge_station_type"
+                    android:layout_width="@dimen/dp_46"
+                    android:layout_height="@dimen/dp_45"
+                    android:textSize="@dimen/sp_26"
+                    android:gravity="center"
+                    android:background="@drawable/bg_favorite_top"
+                    android:textColor="@color/route_cricle_dot_gerrn_color"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginStart="@dimen/dp_26"
+                    android:layout_marginTop="@dimen/dp_21"
+                    tools:text="快"/>
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/charge_station_status"
+                    android:layout_width="@dimen/dp_76"
+                    android:layout_height="@dimen/dp_45"
+                    android:textSize="@dimen/sp_26"
+                    android:gravity="center"
+                    android:background="@drawable/bg_favorite_top"
+                    android:textColor="@color/bg_route_big_window_select"
+                    app:layout_constraintStart_toEndOf="@+id/charge_station_type"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginStart="@dimen/dp_26"
+                    android:layout_marginTop="@dimen/dp_21"
+                    tools:text="已约"/>
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/charge_station_device_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_45"
+                    android:textSize="@dimen/sp_34"
+                    android:gravity="center"
+                    android:textColor="@color/search_color_ffffff"
+                    app:layout_constraintStart_toEndOf="@+id/charge_station_status"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginStart="@dimen/dp_26"
+                    android:layout_marginTop="@dimen/dp_21"
+                    tools:text="大雨停车场"/>
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/charge_station_left_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_45"
+                    android:textSize="@dimen/sp_26"
+                    android:gravity="center"
+                    android:textColor="@color/text_route_defult"
+                    app:layout_constraintStart_toStartOf="@+id/charge_station_type"
+                    app:layout_constraintTop_toBottomOf="@+id/charge_station_device_name"
+                    android:layout_marginTop="@dimen/dp_16"
+                    tools:text="预约剩余时间：28分钟 "/>
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/charge_station_device_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_45"
+                    android:textSize="@dimen/sp_26"
+                    android:gravity="center"
+                    android:textColor="@color/text_route_defult"
+                    app:layout_constraintStart_toStartOf="@+id/charge_station_type"
+                    app:layout_constraintTop_toBottomOf="@+id/charge_station_left_time"
+                    android:layout_marginTop="@dimen/dp_16"
+                    tools:text="设备编号：x x x x x x x x x"/>
+
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_charge_unlock"
+                android:layout_width="@dimen/dp_275"
+                android:layout_height="@dimen/dp_90"
+                android:text="@string/charge_unlock"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_30"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/dp_40"
+                android:background="@drawable/bg_details_bottom_go_here"
+                app:layout_constraintTop_toBottomOf="@+id/charge_reservation_detail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_goneMarginStart="@dimen/dp_0" />
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/poi_cancel_reservation"
+                android:layout_width="@dimen/dp_150"
+                android:layout_height="@dimen/dp_106"
+                android:minWidth="@dimen/dp_90"
+                android:layout_marginStart="@dimen/dp_16"
+                app:layout_constraintTop_toTopOf="@+id/poi_charge_unlock"
+                app:layout_constraintBottom_toBottomOf="@+id/poi_charge_unlock"
+                app:layout_constraintStart_toEndOf="@+id/poi_charge_unlock">
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/poi_cancel_img"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:src="@drawable/icon_poi_details_close"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_cancel_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/charge_cancel_appointment"
+                    android:textColor="@color/poi_details_bottom_icon"
+                    android:textSize="@dimen/sp_30"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/poi_go_here"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/dp_106"
+                android:minWidth="@dimen/dp_90"
+                android:layout_marginStart="@dimen/dp_16"
+                app:layout_constraintTop_toTopOf="@+id/poi_charge_unlock"
+                app:layout_constraintBottom_toBottomOf="@+id/poi_charge_unlock"
+                app:layout_constraintStart_toEndOf="@+id/poi_cancel_reservation">
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_phone"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:src="@drawable/img_navigation_solid_slected_58"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/st_go_here"
+                    android:textColor="@color/poi_details_bottom_icon"
+                    android:textSize="@dimen/sp_30"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

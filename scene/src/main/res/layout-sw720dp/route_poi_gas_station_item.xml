@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="holder"
+            type="com.sgm.navi.scene.ui.adapter.RoutePOIGasStationAdapter.Holder" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinLinearLayout
+        android:id="@+id/item_root_view"
+        android:layout_width="wrap_content"
+        android:minWidth="@dimen/dp_77"
+        android:layout_height="@dimen/dp_55"
+        android:gravity="center">
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/poi_service_area_gas_oil_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/oil_type_98"
+            android:textSize="@dimen/sp_32"
+            android:textColor="@color/text_route_defult"
+            />
+
+    </com.sgm.navi.ui.view.SkinLinearLayout>
+</layout>

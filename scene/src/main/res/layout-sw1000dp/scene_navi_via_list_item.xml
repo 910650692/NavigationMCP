@@ -1,0 +1,174 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.sgm.navi.service.define.navi.NaviViaEntity" />
+
+        <variable
+            name="viaBean"
+            type="com.sgm.navi.service.define.navi.NaviViaEntity" />
+
+        <variable
+            name="holder"
+            type="com.sgm.navi.scene.ui.adapter.NaviViaListAdapter.ResultHolder" />
+
+    </data>
+
+    <com.sgm.navi.ui.view.SwipeMenuLayout
+        android:id="@+id/swipe_menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_124"
+        android:orientation="horizontal">
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/cl_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/dp_27">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="@dimen/dp_40" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_add_via_icon"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:background="@drawable/img_navi_via_item_btn_pass"
+                android:gravity="center"
+                android:text="@string/navi_via_item_pass"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/sp_22"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_add_via_elec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="60%"
+                android:textColor="@color/navi_color_000000_100"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="@id/gl_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/gl_name" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_add_via_elec"
+                android:layout_width="@dimen/dp_31"
+                android:layout_height="@dimen/dp_31"
+                android:src="@drawable/img_electricity_medium_42"
+                app:layout_constraintBottom_toBottomOf="@id/stv_add_via_elec"
+                app:layout_constraintEnd_toStartOf="@id/stv_add_via_elec"
+                app:layout_constraintTop_toTopOf="@id/stv_add_via_elec" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_add_via_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_27"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp_5"
+                android:singleLine="true"
+                android:textColor="@color/navi_color_000000_100"
+                android:textSize="@dimen/sp_29"
+                app:layout_constraintBottom_toBottomOf="@id/gl_name"
+                app:layout_constraintEnd_toStartOf="@id/siv_add_via_elec"
+                app:layout_constraintStart_toEndOf="@id/stv_add_via_icon"
+                app:layout_constraintTop_toTopOf="@id/gl_name"
+                tools:text="杨高南路地铁站" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_eta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="stv_add_via_distance,stv_arrive_default,stv_arrive_time,
+                                               stv_arrival_day" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_add_via_distance"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_23"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="1"
+                android:textColor="@color/navi_color_000000_70"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintEnd_toStartOf="@+id/stv_arrive_time"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/stv_add_via_name"
+                tools:text="98公里42分钟" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_arrive_default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/rg_arrive_word"
+                android:textColor="@color/navi_color_000000_70"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="@id/stv_add_via_distance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/stv_add_via_distance"
+                tools:text="@string/rg_arrive_word" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_arrive_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/navi_color_000000_70"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="@id/stv_add_via_distance"
+                app:layout_constraintEnd_toStartOf="@id/stv_arrive_default"
+                app:layout_constraintTop_toTopOf="@id/stv_add_via_distance"
+                tools:text="12:50" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_arrival_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/sp_1"
+                android:textColor="@color/navi_color_000000_70"
+                android:textSize="@dimen/sp_20"
+                android:translationY="@dimen/dp_10"
+                app:layout_constraintBottom_toTopOf="@id/stv_arrive_time"
+                app:layout_constraintStart_toEndOf="@id/stv_arrive_time"
+                tools:text="+2" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        <com.sgm.navi.ui.view.SkinLinearLayout
+            android:id="@+id/ll_action_container"
+            android:layout_width="@dimen/dp_107"
+            android:layout_height="match_parent"
+            android:background="@drawable/img_navi_via_item_delete"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:background="@drawable/img_delete_68_sw1225" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/navi_del"
+                android:textColor="@color/navi_color_FFFFFF_100"
+                android:textSize="@dimen/sp_26" />
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SwipeMenuLayout>
+</layout>

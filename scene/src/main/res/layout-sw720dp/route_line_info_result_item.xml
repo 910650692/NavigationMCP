@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="holder"
+            type="com.sgm.navi.scene.ui.adapter.RouteResultAdapter.Holder" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/item_root_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_124"
+        android:background="@color/bg_route_item_select"
+        android:paddingStart="@dimen/dp_30"
+        android:paddingEnd="@dimen/dp_30">
+
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/item_root_view_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_item_num"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/text_color_route_item_no_select"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_item_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_20"
+            android:textColor="@color/text_color_route_item_select"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintStart_toEndOf="@+id/route_item_num"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="xx小时xx分钟" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_item_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/bg_route_details_defult_label"
+            android:paddingHorizontal="@dimen/dp_10"
+            android:paddingVertical="@dimen/dp_5"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_22"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="少收费" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_item_distance"
+            android:layout_width="@dimen/dp_112"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_21"
+            android:textColor="@color/text_color_route_item_no_select"
+            android:textSize="@dimen/sp_26"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/route_item_time"
+            tools:text="xx公里" />
+
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/route_item_traffic_light"
+            android:layout_width="@dimen/dp_31"
+            android:layout_height="@dimen/dp_31"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_23"
+            android:src="@drawable/img_route_money"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/route_item_distance" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_item_traffic_light_value"
+            android:layout_width="@dimen/dp_42"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_21"
+            android:textColor="@color/text_color_route_item_no_select"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/route_item_traffic_light"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="88" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/route_item_traffic_price"
+            android:layout_width="@dimen/dp_31"
+            android:layout_height="@dimen/dp_31"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_23"
+            android:src="@drawable/img_route_lingt"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/route_item_traffic_light_value" />
+
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_item_price"
+            android:layout_width="@dimen/dp_42"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_21"
+            android:textColor="@color/text_color_route_item_no_select"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/route_item_traffic_price"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="3" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/route_item_electricity_img"
+            android:layout_width="@dimen/dp_31"
+            android:layout_height="@dimen/dp_31"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_23"
+            android:src="@drawable/img_route_electricity"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/route_item_price" />
+
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_item_electricity"
+            android:layout_width="@dimen/dp_140"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_21"
+            android:textColor="@color/text_color_route_item_no_select"
+            android:textSize="@dimen/sp_25"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/route_item_electricity_img"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="60%到达" />
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

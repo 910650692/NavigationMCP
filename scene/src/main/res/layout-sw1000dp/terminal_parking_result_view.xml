@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="sceneTerminalViewImpl"
+            type="com.sgm.navi.scene.impl.search.SceneTerminalViewImpl" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinLinearLayout
+        android:layout_width="@dimen/dp_613"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_buick"
+        android:orientation="vertical">
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_89">
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:gravity="center_vertical"
+                android:id="@+id/sk_tv_terminal_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_30"
+                android:text="建议提前选择以下到达点:"
+                android:textColor="@color/search_color_ffffff"
+                android:textSize="@dimen/sp_32"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/sk_iv_terminal_close"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:src="@drawable/icon_poi_details_close"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/dp_921"
+            android:paddingBottom="@dimen/dp_20">
+
+            <com.sgm.navi.ui.view.SkinRecyclerView
+                android:id="@+id/recycler_search_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinLinearLayout>
+
+</layout>

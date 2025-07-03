@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/search_loading_bg_80">
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_560"
+            android:layout_height="@dimen/dp_550"
+            android:background="@drawable/bg_confirm_dialog"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/cancel"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginTop="@dimen/dp_18"
+                android:layout_marginEnd="@dimen/dp_26"
+                android:src="@drawable/icon_poi_details_close"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_24"
+                android:gravity="center"
+                android:text="@string/download_app"
+                android:textColor="@color/search_color_ffffff"
+                android:textSize="@dimen/sp_34"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/qr_code_bg"
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="@dimen/dp_160"
+                android:layout_marginTop="@dimen/dp_101"
+                android:background="@drawable/bg_qr_code"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/qr_code_img"
+                android:layout_width="@dimen/dp_144"
+                android:layout_height="@dimen/dp_144"
+                android:layout_marginTop="@dimen/dp_109"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_285"
+                android:gravity="center"
+                tools:text="使用充电桩须使用XXXXXXAPP"
+                android:text="@string/charge_appointment"
+                android:textColor="@color/search_color_ffffff"
+                android:textSize="@dimen/sp_34"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_hint"
+                android:layout_width="wrap_content"
+                android:maxWidth="@dimen/dp_512"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_346"
+                android:gravity="start"
+                android:text="@string/charge_hint"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_30"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+
+            
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+</layout>

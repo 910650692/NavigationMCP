@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="SceneMapPointSearchView"
+            type="com.sgm.navi.scene.api.favorite.ISceneMapPointSearchView" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_613"
+        android:layout_height="wrap_content"
+        android:minHeight="340dp"
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155">
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/cs_poi_no_result"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_607"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_loading"
+                android:layout_width="@dimen/dp_102"
+                android:layout_height="@dimen/dp_102"
+                android:src="@drawable/icon_limit_loading"
+                android:layout_marginBottom="@dimen/dp_24"
+                tools:visibility="gone"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/no_result_hint" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/no_result_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/load_failed"
+                android:textSize="@dimen/sp_26"
+                android:textColor="@color/search_color_ffffff_70"
+                app:layout_constraintTop_toBottomOf="@+id/iv_loading"
+                app:layout_constraintBottom_toTopOf="@+id/no_result_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/no_result_button"
+                android:layout_width="@dimen/dp_225"
+                android:layout_height="@dimen/dp_65"
+                android:text="@string/reload"
+                android:gravity="center"
+                android:textColor="@color/white"
+                tools:visibility="visible"
+                android:textSize="@dimen/sp_26"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/bg_setting_confirm"
+                app:layout_constraintTop_toBottomOf="@+id/no_result_hint"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/dp_34" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_end="@dimen/dp_34" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/sk_poi_name"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_40"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/poi_details_bottom_ff_00"
+            android:textSize="@dimen/sp_32"
+            app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/poi_type_icon"
+            clickCommand="@{SceneMapPointSearchView.closeFragment}"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginTop="@dimen/dp_29"
+            android:layout_marginEnd="@dimen/sp_22"
+            tools:visibility="visible"
+            android:src="@drawable/icon_poi_details_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/poi_second_address"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_26"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@color/search_color_ffffff_70"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/sk_poi_name"
+            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+            tools:text="世纪大道1号" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/poi_distance_time"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="2"
+            android:text="5.2公里   30分钟"
+            android:textColor="@color/poi_details_bottom_ff_00"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
+            tools:text="5.2公里   30分钟"
+            android:visibility="gone"/>
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/siv_arrival_capacity"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            android:src="@drawable/img_electricity_medium_48"
+            app:layout_constraintBottom_toBottomOf="@+id/poi_arrival_capacity"
+            app:layout_constraintEnd_toStartOf="@+id/poi_arrival_capacity"
+            app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
+            app:layout_constraintTop_toTopOf="@+id/poi_arrival_capacity"
+            android:visibility="gone"/>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/poi_arrival_capacity"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="1"
+            android:text="15%到达"
+            android:textColor="@color/poi_details_bottom_ff_00"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
+            tools:text="15%到达"
+            android:visibility="gone"/>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/poi_business_hours"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="1"
+            android:textColor="@color/poi_details_bottom_ff_00"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line"
+            tools:text="营业时间: 09:00 -- 21:00"
+            android:visibility="gone"/>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/poi_phone"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="1"
+            android:text="电        话: 021-888888"
+            android:textColor="@color/poi_details_bottom_ff_00"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/poi_business_hours"
+            tools:text="电        话: 021-888888"
+            android:visibility="gone"/>
+
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/stl_setting"
+            clickCommand="@{SceneMapPointSearchView.clickSetting}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_77"
+            android:layout_marginBottom="@dimen/dp_34"
+            android:layout_marginHorizontal="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_26"
+            android:background="@drawable/bg_details_bottom_go_here"
+            app:layout_constraintTop_toBottomOf="@id/poi_second_address"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintEnd_toEndOf="@+id/end_guideline">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_setting"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:layout_marginStart="@dimen/dp_58"
+                android:src="@drawable/icon_details_bottom_go_here"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="gone"/>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_24"
+                tools:text="添加"
+                android:textColor="@color/search_go_here"
+                android:textSize="@dimen/sp_29"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+<!--        <include-->
+<!--            android:id="@+id/scene_poi_details_bottom_view"-->
+<!--            layout="@layout/scene_poi_details_bottom_view"-->
+<!--            android:layout_width="@dimen/dp_0"-->
+<!--            android:layout_height="@dimen/dp_108"-->
+<!--            android:layout_marginBottom="@dimen/dp_40"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/start_guideline" />-->
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

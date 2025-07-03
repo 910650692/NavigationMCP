@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="SceneMainAlongWaySearchHistoryImpl"
+            type="com.sgm.navi.scene.impl.search.SceneMainAlongWaySearchHistoryImpl" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_search_main_tab"
+        android:layout_marginBottom="@dimen/dp_130"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.sgm.navi.ui.view.SkinRecyclerView
+            android:id="@+id/rcy_record_along"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintBottom_toTopOf="@id/scl_delete_record_along"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintHeight_min="@dimen/dp_579"
+            app:layout_constraintHeight_max="@dimen/dp_770"/>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/tv_record_null_along"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_452"
+            android:text="@string/shv_record_null"
+            android:textColor="@color/search_color_ffffff_70"
+            android:textSize="@dimen/sp_26"
+            android:visibility="gone"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinRecyclerView
+            android:id="@+id/suggest_result_list_along"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintBottom_toTopOf="@id/scl_delete_record_along"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintHeight_min="@dimen/dp_579"
+            app:layout_constraintHeight_max="@dimen/dp_770"/>
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/scl_delete_record_along"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_17"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_delete"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:src="@drawable/img_basic_ic_delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/tv_delete"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_9"
+                android:text="@string/shv_clear_record"
+                android:textColor="@color/search_color_ffffff_70"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/iv_delete"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

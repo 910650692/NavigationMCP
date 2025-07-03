@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="ISceneSugSearchPoiList"
+            type="com.sgm.navi.scene.api.search.ISceneSearchPoiList" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/offline_search_top_view"
+            layout="@layout/search_edit_bar_view"
+            android:layout_width="@dimen/dp_640"
+            android:layout_height="@dimen/dp_102" />
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_640"
+            android:layout_height="@dimen/dp_610"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/bg_search_main_tab">
+
+            <com.sgm.navi.ui.view.SkinRecyclerView
+                android:id="@+id/offline_recycler_search_result"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_40"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <com.sgm.navi.ui.view.SkinRecyclerView
+                android:id="@+id/offline_recycler_search_keyword_result"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_40"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"/>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/search_no_result_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_36"
+                android:textColor="@color/search_quick_tab_view_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/search_no_city_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="@dimen/dp_560"
+                android:textSize="@dimen/sp_36"
+                android:text="@string/search_offline_no_city_hint"
+                android:visibility="gone"
+                android:gravity="center"
+                android:textColor="@color/search_quick_tab_view_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+    </com.sgm.navi.ui.view.SkinLinearLayout>
+
+</layout>

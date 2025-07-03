@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="holder"
+            type="com.sgm.navi.scene.ui.adapter.QuickSearchListAdapter.ResultHolder" />
+
+        <variable
+            name="layoutPosition"
+            type="String" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_133"
+        android:layout_height="@dimen/dp_143"
+        android:paddingTop="@dimen/dp_17">
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/sk_iv_bg"
+            android:layout_width="@dimen/dp_66"
+            android:layout_height="@dimen/dp_66"
+            android:background="@drawable/bg_quick_search_item"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/sk_iv_icon"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:src="@drawable/img_basic_ic_gas_station"
+            app:layout_constraintBottom_toBottomOf="@+id/sk_iv_bg"
+            app:layout_constraintEnd_toEndOf="@+id/sk_iv_bg"
+            app:layout_constraintStart_toStartOf="@+id/sk_iv_bg"
+            app:layout_constraintTop_toTopOf="@+id/sk_iv_bg" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/quick_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/st_quick_search_station"
+            android:textColor="@color/search_quick_tab_view_color"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintEnd_toEndOf="@+id/sk_iv_bg"
+            app:layout_constraintStart_toStartOf="@+id/sk_iv_bg"
+            app:layout_constraintTop_toBottomOf="@+id/sk_iv_bg" />
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

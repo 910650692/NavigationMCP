@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="Scene"
+            type="com.sgm.navi.scene.api.route.ISceneRouteGasStationChargeService" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_124">
+
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/route_right_tab_list_service"
+            clickCommand="@{Scene.clickAround}"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_360"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_right_tab_list_tv_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_420"
+            android:layout_marginTop="@dimen/dp_69"
+            android:text="@string/route_charge_gas_around"
+            android:textColor="@color/tab_list_route_tab_list_unselect"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:select_text_color="@color/tab_list_route_tab_list_select" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/route_right_tab_list_iv_service"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginStart="@dimen/dp_421"
+            android:layout_marginTop="@dimen/dp_16"
+            android:src="@drawable/selector_route_tab_list_charge_gas_around"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/route_right_tab_list_weather"
+            clickCommand="@{Scene.clickEnd}"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_180"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_right_tab_list_tv_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_247"
+            android:layout_marginTop="@dimen/dp_69"
+            android:text="@string/route_charge_gas_end"
+            app:select_text_color="@color/tab_list_route_tab_list_select"
+            android:textColor="@color/tab_list_route_tab_list_unselect"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/route_right_tab_list_iv_weather"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginStart="@dimen/dp_248"
+            android:layout_marginTop="@dimen/dp_16"
+            android:src="@drawable/selector_route_tab_list_charge_gas_end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/route_right_tab_list_gas_station"
+            clickCommand="@{Scene.clickAlone}"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_right_tab_list_tv_gas_station"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_74"
+            android:layout_marginTop="@dimen/dp_69"
+            android:text="@string/route_charge_gas_along"
+            android:textColor="@color/tab_list_route_tab_list_unselect"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:select_text_color="@color/tab_list_route_tab_list_select" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/route_right_tab_list_iv_gas_station"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginStart="@dimen/dp_75"
+            android:layout_marginTop="@dimen/dp_16"
+            android:src="@drawable/selector_route_tab_list_charge_gas_along"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+</layout>

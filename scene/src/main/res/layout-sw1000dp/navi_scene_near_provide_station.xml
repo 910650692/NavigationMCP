@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <com.sgm.navi.ui.view.SwipeMenuLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_104">
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_104">
+
+            <View
+                android:id="@+id/view_bg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_104"
+                android:background="@drawable/bg_scene_charge_tip" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginStart="@dimen/dp_8"
+                app:layout_constraintBottom_toBottomOf="@id/view_bg"
+                app:layout_constraintStart_toStartOf="@id/view_bg"
+                app:layout_constraintTop_toTopOf="@id/view_bg"
+                tools:background="@android:color/holo_red_light" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_title"
+                android:layout_width="@dimen/dp_357"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_12"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/traffic_title_color"
+                android:textSize="@dimen/sp_30"
+                app:layout_constraintStart_toEndOf="@id/iv_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="国家电网务区充电站充电充电…" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_sub_title"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/traffic_title_color"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="@id/view_bg"
+                app:layout_constraintStart_toEndOf="@id/iv_icon"
+                tools:text="服务区" />
+
+            <include
+                android:id="@+id/layout_charge_desc"
+                layout="@layout/layout_scene_charge_station_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                app:layout_constraintStart_toEndOf="@id/tv_sub_title"
+                app:layout_constraintTop_toTopOf="@id/tv_sub_title" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_navi_icon"
+                android:layout_width="@dimen/dp_42"
+                android:layout_height="@dimen/dp_42"
+                android:src="@drawable/img_navigation_black_58"
+                app:layout_constraintBottom_toTopOf="@id/tv_distance"
+                app:layout_constraintEnd_toEndOf="@id/tv_distance"
+                app:layout_constraintStart_toStartOf="@id/tv_distance"
+                app:layout_constraintTop_toTopOf="@id/view_bg"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_31"
+                android:minWidth="@dimen/dp_88"
+                android:textColor="@color/traffic_sub_title_color"
+                android:textSize="@dimen/sp_26"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@id/view_bg"
+                app:layout_constraintEnd_toEndOf="@id/view_bg"
+                app:layout_constraintTop_toBottomOf="@id/iv_navi_icon"
+                tools:text="7.2公里" />
+
+            <View
+                android:id="@+id/view_navi_now"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_distance"
+                app:layout_constraintEnd_toEndOf="@id/tv_distance"
+                app:layout_constraintStart_toStartOf="@id/tv_distance"
+                app:layout_constraintTop_toTopOf="@id/iv_navi_icon" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        <com.sgm.navi.ui.view.SkinLinearLayout
+            android:id="@+id/item_delete"
+            android:layout_width="@dimen/dp_170"
+            android:layout_height="@dimen/dp_150"
+            android:layout_weight="1"
+            android:background="@color/card_delete_bg_color"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_favorite_delete" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_4"
+                android:text="@string/delete"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_30" />
+
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+    </com.sgm.navi.ui.view.SwipeMenuLayout>
+</layout>

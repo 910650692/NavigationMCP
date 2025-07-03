@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/ly_descendants_view"
+        android:layout_width="@dimen/dp_814"
+        android:layout_height="@dimen/dp_176"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:padding="@dimen/dp_29">
+
+        <ProgressBar
+            android:id="@+id/route_charge_progress"
+            android:layout_width="@dimen/dp_678"
+            android:layout_height="@dimen/dp_6"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:max="100"
+            android:progress="100"
+            android:soundEffectsEnabled="false"
+            android:progressDrawable="@drawable/img_route_charge_progress_bar"
+            android:splitTrack="false"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:thumb="@android:color/transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_supplement_total_mileage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_26"
+            android:text="推荐充电2次,共60分钟"
+            android:layout_marginStart="@dimen/dp_26"
+            android:layout_marginTop="@dimen/dp_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/route_charge_start"
+            android:layout_width="@dimen/dp_34"
+            android:layout_height="@dimen/dp_34"
+            android:src="@drawable/img_route_start"
+            android:layout_marginStart="@dimen/dp_22"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="@dimen/dp_45"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/route_charge_progress_icons"
+            android:layout_width="@dimen/dp_678"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/route_charge_progress"
+            app:layout_constraintEnd_toEndOf="@+id/route_charge_progress"/>
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/route_charge_end"
+            android:layout_width="@dimen/dp_34"
+            android:layout_height="@dimen/dp_34"
+            android:src="@drawable/img_route_end"
+            android:layout_marginEnd="@dimen/dp_22"
+            android:layout_marginTop="@dimen/dp_45"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_charge_total_mileage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_26"
+            android:layout_marginEnd="@dimen/dp_34"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/route_charge_end"
+            tools:text="898km"/>
+
+
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+</layout>

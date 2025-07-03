@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ScenePoiDetailContentView"
+            type="com.sgm.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/poi_scenic_spot_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@id/poi_scenic_spot_price_icon"
+            android:layout_width="@dimen/dp_31"
+            android:layout_height="@dimen/dp_31"
+            android:src="@drawable/img_money_select_42"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/poi_scenic_spot_price"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_5"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/search_color_ffffff"
+            android:textSize="@dimen/sp_22"
+            app:layout_constraintTop_toTopOf="@+id/poi_scenic_spot_price_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/poi_scenic_spot_price_icon"
+            app:layout_constraintStart_toEndOf="@+id/poi_scenic_spot_price_icon"
+            tools:text="35" />
+
+        <com.sgm.navi.ui.view.SkinRecyclerView
+            android:id="@+id/poi_scenic_spot_child_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="#MARK_NO_SCORLLABLE"
+            android:layout_marginTop="@dimen/dp_44"
+            app:layout_goneMarginTop="@dimen/dp_20"
+            app:layout_constraintTop_toBottomOf="@+id/poi_scenic_spot_price"
+            app:layout_constraintStart_toStartOf="parent"/>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

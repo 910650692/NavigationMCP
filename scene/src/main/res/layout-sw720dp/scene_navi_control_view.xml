@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="naviControl"
+            type="com.sgm.navi.scene.api.navi.ISceneNaviControl" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true">
+
+        <!-- 导航按钮组 -->
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="sv_exit,scl_settings,siv_exit_navi,stv_exit_navi" />
+        <!--android:background="@drawable/bg_navi_btn_select"-->
+
+        <!--退出导航-->
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/sv_exit_container"
+            android:layout_width="@dimen/dp_208"
+            android:layout_height="@dimen/dp_192"
+            android:background="@drawable/bg_shadow_navi_buick"
+            android:padding="@dimen/dp_34"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/sv_exit"
+                clickCommand="@{naviControl.closeNavi}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:click_color_change="true">
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_exit_navi"
+                    style="@style/style_navi_control_iv_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
+                    android:background="@drawable/img_quit_58"
+                    app:layout_constraintEnd_toEndOf="@id/sv_exit"
+                    app:layout_constraintStart_toStartOf="@id/sv_exit"
+                    app:layout_constraintTop_toTopOf="@id/sv_exit" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_exit_navi"
+                    style="@style/style_navi_control_tv_com"
+                    android:layout_marginTop="@dimen/dp_3"
+                    android:text="@string/navi_btn_exit"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintEnd_toEndOf="@id/sv_exit"
+                    app:layout_constraintStart_toStartOf="@id/sv_exit"
+                    app:layout_constraintTop_toBottomOf="@id/siv_exit_navi" />
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_192"
+            android:maxWidth="@dimen/dp_455"
+            android:layout_marginStart="@dimen/dp_m_51"
+            android:background="@drawable/bg_shadow_navi_buick"
+            android:padding="@dimen/dp_34"
+            app:layout_constraintBottom_toBottomOf="@id/sv_exit_container"
+            app:layout_constraintStart_toEndOf="@id/sv_exit_container"
+            app:layout_constraintTop_toTopOf="@id/sv_exit_container">
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/scl_settings"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                <!--看全览-->
+                <com.sgm.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/sv_overview_switch"
+                    clickCommand="@{naviControl.switchOverview}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_26"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:contentDescription="@string/navi_overview_switch"
+                    app:click_color_change="true"
+                    app:layout_constraintEnd_toStartOf="@id/sv_variation"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.sgm.navi.ui.view.SkinImageView
+                        android:id="@+id/siv_overview_switch"
+                        style="@style/style_navi_control_iv2_com"
+                        android:layout_width="@dimen/dp_49"
+                        android:layout_height="@dimen/dp_49"
+                        android:background="@drawable/img_look_through_black_58"
+                        app:layout_constraintEnd_toEndOf="@id/sv_overview_switch"
+                        app:layout_constraintStart_toStartOf="@id/sv_overview_switch"
+                        app:layout_constraintTop_toTopOf="@id/sv_overview_switch" />
+
+                    <com.sgm.navi.ui.view.SkinTextView
+                        android:id="@+id/stv_overview_switch"
+                        style="@style/style_navi_control_tv_com"
+                        android:layout_marginTop="@dimen/dp_3"
+                        android:text="@string/navi_overview_switch"
+                        android:textSize="@dimen/sp_26"
+                        app:layout_constraintEnd_toEndOf="@id/sv_overview_switch"
+                        app:layout_constraintStart_toStartOf="@id/sv_overview_switch"
+                        app:layout_constraintTop_toBottomOf="@id/siv_overview_switch" />
+
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
+                <!--播报模式切换/固定全览-->
+                <com.sgm.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/sv_variation"
+                    clickCommand="@{naviControl.onVariation}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/navi_mute"
+                    app:click_color_change="true"
+                    app:layout_constraintBottom_toBottomOf="@+id/sv_overview_switch"
+                    app:layout_constraintEnd_toStartOf="@id/sv_more_setup"
+                    app:layout_constraintStart_toEndOf="@id/sv_overview_switch"
+                    app:layout_constraintTop_toTopOf="@+id/sv_overview_switch"
+                    app:layout_goneMarginEnd="@dimen/dp_26">
+
+                    <com.sgm.navi.ui.view.SkinImageView
+                        android:id="@+id/siv_variation"
+                        style="@style/style_navi_control_iv2_com"
+                        android:layout_width="@dimen/dp_49"
+                        android:layout_height="@dimen/dp_49"
+                        android:background="@drawable/img_mute_broadcast_black_58"
+                        app:layout_constraintEnd_toEndOf="@id/sv_variation"
+                        app:layout_constraintStart_toStartOf="@id/sv_variation"
+                        app:layout_constraintTop_toTopOf="@id/sv_variation" />
+
+                    <com.sgm.navi.ui.view.SkinTextView
+                        android:id="@+id/stv_variation"
+                        style="@style/style_navi_control_tv_com"
+                        android:layout_marginTop="@dimen/dp_3"
+                        android:text="@string/navi_mute"
+                        android:textSize="@dimen/sp_26"
+                        app:layout_constraintEnd_toEndOf="@id/sv_variation"
+                        app:layout_constraintStart_toStartOf="@id/sv_variation"
+                        app:layout_constraintTop_toBottomOf="@id/siv_variation" />
+
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/group_more_setup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{naviControl.getGroupMoreSetupField()?View.VISIBLE:View.GONE}"
+                    app:constraint_referenced_ids="sv_more_setup,siv_more_setup,stv_more_setup"
+                    tools:visibility="visible" />
+                <!--更多-->
+                <com.sgm.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/sv_more_setup"
+                    clickCommand="@{naviControl.moreSetup}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_26"
+                    android:contentDescription="@string/navi_more_setup"
+                    app:click_color_change="true"
+                    app:layout_constraintBottom_toBottomOf="@id/sv_variation"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/sv_variation"
+                    app:layout_constraintTop_toTopOf="@id/sv_variation">
+
+                    <com.sgm.navi.ui.view.SkinImageView
+                        android:id="@+id/siv_more_setup"
+                        style="@style/style_navi_control_iv2_com"
+                        android:layout_width="@dimen/dp_49"
+                        android:layout_height="@dimen/dp_49"
+                        android:background="@drawable/img_buick_more_58"
+                        app:layout_constraintEnd_toEndOf="@id/sv_more_setup"
+                        app:layout_constraintStart_toStartOf="@id/sv_more_setup"
+                        app:layout_constraintTop_toTopOf="@id/sv_more_setup" />
+
+                    <com.sgm.navi.ui.view.SkinTextView
+                        android:id="@+id/stv_more_setup"
+                        style="@style/style_navi_control_tv_com"
+                        android:layout_marginTop="@dimen/dp_3"
+                        android:text="@string/navi_more_setup"
+                        android:textSize="@dimen/sp_26"
+                        app:layout_constraintEnd_toEndOf="@id/sv_more_setup"
+                        app:layout_constraintStart_toStartOf="@id/sv_more_setup"
+                        app:layout_constraintTop_toBottomOf="@id/siv_more_setup" />
+
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>
