@@ -2106,7 +2106,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onPoiPageChange(final String sessionId, final String type, final String typeValue, final RespCallback respCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onPoiPageChange: sessionId = " + sessionId + ", type = " + type + ", typeValue = " + typeValue);
-        return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_THIS_FUNCTION);
+        return VoiceSearchManager.getInstance().handlePoiPage(sessionId, type, typeValue, respCallback);
     }
 
     /**

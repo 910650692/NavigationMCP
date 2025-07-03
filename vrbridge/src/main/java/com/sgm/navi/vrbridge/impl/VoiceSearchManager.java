@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.android.utils.NetWorkUtils;
+import com.android.utils.StringUtils;
 import com.android.utils.log.Logger;
 import com.baidu.oneos.protocol.bean.ArrivalBean;
 import com.baidu.oneos.protocol.bean.CallResponse;
@@ -59,6 +60,10 @@ public final class VoiceSearchManager {
     private String mKeyword; //搜索关键字
     private String mRouteType; //路线偏好
     private List<PoiInfoEntity> mSearchResultList; //多轮选择保存的搜索结果
+    private int mMaxPage = 0;
+    private int mCurrentPage = 0;
+    private boolean mInTurnRound = false;
+    private RespCallback mTurnCallback;
     private boolean mWaitPoiSearch = false; //搜索结果只有一个，需要poi详情搜结果返回后再执行算路
 
     private List<String> mGenericsList; //DestType为泛型的集合，用来判断途径点和目的地是不是泛型
@@ -91,8 +96,6 @@ public final class VoiceSearchManager {
     }
 
     private VoiceSearchManager() {
-
-
         //当前语义确认的泛型类型为以下
         mGenericsList = new ArrayList<>();
         mGenericsList.add(IVrBridgeConstant.DestType.TOILET);
@@ -139,6 +142,8 @@ public final class VoiceSearchManager {
         mSearchType = IVrBridgeConstant.VoiceSearchType.DEFAULT;
         mKeyword = null;
         mSearchResultList = new ArrayList<>();
+        mMaxPage = 0;
+        mCurrentPage = 0;
         mNormalDestList = new SparseArray<>();
         mGenericsDestList = new SparseArray<>();
         mMultiplePoiArray = new SparseArray<>();
@@ -188,9 +193,19 @@ public final class VoiceSearchManager {
             if (null == searchResultEntity || null == searchResultEntity.getPoiList() || searchResultEntity.getPoiList().isEmpty()) {
                 Logger.e(IVrBridgeConstant.TAG, "searchResult is empty");
                 searchSuccess = false;
+                mMaxPage = 0;
+                mCurrentPage = 0;
             } else {
                 searchSuccess = true;
                 mSearchResultList.addAll(searchResultEntity.getPoiList());
+                mMaxPage = searchResultEntity.getMaxPageNum();
+                mCurrentPage = searchResultEntity.getPageNum();
+            }
+
+            if (mInTurnRound) {
+                //翻页搜索结果
+                dealTurnPageResult(searchSuccess);
+                return;
             }
 
             //根据语音搜索类型执行下一步
@@ -345,12 +360,12 @@ public final class VoiceSearchManager {
         if (null == poiCallback) {
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.EMPTY_SEARCH_CALLBACK);
         }
-        mPoiCallback = poiCallback;
         if (null == arrivalBean || TextUtils.isEmpty(arrivalBean.getDest())) {
             Logger.e(IVrBridgeConstant.TAG, "voiceSearchParams is null");
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.EMPTY_DEST);
         }
 
+        mPoiCallback = poiCallback;
         resetSearchAbout();
         mSessionId = sessionId;
         mDestInfo = arrivalBean;
@@ -1978,5 +1993,111 @@ public final class VoiceSearchManager {
             mRespCallback.onResponse(sortResultResponse);
         }
     }
+
+
+    /**
+     * 处理语音翻页.
+     *
+     * @param sessionId 多轮对话一致.
+     *
+     * @param type  direction：方位，比如上一页、下一页
+     *              index：正向位置，比如第一页
+     *              index_reverse：反向位置，比如倒数第一页，最后一页
+     *
+     * @param typeValue  direction = UP:上一页；DOWN：下一页
+     *                   index、index_reverse >= 1，具体页码值
+     *
+     * @param respCallback 执行结果异步回复.
+     *
+     * @return CallResponse 此指令直接执行结果.
+     */
+    public CallResponse handlePoiPage(final String sessionId, final String type, final String typeValue, final RespCallback respCallback) {
+        if (!mListPageOpened) {
+            //搜索结果页没有打开
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.HAVE_NO_POI_PAGE);
+        }
+
+        final CallResponse callResponse;
+        switch (type) {
+            case IVrBridgeConstant.PoiPageType.DIRECTION:
+                if (IVrBridgeConstant.PageTypeValue.DOWN.equals(typeValue)) {
+                    //下一页
+                    if (mCurrentPage == mMaxPage) {
+                        //当前已是最后一页
+                        return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ALREADY_LAST_PAGE);
+                    } else {
+                        callResponse = CallResponse.createSuccessResponse();
+                        mTurnCallback = respCallback;
+                        mInTurnRound = true;
+                        mSessionId = sessionId;
+                        SearchPackage.getInstance().keywordSearch(mCurrentPage + 1, mKeyword, false);
+                    }
+                } else {
+                    //上一页
+                    if (mCurrentPage == 1) {
+                        return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ALREADY_FIRST_PAGE);
+                    } else {
+                        callResponse = CallResponse.createSuccessResponse();
+                        mTurnCallback = respCallback;
+                        mInTurnRound = true;
+                        mSessionId = sessionId;
+                        SearchPackage.getInstance().keywordSearch(mCurrentPage - 1, mKeyword, false);
+                    }
+                }
+                break;
+            case IVrBridgeConstant.PoiPageType.INDEX:
+                //正向第几页
+                final int target = StringUtils.stringToInt(typeValue);
+                callResponse = toSearchPage(sessionId, target, respCallback);
+                break;
+            case IVrBridgeConstant.PoiPageType.REVERSE_INDEX:
+                //反向第几页
+                final int param = StringUtils.stringToInt(typeValue);
+                if (param < 1) {
+                    return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.PAGE_ERROR_PARAM);
+                }
+                final int reversePage = mMaxPage + 1 - param;
+                callResponse = toSearchPage(sessionId, reversePage, respCallback);
+                break;
+            default:
+                return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.PAGE_ERROR_PARAM);
+        }
+
+        return callResponse;
+    }
+
+    private CallResponse toSearchPage(final String sessionId, final int target, final RespCallback respCallback) {
+        if (target < 1 || target > mMaxPage) {
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.OUT_OF_CHOICE_RANGE);
+        } else if (mCurrentPage == target) {
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ALREADY_CURRENT_PAGE);
+        } else {
+            mTurnCallback = respCallback;
+            mInTurnRound = true;
+            mSessionId = sessionId;
+            SearchPackage.getInstance().keywordSearch(target, mKeyword, false);
+            return CallResponse.createSuccessResponse();
+        }
+    }
+
+    //处理翻页后的搜索结果
+    private void dealTurnPageResult(final boolean success) {
+        mInTurnRound = false;
+        if (success) {
+            final List<PoiBean> poiBeanList = VoiceConvertUtil.convertSearchResult(mSearchResultList);
+            final int size = poiBeanList.size();
+            if (Logger.openLog) {
+                Logger.i(IVrBridgeConstant.TAG, "turnPage resultSize:", size);
+            }
+            if (null != mPoiCallback) {
+                mPoiCallback.onPoiSearch(mSessionId, poiBeanList, size);
+            }
+        } else if (null != mTurnCallback) {
+            final CallResponse response = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NO_RESULT_TRY_OTHER);
+            response.setNeedPlayMessage(true);
+            mTurnCallback.onResponse(response);
+        }
+    }
+
 
 }

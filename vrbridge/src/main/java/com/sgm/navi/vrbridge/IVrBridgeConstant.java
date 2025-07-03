@@ -454,6 +454,22 @@ public interface IVrBridgeConstant {
         String CAN_NOT_DELETE_VIA = "不处于选路态或导航态，无法删除途径点";
         String VIA_DELETE_HINT = "已删除途径点，正在重新规划路线";
 
+        String HAVE_NO_POI_PAGE = "当前没有展示搜索结果页面";
+        String ALREADY_FIRST_PAGE = "当前已是第一页";
+        String ALREADY_LAST_PAGE = "当前已是最后一页";
+        String ALREADY_CURRENT_PAGE = "已显示此页面";
+        String PAGE_ERROR_PARAM = "错误的参数";
+    }
+
+    public interface PoiPageType {
+        String DIRECTION = "direction";
+        String INDEX = "index";
+        String REVERSE_INDEX = "index_reverse";
+    }
+
+    public interface PageTypeValue {
+        String DOWN = "DOWN";
+        String UP = "UP";
     }
 
 }

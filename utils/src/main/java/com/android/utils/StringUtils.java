@@ -1377,4 +1377,15 @@ public class StringUtils {
         }
         return desValue;
     }
+
+    public static int stringToInt(final String value) {
+        int desValue = 0;
+        try {
+            desValue = Integer.parseInt(value);
+        } catch (NumberFormatException exception) {
+            Logger.e(TAG, "stringToInt exception:", exception.getMessage());
+        }
+        return desValue;
+    }
+
 }
