@@ -35,6 +35,7 @@ import java.util.Optional;
 public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingResultViewBinding, SceneTerminalViewImpl> {
     private TerminalParkingResultAdapter mAdapter;
     private LinearLayoutManager layoutManager;
+    private SearchLoadingDialog mSearchLoadingDialog;
 
     public SceneTerminalParkingListView(@NonNull final Context context) {
         super(context);
@@ -67,6 +68,7 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
     protected void initObserver() {
         setupRecyclerView();
         setupSearchActions();
+        mSearchLoadingDialog = new SearchLoadingDialog(getContext());
 
     }
 
@@ -78,6 +80,12 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
         mScreenViewModel.aroundSearch("停车场", geoPoint);
         if(!ConvertUtils.isNull(mAdapter)){
             mAdapter.setEndPoint(geoPoint);
+        }
+        if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
+            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+        } else {
+            mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+            mSearchLoadingDialog.show();
         }
     }
 
@@ -135,6 +143,9 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             return;
         }
+        if (mSearchLoadingDialog != null && mSearchLoadingDialog.isShowing()) {
+            mSearchLoadingDialog.dismiss();
+        }
         if (ConvertUtils.isEmpty(mScreenViewModel)) {
             return;
         }
@@ -173,5 +184,13 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
                 },1000);
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mSearchLoadingDialog != null && mSearchLoadingDialog.isShowing()) {
+            mSearchLoadingDialog.dismiss();
+        }
     }
 }
