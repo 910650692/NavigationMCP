@@ -386,7 +386,7 @@ public final class SuperCruiseManager {
         superCruiseJson.setEffectiveSpeedType(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedType()));
         superCruiseJson.setSpeedCategory(String.valueOf(mSpeedLimitBuilder.getSpeedCategory()));
         final String json = GsonUtils.toJson(superCruiseJson);
-        if (BuildConfig.DEBUG) JsonLog.saveJsonToCache(json, "sc.json");
+        if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(json, "sc.json");
         Logger.d(TAG, "sendData: " , json);
 //        JsonLog.print(TAG, json);
     }

@@ -126,7 +126,7 @@ public final class GmcL2ppManager {
             }
             String json = GsonUtils.toJson(routeL2Data);
             Logger.d(TAG, "send SD Map route data");
-            if (BuildConfig.DEBUG) JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
+            if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
             // 发送SD Map route数据
             mAdasManager.sendData(DataType.SDRoute, json.getBytes());
         }
@@ -141,7 +141,7 @@ public final class GmcL2ppManager {
             }
             String json = GsonUtils.toJson(l2NaviBean);
             Logger.d(TAG, "send SD Map tbt data: " , json);
-            if (BuildConfig.DEBUG) JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
+            if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
             // 发送SD Map tbt数据
             mAdasManager.sendData(DataType.SDPeriodShortData, json.getBytes());
         }
@@ -166,7 +166,7 @@ public final class GmcL2ppManager {
                 return;
             }
             final String jsonString = new String(bytes, StandardCharsets.UTF_8);
-            if (BuildConfig.DEBUG) JsonLog.saveJsonToCache(jsonString, "l2.json", "l2_odd");
+            if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(jsonString, "l2.json", "l2_odd");
             Logger.d(TAG, "ODD data fromJson start");
             OddBean oddBean = null;
             try {

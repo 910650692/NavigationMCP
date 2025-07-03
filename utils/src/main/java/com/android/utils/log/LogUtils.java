@@ -46,6 +46,10 @@ public class LogUtils {
         LOG_LEVEL = level;
     }
 
+    protected static boolean isDebugLevel() {
+        return !(DEBUG < LOG_LEVEL);
+    }
+
     /**
      * Log switch.
      *

@@ -68,4 +68,8 @@ public class Logger {
     public static String getCurrentTagName() {
         return LogUtils.getCurrentTagName();
     }
+
+    public static boolean isDebugLevel() {
+        return LogUtils.isDebugLevel();
+    }
 }
