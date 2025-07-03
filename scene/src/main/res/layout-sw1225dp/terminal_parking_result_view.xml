@@ -9,9 +9,9 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_628"
+        android:layout_width="@dimen/dp_613"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_29"
+        android:padding="@dimen/dp_34"
         android:background="@drawable/bg_shadow_navi_buick"
         android:orientation="vertical">
 
@@ -44,12 +44,17 @@
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.sgm.navi.ui.view.SkinRecyclerView
-            android:id="@+id/recycler_search_result"
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_898"
-            android:layout_marginBottom="@dimen/dp_24"/>
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/dp_921"
+            android:paddingBottom="@dimen/dp_20">
 
+            <com.sgm.navi.ui.view.SkinRecyclerView
+                android:id="@+id/recycler_search_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.sgm.navi.ui.view.SkinLinearLayout>
 
 </layout>
