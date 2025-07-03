@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -173,6 +174,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onResume() {
         super.onResume();
+        checkScreen();
         if (mViewModel.getSdkInitStatus()) {
             mViewModel.getCurrentCityLimit();
             //界面可见时重新适配深浅色模式
@@ -180,6 +182,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                     ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
         }
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+    }
+
+    private void checkScreen() {
+        ScreenTypeUtils.getInstance().isSameScreenType(getResources().getDisplayMetrics());
     }
 
     @Override
