@@ -189,6 +189,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
     private void initAdapter() {
         mSearchHistoryAdapter = new SearchHistoryAdapter();
         mViewBinding.rcyRecord.setAdapter(mSearchHistoryAdapter);
+        mViewBinding.rcyRecord.setItemAnimator(null);
         mSearchHistoryAdapter.setOnItemClickListener(new SearchHistoryAdapter.ItemClickListener() {
             @Override
             public void onItemClick(final int position, final History history) {
