@@ -171,6 +171,10 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         }
     }
 
+    /**
+     * 查询所有收藏列表
+     * @param param 获取token的参数
+     */
     public void searchCollectList(AccessTokenParam param){
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
@@ -180,12 +184,20 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         });
     }
 
+    /**
+     * 是否登陆SGM账号
+     * @return 登陆状态
+     */
     public boolean isSGMLogin(){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isSGMLogin: ", AccountPackage.getInstance().isSGMLogin());
         return AccountPackage.getInstance().isSGMLogin();
     }
 
-    public void queryReservation(SearchResultEntity searchResultEntity,AccessTokenParam param){
+    /**
+     * 查询所以已预约单的列表
+     * @param param 获取token的参数
+     */
+    public void queryReservation(AccessTokenParam param){
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);

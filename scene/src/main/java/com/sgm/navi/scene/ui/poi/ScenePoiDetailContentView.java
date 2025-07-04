@@ -536,6 +536,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         ToastUtils.Companion.getInstance().showCustomToastView(mIsCollectStatus ? getContext().getString(R.string.sha_has_favorite) : getContext().getString(R.string.sha_cancel_favorite));
     }
 
+    /**
+     * 查询充电站云端详情数据失败
+     * @param taskId
+     * @param message
+     */
     public void onNetSearchResultError(int taskId,String message){
         if(ConvertUtils.isNull(mScreenViewModel)){
             return;

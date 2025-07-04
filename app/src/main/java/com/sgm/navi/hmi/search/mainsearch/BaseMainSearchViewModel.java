@@ -4,6 +4,9 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.ConvertUtils;
+import com.sgm.navi.patacnetlib.NetQueryManager;
+import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 
@@ -39,5 +42,9 @@ public class BaseMainSearchViewModel extends BaseViewModel<MainSearchFragment, M
      */
     public int powerType() {
         return mModel.powerType();
+    }
+
+    public void getAppKey(){
+        mModel.getAppKey();
     }
 }

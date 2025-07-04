@@ -108,6 +108,13 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         mView.onSilentSearchResult(taskId,searchResultEntity);
     }
 
+    /**
+     * poi详情查询接口
+     * 已登录: 详情 -》 收藏列表 -》预约状态
+     * 未登录: 详情
+     * @param taskId 任务id
+     * @param result 详情数据
+     */
     public void notifyNetSearchResult(int taskId,BaseRep result){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" , result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
@@ -118,7 +125,6 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                 GeoPoint point = new GeoPoint();
                 point.setLat(ConvertUtils.str2Double(jsonObject.getString("stationLat")));
                 point.setLon(ConvertUtils.str2Double(jsonObject.getString("stationLng")));
-                JSONArray jsonArray = jsonObject.getJSONArray("pictures");
                 ArrayList<ChargeInfo> chargeList = new ArrayList<>();
                 ArrayList<PoiInfoEntity> poiInfoEntityList = new ArrayList<>();
                 ChargeInfo chargeInfo = GsonUtils.fromJson(GsonUtils.toJson(result.getDataSet()),ChargeInfo.class);
@@ -150,12 +156,12 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                 mSearchResultEntity = searchResultEntity;
                 mTaskId = taskId;
                 if(mModel.isSGMLogin()){
+                    // 查询收藏列表，确认该poi的收藏状态
                     mView.onNetSearchResult();
                 }else{
                     mView.onSearchResult(taskId,searchResultEntity);
                 }
             } catch (JSONException e) {
-                Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
                 notifyNetSearchResultError(taskId,e.getMessage());
             }
         }else{
@@ -173,6 +179,10 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
 
     }
 
+    /**
+     * 查询收藏列表，根据poiId判断该poi点是否已收藏
+     * @param result 收藏列表
+     */
     public void notifyCollectList(BaseRep result){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code",result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
@@ -181,7 +191,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
             try {
                 JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
                 JSONArray jsonArray = jsonObject.getJSONArray("items");
-                if(jsonArray.length() > 0 && ConvertUtils.isNull(mSearchResultEntity)){
+                if(jsonArray.length() > 0 && !ConvertUtils.isNull(mSearchResultEntity)){
                     for (int j = 0; j < mSearchResultEntity.getPoiList().size(); j++) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
@@ -193,16 +203,20 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                         }
                     }
                 }
+                // 继续查询预约状态
                 mView.searchReservation();
             } catch (JSONException e) {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: ",e);
-                notifyCollectListError(result.getMessage());
+                notifyCollectListError(e.getMessage());
             }
         }else{
             notifyCollectListError(result.getMessage());
         }
     }
 
+    /**
+     * 查询poi预约状态，详情查询链路最后一环，查询完成后，通知页面详情数据
+     * @param result 预约单数据
+     */
     public void notifyReservationList(BaseRep result){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code",result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
@@ -222,7 +236,6 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                     mView.onSearchResult(mTaskId,mSearchResultEntity);
                 });
             } catch (JSONException e) {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: ",e);
                 notifyReservationListError(result.getMessage());
             }
         }else{
@@ -230,20 +243,33 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         }
     }
 
+    /**
+     * 查询详情错误
+     * @param taskId 任务id
+     * @param message 错误信息
+     */
     public void notifyNetSearchResultError(int taskId, String message){
         mView.onNetSearchResultError(taskId,message);
     }
 
-    public void notifyCollectStatusError(int taskId, String message){
-        mView.onNotifyCollectStatusError(taskId,message);
-    }
-
+    /**
+     * 自查询：查询收藏列表失败，和详情查询共用同一个taskId
+     * @param message 错误消息
+     */
     public void notifyCollectListError(String message){
         notifyNetSearchResultError(mTaskId,message);
     }
 
+    /**
+     * 自查询：查询预约单列表失败，和详情查询共用同一个taskId
+     * @param message 错误消息
+     */
     public void notifyReservationListError(String message){
         notifyNetSearchResultError(mTaskId,message);
+    }
+
+    public void notifyCollectStatusError(int taskId, String message){
+        mView.onNotifyCollectStatusError(taskId,message);
     }
 
     private CostTime getCurrentElePrice(ArrayList<CostTime> costTimes) {
@@ -267,6 +293,6 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void searchReservation(AccessTokenParam param){
-        mModel.queryReservation(mSearchResultEntity,param);
+        mModel.queryReservation(param);
     }
 }

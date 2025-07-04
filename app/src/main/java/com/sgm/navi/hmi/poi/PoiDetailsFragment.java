@@ -168,6 +168,11 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mViewModel.searchCollectList(mParams);
     }
 
+    /**
+     * 查询详情失败，通知scene
+     * @param taskId 任务id
+     * @param message 错误信息
+     */
     public void onNetSearchResultError(final int taskId, String message) {
         mBinding.scenePoiDetailContentView.onNetSearchResultError(taskId, message);
     }

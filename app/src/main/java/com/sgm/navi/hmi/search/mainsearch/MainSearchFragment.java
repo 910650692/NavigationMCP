@@ -33,6 +33,7 @@ public class MainSearchFragment extends BaseFragment<MainFragmentSearchBinding, 
         final int powerType = mViewModel.powerType();
         final String[] categories;
         final TypedArray iconArray;
+        mViewModel.getAppKey();
         // 油车
         if (powerType == 1) {
             categories = getResources().getStringArray(R.array.main_search_categories_name_charging);
