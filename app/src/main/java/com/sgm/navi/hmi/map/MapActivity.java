@@ -20,6 +20,7 @@ import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.SpUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -47,6 +48,7 @@ import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.FragmentIntent;
@@ -54,7 +56,10 @@ import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @Description TODO
@@ -72,6 +77,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private MainScreenMapView mapView;
     private MsgTopDialog mMsgTopDialog;
     private Runnable mOpenGuideRunnable;
+
+    private Runnable timerRunnable = null;
 
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
@@ -108,6 +115,31 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
             }
         });
+    }
+
+    private void updateTimeText() {
+        // 更新时间格式
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String currentTime = sdf.format(new Date());
+        mBinding.screenScaleDate.setText(currentTime);
+        // 每秒更新一次
+        ThreadManager.getInstance().postDelay(timerRunnable, 1000);
+    }
+
+    public void startTime() {
+        if (timerRunnable == null) {
+            timerRunnable = this::updateTimeText;
+            mBinding.screenScaleDate.setVisibility(View.VISIBLE);
+            updateTimeText();
+        }
+    }
+
+    public void stopTime() {
+        if (timerRunnable != null) {
+            ThreadManager.getInstance().removeHandleTask(timerRunnable);
+            mBinding.screenScaleDate.setVisibility(View.GONE);
+            timerRunnable = null;
+        }
     }
 
     @Override
@@ -198,6 +230,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_CLOSE)
     protected void onDestroy() {
+        stopTime();
         // 退出的时候主动保存一下最后的定位信息
         if (mViewModel.getSdkInitStatus()) {
             mViewModel.saveLastLocationInfo();

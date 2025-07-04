@@ -35,6 +35,7 @@ import com.sgm.navi.service.define.engine.GaodeLogLevel;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.engine.EnginePackage;
 import com.sgm.navi.service.logicpaket.hud.HudPackage;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.recorder.RecorderPackage;
 import com.sgm.navi.service.logicpaket.signal.SignalPackage;
@@ -91,6 +92,10 @@ public class TestWindow {
         Logger.d(TAG, "isDebug", BuildConfig.DEBUG);
         mBinding.testNavLog.setChecked(BuildConfig.DEBUG ||
                 SpUtils.getInstance().getBoolean(SpUtils.SP_KEY_LOG_SWITCH, false));
+        if (BuildConfig.DEBUG ||
+                SpUtils.getInstance().getBoolean(SpUtils.SP_KEY_LOG_SWITCH, false)) {
+            MapPackage.getInstance().startTime();
+        }
         mBinding.testGaodeLog.setChecked(BuildConfig.DEBUG ||
                 SpUtils.getInstance().getBoolean(SpUtils.SP_KEY_GAO_DE_LOG_SWITCH, false));
         mWindowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
@@ -227,6 +232,11 @@ public class TestWindow {
 
         mBinding.testNavLog.setOnCheckedChangeListener((buttonView, checked) -> {
             Logger.switchLog(checked);
+            if (checked) {
+                MapPackage.getInstance().startTime();
+            } else {
+                MapPackage.getInstance().stopTime();
+            }
         });
         mBinding.testGaodeLog.setOnCheckedChangeListener((buttonView, checked) -> {
             EnginePackage.getInstance().switchLog(checked ? GaodeLogLevel.LOG_DEBUG : GaodeLogLevel.LOG_NONE);

@@ -44,6 +44,42 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     private LayerPackage mLayerPackage;
     private final ConcurrentHashMap<MapType, List<IMapPackageCallback>> callbacks = new ConcurrentHashMap<>();
 
+    public interface TimeHelper {
+        void startTime();
+
+        void stopTime();
+    }
+
+    private List<TimeHelper> helper = new ArrayList<>();
+
+    public void addTimeHelper(TimeHelper timeHelper) {
+        if (ConvertUtils.isEmpty(helper)) {
+            helper = new ArrayList<>();
+        }
+        if (!helper.contains(timeHelper)) {
+            helper.add(timeHelper);
+        }
+    }
+
+    public void removeTimeHelper(TimeHelper timeHelper) {
+        if (ConvertUtils.isEmpty(helper)) return;
+        helper.remove(timeHelper);
+    }
+
+    public void startTime() {
+        if (ConvertUtils.isEmpty(helper)) return;
+        for (TimeHelper timeHelper : helper) {
+            timeHelper.startTime();
+        }
+    }
+
+    public void stopTime() {
+        if (ConvertUtils.isEmpty(helper)) return;
+        for (TimeHelper timeHelper : helper) {
+            timeHelper.stopTime();
+        }
+    }
+
     private static final class Helper {
         private static final MapPackage ep = new MapPackage();
     }

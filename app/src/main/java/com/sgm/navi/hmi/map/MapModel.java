@@ -288,11 +288,23 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         addGestureListening();//添加收拾监听
         NavistatusAdapter.getInstance().registerCallback(this);
         SettingUpdateObservable.getInstance().addObserver(TAG, this);
-
+        mapPackage.addTimeHelper(timeHelper);
         speedMonitor.registerCallBack(this);
         mViewModel.initVisibleAreaPoint();
         FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
     }
+
+    private MapPackage.TimeHelper timeHelper = new MapPackage.TimeHelper() {
+        @Override
+        public void startTime() {
+            mViewModel.startTime();
+        }
+
+        @Override
+        public void stopTime() {
+            mViewModel.stopTime();
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -324,7 +336,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (null == mapPackage) {
             return;
         }
-
+        mapPackage.removeTimeHelper(timeHelper);
         mapPackage.unBindMapView(mViewModel.getMapView());
         speedMonitor.removeCallBack();
         speedMonitor.unInit();

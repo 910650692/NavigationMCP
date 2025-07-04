@@ -239,6 +239,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
+    public void startTime() {
+        mView.startTime();
+    }
+
+    public void stopTime() {
+        mView.stopTime();
+    }
+
     /**
      * 打开隐私权限弹窗
      */
