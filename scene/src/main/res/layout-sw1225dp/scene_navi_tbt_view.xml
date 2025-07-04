@@ -15,7 +15,7 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_progress"
         android:layout_width="@dimen/dp_545"
-        android:layout_height="@dimen/dp_96"
+        android:layout_height="@dimen/dp_119"
         tools:background="@color/navi_color_FFFFFF_80">
 
         <com.sgm.navi.ui.view.SkinImageView
