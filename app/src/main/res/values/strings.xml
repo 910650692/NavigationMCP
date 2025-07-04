@@ -449,7 +449,7 @@
     <string name="setting_others_privacy_one_year">一年</string>
     <string name="setting_others_privacy_never">永不</string>
     <string name="setting_others_privacy_end_date">授权时期：</string>
-    <string name="setting_others_privacy_location_description">保障“精确定位与导航巡航”、“路线规划”等功能正常使用</string>
+    <string name="setting_others_privacy_location_description">保障\"精确定位与导航巡航\"、\"路线规划\"等功能正常使用</string>
     <string name="setting_others_privacy_permission_no">未授权</string>
     <string name="setting_others_privacy_permission_yes">已授权</string>
     <string name="setting_others_privacy_protocol_center">协议中心</string>
