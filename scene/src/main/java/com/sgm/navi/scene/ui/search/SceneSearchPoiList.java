@@ -302,17 +302,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     mScreenViewModel.clearLabelMarker();
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd) {
-                        if ((mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
-                                || mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) && mRouteAround) {
-                            routeClickEvent(poiInfoEntity, position);
-                            return;
-                        }
-                        if (mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
-                            mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
-                        } else {
-                            mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
-                        }
-
+                        addRemoveClick(position, poiInfoEntity);
                     } else {
                         if (mIsEnd) {
                             ThreadManager.getInstance().execute(() -> mRoutePackage.requestChangeEnd(mMapTypeId, poiInfoEntity));
@@ -1911,6 +1901,28 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.routeChargeListAlongWayCancel.setVisibility(View.VISIBLE);
         }
     }
+
+    public void addRemoveClick(final int position, final PoiInfoEntity poiInfoEntity) {
+        if ((mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
+                || mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) && mRouteAround) {
+            routeClickEvent(poiInfoEntity, position);
+            return;
+        }
+        if (mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+            mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+        } else {
+            mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+        }
+    }
+
+    public void onSearchItemClick(int index) {
+        List<PoiInfoEntity> poiInfoEntities = mSearchResultEntity.getPoiList();
+        if (poiInfoEntities != null && !poiInfoEntities.isEmpty() && index < poiInfoEntities.size() && index != -1) {
+            addRemoveClick(index, poiInfoEntities.get(index));
+            mViewBinding.recyclerSearchResult.scrollToPosition(index);
+        }
+    }
+
 
     //------------算路沿途搜***************************************************/
 

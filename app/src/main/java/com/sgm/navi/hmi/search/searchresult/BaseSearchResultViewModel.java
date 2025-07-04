@@ -183,4 +183,10 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     public boolean isRouteAlongSearch() {
         return mModel.isRouteAlongSearch();
     }
+
+    public void onSearchItemClick(int index) {
+        if (mView != null) {
+            mView.onSearchItemClick(index);
+        }
+    }
 }

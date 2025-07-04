@@ -223,4 +223,8 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
             mViewModel.updateShowState(isShow);
         }
     }
+
+    public void onSearchItemClick(int index) {
+        mBinding.scenePoiList.onSearchItemClick(index);
+    }
 }

@@ -10,6 +10,7 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.MapTypeManager;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -131,6 +132,16 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
                 mViewModel.notifySilentSearchResult(taskId, searchResultEntity);
+            }
+        }
+    }
+
+    @Override
+    public void onSearchItemClick(MapType mapTypeId, LayerPointItemType type, int index) {
+        Logger.d(TAG, "onSearchItemClick : " + type);
+        if (type == LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD) {
+            if (mViewModel != null) {
+                mViewModel.onSearchItemClick(index);
             }
         }
     }
