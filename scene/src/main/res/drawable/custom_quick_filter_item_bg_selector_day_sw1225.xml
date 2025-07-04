@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bg_base_mfc_cadillac_bg_selector" android:state_focused="true" />
+    <item android:drawable="@drawable/bg_quick_filter_item_select_sw1225" android:state_pressed="true" />
+    <item android:drawable="@drawable/bg_quick_filter_item_select_sw1225" android:state_selected="true" />
+    <item android:drawable="@drawable/bg_quick_filter_item_normal_sw1225" />
+</selector>
