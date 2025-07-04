@@ -414,6 +414,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * @noinspection checkstyle:LeftCurly
      */
     public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        if (mScreenViewModel != null && mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
+            //1064667，地图点击详情页完全展示后，再通知地图显示“回车位”按钮
+            mScreenViewModel.NotifyMapTimer();
+        }
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty() || ConvertUtils.isEmpty(mScreenViewModel)) {
             //ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             return;
@@ -1657,6 +1661,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     public void onDestroy() {
         if (mScreenViewModel != null) {
             mScreenViewModel.clearAllPoiMarker();
+            mScreenViewModel.abortSearch(mScreenViewModel.getMTaskId());
         }
         super.onDestroy();
         if (mAnimator != null) {
@@ -1682,6 +1687,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.GONE);
                 if (mAnimator != null) {
                     mAnimator.cancel();
+                }
+                if (mScreenViewModel != null && mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
+                    //1064667，地图点击详情页加载失败后，再通知地图显示“回车位”按钮
+                    mScreenViewModel.NotifyMapTimer();
                 }
                 mViewBinding.noResultButton.setOnClickListener((view) -> {
                     mScreenViewModel.NotifyMapTimer();

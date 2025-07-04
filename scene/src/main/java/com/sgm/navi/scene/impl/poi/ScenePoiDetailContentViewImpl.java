@@ -364,4 +364,12 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     public void NotifyMapTimer(){
         mMapPackage.onNotifyMap(MapType.MAIN_SCREEN_MAIN_MAP, MapNotifyType.REFRESH_SELF_PARKING_TIMER);
     }
+
+    /**
+     * 中止搜索
+     * @param taskId 任务id
+     */
+    public void abortSearch(final int taskId) {
+        mSearchPackage.abortSearch(taskId);
+    }
 }
