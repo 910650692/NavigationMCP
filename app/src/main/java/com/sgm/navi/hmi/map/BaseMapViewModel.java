@@ -222,11 +222,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     private void checkAgreementRights(){
         Logger.i(TAG, "checkAgreementRights");
-        if (!mModel.isAllowSGMAgreement()) {
-            mModel.showSGMAgreement(true);
-        } else {
+//        if (!mModel.isAllowSGMAgreement()) {
+//            mModel.showSGMAgreement(true);
+//        } else {
             checkPrivacyRights();
-        }
+//        }
     }
 
     public void checkPrivacyRights() {
