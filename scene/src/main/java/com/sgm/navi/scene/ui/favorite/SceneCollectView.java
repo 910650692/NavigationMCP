@@ -321,15 +321,14 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     }
 
     public void setPowerType(final int powerType){
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: "+powerType);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: " + powerType);
         mScreenViewModel.mPowerType.setValue(powerType);
-        //BUGFIX 1065912 不需要显示tab 默认常规收藏夹
-//        if (mCollectionType == AutoMapConstant.CollectionType.COLLECTION) {
-//            if (mScreenViewModel.mPowerType != null) {
-//                mViewBinding.tvFavoriteSwitch.setVisibility((mScreenViewModel.mPowerType.getValue() == 1
-//                        || mScreenViewModel.mPowerType.getValue() == 2) ? VISIBLE : GONE);
-//            }
-//        }
+        if (mCollectionType == AutoMapConstant.CollectionType.COLLECTION) {
+            if (mScreenViewModel.mPowerType != null) {
+                mViewBinding.tvFavoriteSwitch.setVisibility((powerType == 1
+                        || powerType == 2) ? VISIBLE : GONE);
+            }
+        }
     }
 
     private void hideEmptyView(){
