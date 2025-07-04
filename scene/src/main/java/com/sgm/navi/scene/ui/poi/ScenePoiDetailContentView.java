@@ -636,8 +636,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         public void run() {
                             if (!ConvertUtils.isEmpty(etaInfo) && !ConvertUtils.isEmpty(mViewBinding)
                                     && !ConvertUtils.isEmpty(mViewBinding.poiDistanceTime)) {
-                                final String distance = formatDistanceArrayInternal(
-                                        etaInfo.getDistance());
+                                final String distance = formatDistanceArrayInternal(SearchPackage.getInstance()
+                                        .calcStraightDistanceWithInt(mPoiInfoEntity.getPoint()));
                                 mEtaInfo = etaInfo;
                                 mViewBinding.poiDistanceTime.setText(MessageFormat.format("{0} {1}",
                                         distance, etaInfo.getTravelTime()));
