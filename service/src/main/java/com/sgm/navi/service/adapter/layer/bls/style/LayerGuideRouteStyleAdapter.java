@@ -25,6 +25,7 @@ import com.autonavi.gbl.layer.RoutePathPointItem;
 import com.autonavi.gbl.layer.ViaChargeStationLayerItem;
 import com.autonavi.gbl.layer.model.BizRoadCrossType;
 import com.autonavi.gbl.layer.model.BizRouteType;
+import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.sgm.navi.service.R;
@@ -98,7 +99,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public String provideLayerItemStyleJson(LayerItem item) {
+    public String provideLayerItemStyleJson(BaseLayer layer, LayerItem item) {
         switch (item.getBusinessType()) {
             case BizRoadCrossType.BizRoadCrossTypeVector -> {
                 Logger.d(TAG, "2D矢量路口大图图层");
@@ -117,7 +118,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 return KEY_ROAD_START_DEFAULT;
             }
             case BizRouteType.BizRouteTypeEndPoint -> {
-                    return KEY_ROAD_END_DEFAULT;
+                //终点扎标开启图层避让 防止终点扎标被其他图元重叠
+                layer.enablePoiFilter(true);
+                return KEY_ROAD_END_DEFAULT;
             }
             case BizRouteType.BizRouteTypeEnergyEmptyPoint -> {
                 Logger.d(TAG, "能量耗尽点");
@@ -126,7 +129,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             case BizRouteType.BizRouteTypeViaChargeStationPoint -> {
                 if (ConvertUtils.isEmpty(mRouteChargeStation.getMRouteSupplementParams())) {
                     Logger.d(TAG, "默认补能规划扎标");
-                    return super.provideLayerItemStyleJson(item);
+                    return super.provideLayerItemStyleJson(layer, item);
                 }
                 Logger.d(TAG, "自定义补能规划扎标");
                 return KEY_ROAD_VIA_CHARGE_STATION;
@@ -142,15 +145,15 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                         return KEY_ROAD_ROUTE_VIA_CHARGE_STATION;
                     }
                     Logger.d(TAG, "途经点扎标-默认扎标");
-                    return super.provideLayerItemStyleJson(item);
+                    return super.provideLayerItemStyleJson(layer, item);
                 }
             }
             case BizRouteType.BizRouteTypeGuideLabel -> {
                 Logger.i(TAG, "多备选路线标签 BizRouteTypeGuideLabel");
-                return super.provideLayerItemStyleJson(item);
+                return super.provideLayerItemStyleJson(layer, item);
             }
         }
-        return super.provideLayerItemStyleJson(item);
+        return super.provideLayerItemStyleJson(layer, item);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.autonavi.gbl.layer.SearchChargeStationLayerItem;
 import com.autonavi.gbl.layer.model.BizChargeStationInfo;
 import com.autonavi.gbl.layer.model.BizSearchType;
 import com.autonavi.gbl.layer.model.SearchAlongWayExtraData;
+import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.sgm.navi.service.R;
@@ -37,6 +38,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     private static final String KEY_SEARCH_ALONG_WAY_CHARGE = "search_along_way_charge";
     //终点可停车-自定义停车场扎标
     private static final String KEY_SEARCH_PARK_ROUTE = "search_park_route";
+    private static final String KEY_SEARCH_PARK_POINT = "search_park_point";
     //搜索列表可见数字扎标
     private static final String KEY_SEARCH_LIST_INDEX = "search_list_index";
     //充电桩列表可见数字扎标
@@ -50,7 +52,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public String provideLayerItemStyleJson(LayerItem item) {
+    public String provideLayerItemStyleJson(BaseLayer layer, LayerItem item) {
         switch (item.getBusinessType()) {
             case BizSearchType.BizSearchTypePoiParentPoint -> {
                 int index = getIndexOfLayerItem(item);
@@ -75,8 +77,9 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 }
             }
             case BizSearchType.BizSearchTypePoiParkRoute -> {
-                Logger.d(TAG, "自定义终点停车场扎标");
-                return KEY_SEARCH_PARK_ROUTE;
+                // 暂无动态停车场数据 无需做比例尺适配
+                Logger.d(TAG, "默认停车场扎标");
+                return KEY_SEARCH_PARK_POINT;
             }
             case BizSearchType.BizSearchTypeChargeStation -> {
                 int index = getIndexOfLayerItem(item);
@@ -89,7 +92,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 }
             }
         }
-        return super.provideLayerItemStyleJson(item);
+        return super.provideLayerItemStyleJson(layer, item);
     }
 
     @Override

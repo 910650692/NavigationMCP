@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.layer.bls.style;
 
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.observer.PrepareLayerParamInner;
+import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -38,7 +39,7 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
      * @param item
      * @return
      */
-    public String provideLayerItemStyleJson(LayerItem item) {
+    public String provideLayerItemStyleJson(BaseLayer layer, LayerItem item) {
         return null;
     }
 

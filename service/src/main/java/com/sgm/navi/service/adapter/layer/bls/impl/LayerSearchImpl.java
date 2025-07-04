@@ -4,7 +4,6 @@ package com.sgm.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ResourceUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
@@ -22,9 +21,6 @@ import com.autonavi.gbl.layer.model.BizSearchParentPoint;
 import com.autonavi.gbl.layer.model.BizSearchType;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.LayerItem;
-import com.autonavi.gbl.map.model.PointD;
-import com.autonavi.gbl.map.model.PreviewParam;
-import com.sgm.navi.service.R;
 import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.sgm.navi.service.adapter.layer.bls.style.LayerSearchStyleAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -51,16 +47,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         super(bizService, mapView, context, mapType);
         getLayerSearchControl().setStyle(this);
         getLayerSearchControl().addClickObserver(this);
-        initBiztTypeCollision();
     }
-
-    /**
-     * 开启图元碰撞
-     */
-    private void initBiztTypeCollision() {
-        getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiParkRoute).enableCollision(true);
-    }
-
 
     @Override
     protected LayerSearchStyleAdapter createStyleAdapter() {

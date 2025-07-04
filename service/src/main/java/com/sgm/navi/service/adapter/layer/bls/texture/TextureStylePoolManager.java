@@ -43,7 +43,7 @@ public final class TextureStylePoolManager {
 
     public String getLayerStyleJson(MapType mapType, BaseLayer layer, LayerItem item, BaseStyleAdapter styleAdapter) {
         String styleJson = null;
-        String jsonPathName = styleAdapter.provideLayerItemStyleJson(item);
+        String jsonPathName = styleAdapter.provideLayerItemStyleJson(layer, item);
         if (!TextUtils.isEmpty(jsonPathName)) {
             if (!jsonPathName.endsWith(JSON)) {
                 jsonPathName = jsonPathName + JSON;

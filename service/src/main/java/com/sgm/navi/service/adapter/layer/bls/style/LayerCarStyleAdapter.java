@@ -6,6 +6,7 @@ import com.autonavi.gbl.layer.BizCarControl;
 import com.autonavi.gbl.layer.model.BizCarType;
 import com.autonavi.gbl.layer.model.PrepareLayerCarParam;
 import com.autonavi.gbl.layer.model.PrepareLayerMarkerParam;
+import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CarMode;
 import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
@@ -32,7 +33,7 @@ public class LayerCarStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public String provideLayerItemStyleJson(LayerItem item) {
+    public String provideLayerItemStyleJson(BaseLayer layer, LayerItem item) {
         switch (item.getBusinessType()) {
             case BizCarType.BizCarTypeInvalid:
             case BizCarType.BizCarTypeGuide:
@@ -65,7 +66,7 @@ public class LayerCarStyleAdapter extends BaseStyleAdapter {
                 }
             }
         }
-        return super.provideLayerItemStyleJson(item);
+        return super.provideLayerItemStyleJson(layer, item);
     }
 
     public void updateCarSpeed(int speed) {

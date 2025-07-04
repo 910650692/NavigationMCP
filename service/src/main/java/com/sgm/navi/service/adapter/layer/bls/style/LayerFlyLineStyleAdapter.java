@@ -4,6 +4,7 @@ import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizFlyLineControl;
 import com.autonavi.gbl.layer.model.BizFlyLineType;
 import com.autonavi.gbl.layer.model.FlylineDrawMode;
+import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
 
 public class LayerFlyLineStyleAdapter extends BaseStyleAdapter {
@@ -17,7 +18,7 @@ public class LayerFlyLineStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public String provideLayerItemStyleJson(LayerItem item) {
+    public String provideLayerItemStyleJson(BaseLayer layer, LayerItem item) {
         switch (item.getBusinessType()) {
             case BizFlyLineType.BizFlyLineTypePoint -> {
                 if (bizFlyLineControl != null) {
@@ -28,6 +29,6 @@ public class LayerFlyLineStyleAdapter extends BaseStyleAdapter {
                 }
             }
         }
-        return super.provideLayerItemStyleJson(item);
+        return super.provideLayerItemStyleJson(layer, item);
     }
 }
