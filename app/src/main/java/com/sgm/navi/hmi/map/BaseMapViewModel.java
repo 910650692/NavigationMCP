@@ -445,6 +445,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     };
 
+    public MessageCenterType getCurrentMsgType() {
+        if (messageCenterEntity == null) {
+            return null;
+        }
+        MessageCenterInfo messageCenterInfo = messageCenterEntity.get();
+        if (messageCenterInfo != null) {
+            return messageCenterInfo.getMsgType();
+        }
+        return null;
+    }
+
     public Action openLimitDetailFragment = new Action() {
         @Override
         @HookMethod(eventName = BuryConstant.EventName.AMAP_TRAFFICRESTRICT_CURRENT)

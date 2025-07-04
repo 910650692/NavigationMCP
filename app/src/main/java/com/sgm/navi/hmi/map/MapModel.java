@@ -57,6 +57,7 @@ import com.sgm.navi.service.logicpaket.activate.ActivatePackage;
 import com.sgm.navi.service.logicpaket.activate.IActivateObserver;
 import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
+import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.account.AccountQRCodeLoginFragment;
@@ -924,6 +925,17 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapModelHelp.onNaviStatusChange(naviStatus);
         Logger.i(TAG, "onNaviStatusChange:" , naviStatus);
         layerPackage.hideOrShowFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP, NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) || NaviStatus.NaviStatusType.CRUISE.equals(naviStatus));
+        if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus)) {
+            if (mViewModel != null) {
+                MessageCenterType messageCenterType = mViewModel.getCurrentMsgType();
+                if (MessageCenterType.CONTINUE_NAVI.equals(messageCenterType)) {
+                    Action messageCenterGone = mViewModel.messageCenterGone;
+                    if (messageCenterGone != null) {
+                        messageCenterGone.call();
+                    }
+                }
+            }
+        }
         if (NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) && !mSettingPackage.getPrivacyStatus()) {
             //导航结束，判断当前隐私协议状态，如果为拒绝，退出应用
             CarModelsFeature.getInstance().exitApp();
