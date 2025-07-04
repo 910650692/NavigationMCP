@@ -146,7 +146,8 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
             Logger.d(TAG, "ClusterActivity onClose");
             getRootView().setVisibility(GONE);
             //finishAndRemoveTask();
-            moveTaskToBack(true);
+            //moveTaskToBack(true);
+            finishAndRemoveTask();
         }
     }
 }
