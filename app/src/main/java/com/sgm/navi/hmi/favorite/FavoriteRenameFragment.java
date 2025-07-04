@@ -70,7 +70,7 @@ public class FavoriteRenameFragment extends BaseFragment<FragmentFavoriteRenameB
      */
     public void setEditTextContent(String content) {
         mBinding.settingFavoriteRename.requestFocus();
-        mBinding.settingFavoriteRename.setText(content);
+        //mBinding.settingFavoriteRename.setText(content); //UE确认，此处要置空，用户重新输入
         mBinding.settingFavoriteRename.setSelection(content.length());
     }
 
