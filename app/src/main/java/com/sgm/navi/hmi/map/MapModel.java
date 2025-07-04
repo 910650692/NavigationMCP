@@ -49,7 +49,6 @@ import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
-import com.sgm.navi.service.define.map.MainScreenMapView;
 import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.logicpaket.activate.ActivatePackage;
@@ -173,6 +172,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private CommonManager mCommonManager;
     private final IActivateObserver mActObserver;
+    private StartupExceptionDialog mStartExceptionDialog = null;
 
     private MapPackage mapPackage;
     private LayerPackage layerPackage;
@@ -468,21 +468,26 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN_FAIL)
     public void popStartupExceptionDialog() {
-        StartupExceptionDialog startupExceptionDialog = new StartupExceptionDialog(
-                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()),
-                new IBaseDialogClickListener() {
-                    @Override
-                    public void onNetWorkConnect() {
-                        startInitEngine();
+        if (null == mStartExceptionDialog) {
+            mStartExceptionDialog = new StartupExceptionDialog(mViewModel.getView(), new IBaseDialogClickListener() {
+                @Override
+                public void onNetWorkConnect() {
+                    if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
+                        mStartExceptionDialog.dismiss();
                     }
+                    startInitEngine();
+                }
 
-                    @Override
-                    public void onExit() {
-                        StackManager.getInstance().exitApp();
-                        FloatViewManager.getInstance().showAllCardWidgets();
-                    }
-                });
-        startupExceptionDialog.show();
+                @Override
+                public void onExit() {
+                    StackManager.getInstance().exitApp();
+                    FloatViewManager.getInstance().showAllCardWidgets();
+                }
+            });
+        }
+        if (!mStartExceptionDialog.isShowing()) {
+            mStartExceptionDialog.show();
+        }
     }
 
     public void startInitEngine() {

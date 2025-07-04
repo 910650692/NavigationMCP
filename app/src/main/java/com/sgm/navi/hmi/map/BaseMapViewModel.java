@@ -1457,4 +1457,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mScaleViewVisibility.set(!ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().isNaviDeskBg());
         sRVisible.set(!FloatViewManager.getInstance().isNaviDeskBg() && isSupportSplitScreen());
     }
+
+    public MapActivity getView() {
+        return mView;
+    }
 }
