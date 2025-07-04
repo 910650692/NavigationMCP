@@ -135,11 +135,8 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
         if (null != poiInfo) {
             ExportIntentParam.setPoiInfo(poiInfo);
         }
-        final Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        final ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchDisplayId(0);
-        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+        final boolean isNaviDesk = FloatViewManager.getInstance().isNaviDeskBg();
+        AppCache.getInstance().openMap(isNaviDesk);
     }
 
     /***

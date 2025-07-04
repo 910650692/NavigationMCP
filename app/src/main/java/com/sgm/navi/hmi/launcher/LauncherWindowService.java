@@ -233,13 +233,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
     public void openSelf(final int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
-        Class startCls = MapActivity.class;
-        ExportIntentParam.setIntentPage(pageCode);
-        Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
-        final ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchDisplayId(0);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().openMap(mFloatManager.isNaviDeskBg());
     }
 
     public static void startService() {

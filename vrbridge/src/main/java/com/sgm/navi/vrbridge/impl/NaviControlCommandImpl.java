@@ -2140,7 +2140,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         Logger.d(IVrBridgeConstant.TAG, "onMapToggle: action = " + action + ", target = " + target);
         switch (action) {
             case IVrBridgeConstant.MapToggleAction.OPEN:
-                MapStateManager.getInstance().openMap();
+                MapStateManager.getInstance().openMapWhenBackground();
                 break;
             case IVrBridgeConstant.MapToggleAction.CLOSE:
                 closeMap(respCallback);

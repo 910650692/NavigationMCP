@@ -27,6 +27,7 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
+import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.hmi.utils.CaptureScreenUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
@@ -256,12 +257,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
     public void openSelf(final int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
         ExportIntentParam.setIntentPage(pageCode);
-        Class startCls = MapActivity.class;
-        final Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
-        final ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchDisplayId(0);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().openMap(FloatViewManager.getInstance().isNaviDeskBg());
     }
 
     /***

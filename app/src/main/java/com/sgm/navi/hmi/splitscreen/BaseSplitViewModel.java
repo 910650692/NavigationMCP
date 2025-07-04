@@ -222,17 +222,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
         ExportIntentParam.setIntentPage(pageCode);
-        Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
-        ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchDisplayId(0);
-        Bundle bundle = new Bundle();
-        bundle.putInt(INaviConstant.PAGE_EXTRA, pageCode);
-        if (poiInfo != null) {
-            bundle.putParcelable(INaviConstant.POI_INFO_EXTRA, poiInfo);
-        }
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
-        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().openMap(FloatViewManager.getInstance().isNaviDeskBg());
     }
 
     private void startImmersiveSchedule() {

@@ -9,7 +9,9 @@ import android.view.KeyEvent;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
+import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;
@@ -45,12 +47,7 @@ public class NaviMfcHardKeyReceiver extends BroadcastReceiver {
 
     public void openSelf(int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
-        Class startCls = MapActivity.class;
-        Intent intent = new Intent(AppCache.getInstance().getMContext(), startCls);
-        final ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchDisplayId(0);
-        intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+        ExportIntentParam.setIntentPage(pageCode);
+        AppCache.getInstance().openMap(FloatViewManager.getInstance().isNaviDeskBg());
     }
 }

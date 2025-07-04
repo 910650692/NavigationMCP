@@ -18,6 +18,7 @@ import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.fsa.FsaConstant;
 import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.fsa.bean.PoiInfoForExport;
+import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.splitscreen.SRFloatWindowService;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.mapservice.bean.common.BaseCityInfo;
@@ -1394,28 +1395,11 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
 
     @Override
     public void openMap(final String clientPkg) {
-        Logger.i(TAG, clientPkg + " openMap");
-        final boolean appForeground = ProcessManager.isAppInForeground();
-        if (appForeground) {
-            return;
+        final boolean isNaviDesk = FloatViewManager.getInstance().isNaviDeskBg();
+        if (Logger.openLog) {
+            Logger.i(TAG, clientPkg, " openMap, isNaviDesk", isNaviDesk);
         }
-        if (null != AppCache.getInstance().getMContext()) {
-            try {
-                final String appPkgName = AppCache.getInstance().getMContext().getPackageName();
-                final PackageManager packageManager = AppCache.getInstance().getMContext().getPackageManager();
-                final Intent launcherIntent = packageManager.getLaunchIntentForPackage(appPkgName);
-                if (null != launcherIntent) {
-                    launcherIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    final ActivityOptions options = ActivityOptions.makeBasic();
-                    options.setLaunchDisplayId(0);
-                    AppCache.getInstance().getMContext().startActivity(launcherIntent, options.toBundle());
-                } else {
-                    Logger.e(TAG, "can't find map hmi");
-                }
-            } catch (ActivityNotFoundException exception) {
-                Logger.e(TAG, "open map error: " + exception.getMessage());
-            }
-        }
+        AppCache.getInstance().openMap(isNaviDesk);
     }
 
     //直接获取当前位置信息
@@ -1709,6 +1693,9 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
      */
     @Override
     public boolean stopNavi(final String pkgName) {
+        if (Logger.openLog) {
+            Logger.d(TAG, pkgName, "stopNavigation");
+        }
         boolean result = false;
         if (isNaviStatus(INNER_CLIENT)) {
             result = NaviPackage.getInstance().stopNavigation();

@@ -1,5 +1,6 @@
 package com.sgm.navi.vrbridge;
 
+import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -52,6 +53,7 @@ public final class MapStateManager {
     private int mLimitSpeed = 0; //当前道路限速
     private LocParallelInfoEntity mParallelInfo = null; //平行路信息
     private int mLocationInterval = 10; //语音定位信息最多10s更新一次
+    private int mLauncherDeskMode = 0;
 
     private boolean mMapStateInitiated = false; //地图状态是否已初始化
 
@@ -127,18 +129,6 @@ public final class MapStateManager {
 
         registerCallback();
         mMapStateInitiated = true;
-    }
-
-    public void vrSendLauncherShow(final boolean isShow) {
-        if (Logger.openLog) {
-            Logger.d(IVrBridgeConstant.TAG, "vrSendLauncherShow: ", isShow);
-        }
-        if (!mMapStateInitiated) {
-            Logger.w(IVrBridgeConstant.TAG, "MapStateManager not initiated");
-            return;
-        }
-        mBuilder.setIsDisplayInLauncher(isShow);
-        AMapStateUtils.saveMapState(mBuilder.build());
     }
 
     private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
@@ -715,7 +705,7 @@ public final class MapStateManager {
         if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus
                 || ProcessStatus.AppRunStatus.PAUSED == appRunStatus
                 || ProcessStatus.AppRunStatus.STOPPED == appRunStatus) {
-            openMap();
+            openMap(appRunStatus);
             if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus) {
                 saveCommand = true;
             }
@@ -726,23 +716,50 @@ public final class MapStateManager {
 
     /**
      * 切换到前台.
+     *
+     * @param appStatus Map应用运行状态.
      */
-    public void openMap() {
-        if (null != AppCache.getInstance().getMContext()) {
-            try {
-                final String appPkgName = AppCache.getInstance().getMContext().getPackageName();
-                final PackageManager packageManager = AppCache.getInstance().getMContext().getPackageManager();
-                final Intent launcherIntent = packageManager.getLaunchIntentForPackage(appPkgName);
-                if (null != launcherIntent) {
-                    launcherIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    AppCache.getInstance().getMContext().startActivity(launcherIntent);
-                } else {
-                    Logger.e(IVrBridgeConstant.TAG, "can't find map hmi");
-                }
-            } catch (ActivityNotFoundException exception) {
-                Logger.e(IVrBridgeConstant.TAG, "open map error: " + exception.getMessage());
-            }
+    public void openMap(final int appStatus) {
+        if (Logger.openLog) {
+            Logger.i(IVrBridgeConstant.TAG, "openMap current appStatus", appStatus, "launcherMode", mLauncherDeskMode);
         }
+
+        AppCache.getInstance().openMap(mLauncherDeskMode == 1);
+    }
+
+    /**
+     * 引导态下Launcher TBT卡片是否显示.
+     *
+     * @param isShow true:显示  false:不显示.
+     */
+    public void vrSendLauncherShow(final boolean isShow) {
+        if (Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "vrSendLauncherShow: ", isShow);
+        }
+        if (!mMapStateInitiated) {
+            Logger.w(IVrBridgeConstant.TAG, "MapStateManager not initiated");
+            return;
+        }
+        mBuilder.setIsDisplayInLauncher(isShow);
+        AMapStateUtils.saveMapState(mBuilder.build());
+    }
+
+    /**
+     * 获取桌面模式
+     *
+     * @return 0:壁纸桌面  1:地图桌面  2:实况桌面.
+     */
+    public int getLauncherDeskMode() {
+        return mLauncherDeskMode;
+    }
+
+    /**
+     * 设置桌面模式.
+     *
+     * @param launcherDeskMode 0:壁纸桌面  1:地图桌面  2:实况桌面.
+     */
+    public void setLauncherDeskMode(final int launcherDeskMode) {
+        mLauncherDeskMode = launcherDeskMode;
     }
 
 }

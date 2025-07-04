@@ -13,6 +13,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.exportservice.ExportIntentParam;
+import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -250,13 +251,7 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
         if (null != poiInfo) {
             ExportIntentParam.setPoiInfo(poiInfo);
         }
-        Intent intent = new Intent(AppCache.getInstance().getMContext(), MapActivity.class);
-        ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchDisplayId(0);
-        Bundle bundle = new Bundle();
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
-        AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+        AppCache.getInstance().openMap(FloatViewManager.getInstance().isNaviDeskBg());
     }
 
     public void onImmersiveStatusChange(ImersiveStatus lastImersiveStatus) {

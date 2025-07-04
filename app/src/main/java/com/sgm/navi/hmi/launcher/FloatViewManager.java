@@ -23,6 +23,7 @@ import com.sgm.navi.service.AppCache;
 import com.patac.launcher.ILauncherCallback;
 import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
+import com.sgm.navi.vrbridge.MapStateManager;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
@@ -92,6 +93,7 @@ public class FloatViewManager {
             super.onChange(selfChange, uri);
             currentDeskMode = Settings.Global.getInt(mContentResolver, DESKTOP_MODE_KEY, DesktopMode.KANZI_MODE.getValue());
             Logger.i(TAG, "onChange", selfChange, currentDeskMode);
+            MapStateManager.getInstance().setLauncherDeskMode(currentDeskMode);
             notifyDeskModeChanged();
         }
     };
@@ -105,6 +107,7 @@ public class FloatViewManager {
         ThreadManager.getInstance().execute(() -> {
             currentDeskMode = Settings.Global.getInt(mContentResolver, DESKTOP_MODE_KEY, DesktopMode.KANZI_MODE.getValue());
             Logger.i(TAG, "getDesktopMode", currentDeskMode);
+            MapStateManager.getInstance().setLauncherDeskMode(currentDeskMode);
         });
     }
 
