@@ -215,17 +215,25 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
      */
     public void setDownloadedView(final ArrayList<ProvDataInfo> provDataInfos) {
         int size = 0;
+        boolean hasBasePackage = false;
         if (provDataInfos != null && !provDataInfos.isEmpty()) {
             for (int i = 0; i < provDataInfos.size(); i++) {
                 final List<CityDataInfo> city = provDataInfos.get(i).getCityInfoList();
                 size = city.size() + size;
+                if (TextUtils.equals(provDataInfos.get(i).getName(),
+                        ResourceUtils.Companion.getInstance().getString(
+                                R.string.offline_item_city_title))) {
+                    hasBasePackage = true;
+                }
             }
         }
 
         mDownloadedNoDataVisibility.setValue(size == 0);
         mView.updateDownloadedView(provDataInfos);
         mAllDownloadedDataSize.setValue(ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_start)
-            + size + ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_end));
+                + (hasBasePackage ? size - 1 : size)
+                + ResourceUtils.Companion.getInstance()
+                .getString(R.string.offline_manager_map_downloading_size_end));
 
     }
 
