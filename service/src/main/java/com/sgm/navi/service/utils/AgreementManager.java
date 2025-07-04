@@ -3,6 +3,7 @@ package com.sgm.navi.service.utils;
 
 import android.content.Context;
 
+import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.patac.hmi.privacy.domain.repository.AgreementDataSourceRepository;
 import com.patac.hmi.privacy.domain.utils.DialogType;
@@ -49,7 +50,12 @@ public class AgreementManager implements IAgreementCallBack {
         try {
             mAgreementDataSourceRepository.registerAgreementListener(
                     AgreementManager.this, mContext);
-            mAgreementState = mAgreementDataSourceRepository.agreementStatus();
+            if (DeviceUtils.isCar(mContext)) {
+                mAgreementState = mAgreementDataSourceRepository.agreementStatus();
+            } else {
+                Logger.d(TAG, "AgreementManager init isCar");
+                mAgreementState = true;
+            }
             Logger.d(TAG, "AgreementManager init mAgreementState = ", mAgreementState);
             mAgreementDataSourceRepository.registerGmBaiduAgreementCallback(this);
         } catch (Exception e) {
@@ -84,7 +90,11 @@ public class AgreementManager implements IAgreementCallBack {
      * @return  是否同意协议.
      */
     public boolean isAllowSGMAgreement() {
-        mAgreementState = mAgreementDataSourceRepository.agreementStatus();
+        if (DeviceUtils.isCar(mContext)) {
+            mAgreementState = mAgreementDataSourceRepository.agreementStatus();
+        } else {
+            mAgreementState = true;
+        }
         Logger.i(TAG, "isAllowSGMAgreement: ", mAgreementState);
         return mAgreementState;
     }
