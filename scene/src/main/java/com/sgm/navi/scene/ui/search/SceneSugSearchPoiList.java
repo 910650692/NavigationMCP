@@ -313,20 +313,23 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                     mViewBinding.recyclerSearchHistory.setVisibility(GONE);
                     suggestionSearch(editable.toString().trim());
                 } else {
-                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"Text is empty");
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Text is empty");
                     mViewBinding.sclSearchTopView.ivEditClear.setVisibility(GONE);
                     mViewBinding.recyclerSearchResult.setVisibility(GONE);
                     mViewBinding.recyclerSearchHistory.setVisibility(VISIBLE);
                     mAdapter.clearList();
                     final List<History> list = getSearchKeywordRecord();
-                    if(list.isEmpty()){
+                    if (list.isEmpty()) {
                         mViewBinding.recyclerSearchHistory.setVisibility(GONE);
                         mViewBinding.recyclerNoHint.setVisibility(VISIBLE);
                         mViewBinding.recyclerNoHint.setText(ResourceUtils.Companion.getInstance().getString(R.string.shv_record_null));
-                    }else{
+                    } else {
                         mViewBinding.recyclerSearchHistory.setVisibility(VISIBLE);
                         mViewBinding.recyclerNoHint.setVisibility(GONE);
-                        mSearchHistoryAdapter.notifyList(list);
+                        if (mSearchHistoryAdapter.getItemCount() != list.size()) {
+                            //列表数据刷新，才更新list
+                            mSearchHistoryAdapter.notifyList(list);
+                        }
                         mSearchHistoryAdapter.setMIsShowIndex(false);
                     }
                 }
@@ -337,6 +340,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onEditorActionListener actionId: " , actionId);
             if (ConvertUtils.isEmpty(getEditText())) {
                 hideInput();
+                ToastUtils.Companion.getInstance().showCustomToastView("搜索内容不能为空");
                 return true;
             }
             // 预搜索界面逻辑处理，跳转到搜索结果页面
