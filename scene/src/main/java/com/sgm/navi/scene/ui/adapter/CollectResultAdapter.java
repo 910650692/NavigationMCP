@@ -211,21 +211,15 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click " + mPoiEntities.get(position).getName()
                     + " ,id: " + mPoiEntities.get(position).getPid()
                     + " ,point: " + mPoiEntities.get(position).getPoint());
-            if (mSearchPackage.isAlongWaySearch()) {
-                if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
-                    return;
-                }
-            } else {
-                //若是常用地址或者收到的点并且已经添加，直接return
-                if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
-                    if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
-                        if (!ConvertUtils.isEmpty(BehaviorPackage.getInstance().isFavorite(mPoiEntities.get(position)))) {
-                            return;
-                        }
-                    } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COMMON) {
-                        if (BehaviorPackage.getInstance().isFrequentAddress(mPoiEntities.get(position))) {
-                            return;
-                        }
+            //若是常用地址或者收到的点并且已经添加，直接return
+            if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
+                if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
+                    if (!ConvertUtils.isEmpty(BehaviorPackage.getInstance().isFavorite(mPoiEntities.get(position)))) {
+                        return;
+                    }
+                } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COMMON) {
+                    if (BehaviorPackage.getInstance().isFrequentAddress(mPoiEntities.get(position))) {
+                        return;
                     }
                 }
             }

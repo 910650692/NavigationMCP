@@ -144,7 +144,11 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                     if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.ALONG_WAY) {
                         //如果是添加途径点，则改为添加途径点后跳转到路线规划页面
                         if (SearchPackage.getInstance().isAlongWaySearch()) {
-                            RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                            if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                                RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                            } else {
+                                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                            }
                         }
 //                        closeAllFragmentsUntilTargetFragment("MainAlongWaySearchFragment");
                     } else {
