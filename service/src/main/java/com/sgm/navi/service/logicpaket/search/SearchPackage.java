@@ -50,6 +50,7 @@ import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.greendao.history.History;
 import com.sgm.navi.service.greendao.history.HistoryManager;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,6 +85,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private final RouteAdapter mRouteAdapter;
     private final NavistatusAdapter mNavistatusAdapter;
     private final UserTrackAdapter mUserTrackAdapter;
+    private final NaviPackage mNaviPackage;
     private CommonManager mCommonManager;
     private final ConcurrentHashMap<String, SearchResultCallback> mISearchResultCallbackMap = new ConcurrentHashMap<>();
     private final AtomicReference<String> mCurrentCallbackId = new AtomicReference<>();
@@ -104,6 +106,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         mRouteAdapter = RouteAdapter.getInstance();
         mNavistatusAdapter = NavistatusAdapter.getInstance();
         mUserTrackAdapter = UserTrackAdapter.getInstance();
+        mNaviPackage = NaviPackage.getInstance();
         mCommonManager = CommonManager.getInstance();
         mCommonManager.init();
         if (mLayerAdapter != null) mLayerAdapter.registerLayerClickObserver(MapType.MAIN_SCREEN_MAIN_MAP,  this);
@@ -1440,7 +1443,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final LayerPointItemType layerPointItemType = LayerPointItemType.SEARCH_PARENT_PARK;
         sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
         mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
-                layerItemSearchResult, true);
+                layerItemSearchResult, false);
         showPreview(poiList);
     }
 
@@ -1692,6 +1695,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "clearLabelMark");
         sMarkerInfoMap.clear();
         mLayerAdapter.clearAllSearchLayerItems(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (mNaviPackage.getFixedOverViewStatus()) {
+            return;
+        }
         mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
@@ -1701,6 +1707,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public void clearPoiLabelMark() {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "clearPoiLabelMark");
         mLayerAdapter.clearSearchPOILayerItems(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_LABEL);
+        if (mNaviPackage.getFixedOverViewStatus()) {
+            return;
+        }
         mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 

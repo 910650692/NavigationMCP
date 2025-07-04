@@ -9,6 +9,7 @@ import com.sgm.navi.scene.ui.search.SceneTerminalParkingListView;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
@@ -37,7 +38,7 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
     @Override
     public void closeSearch() {
         StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
-        mSearchPackage.clearLabelMark();
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_PARK);
     }
 
     /**
