@@ -48,11 +48,13 @@ import java.util.Date;
  * @CreateDate: $ $
  */
 public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBinding, SceneHomeCompanyViewImpl> {
+
     private static final String DIVIDER = "_";
     private int mHomeCompanyType;
     private IOnHomeCompanyClickListener mClickListener;
     private PoiInfoEntity mUserPoiInfoEntity;
     private boolean mIsClickMyPos = false;
+
     public void setClickListener(final IOnHomeCompanyClickListener clickListener) {
         this.mClickListener = clickListener;
     }
@@ -81,7 +83,9 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
 
     @Override
     protected void setInitVariableId() {
-        mViewBinding.setSceneHomeCompanyView(mScreenViewModel);
+        if (null != mViewBinding) {
+            mViewBinding.setSceneHomeCompanyView(mScreenViewModel);
+        }
     }
 
     @Override
@@ -94,6 +98,10 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      * 初始化搜索框相关事件
      */
     private void setupSearchActions() {
+        if (null == mViewBinding) {
+            return;
+        }
+
         mViewBinding.searchBarTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
@@ -130,9 +138,8 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
             hideInput();
             return true;
         });
-        if (mViewBinding != null && mViewBinding.ivEditClear != null) {
-            mViewBinding.ivEditClear.setOnClickListener(view -> clearEditText());
-        }
+
+        mViewBinding.ivEditClear.setOnClickListener(view -> clearEditText());
     }
 
     /**
@@ -161,63 +168,36 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      */
     public void setViewVisibility(final int formType) {
         mHomeCompanyType = formType;
+        if (null == mViewBinding) {
+            return;
+        }
         switch (formType) {
             //家和公司: 显示地图选点、我的位置
             case AutoMapConstant.HomeCompanyType.HOME:
                 mViewBinding.searchBarTextView.setHint(getContext().getString(R.string.home_search_hint));
-                if (null != mViewBinding.sclGasStation) {
-                    mViewBinding.sclGasStation.setVisibility(View.GONE);
-                }
-                if (null != mViewBinding.sclPullUp) {
-                    mViewBinding.sclPullUp.setVisibility(View.GONE);
-                }
-                if (null != mViewBinding.sclCarWashing) {
-                    mViewBinding.sclCarWashing.setVisibility(View.VISIBLE);
-                }
-
-                if (null != mViewBinding.sclGourmet) {
-                    mViewBinding.sclGourmet.setVisibility(View.VISIBLE);
-                }
+                mViewBinding.sclGasStation.setVisibility(View.GONE);
+                mViewBinding.sclPullUp.setVisibility(View.GONE);
+                mViewBinding.sclCarWashing.setVisibility(View.VISIBLE);
+                mViewBinding.sclGourmet.setVisibility(View.VISIBLE);
                 break;
             case AutoMapConstant.HomeCompanyType.COMPANY:
                 mViewBinding.searchBarTextView.setHint(getContext().getString(R.string.company_search_hint));
-                if (null != mViewBinding.sclGasStation) {
-                    mViewBinding.sclGasStation.setVisibility(View.GONE);
-                }
-                if (null != mViewBinding.sclPullUp) {
-                    mViewBinding.sclPullUp.setVisibility(View.GONE);
-                }
-                if (null != mViewBinding.sclCarWashing) {
-                    mViewBinding.sclCarWashing.setVisibility(View.VISIBLE);
-                }
-
-                if (null != mViewBinding.sclGourmet) {
-                    mViewBinding.sclGourmet.setVisibility(View.VISIBLE);
-                }
+                mViewBinding.sclGasStation.setVisibility(View.GONE);
+                mViewBinding.sclPullUp.setVisibility(View.GONE);
+                mViewBinding.sclCarWashing.setVisibility(View.VISIBLE);
+                mViewBinding.sclGourmet.setVisibility(View.VISIBLE);
                 break;
             //常用地址:显示收藏夹、收到的点、地图选点
             case AutoMapConstant.HomeCompanyType.COMMON:
-                if (null != mViewBinding.sclCarWashing) {
-                    mViewBinding.sclCarWashing.setVisibility(View.GONE);
-                }
-                if (null != mViewBinding.sclGasStation) {
-                    mViewBinding.sclGasStation.setVisibility(View.VISIBLE);
-                }
-                if (null != mViewBinding.sclPullUp) {
-                    mViewBinding.sclPullUp.setVisibility(View.VISIBLE);
-                }
-                if (null != mViewBinding.sclGourmet) {
-                    mViewBinding.sclGourmet.setVisibility(View.VISIBLE);
-                }
+                mViewBinding.sclCarWashing.setVisibility(View.GONE);
+                mViewBinding.sclGasStation.setVisibility(View.VISIBLE);
+                mViewBinding.sclPullUp.setVisibility(View.VISIBLE);
+                mViewBinding.sclGourmet.setVisibility(View.VISIBLE);
                 break;
             case AutoMapConstant.HomeCompanyType.COLLECTION:
                 //收藏夹 显示地图选点，收到的点
-                if (null != mViewBinding.sclCarWashing) {
-                    mViewBinding.sclCarWashing.setVisibility(View.GONE);
-                }
-                if (null != mViewBinding.sclGasStation) {
-                    mViewBinding.sclGasStation.setVisibility(View.GONE);
-                }
+                mViewBinding.sclCarWashing.setVisibility(View.GONE);
+                mViewBinding.sclGasStation.setVisibility(View.GONE);
                 break;
             default:
                 break;
@@ -247,8 +227,8 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      * @return 输入框内容
      */
     private String getEditText() {
-        return mViewBinding.searchBarTextView.getText() != null ?
-                mViewBinding.searchBarTextView.getText().toString().trim() : "";
+        return null != mViewBinding && null != mViewBinding.searchBarTextView.getText() ?
+                mViewBinding.searchBarTextView.getText().toString() : "";
     }
 
     /**
@@ -421,4 +401,5 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
             mIsClickMyPos = false;
         }
     }
+
 }
