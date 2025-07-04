@@ -372,4 +372,8 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     public void abortSearch(final int taskId) {
         mSearchPackage.abortSearch(taskId);
     }
+
+    public void getPointType(String pointTypeCOde){
+        mSearchPackage.getPointTypeCode(pointTypeCOde);
+    }
 }

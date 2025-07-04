@@ -15,6 +15,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.databinding.ListScenePoiDetailsScenicChildSpotBinding;
+import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.search.ChildInfo;
 
@@ -25,6 +26,7 @@ public class PoiListDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiLi
     private final List<ChildInfo> mChildList;
     private OnItemClickListener mItemClickListener;
     private boolean mIsCollapse = true;
+    private int mPointType;
 
     public boolean isCollapse() {
         return mIsCollapse;
@@ -34,8 +36,9 @@ public class PoiListDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiLi
         mIsCollapse = collapse;
     }
 
-    public PoiListDetailsScenicChildAdapter() {
+    public PoiListDetailsScenicChildAdapter(int pointTypeCode) {
         mChildList = new ArrayList<>();
+        mPointType = pointTypeCode;
     }
 
 
@@ -88,10 +91,17 @@ public class PoiListDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiLi
                 R.color.custom_filter_item_text_bg_selector_day);
         holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.setTextColor(titleList);
 
-        holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setText(subTitle);
-        final ColorStateList subTitleList = ContextCompat.getColorStateList(holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.getContext(),
-                R.color.custom_filter_sub_item_text_bg_selector_day);
-        holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setTextColor(subTitleList);
+        // 交通枢纽且无推荐数据，隐藏
+        if(mPointType == AutoMapConstant.PointTypeCode.TRANSPORT_HUB && ratio <= 0){
+            holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setVisibility(View.GONE);
+        }else{
+            holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setVisibility(View.VISIBLE);
+            holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setText(subTitle);
+            final ColorStateList subTitleList = ContextCompat.getColorStateList(holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.getContext(),
+                    R.color.custom_filter_sub_item_text_bg_selector_day);
+            holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setTextColor(subTitleList);
+        }
+
 
         holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.setSelected(childInfo.getChecked() == 1);
         holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setSelected(childInfo.getChecked() == 1);

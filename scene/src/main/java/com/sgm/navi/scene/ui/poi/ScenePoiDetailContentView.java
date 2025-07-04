@@ -1339,7 +1339,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      */
     private void refreshChildListView() {
         final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
-        mScenicChildAdapter = new PoiDetailsScenicChildAdapter();
+        int pointType = mScreenViewModel.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
+        mScenicChildAdapter = new PoiDetailsScenicChildAdapter(pointType);
         if (childInfoList != null && !childInfoList.isEmpty()) {
             for (ChildInfo childInfo : childInfoList) {
                 mScreenViewModel.setGrandChildInfoList(childInfo)
@@ -1560,7 +1561,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             return;
         }
         final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
-        final PoiDetailsScenicChildAdapter scenicChildAdapter = new PoiDetailsScenicChildAdapter();
+        int pointType = mScreenViewModel.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
+        final PoiDetailsScenicChildAdapter scenicChildAdapter = new PoiDetailsScenicChildAdapter(pointType);
         if (childInfoList != null && !childInfoList.isEmpty()) {
             for (ChildInfo childInfo : childInfoList) {
                 mScreenViewModel.setGrandChildInfoList(childInfo)

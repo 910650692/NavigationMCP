@@ -372,7 +372,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             }
 
             final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
-            final PoiListDetailsScenicChildAdapter scenicChildAdapter = new PoiListDetailsScenicChildAdapter();
+            final PoiListDetailsScenicChildAdapter scenicChildAdapter = new PoiListDetailsScenicChildAdapter(pointTypeCode);
             if (childInfoList != null && !childInfoList.isEmpty()) {
                 for (ChildInfo childInfo : childInfoList) {
                     SearchPackage.getInstance().setGrandChildInfoList(childInfo)
