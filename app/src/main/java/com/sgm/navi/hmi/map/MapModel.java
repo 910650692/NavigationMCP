@@ -1046,7 +1046,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public String getNaviStatus() {
-        return mNaviStatusPackage.getCurrentNaviStatus();
+        return NaviStatusPackage.getInstance().getCurrentNaviStatus();
     }
 
     private ContinueNaviDialog mContinueNaviDialog;
