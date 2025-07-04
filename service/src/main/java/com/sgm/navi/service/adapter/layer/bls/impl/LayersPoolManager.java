@@ -60,10 +60,10 @@ public final class LayersPoolManager implements ILayerAdapterCallBack {
     }
 
     public boolean unInitLayer(MapType mapType) {
-        if (!ConvertUtils.isEmpty(layersPools.get(mapType))) {
+        if (layersPools.containsKey(mapType)) {
             layersPools.get(mapType).removeClickCallback();
+            layersPools.remove(mapType);
         }
-        layersPools.remove(mapType);
         return false;
     }
 
