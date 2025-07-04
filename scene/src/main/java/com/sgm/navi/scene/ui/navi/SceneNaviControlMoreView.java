@@ -229,7 +229,7 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
         mScreenViewModel.refreshRouteCauseNet();
     }
 
-    public void setSwipeListener(SwipeView.DownSwipeListener downSwipeListener) {
+    public void setSwipeListener(SwipeView.DownSwipeAndClickListener downSwipeListener) {
         if (mViewBinding != null && mViewBinding.svBarArea != null) {
             if (mViewBinding.svBarArea instanceof SwipeView) {
                 ((SwipeView) mViewBinding.svBarArea).setDownSwipeListener(downSwipeListener);

@@ -44,7 +44,7 @@ import java.util.HashMap;
 import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMoreView> implements
-        ISceneNaviControl, SwipeView.DownSwipeListener {
+        ISceneNaviControl, SwipeView.DownSwipeAndClickListener {
     private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CONTROL_MORE_IMPL;
     private final NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
@@ -432,6 +432,11 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
 
     @Override
     public void onDownSwipe() {
+        backControl();
+    }
+
+    @Override
+    public void onClick() {
         backControl();
     }
 }

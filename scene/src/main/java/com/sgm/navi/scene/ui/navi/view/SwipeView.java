@@ -9,7 +9,11 @@ import com.sgm.navi.ui.view.SkinFrameLayout;
 
 public class SwipeView extends SkinFrameLayout {
     private GestureDetector mGestureDetector;
-    private DownSwipeListener mDownSwipeListener;
+    private DownSwipeAndClickListener mDownSwipeAndClickListener;
+    private float mDownX, mDownY;
+    private long mDownTime;
+    private static final int CLICK_THRESHOLD = 200; // ms
+    private static final int MOVE_THRESHOLD = 10; // px
 
     public SwipeView(final android.content.Context context) {
         super(context);
@@ -25,8 +29,10 @@ public class SwipeView extends SkinFrameLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public interface DownSwipeListener {
+    public interface DownSwipeAndClickListener {
         void onDownSwipe();
+
+        void onClick();
     }
 
 
@@ -43,8 +49,8 @@ public class SwipeView extends SkinFrameLayout {
                 float diffX = Math.abs(e2.getX() - e1.getX());
                 if (diffY > SWIPE_THRESHOLD && Math.abs(velocityY) >
                         SWIPE_VELOCITY_THRESHOLD && diffY > diffX) {
-                    if (mDownSwipeListener != null) {
-                        mDownSwipeListener.onDownSwipe();
+                    if (mDownSwipeAndClickListener != null) {
+                        mDownSwipeAndClickListener.onDownSwipe();
                     }
                     return true;
                 }
@@ -58,11 +64,32 @@ public class SwipeView extends SkinFrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         mGestureDetector.onTouchEvent(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mDownX = event.getX();
+                mDownY = event.getY();
+                mDownTime = System.currentTimeMillis();
+                break;
+            case MotionEvent.ACTION_UP:
+                float upX = event.getX();
+                float upY = event.getY();
+                long upTime = System.currentTimeMillis();
+                if (Math.abs(upX - mDownX) < MOVE_THRESHOLD &&
+                        Math.abs(upY - mDownY) < MOVE_THRESHOLD &&
+                        (upTime - mDownTime) < CLICK_THRESHOLD) {
+                    if (mDownSwipeAndClickListener != null) {
+                        mDownSwipeAndClickListener.onClick();
+                    }
+                }
+                break;
+            default:
+                break;
+        }
         return true;
     }
 
-    public void setDownSwipeListener(DownSwipeListener listener) {
-        this.mDownSwipeListener = listener;
+    public void setDownSwipeListener(DownSwipeAndClickListener listener) {
+        this.mDownSwipeAndClickListener = listener;
     }
 
 }
