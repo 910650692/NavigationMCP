@@ -54,4 +54,6 @@ public class RequestRouteResult {
     private boolean mRestoration = false;
     /*** 是否高德sdk自动重算 **/
     private boolean mAutoRouting = false;
+    /*** 是否直接开始导航 **/
+    private boolean mStartNavi = false;
 }

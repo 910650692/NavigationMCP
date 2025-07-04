@@ -497,6 +497,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
 
         final RouteMsgPushInfo routeMsgPushInfo = new RouteMsgPushInfo();
         routeMsgPushInfo.setMMsgPushInfo(msg);
+        routeMsgPushInfo.setMSendType(msg.content.sendMode);
         final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
         poiInfoEntity.setName(msg.content.routeParam.destination.name);
         poiInfoEntity.setPid(msg.content.routeParam.destination.poiId);

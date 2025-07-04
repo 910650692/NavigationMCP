@@ -742,8 +742,8 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     /**
      * 取消算路
      * */
-    public void cancelRoute() {
-        mRoutePackage.abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
+    public boolean cancelRoute() {
+        return mRoutePackage.abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     @Override
@@ -760,7 +760,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             return;
         }
         if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.setRouteResultListUI(mRouteLineInfos);
+            mViewModel.setRouteResultListUI(mRouteLineInfos, !requestRouteResult.isMStartNavi());
         }
         if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.ROUTING) ) {
             NaviStatusPackage.getInstance().setNaviStatus(NaviStatus.NaviStatusType.SELECT_ROUTE);
@@ -770,6 +770,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (endRouteParam == null) {
             Logger.e(TAG, "error endParam");
             return;
+        }
+        if (requestRouteResult.isMStartNavi()) {
+            Logger.d(TAG, "Start navigation directly");
+            mViewModel.startNavi(false);
         }
         ThreadManager.getInstance().postDelay( () -> {
             if (RoutePackage.getInstance().isRouteState()) {

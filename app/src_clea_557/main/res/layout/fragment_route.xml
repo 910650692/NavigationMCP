@@ -13,6 +13,8 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/fragment_route"
+        android:visibility="invisible"
         android:layout_width="@dimen/dp_1721"
         android:layout_height="@dimen/dp_772">
         <!--tab list-->

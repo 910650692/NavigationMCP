@@ -124,6 +124,10 @@ public class RouteAdapterImpl implements IRouteApi {
         requestRouteResult.setMRouteRequestCallBackType(param.getRouteRequestCallBackType());
         requestRouteResult.setMRestoration(false);
         requestRouteResult.setMAutoRouting(false);
+        if (param.isMStartNavi()) {
+            requestRouteResult.setMStartNavi(true);
+            requestRouteResult.setMAutoRouting(true);
+        }
         final RouteOption routeOption = mAdapterImplHelper.getRequestParam(requestRouteResult, paramList);
         mLastRouteOption = routeOption;
         mLastRequestRouteResult = requestRouteResult;
@@ -228,6 +232,7 @@ public class RouteAdapterImpl implements IRouteApi {
         final AimRoutePushMsg aimRoutePushMsg = (AimRoutePushMsg) routeMsgPushInfo.getMMsgPushInfo();
         final RouteRestorationOption routeRestorationOption = new RouteRestorationOption();
         final RoutepathrestorationPathInfo path = aimRoutePushMsg.content.path;
+        int send = aimRoutePushMsg.content.sendMode;
         routeRestorationOption.setPaths(path.paths);
         routeRestorationOption.setStartPoints(path.startPoints.points);
         routeRestorationOption.setViaPoints(path.routeViaPoints.display_points, path.routeViaPoints.path_project_points);
@@ -258,6 +263,7 @@ public class RouteAdapterImpl implements IRouteApi {
         requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
         requestRouteResult.setMRestoration(true);
         requestRouteResult.setMAutoRouting(false);
+        requestRouteResult.setMStartNavi(send == 1);
         final RouteLineLayerParam routeLineLayerParam = new RouteLineLayerParam();
         routeLineLayerParam.getMRouteLinePoints().getMEndPoints().add(routeMsgPushInfo.getMEndPoint());
         routeLineLayerParam.getMRouteLinePoints().getMStartPoints().add(routeMsgPushInfo.getMStartPoint());
@@ -272,9 +278,10 @@ public class RouteAdapterImpl implements IRouteApi {
     }
 
     @Override
-    public void abortRequest(final long requestId) {
+    public boolean abortRequest(final long requestId) {
         final boolean success = mRouteService.abortRequest(requestId);
         Logger.i(TAG, "abortRequest: " + success);
+        return success;
     }
 
     /**

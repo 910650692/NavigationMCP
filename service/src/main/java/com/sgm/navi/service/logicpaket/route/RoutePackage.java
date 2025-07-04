@@ -969,6 +969,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
         RouteRequestParam routeRequestParam = new RouteRequestParam();
         routeRequestParam.setMMapTypeId(mapTypeId);
+        routeRequestParam.setMStartNavi(routeMsgPushInfo.getMSendType() == 1);
         final long requestId = mRouteAdapter.requestRoute(routeRequestParam, paramList);
         mRequestId.put(routeRequestParam.getMMapTypeId(), requestId);
     }
@@ -1882,11 +1883,15 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      *
      * @param mapTypeId 屏幕ID
      */
-    public void abortRequest(final MapType mapTypeId) {
-        if (ConvertUtils.isEmpty(mRequestId)) {
-            return;
+    public boolean abortRequest(final MapType mapTypeId) {
+        if (ConvertUtils.isEmpty(mRequestId) || mRouteAdapter == null) {
+            return false;
         }
-        mRouteAdapter.abortRequest(mRequestId.get(mapTypeId));
+        Long requestId = mRequestId.get(mapTypeId);
+        if (requestId == null) {
+            return false;
+        }
+        return mRouteAdapter.abortRequest(requestId);
     }
 
     /**

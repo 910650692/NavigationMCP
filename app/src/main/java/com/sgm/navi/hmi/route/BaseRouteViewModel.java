@@ -1219,9 +1219,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     /***
      * 展示算路结果列表
      * @param routeLineInfos 列表数据
+     * @param isShow 是否显示算路界面
      */
-    public void setRouteResultListUI(final List<RouteLineInfo> routeLineInfos) {
-        mView.setRouteResultListUI(routeLineInfos);
+    public void setRouteResultListUI(final List<RouteLineInfo> routeLineInfos, final boolean isShow) {
+        mView.setRouteResultListUI(routeLineInfos, isShow);
     }
 
     /***
@@ -2033,7 +2034,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     @Override
     public void onClose() {
-        mModel.cancelRoute();
+        boolean success = mModel.cancelRoute();
+        if (!success) {
+            mView.progressUIClose();
+        }
+
     }
 
     public void onReStoreFragment() {

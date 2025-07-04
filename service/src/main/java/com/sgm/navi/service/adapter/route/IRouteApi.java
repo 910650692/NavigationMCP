@@ -115,10 +115,10 @@ public interface IRouteApi {
     void requestRouteRestoration(RouteMsgPushInfo routeMsgPushInfo, MapType mapTypeId);
 
     /**
-     * 路线还原，手机算路
+     * 取消算路
      * @param requestId 算路还原参数
      */
-    void abortRequest(long requestId);
+    boolean abortRequest(long requestId);
 
     /**
      * 平行路切换完成重算路

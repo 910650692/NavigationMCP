@@ -24,6 +24,7 @@ public class RouteMsgPushInfo implements Parcelable {
     private RoutePoint mEndPoint;
     private ArrayList<RoutePoint> mViaPoints = new ArrayList<>();
     private ArrayList<PoiInfoEntity> mViaPoiInfoEntity = new ArrayList<>();
+    private int mSendType = 0;
 
     protected RouteMsgPushInfo(Parcel in) {
         mName = in.readString();
@@ -32,6 +33,7 @@ public class RouteMsgPushInfo implements Parcelable {
         mEndPoint = in.readParcelable(RoutePoint.class.getClassLoader());
         mViaPoints = in.createTypedArrayList(RoutePoint.CREATOR);
         mViaPoiInfoEntity = in.createTypedArrayList(PoiInfoEntity.CREATOR);
+        mSendType = in.readInt();
     }
 
     public static final Creator<RouteMsgPushInfo> CREATOR = new Creator<RouteMsgPushInfo>() {
@@ -59,5 +61,6 @@ public class RouteMsgPushInfo implements Parcelable {
         dest.writeParcelable(mEndPoint, flags);
         dest.writeTypedList(mViaPoints);
         dest.writeTypedList(mViaPoiInfoEntity);
+        dest.writeInt(mSendType);
     }
 }

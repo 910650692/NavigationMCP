@@ -372,12 +372,18 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * @param routeLineInfos 数据
      */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_ROUTE_LIST)
-    public void setRouteResultListUI(final List<RouteLineInfo> routeLineInfos) {
+    public void setRouteResultListUI(final List<RouteLineInfo> routeLineInfos, final boolean show) {
+        Logger.d(TAG, "setRouteResultListUI " + show);
         if (!ConvertUtils.isEmpty(mRouteListPageView) && !ConvertUtils.isEmpty(mRouteListPageView.routeLineInfoSceneRouteResult)) {
             mRouteListPageView.routeLineInfoSceneRouteResult.notifyResultList(routeLineInfos);
         } else {
             Logger.e(TAG, ROUTE_ERROR);
         }
+        ThreadManager.getInstance().postUi(() -> {
+            if (show) {
+                mBinding.fragmentRoute.setVisibility(View.VISIBLE);
+            }
+        });
 
         //For Bury Point
         final BuryProperty buryProperty = new BuryProperty.Builder().setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION,
@@ -1347,6 +1353,16 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
             mRouteRequestLoadingDialog.dismiss();
             mRouteRequestLoadingDialog = null;
+        }
+    }
+
+    /***
+     * 算路请求弹框关闭按钮点击
+     */
+    public void progressUIClose() {
+        if (mBinding.fragmentRoute.getVisibility() == View.INVISIBLE) {
+            Logger.d(TAG, "progress UI Close in error");
+            mViewModel.getCloseRouteClick().call();
         }
     }
 

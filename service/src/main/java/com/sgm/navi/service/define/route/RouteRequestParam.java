@@ -20,4 +20,5 @@ public class RouteRequestParam {
     private boolean mIsOnline = true; //不填
     private int mRoutePriorityType = -1; //算路优先级时必填
     private int routeRequestCallBackType = -1; //-1 nomal, 0 通勤-家， 1 通勤公司
+    private boolean mStartNavi = false;// 是否直接开始导航
 }

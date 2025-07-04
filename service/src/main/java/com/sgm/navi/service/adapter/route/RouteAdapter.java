@@ -228,8 +228,8 @@ final public class RouteAdapter {
      * 取消算路
      * @param requestId 算路请求ID
      */
-    public void abortRequest(final long requestId) {
-        mRouteApi.abortRequest(requestId);
+    public boolean abortRequest(final long requestId) {
+        return mRouteApi.abortRequest(requestId);
     }
 
     public void sendL2Data(final MapType mapTypeId) {

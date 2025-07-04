@@ -17,6 +17,8 @@
         android:layout_height="wrap_content">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/fragment_route"
+            android:visibility="invisible"
             android:layout_width="@dimen/dp_2062"
             android:layout_height="@dimen/dp_1102"
             android:focusable="false">
