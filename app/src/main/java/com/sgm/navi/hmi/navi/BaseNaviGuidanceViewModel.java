@@ -12,10 +12,9 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
-import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
+import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.TimerHelper;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.scene.ui.navi.ChargeTipEntity;
@@ -35,15 +34,15 @@ import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.route.RouteRequestParam;
-import com.sgm.navi.service.define.screen.ScreenType;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
-import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.tts.NaviMediaPlayer;
 import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -308,6 +307,10 @@ public class BaseNaviGuidanceViewModel extends
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
         if (ConvertUtils.isEmpty(sapaInfoEntity)) {
             Logger.i(TAG, "onNaviSAPAInfo sapaInfoEntity is null");
+            return;
+        }
+        if (ConvertUtils.isEmpty(sapaInfoEntity.getList())) {
+            Logger.i(TAG, "onNaviSAPAInfo sapaInfoEntity list is empty");
             return;
         }
         mModelSaveEntity.setSapaInfoEntity(sapaInfoEntity);

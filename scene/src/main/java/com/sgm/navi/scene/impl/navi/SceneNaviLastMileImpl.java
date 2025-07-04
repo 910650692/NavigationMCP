@@ -120,7 +120,7 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
                     SettingController.KEY_SETTING_IS_SEND_DESTINATION_LAST_MILE);
             // 功能未设置不显示
             if (!"1".equals(value)) {
-                Logger.d(TAG, "SceneNaviSendPhoneImpl is not send destination last mile not set");
+                Logger.d(TAG, "SceneNaviSendPhoneImpl is not send destination last mile not set value:" + value);
                 return;
             }
             mIsDisplayedLastMile = true;

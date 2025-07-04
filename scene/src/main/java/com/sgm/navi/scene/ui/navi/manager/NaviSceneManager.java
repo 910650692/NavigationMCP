@@ -31,10 +31,6 @@ public class NaviSceneManager implements INaviSceneEvent {
     private final Runnable mRunnable;
     private boolean mIsCanAddScene;
 
-    private final List<NaviSceneId> hideByMoreSetup = new ArrayList<>(Arrays.asList(
-            NaviSceneId.NAVI_SUSPEND_CARD, NaviSceneId.NAVI_CHARGE_TIP,
-            NaviSceneId.NAVI_SCENE_SERVICE_AREA, NaviSceneId.NAVI_SCENE_2D_CROSS));
-
     private NaviSceneManager() {
         sceneViewList = new ConcurrentHashMap<>();
         showSceneList = new CopyOnWriteArrayList<>();
