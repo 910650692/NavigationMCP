@@ -60,10 +60,22 @@
                 app:layout_constraintStart_toEndOf="@+id/iv_back"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.sgm.navi.ui.view.SkinImageView
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:id="@+id/search_close"
+                android:src="@drawable/img_off58"
+                clickCommand="@{ViewModel.ClearTextContent}"
+                android:visibility="@{ViewModel.mCloseViewVisibility ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@+id/edit_text_id"
+                app:layout_constraintStart_toEndOf="@+id/edit_text_id"
+                app:layout_constraintTop_toTopOf="@+id/edit_text_id" />
+
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/skinConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_930"
             android:layout_marginTop="@dimen/dp_223"
@@ -71,6 +83,7 @@
             android:paddingHorizontal="@dimen/dp_51"
             android:background="@drawable/bg_shadow_navi_cadillac"
             android:focusable="false"
+            android:visibility="@{ViewModel.mSearchCityVisibility ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -110,6 +123,40 @@
                 android:focusable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_current_city" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/city_text"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_930"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:gravity="center"
+            android:text="@{ViewModel.mTextViewContent}"
+            android:textSize="@dimen/sp_26"
+            android:visibility="@{ViewModel.mTextViewVisibility ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/skinConstraintLayout" />
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_930"
+            android:layout_marginTop="@dimen/dp_223"
+            android:paddingVertical="@dimen/dp_51"
+            android:paddingHorizontal="@dimen/dp_51"
+            android:background="@drawable/bg_shadow_navi_cadillac"
+            android:focusable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="@{ViewModel.mSearchCityVisibility ? View.VISIBLE : View.GONE}">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:numColumns="3"
+                android:paddingHorizontal="@dimen/dp_52"
+                android:paddingVertical="@dimen/dp_52" />
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 

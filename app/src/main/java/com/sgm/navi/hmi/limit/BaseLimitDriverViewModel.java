@@ -41,6 +41,7 @@ public class BaseLimitDriverViewModel extends BaseViewModel<LimitDriveFragment, 
 
     public MutableLiveData<Boolean> mTextViewVisibility = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mCloseViewVisibility = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mSearchCityVisibility = new MutableLiveData<>(false);
     public MutableLiveData<String> mTextViewContent = new MutableLiveData<>("");
     public MutableLiveData<String> mEditTextContent = new MutableLiveData<>("");
 

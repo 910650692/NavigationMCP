@@ -78,7 +78,8 @@
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:paddingHorizontal="@dimen/dp_34"
             android:paddingVertical="@dimen/dp_34"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="@{ViewModel.mSearchCityVisibility ? View.GONE : View.VISIBLE}">
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_current_city"
@@ -126,6 +127,26 @@
             android:visibility="@{ViewModel.mTextViewVisibility ? View.VISIBLE : View.GONE}"
             tools:visibility="gone"
             app:layout_constraintTop_toTopOf="@+id/skinConstraintLayout" />
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_464"
+            android:layout_marginTop="@dimen/dp_120"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:paddingHorizontal="@dimen/dp_34"
+            android:paddingVertical="@dimen/dp_34"
+            android:visibility="@{ViewModel.mSearchCityVisibility ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:numColumns="3"
+                android:paddingHorizontal="@dimen/dp_34"
+                android:paddingVertical="@dimen/dp_34" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 

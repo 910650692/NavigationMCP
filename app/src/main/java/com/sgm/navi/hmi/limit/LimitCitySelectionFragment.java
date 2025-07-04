@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.databinding.library.baseAdapters.BR;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.sgm.navi.hmi.R;
@@ -21,6 +22,7 @@ import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.sgm.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author LiuChang
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySelectionBinding, LimitDriverViewModel> {
     private LimitProvincesAdapter mAdapter;
     private ArrayList<ProvDataInfo> mProvDataInfos;
+    private LimitCitiesAdapter mSearchCitiesAdapter;
 
     @Override
     public int onLayoutId() {
@@ -47,6 +50,9 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
         mAdapter = new LimitProvincesAdapter(requireContext(), new ArrayList<>());
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         mBinding.recyclerView.setAdapter(mAdapter);
+        mSearchCitiesAdapter = new LimitCitiesAdapter(requireContext(), new ArrayList<>());
+        mBinding.searchRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 3));
+        mBinding.searchRecyclerView.setAdapter(mSearchCitiesAdapter);
     }
 
     @Override
@@ -80,6 +86,16 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
             }
         });
 
+        mSearchCitiesAdapter.setListener(new LimitCitiesAdapter.ItemClickListener() {
+            @Override
+            public void onClick(String cityCode) {
+                final Bundle bundle = new Bundle();
+                bundle.putSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_CITY_TASK_ID, cityCode);
+                addPoiDetailsFragment(new LimitDriveFragment(), bundle);
+                closeAllFragmentsUntilTargetFragment(LimitCitySelectionFragment.class.getName());
+            }
+        });
+
         mBinding.editTextId.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(final CharSequence charSequence, final int start, final int count, final int after) {
@@ -97,37 +113,34 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
                 if(mProvDataInfos == null) {
                     return;
                 }
+                if (editText.isEmpty()) {
+                    mViewModel.mTextViewVisibility.setValue(false);
+                    mViewModel.mCloseViewVisibility.setValue(false);
+                    mViewModel.mSearchCityVisibility.setValue(false);
+                    return;
+                }
+                List<CityDataInfo> mSearchDate = new ArrayList<>();
                 for (int i = 0; i < mProvDataInfos.size(); i++) {
-                    if (mProvDataInfos.get(i).getName().contains(editText)) {
-                        mViewModel.mTextViewVisibility.setValue(false);
-                        mViewModel.mCloseViewVisibility.setValue(false);
-                        final LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding
-                                .recyclerView.getLayoutManager();
-                        if (layoutManager != null) {
-                            layoutManager.scrollToPositionWithOffset(i ,0);
-                        }
-                        break;
-                    }
                     for (CityDataInfo cityDataInfo :mProvDataInfos.get(i).getCityInfoList()) {
                         if (cityDataInfo.getName() == null) {
                             continue;
                         }
                         if (cityDataInfo.getName().contains(editText)) {
-                            mViewModel.mTextViewVisibility.setValue(false);
-                            mViewModel.mCloseViewVisibility.setValue(false);
-                            final LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding
-                                    .recyclerView.getLayoutManager();
-                            if (layoutManager != null) {
-                                layoutManager.scrollToPositionWithOffset(i ,0);
-                            }
-                            break;
-                        } else {
-                            mViewModel.mTextViewVisibility.setValue(true);
-                            mViewModel.mCloseViewVisibility.setValue(true);
-                            mViewModel.mTextViewContent.setValue("没有找到\"" + editText + "\"相关的城市");
-                            break;
+                            mSearchDate.add(cityDataInfo);
                         }
                     }
+                }
+                if (mSearchDate.isEmpty()) {
+                    mViewModel.mTextViewContent.setValue("没有找到\"" + editText + "\"相关的城市");
+                    mViewModel.mTextViewVisibility.setValue(true);
+                    mViewModel.mCloseViewVisibility.setValue(true);
+                    mViewModel.mSearchCityVisibility.setValue(false);
+                } else {
+                    mViewModel.mTextViewVisibility.setValue(false);
+                    mViewModel.mCloseViewVisibility.setValue(false);
+                    mSearchCitiesAdapter.setData(mSearchDate);
+                    mViewModel.mSearchCityVisibility.setValue(true);
+
                 }
             }
         });
