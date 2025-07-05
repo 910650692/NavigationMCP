@@ -23,6 +23,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ScreenUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.file.FileUtils;
@@ -512,6 +513,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapPackage.registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         layerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         ImmersiveStatusScene.getInstance().registerCallback("MapModel", this);
+        //mapdevices绑定成功后适配深浅色模式
+        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+                ThemeUtils.INSTANCE.isNightModeEnabled(mapSurfaceView.getMapViewContext()) ? ThemeType.NIGHT : ThemeType.DAY);
     }
 
     public void startListenMsg() {
