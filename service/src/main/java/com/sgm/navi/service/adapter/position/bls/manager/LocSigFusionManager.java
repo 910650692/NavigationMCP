@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.position.bls.manager;
 
 import android.content.Context;
 import android.location.Location;
+import android.os.SystemClock;
 
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.pos.PosService;
@@ -22,6 +23,7 @@ import com.sgm.navi.service.adapter.position.bls.sensor.DrSensorManager;
 import com.sgm.navi.service.define.position.LocGpgsvWrapper;
 import com.sgm.navi.service.define.position.LocMode;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class LocSigFusionManager implements IPosSensorParaObserver, ILocationListener, IDrSensorListener {
@@ -102,6 +104,7 @@ public class LocSigFusionManager implements IPosSensorParaObserver, ILocationLis
         }
         LocSignData data = new LocSignData();
         data.dataType = LocDataType.LocDataGnss;
+        locGnss.tickTime = BigInteger.valueOf(SystemClock.elapsedRealtime());
         data.gnss = locGnss;
         mPositionBlsStrategy.setSignInfo(data);
         mPositionBlsStrategy.updateSdkLocStatus(true);
@@ -114,6 +117,7 @@ public class LocSigFusionManager implements IPosSensorParaObserver, ILocationLis
         }
         LocSignData locSignData = new LocSignData();
         locSignData.dataType = LocDataType.LocDataGpgsv;
+        wrapper.locGpgsv.tickTime = BigInteger.valueOf(SystemClock.elapsedRealtime());
         locSignData.gpgsv = wrapper.locGpgsv;
         mPositionBlsStrategy.setSignInfo(locSignData);
     }

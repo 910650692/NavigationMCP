@@ -101,7 +101,6 @@ public class LocationUtil {
         if (location.hasAccuracy())
             locData.accuracy = location.getAccuracy(); // 精度半径。米
         // 推荐使用系统滴答数，而非信号源的时间戳
-        locData.tickTime = BigInteger.valueOf(SystemClock.elapsedRealtime());
         return locData;
     }
 
