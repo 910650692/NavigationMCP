@@ -617,7 +617,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         } else {
             Logger.d(FsaConstant.FSA_TAG, "sendEvent: ",functionId, "-" , FsaIdString.function2String(functionId) ," info = " , info);
         }
-        mService.eventHandler.sendEvent(event, FSACatalog.DeviceName.UNKNOWN);
+        mService.eventHandler.sendEvent(event);//, FSACatalog.DeviceName.UNKNOWN
         if (isSave) {
             FsaNaviScene.getInstance().saveData(functionId, info);
         }
