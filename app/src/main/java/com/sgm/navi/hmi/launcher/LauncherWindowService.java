@@ -47,6 +47,9 @@ import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
+import com.sgm.navi.ui.base.BaseActivity;
+import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.vrbridge.MapStateManager;
 
 /**
@@ -65,6 +68,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
     private NaviStatusPackage mNaviStatusPackage;
+    private RoutePackage mRoutePackage;
     private LaneInfoEntity mLastLanInfo;
     private boolean mIsShowLane = false;
     private LayerAdapter mLayerAdapter;
@@ -107,6 +111,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         mNaviEtaInfo = mNaviPackage.getCurrentNaviEtaInfo();
         captureScreenUtils = CaptureScreenUtils.getInstance();
         currentNaviStatus = mNaviStatusPackage.getCurrentNaviStatus();
+        mRoutePackage = RoutePackage.getInstance();
     }
 
     private void initCallBacks() {
@@ -233,6 +238,17 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
     public void openSelf(final int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
+        // 非导航状态打开对应窗口时候先关闭所有Fragment
+        if (!isOnNavigating()) {
+            BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MAP_TYPE.name());
+            if (mRoutePackage.isRouteState()) {
+                mRoutePackage.clearRouteLine(MAP_TYPE);
+            }
+            if (!ConvertUtils.isNull(baseActivity)) {
+                baseActivity.closeAllFragment();
+            }
+        }
+        ExportIntentParam.setIntentPage(pageCode);
         AppCache.getInstance().openMap(mFloatManager.isNaviDeskBg());
     }
 
