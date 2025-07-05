@@ -30,8 +30,8 @@ public final class MapState {
         mSwitchParallelBridge = false;
         mIsListPage = false;
         mCurrPlanPref = -1;
-        mMaxZoomLevel = 19;
-        mMinZoomLevel = 2;
+        mMaxZoomLevel = 20;
+        mMinZoomLevel = 3;
         mHasPrivacyPermission = false;
         mIsLogin = false;
         mIsAgreeTeamAgreement = false;

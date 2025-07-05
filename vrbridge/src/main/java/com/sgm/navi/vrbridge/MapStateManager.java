@@ -83,7 +83,7 @@ public final class MapStateManager {
         }
         updateForegroundStatus(foregroundStatus);
         mBuilder.setHasPrivacyPermission(true);
-        mBuilder.setMaxZoomLevel(19);
+        mBuilder.setMaxZoomLevel(20);
         mBuilder.setMinZoomLevel(3);
         mBuilder.setViaPointsMaxCount(5);
         mBuilder.setListPage(false);
@@ -153,7 +153,7 @@ public final class MapStateManager {
         @Override
         public void onMapLevelChanged(final MapType mapTypeId, final float mapLevel) {
             if (Logger.openLog) {
-                Logger.d(TAG, "onMapLevelChanged: ", mapLevel);
+                Logger.d(IVrBridgeConstant.TAG, "onMapLevelChanged: ", mapLevel);
             }
             mBuilder.setCurrZoomLevel((int) mapLevel);
             AMapStateUtils.saveMapState(mBuilder.build());

@@ -143,9 +143,6 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 }
             }
         }
-        if (Logger.openLog) {
-            Logger.d(IVrBridgeConstant.TAG, "map state : ", MapState.getInstance().getCurrZoomLevel());
-        }
         callResponse.setNeedPlayMessage(true);
         respTts(callResponse, respCallback);
         return CallResponse.createSuccessResponse();
