@@ -49,7 +49,7 @@ public final class TexturePoolManager {
     private static final int MARK_ID_CAR_SPEED = 0x20000;
 
     private static final int DYN_MARK_ID_START = 0x30000;
-    private static final int DYN_MARK_ID_MAX = 0x60000;
+    private static final int DYN_MARK_ID_MAX = 0x301F4;
     private int dynMarkerId = DYN_MARK_ID_START;
 
     private static final int MARK_ID_ARROW = 0x10000;
