@@ -1010,7 +1010,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 final Fragment fragment = (Fragment) ARouter.getInstance()
                         .build(RoutePath.Search.OFFLINE_SEARCH_FRAGMENT)
                         .navigation();
-                addFragment((BaseFragment) fragment, SearchFragmentFactory.createOfflineFragment(mSearchText));
+                addFragment((BaseFragment) fragment, SearchFragmentFactory.createOfflineFragment(searchResultEntity.getKeyword()));
             }
             //搜索无数据时，展示无结果页面
             mViewBinding.searchResultNoData.setVisibility(VISIBLE);
