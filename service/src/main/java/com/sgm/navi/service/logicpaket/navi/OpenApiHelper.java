@@ -312,10 +312,12 @@ public final class OpenApiHelper {
      * @param maxEnergy 最大电池量，单位为百分之一瓦时
      * @return 获取到达电量剩余百分比
      */
-    public static int calculateRemainingOrNeededEnergyPercent(long energyConsumption,
-                                                              long currentEnergy, long maxEnergy) {
+    public static int calculateRemainingOrNeededEnergyPercent(long energyConsumption, long currentEnergy, long maxEnergy) {
         Logger.i(TAG, "calculateRemainingOrNeededEnergyPercent","energyConsumption: ",
                 energyConsumption, ", currentEnergy: ", currentEnergy, ", maxEnergy: " + maxEnergy);
+        if (energyConsumption < 0 || currentEnergy < 0 || maxEnergy <= 0) {
+            return -1; // 返回-1表示无效的电量数据
+        }
         // 验证当前剩余电量是否足够到达目的地
         if (currentEnergy >= energyConsumption) {
             // 如果电量足够，计算到达目的地后的剩余电量百分比
