@@ -869,7 +869,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (routeParams.size() > 0) {
             int index = -1;
             for (int t = NumberUtils.NUM_0; t < routeParams.size(); t++) {
-                if ((!ConvertUtils.isEmpty(routeParams.get(t).getPoiID()) && routeParams.get(t).getPoiID() == poiInfoEntity.getPid())
+                if ((!ConvertUtils.isEmpty(routeParams.get(t).getPoiID()) && ConvertUtils.equals(routeParams.get(t).getPoiID(), poiInfoEntity.getPid()))
                         || (poiInfoEntity.getPoint().getLon() == routeParams.get(t).getMRealPos().getLon()
                         && poiInfoEntity.getPoint().getLat() == routeParams.get(t).getMRealPos().getLat())) {
                     index = t;
