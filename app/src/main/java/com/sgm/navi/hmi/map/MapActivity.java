@@ -382,6 +382,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (mViewModel.isSupportSplitScreen()) {
             Logger.d("screen_change_used", newConfig.screenWidthDp);
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
+            mViewModel.onNaviStatusChange();
             setSplitFragment();
         }
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,

@@ -933,6 +933,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (param == null) {
             return;
         }
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            Logger.d(TAG, "One-third screen");
+            limitDriverVisibility.set(false);
+            return;
+        }
         this.routeRestrictionParam = param;
         this.restrictedArea = param.getMRestrictedArea();
         // 导航中或者算路中不显示
