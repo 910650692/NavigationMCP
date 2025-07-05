@@ -268,7 +268,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      * 沉浸式状态改变后更新UI状态
      */
     public void updateUiStateAfterImmersiveChanged(ImersiveStatus currentImersiveStatus) {
-        mIsOnTouch.set(currentImersiveStatus == ImersiveStatus.TOUCH && mModel.isOnTouch());
+        mIsOnTouch.set(currentImersiveStatus == ImersiveStatus.TOUCH && mModel.isOnNavigating());
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
             startImmersiveSchedule();
         } else {
