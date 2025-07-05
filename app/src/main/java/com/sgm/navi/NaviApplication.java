@@ -61,7 +61,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
     private void killSelf() {
         ThreadManager.getInstance().execute(() -> {
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Logger.w(TAG, "killSelf exception", e.getMessage());
             }
