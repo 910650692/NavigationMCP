@@ -2034,11 +2034,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     @Override
     public void onClose() {
-        boolean success = mModel.cancelRoute();
-        if (!success) {
-            mView.progressUIClose();
-        }
-
+        mModel.cancelRoute();
+        mView.progressUIClose();
     }
 
     public void onReStoreFragment() {

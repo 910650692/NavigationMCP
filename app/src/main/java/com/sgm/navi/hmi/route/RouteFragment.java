@@ -1354,6 +1354,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mRouteRequestLoadingDialog.dismiss();
             mRouteRequestLoadingDialog = null;
         }
+        mBinding.fragmentRoute.setVisibility(View.VISIBLE);
     }
 
     /***
