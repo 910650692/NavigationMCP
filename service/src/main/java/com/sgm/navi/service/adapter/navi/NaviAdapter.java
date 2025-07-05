@@ -443,7 +443,7 @@ public final class NaviAdapter {
         if (mNaviEtaInfo != null) {
             currentSegmentIdx = mNaviEtaInfo.curSegIdx;
         }
-        Logger.i(TAG, "getPointTmcStatus viaSegmentIdx:" + viaSegmentIdx);
+        Logger.i(TAG, "getPointTmcStatus viaSegmentIdx: ", viaSegmentIdx, "; currentSegIdx: ", currentSegmentIdx);
         if (viaSegmentIdx < 0 || currentSegmentIdx < 0) {
             return -1;
         }

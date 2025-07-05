@@ -11,9 +11,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import androidx.core.widget.NestedScrollView;
-
-import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -56,25 +54,39 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
                 showOrHideDetail(true);
                 mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_service_title);
 
-                boolean isDarkMode = isDarkModeEnabled();
-                Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
-                String serviceTermsUrl = isDarkMode ?
-                        getContext().getString(R.string.service_terms_url_dark) :
-                        getContext().getString(R.string.service_terms_url_light);
+                if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                    boolean isDarkMode = isDarkModeEnabled();
+                    mViewBinding.reminderDetail.netErrorHint.setVisibility(View.INVISIBLE);
+                    Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
+                    String serviceTermsUrl = isDarkMode ?
+                            getContext().getString(R.string.service_terms_url_dark) :
+                            getContext().getString(R.string.service_terms_url_light);
 
-                mWebView.loadUrl(serviceTermsUrl);
+                    mWebView.loadUrl(serviceTermsUrl);
+                } else {
+                    Logger.d("ReminderDialog", "Network is not available, cannot load service terms.");
+                    mViewBinding.reminderDetail.netErrorHint.setVisibility(View.VISIBLE);
+                    mViewBinding.reminderDetail.reminderWebView.setVisibility(View.INVISIBLE);
+                }
             }
         });
         mViewBinding.reminderIndex.reminderPagePrivacy.setOnClickListener(v -> {
             showOrHideDetail(true);
             mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_privacy_title);
 
-            boolean isDarkMode = isDarkModeEnabled();
-            Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
-            String privacyPolicyUrl = isDarkMode ?
-                    getContext().getString(R.string.privacy_policy_url_dark) :
-                    getContext().getString(R.string.privacy_policy_url_light);
-            mWebView.loadUrl(privacyPolicyUrl);
+            if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                boolean isDarkMode = isDarkModeEnabled();
+                mViewBinding.reminderDetail.netErrorHint.setVisibility(View.INVISIBLE);
+                Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
+                String privacyPolicyUrl = isDarkMode ?
+                        getContext().getString(R.string.privacy_policy_url_dark) :
+                        getContext().getString(R.string.privacy_policy_url_light);
+                mWebView.loadUrl(privacyPolicyUrl);
+            } else {
+                Logger.d("ReminderDialog", "Network is not available, cannot load service terms.");
+                mViewBinding.reminderDetail.netErrorHint.setVisibility(View.VISIBLE);
+                mViewBinding.reminderDetail.reminderWebView.setVisibility(View.INVISIBLE);
+            }
         });
         mViewBinding.reminderIndex.dialogCommit.setOnClickListener(v -> {
             if (mDialogClickListener != null) {

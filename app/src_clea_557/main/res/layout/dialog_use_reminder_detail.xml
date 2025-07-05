@@ -40,10 +40,22 @@
             android:layout_marginHorizontal="@dimen/dp_160"
             android:layout_marginTop="@dimen/dp_164"
             android:layout_marginBottom="@dimen/dp_48"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/net_error_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/net_error_hint"
+            android:textSize="@dimen/sp_42"
+            android:textColor="@color/dialog_title_color"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/reminder_web_view"
+            app:layout_constraintEnd_toEndOf="@id/reminder_web_view"
+            app:layout_constraintStart_toStartOf="@id/reminder_web_view"
+            app:layout_constraintTop_toTopOf="@id/reminder_web_view" />
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>
