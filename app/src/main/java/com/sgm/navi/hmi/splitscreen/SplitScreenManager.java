@@ -57,14 +57,14 @@ public class SplitScreenManager {
      * 导航1/3屏，点击切换智能驾驶App到全屏
      */
     public void switchSRToFullScreen() {
-        exitSplitScreen(1, "");
+        exitSplitScreen(PatacSESConstants.EXIT_TYPE_OUT, PatacSESConstants.SPLIT_SCREEN_NAVI);
     }
 
     /***
      * 导航切换到全屏
      */
     public void switchNaviToFullScreen() {
-        exitSplitScreen(0, "");
+        exitSplitScreen(PatacSESConstants.EXIT_TYPE_KEEP, PatacSESConstants.SPLIT_SCREEN_NAVI);
     }
 
     private static final class InstanceHolder {

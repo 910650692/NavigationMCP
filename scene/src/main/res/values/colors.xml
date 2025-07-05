@@ -299,5 +299,6 @@
     <color name="setting_dialog_cancel">#FF000000</color>
     <color name="text_route_button_title">#FFFFFFFF</color>
 
+    <color name="dialog_title_color">#0C0C0C</color>
 
 </resources>

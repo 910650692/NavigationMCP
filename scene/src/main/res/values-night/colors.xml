@@ -200,4 +200,5 @@
 
     <color name="setting_dialog_confirm">#FFFFFFFF</color>
     <color name="setting_dialog_cancel">#FFFFFFFF</color>
+    <color name="dialog_title_color">#FFFFFF</color>
 </resources>
