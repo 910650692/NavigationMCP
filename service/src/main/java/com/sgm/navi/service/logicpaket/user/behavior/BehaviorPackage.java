@@ -271,10 +271,11 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
                 return itemId;
             }
             if (TextUtils.isEmpty(poiInfo.getFavoriteInfo().getItemId())) {
-                itemId = poiInfo.getPid() + type;
+                itemId = poiInfo.getPid();
             } else {
-                itemId = poiInfo.getFavoriteInfo().getItemId() + type;
+                itemId = poiInfo.getFavoriteInfo().getItemId();
             }
+            Logger.d(TAG, "add fav itemId is: " + itemId);
             poiInfo.getFavoriteInfo().setItemId(itemId);
             addFavoriteData(poiInfo, type);
         }
@@ -372,7 +373,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
                 return itemId;
             }
             if (poiInfo.getFavoriteInfo() == null || TextUtils.isEmpty(poiInfo.getFavoriteInfo().getItemId())) {
-                itemId = poiInfo.getPid() + 0;
+                itemId = poiInfo.getPid();
             } else {
                 itemId = poiInfo.getFavoriteInfo().getItemId();
             }
