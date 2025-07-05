@@ -115,6 +115,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
             }
         });
+        mBinding.mainImg.setOnClickListener(v -> {
+            FloatViewManager.getInstance().hideAllCardWidgets(false);
+        });
     }
 
     private void updateTimeText() {
@@ -382,6 +385,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (mViewModel.isSupportSplitScreen()) {
             Logger.d("screen_change_used", newConfig.screenWidthDp);
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
+            mViewModel.notifyScreenSizeChanged();
             mViewModel.onNaviStatusChange();
             setSplitFragment();
         }

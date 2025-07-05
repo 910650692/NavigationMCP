@@ -19,6 +19,7 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.DialogUseReminderBinding;
+import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -90,6 +91,9 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
 
         mViewBinding.reminderDetail.reminderIvBack.setOnClickListener(v -> {
             showOrHideDetail(false);
+        });
+        mViewBinding.getRoot().setOnClickListener(v -> {
+            FloatViewManager.getInstance().hideAllCardWidgets( false);
         });
     }
 

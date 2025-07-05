@@ -25,6 +25,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
@@ -149,9 +150,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
         backToCcPVisibility = new ObservableBoolean(false);
         mainBTNVisibility = new ObservableBoolean(true);
-        mScaleViewVisibility = new ObservableBoolean(
-                !ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().isNaviDeskBg()
-        );
+        mScaleViewVisibility = new ObservableBoolean(true);
         naviHomeVisibility = new ObservableField<>(false);
         limitDriverVisibility = new ObservableField<>(false);
         limitEndNumVisibility = new ObservableField<>(false);
@@ -162,7 +161,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         carModeImgId = new ObservableInt(R.drawable.img_car_mode_2d_north);
         cruiseVisibility = new ObservableField<>(false);
         muteVisibility = new ObservableField<>(true);
-        bottomNaviVisibility = new ObservableBoolean(!FloatViewManager.getInstance().isNaviDeskBg());
+        bottomNaviVisibility = new ObservableBoolean(true);
         backToParkingVisibility = new ObservableBoolean(false);
         messageCenterVisible = new ObservableBoolean(false);
         messageCenterEntity = new ObservableField<>();
@@ -179,10 +178,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mPopGuideLoginShow = new ObservableField<>(false);
         cruiseLanesVisibility = new ObservableField<>(false);
         mGoHomeVisible = new ObservableField<>(false);
-        sRVisible = new ObservableField<>(
-                isSupportSplitScreen() && !FloatViewManager.getInstance().isNaviDeskBg() && !ScreenTypeUtils.getInstance().isOneThirdScreen()
-        );
-        mIsFullScreen = new ObservableField<>(ScreenTypeUtils.getInstance().isFullScreen());
+        sRVisible = new ObservableField<>(isSupportSplitScreen());
+        mIsFullScreen = new ObservableField<>(true);
     }
 
     @Override
@@ -194,13 +191,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void onCreate() {
         super.onCreate();
         checkAgreementRights();
-        sRVisible.set(
-                isSupportSplitScreen() && !FloatViewManager.getInstance().isNaviDeskBg() && !ScreenTypeUtils.getInstance().isOneThirdScreen()
-        );
-        mScaleViewVisibility = new ObservableBoolean(
-                isSupportSplitScreen() && !ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().isNaviDeskBg()
-        );
-        mIsFullScreen.set(ScreenTypeUtils.getInstance().isFullScreen());
     }
 
     @Override
@@ -571,7 +561,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set((NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
-                NaviStatus.NaviStatusType.NAVING.equals(state) || exist) && !FloatViewManager.getInstance().isNaviDeskBg() && (!ScreenTypeUtils.getInstance().isOneThirdScreen()));
+                NaviStatus.NaviStatusType.NAVING.equals(state) || exist) && !FloatViewManager.getInstance().judgedWidgetIsVisible() && (!ScreenTypeUtils.getInstance().isOneThirdScreen()));
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -606,7 +596,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || NaviStatus.NaviStatusType.ROUTING.equals(state)
                 || NaviStatus.NaviStatusType.NAVING.equals(state))
                 || AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT.equals(fragment)
-                && (!ScreenTypeUtils.getInstance().isOneThirdScreen()) && !FloatViewManager.getInstance().isNaviDeskBg());
+                && (!ScreenTypeUtils.getInstance().isOneThirdScreen()) && !FloatViewManager.getInstance().judgedWidgetIsVisible());
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -619,9 +609,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mView.setMapFocusable(true);
         mModel.refreshMapMode();
         mModel.resetMapCenterInScreen();
-        mScaleViewVisibility.set(!ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().isNaviDeskBg());
+        mScaleViewVisibility.set(!ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().judgedWidgetIsVisible());
         mainBTNVisibility.set(true);
-        bottomNaviVisibility.set(!FloatViewManager.getInstance().isNaviDeskBg());
+        bottomNaviVisibility.set(!FloatViewManager.getInstance().judgedWidgetIsVisible());
         if (mModel.checkPopGuideLogin()) {
             mPopGuideLoginShow.set(true);
         }
@@ -1191,7 +1181,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void showOrHiddenCruise(boolean isShow) {
         cruiseVisibility.set(isShow);
-        bottomNaviVisibility.set(!isShow && mainBTNVisibility.get() && !FloatViewManager.getInstance().isNaviDeskBg());
+        bottomNaviVisibility.set(!isShow && mainBTNVisibility.get() && !FloatViewManager.getInstance().judgedWidgetIsVisible());
     }
 
     /***
@@ -1453,17 +1443,103 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     /**
-     * 桌面背景模式切换后如果是导航桌面需要隐藏“缩放按钮”和“底部设置按钮”和“分屏按钮”
+     * 桌面背景模式切换后如果是导航桌面需要隐藏“分屏按钮”
+     *
      * @param desktopMode
      */
     public void onDeskBackgroundChange(FloatViewManager.DesktopMode desktopMode) {
-        boolean isOnCruise = ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.CRUISE);
-        bottomNaviVisibility.set(!isOnCruise && mainBTNVisibility.get() && !FloatViewManager.getInstance().isNaviDeskBg());
-        mScaleViewVisibility.set(!ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().isNaviDeskBg());
-        sRVisible.set(!FloatViewManager.getInstance().isNaviDeskBg() && isSupportSplitScreen());
+        Logger.d(TAG, "onDeskBackgroundChange", desktopMode.getValue(), "sRVisible", sRVisible.get());
+        sRVisible.set(
+                !FloatViewManager.getInstance().isNaviDeskBg() &&
+                        !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
+                        isSupportSplitScreen()
+        );
+        switch (desktopMode) {
+            case NAVIGATION_MODE -> {
+                if (ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
+                    Logger.d(TAG, "切到地图桌面，导航中，则隐藏所有卡片");
+                    FloatViewManager.getInstance().hideAllCardWidgets(false);
+                } else if (!FloatViewManager.getInstance().judgedWidgetIsVisible()) {
+                    Logger.d(TAG, "切到地图桌面，非导航中，显示所有卡片");
+                    FloatViewManager.getInstance().showAllCardWidgets();
+                }
+            }
+            default -> {
+                // 切到非地图桌面，如果导航处于前台，则隐藏所有卡片
+                if (ProcessManager.isAppInForeground() && FloatViewManager.getInstance().judgedWidgetIsVisible()) {
+                    Logger.d(TAG, "切到非地图桌面，如果导航处于前台，则隐藏所有卡片");
+                    FloatViewManager.getInstance().hideAllCardWidgets(false);
+                }
+            }
+        }
+    }
+
+    /**
+     * 桌面小卡片显示和隐藏状态回调
+     *
+     * @param isVisible true显示
+     */
+    public void onDeskCardVisibleStateChange(boolean isVisible) {
+        ThreadManager.getInstance().execute(() -> {
+            final boolean currentBottomVisibility = bottomNaviVisibility.get();
+            final boolean currentScaleViewVisibility = mScaleViewVisibility.get();
+            final boolean currentSRVisible = sRVisible.get();
+
+            Logger.d(
+                    TAG, "onDeskCardVisibleStateChange",
+                    "currentBottomVisibility:", currentBottomVisibility,
+                    "currentScaleViewVisibility:", currentScaleViewVisibility,
+                    "currentSRVisible:", currentSRVisible
+            );
+            bottomNaviVisibility.set(
+                 !ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.CRUISE) &&
+                         !FloatViewManager.getInstance().judgedWidgetIsVisible()
+            );
+            mScaleViewVisibility.set(
+                    !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
+                            !FloatViewManager.getInstance().judgedWidgetIsVisible()
+            );
+            sRVisible.set(
+                    !FloatViewManager.getInstance().isNaviDeskBg() &&
+                            !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
+                            isSupportSplitScreen()
+            );
+        });
+    }
+
+    public void notifyNaviStartOrStop(boolean isNaviStart) {
+        Logger.d(TAG, "notifyNaviStartOrStop", "isNaviStart:" , isNaviStart);
+        if (isNaviStart) {
+            FloatViewManager.getInstance().hideAllCardWidgets(false);
+        } else {
+            FloatViewManager.getInstance().showAllCardWidgets();
+        }
     }
 
     public MapActivity getView() {
         return mView;
+    }
+
+    /***
+     * 屏幕尺寸发生变化回调通知
+     */
+    public void notifyScreenSizeChanged() {
+        final boolean currentScaleViewVisibility = mScaleViewVisibility.get();
+        final boolean currentSRVisible = sRVisible.get();
+        Logger.d(
+                TAG, "notifyScreenSizeChanged",
+                "currentScaleViewVisibility:", currentScaleViewVisibility,
+                "currentSRVisible:", currentSRVisible
+        );
+        mScaleViewVisibility.set(
+                !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
+                   !FloatViewManager.getInstance().judgedWidgetIsVisible()
+        );
+        sRVisible.set(
+                !FloatViewManager.getInstance().isNaviDeskBg() &&
+                        !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
+                        isSupportSplitScreen()
+        );
+        mIsFullScreen.set(ScreenTypeUtils.getInstance().isFullScreen());
     }
 }

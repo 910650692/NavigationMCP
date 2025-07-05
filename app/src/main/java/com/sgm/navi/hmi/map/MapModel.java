@@ -40,6 +40,7 @@ import com.sgm.navi.flavor.CarModelsFeature;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.IDeskBackgroundChangeListener;
+import com.sgm.navi.hmi.launcher.OnDeskCardVisibleStateChangeListener;
 import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.setting.SettingFragment;
@@ -168,7 +169,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack,
         ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
-        IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback {
+        IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback, OnDeskCardVisibleStateChangeListener {
 
     private CommonManager mCommonManager;
     private final IActivateObserver mActObserver;
@@ -291,7 +292,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapPackage.addTimeHelper(timeHelper);
         speedMonitor.registerCallBack(this);
         mViewModel.initVisibleAreaPoint();
-        FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
     }
 
     private MapPackage.TimeHelper timeHelper = new MapPackage.TimeHelper() {
@@ -323,6 +323,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                         }
                     }
                 });
+        FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
+        FloatViewManager.getInstance().addDeskCardVisibleChangeListener(this);
     }
 
     @Override
@@ -360,6 +362,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         cancelCloseTmcTimerWithoutNetwork();
         FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
         AgreementPackage.getInstance().unRegisterAgreementCallback("StartupModel");
+        FloatViewManager.getInstance().removeDeskCardVisibleChangeListener(this);
     }
 
     @Override
@@ -446,6 +449,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         } else {
             PermissionUtils.getInstance().requestPermission();
+            FloatViewManager.getInstance().hideAllCardWidgets(false);
         }
     }
 
@@ -488,6 +492,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (!mStartExceptionDialog.isShowing()) {
             mStartExceptionDialog.show();
         }
+        FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 
     public void startInitEngine() {
@@ -1276,6 +1281,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onNaviStop() {
         Logger.i(TAG, "onNaviStop:");
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        mViewModel.notifyNaviStartOrStop(false);
+    }
+
+    @Override
+    public void onNaviStart() {
+        IGuidanceObserver.super.onNaviStart();
+        mViewModel.notifyNaviStartOrStop(true);
     }
 
     @Override
@@ -1940,5 +1952,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onDeskBackgroundChange(FloatViewManager.DesktopMode desktopMode) {
         mViewModel.onDeskBackgroundChange(desktopMode);
+    }
+
+    @Override
+    public void onDeskCardVisibleStateChange(boolean isVisible) {
+        mViewModel.onDeskCardVisibleStateChange(isVisible);
     }
 }

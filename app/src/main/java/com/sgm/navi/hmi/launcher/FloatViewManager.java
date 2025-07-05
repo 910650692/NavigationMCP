@@ -112,7 +112,7 @@ public class FloatViewManager {
     }
 
     private final CopyOnWriteArrayList<IDeskBackgroundChangeListener> mDeskBackgroundChangeListeners = new CopyOnWriteArrayList<>();
-
+    private final CopyOnWriteArrayList<OnDeskCardVisibleStateChangeListener> mDeskCardVisibleChangeListeners = new CopyOnWriteArrayList<>();
     private FloatViewManager() {
         mContentResolver = AppCache.getInstance().getMApplication().getContentResolver();
         mContentResolver.registerContentObserver(uri, true, observer);
@@ -160,6 +160,7 @@ public class FloatViewManager {
                 if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
                     mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER);
                     Logger.i(TAG, "showAllCardWidgets-Success!");
+                    notifyDeskCardVisibleStateChange(judgedWidgetIsVisible());
                 }
             } catch (Exception e) {
                 Logger.e(TAG, "showAllCardWidgets failed", e.getMessage());
@@ -178,6 +179,7 @@ public class FloatViewManager {
             try {
                 if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
                     mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.HIDE_APP_WIDGET_AND_WEATHER);
+                    notifyDeskCardVisibleStateChange(judgedWidgetIsVisible());
                     if (isNeedStartTimer) {
                         starTimer();
                     }
@@ -235,6 +237,14 @@ public class FloatViewManager {
      * 判断当前桌面是否为导航桌面
      * @return
      */
+    public static boolean isNaviDeskBg(DesktopMode desktopMode) {
+        return desktopMode == DesktopMode.NAVIGATION_MODE;
+    }
+
+    /***
+     * 判断当前桌面是否为导航桌面
+     * @return
+     */
     public boolean isNaviDeskBg() {
         return currentDeskMode == DesktopMode.NAVIGATION_MODE.getValue();
     }
@@ -259,7 +269,41 @@ public class FloatViewManager {
         }
     }
 
+    public void addDeskCardVisibleChangeListener(OnDeskCardVisibleStateChangeListener listener) {
+        if (!ConvertUtils.isNull(listener)) {
+            mDeskCardVisibleChangeListeners.add(listener);
+        }
+    }
+
+    public void removeDeskCardVisibleChangeListener(OnDeskCardVisibleStateChangeListener listener) {
+        if (!ConvertUtils.isNull(listener)) {
+            mDeskCardVisibleChangeListeners.remove(listener);
+        }
+    }
+
     private void notifyDeskModeChanged() {
         mDeskBackgroundChangeListeners.forEach(listener -> listener.onDeskBackgroundChange(DesktopMode.values()[currentDeskMode]));
+    }
+
+    private void notifyDeskCardVisibleStateChange(boolean isVisible) {
+        mDeskCardVisibleChangeListeners.forEach(listener -> listener.onDeskCardVisibleStateChange(isVisible));
+    }
+
+    /***
+     * 判断当前桌面的Widgets是否可见
+     * @return true:可见
+     */
+    public boolean judgedWidgetIsVisible() {
+        try {
+            if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
+                int mode = mLauncherModeManager.getLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE);
+                Logger.d(TAG, "judgedWidgetIsVisible-mode", mode);
+                return mode == PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER || mode == PatacLauncherModeConfig.SHOW_APP_WIDGET;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
