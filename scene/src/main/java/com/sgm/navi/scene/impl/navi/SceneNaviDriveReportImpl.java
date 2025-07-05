@@ -51,7 +51,6 @@ public class SceneNaviDriveReportImpl extends BaseSceneModel<SceneNaviDriveRepor
         Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviDriveReportImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.
                 SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                NaviSceneId.NAVI_DRIVE_REPORT);
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_DRIVE_REPORT);
     }
 }

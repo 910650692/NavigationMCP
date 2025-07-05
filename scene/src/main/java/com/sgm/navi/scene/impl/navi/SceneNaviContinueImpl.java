@@ -52,8 +52,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         if (mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                         INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                        INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                NaviSceneId.NAVI_CONTINUE);
+                        INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_CONTINUE);
     }
 
     /**
@@ -168,9 +167,8 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
             mScreenView.backToNaviFragment();
         }
         // taskId:1015285 点击继续导航后如果途经点面板在显示状态需要关闭
-        NaviSceneManager.getInstance().notifySceneStateChange(
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState,
-                NaviSceneId.NAVI_SCENE_VIA_POINT_LIST);
+        NaviSceneManager.getInstance().notifySceneStateChangeReset(
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SCENE_VIA_POINT_LIST,true);
     }
 
     private void goToCarPositionAndFollow() {

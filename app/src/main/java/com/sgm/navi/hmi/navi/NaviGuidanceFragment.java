@@ -385,7 +385,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviTbt.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviEta.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);
-        mBinding.sceneNaviViaInfo.onNaviInfo(naviEtaInfo);
+        if (!ConvertUtils.isEmpty(naviEtaInfo.viaRemain) || mBinding.sceneNaviViaInfo.getVisibility() != GONE) {
+            mBinding.sceneNaviViaInfo.onNaviInfo(naviEtaInfo);
+        }
         mBinding.sceneNaviLastMile.onNaviInfo(naviEtaInfo);
     }
 
@@ -945,8 +947,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mSceneNaviControlMoreView.updateSceneVisible(false);
         }
         if (mBinding != null && mBinding.sceneNaviPreference.getVisibility() == VISIBLE) {
-            NaviSceneManager.getInstance().notifySceneStateChange(
-                    INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SCENE_PREFERENCE);
+            NaviSceneManager.getInstance().notifySceneStateChangeReset(
+                    INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SCENE_PREFERENCE, true);
         }
     }
 

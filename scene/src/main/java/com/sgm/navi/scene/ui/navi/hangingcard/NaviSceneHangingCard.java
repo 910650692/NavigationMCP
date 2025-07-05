@@ -191,7 +191,7 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
             mViewBinding.llSecond.removeAllViews();
             mViewBinding.llThird.removeAllViews();
             mViewBinding.ivToggle.setVisibility(GONE);
-            notifySceneStateChange(false);
+            notifySceneStateChange(false,false);
         } else if (uiList.size() == 1) {
             addChild(uiList.get(0), mViewBinding.llFirst, true);
             mViewBinding.llFirst.setVisibility(VISIBLE);
@@ -264,7 +264,7 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
             mViewBinding.llFirst.removeAllViews();
             mViewBinding.llSecond.removeAllViews();
             mViewBinding.llThird.removeAllViews();
-            notifySceneStateChange(false);
+            notifySceneStateChange(false,false);
         } else if (uiList.size() == 1) {
             addChild(uiList.get(0), mViewBinding.llFirst, false);
             mViewBinding.llSecond.removeAllViews();

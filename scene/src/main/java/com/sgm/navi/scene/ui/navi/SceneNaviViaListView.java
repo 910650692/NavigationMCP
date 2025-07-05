@@ -114,7 +114,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
             super.close();
             OpenApiHelper.exitPreview(mMapTypeId);
             if (mScreenViewModel != null) {
-                mScreenViewModel.updateSceneVisible(false);
+                mScreenViewModel.updateSceneVisible(false, false);
             }
             // taskId：1015285 途经点收起后需要关闭继续导航按钮
             NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.
@@ -228,7 +228,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
             Logger.e(TAG, "mScreenViewModel == null");
             return;
         }
-        mScreenViewModel.updateSceneVisible(isVisible);
+        mScreenViewModel.updateSceneVisible(isVisible, true);
     }
 
     /**
@@ -339,7 +339,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     public void updateSceneVisible(final boolean isVisible) {
         Logger.i(TAG, "updateSceneVisible:", isVisible);
         if (mScreenViewModel != null) {
-            mScreenViewModel.updateSceneVisible(isVisible);
+            mScreenViewModel.updateSceneVisible(isVisible, true);
         }
     }
 }

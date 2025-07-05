@@ -335,7 +335,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     @Override
     public void showMain() {
         try {
-            NaviSceneManager.getInstance().notifySceneReset(true);
+            NaviSceneManager.getInstance().notifySceneReset();
             isShowMoreSetup(true);
             mScreenView.updateOverview(mNaviPackage.getPreviewStatus() ?
                     NaviConstant.OverviewType.OVERVIEW_FIXED :
@@ -375,8 +375,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviControlImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                         INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                        INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                mScreenView.getSceneId());
+                        INaviSceneEvent.SceneStateChangeType.SceneCloseState), mScreenView.getSceneId());
     }
 
     public int getCarType() {

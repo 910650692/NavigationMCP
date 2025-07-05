@@ -146,8 +146,7 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
         Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviSpeedImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                NaviSceneId.NAVI_SCENE_SPEED);
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_SPEED);
     }
 
     /**

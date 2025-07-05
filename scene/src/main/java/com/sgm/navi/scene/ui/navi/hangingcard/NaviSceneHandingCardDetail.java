@@ -75,7 +75,7 @@ public class NaviSceneHandingCardDetail extends NaviSceneBase<NaviSceneHandingCa
         mViewBinding.recyclerView.setAdapter(mAdapter);
         mViewBinding.ivClose.setOnClickListener(v -> {
             mScreenViewModel.exitPreview();
-            notifySceneStateChange(false);
+            notifySceneStateChange(false, true);
         });
         mViewBinding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -105,7 +105,7 @@ public class NaviSceneHandingCardDetail extends NaviSceneBase<NaviSceneHandingCa
         mViewBinding.recyclerView.scrollToPosition(0);
         mScreenViewModel.updateUi(list, type);
         mAdapter.notifyDataChanged(list, type);
-        notifySceneStateChange(true);
+        notifySceneStateChange(true,false);
     }
 
     @Override

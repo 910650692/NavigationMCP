@@ -346,8 +346,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviParallelImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                NaviSceneId.NAVI_SCENE_PARALLEL);
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_PARALLEL);
     }
 
     /**

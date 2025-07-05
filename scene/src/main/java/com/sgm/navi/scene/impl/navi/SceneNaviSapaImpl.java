@@ -383,8 +383,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
         Logger.i(TAG, "SceneNaviSAPAImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                NaviSceneId.NAVI_SCENE_SERVICE_AREA);
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_SERVICE_AREA);
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.sgm.navi.scene.impl.navi;
 
-import android.util.Log;
-
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
@@ -172,13 +170,12 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     /**
      * @param isVisible 是否显示
      */
-    private void updateSceneVisible(final boolean isVisible) {
+    private void updateSceneVisible(final boolean isVisible, boolean isReset) {
         if (mScreenView.isVisible() == isVisible) return;
         Logger.i(TAG, "SceneNaviSapaDetailImpl", isVisible);
-        mScreenView.getNaviSceneEvent().notifySceneStateChange(
+        mScreenView.getNaviSceneEvent().notifySceneStateChangeReset(
                 (isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                        INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                NaviSceneId.NAVI_SAPA_DETAIL_INFO);
+                        INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SAPA_DETAIL_INFO, isReset);
     }
 
     /**
@@ -220,7 +217,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                     Logger.e(TAG, "sapaItem is null");
                 }
             }
-            updateSceneVisible(true);
+            updateSceneVisible(true, false);
         }
     }
 
@@ -577,7 +574,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
      * 关闭场景
      */
     public void closeScene() {
-        updateSceneVisible(false);
+        updateSceneVisible(false, true);
     }
 
     /**
@@ -634,7 +631,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                     mCurrentPoiInfoEntity, true);
         }
-        updateSceneVisible(false);
+        updateSceneVisible(false, true);
     }
 
 

@@ -236,7 +236,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
                 }
             }
             mScreenView.notifyDataChanged();
-            mScreenView.notifySceneStateChange(true);
+            mScreenView.notifySceneStateChange(true, false);
         }
     }
 

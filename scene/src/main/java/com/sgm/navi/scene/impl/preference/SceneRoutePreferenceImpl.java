@@ -520,8 +520,7 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView>
 
     @Override
     public void closeScene() {
-        NaviSceneManager.getInstance().notifySceneStateChange(
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState,
-                NaviSceneId.NAVI_SCENE_PREFERENCE);
+        NaviSceneManager.getInstance().notifySceneStateChangeReset(
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SCENE_PREFERENCE, true);
     }
 }

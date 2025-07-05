@@ -48,27 +48,27 @@ public final class NaviSceneRule {
             /*00*/{5, 1, 0, 3, 0, 1, 3, 3, 3, 0, 0, 1, 1, 0, 3, 0, 0, 1, 1, 0, 3, 3, 0, 4},
             /*01*/{1, 5, 0, 3, 0, 1, 3, 3, 3, 0, 0, 1, 1, 0, 3, 0, 0, 1, 1, 0, 3, 3, 0, 4},
             /*02*/{0, 0, 5, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 1, 0, 0, 0, 0, 0},
-            /*03*/{2, 2, 0, 5, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 1, 0, 0, 2, 0, 0},
+            /*03*/{2, 2, 0, 5, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 1, 0, 0, 0, 0, 0},
             /*04*/{0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 1, 0, 0, 0, 0, 0},
-            /*05*/{4, 4, 3, 3, 0, 5, 3, 3, 3, 3, 0, 4, 4, 0, 3, 0, 0, 5, 1, 0, 3, 3, 0, 3},
+            /*05*/{4, 4, 3, 3, 0, 5, 3, 3, 3, 3, 0, 4, 4, 0, 3, 0, 0, 5, 1, 0, 3, 3, 0, 4},
             /*06*/{2, 2, 0, 0, 0, 2, 5, 0, 3, 0, 0, 2, 2, 0, 0, 0, 0, 5, 5, 0, 2, 3, 0, 5},
             /*07*/{2, 2, 0, 0, 0, 2, 0, 5, 3, 0, 0, 0, 2, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 0},
             /*08*/{2, 2, 0, 0, 0, 2, 2, 0, 5, 0, 0, 2, 2, 0, 0, 0, 0, 2, 1, 0, 2, 3, 5, 2},
             /*09*/{0, 0, 0, 0, 0, 2, 0, 0, 0, 5, 0, 4, 4, 0, 0, 0, 0, 4, 1, 0, 0, 0, 0, 4},
             /*10*/{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
-            /*11*/{4, 4, 0, 0, 0, 1, 3, 0, 3, 3, 0, 5, 3, 0, 0, 0, 0, 5, 1, 0, 0, 3, 0, 0},
-            /*12*/{4, 4, 0, 0, 0, 1, 3, 3, 3, 3, 0, 3, 5, 0, 0, 0, 0, 5, 1, 0, 0, 3, 0, 0},
+            /*11*/{4, 4, 0, 0, 0, 1, 3, 0, 3, 3, 0, 5, 2, 0, 0, 0, 0, 5, 1, 0, 3, 3, 0, 0},
+            /*12*/{4, 4, 0, 0, 0, 1, 3, 3, 3, 3, 0, 3, 5, 0, 0, 0, 0, 5, 1, 0, 3, 3, 0, 0},
             /*13*/{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
             /*14*/{2, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 5, 1, 0, 0, 0, 0, 0},
             /*15*/{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 1, 0, 0, 0, 1, 0},
             /*16*/{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 1, 4, 0, 0, 0, 0},
-            /*17*/{4, 4, 3, 3, 3, 5, 3, 3, 3, 3, 4, 4, 4, 0, 3, 0, 0, 5, 1, 0, 2, 3, 0, 0},
+            /*17*/{4, 4, 3, 3, 3, 5, 3, 3, 3, 3, 4, 4, 4, 0, 3, 0, 0, 5, 1, 0, 3, 3, 0, 0},
             /*18*/{4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 5, 4, 3, 3, 0, 0},
             /*19*/{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0},
-            /*20*/{2, 2, 0, 0, 0, 2, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 5, 3, 0, 3},
+            /*20*/{2, 2, 0, 0, 0, 2, 3, 0, 3, 0, 0, 2, 0, 0, 0, 0, 3, 3, 3, 0, 5, 3, 0, 3},
             /*21*/{2, 2, 0, 0, 0, 2, 2, 0, 3, 0, 0, 2, 2, 0, 0, 0, 0, 2, 3, 0, 2, 5, 0, 5},
             /*22*/{0, 0, 0, 0, 5, 0, 0, 0, 0, 5, 0, 0, 0, 0, 5, 4, 0, 0, 0, 0, 0, 0, 5, 0},
-            /*23*/{2, 2, 0, 0, 0, 2, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 2, 3, 0, 5}
+            /*23*/{2, 2, 0, 0, 0, 1, 3, 0, 3, 3, 0, 3, 0, 0, 0, 0, 0, 4, 0, 0, 2, 3, 0, 5}
     };
 
     /**
@@ -90,4 +90,83 @@ public final class NaviSceneRule {
         }
         return COLLISION_MATRIX[newIndex][curIndex];//第newIndex行 第curIndex列
     }
+
+    /**
+     * 路口大图关闭时恢复场景ID
+     */
+    public static final NaviSceneId[] CROSS_RESET = {
+            NaviSceneId.NAVI_SCENE_LANES,
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL,
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO,
+            NaviSceneId.NAVI_SCENE_SERVICE_AREA,
+            NaviSceneId.NAVI_SCENE_TMC,
+            NaviSceneId.NAVI_CHARGE_TIP,
+            NaviSceneId.NAVI_SUSPEND_CARD
+    };
+
+    /**
+     * 途经点列表关闭时恢复场景ID
+     */
+    public static final NaviSceneId[] VIA_LIST_RESET = {
+            NaviSceneId.NAVI_SCENE_ETA,
+            NaviSceneId.NAVI_SCENE_LANES,
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL,
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO,
+            NaviSceneId.NAVI_SCENE_SERVICE_AREA,
+            NaviSceneId.NAVI_SCENE_CONTROL,
+            NaviSceneId.NAVI_SCENE_TMC,
+            NaviSceneId.NAVI_CHARGE_TIP,
+            NaviSceneId.NAVI_SUSPEND_CARD
+    };
+
+    /**
+     * 服务区/收费站详情关闭时恢复场景ID
+     */
+    public static final NaviSceneId[] SAPA_DETAIL_RESET = {
+            NaviSceneId.NAVI_SCENE_ETA,
+            NaviSceneId.NAVI_SCENE_LANES,
+            NaviSceneId.NAVI_SCENE_TBT,
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL,
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO,
+            NaviSceneId.NAVI_SCENE_SERVICE_AREA,
+            NaviSceneId.NAVI_SCENE_CONTROL,
+            NaviSceneId.NAVI_SCENE_TMC,
+            NaviSceneId.NAVI_CHARGE_TIP,
+            NaviSceneId.NAVI_SUSPEND_CARD
+    };
+
+    /**
+     * 路线偏好关闭时恢复场景ID 3
+     */
+    public static final NaviSceneId[] PREFERENCE_DETAIL_RESET = {
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL,
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO,
+            NaviSceneId.NAVI_SCENE_SERVICE_AREA,
+            NaviSceneId.NAVI_SCENE_CONTROL,
+            NaviSceneId.NAVI_SCENE_CONTROL_MORE,
+            NaviSceneId.NAVI_CHARGE_TIP,
+            NaviSceneId.NAVI_SUSPEND_CARD
+    };
+
+    /**
+     * 悬挂卡列表详情关闭时恢复场景ID 3
+     */
+    public static final NaviSceneId[] SUSPEND_DETAIL_RESET = {
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL,
+            NaviSceneId.NAVI_SCENE_SERVICE_AREA,
+            NaviSceneId.NAVI_SCENE_CONTROL,
+            NaviSceneId.NAVI_SCENE_CONTROL_MORE,
+            NaviSceneId.NAVI_SUSPEND_CARD
+    };
+
+    /**
+     * 控制tools更多关闭时恢复场景ID 3
+     */
+    public static final NaviSceneId[] CONTROL_MORE_RESET = {
+            NaviSceneId.NAVI_SCENE_VIA_DETAIL,
+            NaviSceneId.NAVI_SCENE_SERVICE_AREA,
+            NaviSceneId.NAVI_SCENE_CONTROL,
+            NaviSceneId.NAVI_CHARGE_TIP,
+            NaviSceneId.NAVI_SUSPEND_CARD
+    };
 }

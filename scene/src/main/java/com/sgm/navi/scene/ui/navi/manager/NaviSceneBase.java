@@ -227,7 +227,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
         }
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
             if (mCountdown == NumberUtils.NUM_0) {
-                notifySceneStateChange(false);
+                notifySceneStateChange(false, true);
                 cancelCountdown();
             }
             --mCountdown;
@@ -252,14 +252,13 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
      * 根据需要复写
      * @param isVisible
      */
-    public void notifySceneStateChange(final boolean isVisible) {
+    public void notifySceneStateChange(final boolean isVisible, boolean isReset) {
         final boolean isCanDo = isVisible != isVisible();
         Logger.i(TAG, "clsName:" , getClass().getSimpleName(), "notifySceneStateChange success", "isCanDo:" , isCanDo , ",isVisible：" , isVisible);
         if (isCanDo) {
-            getNaviSceneEvent().notifySceneStateChange((isVisible ?
+            getNaviSceneEvent().notifySceneStateChangeReset((isVisible ?
                             INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                            INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                    getSceneId());
+                    INaviSceneEvent.SceneStateChangeType.SceneCloseState), getSceneId(), isReset);
         }
     }
 }

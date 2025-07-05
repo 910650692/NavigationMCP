@@ -128,12 +128,15 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
      * @param isVisible isVisible
      */
     private void updateSceneVisible(final boolean isVisible) {
+        if (mScreenView == null) {
+            Logger.i(TAG, "updateSceneVisible mScreenView is null");
+            return;
+        }
         Logger.i(TAG, "updateSceneVisible isVisible = ", isVisible,
                 " mScreenView.isVisible() = ", mScreenView.isVisible());
         if (!isVisible) {
             mScreenView.getNaviSceneEvent().notifySceneStateChange(
-                    INaviSceneEvent.SceneStateChangeType.SceneCloseState,
-                    NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO);
+                    INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO);
         }
         if(mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
@@ -200,6 +203,10 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
     }
 
     public void refreshViaInfo() {
+        if (ConvertUtils.isEmpty(mNaviEtaInfo)) {
+            Logger.i(TAG, " mNaviEtaInfo is null");
+            return;
+        }
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
         final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
         if (!ConvertUtils.isEmpty(allPoiParamList)) {

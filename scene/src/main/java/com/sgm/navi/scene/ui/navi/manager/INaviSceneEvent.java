@@ -27,15 +27,20 @@ public interface INaviSceneEvent {
     /**
      * @param type type
      * @param cardId cardId
+     */
+    void notifySceneStateChangeReset(SceneStateChangeType type, NaviSceneId cardId, boolean isReset);
+
+    /**
+     * @param type type
+     * @param cardId cardId
      * @param info info
      */
     void notifySceneStateChange(SceneStateChangeType type, NaviSceneId cardId, SceneInfo info);
 
     /**
      * 将隐藏的scene展示
-     * @param isShowControl 是否显示控制条
      */
-    void notifySceneReset(boolean isShowControl);
+    void notifySceneReset();
 
     void destroySceneView();
 

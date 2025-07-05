@@ -58,7 +58,7 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
                 boolean currentNavi = mCallBack != null && mCallBack.getCurrentFragmentIsNavi();
                 if (currentNavi) {
                     ThreadManager.getInstance().postUi(() -> {
-                        updateSceneVisible(false);
+                        updateSceneVisible(false, true);
                         cancelTimer();
                     });
                 } else {
@@ -82,13 +82,12 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
     /**
      * @param isVisible visible
      */
-    public void updateSceneVisible(final boolean isVisible) {
+    public void updateSceneVisible(final boolean isVisible, final boolean isReset) {
         Logger.i(TAG, "SceneNaviViaListImpl", "isVisible:", isVisible, "currentVis:",
                 mScreenView.isVisible());
         if(mScreenView.isVisible() == isVisible) return;
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+        mScreenView.getNaviSceneEvent().notifySceneStateChangeReset((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                NaviSceneId.NAVI_SCENE_VIA_POINT_LIST);
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, isReset);
     }
 }

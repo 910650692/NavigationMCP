@@ -83,10 +83,9 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
         IRouteResultObserver.super.onRouteSuccess(successMsg);
         Map<MapType, Long> ids = mRoutePackage.getRequestIds();
         if (!ConvertUtils.isEmpty(ids) && ids.containsValue(requestId)) {
-            mScreenView.notifySceneStateChange(false);
+            mScreenView.notifySceneStateChange(false, true);
             NaviSceneManager.getInstance().notifySceneStateChange(
-                    INaviSceneEvent.SceneStateChangeType.SceneCloseState,
-                    NaviSceneId.NAVI_SUSPEND_CARD
+                    INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SUSPEND_CARD
             );
         }
     }
@@ -154,7 +153,7 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
     @Override
     public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus lastImersiveStatus) {
         if (lastImersiveStatus == ImersiveStatus.IMERSIVE && mScreenView.isVisible()) {
-            mScreenView.notifySceneStateChange(false);
+            mScreenView.notifySceneStateChange(false, true);
             Logger.i(TAG, "onImmersiveStatusChange-close-self!");
         }
     }

@@ -390,10 +390,9 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     public void notifySceneStateChange(final boolean isVisible) {
         if (mScreenView.isVisible() == isVisible) return;
         Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviControlImpl", isVisible);
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+        mScreenView.getNaviSceneEvent().notifySceneStateChangeReset((isVisible ?
                         INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                        INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                mScreenView.getSceneId());
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), mScreenView.getSceneId(), true);
     }
 
     public int getCarType() {

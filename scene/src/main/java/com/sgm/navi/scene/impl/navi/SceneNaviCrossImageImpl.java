@@ -271,9 +271,9 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     public void notifySceneStateChange(final boolean isVisible) {
         if (mScreenView.isVisible() == isVisible) return;
         Logger.i(TAG, "SceneNaviCrossImageImpl", isVisible);
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+        mScreenView.getNaviSceneEvent().notifySceneStateChangeReset((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_2D_CROSS);
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_2D_CROSS, true);
     }
 
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {

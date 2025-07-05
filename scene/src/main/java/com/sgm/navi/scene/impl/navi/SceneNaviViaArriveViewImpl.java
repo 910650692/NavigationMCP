@@ -31,8 +31,7 @@ public class SceneNaviViaArriveViewImpl extends BaseSceneModel<SceneNaviViaArriv
         Logger.i(TAG, "SceneNaviViaArriveViewImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
-                NaviSceneId.NAVI_VIA_ARRIVED_POP);
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_VIA_ARRIVED_POP);
     }
 
 }
