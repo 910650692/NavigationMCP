@@ -17,8 +17,10 @@ import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.ui.base.BaseActivity;
+import com.sgm.navi.utils.ActivityCloseManager;
+import com.sgm.navi.utils.OnCloseActivityListener;
 
-public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel>{
+public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> implements OnCloseActivityListener {
 
     private static final String TAG = "HudActivityTAG";
 
@@ -40,6 +42,7 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel>{
     @Override
     public void onInitView() {
         Logger.d(TAG, "onInitView");
+        ActivityCloseManager.getInstance().addOnCloseListener(this);
         setHudMapViewWH();
     }
 
@@ -69,6 +72,7 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel>{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ActivityCloseManager.getInstance().removeOnCloseListener(this);
         Logger.d(TAG, "onDestroy");
 
     }
@@ -103,6 +107,15 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel>{
             params.width = widthDp;
             params.height = heightDp;
             mapView.setLayoutParams(params);
+        }
+    }
+
+    @Override
+    public void onClose(boolean isCluster) {
+        if (!isCluster){
+            Logger.d(TAG, "hud close");
+            mBinding.hud.setVisibility(View.GONE);
+            finishAndRemoveTask();
         }
     }
 }

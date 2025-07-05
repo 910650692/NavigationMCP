@@ -12,6 +12,7 @@ import android.view.Display;
 import androidx.annotation.WorkerThread;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -118,6 +119,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final Object mLock = new Object();
     private static final int IS_GB = 1;
     private static final int IS_CLEA = 0;
+    private static final int IS_BUICK = 1;
+    private static final int IS_CADILLAC = 2;
 
     private ExportEventCallBack mEventCallBack;
 
@@ -383,19 +386,15 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 break;
             case FsaConstant.FsaEventPayload.HUD_HINT:
                 //属于CLEA平台 接收信号 去关闭HUD
-                if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//是CLEA 启动HUDActivity 有displayID = 4
-                    Logger.d(FsaConstant.FSA_TAG,"hud NO");
-                    switchHudActivity(false);
-                }
+                Logger.d(FsaConstant.FSA_TAG,"hud NO");
+                switchHudActivity(false);
                 break;
             case FsaConstant.FsaEventPayload.HUD_FULL:
                 break;
             case FsaConstant.FsaEventPayload.HUD_LEFT_HALF:
                 //属于CLEA平台 接收信号 去开启HUD
-                if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//是CLEA 关闭HUDActivity 有displayID = 4
-                    Logger.d(FsaConstant.FSA_TAG,"hud OK");
-                    switchHudActivity(true);
-                }
+                Logger.d(FsaConstant.FSA_TAG,"hud OK");
+                switchHudActivity(true);
                 break;
             case FsaConstant.FsaEventPayload.HUD_RIGHT_HALF:
                 break;
@@ -406,6 +405,19 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     //开启HUDMapviewActivity方法
     private void switchHudActivity(boolean isHud) {
         int secondeDid = 4; // HUD的DisplayId为4
+        //if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && De)
+        //cadi gb hud5
+        //buick clea hud4
+        if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && CalibrationPackage.getInstance().brand() == IS_BUICK && CalibrationPackage.getInstance().architecture() == IS_CLEA){//buick
+            Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: yes IS_BUICK IS_CLEA");
+            secondeDid = 4;
+        }else if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && CalibrationPackage.getInstance().brand() == IS_CADILLAC && CalibrationPackage.getInstance().architecture() == IS_GB){//Cadillac
+            Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: yes IS_CADILLAC IS_GB");
+            secondeDid = 3;
+        }else {
+            Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: NONONO");
+            return;
+        }
         Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: ",isHud,secondeDid);
         if (isHud) {
             Logger.d(FsaConstant.FSA_TAG, "open HudActivity");
@@ -912,6 +924,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             intent.putExtra("isOpen", isOpen);
             AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
         } else {
+            Logger.d(FsaConstant.FSA_TAG, "close ClusterActivity");
             ThreadManager.getInstance().postUi(() -> {
                 ActivityCloseManager.getInstance().triggerClose(true);});
         }
@@ -1189,6 +1202,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
         @Override
         public void onCurrentRoadSpeed(final int speed) {
+            Logger.d(TAG, "当前道路限速：" , speed);
             FsaNaviScene.getInstance().updateSpeedLimitSignData(MyFsaService.this, speed);
         }
 
