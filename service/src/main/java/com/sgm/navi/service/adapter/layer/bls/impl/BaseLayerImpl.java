@@ -32,6 +32,7 @@ import com.autonavi.gbl.map.layer.model.LayerTexture;
 import com.autonavi.gbl.map.layer.model.RouteLayerStyle;
 import com.autonavi.gbl.map.layer.observer.ICarObserver;
 import com.autonavi.gbl.map.layer.observer.ILayerClickObserver;
+import com.autonavi.gbl.map.model.MapStyleTime;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -189,6 +190,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                 customTexture.updateList.addAll(customUpdatePairs);
             }
             customTexture.cmbFileInfo.isMergeRes = !styleAdapter.isFromCardImagesRes(item);
+            customTexture.attrs.isNightForAsvg = mapView.getOperatorStyle().getMapStyle().time == MapStyleTime.MapTimeNight;
             if (!customTexture.cmbFileInfo.isMergeRes) {
                 Logger.e(TAG, getClass().getSimpleName(), " ", mapType, " 使用 自定义 图片资源  图层 :", layer.getName(), " );图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType());
             }
