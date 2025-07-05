@@ -380,7 +380,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             Logger.e(TAG, ROUTE_ERROR);
         }
         ThreadManager.getInstance().postUi(() -> {
-            if (show) {
+            if (show && mBinding.fragmentRoute.getVisibility() == View.INVISIBLE) {
                 mBinding.fragmentRoute.setVisibility(View.VISIBLE);
             }
         });
@@ -1354,7 +1354,9 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mRouteRequestLoadingDialog.dismiss();
             mRouteRequestLoadingDialog = null;
         }
-        mBinding.fragmentRoute.setVisibility(View.VISIBLE);
+        if (mBinding.fragmentRoute.getVisibility() == View.INVISIBLE) {
+            mBinding.fragmentRoute.setVisibility(View.VISIBLE);
+        }
     }
 
     /***

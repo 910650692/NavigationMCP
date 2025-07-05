@@ -136,6 +136,7 @@ public class RouteAdapterImpl implements IRouteApi {
         mAdapterImplHelper.initRouteResultLock();
         final long requestId = mRouteService.requestRoute(routeOption);
         mRequestRouteId = requestId;
+        mAdapterImplHelper.retainOnlyLastSuccessRequest();
         final ConcurrentHashMap<Long, RequestRouteResult> routeResultHashtable = mAdapterImplHelper.getRouteResultDataHashtable();
         routeResultHashtable.put(requestId, requestRouteResult);
         Logger.i(TAG, "route plane request id " + requestId);
@@ -271,6 +272,7 @@ public class RouteAdapterImpl implements IRouteApi {
         requestRouteResult.setMLineLayerParam(routeLineLayerParam);
         mAdapterImplHelper.initRouteResultLock();
         final long requestId =  mRouteService.requestRouteRestoration(routeRestorationOption);
+        mAdapterImplHelper.retainOnlyLastSuccessRequest();
         final ConcurrentHashMap<Long, RequestRouteResult> routeResultHashtable =  mAdapterImplHelper.getRouteResultDataHashtable();
         routeResultHashtable.put(requestId, requestRouteResult);
         mAdapterImplHelper.routeResultLockCountDown();
@@ -445,6 +447,7 @@ public class RouteAdapterImpl implements IRouteApi {
         mAdapterImplHelper.initRouteResultLock();
         final long requestId = mRouteService.requestRoute(mLastRouteOption);
         mRequestRouteId = requestId;
+        mAdapterImplHelper.retainOnlyLastSuccessRequest();
         final ConcurrentHashMap<Long, RequestRouteResult> routeResultHashtable = mAdapterImplHelper.getRouteResultDataHashtable();
         routeResultHashtable.put(requestId, mLastRequestRouteResult);
         mAdapterImplHelper.routeResultLockCountDown();

@@ -133,8 +133,7 @@ public class RouteAdapterImplHelper {
     private final ConcurrentHashMap<String, RouteResultObserver> mRouteResultObserverHashtable;
     /*** 算路请求队列，会初始化一些的到结果前的一些参数 key = requestId，value = requestResult **/
     private ConcurrentHashMap<Long, RequestRouteResult> mRouteResultDataHashtable;
-    private long mRequsetId = -1;
-
+    private long mLastSuccessRequsetId = -1;
     private int mRouteStrategy;
     private int mRouteConstrainCode;
     private UserAvoidInfo mUserAvoidInfo;
@@ -167,6 +166,19 @@ public class RouteAdapterImplHelper {
             mRouteResultDataHashtable = new ConcurrentHashMap<>();
         }
         return mRouteResultDataHashtable;
+    }
+
+    /**
+     * 保留最后一次成功的算路结果
+     *
+     */
+    public void retainOnlyLastSuccessRequest() {
+        if (mLastSuccessRequsetId == -1) return;
+        RequestRouteResult data = mRouteResultDataHashtable.get(mLastSuccessRequsetId);
+        mRouteResultDataHashtable.clear();
+        if (data != null) {
+            mRouteResultDataHashtable.put(mLastSuccessRequsetId, data);
+        }
     }
 
     /**
@@ -701,7 +713,7 @@ public class RouteAdapterImplHelper {
                 Logger.i(TAG, "Invalid callback");
                 return;
             }
-            mRequsetId = requestId;
+            mLastSuccessRequsetId = requestId;
             mPathInfoList = pathInfoList;
             mRequestRouteResult = requestRouteResult;
             boolean mFastNavi = requestRouteResult.isMFastNavi();
@@ -2059,7 +2071,7 @@ public class RouteAdapterImplHelper {
 
     private final IRouteWeatherObserver mRouteWeatherObserver = (requestId, arrayList) -> {
         Logger.i(TAG, "requestId -> " + requestId, "arrayList -> " + arrayList);
-        final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mRequsetId);
+        final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mLastSuccessRequsetId);
         if (requestRouteResult == null) {
             Logger.e(TAG, "have no this data");
             return;
@@ -2091,12 +2103,13 @@ public class RouteAdapterImplHelper {
         public void onRerouteInfo(BLRerouteRequestInfo info) {
             initRouteResultLock();
             Logger.i(TAG, "平行路切换onRerouteInfo: ", info.errCode + "----" + info.requestId + "----" + info.option.getRouteType() + "----" + info.option.getRouteReqId());
-            if (mRequsetId == -1 || info.requestId == 0 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
+            if (mLastSuccessRequsetId == -1 || info.requestId == 0 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
                 Logger.e(TAG, "have no this data");
                 routeResultLockCountDown();
                 return;
             }
-            final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mRequsetId);
+            final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mLastSuccessRequsetId);
+            retainOnlyLastSuccessRequest();
             if (ConvertUtils.isEmpty(requestRouteResult)) {
                 Logger.e(TAG, "onRerouteInfo: 请求参数已经被清空");
                 routeResultLockCountDown();
