@@ -110,7 +110,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     //0:充电沿途 1：充电终点 2：充电周边 3：服务区
     private int mListSearchType;
     private int mParkSearchId = -1;
-    private int mEndSearchId = -1;
     private List<RouteRestAreaInfo> mRouteRestAreaInfos;
     private ImersiveStatus mCurrentImersiveStatus;
     private boolean mRestrictionLabel = false;
@@ -776,11 +775,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             Logger.d(TAG, "Start navigation directly");
             mViewModel.startNavi(false);
         }
-        ThreadManager.getInstance().postDelay( () -> {
-            if (RoutePackage.getInstance().isRouteState()) {
-                mEndSearchId = mSearchPackage.poiIdSearch(endRouteParam.getPoiID(), true);
-            }
-        }, 2000);
     }
 
     /***
@@ -1290,23 +1284,17 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
     public void onSilentSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
         if (!RoutePackage.getInstance().isRouteState()) {
             mParkSearchId = -1;
-            mEndSearchId = -1;
             return;
         }
         if (mParkSearchId == taskId) {
             if (searchResultEntity != null && searchResultEntity.getMTotal() > 0
                     && mRoutePackage.isRouteState()) {
-                PoiInfoEntity endPoiEntity = mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP);
+                PoiInfoEntity endPoiEntity = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getMPoiInfoEntity();
                 if (endPoiEntity != null && endPoiEntity.getPointTypeCode() != null && endPoiEntity.getPointTypeCode().startsWith("1509")) {
                     Logger.d(TAG, "The endpoint is the parking");
                     return;
                 }
                 showRoutePark(MapType.MAIN_SCREEN_MAIN_MAP);
-            }
-        }
-        if (mEndSearchId == taskId) {
-            if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()) {
-                mRoutePackage.setEndEntity(MapType.MAIN_SCREEN_MAIN_MAP, searchResultEntity.getPoiList().get(0));
             }
         }
     }

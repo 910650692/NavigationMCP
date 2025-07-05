@@ -50,7 +50,7 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
         mViewBinding.tvMessage.setText(ResourceUtils.Companion.getInstance().getText(R.string.route_search_loading));
         mViewBinding.ivClose.setOnClickListener(v -> {
             dismiss();
-            if (!ConvertUtils.isEmpty(mListener)) {
+            if (mListener != null) {
                 mListener.onClose();
             }
         });
@@ -66,6 +66,7 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
             if (mAnimator.isRunning()) {
                 mAnimator.cancel();
             }
+            mAnimator.removeAllUpdateListeners(); // 清理旧监听器
             mAnimator = null;
         }
 
@@ -74,31 +75,32 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
         mAnimator.setDuration(2000); // 动画持续时间
         mAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
         mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
+
+        // 使用局部变量提升访问速度
+        final float[] lastAngle = {mAngelTemp};
+
         // 添加动画更新监听器
         mAnimator.addUpdateListener(animation -> {
             final float angles = (float) animation.getAnimatedValue();
             int angle = (int) angles;
-            if (shouldSkipUpdate(angle)) {
+            if (shouldSkipUpdate(angle, lastAngle[0])) {
                 return;
             }
             sivLoading.setRotation(angle);
+            lastAngle[0] = angle; // 更新临时角度值
         });
     }
 
-
     /**
      * 用于控制角度变化频率的辅助方法
-     * @param angle 变化角度
+     * @param angle 当前角度
+     * @param lastAngle 上次角度
      * @return 是否跳过更新
      */
-    private boolean shouldSkipUpdate(final float angle) {
-        final float changeAngle = angle - mAngelTemp;
-        final float angleStep = 30;
-        if (changeAngle > 0f && changeAngle <= angleStep) {
-            return true; // 跳过更新，避免高频调用浪费资源
-        }
-        mAngelTemp = angle; // 更新临时角度值
-        return false;
+    private boolean shouldSkipUpdate(final int angle, final float lastAngle) {
+        final int changeAngle = angle - (int) lastAngle;
+        final int angleStep = 30;
+        return changeAngle > 0 && changeAngle <= angleStep;
     }
 
     /**
@@ -111,6 +113,9 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
         if (mAnimator.isRunning()) {
             mAnimator.cancel();
         }
+        mAnimator.removeAllUpdateListeners(); // 释放引用
+        mAnimator = null;
+        mAngelTemp = 0;
     }
 
     @Override
