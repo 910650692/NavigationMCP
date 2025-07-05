@@ -102,19 +102,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mRotateAnim.setRepeatCount(Animation.INFINITE);
         mRotateAnim.setInterpolator(new LinearInterpolator());
         mBinding.mainImg.setVisibility(View.VISIBLE);
-
-        mFailedDialog = new ActivateFailedDialog(this);
-        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
-            @Override
-            public void onCommitClick() {
-                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "重试激活");
-            }
-
-            @Override
-            public void onCancelClick() {
-                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
-            }
-        });
         mBinding.mainImg.setOnClickListener(v -> {
             FloatViewManager.getInstance().hideAllCardWidgets(false);
         });
@@ -244,6 +231,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mMsgTopDialog.dismiss();
             mMsgTopDialog = null;
         }
+
+        if (mFailedDialog.isShowing()) {
+            mFailedDialog.dismiss();
+        }
+        mFailedDialog = null;
         Logger.i(TAG, "onDestroy");
         super.onDestroy();
     }
@@ -336,10 +328,22 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
      * @param msg 错误信息
      */
     public void showActivateFailedDialog(final String msg) {
-        if (ConvertUtils.isEmpty(mFailedDialog) || mFailedDialog.isShowing()) {
-            Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "dialog null or showing");
+        if (mFailedDialog.isShowing()) {
+            Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "dialog showing");
             return;
         }
+        mFailedDialog = new ActivateFailedDialog(this);
+        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "重试激活");
+            }
+
+            @Override
+            public void onCancelClick() {
+                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
+            }
+        });
         mFailedDialog.show();
     }
 
