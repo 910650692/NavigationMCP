@@ -15,7 +15,7 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_progress"
         android:layout_width="@dimen/dp_545"
-        android:layout_height="@dimen/dp_96"
+        android:layout_height="@dimen/dp_119"
         tools:background="@color/navi_color_FFFFFF_80">
 
         <com.sgm.navi.ui.view.SkinImageView
@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_end="@dimen/dp_47" />
+            app:layout_constraintGuide_end="@dimen/dp_50" />
         <!--路名基线-->
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_route_name"
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_end="@dimen/dp_45" />
+            app:layout_constraintGuide_end="@dimen/dp_50" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_exit"
