@@ -38,6 +38,7 @@ import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
+import com.sgm.navi.service.define.map.MapStateStyle;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.MapTypeManager;
 import com.sgm.navi.service.define.message.MessageCenterInfo;
@@ -353,6 +354,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     getMapTypeIdByName(mViewModel.mScreenId);
             mNaviPackage.addNaviRecord(false);
             mLayerPackage.setStartPointVisible(mapTypeId, false);
+            mMapPackage.setMapStateStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+                    MapStateStyle.MAP_NAVI);
             if (!mClusterMapOpenCloseManager.isClusterOpen()) {
                 mNaviPackage.setClusterFixOverViewStatus(false);
                 mMapPackage.goToCarPosition(mapTypeId);
