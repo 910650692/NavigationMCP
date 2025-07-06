@@ -44,6 +44,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      */
     private CrossImageEntity mRoadCrossInfo;
     public ObservableField<Boolean> mNextManeuverVisible;
+    private boolean mIsSetRect;
 
     public SceneNaviCrossImageImpl(final SceneNaviCrossImageView screenView) {
         super(screenView);
@@ -72,6 +73,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
                 // 当UI区域首次显示时，需要主动触发BL显示路口大图（2D矢量路口大图第一次显示的时候默认隐藏）
                 if (mIsShowCrossImage && mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D) {
                     mNaviPackage.setRoadCrossRect(mMapTypeId, newRect.getLocationOnScreen());
+                    mIsSetRect = true;
                     showLayerCross();
                 }
             }
@@ -202,7 +204,11 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      * 显示图层中的路口大图
      */
     public void showLayerCross() {
-        Logger.i(TAG, "mRoadCrossInfo:", mRoadCrossInfo, " mMapTypeId:", mMapTypeId);
+        Logger.i(TAG, "mRoadCrossInfo:", mRoadCrossInfo, " mMapTypeId:", mMapTypeId,
+                " mIsSetRect:", mIsSetRect);
+        if (!mIsSetRect) {
+            return;
+        }
         LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
         layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
         if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
