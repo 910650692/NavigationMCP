@@ -12,8 +12,8 @@
     <string name="layer_route_end_pop_type_battery">电量</string>
 
     <!--  补能规划  -->
-    <string name="layer_route_via_charge_time">充电 %d 分钟</string>
-    <string name="layer_route_via_charge_distance">%s%d公里</string>
+    <string name="layer_route_via_charge_time">充电 %s 分钟</string>
+    <string name="layer_route_via_charge_distance">%s%s公里</string>
     <string name="layer_route_via_charge_distance_first">距起点</string>
     <string name="layer_route_via_charge_distance_behind">间隔</string>
 

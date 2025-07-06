@@ -19,7 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.android.utils.ConvertUtils;
+import com.android.utils.ConvertUtimport com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ScreenUtils;
@@ -653,7 +653,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         refreshMapMode();
     }
 
-    public void refreshMapMode(){
+    public void refreshMapMode() {
         String data = mSettingPackage.getValueFromDB(SettingController.SETTING_GUIDE_MAP_MODE);
         MapMode currentMode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
         MapMode mapViewMode = MapMode.UP_2D;
@@ -942,7 +942,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
         if (NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) && !mSettingPackage.getPrivacyStatus()) {
             //导航结束，判断当前隐私协议状态，如果为拒绝，退出应用
-            CarModelsFeature.getInstance().exitApp();
+            if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
+                CarModelsFeature.getInstance().exitApp();
+            }
         }
     }
 

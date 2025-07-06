@@ -31,6 +31,7 @@ import com.sgm.navi.service.define.layer.refix.LayerSearchPOIType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.ChildInfo;
+import com.sgm.navi.service.define.search.LabelInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
 
@@ -551,6 +552,24 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                     viaPoint.mExtraData.chargeStationInfo.slowFree = chargeInfo.getMSlowFree();
                     viaPoint.mExtraData.chargeStationInfo.slowTotal = chargeInfo.getMSlowTotal();
                     viaPoint.mExtraData.chargeStationInfo.brandDesc = chargeInfo.getMBrand();
+                }
+                List<LabelInfo> labelInfos = poiInfoEntity.getMLableList();
+                for (LabelInfo labelInfo : labelInfos) {
+                    switch (labelInfo.getMType()) {
+                        case 1:
+                            viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeBestWay;
+                            break;
+                        case 2:
+                            viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeFastWay;
+                            break;
+                        case 3:
+                            viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeExtraETA;
+                            break;
+                        default:
+                            viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeNone;
+                            break;
+                    }
+                    break;
                 }
                 break;
             }
