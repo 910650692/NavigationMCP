@@ -23,6 +23,14 @@
             android:layout_height="match_parent"
             android:maxHeight="@dimen/dp_772">
 
+            <com.sgm.navi.scene.ui.navi.view.TbtLoadingView
+                android:id="@+id/tlv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <!--上部分的父布局-->
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_top_container"

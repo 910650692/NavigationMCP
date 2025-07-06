@@ -52,6 +52,7 @@ import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
+import com.sgm.navi.service.define.navi.NaviInfoEntity;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
@@ -83,6 +84,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private BroadcastReceiver mTimeFormatReceiver;
     private boolean mIsBroadcastRegistered;
     private boolean mIs24HourFormat;
+    private NaviEtaInfo mCurrentNaviInfo;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -262,6 +264,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         // 如果当前导航状态不是导航中，则开始导航
         if (!NaviStatus.NaviStatusType.NAVING.equals(naviStatus)) {
             mViewModel.startNavigation(getArguments());
+            if (mCurrentNaviInfo == null) {
+                startLoading();
+            }
         } else {
             // 恢复导航页面数据
             mViewModel.restoreNavigationByRebuild();
@@ -270,6 +275,18 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mViewModel.setDefultPlateNumberAndAvoidLimitSave();
         mViewModel.initShowScene(NAVI_SCENE_CONTROL, NAVI_SCENE_TBT, NAVI_SCENE_ETA, NAVI_SCENE_TMC);
         mIs24HourFormat = getTimeFormatIs24Hour();
+    }
+
+    private void startLoading() {
+        mBinding.sclTopContainer.setVisibility(GONE);
+        mBinding.tlv.setVisibility(VISIBLE);
+        mBinding.tlv.startLoading();
+    }
+
+    private void stopLoading() {
+        mBinding.tlv.stopLoading();
+        mBinding.tlv.setVisibility(GONE);
+        mBinding.sclTopContainer.setVisibility(VISIBLE);
     }
 
     @Override
@@ -379,9 +396,13 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param naviEtaInfo navi eta info
      */
     public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
+        if (mCurrentNaviInfo == null && naviEtaInfo != null) {
+            stopLoading();
+        }
         if (ConvertUtils.isEmpty(naviEtaInfo)) {
             return;
         }
+        mCurrentNaviInfo = naviEtaInfo;
         mBinding.sceneNaviTbt.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviEta.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);

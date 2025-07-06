@@ -165,6 +165,7 @@
     <string name="tip_msg_11_tts2">您错过了%s充电站，已为您刷新了补能规划</string>
     <string name="tip_msg_12">抵达终点后剩余电量低</string>
     <string name="tip_msg_12_sub_title">是否打开补能规划？</string>
+    <string name="tbt_loading">请求路线信息中</string>
 
     <!--算路相关-->
     <string name="route_search_loading">路线规划中…</string>
