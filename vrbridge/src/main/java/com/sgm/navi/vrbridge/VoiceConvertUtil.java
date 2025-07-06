@@ -22,7 +22,7 @@ public final class VoiceConvertUtil {
 
     private static final String INTEGER_MATCH = "-?\\d+";
     //较远POI点高德返回的距离
-    private static final String ZERO_DIST = "0米";
+    private static final String ZERO_DIST = "0m";
 
     private VoiceConvertUtil() {
 
