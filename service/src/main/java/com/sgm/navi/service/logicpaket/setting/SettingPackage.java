@@ -4,9 +4,11 @@ package com.sgm.navi.service.logicpaket.setting;
 import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.map.MapAdapter;
@@ -986,6 +988,9 @@ public final class SettingPackage implements SettingAdapterCallback {
      * @return true：授权一年 false：永不授权
      */
     public boolean getPrivacyStatus() {
+        if (!DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
+            return true;
+        }
         return SettingsPrivacyManager.getInstance().getLocationPrivacyStatus();
     }
 
@@ -995,6 +1000,9 @@ public final class SettingPackage implements SettingAdapterCallback {
      * @return 时间
      */
     public String getEndDate() {
+        if (!DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
+            return "2030年7月6日";
+        }
         return SettingsPrivacyManager.getInstance().getEndDate();
     }
 
