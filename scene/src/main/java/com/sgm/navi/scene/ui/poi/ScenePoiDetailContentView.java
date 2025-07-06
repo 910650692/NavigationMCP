@@ -899,6 +899,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 }
             }
             refreshEtaInfoView();
+            refreshPoiView(mPoiType,mPoiInfoEntity,false);
         } else {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mViewBinding or poiInfoEntity is null");
         }
@@ -1656,7 +1657,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setImageResource(
                 scenicChildAdapter.isCollapse() ?
                         R.drawable.img_under_the_48 : R.drawable.img_up_48);
-
     }
 
     @Override
