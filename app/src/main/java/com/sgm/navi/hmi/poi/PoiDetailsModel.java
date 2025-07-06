@@ -6,11 +6,15 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.map.IMapAdapterCallback;
+import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
@@ -23,13 +27,14 @@ import java.util.UUID;
  * @author lvww
  * @version \$Revision1.0\$
  */
-public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements SearchResultCallback {
+public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements SearchResultCallback,IMapAdapterCallback {
     private final SearchPackage mSearchPackage;
     private final String mCallbackId;
     private final CalibrationPackage mCalibrationPackage;
     private final MapPackage mapPackage;
     private double maxDistance = 5; //自车位和地图中心点阈值
     private int mTaskId;
+    private boolean isReStore;
     private SearchResultEntity mSearchResultEntity;
 
     public PoiDetailsModel() {
@@ -39,6 +44,14 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         mSearchPackage.registerCallBack(mCallbackId, this);
         mCalibrationPackage = CalibrationPackage.getInstance();
         mapPackage= MapPackage.getInstance();
+        isReStore = false;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "PoiDetailsModel 创建");
+        MapAdapter.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
     }
 
     /**
@@ -46,11 +59,26 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
      */
     public void onReStoreFragment() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , mTaskId , " ,mSearchResultEntity：" , mSearchResultEntity);
+        isReStore = true;
         if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
             final ThreadManager threadManager = ThreadManager.getInstance();
-            threadManager.postUi(() -> mViewModel.onSearchResult(mTaskId, mSearchResultEntity));
+            threadManager.postUi(() -> {
+                mViewModel.onSearchResult(mTaskId, mSearchResultEntity);
+            });
         }
     }
+
+    @Override
+    public void onMapLoadSuccess(MapType mapTypeId) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "isReStore: " , isReStore);
+        if(isReStore && !ConvertUtils.isEmpty(mSearchResultEntity)){
+            ThreadManager.getInstance().postUi(() -> {
+                mSearchPackage.createLabelMarker(mSearchResultEntity);
+                mSearchPackage.showPreview(mSearchResultEntity.getPoiList());
+            });
+        }
+    }
+
 
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
@@ -80,6 +108,7 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         super.onDestroy();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "PoiDetailsModel 销毁");
         mSearchPackage.unRegisterCallBack(mCallbackId);
+        MapAdapter.getInstance().unregisterCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
     }
 
     /**
