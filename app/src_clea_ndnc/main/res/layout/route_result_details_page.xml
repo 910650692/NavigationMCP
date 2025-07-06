@@ -93,7 +93,7 @@
         <com.sgm.navi.scene.ui.route.SceneRouteDetailsResultListView
             android:id="@+id/route_detail_info_scene_route_details_result"
             android:layout_width="@dimen/dp_613"
-            android:layout_height="@dimen/dp_631"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_m_48"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:paddingHorizontal="@dimen/dp_34"
