@@ -87,6 +87,7 @@
                 android:id="@+id/poi_base_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:scrollbars="none"
                 android:layout_marginBottom="@dimen/dp_34"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -160,13 +161,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_14"
                         android:layout_marginEnd="@dimen/dp_10"
-                        android:maxLines="2"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:maxWidth="@dimen/dp_311"
                         android:text="@{viewModel.routeSearchTimeAndDistance}"
                         android:textColor="@color/text_route_detail_title"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_29"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
-                        tool:text="5.2公里   30分钟" />
+                        tool:text="1657公里   17小时36分钟" />
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_arrival_capacity"
@@ -187,10 +190,10 @@
                         android:maxLines="1"
                         android:text="@{viewModel.routeSearchElec}"
                         android:textColor="@color/text_route_detail_title"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_29"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
-                        tool:text="15%到达" />
+                        tool:text="100%到达" />
 
                     <com.sgm.navi.ui.view.SkinConstraintLayout
                         android:id="@+id/poi_content_layout"
