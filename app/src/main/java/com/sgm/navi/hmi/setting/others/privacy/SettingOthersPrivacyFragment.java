@@ -1,6 +1,7 @@
 package com.sgm.navi.hmi.setting.others.privacy;
 
 import android.view.View;
+import android.widget.CompoundButton;
 
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
@@ -34,7 +35,7 @@ public class SettingOthersPrivacyFragment extends BaseFragment<FragmentSettingPr
 
     @Override
     public void onInitData() {
-
+        updateCheckBoxTextColor();
     }
 
     /**
@@ -54,5 +55,19 @@ public class SettingOthersPrivacyFragment extends BaseFragment<FragmentSettingPr
 //                mBinding.settingOthersPrivacyNever.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
             }
         });
+    }
+
+
+    public void updateCheckBoxTextColor() {
+        mBinding.settingOthersPrivacyNever.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
+        mBinding.settingOthersPrivacyOneYear.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
+    }
+
+    public void updateCheckBoxTextColor(final CompoundButton compoundButton, final boolean isSelected) {
+        if (isSelected) {
+            compoundButton.setTextColor(getResources().getColor(com.sgm.navi.scene.R.color.setting_white));
+        } else {
+            compoundButton.setTextColor(getResources().getColor(com.sgm.navi.scene.R.color.setting_preference_text_gray));
+        }
     }
 }
