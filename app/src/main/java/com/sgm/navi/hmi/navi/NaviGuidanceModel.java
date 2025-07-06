@@ -1249,7 +1249,12 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                         AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfo);
                 poiBundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE,
                         AutoMapConstant.PoiType.POI_MAP_CLICK);
-                poiBundle.putInt(NaviConstant.KEY_NO_HIDE_FRAGMENT, NumberUtils.NUM_1);
+                boolean isNavi = StackManager.getInstance().
+                        getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()) instanceof
+                        NaviGuidanceFragment;
+                if (isNavi) {
+                    poiBundle.putInt(NaviConstant.KEY_NO_HIDE_FRAGMENT, NumberUtils.NUM_1);
+                }
                 final PoiDetailsFragment poiFragment = new PoiDetailsFragment();
                 addPoiDetailsFragment(poiFragment, poiBundle);
                 hideNaviContent();
