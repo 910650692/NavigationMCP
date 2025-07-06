@@ -439,7 +439,7 @@
                 clickCommand="@{ViewModel.getStartNaviClick()}"
                 android:layout_width="@dimen/dp_293"
                 android:layout_height="@dimen/dp_77"
-                android:layout_marginStart="@dimen/dp_30"
+                android:layout_marginStart="@dimen/dp_26"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:background="@drawable/bg_route_start_navigation_button"
                 app:layout_constraintBottom_toBottomOf="parent"
