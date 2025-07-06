@@ -42,6 +42,7 @@ import com.autonavi.gbl.search.model.SearchTipsCityInfo;
 import com.autonavi.gbl.search.model.SuggestionSearchResult;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.search.ChargeInfo;
@@ -1180,10 +1181,13 @@ public final class SearchResultMapper {
         //标签信息
         final List<LabelInfo> labelInfos = new ArrayList<>();
         for (SearchLabelInfo searchLabelInfo : poiInfo.labelInfo) {
-            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, " label info type: " + searchLabelInfo.type + " ,content: " + searchLabelInfo.content);
+            if(BuildConfig.DEBUG){
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, " name is: " + poiInfo.basicInfo.name + " label info type: " + searchLabelInfo.type + " ,subType: " + searchLabelInfo.subType + " ,content: " + searchLabelInfo.content);
+            }
             final LabelInfo labelInfo = new LabelInfo()
                     .setMContent(searchLabelInfo.content)
-                    .setMType(searchLabelInfo.type);
+                    .setMType(searchLabelInfo.type)
+                    .setMSubType(searchLabelInfo.subType);
             labelInfos.add(labelInfo);
         }
 

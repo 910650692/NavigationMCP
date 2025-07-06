@@ -16,11 +16,13 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class LabelInfo implements Parcelable {
     private String mContent;       // 标签名称
+    private int mSubType;       // 子标签type
     private int mType;             // 标签type
 
     protected LabelInfo(final Parcel in) {
         mContent = in.readString();
         mType = in.readInt();
+        mSubType = in.readInt();
     }
 
     public static final Creator<LabelInfo> CREATOR = new Creator<LabelInfo>() {
@@ -44,5 +46,6 @@ public class LabelInfo implements Parcelable {
     public void writeToParcel(@NonNull final Parcel parcel, final int i) {
         parcel.writeString(mContent);
         parcel.writeInt(mType);
+        parcel.writeInt(mSubType);
     }
 }
