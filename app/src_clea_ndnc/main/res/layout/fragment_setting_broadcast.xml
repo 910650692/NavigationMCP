@@ -12,7 +12,8 @@
     <com.sgm.navi.ui.view.SkinScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="@dimen/dp_732"
