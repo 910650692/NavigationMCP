@@ -27,7 +27,7 @@ class ToastUtils private constructor() {
     private var myLopper: Looper? = null
     private var snackbar: Snackbar? = null
 
-    fun init(context: Context) {
+    private fun init(context: Context) {
         mContext = context
     }
 
@@ -84,7 +84,7 @@ class ToastUtils private constructor() {
         ConvertUtils.checkParam("show", msg, time)
         val view = LayoutInflater.from(mContext).inflate(R.layout.toast_base_view, null)
         val toastText = view.findViewById<TextView>(R.id.toast_text)
-        if (mToast == null) mToast = Toast(mContext)
+        if (mToast == null) mToast = Toast.makeText(mContext, msg, time)
         mToast?.view = view
         mToast!!.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, ResourceUtils.getInstance().getDimensionPixelSize(R.dimen.dp_20))
         mToast?.setDuration(time)
@@ -96,7 +96,7 @@ class ToastUtils private constructor() {
     fun showCustomToastView(view: View, msg: String) {
         cancelView()
         ConvertUtils.checkParam("show", view, msg)
-        var toastText = view.findViewById<TextView>(R.id.toast_text)
+        val toastText = view.findViewById<TextView>(R.id.toast_text)
         toastText.text = msg
         if (mToast == null) mToast = Toast(mContext)
         mToast?.view = view
@@ -132,7 +132,7 @@ class ToastUtils private constructor() {
         snackbar = null
     }
 
-    fun destroy() {
+    private fun destroy() {
         cancelView()
         mContext = null
         myLopper = null
@@ -148,19 +148,34 @@ class ToastUtils private constructor() {
         }
     }
 
-    companion object {
-        fun getInstance() = Helper.toast
-    }
-
-    object Helper {
-        val toast = ToastUtils()
-    }
-
     @HookMethod(eventName = BuryConstant.EventName.AMAP_POPUP)
     private fun sendBuryPointForShowToast(msg: String) {
         val pro = BuryProperty.Builder()
             .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, msg)
             .build()
         BuryPointController.getInstance().buryProps = pro
+    }
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        @Volatile
+        private var instance: ToastUtils? = null
+
+        fun getInstance(): ToastUtils {
+            return instance ?: synchronized(this) {
+                val createdInstance = ToastUtils()
+                instance = createdInstance
+                createdInstance
+            }
+        }
+
+        fun init(context: Context) {
+            instance?.init(context)
+        }
+
+        fun destroyInstance() {
+            instance?.destroy()
+            instance = null
+        }
     }
 }

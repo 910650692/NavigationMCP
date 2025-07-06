@@ -291,42 +291,29 @@ public class RouteAdapterImplHelper {
      * @return 算路Type
      */
     public int getRouteType(final int routePriorityType) {
-        switch (routePriorityType) {
-            case RoutePriorityType.ROUTE_TYPE_COMMON:
-                return RouteType.RouteTypeCommon;
-            case RoutePriorityType.ROUTE_TYPE_YAW:
-                return RouteType.RouteTypeYaw;
-            case RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE:
-                return RouteType.RouteTypeChangeStratege;
-            case RoutePriorityType.ROUTE_TYPE_PARALLEL_ROAD:
-                return RouteType.RouteTypeParallelRoad;
-            case RoutePriorityType.ROUTE_TYPE_TMC:
-                return RouteType.RouteTypeTMC;
-            case RoutePriorityType.ROUTE_TYPE_LIMIT_LINE:
-                return RouteType.RouteTypeLimitLine;
-            case RoutePriorityType.ROUTE_TYPE_DAMAGED_ROAD:
-                return RouteType.RouteTypeDamagedRoad;
-            case RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT:
-                return RouteType.RouteTypeChangeJnyPnt;
-            case RoutePriorityType.ROUTE_TYPE_LIMIT_FORBID:
-                return RouteType.RouteTypeLimitForbid;
-            case RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH:
-                return RouteType.RouteTypeManualRefresh;
-            case RoutePriorityType.ROUTE_TYPE_LIMIT_FORBID_OFF_LINE:
-                return RouteType.RouteTypeLimitForbidOffLine;
-            case RoutePriorityType.ROUTE_TYPE_MUTI_ROUTE_REQUEST:
-                return RouteType.RouteTypeMutiRouteRequest;
-            case RoutePriorityType.ROUTE_TYPE_DISPATCH:
-                return RouteType.RouteTypeDispatch;
-            case RoutePriorityType.ROUTE_TYPE_VOICE_CHANGE_DEST:
-                return RouteType.RouteTypeVoiceChangeDest;
-            case RoutePriorityType.ROUTE_TYPE_GROUP_CHANGE_DEST:
-                return RouteType.RouteTypeGroupChangeDest;
-            case RoutePriorityType.ROUTE_TYPE_CHANGE_ROUTE_COVERTLY:
-                return RouteType.RouteTypeChangeRouteCovertly;
-            default:
-                return RouteType.RouteTypeCommon;
-        }
+        return switch (routePriorityType) {
+            case RoutePriorityType.ROUTE_TYPE_YAW -> RouteType.RouteTypeYaw;
+            case RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE -> RouteType.RouteTypeChangeStratege;
+            case RoutePriorityType.ROUTE_TYPE_PARALLEL_ROAD -> RouteType.RouteTypeParallelRoad;
+            case RoutePriorityType.ROUTE_TYPE_TMC -> RouteType.RouteTypeTMC;
+            case RoutePriorityType.ROUTE_TYPE_LIMIT_LINE -> RouteType.RouteTypeLimitLine;
+            case RoutePriorityType.ROUTE_TYPE_DAMAGED_ROAD -> RouteType.RouteTypeDamagedRoad;
+            case RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT -> RouteType.RouteTypeChangeJnyPnt;
+            case RoutePriorityType.ROUTE_TYPE_LIMIT_FORBID -> RouteType.RouteTypeLimitForbid;
+            case RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH -> RouteType.RouteTypeManualRefresh;
+            case RoutePriorityType.ROUTE_TYPE_LIMIT_FORBID_OFF_LINE ->
+                    RouteType.RouteTypeLimitForbidOffLine;
+            case RoutePriorityType.ROUTE_TYPE_MUTI_ROUTE_REQUEST ->
+                    RouteType.RouteTypeMutiRouteRequest;
+            case RoutePriorityType.ROUTE_TYPE_DISPATCH -> RouteType.RouteTypeDispatch;
+            case RoutePriorityType.ROUTE_TYPE_VOICE_CHANGE_DEST ->
+                    RouteType.RouteTypeVoiceChangeDest;
+            case RoutePriorityType.ROUTE_TYPE_GROUP_CHANGE_DEST ->
+                    RouteType.RouteTypeGroupChangeDest;
+            case RoutePriorityType.ROUTE_TYPE_CHANGE_ROUTE_COVERTLY ->
+                    RouteType.RouteTypeChangeRouteCovertly;
+            default -> RouteType.RouteTypeCommon;
+        };
     }
 
     public void setAvoidRoad(final RouteAvoidInfo routeAvoidInfo) {
@@ -641,7 +628,7 @@ public class RouteAdapterImplHelper {
                         int childTypeID = info.getSegmentInfo(currentSegmentIndex).getMainAction();
                         if (childTypeID == MainAction.MainActionNULL) {
                             childTypeID = info.getSegmentInfo(currentSegmentIndex).getAssistantAction();
-                            Logger.i(TAG, "AssistantAction_dh_line: " + childTypeID);
+                            Logger.i(TAG, "AssistantAction_dh_line: ", childTypeID);
                         }
                         routeLineSegmentInfoChild.setMIconType(childTypeID);
                         routeLineSegmentInfoChildList.add(routeLineSegmentInfoChild);
@@ -725,10 +712,15 @@ public class RouteAdapterImplHelper {
             handlerRouteResult(requestRouteResult, pathInfoList);
             handlerDrawLine(requestRouteResult.getMLineLayerParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
-            handlerChargingStation(requestRouteResult, pathInfoList, requestId, requestRouteResult.getMMapTypeId());
-            handlerRestriction(requestRouteResult.getMRouteRestrictionParam(), pathInfoList, requestId,
-                    requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
-            handlerRange(pathInfoList, requestRouteResult.isMIsOnlineRoute());
+            if (!requestRouteResult.isMAutoRouting()){
+                Logger.i(TAG, "reRoute", "正常路线规划业务，继续执行限行、补能、续航图层刷新动作");
+                handlerChargingStation(requestRouteResult, pathInfoList, requestId, requestRouteResult.getMMapTypeId());
+                handlerRestriction(requestRouteResult.getMRouteRestrictionParam(), pathInfoList, requestId,
+                        requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
+                handlerRange(pathInfoList, requestRouteResult.isMIsOnlineRoute());
+            }else {
+                Logger.i(TAG, "reRoute", "偏航重算，阻断执行限行、补能、续航图层刷新动作");
+            }
         }
 
         @Override
@@ -2102,7 +2094,7 @@ public class RouteAdapterImplHelper {
         @Override
         public void onRerouteInfo(BLRerouteRequestInfo info) {
             initRouteResultLock();
-            Logger.i(TAG, "平行路切换onRerouteInfo: ", info.errCode + "----" + info.requestId + "----" + info.option.getRouteType() + "----" + info.option.getRouteReqId());
+            Logger.i(TAG, "平行路切换onRerouteInfo: ", info.errCode, info.requestId ,info.option.getRouteType(), info.option.getRouteReqId());
             if (mLastSuccessRequsetId == -1 || info.requestId == 0 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
                 Logger.e(TAG, "have no this data");
                 routeResultLockCountDown();

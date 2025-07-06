@@ -118,33 +118,44 @@ public class ThreadManager {
         return mThreadPool.supplyAsync(runnable, timeout);
     }
 
-    public <T> T supplyAsync(RunTask<T> runnable, long timeout, TimeUnit unit) {
-        return mThreadPool.supplyAsync(runnable, timeout, unit);
+    public <T> CompletableFuture<T> supplyAsyncCall(RunTask<T> runnable) {
+        return mThreadPool.supplyAsyncCall(runnable);
     }
 
-    public <T, U> U supplyFuture(RunTask<T> runnable, RunFunction<T, U> uRunTask) {
-        CompletableFuture<T> completableFuture= supplyFuture(runnable);
-        return thenApply(completableFuture, uRunTask);
-    }
-
-    public <T> CompletableFuture<T> supplyFuture(RunTask<T> runnable) {
-        return mThreadPool.supplyFuture(runnable);
+    public <T> CompletableFuture<T> supplyAsyncCall(RunTask<T> runnable, long timeout) {
+        return mThreadPool.supplyAsyncCall(runnable, timeout);
     }
 
     public <T, U> U thenApply(CompletableFuture<T> future, RunFunction<T, U> uRunTask) {
         return mThreadPool.thenApply(future, uRunTask);
     }
 
+    public <T, U> U thenApply(CompletableFuture<T> future, RunFunction<T, U> uRunTask, int timeout) {
+        return mThreadPool.thenApply(future, uRunTask, timeout);
+    }
+
     public <T, U> CompletableFuture<U> thenApplyCall(CompletableFuture<T> future, RunFunction<T, U> uRunTask) {
         return mThreadPool.thenApplyCall(future, uRunTask);
+    }
+
+    public <T, U> CompletableFuture<U> thenApplyCall(CompletableFuture<T> future, RunFunction<T, U> uRunTask, int timeout) {
+        return mThreadPool.thenApplyCall(future, uRunTask, timeout);
     }
 
     public <T, U> U thenApplyAsync(CompletableFuture<T> future, RunFunction<T, U> uRunTask) {
         return mThreadPool.thenApplyAsync(future, uRunTask);
     }
 
+    public <T, U> U thenApplyAsync(CompletableFuture<T> future, RunFunction<T, U> uRunTask, int timeout) {
+        return mThreadPool.thenApplyAsync(future, uRunTask, timeout);
+    }
+
     public <T, U> CompletableFuture<U> thenApplyAsyncCall(CompletableFuture<T> future, RunFunction<T, U> uRunTask) {
         return mThreadPool.thenApplyAsyncCall(future, uRunTask);
+    }
+
+    public <T, U> CompletableFuture<U> thenApplyAsyncCall(CompletableFuture<T> future, RunFunction<T, U> uRunTask, int timeout) {
+        return mThreadPool.thenApplyAsyncCall(future, uRunTask, timeout);
     }
 
     public ScheduledFuture asyncDelayWithResult(Runnable run, long start) {

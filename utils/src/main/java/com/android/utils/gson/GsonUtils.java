@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class GsonUtils {
      * @param object
      * @return 实体转json
      */
-    public static final String toJson(Object object) {
+    public static String toJson(Object object) {
         ConvertUtils.checkParam("toJson", object, gsonBuild);
         return gsonBuild.toJson(object, object.getClass());
     }
@@ -45,7 +46,7 @@ public class GsonUtils {
      * @param <T>
      * @return 实体转json
      */
-    public static final <T> String toJson(T[] t) {
+    public static <T> String toJson(T[] t) {
         ConvertUtils.checkParam("toJson", t, gsonBuild);
         return gsonBuild.toJson(t, t.getClass());
     }
@@ -57,7 +58,7 @@ public class GsonUtils {
      * @param classOfT 映射体
      * @return json转换为实体
      */
-    public static final <T> T fromJson(String json, Class<T> classOfT) {
+    public static <T> T fromJson(String json, Class<T> classOfT) {
         ConvertUtils.checkParam("fromJson", json, gsonBuild);
         return gsonBuild.fromJson(json, classOfT);
     }
@@ -69,7 +70,7 @@ public class GsonUtils {
      * @param classOfT 映射体
      * @return json转换为实体
      */
-    public static final <T> T fromJsonV2(String json, Class<T> classOfT) {
+    public static <T> T fromJsonV2(String json, Class<T> classOfT) {
         return gsonBuild.fromJson(json, classOfT);
     }
 
@@ -80,7 +81,7 @@ public class GsonUtils {
      * @param <T>
      * @return 集合实体
      */
-    public static final <T> List<T> fromJson2List(String json, Class<T> clazz) {
+    public static <T> List<T> fromJson2List(String json, Class<T> clazz) {
         ConvertUtils.checkParam("fromJson2List", json, gsonBuild);
         return fromJson2List(json, new TypeToken<List<T>>() {
         }.getType());
@@ -94,7 +95,7 @@ public class GsonUtils {
      * @param <T>
      * @return 集合实体
      */
-    public static final <T> List<T> fromJson2List(String json, Type type) {
+    public static <T> ArrayList<T> fromJson2List(String json, Type type) {
         ConvertUtils.checkParam("fromJson2List", json, type, gsonBuild);
         return gsonBuild.fromJson(json, type);
     }
@@ -107,7 +108,7 @@ public class GsonUtils {
      * @param <T>
      * @return 集合实体
      */
-    public static final <T> List<T> fromJsonList(String json, Class<T[]> clazz) {
+    public static <T> List<T> fromJsonList(String json, Class<T[]> clazz) {
         ConvertUtils.checkParam("fromJsonArray", json, gsonBuild);
         return Arrays.asList(gsonBuild.fromJson(json, clazz));
     }
@@ -120,7 +121,7 @@ public class GsonUtils {
      * @param <T>
      * @return 数组实体
      */
-    public static final <T> T[] fromJsonArray(String json, Class<T[]> clazz) {
+    public static <T> T[] fromJsonArray(String json, Class<T[]> clazz) {
         ConvertUtils.checkParam("fromJsonArray", json, gsonBuild);
         return gsonBuild.fromJson(json, clazz);
     }
@@ -133,7 +134,7 @@ public class GsonUtils {
      * @param <T>
      * @return 目标实体
      */
-    public static final <T> T convertToT(Object o, Class<T> clazz) {
+    public static <T> T convertToT(Object o, Class<T> clazz) {
         String json = toJson(o);
         return fromJson(json, clazz);
     }
@@ -145,10 +146,10 @@ public class GsonUtils {
      * @param <T>
      * @return 集合实体
      */
-    public static final <T> List<T> fromJson2List(List<?> list, Class<T> clazz) {
+    public static <T> ArrayList<T> fromJson2List(ArrayList<?> list, Class<T> clazz) {
         ConvertUtils.checkParam("fromJson2List", list, gsonBuild);
         String json = toJson(list);
-        return fromJson2List(json, new TypeToken<List<T>>() {
+        return fromJson2List(json, new TypeToken<ArrayList<T>>() {
         }.getType());
     }
 
@@ -207,9 +208,9 @@ public class GsonUtils {
             String pathClass = clas.substring(6);
             String className = clas.substring(clas.lastIndexOf(".") + 1);
             if(Logger.openLog) {
-                Logger.d("className -> ", pathClass, " className ->", className);
+                Logger.d("class Path", pathClass, " className", className);
             }
-            Class cla = Class.forName(pathClass);
+            Class<?> cla = Class.forName(pathClass);
             Object replicaObj = cla.newInstance();
             dataReplica.set(objReplica, replicaObj);
             return replicaObj;
@@ -223,10 +224,7 @@ public class GsonUtils {
             return false;
         } else {
             String[] var1 = type;
-            int var2 = var1.length;
-
-            for (int var3 = 0; var3 < var2; ++var3) {
-                String type = var1[var3];
+            for (String type : var1) {
                 if (classType.contains(type)) {
                     return false;
                 }

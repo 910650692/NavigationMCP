@@ -209,13 +209,17 @@ public final class FsaNaviScene {
             Logger.e(FsaConstant.FSA_TAG, "FSA service is null");
             return;
         }
-        if (null == naviTmcInfo || null == naviTmcInfo.getLightBarDetail() || null == naviTmcInfo.getLightBarDetail().getTmcInfoData()
-                || naviTmcInfo.getLightBarDetail().getTmcInfoData().isEmpty()) {
+        if (null == naviTmcInfo) {
             Logger.e(FsaConstant.FSA_TAG, "naviTmcInfo is null");
+            return;
         }
 
         final ArrayList<RoadCondition> roadConditionList = new ArrayList<>();
-        for (NaviTmcInfo.NaviTmcInfoData tmcInfoData : naviTmcInfo.getLightBarDetail().getTmcInfoData()) {
+        NaviTmcInfo.NaviLightBarDetail  naviLightBarDetail = naviTmcInfo.getLightBarDetail();
+        if(null == naviLightBarDetail) return;
+        ArrayList<NaviTmcInfo.NaviTmcInfoData> naviTmcInfoData = naviLightBarDetail.getTmcInfoData();
+        if(null == naviTmcInfoData) return;
+        for (NaviTmcInfo.NaviTmcInfoData tmcInfoData : naviTmcInfoData) {
             if (null == tmcInfoData) {
                 continue;
             }

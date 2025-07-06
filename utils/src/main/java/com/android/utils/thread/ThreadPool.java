@@ -120,60 +120,45 @@ public class ThreadPool extends Pool {
     }
 
     /**
-     * 开启异步线程 可携带返回值.
+     * 开启异步线程 可携带返回值
      *
      * @param runnable 任务线程
      * @param <T>      返回类型参数
      * @return T
      */
     protected <T> T supplyAsync(RunTask<T> runnable) {
-        return supplyAsync(runnable, 0);
-    }
-
-    /**
-     * 开启异步线程 可携带返回值, 本次调用会和参数线程不在同一个线程.
-     *
-     * @param runnable 任务线程
-     * @param timeout  超时时间 默认单位 秒
-     * @param <T>      返回类型参数
-     * @return T
-     */
-    protected <T> T supplyAsync(RunTask<T> runnable, long timeout) {
-        return supplyAsync(runnable, timeout, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 开启异步线程 可携带返回值, 本次调用会和参数线程不在同一个线程.
-     *
-     * @param runnable 任务线程
-     * @param timeout  超时时间 默认单位 秒
-     * @param <T>      返回类型参数
-     * @return T
-     */
-    protected <T> T supplyAsync(RunTask<T> runnable, long timeout, TimeUnit unit) {
+        CompletableFuture<T> future = supplyAsyncCall(runnable);
         try {
-            if (0 == timeout) return supplyFuture(runnable).get();
-            return supplyFuture(runnable).get(timeout, unit);
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            Logger.e(e.toString());
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            future.cancel(true);
             return null;
         }
     }
 
-    /**
-     * 开启异步线程 可携带返回值, 本次调用会和参数线程不在同一个线程.
-     *
-     * @param runnable 任务线程
-     * @param <T>      返回类型参数
-     * @return T CompletableFuture<T>
-     */
-    protected <T> CompletableFuture<T> supplyFuture(RunTask<T> runnable) {
+    protected <T> T supplyAsync(RunTask<T> runnable, long timeout) {
+        CompletableFuture<T> future = supplyAsyncCall(runnable, timeout);
+        try {
+            if (0 == timeout) return future.get();
+            return future.get(timeout, TimeUnit.MILLISECONDS);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            future.cancel(true);
+            return null;
+        }
+    }
+
+    protected <T> CompletableFuture<T> supplyAsyncCall(RunTask<T> runnable) {
         isShutdown();
         return CompletableFuture.supplyAsync(runnable, mThreadPool);
     }
 
+    protected <T> CompletableFuture<T> supplyAsyncCall(RunTask<T> runnable, long timeout) {
+        isShutdown();
+        return CompletableFuture.supplyAsync(runnable, mThreadPool).completeOnTimeout(null, timeout, TimeUnit.MILLISECONDS);
+    }
+
     /**
-     * 开启异步线程 可携带返回值, 本次调用会和参数线程不在同一个线程.
+     * 开启异步线程 可携带返回值, 本次调用会和参数线程在同一个线程.
      *
      * @param uRunTask 任务线程
      * @param <T>      入参类型,
@@ -181,10 +166,21 @@ public class ThreadPool extends Pool {
      * @return U
      */
     protected <T, U> U thenApply(CompletableFuture<T> future, RunFunction<T, U> uRunTask) {
+        CompletableFuture<U> completableFuture = thenApplyCall(future, uRunTask);
         try {
-            return thenApplyCall(future, uRunTask).get();
+            return completableFuture.get();
         } catch (ExecutionException | InterruptedException e) {
-            Logger.e(e.toString());
+            completableFuture.cancel(true);
+            return null;
+        }
+    }
+
+    protected <T, U> U thenApply(CompletableFuture<T> future, RunFunction<T, U> uRunTask, long timeout) {
+        CompletableFuture<U> completableFuture =  thenApplyCall(future, uRunTask).completeOnTimeout(null, timeout, TimeUnit.MILLISECONDS);
+        try {
+            return completableFuture.get();
+        } catch (ExecutionException | InterruptedException e) {
+            completableFuture.cancel(true);
             return null;
         }
     }
@@ -193,8 +189,12 @@ public class ThreadPool extends Pool {
         return future.thenApply(uRunTask);
     }
 
+    protected <T, U> CompletableFuture<U> thenApplyCall(CompletableFuture<T> future, RunFunction<T, U> uRunTask, long timeout) {
+        return future.thenApply(uRunTask).completeOnTimeout(null, timeout, TimeUnit.MILLISECONDS);
+    }
+
     /**
-     * 本次调用不会和参数线程不在同一个线程.
+     * 本次调用会和参数线程不在同一个线程.
      *
      * @param uRunTask 任务线程
      * @param <T>      入参类型,
@@ -202,23 +202,30 @@ public class ThreadPool extends Pool {
      * @return U
      */
     protected <T, U> U thenApplyAsync(CompletableFuture<T> future, RunFunction<T, U> uRunTask) {
+        CompletableFuture<U> completableFuture = future.thenApplyAsync(uRunTask);
         try {
-            return thenApplyAsyncCall(future, uRunTask).get();
+            return completableFuture.get();
         } catch (ExecutionException | InterruptedException e) {
-            Logger.e(e.toString());
+            completableFuture.cancel(true);
             return null;
         }
     }
 
-    /**
-     * 本次调用不会和参数线程不在同一个线程.
-     *
-     * @param uRunTask 任务线程
-     * @param <T>      入参类型,
-     * @param <U>      返回类型参数
-     * @return U
-     */
+    protected <T, U> U thenApplyAsync(CompletableFuture<T> future, RunFunction<T, U> uRunTask, long timeout) {
+        CompletableFuture<U> completableFuture = thenApplyAsyncCall(future, uRunTask).completeOnTimeout(null, timeout, TimeUnit.MILLISECONDS);
+        try {
+            return completableFuture.get(timeout, TimeUnit.MILLISECONDS);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            completableFuture.cancel(true);
+            return null;
+        }
+    }
+
     protected <T, U> CompletableFuture<U> thenApplyAsyncCall(CompletableFuture<T> future, RunFunction<T, U> uRunTask) {
         return future.thenApplyAsync(uRunTask);
+    }
+
+    protected <T, U> CompletableFuture<U> thenApplyAsyncCall(CompletableFuture<T> future, RunFunction<T, U> uRunTask, long timeout) {
+        return future.thenApplyAsync(uRunTask).completeOnTimeout(null, timeout, TimeUnit.MILLISECONDS);
     }
 }

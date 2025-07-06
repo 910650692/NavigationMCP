@@ -326,7 +326,7 @@ public class EngineAdapterImpl implements IEngineApi {
                     final String mmDdByDate = fds.format(new Date(sdkLimitTimeUTC));
                     Logger.i(TAG, "sdkLimitTimeUTC mmDdByDate = " + mmDdByDate);
                     if (!TextUtils.isEmpty(mmDdByDate)) {
-                        ToastUtils.Companion.getInstance().showTextLong("地图试用版本于在" + mmDdByDate + "到期，请尽快升级");
+                        ToastUtils.Companion.getInstance().showCustomToastView("地图试用版本于在" + mmDdByDate + "到期，请尽快升级");
                     }
                 }
             }
@@ -415,9 +415,9 @@ public class EngineAdapterImpl implements IEngineApi {
         String uid = "";
         final CommonManager commonManager = CommonManager.getInstance();
         commonManager.init();
-        AccountProfileInfo info = new AccountProfileInfo();
+        AccountProfileInfo info;
         final String valueJson = commonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
-        Logger.d("getUserInfo valueJson = " + valueJson);
+        Logger.d("getUserInfo valueJson = ", valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
             info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
             uid = info.getUid();

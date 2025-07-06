@@ -18,6 +18,12 @@ public class FyEnergyEndPoint implements Parcelable {
     private short segmentIdx;
     private short linkIndex;
 
+    public FyEnergyEndPoint(GeoPoint show, short segmentIdx, short linkIndex) {
+        this.show = show;
+        this.segmentIdx = segmentIdx;
+        this.linkIndex = linkIndex;
+    }
+
     protected FyEnergyEndPoint(Parcel in) {
         show = in.readParcelable(GeoPoint.class.getClassLoader());
         segmentIdx = (short) in.readInt();

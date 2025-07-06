@@ -1,20 +1,24 @@
 package com.sgm.navi.service.adapter.navi.bls;
 
+import androidx.annotation.NonNull;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.TimeUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
+import com.autonavi.gbl.common.path.model.ChargingStation;
+import com.autonavi.gbl.common.path.model.ElecVehicleETAInfo;
+import com.autonavi.gbl.common.path.model.EnergyEndPoint;
 import com.autonavi.gbl.common.path.model.LightBarItem;
 import com.autonavi.gbl.common.path.model.RoadClass;
-import com.autonavi.gbl.common.path.model.SubCameraExtType;
 import com.autonavi.gbl.common.path.model.TollGateInfo;
 import com.autonavi.gbl.common.path.model.TrafficItem;
+import com.autonavi.gbl.common.path.model.ViaMergeInfo;
 import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.autonavi.gbl.guide.model.CrossNaviInfo;
-import com.autonavi.gbl.guide.model.CrossType;
 import com.autonavi.gbl.guide.model.CruiseFacilityInfo;
 import com.autonavi.gbl.guide.model.CruiseInfo;
-import com.autonavi.gbl.guide.model.DriveReport;
 import com.autonavi.gbl.guide.model.ExitDirectionInfo;
 import com.autonavi.gbl.guide.model.LaneInfo;
 import com.autonavi.gbl.guide.model.LightBarDetail;
@@ -34,32 +38,31 @@ import com.autonavi.gbl.guide.model.NaviInfo;
 import com.autonavi.gbl.guide.model.NaviInfoPanel;
 import com.autonavi.gbl.guide.model.NaviIntervalCameraDynamicInfo;
 import com.autonavi.gbl.guide.model.NaviRoadFacility;
-import com.autonavi.gbl.guide.model.NaviStatisticsInfo;
 import com.autonavi.gbl.guide.model.NaviSubCameraExt;
 import com.autonavi.gbl.guide.model.SAPAInquireResponseData;
 import com.autonavi.gbl.guide.model.SoundInfo;
 import com.autonavi.gbl.guide.model.TimeAndDist;
 import com.autonavi.gbl.guide.model.TmcInfoData;
 import com.autonavi.gbl.guide.model.TrafficLightCountdown;
-import com.autonavi.gbl.guide.model.VectorCrossImageType;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.cruise.CruiseFacilityEntity;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
-import com.sgm.navi.service.define.cruise.CruiseIntervalvelocity;
 import com.sgm.navi.service.define.navi.CameraInfoEntity;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
+import com.sgm.navi.service.define.navi.FyChargingStation;
+import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
+import com.sgm.navi.service.define.navi.FyEnergyEndPoint;
+import com.sgm.navi.service.define.navi.FyViaMergeInfo;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.LightInfoEntity;
 import com.sgm.navi.service.define.navi.NaviCongestionDetailInfoEntity;
 import com.sgm.navi.service.define.navi.NaviCongestionInfoEntity;
-import com.sgm.navi.service.define.navi.NaviDriveReportEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviInfoEntity;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviMixForkInfo;
-import com.sgm.navi.service.define.navi.NaviParkingEntity;
 import com.sgm.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
@@ -68,13 +71,10 @@ import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.sgm.navi.service.define.route.RouteParam;
-import com.sgm.navi.service.define.search.ParkingInfo;
-import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 // TODO: 2024/12/30 数据需要根据业务精简一下
 public final class NaviDataFormatHelper {
@@ -138,17 +138,6 @@ public final class NaviDataFormatHelper {
             soundInfoEntity.setText(info.text);
             soundInfoEntity.setSoundType(info.soundType);
         }
-        return soundInfoEntity;
-    }
-
-    /**
-     * @param type type
-     * @return SoundInfoEntity
-     */
-    public static SoundInfoEntity formatSoundInfo(final int type) {
-        final SoundInfoEntity soundInfoEntity = new SoundInfoEntity();
-        soundInfoEntity.setRingType(type);
-        soundInfoEntity.setRingType(true);
         return soundInfoEntity;
     }
 
@@ -368,14 +357,88 @@ public final class NaviDataFormatHelper {
      * @param lightBarDetail lightBarDetail
      * @return NaviTmcInfo
      */
-    public static NaviTmcInfo forMatTMCLightBar(final ArrayList<LightBarInfo> lightBarInfo,
+    /**
+     * @param lightBarInfo   lightBarInfo
+     * @param lightBarDetail lightBarDetail
+     * @return NaviTmcInfo
+     */
+    public static NaviTmcInfo formatTmcLightBar(final ArrayList<LightBarInfo> lightBarInfo,
                                                 final LightBarDetail lightBarDetail) {
+        if (lightBarInfo == null || lightBarDetail == null) {
+            return new NaviTmcInfo(); // 或者根据业务需求返回 null / 抛异常
+        }
+
         final NaviTmcInfo naviTmcInfo = new NaviTmcInfo();
+        final NaviTmcInfo.NaviLightBarDetail naviLightBarDetail = getNaviLightBarDetail(lightBarDetail);
+        naviTmcInfo.setLightBarDetail(naviLightBarDetail);
+
+        final ArrayList<NaviTmcInfo.NaviLightBarInfo> barInfoList = new ArrayList<>(lightBarInfo.size());
+
+        for (LightBarInfo info : lightBarInfo) {
+            if (info == null) continue;
+
+            final NaviTmcInfo.NaviLightBarInfo barInfo = new NaviTmcInfo.NaviLightBarInfo();
+            barInfo.setPathID(info.pathID);
+
+            final ArrayList<NaviTmcInfo.NaviLightBarItem> itemArrayList;
+            if (info.itemList != null) {
+                itemArrayList = new ArrayList<>(info.itemList.size());
+                for (LightBarItem lightBarItem : info.itemList) {
+                    itemArrayList.add(convertToNaviLightBarItem(lightBarItem));
+                }
+            } else {
+                itemArrayList = new ArrayList<>();
+            }
+
+            barInfo.setItemList(itemArrayList);
+            barInfoList.add(barInfo);
+        }
+
+        naviTmcInfo.setLightBarInfo(barInfoList);
+        return naviTmcInfo;
+    }
+
+    private static NaviTmcInfo.NaviLightBarItem convertToNaviLightBarItem(LightBarItem lightBarItem) {
+        if (lightBarItem == null) {
+            return new NaviTmcInfo.NaviLightBarItem();
+        }
+
+        final NaviTmcInfo.NaviLightBarItem item = new NaviTmcInfo.NaviLightBarItem();
+        item.setStatusFlag(lightBarItem.statusFlag);
+        item.setStatus(lightBarItem.status);
+        item.setFineStatus(lightBarItem.fineStatus);
+        item.setLength(lightBarItem.length);
+        item.setTimeOfSeconds(lightBarItem.timeOfSeconds);
+        item.setStartSegmentIdx(lightBarItem.startSegmentIdx);
+        item.setStartLinkIdx(lightBarItem.startLinkIdx);
+        item.setStartLinkStatus(lightBarItem.startLinkStatus);
+        item.setStartLinkFineStatus(lightBarItem.startLinkFineStatus);
+        item.setEndSegmentIdx(lightBarItem.endSegmentIdx);
+        item.setEndLinkIndex(lightBarItem.endLinkIndex);
+        item.setEndLinkStatus(lightBarItem.endLinkStatus);
+        item.setEndLinkFineStatus(lightBarItem.endLinkFineStatus);
+
+        item.setStartTrafficItem(formatTrafficItem(lightBarItem.startTrafficItem));
+        item.setStart3dTrafficItem(formatTrafficItem(lightBarItem.start3dTrafficItem));
+        item.setEndTrafficItem(formatTrafficItem(lightBarItem.endTrafficItem));
+        item.setEnd3dTrafficItem(formatTrafficItem(lightBarItem.end3dTrafficItem));
+
+        return item;
+    }
+
+
+    private static @NonNull NaviTmcInfo.NaviLightBarDetail getNaviLightBarDetail(LightBarDetail lightBarDetail) {
         final NaviTmcInfo.NaviLightBarDetail naviLightBarDetail = new NaviTmcInfo.NaviLightBarDetail();
         naviLightBarDetail.setPathID(lightBarDetail.pathID);
         naviLightBarDetail.setTotalDistance(lightBarDetail.totalDistance);
         naviLightBarDetail.setRestDistance(lightBarDetail.restDistance);
         naviLightBarDetail.setFinishDistance(lightBarDetail.finishDistance);
+        final ArrayList<NaviTmcInfo.NaviTmcInfoData> tmcInfoList = getNaviTmcInfoData(lightBarDetail);
+        naviLightBarDetail.setTmcInfoData(tmcInfoList);
+        return naviLightBarDetail;
+    }
+
+    private static @NonNull ArrayList<NaviTmcInfo.NaviTmcInfoData> getNaviTmcInfoData(LightBarDetail lightBarDetail) {
         final ArrayList<NaviTmcInfo.NaviTmcInfoData> tmcInfoList = new ArrayList<>();
         for (TmcInfoData tmcInfoData : lightBarDetail.tmcInfoData) {
             final NaviTmcInfo.NaviTmcInfoData naviTmcInfoData = new NaviTmcInfo.NaviTmcInfoData();
@@ -386,47 +449,32 @@ public final class NaviDataFormatHelper {
             naviTmcInfoData.setTravelTime(tmcInfoData.travelTime);
             tmcInfoList.add(naviTmcInfoData);
         }
-        naviLightBarDetail.setTmcInfoData(tmcInfoList);
-        naviTmcInfo.setLightBarDetail(naviLightBarDetail);
-        final ArrayList<NaviTmcInfo.NaviLightBarInfo> list = new ArrayList<>();
-        for (LightBarInfo info : lightBarInfo) {
-            final NaviTmcInfo.NaviLightBarInfo barInfo = new NaviTmcInfo.NaviLightBarInfo();
-            barInfo.setPathID(info.pathID);
-            final ArrayList<NaviTmcInfo.NaviLightBarItem> items = new ArrayList<>();
-            for (LightBarItem lightBarItem : info.itemList) {
-                final NaviTmcInfo.NaviLightBarItem item = new NaviTmcInfo.NaviLightBarItem();
-                item.setStatusFlag(lightBarItem.statusFlag);
-                item.setStatus(lightBarItem.status);
-                item.setFineStatus(lightBarItem.fineStatus);
-                item.setLength(lightBarItem.length);
-                item.setTimeOfSeconds(lightBarItem.timeOfSeconds);
-                item.setStartSegmentIdx(lightBarItem.startSegmentIdx);
-                item.setStartLinkIdx(lightBarItem.startLinkIdx);
-                item.setStartLinkStatus(lightBarItem.startLinkStatus);
-                item.setStartLinkFineStatus(lightBarItem.startLinkFineStatus);
-                item.setEndSegmentIdx(lightBarItem.endSegmentIdx);
-                item.setEndLinkIndex(lightBarItem.endLinkIndex);
-                item.setEndLinkStatus(lightBarItem.endLinkStatus);
-                item.setEndLinkFineStatus(lightBarItem.endLinkFineStatus);
-                item.setStartTrafficItem(formatTrafficItem(lightBarItem.startTrafficItem));
-                item.setStart3dTrafficItem(formatTrafficItem(lightBarItem.start3dTrafficItem));
-                item.setEndTrafficItem(formatTrafficItem(lightBarItem.endTrafficItem));
-                item.setEnd3dTrafficItem(formatTrafficItem(lightBarItem.end3dTrafficItem));
-                items.add(item);
-            }
-            barInfo.setItemList(items);
-            list.add(barInfo);
-        }
-        naviTmcInfo.setLightBarInfo(list);
-        return naviTmcInfo;
+        return tmcInfoList;
     }
 
     /**
      * @param trafficItem trafficItem
      * @return NaviTmcInfo.NaviTrafficItem
      */
+    /**
+     * @param trafficItem trafficItem
+     * @return NaviTmcInfo.NaviTrafficItem
+     */
     private static NaviTmcInfo.NaviTrafficItem formatTrafficItem(final TrafficItem trafficItem) {
+        if (trafficItem == null) {
+            return null; // 或者抛出异常，视业务需求而定
+        }
         final NaviTmcInfo.NaviTrafficItem naviTrafficItem = new NaviTmcInfo.NaviTrafficItem();
+        GeoPoint startPoint = null;
+        if (trafficItem.startPnt != null) {
+            startPoint = new GeoPoint(trafficItem.startPnt.lon, trafficItem.startPnt.lat, trafficItem.startPnt.z);
+        }
+        naviTrafficItem.setStartPnt(startPoint);
+        GeoPoint endPoint = null;
+        if (trafficItem.endPnt != null) {
+            endPoint = new GeoPoint(trafficItem.endPnt.lon, trafficItem.endPnt.lat, trafficItem.endPnt.z);
+        }
+        naviTrafficItem.setEndPnt(endPoint);
         naviTrafficItem.setLength(trafficItem.length);
         naviTrafficItem.setTravelTime(trafficItem.travelTime);
         naviTrafficItem.setRatio(trafficItem.ratio);
@@ -437,14 +485,9 @@ public final class NaviDataFormatHelper {
         naviTrafficItem.setSpeed(trafficItem.speed);
         naviTrafficItem.setCredibility(trafficItem.credibility);
         naviTrafficItem.setReverse(trafficItem.reverse);
-        naviTrafficItem.setStartPnt(new GeoPoint(trafficItem.startPnt.lon, trafficItem.startPnt.lat,
-                trafficItem.startPnt.z));
-        naviTrafficItem.setEndPnt(new GeoPoint(trafficItem.endPnt.lon, trafficItem.endPnt.lat,
-                trafficItem.endPnt.z));
-        naviTrafficItem.setEndPnt(new GeoPoint(trafficItem.endPnt.lon, trafficItem.endPnt.lat,
-                trafficItem.endPnt.z));
         return naviTrafficItem;
     }
+
 
     /**
      * @param info info
@@ -515,74 +558,39 @@ public final class NaviDataFormatHelper {
      * @param naviCameraList naviCameraList
      * @return CameraInfoEntity
      */
-    public static CameraInfoEntity forMatNaviCameraInfo(
-            final ArrayList<NaviCameraExt> naviCameraList) {
-        //TODO 需要判断下此处还是否需要，该方法无法返回低道路等级限速摄像头信息，存在问题 - Niu
-        final CameraInfoEntity cameraInfoEntity = new CameraInfoEntity();
-        if (!ConvertUtils.isEmpty(naviCameraList)) {
-            loop:
-            for (NaviCameraExt cameraInfo : naviCameraList) {
-                if (cameraInfo.subCameras == null || cameraInfo.subCameras.isEmpty()) {
+    public static CameraInfoEntity formatNearestCameraInfo(final ArrayList<NaviCameraExt> naviCameraList) {
+        CameraInfoEntity bestMatch = new CameraInfoEntity();
+        if (ConvertUtils.isEmpty(naviCameraList)) {
+            return bestMatch;
+        }
+        for (NaviCameraExt cameraInfo : naviCameraList) {
+            if (ConvertUtils.isEmpty(cameraInfo.subCameras) || cameraInfo.coord2D == null) {
+                continue;
+            }
+            for (NaviSubCameraExt subCamera : cameraInfo.subCameras) {
+                if (ConvertUtils.isEmpty(subCamera.speed)) {
                     continue;
                 }
-                if (((cameraInfo.roadClass == RoadClass.RoadClassFreeway || cameraInfo.roadClass == RoadClass.RoadClassCitySpeedway) &&
-                        cameraInfo.distance <= 1000) || cameraInfo.distance <= 500) { // 高速路、城快 < 1KM 或者 普通道路 < 500M
-                    final NaviSubCameraExt subCameraExt = cameraInfo.subCameras.get(0);
-                    if (subCameraExt.speed == null || subCameraExt.speed.isEmpty()) {
-                        continue;
-                    }
-                    for (Short speed : subCameraExt.speed) {
-                        if (isValidSpeed(speed)) {
-                            cameraInfoEntity.setCameraId(cameraInfo.cameraId);
-                            cameraInfoEntity.setCoord2D(new GeoPoint(cameraInfo.coord2D.lon, cameraInfo.coord2D.lat));
-                            cameraInfoEntity.setDistance(cameraInfo.distance);
-                            cameraInfoEntity.setRoadClass(cameraInfo.roadClass);
-                            cameraInfoEntity.setSubCameraId(subCameraExt.cameraId);
-                            cameraInfoEntity.setSubType(subCameraExt.subType);
-                            cameraInfoEntity.setMatch(subCameraExt.isMatch);
-                            cameraInfoEntity.setSpeed(speed);
-                            break loop;
+                for (Short speed : subCamera.speed) {
+                    if (isValidSpeed(speed)) {
+                        // 如果当前摄像头距离更近，则更新为最佳匹配
+                        if (cameraInfo.distance < bestMatch.getDistance()) {
+                            bestMatch.setCameraId(cameraInfo.cameraId);
+                            bestMatch.setCoord2D(new GeoPoint(cameraInfo.coord2D.lon, cameraInfo.coord2D.lat));
+                            bestMatch.setDistance(cameraInfo.distance);
+                            bestMatch.setRoadClass(cameraInfo.roadClass);
+                            bestMatch.setSubCameraId(subCamera.cameraId);
+                            bestMatch.setSubType(subCamera.subType);
+                            bestMatch.setMatch(subCamera.isMatch);
+                            bestMatch.setSpeed(speed);
                         }
                     }
                 }
             }
         }
-        return cameraInfoEntity;
+        return bestMatch;
     }
 
-    /**
-     * @param naviCameraList naviCameraList
-     * @return CameraInfoEntity
-     */
-    public static CameraInfoEntity formatNearestCameraInfo(final ArrayList<NaviCameraExt> naviCameraList) {
-        final CameraInfoEntity cameraInfoEntity = new CameraInfoEntity();
-        if (!ConvertUtils.isEmpty(naviCameraList)) {
-            for (NaviCameraExt cameraInfo : naviCameraList) {
-                if (ConvertUtils.isEmpty(cameraInfo.subCameras)) {
-                    continue;
-                }
-                for (NaviSubCameraExt subCamera : cameraInfo.subCameras) {
-                    if (ConvertUtils.isEmpty(subCamera.speed)) {
-                        continue;
-                    }
-                    for (Short speed : subCamera.speed) {
-                        if (isValidSpeed(speed)) {
-                            cameraInfoEntity.setCameraId(cameraInfo.cameraId);
-                            cameraInfoEntity.setCoord2D(new GeoPoint(cameraInfo.coord2D.lon, cameraInfo.coord2D.lat));
-                            cameraInfoEntity.setDistance(cameraInfo.distance);
-                            cameraInfoEntity.setRoadClass(cameraInfo.roadClass);
-                            cameraInfoEntity.setSubCameraId(subCamera.cameraId);
-                            cameraInfoEntity.setSubType(subCamera.subType);
-                            cameraInfoEntity.setMatch(subCamera.isMatch);
-                            cameraInfoEntity.setSpeed(speed);
-                            return cameraInfoEntity;
-                        }
-                    }
-                }
-            }
-        }
-        return cameraInfoEntity;
-    }
 
     /**
      * @param speed speed
@@ -599,18 +607,6 @@ public final class NaviDataFormatHelper {
     public static SapaInfoEntity forMatSAPAInfo(final SAPAInquireResponseData responseData) {
         final ArrayList<NaviFacility> serviceAreaList = responseData.serviceAreaInfo.serviceAreaList;
         return forMatSAPAInfo(serviceAreaList);
-//        SapaInfoEntity sapaInfoEntity = new SapaInfoEntity();
-//        sapaInfoEntity.setRemainFreewayDistance(responseData.serviceAreaInfo.remainFreewayDistance);
-//        sapaInfoEntity.setRemainFreewayTime(responseData.serviceAreaInfo.remainFreewayTime);
-//        sapaInfoEntity.setRemainServiceAreaNum(responseData.serviceAreaInfo.remainServiceAreaNum);
-//        if (!ConvertUtils.isEmpty(responseData.serviceAreaInfo.serviceAreaList)) {
-//            ArrayList<SapaInfoEntity.SAPAItem> sapaItems = new ArrayList<>();
-//            for (NaviFacility naviFacility : responseData.serviceAreaInfo.serviceAreaList) {
-//                sapaItems.add(getSAPAItem(naviFacility));
-//            }
-//            sapaInfoEntity.setList(sapaItems);
-//        }
-//        return sapaInfoEntity;
     }
 
     /**
@@ -669,63 +665,6 @@ public final class NaviDataFormatHelper {
     }
 
     /**
-     * @param crossInfo 路口信息
-     * @return 图片信息
-     */
-    public static CrossImageInfo getCrossImageInfo(final CrossImageEntity crossInfo) {
-        final CrossImageInfo crossImageInfo = new CrossImageInfo();
-        switch (crossInfo.getType()) {
-            case NaviConstant.CrossType.CROSS_TYPE_GRID:
-                crossImageInfo.type = CrossType.CrossTypeGrid;
-                break;
-            case NaviConstant.CrossType.CROSS_TYPE_VECTOR:
-                crossImageInfo.type = CrossType.CrossTypeVector;
-                break;
-            case NaviConstant.CrossType.CROSS_TYPE_3_D:
-                crossImageInfo.type = CrossType.CrossType3D;
-                break;
-            default:
-                break;
-        }
-        switch (crossInfo.getVectorType()) {
-            case NaviConstant.VectorCrossImageType.VECTOR_CROSS_IMAGE_TYPE_INVALID:
-                crossImageInfo.vectorType = VectorCrossImageType.VectorCrossImageTypeInvalid;
-                break;
-            case NaviConstant.VectorCrossImageType.VECTOR_CROSS_IMAGE_TYPE_COMMON:
-                crossImageInfo.vectorType = VectorCrossImageType.VectorCrossImageTypeCommon;
-                break;
-            case NaviConstant.VectorCrossImageType.VECTOR_CROSS_IMAGE_TYPE_ROUNDABOUT:
-                crossImageInfo.vectorType = VectorCrossImageType.VectorCrossImageTypeRoundabout;
-                break;
-            case NaviConstant.VectorCrossImageType.VECTOR_CROSS_IMAGE_TYPE_CONFUSION:
-                crossImageInfo.vectorType = VectorCrossImageType.VectorCrossImageTypeConfusion;
-                break;
-            case NaviConstant.VectorCrossImageType.VECTOR_CROSS_IMAGE_TYPE_NEAR:
-                crossImageInfo.vectorType = VectorCrossImageType.VectorCrossImageTypeNear;
-                break;
-            case NaviConstant.VectorCrossImageType.VECTOR_CROSS_IMAGE_TYPE_DOUBLE_LIGHT:
-                crossImageInfo.vectorType = VectorCrossImageType.VectorCrossImageTypeDoubleLight;
-                break;
-            case NaviConstant.VectorCrossImageType.VECTOR_CROSS_IMAGE_TYPE_SOLID_LINE:
-                crossImageInfo.vectorType = VectorCrossImageType.VectorCrossImageTypeSolidLine;
-                break;
-            case NaviConstant.VectorCrossImageType.VECTOR_CROSS_IMAGE_TYPE_SOLID_NEAR:
-                crossImageInfo.vectorType = VectorCrossImageType.VectorCrossImageTypeSolidNear;
-                break;
-            case NaviConstant.VectorCrossImageType.VECTOR_CROSS_IMAGE_TYPE_MIX_REVERSE:
-                crossImageInfo.vectorType = VectorCrossImageType.VectorCrossImageTypeMixReverse;
-                break;
-            default:
-                break;
-        }
-        crossImageInfo.dataBuf = crossInfo.getDataBuf();
-        crossImageInfo.arrowDataBuf = crossInfo.getArrowDataBuf();
-        crossImageInfo.isOnlyVector = crossInfo.isOnlyVector();
-        crossImageInfo.distance = crossInfo.getDistance();
-        return crossImageInfo;
-    }
-
-    /**
      * @param routeParam routeParam
      * @param obj        obj
      * @return entity
@@ -759,80 +698,6 @@ public final class NaviDataFormatHelper {
         return naviViaEntity;
     }
 
-    /**
-     * @param obj obj
-     * @return entity
-     */
-    public static PoiInfoEntity getPoiInfoEntity(final Object obj) {
-        if (obj instanceof NaviParkingEntity naviParkingEntity) {
-            return new PoiInfoEntity().setName(naviParkingEntity.getName())
-                    .setAddress(naviParkingEntity.getAddress())
-                    .setPoiType(naviParkingEntity.getPoiType())
-                    .setPid(naviParkingEntity.getPid())
-                    .setPoint(naviParkingEntity.getPoint());
-        } else if (obj instanceof RouteParam routeParam) {
-            return new PoiInfoEntity().setName(routeParam.getName())
-                    .setAddress(routeParam.getAddress())
-                    .setPoiType(routeParam.getPoiType())
-                    .setPid(routeParam.getPoiID())
-                    .setPoint(routeParam.getRealPos());
-        }
-        return null;
-    }
-
-    /**
-     * @param poiInfoEntity entity
-     * @param isEndPoi      endPoi
-     * @return entity
-     */
-    public static NaviParkingEntity getNaviParkingEntity(final PoiInfoEntity poiInfoEntity,
-                                                         final boolean isEndPoi) {
-        if (null == poiInfoEntity) {
-            Logger.e(TAG, "poiInfoEntity is null");
-            return new NaviParkingEntity();
-        }
-        final String distance = poiInfoEntity.getDistance();
-        final String meter = AppCache.getInstance().getMContext().getString(com.android.utils.R.string.meter);
-        final String km = AppCache.getInstance().getMContext().getString(com.android.utils.R.string.km);
-        final NaviParkingEntity naviParkingEntity = new NaviParkingEntity()
-                .setEndPoi(isEndPoi)
-                .setName(poiInfoEntity.getName())
-                .setAddress(poiInfoEntity.getAddress())
-                .setPid(poiInfoEntity.getPid())
-                .setPoiType(poiInfoEntity.getPoiType())
-                .setDistance(distance)
-                .setPoint(poiInfoEntity.getPoint())
-                .setChargeInfoList(poiInfoEntity.getChargeInfoList());
-        if (distance.contains(meter)) {
-            naviParkingEntity.setSortDis(Double.parseDouble(distance.replace(meter, "").trim()));
-        } else if (distance.contains(km)) {
-            naviParkingEntity.setSortDis(Double.parseDouble(distance.replace(km, "").trim()) * 1000);
-        }
-        final List<ParkingInfo> parkingInfoList = poiInfoEntity.getParkingInfoList();
-        if (!ConvertUtils.isEmpty(parkingInfoList)) {
-            final ParkingInfo parkingInfo = parkingInfoList.get(0);
-//            List<SearchParkInOutInfo> parkInOutInfos =  parkingInfo.getSearchParkInOutInfos();
-//            naviParkingEntity
-            final int spaceTotal = parkingInfo.getSpaceTotal();
-            final int spaceFree = parkingInfo.getSpaceFree();
-            if (spaceTotal > 0 && spaceFree > -1) {
-                naviParkingEntity.setSpaceTotal(spaceTotal)
-                        .setSpaceFree(spaceFree);
-                //-停车位紧张：总车位数<=30个，剩余车位<30% ；总车位数>30个，剩余车位<10% 或 剩余车位少于10个。
-                if ((spaceTotal <= 30 && ((double) (spaceFree / spaceTotal) < 0.3)) ||
-                        (spaceTotal > 30 && (spaceFree < 10 || ((double) (spaceFree / spaceTotal) < 0.1)))) {
-                    naviParkingEntity.setTag(AppCache.getInstance().getMContext().getString(com.android.utils.R.string.navi_parking_tight));
-                } else {
-                    naviParkingEntity.setTag(AppCache.getInstance().getMContext().getString(com.android.utils.R.string.navi_parking_adequate));
-                }
-                naviParkingEntity.setNum(String.valueOf(spaceFree / spaceTotal));
-            } else {
-                Logger.d("SceneNaviParkListImpl spaceTotal= " , spaceTotal , ",spaceFree= " , spaceFree);
-            }
-        }
-        return naviParkingEntity;
-    }
-
     public static List<NaviMixForkInfo> formaterMixForkList(List<MixForkInfo> mixForkInfos) {
         List<NaviMixForkInfo> naviMixForkInfos = new ArrayList<>();
         for (MixForkInfo mixFork : mixForkInfos) {
@@ -846,85 +711,8 @@ public final class NaviDataFormatHelper {
     }
 
     /**
-     * 数据转化
-     *
-     * @param report 驾驶报告
-     * @return NaviDriveReportEntity
-     */
-    public static NaviDriveReportEntity formaterDriveReport(final DriveReport report) {
-        final NaviDriveReportEntity naviDriveReportEntity = new NaviDriveReportEntity();
-        naviDriveReportEntity.setVehicleType(report.vehicleType);
-        final ArrayList<NaviDriveReportEntity.NaviDriveEventEntity> driveEventList =
-                (ArrayList<NaviDriveReportEntity.NaviDriveEventEntity>) report.
-                        driverEventList.stream()
-                        .map(event -> new NaviDriveReportEntity.NaviDriveEventEntity(
-                                event.lat,
-                                event.lon,
-                                event.type,
-                                event.time,
-                                event.level
-                        ))
-                        .collect(Collectors.toList());
-        naviDriveReportEntity.setDriverEventList(driveEventList);
-        final NaviDriveReportEntity.NaviStatisticsInfoEntity naviStatisticsInfoEntity =
-                new NaviDriveReportEntity.NaviStatisticsInfoEntity();
-        final NaviStatisticsInfo naviStatisticsInfo = report.blNaviStatisticsInfo;
-        naviStatisticsInfoEntity.setStartUTC(
-                naviStatisticsInfo.startUTC);
-        naviStatisticsInfoEntity.setStartSecond(
-                naviStatisticsInfo.startSecond);
-        naviStatisticsInfoEntity.setNormalRouteTime(
-                naviStatisticsInfo.normalRouteTime);
-        naviStatisticsInfoEntity.setSavedTime(
-                naviStatisticsInfo.savedTime);
-        naviStatisticsInfoEntity.setEstimateTime(
-                naviStatisticsInfo.estimateTime);
-        naviStatisticsInfoEntity.setEstimateDist(
-                naviStatisticsInfo.estimateDist);
-        naviStatisticsInfoEntity.setDrivenTime(
-                naviStatisticsInfo.drivenTime);
-        naviStatisticsInfoEntity.setDrivenDist(
-                naviStatisticsInfo.drivenDist);
-        naviStatisticsInfoEntity.setAverageSpeed(
-                naviStatisticsInfo.averageSpeed);
-        naviStatisticsInfoEntity.setHighestSpeed(
-                naviStatisticsInfo.highestSpeed);
-        naviStatisticsInfoEntity.setOverspeedCount(
-                naviStatisticsInfo.overspeedCount);
-        naviStatisticsInfoEntity.setOverspeedCountEx(
-                naviStatisticsInfo.overspeedCountEx);
-        naviStatisticsInfoEntity.setHighwayOverSpeedLowCnt(
-                naviStatisticsInfo.highwayOverSpeedLowCnt);
-        naviStatisticsInfoEntity.setHighwayOverSpeedMidCnt(
-                naviStatisticsInfo.highwayOverSpeedMidCnt);
-        naviStatisticsInfoEntity.setHighwayOverSpeedHighCnt(
-                naviStatisticsInfo.highwayOverSpeedHighCnt);
-        naviStatisticsInfoEntity.setNormalOverSpeedLowCnt(
-                naviStatisticsInfo.normalOverSpeedLowCnt);
-        naviStatisticsInfoEntity.setNormalOverSpeedMidCnt(
-                naviStatisticsInfo.normalOverSpeedMidCnt);
-        naviStatisticsInfoEntity.setNormalOverSpeedHighCnt(
-                naviStatisticsInfo.normalOverSpeedHighCnt);
-        naviStatisticsInfoEntity.setAccidentAreaCount(
-                naviStatisticsInfo.accidentAreaCount);
-        naviStatisticsInfoEntity.setRerouteCount(
-                naviStatisticsInfo.rerouteCount);
-        naviStatisticsInfoEntity.setBrakesCount(
-                naviStatisticsInfo.brakesCount);
-        naviStatisticsInfoEntity.setSlowTime(
-                naviStatisticsInfo.slowTime);
-        naviStatisticsInfoEntity.setArrTrafficDist(
-                naviStatisticsInfo.arrTrafficDist);
-        naviStatisticsInfoEntity.setArrRoadDist(
-                naviStatisticsInfo.arrRoadDist);
-        naviStatisticsInfoEntity.setArrSpeedClass(
-                naviStatisticsInfo.arrSpeedClass);
-        naviDriveReportEntity.setNaviStatisticsInfoEntity(naviStatisticsInfoEntity);
-        return naviDriveReportEntity;
-    }
-
-    /**
      * 引导中的道路设施数据转化
+     *
      * @param list list
      * @return 转化后的数据
      */
@@ -958,19 +746,7 @@ public final class NaviDataFormatHelper {
             LightInfoEntity lightInfoEntity = new LightInfoEntity();
             LightInfo lightInfo = trafficLightCountdown.lightInfo;
             if (null != lightInfo) {
-                ArrayList<LightInfoEntity.LightStateEntity> lightStateEntities = new ArrayList<>();
-                ArrayList<LightState> lightStates = lightInfo.lightStates;
-                if (!ConvertUtils.isEmpty(lightStates)) {
-                    for (LightState lightState : lightStates) {
-                        LightInfoEntity.LightStateEntity lightStateEntity =
-                                new LightInfoEntity.LightStateEntity();
-                        lightStateEntity.setMLightType(lightState.lightType);
-                        lightStateEntity.setMStime(lightState.stime);
-                        lightStateEntity.setMEtime(lightState.etime);
-                        lightStateEntity.setMLastSeconds(lightState.lastSeconds);
-                        lightStateEntities.add(lightStateEntity);
-                    }
-                }
+                ArrayList<LightInfoEntity.LightStateEntity> lightStateEntities = getLightStateEntities(lightInfo);
                 lightInfoEntity.setMLightStates(lightStateEntities);
                 lightInfoEntity.setMDesc(lightInfo.desc);
                 lightInfoEntity.setMDir(lightInfo.dir);
@@ -995,6 +771,23 @@ public final class NaviDataFormatHelper {
         return entity;
     }
 
+    private static @NonNull ArrayList<LightInfoEntity.LightStateEntity> getLightStateEntities(LightInfo lightInfo) {
+        ArrayList<LightInfoEntity.LightStateEntity> lightStateEntities = new ArrayList<>();
+        ArrayList<LightState> lightStates = lightInfo.lightStates;
+        if (!ConvertUtils.isEmpty(lightStates)) {
+            for (LightState lightState : lightStates) {
+                LightInfoEntity.LightStateEntity lightStateEntity =
+                        new LightInfoEntity.LightStateEntity();
+                lightStateEntity.setMLightType(lightState.lightType);
+                lightStateEntity.setMStime(lightState.stime);
+                lightStateEntity.setMEtime(lightState.etime);
+                lightStateEntity.setMLastSeconds(lightState.lastSeconds);
+                lightStateEntities.add(lightStateEntity);
+            }
+        }
+        return lightStateEntities;
+    }
+
     public static CruiseFacilityEntity formatCruiseFacility(ArrayList<CruiseFacilityInfo> facilityInfoList) {
         if (facilityInfoList == null || facilityInfoList.isEmpty()) {
             return null;
@@ -1005,38 +798,6 @@ public final class NaviDataFormatHelper {
         cruiseFacilityEntity.setLimitSpeed(cruiseFacilityInfo.limitSpeed);
         cruiseFacilityEntity.setType(cruiseFacilityInfo.type);
         return cruiseFacilityEntity;
-    }
-
-    public static CruiseIntervalvelocity formatCruiseIntervalvelocity(ArrayList<NaviCameraExt> cameraInfoList) {
-        if (ConvertUtils.isEmpty(cameraInfoList)) {
-            return null;
-        }
-        CruiseIntervalvelocity cruiseIntervalvelocity = new CruiseIntervalvelocity();
-        for (NaviCameraExt naviCameraExt : cameraInfoList) {
-            if (ConvertUtils.isEmpty(naviCameraExt.subCameras)) {
-                continue;
-            }
-            for (NaviSubCameraExt naviSubCameraExt : naviCameraExt.subCameras) {
-                ArrayList<Short> speeds = naviSubCameraExt.speed;
-                if (ConvertUtils.isEmpty(speeds)) {
-                    continue;
-                }
-                for (Short speed : speeds) {
-                    if (isValidSpeed(speed)) {
-                        if (naviSubCameraExt.cameraId == SubCameraExtType.SubCameraExtTypeIntervalvelocityStart) {
-                            cruiseIntervalvelocity.setStartPointDist(naviCameraExt.distance);
-                            cruiseIntervalvelocity.setSpeedValue(speed);
-                        }
-                        if (naviSubCameraExt.cameraId == SubCameraExtType.SubCameraExtTypeIntervalvelocityEnd) {
-                            cruiseIntervalvelocity.setEndPointDist(naviCameraExt.distance);
-                            cruiseIntervalvelocity.setSpeedValue(speed);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        return cruiseIntervalvelocity;
     }
 
     public static NaviCongestionInfoEntity formatNaviCongestionInfo(NaviCongestionInfo info) {
@@ -1059,13 +820,50 @@ public final class NaviDataFormatHelper {
                 continue;
             }
             NaviCongestionDetailInfoEntity entity = new NaviCongestionDetailInfoEntity();
-            entity.setBeginSegmentIndex( naviCongestionDetailInfo.beginSegmentIndex);
-            entity.setBeginLinkIndex( naviCongestionDetailInfo.beginLinkIndex);
-            entity.setRemainDist( naviCongestionDetailInfo.remainDist);
-            entity.setStatus( naviCongestionDetailInfo.status);
-            entity.setTimeOfSeconds( naviCongestionDetailInfo.timeOfSeconds);
+            entity.setBeginSegmentIndex(naviCongestionDetailInfo.beginSegmentIndex);
+            entity.setBeginLinkIndex(naviCongestionDetailInfo.beginLinkIndex);
+            entity.setRemainDist(naviCongestionDetailInfo.remainDist);
+            entity.setStatus(naviCongestionDetailInfo.status);
+            entity.setTimeOfSeconds(naviCongestionDetailInfo.timeOfSeconds);
             list.add(entity);
         }
         return naviCongestionInfoEntity;
+    }
+
+    public static List<FyElecVehicleETAInfo> convertVehicleInfo(ArrayList<ElecVehicleETAInfo> elecVehicleETAInfo) {
+        if (ConvertUtils.isEmpty(elecVehicleETAInfo)) return null;
+        final List<FyElecVehicleETAInfo> desObj = new ArrayList<>(elecVehicleETAInfo.size());
+        for (ElecVehicleETAInfo etaInfo : elecVehicleETAInfo) {
+            if (null == etaInfo) continue;
+            FyElecVehicleETAInfo fyElecVehicleETAInfo = getFyElecVehicleETAInfo(etaInfo);
+
+            ArrayList<ChargingStation> chargeStationInfo = etaInfo.chargeStationInfo;
+            if (null != chargeStationInfo) {
+                ArrayList<FyChargingStation> fyChargingStations = GsonUtils.fromJson2List(chargeStationInfo, FyChargingStation.class);
+                fyElecVehicleETAInfo.setChargeStationInfo(fyChargingStations);
+            }
+            ArrayList<ViaMergeInfo> viaMergeInfos = etaInfo.viaMergeInfo;
+            if (null != viaMergeInfos) {
+                ArrayList<FyViaMergeInfo> viaMergeInfo = GsonUtils.fromJson2List(viaMergeInfos, FyViaMergeInfo.class);
+                fyElecVehicleETAInfo.setViaMergeInfo(viaMergeInfo);
+            }
+            desObj.add(fyElecVehicleETAInfo);
+        }
+        return desObj;
+    }
+
+    private static @NonNull FyElecVehicleETAInfo getFyElecVehicleETAInfo(ElecVehicleETAInfo etaInfo) {
+        FyElecVehicleETAInfo fyElecVehicleETAInfo = new FyElecVehicleETAInfo();
+        fyElecVehicleETAInfo.setEnergyEndFlag(etaInfo.energyEndFlag);
+        fyElecVehicleETAInfo.setPathID(etaInfo.pathID);
+
+        EnergyEndPoint energyEndPoint = etaInfo.energyEndPoint;
+        FyEnergyEndPoint fyEnergyEndPoint = new FyEnergyEndPoint(new GeoPoint(energyEndPoint.show.lat, energyEndPoint.show.lon),
+                energyEndPoint.segmentIdx, energyEndPoint.linkIndex);
+        fyElecVehicleETAInfo.setEnergyEndPoint(fyEnergyEndPoint);
+
+        fyElecVehicleETAInfo.setElecLinkConsume(etaInfo.elecLinkConsume);
+        fyElecVehicleETAInfo.setEnergySum(etaInfo.energySum);
+        return fyElecVehicleETAInfo;
     }
 }

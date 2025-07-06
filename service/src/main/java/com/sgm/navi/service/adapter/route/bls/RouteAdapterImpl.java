@@ -4,6 +4,8 @@ import static com.autonavi.gbl.common.path.model.PointType.PointTypeStart;
 import static com.autonavi.gbl.common.path.option.ParalleType.paralleTypeMainSide;
 import static com.autonavi.gbl.common.path.option.ParalleType.paralleTypeOverhead;
 
+import androidx.annotation.NonNull;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -115,19 +117,7 @@ public class RouteAdapterImpl implements IRouteApi {
     @Override
     public long requestRoute(final RouteRequestParam param, final List<RouteParam> paramList) {
         mAdapterImplHelper.checkoutRouteServer();
-        final RequestRouteResult requestRouteResult = new RequestRouteResult();
-        requestRouteResult.setMMapTypeId(param.getMMapTypeId());
-        requestRouteResult.setMFastNavi(param.isMFastNavi());
-        requestRouteResult.setMRouteWay(param.getMRouteWay());
-        requestRouteResult.setMIsOnlineRoute(param.isMIsOnline());
-        requestRouteResult.setMRouteType(param.getMRoutePriorityType());
-        requestRouteResult.setMRouteRequestCallBackType(param.getRouteRequestCallBackType());
-        requestRouteResult.setMRestoration(false);
-        requestRouteResult.setMAutoRouting(false);
-        if (param.isMStartNavi()) {
-            requestRouteResult.setMStartNavi(true);
-            requestRouteResult.setMAutoRouting(true);
-        }
+        final RequestRouteResult requestRouteResult = getRequestRouteResult(param);
         final RouteOption routeOption = mAdapterImplHelper.getRequestParam(requestRouteResult, paramList);
         mLastRouteOption = routeOption;
         mLastRequestRouteResult = requestRouteResult;
@@ -356,6 +346,29 @@ public class RouteAdapterImpl implements IRouteApi {
     @Override
     public void requestRouteRestArea(int index) {
         mAdapterImplHelper.requestRouteRestArea(index);
+    }
+
+    /**
+     * 请求队列部分参数组装
+     *
+     * @param param 请求参数集
+     * @return 请求结果对象
+     */
+    private RequestRouteResult getRequestRouteResult(RouteRequestParam param) {
+        final RequestRouteResult requestRouteResult = new RequestRouteResult();
+        requestRouteResult.setMMapTypeId(param.getMMapTypeId());
+        requestRouteResult.setMFastNavi(param.isMFastNavi());
+        requestRouteResult.setMRouteWay(param.getMRouteWay());
+        requestRouteResult.setMIsOnlineRoute(param.isMIsOnline());
+        requestRouteResult.setMRouteType(param.getMRoutePriorityType());
+        requestRouteResult.setMRouteRequestCallBackType(param.getRouteRequestCallBackType());
+        requestRouteResult.setMRestoration(false);
+        requestRouteResult.setMAutoRouting(false);
+        if (param.isMStartNavi()) {
+            requestRouteResult.setMStartNavi(true);
+            requestRouteResult.setMAutoRouting(true);
+        }
+        return requestRouteResult;
     }
 
     /**

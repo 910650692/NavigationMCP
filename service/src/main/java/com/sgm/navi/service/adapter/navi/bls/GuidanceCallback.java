@@ -2,7 +2,6 @@ package com.sgm.navi.service.adapter.navi.bls;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.path.model.ElecVehicleETAInfo;
@@ -34,22 +33,25 @@ import com.autonavi.gbl.guide.model.WeatherInfo;
 import com.autonavi.gbl.guide.observer.INaviObserver;
 import com.autonavi.gbl.guide.observer.ISoundPlayObserver;
 import com.autonavi.gbl.util.model.BinaryStream;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.navi.GuidanceObserver;
 import com.sgm.navi.service.adapter.navi.NaviAdapter;
+import com.sgm.navi.service.define.navi.CameraInfoEntity;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
+import com.sgm.navi.service.define.navi.NaviCongestionInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
+import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviMixForkInfo;
 import com.sgm.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
+import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SoundInfoEntity;
+import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.sgm.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.sgm.navi.service.define.route.RouteWeatherInfo;
@@ -127,9 +129,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onShowNaviManeuver(final ManeuverInfo info) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            NaviManeuverInfo maneuverInfo = NaviDataFormatHelper.formatManeuverInfo(info);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onManeuverInfo(NaviDataFormatHelper.formatManeuverInfo(info));
+                    guidanceObserver.onManeuverInfo(maneuverInfo);
                 }
             }
         }
@@ -138,9 +141,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onObtainManeuverIconData(final ManeuverIconResponseData respData) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            NaviManeuverInfo maneuverInfo = NaviDataFormatHelper.formatManeuverIconData(respData);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onManeuverInfo(NaviDataFormatHelper.formatManeuverIconData(respData));
+                    guidanceObserver.onManeuverInfo(maneuverInfo);
                 }
             }
         }
@@ -149,9 +153,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onUpdateExitDirectionInfo(final ExitDirectionInfo boardInfo) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            NaviManeuverInfo naviManeuverInfo = NaviDataFormatHelper.formatExitDirectionInfo(boardInfo);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onManeuverInfo(NaviDataFormatHelper.formatExitDirectionInfo(boardInfo));
+                    guidanceObserver.onManeuverInfo(naviManeuverInfo);
                 }
             }
         }
@@ -160,9 +165,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onShowTollGateLane(final TollGateInfo tollGateInfo) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            SapaInfoEntity sapaInfoEntity =  NaviDataFormatHelper.formatTollGateInfo(tollGateInfo);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onNaviSAPAInfo(NaviDataFormatHelper.formatTollGateInfo(tollGateInfo));
+                    guidanceObserver.onNaviSAPAInfo(sapaInfoEntity);
                 }
             }
         }
@@ -173,10 +179,11 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         final CrossImageEntity naviImageInfo = NaviDataFormatHelper.forMatImageInfo(info);
         Logger.i(TAG, "onShowCrossImage naviImageInfo:",
                 (naviImageInfo == null ? "null" : naviImageInfo.getDistance()));
+        boolean isHaveNaviImageInfo = naviImageInfo != null && naviImageInfo.getDistance() > 0;
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onCrossImageInfo(naviImageInfo != null && naviImageInfo.getDistance() > 0, naviImageInfo);
+                    guidanceObserver.onCrossImageInfo(isHaveNaviImageInfo, naviImageInfo);
                 }
             }
         }
@@ -186,9 +193,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     public void onHideCrossImage(final int type) {
         Logger.i(TAG, "onHideCrossImage type:", type);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            CrossImageEntity crossImageEntity =  NaviDataFormatHelper.forMatImageInfo(type);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onCrossImageInfo(false, NaviDataFormatHelper.forMatImageInfo(type));
+                    guidanceObserver.onCrossImageInfo(false, crossImageEntity);
                 }
             }
         }
@@ -196,21 +204,22 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onShowNaviCrossTMC(final BinaryStream dataBuf) {
-        INaviObserver.super.onShowNaviCrossTMC(dataBuf);
+
     }
 
     @Override
     public void onPassLast3DSegment() {
-        INaviObserver.super.onPassLast3DSegment();
+
     }
 
     @Override
     public void onShowNaviLaneInfo(final LaneInfo info) {
         final LaneInfoEntity laneInfoEntity = NaviDataFormatHelper.forMatLaneInfo(info);
+        boolean isHaveLaneInfo = !ConvertUtils.isEmpty(laneInfoEntity);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onLaneInfo(!ConvertUtils.isEmpty(laneInfoEntity), laneInfoEntity);
+                    guidanceObserver.onLaneInfo(isHaveLaneInfo, laneInfoEntity);
                 }
             }
         }
@@ -230,9 +239,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onUpdateSAPA(final ArrayList<NaviFacility> serviceAreaList) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            SapaInfoEntity sapaInfoEntity = NaviDataFormatHelper.forMatSAPAInfo(serviceAreaList);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onNaviSAPAInfo(NaviDataFormatHelper.forMatSAPAInfo(serviceAreaList));
+                    guidanceObserver.onNaviSAPAInfo(sapaInfoEntity);
                 }
             }
         }
@@ -241,9 +251,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onObtainSAPAInfo(final SAPAInquireResponseData respData) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            SapaInfoEntity sapaInfoEntity = NaviDataFormatHelper.forMatSAPAInfo(respData);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onNaviSAPAInfo(NaviDataFormatHelper.forMatSAPAInfo(respData));
+                    guidanceObserver.onNaviSAPAInfo(sapaInfoEntity);
                 }
             }
         }
@@ -323,7 +334,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
                                     final LightBarDetail lightBarDetail, final long passedIdx,
                                     final boolean dataStatus) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
-            NaviTmcInfo naviTmcInfo = NaviDataFormatHelper.forMatTMCLightBar(lightBarInfo, lightBarDetail);
+            NaviTmcInfo naviTmcInfo = NaviDataFormatHelper.formatTmcLightBar(lightBarInfo, lightBarDetail);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
                     guidanceObserver.onUpdateTMCLightBar(naviTmcInfo);
@@ -339,10 +350,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     public void onUpdateIntervalCameraDynamicInfo(
             final ArrayList<NaviIntervalCameraDynamicInfo> cameraDynamicList) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            SpeedOverallEntity speedOverallEntity = NaviDataFormatHelper.forMatNaviSpeedCameraInfo(cameraDynamicList);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onNaviSpeedOverallInfo(
-                            NaviDataFormatHelper.forMatNaviSpeedCameraInfo(cameraDynamicList));
+                    guidanceObserver.onNaviSpeedOverallInfo(speedOverallEntity);
                 }
             }
         }
@@ -354,9 +365,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onUpdateGreenWaveCarSpeed(final ArrayList<NaviGreenWaveCarSpeed> list) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            SpeedOverallEntity speedOverallEntity = NaviDataFormatHelper.forMatNaviGreenWaveInfo(list);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onNaviSpeedOverallInfo(NaviDataFormatHelper.forMatNaviGreenWaveInfo(list));
+                    guidanceObserver.onNaviSpeedOverallInfo(speedOverallEntity);
                 }
             }
         }
@@ -365,9 +377,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onShowNaviCameraExt(final ArrayList<NaviCameraExt> naviCameraList) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            CameraInfoEntity cameraInfo = NaviDataFormatHelper.formatNearestCameraInfo(naviCameraList);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onNaviCameraInfo(NaviDataFormatHelper.formatNearestCameraInfo(naviCameraList));
+                    guidanceObserver.onNaviCameraInfo(cameraInfo);
                 }
             }
         }
@@ -392,9 +405,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onUpdateTMCCongestionInfo(final NaviCongestionInfo info) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            final NaviCongestionInfoEntity naviCongestionInfoEntity =  NaviDataFormatHelper.formatNaviCongestionInfo(info);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onUpdateTMCCongestionInfo(NaviDataFormatHelper.formatNaviCongestionInfo(info));
+                    guidanceObserver.onUpdateTMCCongestionInfo(naviCongestionInfoEntity);
                 }
             }
         }
@@ -437,9 +451,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     public void onPlayTTS(final SoundInfo info) {
         Logger.d(TAG, "onPlayTTS : ", (info == null ? "null" : info.text));
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            SoundInfoEntity soundInfoEntity =  NaviDataFormatHelper.formatSoundInfo(info);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onPlayTTS(NaviDataFormatHelper.formatSoundInfo(info));
+                    guidanceObserver.onPlayTTS(soundInfoEntity);
                 }
             }
         }
@@ -459,14 +474,13 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     /***
      * 因偏航，道路限行，tmc路况拥堵等原因，guide引擎会通知外界进行路线重算
-     * @param rerouteOption
      */
     @Override
     public void onReroute(final RouteOption rerouteOption) {
         if (rerouteOption == null) {
             return;
         }
-        Logger.i(TAG, "onReroute: ", "RouteReqId: ", rerouteOption.getRouteReqId(),
+        Logger.d(TAG, "onReroute: ", "RouteReqId: ", rerouteOption.getRouteReqId(),
                 " RouteType: ", rerouteOption.getRouteType());
         if (rerouteOption.getRouteType() == RouteType.RouteTypeYaw) {
             final SoundInfoEntity soundInfo = new SoundInfoEntity();
@@ -486,18 +500,14 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
      * 透出电动车ETA信息。
      * TODO 模拟导航这里是没有回调的，需要真实环境测试，抓取log分析
      * 透出电动车ETA信息，仅在线支持。一分钟回调一次
-     * @param elecVehicleETAInfo
      */
     @Override
     public void onUpdateElecVehicleETAInfo(ArrayList<ElecVehicleETAInfo> elecVehicleETAInfo) {
-        INaviObserver.super.onUpdateElecVehicleETAInfo(elecVehicleETAInfo);
         // 透出电动车ETA信息。透出电动车ETA信息，仅在线支持。一分钟回调一次
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            final List<FyElecVehicleETAInfo> desObj = NaviDataFormatHelper.convertVehicleInfo(elecVehicleETAInfo);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    final List<FyElecVehicleETAInfo> desObj = new Gson().
-                            fromJson(GsonUtils.toJson(elecVehicleETAInfo),
-                                    new TypeToken<List<FyElecVehicleETAInfo>>(){}.getType());
                     guidanceObserver.onUpdateElectVehicleETAInfo(desObj);
                 }
             }
