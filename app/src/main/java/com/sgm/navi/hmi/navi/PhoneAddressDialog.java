@@ -63,8 +63,10 @@ public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
         window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT);
         final WindowManager.LayoutParams params = window.getAttributes();
-        params.x = 517;
-        params.y = 85;
+        params.x = (int) this.getContext().getResources()
+                .getDimension(com.sgm.navi.service.R.dimen.dp_650);
+        params.y = (int) this.getContext().getResources()
+                .getDimension(com.sgm.navi.service.R.dimen.dp_90);
         window.setAttributes(params);
     }
 }
