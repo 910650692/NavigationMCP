@@ -22,6 +22,8 @@ import java.util.concurrent.TimeUnit;
  * @Description :System.currentTimeMillis()效率高于new Date().getTime(),yyyy代表年份 MM 代表月份 dd代表天数 DD代表当前天数在今天的第几天 EE代表周几
  */
 public class TimeUtils {
+    private static final SimpleDateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("MM-dd HH:mm");
+    private static final SimpleDateFormat DATE_FORMAT_FULL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /***线程不安全 但是效率高**/
     private final SimpleDateFormat simpleDateFormat;
@@ -891,32 +893,24 @@ public class TimeUtils {
      * @return
      */
     public static String switchTime(long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
-        String createDate = null;
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String createTime = sdf2.format(time * 1000L);
-        Date date = null;
         try {
-            date = sdf2.parse(createTime);
-            long differenceValue = Math.abs(System.currentTimeMillis() - date.getTime());
-            if (differenceValue < 3600000) {
-                if ((differenceValue / 1000 / 60) == 0) {
-                    createDate = "刚刚";
-                } else {
-                    createDate = (differenceValue / 1000 / 60) + "分钟前";
-                }
+            long currentTime = System.currentTimeMillis();
+            long targetTime = time * 1000L; // 转换为毫秒
+            long differenceValue = Math.abs(currentTime - targetTime);
 
-            } else if (differenceValue > 3600000) {
-                if (differenceValue < 86400000) {
-                    createDate = (differenceValue / 1000 / 60 / 60) + "小时前";
-                } else {
-                    createDate = sdf.format(time);
-                }
+            if (differenceValue < 60_000L) { // 1分钟内
+                return "刚刚";
+            } else if (differenceValue < 3_600_000L) { // 1小时内
+                return (differenceValue / 60_000L) + "分钟前";
+            } else if (differenceValue < 86_400_000L) { // 24小时内
+                return (differenceValue / 3_600_000L) + "小时前";
+            } else {
+                return DATE_FORMAT_SHORT.format(targetTime);
             }
-        } catch (ParseException e) {
-
+        } catch (Exception e) {
+            // 可以根据需要记录日志
+            return "未知时间";
         }
-        return createDate;
     }
 
     /**
