@@ -50,7 +50,9 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
 
     @SuppressLint("NotifyDataSetChanged")
     public void notifyList(List<NaviViaEntity> list) {
-        Logger.d(TAG, "NaviAddViaAdapter notifyList " + list);
+        if (Logger.openLog) {
+            Logger.i(TAG, "NaviAddViaAdapter notifyList " + list);
+        }
         if (ConvertUtils.isEmpty(list)) {
             return;
         }

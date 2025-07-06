@@ -284,8 +284,12 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mUpdateViaList = new Runnable() {
             @Override
             public void run() {
-                if (mViewModel != null) {
-                    mViewModel.updateViaList();
+                try {
+                    if (mViewModel != null) {
+                        mViewModel.updateViaList();
+                    }
+                } catch (Exception e) {
+                    Logger.e(TAG, "mUpdateViaList Exception:", e.getMessage());
                 }
             }
         };
@@ -643,7 +647,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 routeWayID.equals(RouteWayID.ROUTE_WAY_ADD_ALL_VIA) ||
                 routeWayID.equals(RouteWayID.ROUTE_WAY_DELETE_VIA) ||
                 routeWayID.equals(RouteWayID.ROUTE_WAY_SORT_VIA)) {
-            ThreadManager.getInstance().postUi(mUpdateViaList);
+            ThreadManager.getInstance().postDelay(mUpdateViaList, NumberUtils.NUM_500);
         }
     }
 
