@@ -89,7 +89,9 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
      * 刷新页面
      */
     public void refreshView() {
-        final boolean isFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
+        NaviPackage naviPackage = NaviPackage.getInstance();
+        final boolean isFixedOverView = naviPackage.getFixedOverViewStatus() ||
+                naviPackage.getClusterFixOverViewStatus();
         Logger.i(TAG, "isFixedOverView:", isFixedOverView);
         mViewBinding.svCarHead.setAlpha(isFixedOverView ? 0.5f : 1.0f);
         mViewBinding.svCarHead.setIsClickChangeColor(!isFixedOverView);

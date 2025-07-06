@@ -354,11 +354,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mNaviPackage.addNaviRecord(false);
             mLayerPackage.setStartPointVisible(mapTypeId, false);
             if (!mClusterMapOpenCloseManager.isClusterOpen()) {
+                mNaviPackage.setClusterFixOverViewStatus(false);
                 mMapPackage.goToCarPosition(mapTypeId);
                 mLayerPackage.setFollowMode(mapTypeId, true);
                 mNaviPackage.setRouteEnergyEmptyPointVisible(MapType.MAIN_SCREEN_MAIN_MAP,
                         false);
             } else {
+                mNaviPackage.setClusterFixOverViewStatus(true);
                 mNaviPackage.setPreviewStatus(true);
                 ThreadManager.getInstance().postDelay(mShowPreView, NumberUtils.NUM_100);
             }
