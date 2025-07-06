@@ -27,26 +27,28 @@
             android:src="@{ViewModel.getWeatherDrawable()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dp_15"
             tools:src="@drawable/img_route_weather_clear" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_weather_details_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_14"
             android:text="@{ViewModel.getWeatherName()}"
             android:textColor="@color/text_route_detail_title"
             android:textSize="@dimen/sp_32"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/route_weather_details_iv"
-            app:layout_constraintTop_toTopOf="@+id/route_weather_details_iv"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="阴转晴" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_weather_details_city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_7"
             android:text="@{ViewModel.getWeatherCityName()}"
             android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_26"
