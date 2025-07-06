@@ -140,7 +140,7 @@
     <color name="setting_bg_stroke">#408C889B</color>
     <color name="setting_bg_close">#4B535D</color>
     <color name="setting_bg_tab_select">#338E97B9</color>
-    <color name="setting_bg_tab_text_select">#FF000000</color>
+    <color name="setting_bg_tab_text_select">#B2000000</color>
     <color name="setting_bg_tab_text_unselect">#B3000000</color>
     <color name="setting_bg_voice_text">#B3000000</color>
     <color name="setting_bg_tab_fill">#99000000</color>
