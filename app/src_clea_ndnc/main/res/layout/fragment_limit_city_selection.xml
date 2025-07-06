@@ -16,7 +16,7 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
         android:layout_width="@dimen/dp_613"
-        android:layout_height="@dimen/dp_676"
+        android:layout_height="wrap_content"
         android:clickable="true">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
@@ -119,7 +119,7 @@
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/city_text"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_464"
+            android:layout_height="@dimen/dp_713"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:gravity="center"
             android:text="@{ViewModel.mTextViewContent}"
