@@ -592,6 +592,13 @@
                 </com.sgm.navi.ui.view.SkinLinearLayout>
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
+            <com.sgm.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/setting_line"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/setting_guide_auto_scale" />
+
             <com.sgm.navi.ui.view.SkinLinearLayout
                 clickCommand="@{viewModel.mPushMessage}"
                 android:id="@+id/setting_push_message_in_navi"
