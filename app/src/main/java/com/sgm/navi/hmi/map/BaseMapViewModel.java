@@ -578,6 +578,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
+        sRVisible.set(false);
     }
 
     public void setMapCenterInScreen(final Bundle bundle) {
@@ -613,6 +614,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
+        sRVisible.set(false);
         cancelTimer();
     }
 
@@ -620,9 +622,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mView.setMapFocusable(true);
         mModel.refreshMapMode();
         mModel.resetMapCenterInScreen();
-        mScaleViewVisibility.set(!ScreenTypeUtils.getInstance().isOneThirdScreen() && !FloatViewManager.getInstance().judgedWidgetIsVisible());
+        mScaleViewVisibility.set(judgedBottomNaviVisibility());
         mainBTNVisibility.set(true);
-        bottomNaviVisibility.set(!FloatViewManager.getInstance().judgedWidgetIsVisible());
+        bottomNaviVisibility.set(judgedBottomNaviVisibility());
+        sRVisible.set(judgedSRVisibility());
         if (mModel.checkPopGuideLogin()) {
             mPopGuideLoginShow.set(true);
         }
@@ -1193,7 +1196,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void showOrHiddenCruise(boolean isShow) {
         cruiseVisibility.set(isShow);
-        bottomNaviVisibility.set(!isShow && mainBTNVisibility.get() && !FloatViewManager.getInstance().judgedWidgetIsVisible());
+        bottomNaviVisibility.set(judgedBottomNaviVisibility());
     }
 
     /***
@@ -1493,29 +1496,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void onDeskCardVisibleStateChange(boolean isVisible) {
         ThreadManager.getInstance().execute(() -> {
-            final boolean currentBottomVisibility = bottomNaviVisibility.get();
-            final boolean currentScaleViewVisibility = mScaleViewVisibility.get();
-            final boolean currentSRVisible = sRVisible.get();
-
-            Logger.d(
-                    TAG, "onDeskCardVisibleStateChange",
-                    "currentBottomVisibility:", currentBottomVisibility,
-                    "currentScaleViewVisibility:", currentScaleViewVisibility,
-                    "currentSRVisible:", currentSRVisible
-            );
-            bottomNaviVisibility.set(
-                 !ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.CRUISE) &&
-                         !FloatViewManager.getInstance().judgedWidgetIsVisible()
-            );
-            mScaleViewVisibility.set(
-                    !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
-                            !FloatViewManager.getInstance().judgedWidgetIsVisible()
-            );
-            sRVisible.set(
-                    !FloatViewManager.getInstance().isNaviDeskBg() &&
-                            !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
-                            isSupportSplitScreen()
-            );
+            Logger.d(TAG, "onDeskCardVisibleStateChange", "isVisible", isVisible);
+            bottomNaviVisibility.set(judgedBottomNaviVisibility());
+            mScaleViewVisibility.set(judgedScaleViewVisibility());
+            sRVisible.set(judgedSRVisibility());
         });
     }
 
@@ -1543,15 +1527,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 "currentScaleViewVisibility:", currentScaleViewVisibility,
                 "currentSRVisible:", currentSRVisible
         );
-        mScaleViewVisibility.set(
-                !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
-                   !FloatViewManager.getInstance().judgedWidgetIsVisible()
-        );
-        sRVisible.set(
-                !FloatViewManager.getInstance().isNaviDeskBg() &&
-                        !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
-                        isSupportSplitScreen()
-        );
+        mScaleViewVisibility.set(judgedScaleViewVisibility());
+        sRVisible.set(judgedSRVisibility());
         mIsFullScreen.set(ScreenTypeUtils.getInstance().isFullScreen());
     }
 
@@ -1562,5 +1539,72 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
         mModel.setMapCenterInScreen();
         mModel.goToCarPosition();
+    }
+
+    /**
+     * 判断底部导航按钮是否需要显示
+     *
+     * @return true 显示
+     */
+    private boolean judgedBottomNaviVisibility() {
+       // 1/3屏需要隐藏
+       if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+           return false;
+       }
+       // 导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏
+       if (FloatViewManager.getInstance().isNaviDeskBg() && FloatViewManager.getInstance().judgedWidgetIsVisible()) {
+           return false;
+       }
+       // 巡航态模式下，隐藏底部导航按钮
+        if (ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
+            return false;
+        }
+        // 如果容器里面有Fragment,隐藏
+        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null) {
+            return false;
+        }
+       return true;
+    }
+
+    /**
+     * 判断缩放按钮是否需要显示
+     *
+     * @return true 显示
+     */
+    private boolean judgedScaleViewVisibility() {
+        // 1/3屏需要隐藏
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            return false;
+        }
+        // 导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏
+        if (FloatViewManager.getInstance().isNaviDeskBg() && FloatViewManager.getInstance().judgedWidgetIsVisible()) {
+            return false;
+        }
+        // 如果容器里面有Fragment,隐藏
+        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 判断底部SR分屏按钮是否需要显示
+     *
+     * @return true 显示
+     */
+    private boolean judgedSRVisibility() {
+        // 1/3屏需要隐藏
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            return false;
+        }
+        // 导航桌面背景模式下，需要隐藏
+        if (FloatViewManager.getInstance().isNaviDeskBg()) {
+            return false;
+        }
+        // 如果容器里面有Fragment,隐藏
+        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null) {
+            return false;
+        }
+        return true;
     }
 }
