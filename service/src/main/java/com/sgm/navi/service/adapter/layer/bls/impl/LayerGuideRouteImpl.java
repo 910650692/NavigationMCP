@@ -871,6 +871,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     public void setSelectedPathIndex(int index) {
         boolean b = getLayerGuideRouteControl().switchSelectedPath(index);
         Logger.d(TAG, getMapType(), "LayerGuideRouteImpl updatePaths setSelectedPathIndex result = ", b, " index ", index);
+        //设置全览  只对主屏生效
+        if (getMapType() == MapType.MAIN_SCREEN_MAIN_MAP) {
+            showPreviewView();
+        }
     }
 
     /**
