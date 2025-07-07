@@ -53,7 +53,9 @@ public final class VoiceConvertUtil {
                 poiBean.setLongitude(geoPoint.getLon());
                 poiBean.setLatitude(geoPoint.getLat());
             }
-            if (ZERO_DIST.equals(poiBean.getDistance()) && null != geoPoint) {
+            final String distance = poiBean.getDistance();
+
+            if (null != geoPoint && (TextUtils.isEmpty(distance) || ZERO_DIST.equals(distance))) {
                 poiBean.setDistance(SearchPackage.getInstance().calcStraightDistance(geoPoint));
             } else {
                 poiBean.setDistance(poiBean.getDistance());
