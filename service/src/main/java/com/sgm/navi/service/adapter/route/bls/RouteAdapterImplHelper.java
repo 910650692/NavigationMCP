@@ -182,6 +182,16 @@ public class RouteAdapterImplHelper {
     }
 
     /**
+     * 清除缓存数据
+     *
+     */
+    public void clearRouteResultData() {
+        if (mRouteResultDataHashtable != null) {
+            mRouteResultDataHashtable.clear();
+        }
+    }
+
+    /**
      * 初始化同步锁
      *
      */

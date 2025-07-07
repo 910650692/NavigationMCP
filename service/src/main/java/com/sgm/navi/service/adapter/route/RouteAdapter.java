@@ -246,6 +246,10 @@ final public class RouteAdapter {
         mRouteApi.requestRouteRestArea(index);
     }
 
+    public void clearRouteResultData() {
+        mRouteApi.clearRouteResultData();
+    }
+
     private static final class Helper {
         private static final RouteAdapter RA = new RouteAdapter();
     }

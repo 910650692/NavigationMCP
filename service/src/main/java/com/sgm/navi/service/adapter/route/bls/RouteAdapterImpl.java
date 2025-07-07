@@ -467,4 +467,12 @@ public class RouteAdapterImpl implements IRouteApi {
         Logger.i(TAG, "平行路切换requestSwitchParallelRoute switchRoadType:"+switchRoadType+" roadID:"+roadID+" flag:"+flag+" hwFlag:"+hwFlag+" requestId:"+requestId);
         return requestId;
     }
+
+    /**
+     * 清除缓存数据
+     *
+     */
+    public void clearRouteResultData() {
+        mAdapterImplHelper.clearRouteResultData();
+    }
 }

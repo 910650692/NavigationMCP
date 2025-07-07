@@ -1734,6 +1734,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mEndPoiEntity.put(mapTypeId, null);
         mSaveViaRouteParams.put(mapTypeId, new ArrayList<>());
         mSaveEndRouteParams.put(mapTypeId, null);
+        clearRouteResultData();
     }
 
     /**
@@ -1945,6 +1946,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     public void requestRouteRestArea(int index) {
         mRouteAdapter.requestRouteRestArea(index);
+    }
+
+    /**
+     * 清除缓存数据
+     *
+     */
+    public void clearRouteResultData() {
+        mRouteAdapter.clearRouteResultData();
     }
 
     private static final class Helper {

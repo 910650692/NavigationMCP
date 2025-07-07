@@ -145,4 +145,10 @@ public interface IRouteApi {
     void requestRouteDetails(int index);
 
     void requestRouteRestArea(int index);
+
+    /**
+     * 清除缓存数据
+     *
+     */
+    void clearRouteResultData();
 }
