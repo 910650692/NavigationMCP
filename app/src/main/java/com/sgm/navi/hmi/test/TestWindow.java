@@ -164,6 +164,9 @@ public class TestWindow {
         mBinding.close.setOnClickListener(v -> removeViewFromWindow());
         mBinding.testCalibration.setOnClickListener(v -> {
             CalibrationPackage calibration = CalibrationPackage.getInstance();
+            if (calibration == null) {
+                return;
+            }
             calibration.powerType();
             calibration.brand();
             calibration.model();

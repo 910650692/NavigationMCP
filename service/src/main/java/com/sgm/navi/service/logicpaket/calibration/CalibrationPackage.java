@@ -130,6 +130,7 @@ public final class CalibrationPackage {
      * true 车机系统需要在主界面和后台使能LBS应用
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean enableApplicationNavigation() {
         return mCalibrationAdapter.enableApplicationNavigation();
     }
@@ -150,6 +151,7 @@ public final class CalibrationPackage {
      * true LBS系统支持V2X超视距提示可视化功能
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean v2xMapDisplayFuncEnable() {
         return mCalibrationAdapter.v2xMapDisplayFuncEnable();
     }
@@ -162,6 +164,7 @@ public final class CalibrationPackage {
      * 3 限速信息来自于导航、V2X和ADAS Map
      * @return int
      */
+    @SuppressWarnings("unused")
     public int speedLimitInformationSource() {
         return mCalibrationAdapter.speedLimitInformationSource();
     }
@@ -171,6 +174,7 @@ public final class CalibrationPackage {
      * [0x0] None, [0x1] FCM, [0x2] IDCM
      * @return int
      */
+    @SuppressWarnings("unused")
     public int adasConfigurationInfomation() {
         return mCalibrationAdapter.adasConfigurationInfomation();
     }
@@ -198,6 +202,7 @@ public final class CalibrationPackage {
      * true 该车型配置RSTP
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean rearSeatTouchPanelFuncEnable() {
         return mCalibrationAdapter.rearSeatTouchPanelFuncEnable();
     }
@@ -208,6 +213,7 @@ public final class CalibrationPackage {
      * 1 需要打开HUD相关功能
      * @return int
      */
+    @SuppressWarnings("unused")
     public int hudFuncEnable() {
         return mCalibrationAdapter.hudFuncEnable();
     }
@@ -248,6 +254,7 @@ public final class CalibrationPackage {
      * 1 导航地图为高德地图
      * @return int
      */
+    @SuppressWarnings("unused")
     public int navigaitonSupplier() {
         return mCalibrationAdapter.navigaitonSupplier();
     }
@@ -264,6 +271,7 @@ public final class CalibrationPackage {
      * POI搜索功能标定
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean poiSearchFuncEnable() {
         return mCalibrationAdapter.poiSearchFuncEnable();
     }
@@ -272,6 +280,7 @@ public final class CalibrationPackage {
      * 情景引擎功能标定
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean scenarioEngineFuncEnable() {
         return mCalibrationAdapter.scenarioEngineFuncEnable();
     }
@@ -280,6 +289,7 @@ public final class CalibrationPackage {
      * 全局搜索功能标定
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean globalSearchFuncEnable() {
         return mCalibrationAdapter.globalSearchFuncEnable();
     }
@@ -288,6 +298,7 @@ public final class CalibrationPackage {
      * 团队旅行功能标定
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean teamTravelFuncEnable() {
         return mCalibrationAdapter.teamTravelFuncEnable();
     }
@@ -296,6 +307,7 @@ public final class CalibrationPackage {
      * 开机动画替换功能标定
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean bootAnimationReplacementFuncEnable() {
         return mCalibrationAdapter.bootAnimationReplacementFuncEnable();
     }
@@ -304,6 +316,7 @@ public final class CalibrationPackage {
      * IME功能标定
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean imeFuncEnable() {
         return mCalibrationAdapter.imeFuncEnable();
     }
@@ -312,6 +325,7 @@ public final class CalibrationPackage {
      * 壁纸和主题功能标定
      * @return boolean
      */
+    @SuppressWarnings("unused")
     public boolean wallpaperThemeFuncEnable() {
         return mCalibrationAdapter.wallpaperThemeFuncEnable();
     }
@@ -321,6 +335,7 @@ public final class CalibrationPackage {
      * 0 "EV"; 1 "Normal";2 "Avenir";3"Reversed1"; 4 "Reversed2";5 "Reversed3";
      * @return int
      */
+    @SuppressWarnings("unused")
     public int themeDefaultValue() {
         return mCalibrationAdapter.themeDefaultValue();
     }
@@ -332,6 +347,7 @@ public final class CalibrationPackage {
      * 能量转换率：范围从0到0.999，精度为0.001
      * @return float[]
      */
+    @SuppressWarnings("unused")
     public float[] slopeUpCostlist() {
         return mCalibrationAdapter.slopeUpCostlist();
     }
@@ -343,6 +359,7 @@ public final class CalibrationPackage {
      * 能量转换率：范围从0到0.999，精度为0.001
      * @return float[]
      */
+    @SuppressWarnings("unused")
     public float[] slopeDownCostlist() {
         return mCalibrationAdapter.slopeDownCostlist();
     }
@@ -354,6 +371,7 @@ public final class CalibrationPackage {
      * 能量转换率：范围从0到0.999，精度为0.001
      * @return float[]
      */
+    @SuppressWarnings("unused")
     public float[] transAccessCostlist() {
         return mCalibrationAdapter.transAccessCostlist();
     }
@@ -365,6 +383,7 @@ public final class CalibrationPackage {
      * 能量转换率：范围从0到0.999，精度为0.001
      * @return float[]
      */
+    @SuppressWarnings("unused")
     public float[] transDecessCostlist() {
         return mCalibrationAdapter.transDecessCostlist();
     }
@@ -377,6 +396,7 @@ public final class CalibrationPackage {
      * 能量消耗 范围从0到1000.000000，精度为0.000001瓦时/公里（watt-hour/km）
      * @return Map
      */
+    @SuppressWarnings("unused")
     public Map<Integer, Float> speedCostlist() {
         return mCalibrationAdapter.speedCostlist();
     }
@@ -419,6 +439,7 @@ public final class CalibrationPackage {
      * 额外能量消耗：范围从0到10.000000，精度为0.000001瓦时/秒（watt-hour/second）
      * @return float[]
      */
+    @SuppressWarnings("unused")
     public float[] auxCostlist() {
         return mCalibrationAdapter.auxCostlist();
     }

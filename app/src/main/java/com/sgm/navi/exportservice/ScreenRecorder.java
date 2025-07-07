@@ -80,6 +80,10 @@ public class ScreenRecorder extends Service {
         mMediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         mMediaProjection = mMediaProjectionManager.getMediaProjection(resultCode, Objects.requireNonNull(resultData));
 
+        if (mMediaProjection == null) {
+            Logger.e(TAG, "mMediaProjection created: error mMediaProjection == null");
+            return super.onStartCommand(intent, flags, startId);
+        }
         Logger.i(TAG, "mMediaProjection created: " + mMediaProjection);
 
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
