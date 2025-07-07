@@ -302,7 +302,7 @@
                 android:id="@+id/scene_navi_charge_tip"
                 android:layout_width="@dimen/dp_545"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_34"
+                android:layout_marginStart="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_1"
                 android:visibility="@{ViewModel.mNaviChargeTipVisibility ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scl_top_container"
