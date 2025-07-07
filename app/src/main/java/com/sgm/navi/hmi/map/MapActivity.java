@@ -328,7 +328,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
      * @param msg 错误信息
      */
     public void showActivateFailedDialog(final String msg) {
-        if (mFailedDialog.isShowing()) {
+        if (mFailedDialog != null && mFailedDialog.isShowing()) {
             Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "dialog showing");
             return;
         }
