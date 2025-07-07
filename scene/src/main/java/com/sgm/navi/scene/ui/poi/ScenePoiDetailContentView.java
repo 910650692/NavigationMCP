@@ -1420,6 +1420,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     }
                 } else {
                     mChildSelectInfo = null;
+                    mScreenViewModel.setChildIndex(-1);
                     mViewBinding.lySecondaryPoi.setVisibility(View.GONE);
                 }
                 mGrandChildSelectInfo = null;

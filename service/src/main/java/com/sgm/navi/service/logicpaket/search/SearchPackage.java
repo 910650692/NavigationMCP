@@ -1553,6 +1553,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      */
     public void setChildIndex(final int index) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "setChildIndex: " + index);
+        if(index == -1){
+            mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT);
+            return;
+        }
         mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT
                 , index);
         mMapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 2);

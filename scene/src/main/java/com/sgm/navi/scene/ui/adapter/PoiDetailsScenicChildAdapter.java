@@ -82,7 +82,6 @@ public class PoiDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiDetail
     @Override
     public void onBindViewHolder(@NonNull final Holder holder, final int position) {
         final ChildInfo childInfo = mChildList.get(position);
-        Logger.d("huangli","ChildInfo: "+childInfo.getShortName());
         final int ratio = (int) Math.round(childInfo.getRatio());
         final String subTitle = holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.getContext().
                 getString(R.string.scenic_ratio, ratio);
