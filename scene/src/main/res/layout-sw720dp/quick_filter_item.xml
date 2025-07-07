@@ -14,7 +14,7 @@
         android:paddingLeft="@dimen/dp_17"
         android:paddingRight="@dimen/dp_17"
         android:layout_height="@dimen/dp_45"
-        android:background="@drawable/custom_filter_item_bg_selector_day_sw1225"
+        android:background="@drawable/custom_quick_filter_item_bg_selector_day_sw1225"
         >
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/ql_icon"

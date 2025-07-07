@@ -23,14 +23,13 @@
         android:id="@+id/scl_delete_record"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_17"
-        >
+        android:paddingTop="@dimen/dp_20">
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_delete"
-            android:layout_width="@dimen/dp_49"
-            android:layout_height="@dimen/dp_49"
-            android:src="@drawable/img_basic_ic_delete"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:src="@drawable/basic_ic_delete_1225"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_delete"
