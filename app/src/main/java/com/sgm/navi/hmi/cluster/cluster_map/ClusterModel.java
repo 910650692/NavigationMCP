@@ -14,6 +14,7 @@ import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.map.MapAdapter;
+import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -24,6 +25,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.logicpaket.cluster.ClusterRouteHelper;
 import com.sgm.navi.service.logicpaket.cruise.CruisePackage;
 import com.sgm.navi.service.logicpaket.cruise.ICruiseObserver;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
@@ -273,5 +275,26 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
             return;
         }
         RoutePackage.getInstance().showRouteLine(getMapId());
+    }
+
+
+//    @Override
+//    public void onDeletePath(ArrayList<Long> pathIDList) {
+//        if (!ConvertUtils.isEmpty(pathIDList)) {
+//            for (long pathId : pathIDList) {
+//                Logger.i(TAG, "onDeletePath pathId = ", pathId);
+//                RoutePackage.getInstance().removeRouteLineInfo(MapType.CLUSTER_MAP, pathId);
+//            }
+//            ClusterRouteHelper.refreshPathList();
+//        }
+//    }
+
+    //备选路线
+    @Override
+    public void onSelectMainPathStatus(long pathID, int result) {
+        Logger.i(TAG, "onSelectMainPathStatus pathID = ", pathID, " result = ", result);
+        if (result == NaviConstant.ChangeNaviPathResult.CHANGE_NAVI_PATH_RESULT_SUCCESS && NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
+            ClusterRouteHelper.onlyShowCurrentPath();
+        }
     }
 }
