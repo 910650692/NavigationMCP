@@ -2,11 +2,9 @@ package com.sgm.navi.hmi.launcher;
 
 import static android.content.Context.WINDOW_SERVICE;
 
-import static com.sgm.navi.service.adapter.layer.bls.utils.CommonUtil.getResources;
 
-import android.app.ActivityOptions;
 import android.content.ComponentCallbacks;
-import android.content.Intent;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -22,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -81,6 +80,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private boolean mCrossImgIsOnShowing = false;
     private CaptureScreenUtils captureScreenUtils;
     private String currentNaviStatus;
+    private final int DisplayId = 0;
 
     private LauncherWindowService() {
 
@@ -195,7 +195,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             Logger.i(TAG, "不需要显示，View 暂时不创建！");
             return;
         }
-        mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(AppCache.getInstance().getMContext()), null);
+        final Context context = ScreenUtils.Companion.getInstance().getTargetDisplayContext(
+                AppCache.getInstance().getMContext(),
+                DisplayId
+        );
+        mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(context), null);
         mView = mBinding.getRoot();
 
         final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
@@ -209,8 +213,8 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         );
 
         layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
-        int top = (int) getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_top);
-        int left = (int) getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_left);
+        int top = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_top);
+        int left = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_left);
         Logger.i(TAG, "LauncherWindowPosition: " + top + "; " + left);
         layoutParams.x = left;
         layoutParams.y = top;

@@ -7,11 +7,13 @@ import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.hardware.display.DisplayManager
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
+import androidx.core.content.getSystemService
 import java.io.BufferedOutputStream
 import java.io.PrintStream
 
@@ -232,5 +234,16 @@ class ScreenUtils private constructor() {
         val resources = context.resources
         val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
         return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
+    }
+
+    fun getTargetDisplayContext(context: Context, displayId: Int): Context {
+        try {
+            val displayManager:DisplayManager = context.getSystemService(DisplayManager::class.java)
+            val targetDisplay = displayManager.getDisplay(displayId)
+            val targetDisplayContext = context.createDisplayContext(targetDisplay)
+            return targetDisplayContext
+        } catch (e: Exception) {
+            return context
+        }
     }
 }

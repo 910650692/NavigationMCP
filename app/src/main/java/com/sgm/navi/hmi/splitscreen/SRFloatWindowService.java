@@ -2,17 +2,16 @@ package com.sgm.navi.hmi.splitscreen;
 
 import static android.content.Context.WINDOW_SERVICE;
 
+
 import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
 import android.content.ComponentCallbacks;
-import android.content.Intent;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -72,7 +72,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
     private boolean isInited = false;
     private boolean mCrossImgIsOnShowing = false;
     private CaptureScreenUtils captureScreenUtils;
-
+    private final int DisplayId = 0;
     private SRFloatWindowService() {
 
     }
@@ -209,7 +209,11 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
             Logger.i(TAG, "不需要显示，View 暂时不创建！");
             return;
         }
-        mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(AppCache.getInstance().getMContext()), null);
+        final Context context = ScreenUtils.Companion.getInstance().getTargetDisplayContext(
+                AppCache.getInstance().getMContext(),
+                DisplayId
+        );
+        mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(context), null);
         mView = mBinding.getRoot();
 
         final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
@@ -222,9 +226,11 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
                 PixelFormat.TRANSLUCENT
         );
 
-        layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
-        layoutParams.x = 34;
-        layoutParams.y = 34;
+        int top = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_top);
+        int left = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_left);
+        Logger.i(TAG, "LauncherWindowPosition: " + top + "; " + left);
+        layoutParams.x = left;
+        layoutParams.y = top;
         mWindowManager.addView(mView, layoutParams);
 //        initClickListener();
         mBinding.cardTbtView.setVisibility(
