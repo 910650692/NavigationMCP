@@ -88,7 +88,7 @@
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_traffic_light_value"
-            android:layout_width="@dimen/dp_42"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_21"
             android:textColor="@color/text_color_route_item_no_select"
@@ -112,7 +112,7 @@
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_price"
-            android:layout_width="@dimen/dp_42"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_21"
             android:textColor="@color/text_color_route_item_no_select"
