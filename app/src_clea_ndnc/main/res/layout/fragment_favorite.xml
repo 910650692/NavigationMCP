@@ -400,7 +400,7 @@
                         android:gravity="center"
                         android:text="@string/account_login"
                         android:textSize="@dimen/sp_26"
-                        android:textColor="@color/white"
+                        android:textColor="@color/always_white"
                         android:layout_marginTop="@dimen/dp_24"
                         android:background="@drawable/bg_setting_preference_select"/>
                 </com.sgm.navi.ui.view.SkinLinearLayout>
@@ -450,7 +450,7 @@
                         android:gravity="center"
                         android:text="@string/route_refresh"
                         android:textSize="@dimen/sp_26"
-                        android:textColor="@color/white"
+                        android:textColor="@color/always_white"
                         android:layout_marginTop="@dimen/dp_28"
                         android:background="@drawable/bg_setting_preference_select"/>
                 </com.sgm.navi.ui.view.SkinLinearLayout>

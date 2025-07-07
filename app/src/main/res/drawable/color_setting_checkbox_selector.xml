@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 选中状态 -->
-    <item android:state_checked="true" android:color="@color/white" />
+    <item android:state_checked="true" android:color="@color/always_white" />
     <item android:state_checked="false" android:color="@color/color_black_70" />
 </selector>

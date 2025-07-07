@@ -412,7 +412,7 @@
                             android:background="@drawable/bg_setting_preference_select"
                             android:gravity="center"
                             android:text="@string/favorite_add"
-                            android:textColor="@color/white"
+                            android:textColor="@color/always_white"
                             android:textSize="@dimen/sp_38" />
                     </com.sgm.navi.ui.view.SkinLinearLayout>
 
@@ -455,7 +455,7 @@
                             android:background="@drawable/bg_setting_preference_select"
                             android:gravity="center"
                             android:text="@string/account_login"
-                            android:textColor="@color/white"
+                            android:textColor="@color/always_white"
                             android:textSize="@dimen/sp_38" />
                     </com.sgm.navi.ui.view.SkinLinearLayout>
 
@@ -510,7 +510,7 @@
                             android:focusable="true"
                             android:gravity="center"
                             android:text="@string/route_refresh"
-                            android:textColor="@color/white"
+                            android:textColor="@color/always_white"
                             android:textSize="@dimen/sp_38" />
                     </com.sgm.navi.ui.view.SkinLinearLayout>
 
