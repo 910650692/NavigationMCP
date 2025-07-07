@@ -590,71 +590,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         if (mMapDataService == null) {
             return null;
         }
-
-        final ArrayList<ProvDataInfo> provinceBeanList = new ArrayList<>();
-
-        // 获取本地已存在数据的adcode列表信息
-        final ArrayList<Integer> downLoadAdcodeList = mMapDataService.getDownLoadAdcodeList();
-        Logger.d(TAG, "getDownLoadAdCodeList: downLoadAdcodeList" + GsonUtils.toJson(downLoadAdcodeList));
-
-        if (null != downLoadAdcodeList && !downLoadAdcodeList.isEmpty()) {
-
-            //获取已下载省份code列表
-            final ArrayList<Integer> provAdcodeList = new ArrayList<>();
-            for (int i = 0; i < downLoadAdcodeList.size(); i++) {
-                final Integer downLoadAdCode = downLoadAdcodeList.get(i);
-                final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, downLoadAdCode);
-                if (cityArea != null && !provAdcodeList.contains(cityArea.upperAdcode)) {
-                    provAdcodeList.add(cityArea.upperAdcode);
-                }
-            }
-
-            //获取省份中已下载的城市信息
-            for (int i = 0; i < provAdcodeList.size(); i++) {
-                final Integer provAdcode = provAdcodeList.get(i);
-                //对省份信息进行赋值
-                final ProvDataInfo provDataInfo = new ProvDataInfo();
-                if (provAdcode == 0) {
-                    provDataInfo.setName("直辖市");
-                    provDataInfo.setAreaType(2);
-                    provDataInfo.setAdcode(2);
-                    provDataInfo.setJianPin("zxs");
-                    provDataInfo.setPinYin("zhixiashi");
-                } else {
-                    final ProvinceInfo info = mMapDataService.getProvinceInfo(provAdcode);
-                    provDataInfo.setName(info.provName);
-                    provDataInfo.setAreaType(info.provLevel);
-                    provDataInfo.setAdcode(info.provAdcode);
-                    provDataInfo.setJianPin(info.provInitial);
-                    provDataInfo.setPinYin(info.provPinyin);
-                }
-
-                //获取省份下已下载的城市
-                final ArrayList<CityDataInfo> cityBeanList = new ArrayList<>();
-                for (int j = 0; j < downLoadAdcodeList.size(); j++) {
-                    final Integer downLoadAdCode = downLoadAdcodeList.get(j);
-                    if (downLoadAdCode != 0) { // 移除基础功能包
-                        final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, downLoadAdCode);
-                        if (cityArea != null) {
-                            final CityDataInfo cityDataInfo = getCityInfo(cityArea.adcode);
-                            if (cityDataInfo.getUpperAdcode() == provDataInfo.getAdcode()) {
-                                cityBeanList.add(cityDataInfo);
-                            }
-                        }
-                    }
-                }
-
-                provDataInfo.setCityInfoList(cityBeanList);
-
-                provinceBeanList.add(provDataInfo);
-
-            }
-
-        }
-
-        Logger.d(TAG, "getDownLoadAdCodeList: provinceBeanList = " + GsonUtils.toJson(provinceBeanList));
-
-        return provinceBeanList;
+        return getWorkedList();
     }
 
     /**
