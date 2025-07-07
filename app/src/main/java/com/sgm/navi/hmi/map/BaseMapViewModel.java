@@ -41,7 +41,6 @@ import com.sgm.navi.hmi.limit.LimitCitySelectionFragment;
 import com.sgm.navi.hmi.limit.LimitDriveFragment;
 import com.sgm.navi.hmi.mapdata.MapDataFragment;
 import com.sgm.navi.hmi.navi.AuthorizationRequestDialog;
-import com.sgm.navi.hmi.navi.ForecastAddressDialog;
 import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.permission.ReminderDialog;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
@@ -524,27 +523,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         addFragment(new HomeCompanyFragment(), bundle);
         mModel.stopCruise();
 
-    }
-
-    public void showForecastDialog(int type, OftenArrivedItemInfo oftenArrivedItemInfo) {
-        ThreadManager.getInstance().postUi(() -> {
-            new ForecastAddressDialog(mView, type, oftenArrivedItemInfo, new IForecastAddressCallBack() {
-                @Override
-                public void AddForecastInfo(OftenArrivedItemInfo oftenArrivedItemInfo) {
-                    mModel.addHomeOrCompanyInfoToSetting(type, oftenArrivedItemInfo);
-                    initTimer();
-                }
-
-                @Override
-                public void addressClick() {
-                    if (AutoMapConstant.HomeCompanyType.HOME == type) {
-                        toHomeFragment();
-                    } else {
-                        toCompanyFragment();
-                    }
-                }
-            }).show();
-        });
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {

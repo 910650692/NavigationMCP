@@ -42,6 +42,7 @@ import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.IDeskBackgroundChangeListener;
 import com.sgm.navi.hmi.launcher.OnDeskCardVisibleStateChangeListener;
+import com.sgm.navi.hmi.navi.ForecastAddressDialog;
 import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.setting.SettingFragment;
@@ -58,6 +59,7 @@ import com.sgm.navi.service.logicpaket.activate.ActivatePackage;
 import com.sgm.navi.service.logicpaket.activate.IActivateObserver;
 import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
+import com.sgm.navi.service.logicpaket.user.forecast.IForecastAddressCallBack;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.sgm.navi.hmi.R;
@@ -172,7 +174,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack,
         ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
-        IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback, OnDeskCardVisibleStateChangeListener {
+        IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback, OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack {
 
     private CommonManager mCommonManager;
     private final IActivateObserver mActObserver;
@@ -219,6 +221,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private History mUncompletedNavi;
     private MapVisibleAreaDataManager mapVisibleAreaDataManager;
     private AuthorizationRequestDialog authorizationRequestDialog = null;
+
+    private ForecastAddressDialog forecastAddressDialog;
 
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
@@ -295,6 +299,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapPackage.addTimeHelper(timeHelper);
         speedMonitor.registerCallBack(this);
         mViewModel.initVisibleAreaPoint();
+        forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView(), this);
     }
 
     private MapPackage.TimeHelper timeHelper = new MapPackage.TimeHelper() {
@@ -366,6 +371,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
         AgreementPackage.getInstance().unRegisterAgreementCallback("StartupModel");
         FloatViewManager.getInstance().removeDeskCardVisibleChangeListener(this);
+        clearDialog();
+    }
+
+    public void clearDialog() {
+        if (null != forecastAddressDialog && forecastAddressDialog.isShowing()) {
+            forecastAddressDialog.dismiss();
+        }
+        forecastAddressDialog = null;
     }
 
     @Override
@@ -1391,7 +1404,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             case AutoMapConstant.GuessPositionType.HOME:
                 OftenArrivedItemInfo mHomeInfo = (data != null ? data.getHome() : null);
                 if (!ConvertUtils.isEmpty(mHomeInfo) && !ConvertUtils.isEmpty(mHomeInfo.getWstrAddress())) {
-                    mViewModel.showForecastDialog(mCompanyOrHomeType, mHomeInfo);
+                    showForecastDialog(mCompanyOrHomeType, mHomeInfo);
                 } else {
                     mViewModel.toHomeFragment();
                 }
@@ -1399,7 +1412,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             case AutoMapConstant.GuessPositionType.COMPANY:
                 OftenArrivedItemInfo mCompanyInfo = (data != null ? data.getCompany() : null);
                 if (!ConvertUtils.isEmpty(mCompanyInfo) && !ConvertUtils.isEmpty(mCompanyInfo.getWstrAddress())) {
-                    mViewModel.showForecastDialog(mCompanyOrHomeType, mCompanyInfo);
+                    showForecastDialog(mCompanyOrHomeType, mCompanyInfo);
                 } else {
                     mViewModel.toCompanyFragment();
                 }
@@ -1973,5 +1986,32 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onDeskCardVisibleStateChange(boolean isVisible) {
         mViewModel.onDeskCardVisibleStateChange(isVisible);
+    }
+
+    public void showForecastDialog(int type, OftenArrivedItemInfo oftenArrivedItemInfo) {
+        ThreadManager.getInstance().postUi(() -> {
+            if(forecastAddressDialog == null){
+                forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView(), this);
+            }
+            forecastAddressDialog.setForecastAddressInfo(type, oftenArrivedItemInfo);
+            if(!forecastAddressDialog.isShowing()){
+                forecastAddressDialog.show();
+            }
+        });
+    }
+
+    @Override
+    public void AddForecastInfo(int type, OftenArrivedItemInfo oftenArrivedItemInfo) {
+        addHomeOrCompanyInfoToSetting(type, oftenArrivedItemInfo);
+        mViewModel.initTimer();
+    }
+
+    @Override
+    public void addressClick(int type) {
+        if (AutoMapConstant.HomeCompanyType.HOME == type) {
+            mViewModel.toHomeFragment();
+        } else {
+            mViewModel.toCompanyFragment();
+        }
     }
 }

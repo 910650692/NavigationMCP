@@ -4,8 +4,8 @@ import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 
 public interface IForecastAddressCallBack {
 
-    void AddForecastInfo(OftenArrivedItemInfo oftenArrivedItemInfo);
+    void AddForecastInfo(int type, OftenArrivedItemInfo oftenArrivedItemInfo);
 
-    void addressClick();
+    void addressClick(int type);
 
 }

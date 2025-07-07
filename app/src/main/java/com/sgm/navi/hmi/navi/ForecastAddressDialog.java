@@ -25,12 +25,16 @@ public class ForecastAddressDialog extends BaseFullScreenDialog<DialogForecastAd
     private IForecastAddressCallBack mIForecastAddressCallBack;
     private int mType;
     private OftenArrivedItemInfo mOftenArrivedItemInfo;
-    public ForecastAddressDialog(final Context context, final int type, final OftenArrivedItemInfo oftenArrivedItemInfo,
-                                 final IForecastAddressCallBack addressCallBack) {
+
+    public ForecastAddressDialog(Context context, final IForecastAddressCallBack addressCallBack){
         super(context);
+        this.mIForecastAddressCallBack = addressCallBack;
+    }
+
+    public void setForecastAddressInfo(final int type, final OftenArrivedItemInfo oftenArrivedItemInfo){
         this.mType = type;
         this.mOftenArrivedItemInfo = oftenArrivedItemInfo;
-        this.mIForecastAddressCallBack = addressCallBack;
+        updateForecastAddressInfo();
     }
 
     @Override
@@ -41,9 +45,20 @@ public class ForecastAddressDialog extends BaseFullScreenDialog<DialogForecastAd
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setDialogView();
+    }
 
+    private void setDialogView() {
+        //todo flavor temp
+        if (BuildConfig.FLAVOR.equals("clea_8255")
+                || BuildConfig.FLAVOR.equals("clea_local_8155")
+                || BuildConfig.FLAVOR.equals("clea_8775")) {
+            mViewBinding.forecastContent.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            mViewBinding.forecastEdit.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateForecastAddressInfo(){
         if(!ConvertUtils.isEmpty(mOftenArrivedItemInfo.getWstrAddress())){
             mViewBinding.forecastContent.setText(mOftenArrivedItemInfo.getWstrAddress());
         }
@@ -56,7 +71,7 @@ public class ForecastAddressDialog extends BaseFullScreenDialog<DialogForecastAd
         mViewBinding.dialogCommit.setOnClickListener(v -> {
             onDismiss();
             //设置数据
-            mIForecastAddressCallBack.AddForecastInfo(mOftenArrivedItemInfo);
+            mIForecastAddressCallBack.AddForecastInfo(mType, mOftenArrivedItemInfo);
 
             if(mViewBinding.forecastTitle.getText() == ResourceUtils.Companion.getInstance().getText(R.string.forecast_title_home)){
                 sendBuryPointForPrediction(BuryConstant.Number.ONE);
@@ -73,23 +88,13 @@ public class ForecastAddressDialog extends BaseFullScreenDialog<DialogForecastAd
 
         mViewBinding.forecastContent.setOnClickListener(v -> {
             onDismiss();
-            mIForecastAddressCallBack.addressClick();
+            mIForecastAddressCallBack.addressClick(mType);
         });
 
         mViewBinding.forecastEdit.setOnClickListener(v -> {
             onDismiss();
             mViewBinding.forecastContent.callOnClick();
         });
-    }
-
-    private void setDialogView() {
-        //todo flavor temp
-        if (BuildConfig.FLAVOR.equals("clea_8255")
-                || BuildConfig.FLAVOR.equals("clea_local_8155")
-                || BuildConfig.FLAVOR.equals("clea_8775")) {
-            mViewBinding.forecastContent.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-            mViewBinding.forecastEdit.setVisibility(View.VISIBLE);
-        }
     }
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_HOME_PREDICTION)
