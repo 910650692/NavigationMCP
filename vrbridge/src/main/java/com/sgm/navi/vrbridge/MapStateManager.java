@@ -1,15 +1,10 @@
 package com.sgm.navi.vrbridge;
 
-import android.app.ActivityOptions;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
-import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
@@ -52,7 +47,7 @@ public final class MapStateManager {
     private NaviEtaInfo mEtaInfo = null; //TBT信息
     private int mLimitSpeed = 0; //当前道路限速
     private LocParallelInfoEntity mParallelInfo = null; //平行路信息
-    private int mLocationInterval = 10; //语音定位信息最多10s更新一次
+    private long mLastLocationUpdateTime = 0L; //语音定位信息最多10s更新一次
     private int mLauncherDeskMode = 0;
 
     private boolean mMapStateInitiated = false; //地图状态是否已初始化
@@ -152,9 +147,6 @@ public final class MapStateManager {
 
         @Override
         public void onMapLevelChanged(final MapType mapTypeId, final float mapLevel) {
-            if (Logger.openLog) {
-                Logger.d(IVrBridgeConstant.TAG, "onMapLevelChanged: ", mapLevel);
-            }
             mBuilder.setCurrZoomLevel((int) mapLevel);
             AMapStateUtils.saveMapState(mBuilder.build());
         }
@@ -290,10 +282,10 @@ public final class MapStateManager {
 
         @Override
         public void onLocationInfo(final LocInfoBean locationInfo) {
-            if (mLocationInterval == 0 && null != locationInfo) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - mLastLocationUpdateTime >= 10000  && null != locationInfo) {
                 AMapStateUtils.saveMapLocation(locationInfo);
-                mLocationInterval = 10;
-                ThreadManager.getInstance().asyncDelay(() -> mLocationInterval = 0, mLocationInterval);
+                mLastLocationUpdateTime = currentTime;
             }
         }
 

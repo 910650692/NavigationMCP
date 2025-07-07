@@ -93,7 +93,6 @@ final public class AMapStateUtils {
             currMapSize = data.optInt("mCurrZoomLevel");
             map.put(NaviStateCons.KEY_CURRENT_MAP_SIZE, currMapSize);
         }
-        Logger.d(IVrBridgeConstant.TAG, "currSize : ", currMapSize, "maxSize: ", maxMapSize, "minSize: ", minMapSize);
         if (currMapSize != -1) {
             if (maxMapSize != -1) {
                 map.put(NaviStateCons.KEY_MAX_MAP, currMapSize == maxMapSize);
