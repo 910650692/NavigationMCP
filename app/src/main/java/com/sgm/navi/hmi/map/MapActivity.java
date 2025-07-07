@@ -229,10 +229,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
         if(mMsgTopDialog != null && mMsgTopDialog.isShowing()){
             mMsgTopDialog.dismiss();
-            mMsgTopDialog = null;
         }
+        mMsgTopDialog = null;
 
-        if (mFailedDialog.isShowing()) {
+        if (mFailedDialog != null && mFailedDialog.isShowing()) {
             mFailedDialog.dismiss();
         }
         mFailedDialog = null;
