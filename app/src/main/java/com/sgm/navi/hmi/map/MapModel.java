@@ -19,7 +19,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.android.utils.ConvertUtimport com.android.utils.DeviceUtils;
+import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ScreenUtils;

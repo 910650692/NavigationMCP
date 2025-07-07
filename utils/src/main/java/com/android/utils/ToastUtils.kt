@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.android.utils.log.Logger
 import com.sgm.navi.burypoint.anno.HookMethod
 import com.sgm.navi.burypoint.bean.BuryProperty
 import com.sgm.navi.burypoint.constant.BuryConstant
@@ -170,6 +171,7 @@ class ToastUtils private constructor() {
         }
 
         fun init(context: Context) {
+            if(null == instance) getInstance()
             instance?.init(context)
         }
 
