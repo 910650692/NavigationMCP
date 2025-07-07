@@ -167,6 +167,7 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
 
     @Override
     public void onSatelliteNum(int num) {
+        Logger.i(TAG, "onSatelliteNum: " + num);
         for (IPositionPackageCallback callback : mIPositionCallback) {
             callback.onSatelliteNum(num);
         }

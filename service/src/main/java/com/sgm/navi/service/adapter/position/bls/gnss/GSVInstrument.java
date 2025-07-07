@@ -45,14 +45,19 @@ public class GSVInstrument extends GnssStatus.Callback {
         int prn;
         int snr = -1;
         for (int i = 0; i < gnssStatus.getSatelliteCount() && count < MAX_GPS_SATELLITE_NUM; i++) {
+            // 可见卫星的唯一标识符 GPS：1~32 SBAS：33~64
             prn = gnssStatus.getSvid(i);
             //usedInFix是判断卫星是否可用，但GSV需要的是所有可见的卫星星历信息，故无需增加该判断
             if (prn > 0 && prn <= 64) {
                 tempPrn[count] = prn;
+                // 卫星仰角，仰角越大，信号越好
                 tempElevation[count] = (int) gnssStatus.getElevationDegrees(i);
+                //获取的是第 i 颗卫星的方位角（Azimuth），单位为度（°），范围通常是 0~360。方位角表示卫星相对于观测点正北方向的夹角，用于描述卫星在天空中的水平位置
                 tempAzimuth[count] = (int) gnssStatus.getAzimuthDegrees(i);
+                // 获取的是第 i 颗卫星的载噪比（C/N0，Carrier-to-Noise density ratio），单位为 dB-Hz。它表示信号强度与噪声密度的比值，数值越大，说明该卫星信号越好。常用于评估卫星信号质量。
                 snr = (int) gnssStatus.getCn0DbHz(i);
                 tempSnr[count] = snr;
+                Logger.d(TAG, "setGSVData: prn:", prn, ",snr:", snr);
                 count++;
                 if (snr > 0) {
                     validCount++;
