@@ -1,5 +1,6 @@
 package com.sgm.navi.hmi.mapdata.manager;
 
+import android.graphics.Typeface;
 import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,7 +50,7 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
 
     @Override
     public void onInitData() {
-
+        setDownloadedTitleStatus(false);
     }
 
     /**
@@ -203,7 +204,7 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     public void setDownloadingTitleStatus(final boolean status) {
         ThreadManager.getInstance().postUi(() -> {
             if (status) {
-                mBinding.tvOfflineAllData.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_select));
+                mBinding.tvOfflineAllData.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_delete));
                 mBinding.offlineAllDataLine.setVisibility(View.VISIBLE);
             } else {
                 mBinding.tvOfflineAllData.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_voice_text));
@@ -219,7 +220,7 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     public void setDownloadedTitleStatus(final boolean status) {
         ThreadManager.getInstance().postUi(() -> {
             if (status) {
-                mBinding.tvOfflineDownloadAdministration.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_select));
+                mBinding.tvOfflineDownloadAdministration.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_delete));
                 mBinding.downloadAdministrationLine.setVisibility(View.VISIBLE);
             } else {
                 mBinding.tvOfflineDownloadAdministration.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_voice_text));

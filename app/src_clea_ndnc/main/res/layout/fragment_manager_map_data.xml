@@ -69,7 +69,7 @@
                             android:button="@null"
                             android:gravity="center"
                             android:text="@string/offline_manager_map_downloading"
-                            android:textColor="@color/setting_bg_tab_text_select"
+                            android:textColor="@color/setting_bg_delete"
                             android:textSize="@dimen/sp_29" />
 
                         <com.sgm.navi.ui.view.SkinView
@@ -115,7 +115,7 @@
                         android:button="@null"
                         android:gravity="center"
                         android:text="@string/offline_city_downloaded"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/setting_bg_delete"
                         android:textSize="@dimen/sp_29" />
 
                     <com.sgm.navi.ui.view.SkinView
@@ -242,7 +242,7 @@
                     android:text="@string/offline_manager_map_no_downloading"
                     android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.VISIBLE : View.GONE}"
                     android:textSize="@dimen/sp_34"
-                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:textColor="@color/setting_bg_delete"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -286,7 +286,7 @@
                     android:text="@string/offline_manager_map_no_downloaded"
                     android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.VISIBLE : View.GONE}"
                     android:textSize="@dimen/sp_34"
-                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:textColor="@color/setting_bg_delete"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
