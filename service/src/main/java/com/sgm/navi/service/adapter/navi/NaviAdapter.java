@@ -444,7 +444,7 @@ public final class NaviAdapter {
             currentSegmentIdx = mNaviEtaInfo.curSegIdx;
         }
         Logger.i(TAG, "getPointTmcStatus viaSegmentIdx: ", viaSegmentIdx, "; currentSegIdx: ", currentSegmentIdx);
-        if (viaSegmentIdx < 0 || currentSegmentIdx < 0) {
+        if ((viaSegmentIdx < 0 && viaSegmentIdx != -2) || currentSegmentIdx < 0) {
             return -1;
         }
         return getDistanceTmcStatus((short) currentSegmentIdx, viaSegmentIdx, pathInfo);
