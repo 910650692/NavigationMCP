@@ -142,7 +142,7 @@
 
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/first_toll_services"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_174"
             android:layout_height="wrap_content"
             android:focusable="false"
             android:layout_marginStart="@dimen/dp_32"
@@ -176,6 +176,42 @@
                 android:focusable="false"
                 android:background="@drawable/img_maintenance_white_42"
                 android:visibility="@{naviSapa.mFirstTollServiceMaintenanceVisible ? View.VISIBLE : View.GONE}" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_first_toll_service_charge_station"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:focusable="false"
+                android:background="@drawable/img_lightning_42"
+                android:visibility="@{naviSapa.mFirstTollServiceChargeStationVisible ? View.VISIBLE : View.GONE}" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_first_toll_service_lavatory"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:focusable="false"
+                android:background="@drawable/img_lavatory_42"
+                android:visibility="@{naviSapa.mFirstTollServiceLavatoryVisible ? View.VISIBLE : View.GONE}" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_first_toll_service_buy"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:focusable="false"
+                android:background="@drawable/img_buy_42"
+                android:visibility="@{naviSapa.mFirstTollServiceBuyVisible ? View.VISIBLE : View.GONE}" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_first_toll_service_hotel"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:focusable="false"
+                android:background="@drawable/img_groggery_42"
+                android:visibility="@{naviSapa.mFirstTollServiceHotelVisible ? View.VISIBLE : View.GONE}" />
 
         </com.sgm.navi.ui.view.SkinLinearLayout>
 
