@@ -150,16 +150,15 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     @Override
     public int suggestionSearch(final SearchRequestParameter requestParameterBuilder) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "suggestionSearch");
+        final SearchSuggestionParam param = SearchRequestParamV2.getInstance().convertToSearchSuggestionParamV2(requestParameterBuilder);
+        final SearchResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
+        mTaskId.set(searchResult.taskId);
         final SearchCallbackWrapper<SuggestionSearchResult> callbackWrapper = createCallbackWrapper(
                 SuggestionSearchResult.class,
                 (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
-
-        mSearchObserversHelper.registerCallback(SuggestionSearchResult.class, callbackWrapper);
-        final SearchSuggestionParam param = SearchRequestParamV2.getInstance().convertToSearchSuggestionParamV2(requestParameterBuilder);
-        final SearchResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
-        mTaskId.set(searchResult.taskId);
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -173,12 +172,6 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     public int keyWordSearch(final SearchRequestParameter requestParameterBuilder) {
         final boolean isReSearch = requestParameterBuilder.isMIsReSearch();
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "keyWordSearch" + isReSearch);
-        final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
-                KeywordSearchResultV2.class,
-                (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
-                (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
-        );
-        mSearchObserversHelper.registerCallback(KeywordSearchResultV2.class, callbackWrapper);
         final KeywordSearchTQueryParam param = SearchRequestParamV2.getInstance().convertToSearchKeywordParamV2(requestParameterBuilder);
         if (isReSearch) {
             getSearchServiceV2().keyWordSearchTQuery(param, mSearchObserversHelper,
@@ -187,7 +180,12 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
             getSearchServiceV2().keyWordSearchTQuery(param, mSearchObserversHelper,
                     SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
         }
-
+        final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
+                KeywordSearchResultV2.class,
+                (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
+        );
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -200,15 +198,15 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     @Override
     public int aggregateSearch(final SearchRequestParameter searchRequestParameter) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "aggregateSearch");
+        final SearchAggregateParam param = SearchRequestParamV2.getInstance().convertToSearchAggregateParamV2(searchRequestParameter);
+        final SearchResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
+        mTaskId.set(searchResult.taskId);
         final SearchCallbackWrapper<AggregateSearchResult> callbackWrapper = createCallbackWrapper(
                 AggregateSearchResult.class,
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameter, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result)
         );
-        mSearchObserversHelper.registerCallback(AggregateSearchResult.class, callbackWrapper);
-        final SearchAggregateParam param = SearchRequestParamV2.getInstance().convertToSearchAggregateParamV2(searchRequestParameter);
-        final SearchResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
-        mTaskId.set(searchResult.taskId);
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -231,23 +229,23 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameter, result),
                 (errCode, result) -> notifySearchSuccess((int) searchResult.taskId, searchRequestParameter, result)
         );
-        mSearchObserversHelper.registerCallback(SearchEnrouteResult.class, callbackWrapper);
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
     @Override
     public int poiListSearch(final SearchRequestParameter searchRequestParameter) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "poiListSearch");
+        final SearchBatchPoiDetailParam param = SearchRequestParamV2.getInstance().convertToSearchBatchParam(searchRequestParameter);
+        final TaskResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
+        mTaskId.set((int)searchResult.taskId);
         final SearchCallbackWrapper<SearchBatchPoiDetailResult> callbackWrapper = createCallbackWrapper(
                 SearchBatchPoiDetailResult.class,
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameter, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result)
         );
 
-        mSearchObserversHelper.registerCallback(SearchBatchPoiDetailResult.class, callbackWrapper);
-        final SearchBatchPoiDetailParam param = SearchRequestParamV2.getInstance().convertToSearchBatchParam(searchRequestParameter);
-        final TaskResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
-        mTaskId.set((int)searchResult.taskId);
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -261,18 +259,18 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     public int aroundSearch(final SearchRequestParameter requestParameterBuilder) {
         final boolean isReSearch = requestParameterBuilder.isMIsReSearch();
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "aroundSearch: " + isReSearch);
-        final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
-                KeywordSearchResultV2.class,
-                (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
-                (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
-        );
-        mSearchObserversHelper.registerCallback(KeywordSearchResultV2.class, callbackWrapper);
         final KeywordSearchRqbxyParam param = SearchRequestParamV2.getInstance().convertToAroundSearchParam(requestParameterBuilder);
         if (isReSearch) {
             getSearchServiceV2().keyWordSearchRqbxy(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_OFFLINE_ONLY, mTaskId.incrementAndGet());
         } else {
             getSearchServiceV2().keyWordSearchRqbxy(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
         }
+        final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
+                KeywordSearchResultV2.class,
+                (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
+        );
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -285,15 +283,15 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     @Override
     public int poiDetailSearch(final SearchRequestParameter requestParameterBuilder) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "poiDetailSearch");
+        final SearchPoiDetailParam param = SearchRequestParamV2.getInstance().convertToSearchPoiDetailParamV2(requestParameterBuilder);
+        getSearchServiceV2().poiDetailSearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
         final SearchCallbackWrapper<PoiDetailSearchResult> callbackWrapper = createCallbackWrapper(
                 PoiDetailSearchResult.class,
                 (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
 
-        mSearchObserversHelper.registerCallback(PoiDetailSearchResult.class, callbackWrapper);
-        final SearchPoiDetailParam param = SearchRequestParamV2.getInstance().convertToSearchPoiDetailParamV2(requestParameterBuilder);
-        getSearchServiceV2().poiDetailSearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -306,15 +304,14 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     @Override
     public int poiIdSearch(final SearchRequestParameter searchRequestParameterBuilder) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "poiIdSearch");
+        final KeywordSearchIdqParam param = SearchRequestParamV2.getInstance().convertToKeywordSearchIdqParam(searchRequestParameterBuilder);
+        getSearchServiceV2().keyWordSearchIdq(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
         final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
                 KeywordSearchResultV2.class,
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result)
         );
-
-        mSearchObserversHelper.registerCallback(KeywordSearchResultV2.class, callbackWrapper);
-        final KeywordSearchIdqParam param = SearchRequestParamV2.getInstance().convertToKeywordSearchIdqParam(searchRequestParameterBuilder);
-        getSearchServiceV2().keyWordSearchIdq(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -327,18 +324,17 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     @Override
     public int geoSearch(final SearchRequestParameter searchRequestParameterBuilder) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "geoSearch");
+        final SearchNearestParam nearestParam = new SearchNearestParam();
+        nearestParam.poi_loc.lon = searchRequestParameterBuilder.getPoiLoc().getLon();
+        nearestParam.poi_loc.lat = searchRequestParameterBuilder.getPoiLoc().getLat();
+        getSearchServiceV1().nearestSearch(nearestParam, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
         final SearchCallbackWrapper<SearchNearestResult> callbackWrapper = createCallbackWrapper(
                 SearchNearestResult.class,
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result)
         );
 
-        mSearchObserversHelper.registerCallback(SearchNearestResult.class, callbackWrapper);
-
-        final SearchNearestParam nearestParam = new SearchNearestParam();
-        nearestParam.poi_loc.lon = searchRequestParameterBuilder.getPoiLoc().getLon();
-        nearestParam.poi_loc.lat = searchRequestParameterBuilder.getPoiLoc().getLat();
-        getSearchServiceV1().nearestSearch(nearestParam, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -351,19 +347,18 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     @Override
     public int deppInfoSearch(final SearchRequestParameter parameter) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "deppInfoSearch");
+        final SearchDeepInfoParam param = new SearchDeepInfoParam();
+        param.poiid = parameter.getPoiId();
+        param.poi_loc.lat = parameter.getPoiLoc().getLat();
+        param.poi_loc.lon = parameter.getPoiLoc().getLon();
+        getSearchServiceV1().deepInfoSearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
         final SearchCallbackWrapper<SearchDeepInfoResult> callbackWrapper = createCallbackWrapper(
                 SearchDeepInfoResult.class,
                 (taskId, result) -> notifySearchSuccess(taskId, parameter, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), parameter, result)
         );
 
-        mSearchObserversHelper.registerCallback(SearchDeepInfoResult.class, callbackWrapper);
-
-        final SearchDeepInfoParam param = new SearchDeepInfoParam();
-        param.poiid = parameter.getPoiId();
-        param.poi_loc.lat = parameter.getPoiLoc().getLat();
-        param.poi_loc.lon = parameter.getPoiLoc().getLon();
-        getSearchServiceV1().deepInfoSearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -376,19 +371,18 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     @Override
     public int doLineDeepInfoSearch(final SearchRequestParameter parameter) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "deppInfoSearch");
+        final SearchLineDeepInfoParam searchLineDeepInfoParam = new SearchLineDeepInfoParam();
+        searchLineDeepInfoParam.poiIds = (java.util.ArrayList<String>) parameter.getPoiIdList();
+        searchLineDeepInfoParam.queryType = Integer.parseInt(parameter.getQueryType());
+        getSearchServiceV1().lineDeepInfoSearch(searchLineDeepInfoParam, mSearchObserversHelper,
+                SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
         final SearchCallbackWrapper<SearchLineDeepInfoResult> callbackWrapper = createCallbackWrapper(
                 SearchLineDeepInfoResult.class,
                 (taskId, result) -> notifySearchSuccess(taskId, parameter, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), parameter, result)
         );
 
-        mSearchObserversHelper.registerCallback(SearchLineDeepInfoResult.class, callbackWrapper);
-
-        final SearchLineDeepInfoParam searchLineDeepInfoParam = new SearchLineDeepInfoParam();
-        searchLineDeepInfoParam.poiIds = (java.util.ArrayList<String>) parameter.getPoiIdList();
-        searchLineDeepInfoParam.queryType = Integer.parseInt(parameter.getQueryType());
-        getSearchServiceV1().lineDeepInfoSearch(searchLineDeepInfoParam, mSearchObserversHelper,
-                SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -401,15 +395,14 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     @Override
     public int alongWaySearch(final SearchRequestParameter searchRequestParameterBuilder) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "alongWaySearch");
+        final SearchAlongWayParam param = SearchRequestParamV2.getInstance().convertToAlongWaySearchIdqParam(searchRequestParameterBuilder);
+        getSearchServiceV1().alongWaySearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
         final SearchCallbackWrapper<SearchAlongWayResult> callbackWrapper = createCallbackWrapper(
                 SearchAlongWayResult.class,
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result)
         );
-
-        mSearchObserversHelper.registerCallback(SearchAlongWayResult.class, callbackWrapper);
-        final SearchAlongWayParam param = SearchRequestParamV2.getInstance().convertToAlongWaySearchIdqParam(searchRequestParameterBuilder);
-        getSearchServiceV1().alongWaySearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
         return mTaskId.get();
     }
 
@@ -544,6 +537,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @param taskId                  任务ID
      */
     private <T> void notifySearchSuccess(final int taskId, final SearchRequestParameter requestParameterBuilder, final T result) {
+        mSearchObserversHelper.unregisterCallback(taskId);
         mSearchNotificationHelper.notifySearchSuccess(taskId, requestParameterBuilder, result);
     }
 

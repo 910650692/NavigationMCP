@@ -48,7 +48,7 @@ public final class SearchObserversHelper implements IKeyWordSearchObserverV2, IS
         IGSearchNearestObserver, IGSearchLineDeepInfoObserver, IGSearchAlongWayObserver, IAggregateSearchObserver,
         ISearchEnrouteObserver , IGSearchDeepInfoObserver, ISearchBatchPoiDetailObserver {
 
-    private final Map<Class<?>, SearchCallbackWrapper<?>> mCallbackWrapperMap = new ConcurrentHashMap<>();
+    private final Map<Integer, SearchCallbackWrapper<?>> mCallbackWrapperMap = new ConcurrentHashMap<>();
     private static final AtomicReference<SearchObserversHelper> INSTANCE = new AtomicReference<>();
 
     private SearchObserversHelper() {
@@ -64,16 +64,14 @@ public final class SearchObserversHelper implements IKeyWordSearchObserverV2, IS
      * @param taskId    taskId
      * @param errorCode errorCode 错误码
      * @param result    result 回调数据类
-     * @param resultType resultType 回调数据类型
      * @param <T>       泛型参数
      */
     @SuppressWarnings("unchecked")
-    private <T> void handleResult(final int taskId, final int errorCode, final T result, final Class<T> resultType) {
-        Optional.ofNullable((SearchCallbackWrapper<T>) mCallbackWrapperMap.get(resultType))
+    private <T> void handleResult(final int taskId, final int errorCode, final T result) {
+        Optional.ofNullable((SearchCallbackWrapper<T>) mCallbackWrapperMap.get(taskId))
                 .ifPresent(callbackWrapper -> {
 //                    try {
-                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Received search result: "
-                            + resultType.getSimpleName() + ", taskId=" + taskId + " ;errorCode: " + errorCode);
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "taskId=" + taskId + " ;errorCode: " + errorCode);
                     if (errorCode == Service.ErrorCodeOK) {
                         callbackWrapper.onSuccess(taskId, result);
                     } else {
@@ -89,21 +87,19 @@ public final class SearchObserversHelper implements IKeyWordSearchObserverV2, IS
     /**
      * 注册回调
      *
-     * @param resultType resultType 注册回调类泛型
      * @param callbackWrapper callbackWrapper 回调监听
      * @param <T> 泛型参数
      */
-    public <T> void registerCallback(final Class<T> resultType, final SearchCallbackWrapper<T> callbackWrapper) {
-        mCallbackWrapperMap.put(resultType, callbackWrapper);
+    public <T> void registerCallback(final int taskId, final SearchCallbackWrapper<T> callbackWrapper) {
+        mCallbackWrapperMap.put(taskId, callbackWrapper);
     }
 
     /**
      * 注销回调
-     * @param resultType resultType 注销回调类泛型
      * @param <T> 泛型参数
      */
-    public <T> void unregisterCallback(final Class<T> resultType) {
-        mCallbackWrapperMap.remove(resultType);
+    public <T> void unregisterCallback(final int taskId) {
+        mCallbackWrapperMap.remove(taskId);
     }
 
     /**
@@ -117,62 +113,62 @@ public final class SearchObserversHelper implements IKeyWordSearchObserverV2, IS
 
     @Override
     public void onGetKeyWordResult(final int taskId, final int errorCode, final KeywordSearchResultV2 pstResult) {
-        handleResult(taskId, errorCode, pstResult, KeywordSearchResultV2.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onGetSuggestionResult(final int taskId, final int errorCode, final SuggestionSearchResult pstResult) {
-        handleResult(taskId, errorCode, pstResult, SuggestionSearchResult.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onGetPoiDetailResult(final int taskId, final int errorCode, final PoiDetailSearchResult pstResult) {
-        handleResult(taskId, errorCode, pstResult, PoiDetailSearchResult.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onGetPoiCmallDetailResult(final int taskId, final int errorCode, final PoiCmallDetailSearchResult pstResult) {
-        handleResult(taskId, errorCode, pstResult, PoiCmallDetailSearchResult.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onGetSceneResult(final int taskId, final int errorCode, final SceneSearchResult pstResult) {
-        handleResult(taskId, errorCode, pstResult, SceneSearchResult.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onGetPoiShopListResult(final int taskId, final int errorCode, final PoiShopListSearchResult pstResult) {
-        handleResult(taskId, errorCode, pstResult, PoiShopListSearchResult.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onGetNearestResult(final int taskId, final int errorCode, final SearchNearestResult pstResult) {
-        handleResult(taskId, errorCode, pstResult, SearchNearestResult.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onGetLineDeepInfoResult(final int taskId, final int errorCode, final SearchLineDeepInfoResult pstResult) {
-        handleResult(taskId, errorCode, pstResult, SearchLineDeepInfoResult.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onGetAlongWayResult(final int taskId, final int errorCode, final SearchAlongWayResult pstResult) {
-        handleResult(taskId, errorCode, pstResult, SearchAlongWayResult.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onGetAggregateResult(final int taskId, final int errorCode, final AggregateSearchResult pstResult) {
-        handleResult(taskId, errorCode, pstResult, AggregateSearchResult.class);
+        handleResult(taskId, errorCode, pstResult);
     }
 
     @Override
     public void onResult(final SearchEnrouteResult searchEnrouteResult) {
-        handleResult((int) searchEnrouteResult.taskId, searchEnrouteResult.errorCode, searchEnrouteResult, SearchEnrouteResult.class);
+        handleResult((int) searchEnrouteResult.taskId, searchEnrouteResult.errorCode, searchEnrouteResult);
     }
 
     @Override
     public void onGetDeepInfoResult(final int taskId, final int errorCode, final SearchDeepInfoResult searchDeepInfoResult) {
-        handleResult(taskId, errorCode, searchDeepInfoResult, SearchDeepInfoResult.class);
+        handleResult(taskId, errorCode, searchDeepInfoResult);
     }
 
     @NonNull
@@ -186,7 +182,7 @@ public final class SearchObserversHelper implements IKeyWordSearchObserverV2, IS
     @Override
     public void onResult(final SearchBatchPoiDetailResult searchBatchPoiDetailResult) {
         handleResult((int) searchBatchPoiDetailResult.taskId, searchBatchPoiDetailResult.errorCode,
-                searchBatchPoiDetailResult, SearchBatchPoiDetailResult.class);
+                searchBatchPoiDetailResult);
 
     }
 }
