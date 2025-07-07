@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ScreenUtils;
+import com.sgm.navi.service.utils.HudMapConfigUtil;
 
 public class HUDMapView extends FullScreenMapView {
     private boolean mOpenScreenStatus = true;
@@ -39,22 +40,22 @@ public class HUDMapView extends FullScreenMapView {
 
     @Override
     public long getMapViewWidth() {
-        return ScreenUtils.Companion.getInstance().dp2px(328);
+        return ScreenUtils.Companion.getInstance().dp2px(HudMapConfigUtil.getHudMapWidth());
     }
 
     @Override
     public long getMapViewHeight() {
-        return ScreenUtils.Companion.getInstance().dp2px(172);
+        return ScreenUtils.Companion.getInstance().dp2px(HudMapConfigUtil.getHudMapHeight());
     }
 
     @Override
     public long getScreenWidth() {
-        return ScreenUtils.Companion.getInstance().dp2px(328);
+        return ScreenUtils.Companion.getInstance().dp2px(HudMapConfigUtil.getHudMapWidth());
     }
 
     @Override
     public long getScreenHeight() {
-        return ScreenUtils.Companion.getInstance().dp2px(172);
+        return ScreenUtils.Companion.getInstance().dp2px(HudMapConfigUtil.getHudMapHeight());
     }
 
     @Override

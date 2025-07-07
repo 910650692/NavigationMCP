@@ -16,6 +16,8 @@ import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
+import com.sgm.navi.service.define.layer.refix.CarModeType;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
@@ -96,17 +98,12 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
             LayerPackage.getInstance().setCarPosition(mMapTypeId, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
                     PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
                     PositionPackage.getInstance().getLastCarLocation().getCourse()));
-            MapPackage.getInstance().goToCarPosition(mMapTypeId);
-            // 根据主屏的车标模式设置车标模式     mLayerPackage.getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP)获取主图的车标样式
-            LayerPackage.getInstance().setCarMode(mMapTypeId, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
-
+            MapPackage.getInstance().goToCarPosition(mMapTypeId,false,false);
+            LayerPackage.getInstance().setCarMode(mMapTypeId, CarModeType.CAR_MODE_DEFAULT);
             MapPackage.getInstance().switchMapMode(MapType.HUD_MAP, MapMode.UP_2D,false);
-            MapPackage.getInstance().setZoomLevel(mMapTypeId, 17);
             LayerPackage.getInstance().setFollowMode(mMapTypeId, true);
-            MapAdapter.getInstance().updateUiStyle(MapType.HUD_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
-            LayerAdapter.getInstance().setSkeletonBaseScale(MapType.HUD_MAP,100);
-            //设置走过的路线是否为灰色
-            //LayerPackage.getInstance().setPassGray(getMapId(), true);
+            MapAdapter.getInstance().updateUiStyle(MapType.HUD_MAP, ThemeType.NIGHT);
+            LayerAdapter.getInstance().setDynamicLevelLock(MapType.HUD_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
             //设置地图文字大小
             boolean mapViewTextSize = SettingPackage.getInstance().getMapViewTextSize();
             if (mapViewTextSize) {
@@ -114,6 +111,7 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
             } else {
                 MapPackage.getInstance().setMapViewTextSize(MapType.HUD_MAP, 1.8f);
             }
+            MapAdapter.getInstance().setHudMapCenterInScreen(MapType.HUD_MAP,(int)mViewModel.getMapView().getMapViewWidth() / 2 , (int)mViewModel.getMapView().getMapViewHeight() / 2);
 
             if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)
                     || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.LIGHT_NAVING)){

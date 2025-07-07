@@ -387,14 +387,18 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             case FsaConstant.FsaEventPayload.HUD_HINT:
                 //属于CLEA平台 接收信号 去关闭HUD
                 Logger.d(FsaConstant.FSA_TAG,"hud NO");
-                switchHudActivity(false);
+                ThreadManager.getInstance().postUi(() -> {
+                    switchHudActivity(false);
+                });
                 break;
             case FsaConstant.FsaEventPayload.HUD_FULL:
                 break;
             case FsaConstant.FsaEventPayload.HUD_LEFT_HALF:
                 //属于CLEA平台 接收信号 去开启HUD
                 Logger.d(FsaConstant.FSA_TAG,"hud OK");
-                switchHudActivity(true);
+                ThreadManager.getInstance().postUi(() -> {
+                    switchHudActivity(true);
+                });
                 break;
             case FsaConstant.FsaEventPayload.HUD_RIGHT_HALF:
                 break;

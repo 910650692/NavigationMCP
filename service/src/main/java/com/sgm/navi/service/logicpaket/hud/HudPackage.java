@@ -10,12 +10,14 @@ import com.sgm.navi.service.adapter.map.IMapAdapterCallback;
 import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
+import com.sgm.navi.service.define.layer.refix.CarModeType;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.HUDMapView;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
@@ -114,13 +116,13 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         LayerAdapter.getInstance().setCarPosition(MapType.HUD_MAP, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
                 PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
                 PositionPackage.getInstance().getLastCarLocation().getCourse()));
-        MapPackage.getInstance().goToCarPosition(MapType.HUD_MAP);
         MapPackage.getInstance().setMapCenter(MapType.HUD_MAP, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
                 PositionPackage.getInstance().getLastCarLocation().getLatitude()));
-        LayerAdapter.getInstance().setCarMode(MapType.HUD_MAP, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
-        LayerAdapter.getInstance().setFollowMode(MapType.HUD_MAP, true);
+        MapPackage.getInstance().goToCarPosition(MapType.HUD_MAP,false,false);
+        LayerAdapter.getInstance().setCarMode(MapType.HUD_MAP, CarModeType.CAR_MODE_DEFAULT);
         MapPackage.getInstance().switchMapMode(MapType.HUD_MAP, MapMode.UP_2D, false);
-        MapPackage.getInstance().setZoomLevel(MapType.HUD_MAP, 15);
+        LayerAdapter.getInstance().setFollowMode(MapType.HUD_MAP, true);
+        MapAdapter.getInstance().updateUiStyle(MapType.HUD_MAP, ThemeType.NIGHT);
         LayerAdapter.getInstance().setDynamicLevelLock(MapType.HUD_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
         if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)
                 || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.LIGHT_NAVING)){

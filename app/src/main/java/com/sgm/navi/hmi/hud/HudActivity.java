@@ -16,6 +16,7 @@ import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
+import com.sgm.navi.service.utils.HudMapConfigUtil;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.utils.ActivityCloseManager;
 import com.sgm.navi.utils.OnCloseActivityListener;
@@ -99,10 +100,9 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
         mBinding.hudMapview.setIsBindView(true);
         if (hudMapView instanceof View) {
             View mapView = (View) hudMapView;
-
             ScreenUtils screenUtils = ScreenUtils.Companion.getInstance();
-            int widthDp = screenUtils.dp2px(328);
-            int heightDp = screenUtils.dp2px(172);
+            int widthDp = screenUtils.dp2px(HudMapConfigUtil.getHudMapWidth());
+            int heightDp = screenUtils.dp2px(HudMapConfigUtil.getHudMapHeight());
             ViewGroup.LayoutParams params = mapView.getLayoutParams();
             params.width = widthDp;
             params.height = heightDp;
