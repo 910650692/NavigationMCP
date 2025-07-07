@@ -1025,7 +1025,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
         if (mScreenViewModel.isAlongWaySearch()) {
             mViewBinding.routeRightTabListChargeScene.setVisibility(VISIBLE);
-            updateSearchContainerMarginBottom(true);
+//            updateSearchContainerMarginBottom(true);
             if(!ConvertUtils.isEmpty(searchResultEntity.getKeyword())){
                 final String queryType = com.android.utils.ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
                 mViewBinding.routeRightTabListChargeScene.setSearchCharge(queryType.equals(searchResultEntity.getKeyword()));
@@ -1054,7 +1054,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.routeRightTabListChargeScene.registerRouteSelectObserver(TAG, this);
 
         } else {
-            updateSearchContainerMarginBottom(false);
+//            updateSearchContainerMarginBottom(false);
             mViewBinding.routeRightTabListChargeScene.setVisibility(GONE);
         }
 
@@ -1477,17 +1477,17 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
     }
 
-    private void updateSearchContainerMarginBottom(boolean isAlongWay) {
-        if (mSearchContainer != null) {
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mSearchContainer.getLayoutParams();
-            if (isAlongWay) {
-                lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_733);
-            } else {
-                lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            }
-            mSearchContainer.setLayoutParams(lp);
-        }
-    }
+//    private void updateSearchContainerMarginBottom(boolean isAlongWay) {
+//        if (mSearchContainer != null) {
+//            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mSearchContainer.getLayoutParams();
+//            if (isAlongWay) {
+//                lp.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_733);
+//            } else {
+//                lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//            }
+//            mSearchContainer.setLayoutParams(lp);
+//        }
+//    }
 
 
     //------------算路沿途搜***************************************************/
