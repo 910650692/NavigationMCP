@@ -89,7 +89,7 @@
             android:paddingHorizontal="@dimen/dp_34"
             android:paddingVertical="@dimen/dp_34"
             app:layout_constraintHeight_default="wrap"
-            app:layout_constraintHeight_max="@dimen/dp_770"
+            app:layout_constraintHeight_max="@dimen/dp_815"
             app:layout_constraintHeight_min="@dimen/dp_566"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/route_service_list_info_info_bg_title" />
