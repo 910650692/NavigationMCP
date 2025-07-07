@@ -20,7 +20,7 @@
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_route_secondary_poi"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_76"
+            android:layout_height="@dimen/dp_65"
             android:maxLines="1"
             android:layout_marginEnd="@dimen/dp_14"
             android:background="@drawable/bg_route_secondary_poi_selected"

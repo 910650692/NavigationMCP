@@ -24,7 +24,7 @@
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_descendants_text"
-                android:layout_width="@dimen/dp_545"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_34"
                 android:text="@string/route_multiple_destinations"
@@ -43,8 +43,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/route_descendants_text"
                 app:layout_constraintWidth_default="wrap"
-                app:layout_constraintWidth_max="@dimen/dp_845"
-                app:layout_constraintWidth_min="@dimen/dp_524" />
+                app:layout_constraintWidth_max="@dimen/dp_778"
+                app:layout_constraintWidth_min="@dimen/dp_477" />
 
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
@@ -53,15 +53,15 @@
             android:id="@+id/rv_secondary_poi"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_26"
             android:layout_marginStart="@dimen/dp_34"
             android:layout_marginEnd="@dimen/dp_34"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/scene_route_descendants_top_view"
             app:layout_constraintWidth_default="wrap"
-            app:layout_constraintWidth_max="@dimen/dp_845"
-            app:layout_constraintWidth_min="@dimen/dp_524"
+            app:layout_constraintWidth_max="@dimen/dp_778"
+            app:layout_constraintWidth_min="@dimen/dp_477"
             app:layout_goneMarginTop="@dimen/dp_0" />
 
 
