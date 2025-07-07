@@ -1839,6 +1839,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public boolean checkPopGuideLogin() {
+        BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if (!ConvertUtils.isNull(baseFragment)) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "checkPopGuideLogin: baseFragment is not null");
+            return false;
+        }
+
         if (mAccountPackage.isLogin() || settingManager.getValueByKey(SettingController.GUIDE_LOGIN_IS_CANCEL).equals("1")) {
             return false;
         }
