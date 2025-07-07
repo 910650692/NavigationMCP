@@ -166,12 +166,13 @@
             <com.sgm.navi.scene.ui.navi.hangingcard.NaviSceneHandingCardDetail
                 android:id="@+id/scene_navi_card_detail"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="@dimen/dp_m_43"
                 android:visibility="@{ViewModel.mHandingCardDetailVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintEnd_toEndOf="@id/scl_top_container"
                 app:layout_constraintStart_toStartOf="@id/scl_top_container"
-                app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
+                app:layout_constraintTop_toBottomOf="@id/scl_top_container"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <!--控制tools-->
             <com.sgm.navi.scene.ui.navi.SceneNaviControlView
