@@ -1412,7 +1412,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param poiList 搜索结果列表
      * @param index 当前选中下标
      */
-    public void updatePoiMarker(final List<PoiInfoEntity> poiList, final int index) {
+    public void updatePoiMarker(final List<PoiInfoEntity> poiList, final int index, final boolean isNeedPreview) {
         if (ConvertUtils.isEmpty(poiList)) {
             return;
         }
@@ -1420,14 +1420,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final int type = getPointTypeCode(poiInfoEntity.getPointTypeCode());
         final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
         layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
-        //todo 等待图层添加更新扎标对应type，目前先用原type占位
         final LayerPointItemType layerPointItemType = type == AutoMapConstant.PointTypeCode.CHARGING_STATION ?
                 LayerPointItemType.SEARCH_PARENT_CHARGE_STATION :
                 LayerPointItemType.SEARCH_PARENT_POINT;
         sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
         mLayerAdapter.updateSearchResult(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
                 layerItemSearchResult);
-        showPreview(poiList);
+        if (isNeedPreview) {
+            showPreview(poiList);
+        }
     }
 
     /**

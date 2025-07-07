@@ -14,6 +14,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
+import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.StackManager;
 
 public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingListView> implements ISceneTerminalParking {
@@ -37,7 +38,10 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
 
     @Override
     public void closeSearch() {
-        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(mMapTypeId.name());
+        if (baseFragment != null) {
+            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        }
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_PARK);
     }
 

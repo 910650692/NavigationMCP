@@ -418,6 +418,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             //1064667，地图点击详情页完全展示后，再通知地图显示“回车位”按钮
             mScreenViewModel.NotifyMapTimer();
         }
+        if (mScreenViewModel != null && mPoiType != AutoMapConstant.PoiType.POI_MAP_CLICK
+                && mPoiType != AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
+            //非地图选点和自车位点击事件，不用扎PoiLabel标。隐藏扎标
+            mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
+        }
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty() || ConvertUtils.isEmpty(mScreenViewModel)) {
             //ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             return;

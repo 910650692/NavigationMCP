@@ -79,10 +79,10 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
 
     /**
      * 图层点击事件回调
-     * @param index 点击下标
+     * @param poiInfoEntity 点击下标
      */
-    public void onMarkClickCallBack(final int index) {
-        mView.onMarkClickCallBack(index);
+    public void onMarkClickCallBack(final PoiInfoEntity poiInfoEntity) {
+        mView.onMarkClickCallBack(poiInfoEntity);
     }
 
     /**

@@ -179,7 +179,7 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
 
     @Override
     public void onMarkClickCallBack(final PoiInfoEntity poiInfoEntity) {
-//        mViewModel.onMarkClickCallBack(index);
+        mViewModel.onMarkClickCallBack(poiInfoEntity);
     }
 
     /**

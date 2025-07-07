@@ -361,7 +361,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                                 final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
                                 poiInfoEntity.setMIsVisible(i <= size - 1);
                             }
-                            mScreenViewModel.updatePoiMarker(poiInfoEntities, 0);
+                            mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, true);
                         }
                         return;
                     }
@@ -373,7 +373,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                                 poiInfoEntity.setMIsVisible(i >= firstVisiblePosition && i <= lastVisiblePosition);
                             }
                         }
-                        mScreenViewModel.updatePoiMarker(poiInfoEntities, 0);
+                        mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, true);
                     }
                 }
             }
@@ -929,7 +929,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             if (ConvertUtils.equals(name, "RouteFragment")) {
                 mScreenViewModel.addPoiMarker(mResultEntity.getPoiList(), 0);
             } else {
-                mScreenViewModel.updatePoiMarker(mResultEntity.getPoiList(), 0);
+                updatePoiMarkerVisibleState();
             }
         }
     }
@@ -1181,19 +1181,24 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     /**
-     * 图层点击事件回调
-     * @param index 点击下标
+     * 图层点击事件回调,点击后更新扎标状态
+     * @param poiInfoEntity 点击下标
      */
-    public void onMarkClickCallBack(final int index) {
-        if (mResultEntity != null) {
-            final List<PoiInfoEntity> list = mResultEntity.getPoiList();
-            if (!ConvertUtils.isEmpty(list) && index < list.size()) {
-                final Bundle bundle = new Bundle();
-                final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
-                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, list.get(index));
-                bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
-                addPoiDetailsFragment((BaseFragment) fragment, bundle);
+    public void onMarkClickCallBack(final PoiInfoEntity poiInfoEntity) {
+        if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
+            final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
+            int index = 0;
+            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                // 遍历所有可见的item
+                for (int i = 0; i < poiInfoEntities.size(); i++) {
+                    if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                        if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntity.getPid())) {
+                            index = i;
+                        }
+                    }
+                }
             }
+            mScreenViewModel.setSelectIndex(poiInfoEntity, index, mSearchType);
         }
 
 

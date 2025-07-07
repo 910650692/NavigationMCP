@@ -330,8 +330,8 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      * @param poiInfoEntities 搜索结果列表
      * @param index 选中下标
      */
-    public void updatePoiMarker(final List<PoiInfoEntity> poiInfoEntities, final int index) {
-        mSearchPackage.updatePoiMarker(poiInfoEntities, index);
+    public void updatePoiMarker(final List<PoiInfoEntity> poiInfoEntities, final int index, final boolean isNeedPreview) {
+        mSearchPackage.updatePoiMarker(poiInfoEntities, index, isNeedPreview);
     }
 
     /**
