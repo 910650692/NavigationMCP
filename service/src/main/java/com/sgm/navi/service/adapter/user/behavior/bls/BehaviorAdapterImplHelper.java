@@ -65,8 +65,7 @@ public class BehaviorAdapterImplHelper implements IBehaviorServiceObserver, ISyn
         mBehaviorService.addObserver(this);
 
         setLoginInfo();
-
-        setConfig(false);
+        setConfig(true);
     }
 
     /**

@@ -665,6 +665,9 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
     @Override
     public void notifyQRCodeLoginConfirm(final int errCode, final int taskId, final AccountUserInfo result) {
         loginStatusChanged();
+        for (BehaviorCallBack observer : mCallBacks) {
+            observer.notifyLoginStatusChanged();
+        }
     }
 
 
