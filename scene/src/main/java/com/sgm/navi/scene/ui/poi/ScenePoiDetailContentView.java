@@ -1929,7 +1929,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 if (poiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
                     //地图选点不需要展示电话和营业时间界面
                     mViewBinding.poiContentLayout.setVisibility(View.GONE);
-                    mViewBinding.scenePoiDetailsBottomView.stlPhone.setVisibility(View.GONE);
+//                    mViewBinding.scenePoiDetailsBottomView.stlPhone.setVisibility(View.GONE);
                     mViewBinding.poiDetailsSubLine.setVisibility(View.GONE);
                 }
                 break;
