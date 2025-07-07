@@ -260,7 +260,6 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
 
     public void showPreview(MapType mapTypeId, PreviewParams previewParams, DynamicLevelMode dynamicLevelMode) {
         Logger.d(TAG, "showPreview");
-        mLayerPackage.setFollowMode(mapTypeId, false);
         //锁住动态比例尺
         mLayerPackage.setDynamicLevelLock(mapTypeId, dynamicLevelMode, true);
         //锁住旋转角
@@ -325,7 +324,6 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
 
     public void exitPreview(MapType mapTypeId, DynamicLevelMode dynamicLevelMode) {
         Logger.d(TAG, "exitPreview");
-        mLayerPackage.setFollowMode(mapTypeId, true);
         mLayerPackage.setDynamicLevelLock(mapTypeId, dynamicLevelMode, false);
         setLockMapRollAngle(mapTypeId, false);
         mMapAdapter.exitPreview(mapTypeId);

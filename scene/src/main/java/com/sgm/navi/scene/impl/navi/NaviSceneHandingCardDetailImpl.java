@@ -112,11 +112,13 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
         } catch (Exception e) {
             Logger.e(TAG, "showPreview e:", e.getMessage());
         }
+        mLayerPackage.setFollowMode(mMapTypeId, false);
         mapPackage.showPreview(mMapTypeId, true, getParkingBound(), DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
 
     public void exitPreview() {
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
+        mLayerPackage.setFollowMode(mMapTypeId, true);
         mSearchPackage.clearLabelMark();
         mapPackage.exitPreview(mMapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
         Logger.i(TAG, "exitPreview success!");
