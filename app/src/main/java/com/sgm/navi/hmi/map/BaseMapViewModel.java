@@ -921,49 +921,51 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             limitDriverVisibility.set(false);
             return;
         }
-        this.routeRestrictionParam = param;
-        this.restrictedArea = param.getMRestrictedArea();
-        // 导航中或者算路中不显示
-        boolean statusVis = mModel.getNaviStatus() == NaviStatus.NaviStatusType.NO_STATUS || mModel.getNaviStatus() == NaviStatus.NaviStatusType.CRUISE;
-        Logger.d(TAG, "statusVis:" , statusVis, "restrictedArea:" , (restrictedArea != null));
+        ThreadManager.getInstance().execute(() -> {
+            routeRestrictionParam = param;
+            restrictedArea = param.getMRestrictedArea();
+            // 导航中或者算路中不显示
+            boolean statusVis = mModel.getNaviStatus() == NaviStatus.NaviStatusType.NO_STATUS || mModel.getNaviStatus() == NaviStatus.NaviStatusType.CRUISE;
+            Logger.d(TAG, "statusVis:" , statusVis, "restrictedArea:" , (restrictedArea != null));
 
-        boolean flag = false;
-        if (this.restrictedArea == null
-                || this.restrictedArea.getMRestrictedAreaDetails() == null
-                || this.restrictedArea.getMRestrictedAreaDetails().isEmpty()
-                || this.restrictedArea.getMRestrictedAreaDetails().get(0) == null
-                || this.restrictedArea.getMRestrictedAreaDetails().get(0).isEmpty()) {
-            Logger.d(TAG, "limit info is null");
-            limitDriverVisibility.set(false);
-            return;
-        }
-        for (RestrictedAreaDetail restrictedAreaDetail : this.restrictedArea.getMRestrictedAreaDetails().get(0)) {
-            if (restrictedAreaDetail.getMEffect() == 1) {
-                flag = true;
-                break;
+            boolean flag = false;
+            if (restrictedArea == null
+                    || restrictedArea.getMRestrictedAreaDetails() == null
+                    || restrictedArea.getMRestrictedAreaDetails().isEmpty()
+                    || restrictedArea.getMRestrictedAreaDetails().get(0) == null
+                    || restrictedArea.getMRestrictedAreaDetails().get(0).isEmpty()) {
+                Logger.d(TAG, "limit info is null");
+                limitDriverVisibility.set(false);
+                return;
             }
-        }
-        if (flag) {
-            limitDriverTitle.set(getApplication().getString(R.string.limit_today_drive));
-            limitEndNumVisibility.set(false);
-            limitEndNumOne.set("");
-            limitEndNumTwo.set("");
-        } else {
-            mModel.getCurrentCityLimitEndNumber();
-        }
-        limitDriverVisibility.set(restrictedArea != null && statusVis);
+            for (RestrictedAreaDetail restrictedAreaDetail : restrictedArea.getMRestrictedAreaDetails().get(0)) {
+                if (restrictedAreaDetail.getMEffect() == 1) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (flag) {
+                limitDriverTitle.set(getApplication().getString(R.string.limit_today_drive));
+                limitEndNumVisibility.set(false);
+                limitEndNumOne.set("");
+                limitEndNumTwo.set("");
+            } else {
+                mModel.getCurrentCityLimitEndNumber();
+            }
+            limitDriverVisibility.set(restrictedArea != null && statusVis);
 
-        if (restrictedArea != null && statusVis) {
-            //首页消息的显示逻辑  发送package消息
-            final boolean showSameDayLimit = mModel.showSameDayLimit();
-            if (showSameDayLimit) {
-                Logger.i("showSameDayLimit", "showSameDayLimit" , statusVis);
-                mModel.managerMessage(new MessageCenterInfo(MessageCenterType.ROAD_LIMIT,
-                        ResourceUtils.Companion.getInstance().getString(R.string.message_center_check), 0,
-                        ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),
-                        "", new Date(), 0, null));
+            if (restrictedArea != null && statusVis) {
+                //首页消息的显示逻辑  发送package消息
+                final boolean showSameDayLimit = mModel.showSameDayLimit();
+                if (showSameDayLimit) {
+                    Logger.i("showSameDayLimit", "showSameDayLimit" , statusVis);
+                    mModel.managerMessage(new MessageCenterInfo(MessageCenterType.ROAD_LIMIT,
+                            ResourceUtils.Companion.getInstance().getString(R.string.message_center_check), 0,
+                            ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),
+                            "", new Date(), 0, null));
+                }
             }
-        }
+        });
     }
 
     /**

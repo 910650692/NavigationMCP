@@ -70,6 +70,7 @@
             android:launchMode="singleInstance"
             android:resizeableActivity="true"
             android:windowSoftInputMode="adjustPan"
+            android:hardwareAccelerated="false"
             tools:ignore="DiscouragedApi" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

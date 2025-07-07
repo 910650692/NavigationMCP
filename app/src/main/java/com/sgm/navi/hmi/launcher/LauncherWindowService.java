@@ -341,14 +341,15 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     }
 
     private void changeUiTypeOnNaviStatusChanged() {
-        Logger.i(TAG, "changeUiTypeOnNaviStatusChanged", ConvertUtils.isNull(mBinding), ConvertUtils.isNull(mView));
+        if (ConvertUtils.isNull(mBinding) || ConvertUtils.isNull(mView)) {
+            Logger.i(TAG, "changeUiTypeOnNaviStatusChanged mBinding || mView  is null");
+            return;
+        }
+        final boolean isNavigating = isOnNavigating();
+        MapStateManager.getInstance().vrSendLauncherShow(isNavigating);
         ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isNull(mBinding) && !ConvertUtils.isNull(mView)) {
-                final boolean isNavigating = isOnNavigating();
-                mBinding.cardTbtView.setVisibility(isNavigating ? View.VISIBLE : View.GONE);
-                mBinding.cardNaviView.setVisibility((isNavigating || FloatViewManager.getInstance().isBiZhiDeskBg()) ? View.GONE : View.VISIBLE);
-                MapStateManager.getInstance().vrSendLauncherShow(isNavigating);
-            }
+            mBinding.cardTbtView.setVisibility(isNavigating ? View.VISIBLE : View.GONE);
+            mBinding.cardNaviView.setVisibility((isNavigating || FloatViewManager.getInstance().isBiZhiDeskBg()) ? View.GONE : View.VISIBLE);
         });
     }
 

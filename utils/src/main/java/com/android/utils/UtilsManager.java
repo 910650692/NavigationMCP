@@ -19,7 +19,7 @@ public class UtilsManager {
         FileUtils.getInstance().initFile(context);
         NetWorkUtils.Companion.getInstance().init(context);
         OkHttpUtils.Companion.getInstance().init(context);
-        ToastUtils.Companion.init(context);
+        ToastUtils.Companion.getInstance().init(context);
         ScreenUtils.Companion.getInstance().init(context);
         ResourceUtils.Companion.getInstance().init(context);
         DeviceUtils.mApplication = context;
@@ -33,7 +33,7 @@ public class UtilsManager {
         ThreadManager.getInstance().closePool();
         FileUtils.getInstance().close();
         NetWorkUtils.Companion.getInstance().clearCache();
-        ToastUtils.Companion.destroyInstance();
+        ToastUtils.Companion.getInstance().destroy();
         ScreenUtils.Companion.getInstance().clearCache();
         ResourceUtils.Companion.getInstance().clearCache();
         DeviceUtils.mApplication = null;

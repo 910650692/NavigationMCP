@@ -35,7 +35,6 @@ import com.sgm.navi.scene.api.route.ISceneRouteSearchRefreshItemCallBack;
 import com.sgm.navi.scene.api.route.ISceneRouteSelectCallBack;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
-import com.sgm.navi.scene.ui.search.RouteRequestLoadingDialog;
 import com.sgm.navi.scene.ui.search.RouteSearchLoadingDialog;
 import com.sgm.navi.scene.ui.search.SearchConfirmDialog;
 import com.sgm.navi.service.AppCache;
@@ -85,8 +84,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         , ISceneRouteGasStationChargeSelectCallBack
         , ISceneRouteSearchChargeRefreshItemCallBack
         , View.OnTouchListener
-        , RouteRequestLoadingDialog.OnCloseClickListener
-        , RouteSearchLoadingDialog.OnCloseClickListener {
+        , RouteSearchLoadingDialog.OnCloseClickListener
+        , IBaseDialogClickListener {
 
     private static final String TAG = BaseRouteViewModel.class.getSimpleName();
 
@@ -2036,7 +2035,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
     @Override
-    public void onClose() {
+    public void onCancelClick() {
         mModel.cancelRoute();
         mView.progressUIClose();
     }
@@ -2070,6 +2069,5 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 mView.setDetailsResult(routeLineDetail);
             }
         });
-
     }
 }

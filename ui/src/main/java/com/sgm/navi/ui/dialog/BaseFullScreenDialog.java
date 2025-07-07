@@ -30,7 +30,7 @@ public abstract class BaseFullScreenDialog<V extends ViewDataBinding> extends Al
         mViewBinding = initLayout();
     }
 
-    protected void setDialogClickListener(final IBaseDialogClickListener dialogClickListener) {
+    public void setDialogClickListener(final IBaseDialogClickListener dialogClickListener) {
         this.mDialogClickListener = dialogClickListener;
     }
 

@@ -176,10 +176,18 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onShowCrossImage(final CrossImageInfo info) {
+        if(null == info) {
+            Logger.i(TAG, "CrossImageInfo is null");
+            return;
+        }
         final CrossImageEntity naviImageInfo = NaviDataFormatHelper.forMatImageInfo(info);
-        Logger.i(TAG, "onShowCrossImage naviImageInfo:",
-                (naviImageInfo == null ? "null" : naviImageInfo.getDistance()));
-        boolean isHaveNaviImageInfo = naviImageInfo != null && naviImageInfo.getDistance() > 0;
+        if(null == naviImageInfo){
+            Logger.i(TAG, "naviImageInfo is null:");
+            return;
+        }
+        long distance = naviImageInfo.getDistance();
+        Logger.i(TAG, "onShowCrossImage naviImageInfo:", distance);
+        boolean isHaveNaviImageInfo = distance > 0;
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -449,7 +457,11 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onPlayTTS(final SoundInfo info) {
-        Logger.d(TAG, "onPlayTTS : ", (info == null ? "null" : info.text));
+        if(null == info) {
+            Logger.d(TAG, "onPlayTTS info is null");
+            return;
+        }
+        Logger.d(TAG, "onPlayTTS : ",info.text);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             SoundInfoEntity soundInfoEntity =  NaviDataFormatHelper.formatSoundInfo(info);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
@@ -504,6 +516,12 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onUpdateElecVehicleETAInfo(ArrayList<ElecVehicleETAInfo> elecVehicleETAInfo) {
         // 透出电动车ETA信息。透出电动车ETA信息，仅在线支持。一分钟回调一次
+        if(ConvertUtils.isEmpty(elecVehicleETAInfo)){
+            Logger.i(TAG, "onUpdateElectVehicleETAInfo is null");
+            return;
+        }
+        int VehicleEtaListSize = elecVehicleETAInfo.size();
+        Logger.i(TAG, "onUpdateElectVehicleETAInfo", VehicleEtaListSize);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             final List<FyElecVehicleETAInfo> desObj = NaviDataFormatHelper.convertVehicleInfo(elecVehicleETAInfo);
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {

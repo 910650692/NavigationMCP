@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
@@ -725,15 +726,17 @@ public final class MapStateManager {
      * @param isShow true:显示  false:不显示.
      */
     public void vrSendLauncherShow(final boolean isShow) {
-        if (Logger.openLog) {
-            Logger.d(IVrBridgeConstant.TAG, "vrSendLauncherShow: ", isShow);
-        }
-        if (!mMapStateInitiated) {
-            Logger.w(IVrBridgeConstant.TAG, "MapStateManager not initiated");
-            return;
-        }
-        mBuilder.setIsDisplayInLauncher(isShow);
-        AMapStateUtils.saveMapState(mBuilder.build());
+        ThreadManager.getInstance().execute(() -> {
+            if (Logger.openLog) {
+                Logger.d(IVrBridgeConstant.TAG, "vrSendLauncherShow: ", isShow);
+            }
+            if (!mMapStateInitiated) {
+                Logger.w(IVrBridgeConstant.TAG, "MapStateManager not initiated");
+                return;
+            }
+            mBuilder.setIsDisplayInLauncher(isShow);
+            AMapStateUtils.saveMapState(mBuilder.build());
+        });
     }
 
     /**

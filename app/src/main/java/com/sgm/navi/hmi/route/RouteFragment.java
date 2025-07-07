@@ -47,6 +47,7 @@ import com.sgm.navi.scene.databinding.ScenePoiDetailsChargingStationViewBinding;
 import com.sgm.navi.scene.databinding.ScenePoiDetailsGasStationViewBinding;
 import com.sgm.navi.scene.databinding.ScenePoiDetailsServiceAreaViewBinding;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
+import com.sgm.navi.scene.dialog.RouteLoadingDialog;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.search.SearchFragmentFactory;
@@ -60,7 +61,6 @@ import com.sgm.navi.scene.ui.route.SceneRoutePreferenceView;
 import com.sgm.navi.scene.ui.route.SceneRouteResultListView;
 import com.sgm.navi.scene.ui.route.SceneRouteSearchChargeRefreshListView;
 import com.sgm.navi.scene.ui.route.SceneRouteSearchRefreshListView;
-import com.sgm.navi.scene.ui.search.RouteRequestLoadingDialog;
 import com.sgm.navi.scene.ui.search.RouteSearchLoadingDialog;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.BuildConfig;
@@ -109,7 +109,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private final int mMaxWidthWithoutBatter= 530;
     private static final int SWIPE_THRESHOLD = 50;
     private static final int TIPS_DELAY = 8000;
-    private RouteRequestLoadingDialog mRouteRequestLoadingDialog;
+    private RouteLoadingDialog mRouteRequestLoadingDialog;
     private RouteSearchLoadingDialog mSearchLoadingDialog;
     private RouteViaPointAdapter mRouteViaPointAdapter;
     private RoutePOIIconAdapter mPoiIconAdapter;
@@ -1328,8 +1328,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         }
         if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
             if (mRouteRequestLoadingDialog == null) {
-                mRouteRequestLoadingDialog = new RouteRequestLoadingDialog(context);
-                mRouteRequestLoadingDialog.setOnCloseClickListener(mViewModel);
+                mRouteRequestLoadingDialog = new RouteLoadingDialog(context);
+                mRouteRequestLoadingDialog.setDialogClickListener(mViewModel);
             }
             if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
                 mRouteRequestLoadingDialog.show();

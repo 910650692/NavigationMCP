@@ -1051,7 +1051,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * @param listener OnNetStatusChangeListener
      */
     public void addOnNetStatusChangeListener(final OnNetStatusChangeListener listener) {
-        Logger.i(TAG, "addOnNetStatusChangeListener listener = ", listener);
         if (listener != null && !mNetStatusChangeListeners.contains(listener)) {
             mNetStatusChangeListeners.add(listener);
         }
@@ -1061,7 +1060,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * @param listener OnNetStatusChangeListener
      */
     public void removeOnNetStatusChangeListener(final OnNetStatusChangeListener listener) {
-        Logger.i(TAG, "removeOnNetStatusChangeListener listener = ", listener);
         mNetStatusChangeListeners.remove(listener);
     }
 
@@ -1104,25 +1102,25 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onNetUnavailable() {
-        Logger.i(TAG, "onNetUnavailable");
+        Logger.d(TAG, "onNetUnavailable");
         onNetStatusChange();
     }
 
     @Override
     public void onNetBlockedStatusChanged() {
-        Logger.i(TAG, "onNetBlockedStatusChanged");
+        Logger.d(TAG, "onNetBlockedStatusChanged");
         onNetStatusChange();
     }
 
     @Override
     public void onNetLosing() {
-        Logger.i(TAG, "onNetLosing");
+        Logger.d(TAG, "onNetLosing");
         onNetStatusChange();
     }
 
     @Override
     public void onNetLinkPropertiesChanged() {
-        Logger.i(TAG, "onNetLinkPropertiesChanged");
+        Logger.d(TAG, "onNetLinkPropertiesChanged");
         onNetStatusChange();
     }
 
@@ -1138,7 +1136,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      */
     @Override
     public void onUpdateElectVehicleETAInfo(List<FyElecVehicleETAInfo> infos) {
-        IGuidanceObserver.super.onUpdateElectVehicleETAInfo(infos);
         Logger.i(TAG, "onUpdateElectVehicleETAInfo");
         if (mTipManager != null) {
             mTipManager.onUpdateElectVehicleETAInfo(infos);

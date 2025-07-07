@@ -1,8 +1,9 @@
-package com.sgm.navi.scene.ui.search;
+package com.sgm.navi.scene.dialog;
 
 import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -11,10 +12,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
+import android.widget.TextView;
 
+import com.android.utils.ResourceUtils;
 import com.sgm.navi.scene.R;
-import com.sgm.navi.scene.databinding.LayoutSearchLoadingBinding;
-import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
+import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
+
 
 /**
  * @author pengbai
@@ -22,24 +25,39 @@ import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
  * @Description: 搜索加载框
  * @CreateDate: $ $
  */
-public class SearchLoadingDialog extends Dialog {
+public class RouteLoadingDialog extends Dialog {
     private ValueAnimator mAnimator;
     private float mAngelTemp = 0;
+    private TextView mTvMessage;
+    protected IBaseDialogClickListener mDialogClickListener;
 
-    public SearchLoadingDialog(final Context context) {
+    public RouteLoadingDialog(final Context context) {
         super(context);
+    }
+
+    public void setDialogClickListener(final IBaseDialogClickListener dialogClickListener) {
+        this.mDialogClickListener = dialogClickListener;
+    }
+
+    /**
+     * 显示离线算路文言
+     */
+    public void showOfflineRouting() {
+        if (null != mTvMessage)
+            mTvMessage.setText(ResourceUtils.Companion.getInstance().getText(R.string.route_offline_loading));
     }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_search_loading);
+        setContentView(R.layout.layout_route_loading);
+        mTvMessage = findViewById(R.id.tv_message);
         initLoadAnim(findViewById(R.id.iv_loading));
-        findViewById(R.id.iv_close).setOnClickListener(v -> {
-            hide();
+        findViewById(R.id.iv_close).setOnClickListener(v -> dismiss());
+        setOnDismissListener(dialog -> {
+            if (null != mDialogClickListener) mDialogClickListener.onCancelClick();
         });
     }
-
 
     @Override
     protected void onStop() {

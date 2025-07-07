@@ -556,7 +556,8 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
         if (bean == null) {
             return null;
         }
-        Logger.i(TAG, "getGpsTrackPoint -> " + GsonUtils.toJson(bean));
+        Logger.i(TAG, "mF64Longitude：", bean.getF64Longitude(), "mF64Latitude：",
+                bean.getF64Latitude(), "F32Speed: ", bean.getF32Speed());
         final GpsTrackPoint gpsTrackPoint = new GpsTrackPoint();
         gpsTrackPoint.f64Latitude = bean.getF64Latitude();
         gpsTrackPoint.f64Longitude = bean.getF64Longitude();

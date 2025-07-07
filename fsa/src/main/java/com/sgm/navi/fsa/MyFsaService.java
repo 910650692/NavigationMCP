@@ -1034,28 +1034,30 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
         @Override
         public void onNaviStatusChange(final String naviStatus) {
-            if (mChargeStationSF != null) {
-                mChargeStationSF.cancel(true);
-                mChargeStationSF = null;
-            }
-            if (mParkingLotSF != null) {
-                mParkingLotSF.cancel(true);
-                mParkingLotSF = null;
-            }
-            if (mServiceSF != null) {
-                mServiceSF.cancel(true);
-                mServiceSF = null;
-            }
-            judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_NAVIGATION, NaviStatus.NaviStatusType.NAVING);
-            judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_LIGHT_NAVIGATION, NaviStatus.NaviStatusType.LIGHT_NAVING);
-            judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_CRUISE, NaviStatus.NaviStatusType.CRUISE);
-            sendCurrentNaviStatus(naviStatus);
-            if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus)) {
-                sendDestinationInfo();
-                sendEvent(FsaConstant.FsaFunction.ID_PANEL_STATUS, FsaConstant.FsaValue.STRING_ONE);
-            } else {
-                sendEvent(FsaConstant.FsaFunction.ID_PANEL_STATUS, FsaConstant.FsaValue.STRING_ZERO);
-            }
+            ThreadManager.getInstance().execute(() -> {
+                if (mChargeStationSF != null) {
+                    mChargeStationSF.cancel(true);
+                    mChargeStationSF = null;
+                }
+                if (mParkingLotSF != null) {
+                    mParkingLotSF.cancel(true);
+                    mParkingLotSF = null;
+                }
+                if (mServiceSF != null) {
+                    mServiceSF.cancel(true);
+                    mServiceSF = null;
+                }
+                judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_NAVIGATION, NaviStatus.NaviStatusType.NAVING);
+                judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_LIGHT_NAVIGATION, NaviStatus.NaviStatusType.LIGHT_NAVING);
+                judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_CRUISE, NaviStatus.NaviStatusType.CRUISE);
+                sendCurrentNaviStatus(naviStatus);
+                if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus)) {
+                    sendDestinationInfo();
+                    sendEvent(FsaConstant.FsaFunction.ID_PANEL_STATUS, FsaConstant.FsaValue.STRING_ONE);
+                } else {
+                    sendEvent(FsaConstant.FsaFunction.ID_PANEL_STATUS, FsaConstant.FsaValue.STRING_ZERO);
+                }
+            });
         }
     };
 

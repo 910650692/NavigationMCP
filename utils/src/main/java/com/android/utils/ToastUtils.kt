@@ -8,12 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.android.utils.log.Logger
 import com.sgm.navi.burypoint.anno.HookMethod
 import com.sgm.navi.burypoint.bean.BuryProperty
 import com.sgm.navi.burypoint.constant.BuryConstant
 import com.sgm.navi.burypoint.controller.BuryPointController
-import com.google.android.material.snackbar.Snackbar
 
 
 /**
@@ -26,9 +24,8 @@ class ToastUtils private constructor() {
     private var mToast: Toast? = null
     private var mContext: Context? = null
     private var myLopper: Looper? = null
-    private var snackbar: Snackbar? = null
 
-    private fun init(context: Context) {
+    fun init(context: Context) {
         mContext = context
     }
 
@@ -129,11 +126,9 @@ class ToastUtils private constructor() {
     private fun cancelView() {
         mToast?.cancel()
         mToast = null
-        snackbar?.dismiss()
-        snackbar = null
     }
 
-    private fun destroy() {
+    fun destroy() {
         cancelView()
         mContext = null
         myLopper = null
@@ -168,16 +163,6 @@ class ToastUtils private constructor() {
                 instance = createdInstance
                 createdInstance
             }
-        }
-
-        fun init(context: Context) {
-            if(null == instance) getInstance()
-            instance?.init(context)
-        }
-
-        fun destroyInstance() {
-            instance?.destroy()
-            instance = null
         }
     }
 }
