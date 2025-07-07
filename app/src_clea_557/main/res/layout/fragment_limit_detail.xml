@@ -50,7 +50,8 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_loading"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_loading"
