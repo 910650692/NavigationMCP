@@ -509,7 +509,7 @@ public final class SearchResultMapper {
                 .setMLatestChargeTimestamp(searchPoiInfo.chargingStationInfo.latestChargeTimestamp)
                 .setMSearchTimestamp(searchPoiInfo.chargingStationInfo.searchTimestamp);
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "brand is: " + searchPoiInfo.chargingStationInfo.brand_desc
-                    + " ,park_category: " + searchPoiInfo.chargingStationInfo.park_category);
+                    + " ,park_category: " + searchPoiInfo.chargingStationInfo.park_category+" ,current_ele_price: " + searchPoiInfo.chargingStationInfo.current_ele_price);
         for (ChargingPlugInfo chargingPlugInfo : searchPoiInfo.chargingStationInfo.plugsInfo) {
             if (chargingPlugInfo.plugType == AutoMapConstant.PLUG_TYPE_SLOW) {
                 chargeInfo.setSlowVolt(chargingPlugInfo.slowVoltage)
@@ -1138,9 +1138,9 @@ public final class SearchResultMapper {
         final int fastTotal = TextUtils.isEmpty(poiInfo.chargingStationInfo.fast_total) ?
                 0 : Integer.parseInt(poiInfo.chargingStationInfo.fast_total);
         double price = 0;
-        // 充电费用：电费+服务费
+        // 充电费用：电费
         if(!ConvertUtils.isEmpty(poiInfo.chargingStationInfo.currentPrice)){
-            price = poiInfo.chargingStationInfo.currentPrice.charging + poiInfo.chargingStationInfo.currentPrice.service;
+            price = poiInfo.chargingStationInfo.currentPrice.charging;
         }
         final ChargeInfo chargeInfo = new ChargeInfo()
                 .setSlow_free(slowFree)
