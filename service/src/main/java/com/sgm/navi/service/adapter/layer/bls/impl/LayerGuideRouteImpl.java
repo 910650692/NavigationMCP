@@ -448,6 +448,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     /*自动添加的补能站数据*/
     public void updateRouteChargeStation(RouteChargeStationParam routeChargeStation) {
+        Logger.d(TAG, "updateRouteChargeStation");
         getStyleAdapter().updateRouteChargeStation(routeChargeStation);
         getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaChargeStationPoint).updateStyle();
     }
@@ -571,19 +572,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getLayerGuideRouteControl().updatePathArrow();
     }
 
-    //设置路线是否对比模式
-    public void setCompareRouteMode(boolean compareMode) {
-        Logger.d(TAG, getMapType(), "setCompareRouteMode compareMode", compareMode);
-        getLayerGuideRouteControl().setCompareRouteMode(compareMode);
-    }
-
-    //更新电量关键点信息
-    public void updateEnergyKeyInfo(ArrayList<LayerItemRouteEnergyKey> energyKeyInfos) {
-        Logger.d(TAG, getMapType(), "updateEnergyKeyInfo energyKeyInfos", energyKeyInfos);
-        ArrayList<BizEnergyKeyInfo> energyKeyInfosBls = new ArrayList<BizEnergyKeyInfo>();
-        getLayerGuideRouteControl().updateEnergyKeyInfo(energyKeyInfosBls);
-    }
-
     /* 更新Odd信息 */
     public void updateOddInfo(ArrayList<LayerItemRouteOdd> oddInfoList, long pathId) {
         if (ConvertUtils.isEmpty(oddInfoList)) {
@@ -631,54 +619,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getLayerGuideRouteControl().setODDDrawMode(ODDDrawMode.ODDDrawModeStartEndPoint);
         Logger.d(TAG, getMapType(), "updateOddInfo oddInfoList", oddInfoList.size(), " oddInfoListBls ", oddInfoListBls.size());
         getLayerGuideRouteControl().updateOddInfo(oddInfoListBls);
-    }
-
-    //更新避让路线图层
-    public void updateRouteDodgeLine(int groupSegIndex) {
-        Logger.d(TAG, getMapType(), "updateRouteDodgeLine groupSegIndex", groupSegIndex);
-        getLayerGuideRouteControl().updateRouteDodgeLine(groupSegIndex);
-    }
-
-    //更新服务区扎标信息
-    public void updateRouteRestAreaInfo(ArrayList<LayerItemRouteRestArea> restAreaInfos) {
-        Logger.d(TAG, getMapType(), "updateRouteRestAreaInfo restAreaInfos ", restAreaInfos.size());
-        ArrayList<BizRouteRestAreaInfo> restAreaInfosBls = new ArrayList<BizRouteRestAreaInfo>();
-        getLayerGuideRouteControl().updateRouteRestAreaInfo(restAreaInfosBls);
-    }
-
-    //更新途经路扎标信息
-    public void updateRouteViaRoadInfo(ArrayList<LayerItemRouteViaRoad> viaRoadInfos) {
-        Logger.d(TAG, getMapType(), "updateRouteViaRoadInfo viaRoadInfos ", viaRoadInfos.size());
-        ArrayList<BizRouteViaRoadInfo> viaRoadInfosBls = new ArrayList<BizRouteViaRoadInfo>();
-        getLayerGuideRouteControl().updateRouteViaRoadInfo(viaRoadInfosBls);
-    }
-
-    //设置彩虹线绘制范围，用于象限的计算
-    public void updateThreeUrgentInfo(ArrayList<LayerItemRouteThreeUrgent> threeUrgentInfos) {
-        Logger.d(TAG, getMapType(), "updateThreeUrgentInfo threeUrgentInfos ", threeUrgentInfos.size());
-        ArrayList<BizThreeUrgentInfo> threeUrgentInfosBls = new ArrayList<BizThreeUrgentInfo>();
-        getLayerGuideRouteControl().updateThreeUrgentInfo(threeUrgentInfosBls);
-    }
-
-
-    //显示第几个中途点ETA和剩余电量，默认显示第一个(如果等于-1，则显示全部途经点，包括服务器推荐的途经充电站)
-    public void showViaETAByIndex(int viaIndex) {
-        Logger.d(TAG, getMapType(), "showViaETAByIndex");
-        getLayerGuideRouteControl().showViaETAByIndex(viaIndex);
-    }
-
-
-    //设置熟悉路线
-    public void setFamiliarRoute(LayerItemRoutePathInfo pathInfo) {
-        Logger.d(TAG, getMapType(), "setFamiliarRoute");
-        PathInfo pathInfoBls = new PathInfo();
-        getLayerGuideRouteControl().setFamiliarRoute(pathInfoBls);
-    }
-
-    //楼层切换
-    public void setParkFloor(int index, int floor) {
-        Logger.d(TAG, getMapType(), "setParkFloor index ", index, " floor ", floor);
-        getLayerGuideRouteControl().setParkFloor(index, floor);
     }
 
     //初始化动态比例尺

@@ -37,7 +37,6 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     private static final String KEY_SEARCH_POINT_ALONG_WAY_CHARGE = "search_point_along_way_charge";
     private static final String KEY_SEARCH_ALONG_WAY_CHARGE = "search_along_way_charge";
     //终点可停车-自定义停车场扎标
-    private static final String KEY_SEARCH_PARK_ROUTE = "search_park_route";
     private static final String KEY_SEARCH_PARK_POINT = "search_park_point";
     //搜索列表可见数字扎标
     private static final String KEY_SEARCH_LIST_INDEX = "search_list_index";
