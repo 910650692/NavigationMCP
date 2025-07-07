@@ -7,8 +7,10 @@
             android:id="@+id/top_dialog_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="@dimen/dp_22"
-            android:background="@drawable/dialog_shape_bg_msg_top"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:minHeight="@dimen/dp_163"
+            android:paddingHorizontal="@dimen/dp_34"
+            android:paddingVertical="@dimen/dp_34"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -38,10 +40,10 @@
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/top_dialog_content"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_45"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_34"
-                android:maxWidth="707dp"
                 android:ellipsize="end"
+                android:maxWidth="707dp"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/dialog_msg_top_text_color"

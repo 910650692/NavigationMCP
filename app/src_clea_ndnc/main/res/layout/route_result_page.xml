@@ -23,9 +23,10 @@
             android:layout_width="@dimen/dp_613"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
-            android:clickable="true"
+            android:minHeight="@dimen/dp_163"
             android:paddingHorizontal="@dimen/dp_34"
-            android:paddingVertical="@dimen/dp_34">
+            android:paddingVertical="@dimen/dp_34"
+            android:clickable="true">
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_line_info_img_close"
@@ -48,8 +49,8 @@
                 android:layout_marginTop="@dimen/dp_31"
                 android:layout_marginEnd="@dimen/dp_25"
                 android:layout_marginBottom="@dimen/dp_31"
-                android:text="@string/route_along_search"
                 android:gravity="center"
+                android:text="@string/route_along_search"
                 android:textColor="@color/text_route_defult"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,8 +98,9 @@
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_line_tv_title"
                 android:layout_width="@dimen/dp_336"
-                android:layout_height="@dimen/dp_95"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_3"
+                android:layout_marginTop="@dimen/dp_29"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
