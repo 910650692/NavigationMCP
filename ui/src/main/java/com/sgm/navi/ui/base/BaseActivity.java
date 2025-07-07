@@ -130,7 +130,6 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle) {
-        onFragmentSizeChanged();
         FragmentIntent.addFragment(mScreenId, onFragmentId(), getSupportFragmentManager(),
                 fragment, bundle);
         if (mStackManager.isFragmentStackNull(mScreenId)) {
@@ -138,11 +137,11 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter(bundle);
         }
+        onFragmentSizeChanged();
     }
 
     @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle, boolean isHideCurFragment) {
-        onFragmentSizeChanged();
         FragmentIntent.addFragment(mScreenId, onFragmentId(), getSupportFragmentManager(),
                 fragment, bundle, isHideCurFragment);
         if (mStackManager.isFragmentStackNull(mScreenId)) {
@@ -150,6 +149,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter(bundle);
         }
+        onFragmentSizeChanged();
     }
 
     @Override
@@ -161,6 +161,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter();
         }
+        onFragmentSizeChanged();
     }
 
     @Override
@@ -180,6 +181,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
             onMoveMapCenter();
         }
+        onFragmentSizeChanged();
     }
 
     @Override
@@ -200,6 +202,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
             onMoveMapCenter();
         }
+        onFragmentSizeChanged();
     }
 
     @Override
@@ -210,11 +213,13 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter();
         }
+        onFragmentSizeChanged();
     }
 
     @Override
     public void closeAllFragmentUpRoute() {
         FragmentIntent.closeAllFragmentUpRoute(mScreenId, getSupportFragmentManager());
+        onFragmentSizeChanged();
     }
 
     @Override
@@ -235,6 +240,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
             onMoveMapCenter();
         }
+        onFragmentSizeChanged();
     }
 
     @Override
@@ -245,12 +251,14 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter();
         }
+        onFragmentSizeChanged();
     }
 
     @Override
     public void closeAllFragmentAndSearchView() {
         FragmentIntent.closeAllFragment(mScreenId, getSupportFragmentManager());
         onMoveMapCenter();
+        onFragmentSizeChanged();
     }
 
     @Override

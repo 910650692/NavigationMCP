@@ -454,7 +454,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onFragmentSizeChanged();
         mViewModel.stopCruise();
         setMapFocusable(false);
-        FloatViewManager.getInstance().hideAllCardWidgets(true);
+        FloatViewManager.getInstance().showAllCardWidgetsAfterFragmentSizeChanged();
     }
 
     public void setMapFocusable(boolean b) {

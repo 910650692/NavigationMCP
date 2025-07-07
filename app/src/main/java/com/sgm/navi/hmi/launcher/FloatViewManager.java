@@ -23,6 +23,8 @@ import com.sgm.navi.service.AppCache;
 import com.patac.launcher.ILauncherCallback;
 import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
+import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.vrbridge.MapStateManager;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -117,6 +119,29 @@ public class FloatViewManager {
         mContentResolver = AppCache.getInstance().getMApplication().getContentResolver();
         mContentResolver.registerContentObserver(uri, true, observer);
         getDesktopMode();
+    }
+
+    /**
+     * 容器里面fragment数量发生改变
+     */
+    public void showAllCardWidgetsAfterFragmentSizeChanged() {
+        final boolean isEmpty = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <=0 ;
+        Logger.d(TAG, "showAllCardWidgetsAfterFragmentSizeChanged", isEmpty);
+        if (!isNaviDeskBg()) return;
+        if (isEmpty) {
+            showAllCardWidgets();
+        } else {
+            hideAllCardWidgets(false);
+        }
+    }
+
+    /***
+     * 地图触摸,隐藏小卡片
+     */
+    public void hideWidgetsOnMapTouch() {
+        Logger.d(TAG, "hideWidgetsOnMapTouch");
+        if (!isNaviDeskBg()) return;
+        hideAllCardWidgets(StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0);
     }
 
     private static final class Holder {

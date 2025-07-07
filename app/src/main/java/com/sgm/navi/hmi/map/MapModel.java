@@ -850,7 +850,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     private void showOrHideWidgetsOnImersiveStatusChanged(ImersiveStatus currentImersiveStatus) {
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
-            FloatViewManager.getInstance().hideAllCardWidgets(true);
+            FloatViewManager.getInstance().hideWidgetsOnMapTouch();
         }
     }
 
