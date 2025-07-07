@@ -627,6 +627,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         if (callback != null) {
             Logger.d(TAG, mapType, " onMapLoadSuccess");
             callback.onMapLoadSuccess(mapType);
+            getMapview().getLayerMgr().updateStyle();
         }
     }
 

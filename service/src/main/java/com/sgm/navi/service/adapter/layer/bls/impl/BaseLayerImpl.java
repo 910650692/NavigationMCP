@@ -184,13 +184,13 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     @Override
     public boolean getCustomTexture(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, CustomTextureParam customTexture) {
         boolean result = super.getCustomTexture(layer, item, styleInfo, customTexture);
+        customTexture.attrs.isNightForAsvg = mapView.getOperatorStyle().getMapStyle().time == MapStyleTime.MapTimeNight;
         if (getStyleAdapter() != null) {
             List<CustomUpdatePair> customUpdatePairs = styleAdapter.updateTextureUpdatePair(item);
             if (!customUpdatePairs.isEmpty()) {
                 customTexture.updateList.addAll(customUpdatePairs);
             }
             customTexture.cmbFileInfo.isMergeRes = !styleAdapter.isFromCardImagesRes(item);
-            customTexture.attrs.isNightForAsvg = mapView.getOperatorStyle().getMapStyle().time == MapStyleTime.MapTimeNight;
             if (!customTexture.cmbFileInfo.isMergeRes) {
                 Logger.e(TAG, getClass().getSimpleName(), " ", mapType, " 使用 自定义 图片资源  图层 :", layer.getName(), " );图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType());
             }
@@ -201,6 +201,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     @Override
     public boolean updateCustomTexture(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, CustomUpdateParam updateParam) {
         boolean result = super.updateCustomTexture(layer, item, styleInfo, updateParam);
+        updateParam.isNightForAsvg = mapView.getOperatorStyle().getMapStyle().time == MapStyleTime.MapTimeNight;
         if (getStyleAdapter() != null) {
             List<CustomUpdatePair> customUpdatePairs = getStyleAdapter().updateTextureUpdatePair(item);
             if (!customUpdatePairs.isEmpty()) {
