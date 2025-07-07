@@ -115,6 +115,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private boolean mRestrictionLabel = false;
     private boolean mWeatherLabel = false;
     private boolean mRestAreaLabel = false;
+    private int mSearchLoadingType = AutoMapConstant.RouteSearchType.NULL;
 
     public RouteModel() {
         mLayerPackage = LayerPackage.getInstance();
@@ -203,6 +204,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
         ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteWeather(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex()));
         if (!ConvertUtils.isEmpty(mViewModel)) {
+            mSearchLoadingType = AutoMapConstant.RouteSearchType.SearchWeather;
             mViewModel.showSearchProgressUI();
         }
     }
@@ -226,6 +228,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         clearSearchLabel();
         ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteRestArea(getCurrentIndex()));
         if (!ConvertUtils.isEmpty(mViewModel)) {
+            mSearchLoadingType = AutoMapConstant.RouteSearchType.SearchRestArea;
             mViewModel.showSearchProgressUI();
         }
     }
@@ -259,6 +262,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             }
             showRestArea();
             if (!ConvertUtils.isEmpty(mViewModel)) {
+                mSearchLoadingType = AutoMapConstant.RouteSearchType.NULL;
                 mViewModel.hideSearchProgressUI();
             }
             if (ConvertUtils.isEmpty(routeRestAreaDetailsInfos)) {
@@ -306,6 +310,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     || pointType == AutoMapConstant.PointTypeCode.SERVICE_AREA) {
                 final List<String> poiIds = new ArrayList<>();
                 poiIds.add(poiInfoEntity.getPid());
+                mSearchLoadingType = AutoMapConstant.RouteSearchType.SearchRestAreaDetail;
                 mLocalTaskId = mSearchPackage.doLineDeepInfoSearch(ResourceUtils.Companion.getInstance()
                         .getString(R.string.route_search_keyword_service), poiIds);
             } else if (poiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge))
@@ -834,13 +839,22 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         if (ConvertUtils.isEmpty(routeRestAreaParam)) {
             return;
         }
+        if (mSearchLoadingType != AutoMapConstant.RouteSearchType.SearchRestArea) {
+            Logger.d(TAG, "Search Rest Area is cancel");
+            return;
+        }
         mRouteRestAreaInfos = routeRestAreaParam.getMRouteRestAreaInfos();
         setSearchListAndShow();
     }
 
     @Override
     public void onRouteWeatherInfo(final RouteWeatherParam routeWeatherParam) {
+        if (mSearchLoadingType != AutoMapConstant.RouteSearchType.SearchWeather) {
+            Logger.d(TAG, "Search weather is cancel");
+            return;
+        }
         if (!ConvertUtils.isEmpty(mViewModel)) {
+            mSearchLoadingType = AutoMapConstant.RouteSearchType.NULL;
             mViewModel.hideSearchProgressUI();
         }
         showWeatherView(routeWeatherParam);
@@ -989,6 +1003,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteDetails(List<RouteLineSegmentInfo> routeLineDetail) {
+        if (mSearchLoadingType != AutoMapConstant.RouteSearchType.SearchRouteDetail) {
+            Logger.d(TAG, "Search route detail is cancel");
+            return;
+        }
         if (!ConvertUtils.isEmpty(mViewModel)) {
             Logger.i(TAG, "展示路线详情");
             mViewModel.showRouteDetails(routeLineDetail);
@@ -1301,7 +1319,12 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
 
     @Override
 public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+    if (mSearchLoadingType != AutoMapConstant.RouteSearchType.SearchRestAreaDetail) {
+        Logger.d(TAG, "Search Rest Area detail is cancel");
+        return;
+    }
     if (!ConvertUtils.isEmpty(mViewModel)) {
+        mSearchLoadingType = AutoMapConstant.RouteSearchType.NULL;
         mViewModel.hideSearchProgressUI();
     }
     if (ConvertUtils.isEmpty(searchResultEntity)) {
@@ -1313,6 +1336,8 @@ public void onSearchResult(final int taskId, final int errorCode, final String m
     List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
     if (poiList == null || poiList.isEmpty()) {
         Logger.d(TAG, "poiList is empty");
+        ThreadManager.getInstance().postUi(() -> ToastUtils.Companion.getInstance().showCustomToastView(
+                ResourceUtils.Companion.getInstance().getString(R.string.route_error_rest_area_detail)));
         return;
     }
     if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.DEEP_INFO_SEARCH) {
@@ -1358,6 +1383,11 @@ public void onSearchResult(final int taskId, final int errorCode, final String m
     } else if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH
             || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
         final PoiInfoEntity poiInfoEntity = poiList.get(0);
+        if (ConvertUtils.isEmpty(poiInfoEntity)) {
+            ThreadManager.getInstance().postUi(() -> ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.route_error_rest_area_detail)));
+            return;
+        }
         if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(mTaskMap.get(taskId))) {
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.showRouteSearchDetailsUI(mTaskMap.get(taskId), poiInfoEntity, mGasChargeAlongList, mListSearchType);
@@ -1411,5 +1441,13 @@ public void setPoint() {
 
     public void requestRouteDetails(int index) {
         ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteDetails(index));
+    }
+
+    public void setSearchLoadingType(int mSearchLoadingType) {
+        this.mSearchLoadingType = mSearchLoadingType;
+    }
+
+    public int getSearchLoadingType() {
+        return mSearchLoadingType;
     }
 }

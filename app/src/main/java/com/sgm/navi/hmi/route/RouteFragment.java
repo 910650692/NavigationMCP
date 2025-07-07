@@ -1384,6 +1384,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
             if (mSearchLoadingDialog == null) {
                 mSearchLoadingDialog = new RouteSearchLoadingDialog(context);
+                mSearchLoadingDialog.setOnCloseClickListener(mViewModel);
             }
             if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
                 mSearchLoadingDialog.show();

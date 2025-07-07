@@ -403,4 +403,16 @@ public interface AutoMapConstant {
         int COMPANY = 2; // 公司
     }
 
+    @IntDef({RouteSearchType.NULL,
+            RouteSearchType.SearchWeather,
+            RouteSearchType.SearchRestArea,
+            RouteSearchType.SearchRestAreaDetail})
+    @interface RouteSearchType {
+        int NULL = 0; // 其他
+        int SearchWeather = 1; // 天气loading
+        int SearchRestArea = 2; // 服务区loading
+        int SearchRestAreaDetail = 3;// 服务区详情loading
+        int SearchRouteDetail = 4;// 服务区详情loading
+    }
+
 }

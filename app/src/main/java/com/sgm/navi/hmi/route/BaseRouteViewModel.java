@@ -36,6 +36,7 @@ import com.sgm.navi.scene.api.route.ISceneRouteSelectCallBack;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.ui.search.RouteRequestLoadingDialog;
+import com.sgm.navi.scene.ui.search.RouteSearchLoadingDialog;
 import com.sgm.navi.scene.ui.search.SearchConfirmDialog;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
@@ -84,7 +85,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         , ISceneRouteGasStationChargeSelectCallBack
         , ISceneRouteSearchChargeRefreshItemCallBack
         , View.OnTouchListener
-        , RouteRequestLoadingDialog.OnCloseClickListener {
+        , RouteRequestLoadingDialog.OnCloseClickListener
+        , RouteSearchLoadingDialog.OnCloseClickListener {
 
     private static final String TAG = BaseRouteViewModel.class.getSimpleName();
 
@@ -1880,6 +1882,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mView.setAvoidStatusUI(false);
             mCurrentPageHistory.add("1");
             mModel.requestRouteDetails(index);
+            mModel.setSearchLoadingType(AutoMapConstant.RouteSearchType.SearchRouteDetail);
             showSearchProgressUI();
         } else {
             mModel.onRouteSelect(index);
@@ -2038,6 +2041,19 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mView.progressUIClose();
     }
 
+    @Override
+    public void onSearchClose() {
+        int searchType = mModel.getSearchLoadingType();
+        Logger.d(TAG, "onSearchClose " + searchType);
+        mModel.setSearchLoadingType(AutoMapConstant.RouteSearchType.NULL);
+        if (searchType == AutoMapConstant.RouteSearchType.SearchWeather
+                ||searchType == AutoMapConstant.RouteSearchType.SearchRestArea ) {
+            mView.clearSceneTabUI();
+        } else if (searchType== AutoMapConstant.RouteSearchType.SearchRouteDetail) {
+            mCloseDetailsRouteClick.call();
+        }
+    }
+
     public void onReStoreFragment() {
         showNormalRouteUI(false);
         mModel.onReStoreFragment();
@@ -2048,6 +2064,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     public void showRouteDetails(List<RouteLineSegmentInfo> routeLineDetail) {
         ThreadManager.getInstance().postUi(() -> {
+            mModel.setSearchLoadingType(AutoMapConstant.RouteSearchType.NULL);
             mView.hideSearchProgressUI();
             if (!ConvertUtils.isEmpty(routeLineDetail)) {
                 mView.setDetailsResult(routeLineDetail);

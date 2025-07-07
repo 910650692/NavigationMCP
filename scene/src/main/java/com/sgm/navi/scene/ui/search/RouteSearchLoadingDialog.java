@@ -18,6 +18,7 @@ import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
 public class RouteSearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchLoadingBinding> {
     private ValueAnimator mAnimator;
     private float mAngelTemp = 0;
+    private OnCloseClickListener mListener;
 
     public RouteSearchLoadingDialog(final Context context) {
         super(context);
@@ -28,12 +29,19 @@ public class RouteSearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchL
         return LayoutSearchLoadingBinding.inflate(getLayoutInflater());
     }
 
+    public void setOnCloseClickListener(OnCloseClickListener listener) {
+        this.mListener = listener;
+    }
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initLoadAnim(mViewBinding.ivLoading);
         mViewBinding.ivClose.setOnClickListener(v -> {
             dismiss();
+            if (mListener != null) {
+                mListener.onSearchClose();
+            }
         });
     }
 
@@ -111,5 +119,9 @@ public class RouteSearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchL
     public void dismiss() {
         super.dismiss();
         stopAnimator();
+    }
+
+    public interface OnCloseClickListener{
+        void onSearchClose();
     }
 }
