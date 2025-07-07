@@ -386,6 +386,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if (null == mViewModel || !mViewModel.getSdkInitStatus()) {
+            return;
+        }
         if (mViewModel.isSupportSplitScreen()) {
             Logger.d("screen_change_used", newConfig.screenWidthDp);
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
