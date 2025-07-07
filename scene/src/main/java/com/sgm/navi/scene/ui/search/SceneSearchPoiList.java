@@ -448,6 +448,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             updateChargeList();
             mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
             mIsFilterViewShow = false;
+            updateChargeList();
             mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
             if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                 mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), false, mPoiInfoEntity);
@@ -469,6 +470,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             updateChargeList();
             mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
             mIsFilterViewShow = false;
+            updateChargeList();
             mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
             if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
                 mScreenViewModel.aroundSearch(mPageNum, mSearchText, mPoiInfoEntity, String.valueOf(mRange), false);
@@ -1458,6 +1460,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
         updateChargeList();
         mIsFilterViewShow = false;
+        updateChargeList();
         mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
         if(ConvertUtils.isEmpty(mResultEntity.getPoiList())){
             mViewBinding.searchResultNoData.setVisibility(VISIBLE);
@@ -1897,6 +1900,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.routeChargeListAlongWaySure.setVisibility(View.GONE);
             mViewBinding.routeChargeListAlongWayCancel.setVisibility(View.GONE);
         } else {
+            if (mIsFilterViewShow) {
+                return;
+            }
             mViewBinding.routeChargeListAlongWaySure.setVisibility(View.VISIBLE);
             mViewBinding.routeChargeListAlongWayCancel.setVisibility(View.VISIBLE);
         }
