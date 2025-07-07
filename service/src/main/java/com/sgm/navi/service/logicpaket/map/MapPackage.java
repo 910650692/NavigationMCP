@@ -393,6 +393,18 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     }
 
     @Override
+    public void onMove(MapType mapTypeId, long px, long py) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onMove(mapTypeId, px, py);
+                }
+            });
+        }
+    }
+
+    @Override
     public void onMapScaleChanged(MapType mapTypeId, int currentScale) {
         if (callbacks.containsKey(mapTypeId)) {
             callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {

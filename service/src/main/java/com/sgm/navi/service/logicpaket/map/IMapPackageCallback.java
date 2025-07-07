@@ -29,6 +29,8 @@ public interface IMapPackageCallback {
 
     default void onMapMove(MapType mapTypeId, long px, long py, boolean moveEnd) {}
 
+    default void onMove(MapType mapTypeId, long px, long py) {}
+
     default void onMapScaleChanged(MapType mapTypeId, int currentScale) {}
 
     default void onMapLoadSuccess(MapType mapTypeId) {}

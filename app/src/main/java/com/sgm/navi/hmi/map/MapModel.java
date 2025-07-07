@@ -225,6 +225,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private ForecastAddressDialog forecastAddressDialog;
 
+    private boolean isReallyMove = false;
+
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
         mCommonManager = CommonManager.getInstance();
@@ -736,9 +738,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
-        //触控态开始回车位倒计时
-        startSelfParkingTimer();
         // 退出巡航
         stopCruise();
 
@@ -764,18 +763,24 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
+    public void onMapMove(MapType mapTypeId, long px, long py, boolean moveEnd) {
+        if(isReallyMove && moveEnd){
+            isReallyMove = false;
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
+            //move事件，并且move结束，开启回车位倒计时
+            startSelfParkingTimer();
+        }
+    }
+
+    @Override
+    public void onMove(MapType mapTypeId, long px, long py) {
+        isReallyMove = true;
+    }
+
+    @Override
     public void onMapClickPoi(MapType mapTypeId, PoiInfoEntity poiInfo) {
         stopCruise();
         mViewModel.toPoiDetailFragment(poiInfo);
-        //选路页面不显示回自车位
-        Logger.i("onMapClickPoi", NaviStatusPackage.getInstance().getCurrentNaviStatus());
-        if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
-            return;
-        }
-
-        ThreadManager.getInstance().postDelay(() -> {
-            mViewModel.showOrHideSelfParkingView(true);
-        }, 600);
     }
 
     @Override
@@ -798,6 +803,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         Logger.i(TAG, "onNotifyMap: ", eventType);
         if (Objects.requireNonNull(eventType) == MapNotifyType.REFRESH_SELF_PARKING_TIMER) {
             startSelfParkingTimer();
+            if(parkingViewExist()) mViewModel.showOrHideSelfParkingView(true);
         }
     }
 
@@ -860,7 +866,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 || getTopFragment(TrafficEventFragment.class);
     }
 
-    private boolean isOnlyExistTargetFragment(Class<? extends Fragment> targetClass) {
+    public boolean isOnlyExistTargetFragment(Class<? extends Fragment> targetClass) {
         return stackManager.getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) == 1 && getTopFragment(targetClass);
     }
 
@@ -875,10 +881,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private void startSelfParkingTimer() {
         if(Logger.openLog) Logger.d(TAG, "startSelfParkingTimer");
         cancelSelfParkingTimer();
-        if (parkingViewExist()) {
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen() || parkingViewExist()) {
             mSelfParkingTimer = ThreadManager.getInstance().asyncWithFixDelay(() -> {
                 cancelSelfParkingTimer();
-                if (parkingViewExist()) {
+                if (ScreenTypeUtils.getInstance().isOneThirdScreen() || parkingViewExist()) {
                     ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
                     if(Logger.openLog) Logger.d("onFinish-startSelfParkingTimer-true");
                     if (getTopFragment(PoiDetailsFragment.class)) {

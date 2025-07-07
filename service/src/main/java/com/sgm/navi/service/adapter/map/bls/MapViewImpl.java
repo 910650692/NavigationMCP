@@ -722,6 +722,14 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     @Override
     public void onMove(long engineId, long px, long py) {
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onMove(mapType, px, py);
+                }
+            });
+        }
         if (NaviStatusPackage.getInstance().isGuidanceActive()) {
             sendBuryPointForZoomWithTwoFingers(true);
         }
