@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -328,6 +329,17 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                 mViewBinding.tvFavoriteSwitch.setVisibility((powerType == 1
                         || powerType == 2) ? VISIBLE : GONE);
             }
+
+            ConstraintLayout.LayoutParams rcvParams = (ConstraintLayout.LayoutParams) mViewBinding.rcvCollect.getLayoutParams();
+            ConstraintLayout.LayoutParams sllParams = (ConstraintLayout.LayoutParams) mViewBinding.sllNoFavorite.getLayoutParams();
+            if (mViewBinding.tvFavoriteSwitch.getVisibility() == VISIBLE) {
+                rcvParams.matchConstraintMaxHeight = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_745);
+                sllParams.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_613);
+            } else {
+                rcvParams.matchConstraintMaxHeight = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_839);
+                sllParams.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_713);
+            }
+            mViewBinding.rcvCollect.setLayoutParams(rcvParams);
         }
     }
 

@@ -117,7 +117,7 @@
             <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_no_sgm"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/dp_589"
                 android:layout_marginTop="@dimen/dp_24"
                 android:gravity="center"
                 android:orientation="vertical"
