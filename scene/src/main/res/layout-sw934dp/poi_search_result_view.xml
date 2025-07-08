@@ -157,6 +157,22 @@
                     android:text="@string/search_offline_hint"
                     android:textSize="@dimen/sp_34"/>
 
+                <com.sgm.navi.ui.view.SkinView
+                    android:id="@+id/il_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_24"
+                    android:src="@drawable/icon_limit_loading"
+                    app:layout_constraintBottom_toBottomOf="@+id/il_loading"
+                    app:layout_constraintEnd_toEndOf="@+id/il_loading"
+                    app:layout_constraintStart_toStartOf="@+id/il_loading"
+                    app:layout_constraintTop_toTopOf="@+id/il_loading" />
+
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_result_no_data"
                     android:layout_width="wrap_content"

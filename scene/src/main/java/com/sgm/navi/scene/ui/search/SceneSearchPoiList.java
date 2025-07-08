@@ -1,6 +1,7 @@
 package com.sgm.navi.scene.ui.search;
 
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -94,7 +96,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private QuickFilterListAdapter mQuickFilterListAdapter;
     private int maxPageNum = 1;
     private int mPageNum = 1;
-    private SearchLoadingDialog mSearchLoadingDialog;
     private int mSearchType = AutoMapConstant.SearchType.SEARCH_KEYWORD;
     private String mSearchText;
     private PoiInfoEntity mPoiInfoEntity;
@@ -130,6 +131,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private List<SearchChildCategoryLocalInfo> mChildQuickList;
     private String mQuickValue;
     private RoutePackage mRoutePackage;
+    private ValueAnimator mAnimator;
+    private float mAngelTemp = 0;
 
     public SceneSearchPoiList(@NonNull final Context context) {
         super(context);
@@ -165,10 +168,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         setupRefreshListener();
         setupFilterActions();
         setupChildListActions();
-        mSearchLoadingDialog = new SearchLoadingDialog(getContext());
         mCurrentSelectedQuick = -1;
         mSearchContainer = mViewBinding.searchContainer;
         mRoutePackage = RoutePackage.getInstance();
+        initLoadAnim(mViewBinding.ivLoading);
     }
 
 
@@ -458,11 +461,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), false);
             }
-            if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
-                Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
-            } else {
-                mSearchLoadingDialog = new SearchLoadingDialog(getContext());
-                mSearchLoadingDialog.show();
+            if (!ConvertUtils.isNull(mAnimator)) {
+                if(mAnimator.isRunning()){
+                    Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+                }else{
+                    showLoading(true);
+                }
             }
         });
         mViewBinding.searchFilterView.searchFilterCancel.setOnClickListener(v -> {
@@ -480,11 +484,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             } else {
                 mScreenViewModel.keywordSearch(mPageNum, mSearchText);
             }
-            if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
-                Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
-            } else {
-                mSearchLoadingDialog = new SearchLoadingDialog(getContext());
-                mSearchLoadingDialog.show();
+            if (!ConvertUtils.isNull(mAnimator)) {
+                if(mAnimator.isRunning()){
+                    Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+                }else{
+                    showLoading(true);
+                }
             }
         });
         mViewBinding.searchTextBarView.csFilter.setOnClickListener(v -> {
@@ -655,11 +660,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             public void onItemClick(List<SearchChildCategoryLocalInfo> list,int position) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"value: "+list + "position: "+position);
                 if(position>list.size()) return;
-                if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
-                    Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
-                } else {
-                    mSearchLoadingDialog = new SearchLoadingDialog(getContext());
-                    mSearchLoadingDialog.show();
+                if (!ConvertUtils.isNull(mAnimator)) {
+                    if(mAnimator.isRunning()){
+                        Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+                    }else{
+                        showLoading(true);
+                    }
                 }
                 mPageNum = 1;
                 if(mCurrentSelectedQuick == position){
@@ -817,11 +823,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "执行搜索 - 类型: " + mSearchType
                 + ", 关键字: " + keyword + ", 页码: " + pageNum + " ,isReSearch: " + isReSearch);
-        if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
-            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
-        } else {
-            mSearchLoadingDialog = new SearchLoadingDialog(getContext());
-            mSearchLoadingDialog.show();
+        if (!ConvertUtils.isNull(mAnimator)) {
+            if(mAnimator.isRunning()){
+                Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mAnimator is showing");
+            }else{
+                showLoading(true);
+            }
         }
         if (mSearchType == AutoMapConstant.SearchType.SEARCH_KEYWORD
                 || mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
@@ -945,8 +952,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      * @param searchResultEntity 搜索结果实体
      */
     public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
-        if (mSearchLoadingDialog != null && mSearchLoadingDialog.isShowing()) {
-            mSearchLoadingDialog.dismiss();
+        if (!ConvertUtils.isNull(mAnimator) && mAnimator.isRunning()) {
+            showLoading(false);
         }
         if (ConvertUtils.isEmpty(mScreenViewModel)) {
             return;
@@ -1011,7 +1018,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
-            mSearchLoadingDialog.dismiss();
+            showLoading(false);
             if (null != mAdapter) {
                 mAdapter.clearList();
             }
@@ -1143,9 +1150,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"error");
             return;
         }
-        if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
-            mSearchLoadingDialog.dismiss();
-        }
+        showLoading(false);
         mViewBinding.searchResultNoData.setVisibility(VISIBLE);
     }
 
@@ -1165,9 +1170,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 + " currentId: " + mScreenViewModel.getMTaskId());
         if ((!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) || mViewBinding == null) {
             return;
-        }
-        if (!ConvertUtils.isEmpty(mSearchLoadingDialog) && mSearchLoadingDialog.isShowing()) {
-            mSearchLoadingDialog.dismiss();
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList() == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
@@ -1393,6 +1395,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mScreenViewModel.clearLabelMarker();
         }
         super.onDestroy();
+        if (!ConvertUtils.isNull(mAnimator)) {
+            mAnimator.cancel();
+        }
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
     }
 
@@ -1955,6 +1960,66 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
 
-    //------------算路沿途搜***************************************************/
+    public void showLoading(final boolean isShow){
+        if(ConvertUtils.isNull(mViewBinding)){
+            return;
+        }
+        mViewBinding.ivLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mViewBinding.ilLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mViewBinding.searchLabelFilter.setVisibility(isShow ? GONE : View.VISIBLE);
+        mViewBinding.searchResultNoData.setVisibility(isShow ? GONE : View.VISIBLE);
+        mViewBinding.recyclerSearchResult.setVisibility(isShow ? GONE : View.VISIBLE);
+        mViewBinding.pullRefreshLayout.setVisibility(isShow ? GONE : View.VISIBLE);
+        if (!ConvertUtils.isNull(mAnimator)) {
+            if (isShow) {
+                mAnimator.start();
+            } else {
+                mAnimator.cancel();
+            }
+        }
+    }
+
+    /**
+     * 初始化加载动画
+     * @param sivLoading 加载动画视图
+     */
+    private void initLoadAnim(final View sivLoading) {
+        // 如果动画已存在并正在运行，则取消并清理
+        if (mAnimator != null) {
+            if (mAnimator.isRunning()) {
+                mAnimator.cancel();
+            }
+            mAnimator = null;
+        }
+
+        // 创建属性动画，从 0 到 360 度循环旋转
+        mAnimator = ValueAnimator.ofFloat(0f, 360f);
+        mAnimator.setDuration(2000); // 动画持续时间
+        mAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
+        mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
+        // 添加动画更新监听器
+        mAnimator.addUpdateListener(animation -> {
+            final float angle = (float) animation.getAnimatedValue();
+            if (shouldSkipUpdate(angle)) {
+                return;
+            }
+            sivLoading.setRotation(angle);
+        });
+    }
+
+    /**
+     *用于控制角度变化频率的辅助方法
+     *@param angle 当前角度
+     *@return 是否跳过更新
+     */
+    private boolean shouldSkipUpdate(final float angle) {
+        final float changeAngle = angle - mAngelTemp;
+        final float angleStep = 10;
+        if (changeAngle > 0f && changeAngle <= angleStep) {
+            return true; // 跳过更新，避免高频调用浪费资源
+        }
+        mAngelTemp = angle; // 更新临时角度值
+        return false;
+    }
 
 }
