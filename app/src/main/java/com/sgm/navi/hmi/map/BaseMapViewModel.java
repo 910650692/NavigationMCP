@@ -482,15 +482,20 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mModel.onContinueNaviClick();
             } else if (messageCenterInfo.getMsgType() == MessageCenterType.GUESS_WANT_GO) {
                 OftenArrivedItemInfo oftenArrivedItemInfo = messageCenterInfo.getOftenArrivedItemInfo();
-                PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
-                        .setAddress(oftenArrivedItemInfo.getWstrAddress())
-                        .setName(oftenArrivedItemInfo.getWstrPoiName());
-                if(oftenArrivedItemInfo.getStNaviCoord().getLat() != NumberUtils.NUM_0 && oftenArrivedItemInfo.getStNaviCoord().getLon() != NumberUtils.NUM_0 ){
-                    poiInfoEntity.setPoint(new GeoPoint(oftenArrivedItemInfo.getStNaviCoord().getLat(), oftenArrivedItemInfo.getStNaviCoord().getLon()));
-                }else{
-                    poiInfoEntity.setPoint(new GeoPoint(oftenArrivedItemInfo.getStDisplayCoord().getLat(), oftenArrivedItemInfo.getStDisplayCoord().getLon()));
+                if(oftenArrivedItemInfo != null){
+                    PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                            .setAddress(oftenArrivedItemInfo.getWstrAddress())
+                            .setName(oftenArrivedItemInfo.getWstrPoiName());
+                    if(oftenArrivedItemInfo.getStNaviCoord() != null && oftenArrivedItemInfo.getStNaviCoord().getLat() != NumberUtils.NUM_0 && oftenArrivedItemInfo.getStNaviCoord().getLon() != NumberUtils.NUM_0 ){
+                        poiInfoEntity.setPoint(oftenArrivedItemInfo.getStNaviCoord());
+                        startRoute(poiInfoEntity);
+                    }else if(oftenArrivedItemInfo.getStDisplayCoord() != null && oftenArrivedItemInfo.getStDisplayCoord().getLat() != NumberUtils.NUM_0 && oftenArrivedItemInfo.getStDisplayCoord().getLon() != NumberUtils.NUM_0 ){
+                        poiInfoEntity.setPoint(oftenArrivedItemInfo.getStDisplayCoord());
+                        startRoute(poiInfoEntity);
+                    }else{
+                        if(Logger.openLog) Logger.e(TAG, "address is null");
+                    }
                 }
-                startRoute(poiInfoEntity);
             }
         }
     };
