@@ -44,11 +44,13 @@ public final class TextureStylePoolManager {
     public String getLayerStyleJson(MapType mapType, BaseLayer layer, LayerItem item, BaseStyleAdapter styleAdapter) {
         String styleJson = null;
         String jsonPathName = styleAdapter.provideLayerItemStyleJson(layer, item);
+        String key = "";
         if (!TextUtils.isEmpty(jsonPathName)) {
             if (!jsonPathName.endsWith(JSON)) {
                 jsonPathName = jsonPathName + JSON;
             }
-            styleJson = allStyleJson.get(jsonPathName);
+            key = jsonPathName + mapType;
+            styleJson = allStyleJson.get(key);
             if (TextUtils.isEmpty(styleJson)) {
                 String jsonFilePath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_STYLE_PATH)
                         .append(mapType.getMapType())
@@ -64,7 +66,7 @@ public final class TextureStylePoolManager {
                     Logger.e(TAG, mapType, " 未配置样式, 采用主屏 新建 自定义的样式配置文件  图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType() + " 配置文件 :" + jsonFilePath);
                 }
                 if (!TextUtils.isEmpty(styleJson)) {
-                    allStyleJson.put(jsonPathName, styleJson);
+                    allStyleJson.put(key, styleJson);
                     Logger.d(TAG, mapType, " 使用 新建 自定义的样式配置 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), " 配置文件 :" + jsonFilePath);
                 }
             } else {
