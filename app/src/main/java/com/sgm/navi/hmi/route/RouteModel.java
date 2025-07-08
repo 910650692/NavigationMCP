@@ -1118,7 +1118,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     @Override
     public void onRouteItemClick(final MapType mapTypeId, final LayerPointItemType type, final LayerItemRoutePointClickResult item) {
         Logger.e(TAG, "onRouteItemClick-RouteModel");
-        if (ConvertUtils.isEmpty(item)) {
+        if (item == null || ConvertUtils.isEmpty(item)) {
             return;
         }
         if (!NaviStatus.NaviStatusType.SELECT_ROUTE.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {

@@ -153,6 +153,7 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
         mRouteSearchTypeVisibility = new ObservableField<>(0);
         mRouteSearchDetailAddRemoveVia = new ObservableField<>("");
         mRouteCurrentName = new ObservableField<>("");
+        mRouteSearchStatusVisibility = new ObservableField<>(false);
         mSpend = new ObservableField<>(mApplication.getString(R.string.route_invalid));
         mDistance = new ObservableField<>(mApplication.getString(R.string.route_invalid));
         mFastFree = new ObservableField<>(mApplication.getString(R.string.route_invalid));

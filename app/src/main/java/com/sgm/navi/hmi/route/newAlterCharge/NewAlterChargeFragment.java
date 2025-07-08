@@ -67,7 +67,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
             @Override
             public void onExpandClick(RouteReplaceSupplementAdapter routeReplaceSupplementAdapter,
                                       ArrayList<RouteAlterChargeStationInfo> routeAlterChargeStationInfos) {
-                if (routeAlterChargeStationInfos != null || !routeAlterChargeStationInfos.isEmpty()) {
+                if (routeAlterChargeStationInfos != null && !routeAlterChargeStationInfos.isEmpty()) {
                     ArrayList<String> pidList = new ArrayList<>();
                     for (RouteAlterChargeStationInfo routeAlterChargeStationInfo : routeAlterChargeStationInfos) {
                         pidList.add(routeAlterChargeStationInfo.getMPoiId());

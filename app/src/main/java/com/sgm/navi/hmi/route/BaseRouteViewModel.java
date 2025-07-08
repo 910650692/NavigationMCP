@@ -692,6 +692,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 return;
             }
             cancelTimer();
+            if (mModel == null || mView == null) {
+                Logger.e(TAG, "mModel or mView is null");
+                return;
+            }
             mModel.clearRouteLine();
             mModel.clearRestrictionView();
             mView.hideTrip();
@@ -708,6 +712,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                     addFragment(new SettingFragment(), null);
                     break;
                 default:
+                    if (mModel == null) {
+                        Logger.e(TAG, "mModel is null");
+                        return;
+                    }
                     mModel.showRestrictionFragment();
                     break;
             }
@@ -723,6 +731,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
         mAlongWaySearchClick = () -> {
             cancelTimer();
+            if (mModel == null) {
+                Logger.e(TAG, "mModel is null");
+                return;
+            }
+
             if (mModel.isMaxRouteParam()) {
                 ToastUtils.Companion.getInstance().showCustomToastView(
                         ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.add_via_failure));
@@ -745,6 +758,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
         mStartNaviClick = () -> {
             cancelTimer();
+            if (mModel == null || mView == null) {
+                Logger.e(TAG, "mModel or mView is null");
+                return;
+            }
             mModel.clearSearchLabel();
             mModel.clearWeatherView();
             mView.hideTrip();
@@ -1802,7 +1819,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         int farthestDistance = 0;
         do {
             //没有添加充电站
-            if (mChargePoiDistanceList == null && mChargePoiDistanceList.isEmpty()) {
+            if (mChargePoiDistanceList == null || mChargePoiDistanceList.isEmpty()) {
                 break;
             }
             foundSmaller = false;

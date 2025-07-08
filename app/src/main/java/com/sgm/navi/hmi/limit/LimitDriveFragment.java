@@ -148,7 +148,9 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
             if (shouldSkipUpdate(angle)) {
                 return;
             }
-            sivLoading.setRotation(angle);
+            if (sivLoading != null) {
+                sivLoading.setRotation(angle);
+            }
         });
     }
 

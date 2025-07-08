@@ -106,6 +106,7 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
         super(application);
         mShowAlterCharge = new ObservableField<>(true);
         mRoutePhoneVisibility = new ObservableField<>(false);
+        mRouteSearchStatusVisibility = new ObservableField<>(false);
         mRouteSearchStatus = new ObservableField<>("");
         mRouteSearchName = new ObservableField<>("");
         mRouteSearchAddress = new ObservableField<>("");

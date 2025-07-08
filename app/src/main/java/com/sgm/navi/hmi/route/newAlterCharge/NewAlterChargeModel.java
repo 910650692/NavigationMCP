@@ -48,6 +48,7 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
 
     @Override
     public void onCreate() {
+        super.onCreate();
         mRoutePackage.registerRouteObserver(TAG, this);
         mSearchPackage.registerCallBack(TAG, this);
         mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);

@@ -57,13 +57,14 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
 
     @Override
     public void onBindViewHolder(final @NonNull AlterChargeStationViewHolder holder, @SuppressLint("RecyclerView") final int position) {
-        holder.mTvName.setText(mData.get(position).getMName());
+        RouteAlterChargeStationInfo data = mData.get(position);
+        holder.mTvName.setText(data.getMName());
         holder.mTvNumber.setText(String.valueOf(position + 1));
         holder.mTvCost.setText(mContext.getString(R.string.route_charge_stations_cost,
-                mData.get(position).getMPriceInfo().getMLowestPriceValue(), mData.get(position).getMPriceInfo().getMLowestPriceUnit()));
+                data.getMPriceInfo().getMLowestPriceValue(), data.getMPriceInfo().getMLowestPriceUnit()));
 
-        String fastTotalNumber = mData.get(position).getMFastPlugInfo().getMTotalNumber();
-        if (fastTotalNumber.isEmpty()) {
+        String fastTotalNumber = data.getMFastPlugInfo().getMTotalNumber();
+        if (fastTotalNumber == null || fastTotalNumber.isEmpty()) {
             fastTotalNumber = mContext.getString(R.string.route_invalid);
             holder.mLayoutFast.setVisibility(View.GONE);
 
@@ -72,8 +73,8 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
         }
         holder.mTvFastTotalNumber.setText(fastTotalNumber);
 
-        String slowTotalNumber = mData.get(position).getMSlowPlugInfo().getMTotalNumber();
-        if (slowTotalNumber.isEmpty()) {
+        String slowTotalNumber = data.getMSlowPlugInfo().getMTotalNumber();
+        if (slowTotalNumber == null || slowTotalNumber.isEmpty()) {
             slowTotalNumber = mContext.getString(R.string.route_invalid);
             holder.mLayoutSlow.setVisibility(View.GONE);
         } else {
@@ -85,7 +86,7 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
             @Override
             public void onClick(final View view) {
                 if (mListener != null) {
-                    mListener.onItemClick(mData.get(position).getMPoiId());
+                    mListener.onItemClick(data.getMPoiId());
                 }
             }
         });
@@ -94,7 +95,7 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
             @Override
             public void onClick(final View view) {
                 if (mListener != null) {
-                    mListener.onAlterClick(mData.get(position));
+                    mListener.onAlterClick(data);
                 }
             }
         });
