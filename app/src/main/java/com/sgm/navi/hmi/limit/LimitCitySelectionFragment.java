@@ -104,7 +104,15 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
 
             @Override
             public void onTextChanged(final CharSequence charSequence, final int start, final int before, final int count) {
-
+                if (charSequence.length() > 0) {
+                    mBinding.editTextId.setHint(mBinding.editTextId.getHint().toString());
+                } else {
+                    if (mBinding.editTextId.getHint().toString().length() > 10) {
+                        mBinding.editTextId.setHint(mBinding.editTextId.getHint().toString().substring(0, 10) + "....");
+                    } else {
+                        mBinding.editTextId.setHint(mBinding.editTextId.getHint().toString());
+                    }
+                }
             }
 
             @Override
