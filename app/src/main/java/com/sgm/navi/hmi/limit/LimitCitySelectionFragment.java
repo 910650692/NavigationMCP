@@ -126,7 +126,10 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
                     mViewModel.mCloseViewVisibility.setValue(false);
                     mViewModel.mSearchCityVisibility.setValue(false);
                     return;
+                } else {
+                    mViewModel.mCloseViewVisibility.setValue(true);
                 }
+
                 List<CityDataInfo> mSearchDate = new ArrayList<>();
                 for (int i = 0; i < mProvDataInfos.size(); i++) {
                     for (CityDataInfo cityDataInfo :mProvDataInfos.get(i).getCityInfoList()) {
@@ -141,11 +144,9 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
                 if (mSearchDate.isEmpty()) {
                     mViewModel.mTextViewContent.setValue("没有找到\"" + editText + "\"相关的城市");
                     mViewModel.mTextViewVisibility.setValue(true);
-                    mViewModel.mCloseViewVisibility.setValue(true);
                     mViewModel.mSearchCityVisibility.setValue(false);
                 } else {
                     mViewModel.mTextViewVisibility.setValue(false);
-                    mViewModel.mCloseViewVisibility.setValue(false);
                     mSearchCitiesAdapter.setData(mSearchDate);
                     mViewModel.mSearchCityVisibility.setValue(true);
 
