@@ -139,6 +139,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> mGoHomeVisible;
     public ObservableField<Boolean> sRVisible;
     public ObservableField<Boolean> mIsFullScreen;
+    public ObservableField<Boolean> mIsChangingConfigurations;
 
     private ScheduledFuture mScheduledFuture;
     private ScheduledFuture goHomeTimer;
@@ -179,6 +180,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mGoHomeVisible = new ObservableField<>(false);
         sRVisible = new ObservableField<>(isSupportSplitScreen());
         mIsFullScreen = new ObservableField<>(true);
+        mIsChangingConfigurations = new ObservableField<>(false);
     }
 
     @Override

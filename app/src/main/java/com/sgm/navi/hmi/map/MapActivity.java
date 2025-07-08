@@ -272,7 +272,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (!mStackManager.isExistFragment(mScreenId, "AccountQRCodeLoginFragment")) {
             mViewModel.checkPopGuideLogin();
         }
-        mViewModel.getOnlineForecastArrivedData();
+        if(Boolean.FALSE.equals(mViewModel.mIsChangingConfigurations.get())) mViewModel.getOnlineForecastArrivedData();
         mOpenGuideRunnable = () -> mViewModel.openGuideFragment();
         ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
     }
@@ -395,6 +395,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (null == mViewModel || !mViewModel.getSdkInitStatus()) {
             return;
         }
+        mViewModel.mIsChangingConfigurations.set(true);
         if (mViewModel.isSupportSplitScreen()) {
             Logger.d("screen_change_used", newConfig.screenWidthDp);
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
