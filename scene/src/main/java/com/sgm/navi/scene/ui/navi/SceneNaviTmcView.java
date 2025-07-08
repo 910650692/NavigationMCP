@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.scene.BuildConfig;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.databinding.SceneNaviTmcViewBinding;
 import com.sgm.navi.scene.impl.navi.SceneNaviTmcImpl;
@@ -495,7 +496,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     private void showViaIcon(final View view,
                              final SceneCommonStruct.TmcViaPointType tmcViaPointType,
                              final int viaY) {
-        if (!CalibConst.Model.NDLB.equals(CalibrationPackage.getInstance().modelName())) {
+        if (!(BuildConfig.FLAVOR.equals("clea_8255")
+                || BuildConfig.FLAVOR.equals("clea_local_8155")
+                || BuildConfig.FLAVOR.equals("clea_8775"))) {
             if (view instanceof SkinTextView stv) {
                 if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaPointType) {//todo flavor temp
                     stv.setText(getContext().getText(R.string.navi_via_item_pass));
