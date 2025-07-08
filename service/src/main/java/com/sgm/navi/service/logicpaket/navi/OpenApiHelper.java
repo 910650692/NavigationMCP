@@ -216,6 +216,8 @@ public final class OpenApiHelper {
      */
     public static void enterPreview(final MapType mapTypeId) {
         Logger.i(TAG, "enterPreview");
+        mMapType = null;
+        mMapMode = null;
         NAVI_PACKAGE.setPreviewStatus(true);
         LAYER_PACKAGE.setFollowMode(mapTypeId, false);
         // 关闭自动比例尺
