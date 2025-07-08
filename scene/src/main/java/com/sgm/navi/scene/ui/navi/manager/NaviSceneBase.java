@@ -127,7 +127,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
      * 显示卡片，倒计时开始
      */
     public void show() {
-        Logger.d(TAG, "show:" , getClass().getSimpleName(), "callBack :" , (mISceneCallback == null));
+        Logger.d(TAG, "show:" , getClass().getSimpleName(), "callBack :" , (mISceneCallback != null));
         // 新卡片显示需要重置倒计时，隐藏卡片显示使用选线剩余倒计时
         if (mSceneState != SCENE_STATE_HIDE) {
             resetCountdown();
