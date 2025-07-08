@@ -1089,6 +1089,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     /***校验继续导航***/
     public void checkContinueNavi(Context context) {
+        if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
+            Logger.i(TAG, "NaviStatusType.NAVING");
+            return;
+        }
         try {
             if (mHistoryManager != null) {
                 mUncompletedNavi = mHistoryManager.getUncompletedNavi();
