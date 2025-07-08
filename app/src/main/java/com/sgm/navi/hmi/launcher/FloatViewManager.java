@@ -23,7 +23,9 @@ import com.sgm.navi.service.AppCache;
 import com.patac.launcher.ILauncherCallback;
 import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
+import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.vrbridge.MapStateManager;
 
@@ -97,6 +99,10 @@ public class FloatViewManager {
             Logger.i(TAG, "onChange", selfChange, currentDeskMode);
             MapStateManager.getInstance().setLauncherDeskMode(currentDeskMode);
             notifyDeskModeChanged();
+            if (!StartService.getInstance().checkSdkIsNeedInit()
+                    && !StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), "RouteFragment")) {
+                LayerPackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+            }
         }
     };
 
