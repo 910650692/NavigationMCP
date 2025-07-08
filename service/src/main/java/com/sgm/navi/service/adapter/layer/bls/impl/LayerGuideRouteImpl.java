@@ -295,11 +295,11 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         //设置路线样式风格
         setMainMapPathDrawStyle(false, false, true);
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyRemainPoint, true);
-        updatePaths();
         //设置全览  只对主屏生效 偏航重算不全览
         if (getMapType() == MapType.MAIN_SCREEN_MAIN_MAP && !routeResult.isMAutoRouting()) {
             showPreviewView();
         }
+        updatePaths();
     }
 
     /* 更新终点扎标数据 */
