@@ -89,7 +89,7 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
         Bundle bundle = getArguments();
         if (bundle != null) {
             PoiInfoEntity entity = bundle.getParcelable(AutoMapConstant.TrafficEventBundleKey.BUNDLE_KEY_ENTITY);
-            if (entity != null) {
+            if (entity != null && mViewModel != null) {
                 mViewModel.queryTrafficEvent(entity);
             }
         }
