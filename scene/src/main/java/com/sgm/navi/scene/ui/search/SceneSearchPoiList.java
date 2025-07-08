@@ -782,7 +782,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 } else {
                     performSearch(--mPageNum, getEditText(), false);
                 }
-                mViewBinding.pullRefreshLayout.finishRefresh();
+                if (mViewBinding != null) {
+                    mViewBinding.pullRefreshLayout.finishRefresh();
+                }
             }
 
             @Override
@@ -792,7 +794,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 } else {
                     performSearch(++mPageNum, getEditText(), false);
                 }
-                mViewBinding.pullRefreshLayout.finishLoadMore();
+                if (mViewBinding != null) {
+                    mViewBinding.pullRefreshLayout.finishLoadMore();
+                }
             }
         });
     }
