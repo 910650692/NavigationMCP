@@ -95,7 +95,7 @@
     <color name="text_route_title">#66000000</color>
     <color name="text_route_detail_title">#FF000000</color>
     <color name="text_route_button_title">#FFFFFFFF</color>
-    <color name="text_route_search_detail_title">#FF2461EA</color>
+    <color name="text_route_search_detail_title">#7F000000</color>
 
     <color name="text_route_restriction_error">#1AC73333</color>
     <color name="text_route_restriction_success">#1A4ABA59</color>
