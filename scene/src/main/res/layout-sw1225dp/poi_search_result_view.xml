@@ -25,7 +25,8 @@
             android:paddingVertical="@dimen/dp_34"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible">
 
             <ProgressBar
                 android:id="@+id/route_charge_progress"
@@ -86,7 +87,6 @@
                 android:textColor="@color/text_route_defult"
                 android:textSize="@dimen/sp_22"
                 app:layout_constraintBottom_toTopOf="@+id/route_charge_exhaustion_point"
-                app:layout_constraintEnd_toEndOf="@+id/route_charge_exhaustion_point"
                 app:layout_constraintStart_toStartOf="@+id/route_charge_exhaustion_point" />
 
             <com.sgm.navi.ui.view.SkinImageView
