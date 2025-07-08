@@ -6,6 +6,8 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
 
@@ -53,13 +55,22 @@ public class ProvinceKeyboardView extends GridLayout {
             tv.setButtonDrawable(null);
             tv.setFocusable(true);
             tv.setBackgroundResource(R.drawable.bg_setting_keyboard_selector);
-            tv.setOnClickListener(v -> {
-                if (mListener != null) {
-                    tv.setSelected(true);
-                    updateCheckBoxTextColor(tv,true);
-                    tv.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
-                    mListener.onProvinceSelected(province);
+            tv.setOnTouchListener((v, event) -> {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.playSoundEffect(SoundEffectConstants.CLICK);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        tv.setSelected(true);
+                        updateCheckBoxTextColor(tv, true);
+                        tv.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
+                        if (mListener != null) {
+                            mListener.onProvinceSelected(province);
+                        }
+                        tv.setChecked(true);
+                        break;
                 }
+                return true;
             });
 
             tv.setOnCheckedChangeListener((buttonView, isChecked) -> {

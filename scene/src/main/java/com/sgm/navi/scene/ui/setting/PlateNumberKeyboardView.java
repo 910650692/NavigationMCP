@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
@@ -146,6 +147,7 @@ public class PlateNumberKeyboardView extends GridLayout {
                 keyView.setOnTouchListener((v, event) -> {
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
+                            v.playSoundEffect(SoundEffectConstants.CLICK);
                             keyView.setSelected(true);
                             updateCheckBoxTextColor(keyView,true);
                             keyView.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
@@ -161,6 +163,7 @@ public class PlateNumberKeyboardView extends GridLayout {
                                     mListener.onKeyPress(key);
                                 }
                             }
+                            keyView.setChecked(true);
                             break;
                     }
                     return true;
