@@ -186,7 +186,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         boolean result = super.getCustomTexture(layer, item, styleInfo, customTexture);
         customTexture.attrs.isNightForAsvg = mapView.getOperatorStyle().getMapStyle().time == MapStyleTime.MapTimeNight;
         if (getStyleAdapter() != null) {
-            List<CustomUpdatePair> customUpdatePairs = styleAdapter.updateTextureUpdatePair(item);
+            List<CustomUpdatePair> customUpdatePairs = styleAdapter.updateTextureUpdatePair(item, customTexture.attrs.isNightForAsvg);
             if (!customUpdatePairs.isEmpty()) {
                 customTexture.updateList.addAll(customUpdatePairs);
             }
@@ -203,7 +203,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         boolean result = super.updateCustomTexture(layer, item, styleInfo, updateParam);
         updateParam.isNightForAsvg = mapView.getOperatorStyle().getMapStyle().time == MapStyleTime.MapTimeNight;
         if (getStyleAdapter() != null) {
-            List<CustomUpdatePair> customUpdatePairs = getStyleAdapter().updateTextureUpdatePair(item);
+            List<CustomUpdatePair> customUpdatePairs = getStyleAdapter().updateTextureUpdatePair(item, updateParam.isNightForAsvg);
             if (!customUpdatePairs.isEmpty()) {
                 updateParam.updateList.addAll(customUpdatePairs);
             }

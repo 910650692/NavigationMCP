@@ -83,7 +83,7 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         return null;
     }
 
-    public List<CustomUpdatePair> updateTextureUpdatePair(LayerItem item) {
+    public List<CustomUpdatePair> updateTextureUpdatePair(LayerItem item, boolean isNightMode) {
         return new ArrayList<>();
     }
 

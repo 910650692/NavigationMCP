@@ -737,7 +737,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public List<CustomUpdatePair> updateTextureUpdatePair(LayerItem item) {
+    public List<CustomUpdatePair> updateTextureUpdatePair(LayerItem item, boolean isNightMode) {
         List<CustomUpdatePair> customUpdatePairs = new ArrayList<>();
         switch (item.getBusinessType()) {
             case BizRouteType.BizRouteTypeViaPoint -> {
