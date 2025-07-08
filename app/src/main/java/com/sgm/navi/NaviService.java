@@ -22,6 +22,7 @@ import androidx.work.WorkerParameters;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.adas.AdasClient;
+import com.sgm.navi.broadcast.PoiPushReceiver;
 import com.sgm.navi.broadcast.SteeringWheelButtonReceiver;
 import com.sgm.navi.flavor.BaseCarModelsFeature;
 import com.sgm.navi.flavor.CarModelsFeature;
@@ -42,6 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @date 2024/12/1
  */
 public class NaviService extends Service {
+
     private static final String TAG = MapDefaultFinalTag.INIT_HMI_TAG;
     private static final String NOTIFICATION_ID = "102";
     private static final String NOTIFICATION_NAME = "NaviService";
@@ -51,6 +53,7 @@ public class NaviService extends Service {
     private static OneTimeWorkRequest vrBridgeWorkRequest;
     private static OneTimeWorkRequest carModelsFeatureWorkRequest;
     private static final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+    private boolean mHasRegisterBroadcast = false;
 
     public NaviService() {
         initBroadcast();
@@ -107,9 +110,17 @@ public class NaviService extends Service {
     }
 
     private void initBroadcast() {
+        if (mHasRegisterBroadcast) {
+            return;
+        }
         SteeringWheelButtonReceiver steeringWheelButtonReceiver = new SteeringWheelButtonReceiver();
         IntentFilter intentFilter = new IntentFilter(SteeringWheelButtonReceiver.ACTION);
         AppCache.getInstance().getMContext().registerReceiver(steeringWheelButtonReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+
+        PoiPushReceiver poiPushReceiver = new PoiPushReceiver();
+        IntentFilter poiFilter = new IntentFilter(PoiPushReceiver.PUSH_ACTION);
+        AppCache.getInstance().getMContext().registerReceiver(poiPushReceiver, poiFilter, Context.RECEIVER_EXPORTED);
+        mHasRegisterBroadcast = true;
     }
 
     /**

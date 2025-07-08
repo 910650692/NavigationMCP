@@ -173,6 +173,15 @@
         <meta-data
             android:name="com.sgm.navi.hmi"
             android:value="local" />
+
+        <receiver android:name="com.sgm.navi.broadcast.PoiPushReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="patac.intent.action.push.RECEIVE" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
