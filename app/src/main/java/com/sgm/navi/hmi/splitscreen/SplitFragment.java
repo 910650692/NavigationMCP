@@ -43,6 +43,7 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
             closeFragment(true);
         } else {
             mViewModel.initView();
+            mBinding.sceneNaviTbt.showOrHideGpsSign(false);
         }
     }
 
