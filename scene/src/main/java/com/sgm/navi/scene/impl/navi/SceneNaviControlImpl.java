@@ -198,6 +198,8 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
                 final SoundInfoEntity soundInfo = new SoundInfoEntity();
                 soundInfo.setText(AppCache.getInstance().getMApplication().getString(R.string.navi_start_broadcast));
                 mNaviPackage.onPlayTTS(soundInfo);
+            } else {
+                mNaviPackage.stopSpeech();
             }
         }
     }
