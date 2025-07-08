@@ -166,6 +166,12 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
                 }
             }
         }
+    }
 
+    /**
+     * 设置标准女声的VoiceId
+     */
+    public void resetVoiceId() {
+        mVoiceId = 0;
     }
 }
