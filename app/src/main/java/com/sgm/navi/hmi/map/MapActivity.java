@@ -36,6 +36,7 @@ import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.startup.ActivateFailedDialog;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
@@ -104,6 +105,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.mainImg.setVisibility(View.VISIBLE);
         mBinding.mainImg.setOnClickListener(v -> {
             FloatViewManager.getInstance().hideAllCardWidgets(false);
+        });
+        mBinding.mainImg.post(() -> {
+            if (mViewModel.isSupportSplitScreen()) {
+                checkConfig();
+            }
         });
     }
 
@@ -526,4 +532,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         return super.dispatchTouchEvent(ev);
     }
 
+    private void checkConfig() {
+        final ScreenType currentScreenType = ScreenTypeUtils.getInstance().calculateScreenType(getResources().getConfiguration());
+        if (currentScreenType != ScreenTypeUtils.getInstance().getScreenType() && mViewModel.isSupportSplitScreen()) {
+            ScreenTypeUtils.getInstance().setScreenType(getResources().getConfiguration());
+            mViewModel.notifyScreenSizeChanged();
+            mViewModel.onNaviStatusChange();
+            setSplitFragment();
+//            mViewModel.toSetCarPosition();
+            Logger.d(TAG, "checkConfig and need update!");
+        }
+    }
 }

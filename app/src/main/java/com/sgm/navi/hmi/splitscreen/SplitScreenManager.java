@@ -50,7 +50,22 @@ public class SplitScreenManager {
      * 交换位置和大小，即导航切到2/3右侧，SR切到1/3左侧
      */
     public void switchPositionAndSize() {
-        switchSplitScreen(2, "");
+        // 判断当前正在分屏的应用是否是SR
+        boolean isSROnSplit = false;
+        String[] status = getSplitScreenStatus();
+        if (!ConvertUtils.isNull(status)) {
+            for (String item : status) {
+                if (ConvertUtils.equals(item, PatacSESConstants.SPLIT_SCREEN_SR)) {
+                    isSROnSplit = true;
+                }
+            }
+        }
+        Logger.d("screen_change_used", "isSROnSplit: " , isSROnSplit);
+        if (isSROnSplit) {
+            switchSplitScreen(PatacSESConstants.SWITCH_TYPE_POSITION_SIZE, "");
+        } else {
+            replaceISplitScreen(PatacSESConstants.SPLIT_SCREEN_NAVI, PatacSESConstants.SPLIT_SCREEN_SR, PatacSESConstants.EXIT_TYPE_OUT, "");
+        }
     }
 
     /***
@@ -159,13 +174,13 @@ public class SplitScreenManager {
                 try {
                     mBinder.exitISplitScreen(type, extra);
                 } catch (RemoteException e) {
-                    Logger.e("screen_change_used", "exitSplitScreen failed" , e.getMessage());
+                    Logger.e("screen_change_used", "exitSplitScreen failed", e.getMessage());
                 }
             } else {
                 Logger.e("screen_change_used", "exitSplitScreen failed: service not connect or mBinder is null!");
             }
         } catch (Exception e) {
-            Logger.e("screen_change_used", "exitSplitScreen-failed", e.getMessage(),  type, extra);
+            Logger.e("screen_change_used", "exitSplitScreen-failed", e.getMessage(), type, extra);
         }
     }
 
@@ -180,10 +195,33 @@ public class SplitScreenManager {
      * @param extra
      */
     public void switchSplitScreen(int type, String extra) {
-        Logger.i("screen_change_used", "switchISplitScreen" , type, "extra" , extra);
+        Logger.i("screen_change_used", "switchISplitScreen", type, "extra", extra);
         if (!ConvertUtils.isNull(mBinder)) {
             try {
                 mBinder.switchISplitScreen(type, extra);
+            } catch (RemoteException e) {
+                Logger.e("screen_change_used", "switchISplitScreen");
+            }
+        } else {
+            Logger.e("screen_change_used", "switchSplitScreen failed: service not connect or mBinder is null!");
+        }
+    }
+
+    /***
+     * 方法作用：替换分屏
+     * @param caller 调用方的定义包名
+     * @param replacePackage 需要替换的定义包名
+     * @param type 1：保留调用方应用，替换另一个应用
+     * 2：替换调用方应用
+     * PatacSESConstants.EXIT_TYPE_KEEP = 1;
+     * PatacSESConstants.EXIT_TYPE_OUT = 2;
+     * @param extra
+     */
+    public void replaceISplitScreen(String caller , String replacePackage, int type, String extra) {
+        Logger.i("screen_change_used", "replaceISplitScreen");
+        if (!ConvertUtils.isNull(mBinder)) {
+            try {
+                mBinder.replaceISplitScreen(caller , replacePackage, type, extra);
             } catch (RemoteException e) {
                 Logger.e("screen_change_used", "switchISplitScreen");
             }
@@ -204,7 +242,7 @@ public class SplitScreenManager {
                 final String[] status = mBinder.getISplitScreenStatus();
                 return status;
             } catch (RemoteException e) {
-                Logger.e("screen_change_used", "getSplitScreenStatus failed" , e.getMessage());
+                Logger.e("screen_change_used", "getSplitScreenStatus failed", e.getMessage());
                 return null;
             }
         }

@@ -592,7 +592,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
-        sRVisible.set(false);
         cancelTimer();
     }
 
@@ -1389,7 +1388,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 startNaviForRouteOver();
                 break;
             case INaviConstant.OpenIntentPage.SEARCH_RESULT_PAGE:
-                //todo
+                searchForChargeStation.call();
                 break;
             default:
                 break;
@@ -1444,17 +1443,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void onDeskBackgroundChange(FloatViewManager.DesktopMode desktopMode) {
         Logger.d(TAG, "onDeskBackgroundChange", desktopMode.getValue(), "sRVisible", sRVisible.get());
-        sRVisible.set(
-                !FloatViewManager.getInstance().isNaviDeskBg() &&
-                        !ScreenTypeUtils.getInstance().isOneThirdScreen() &&
-                        isSupportSplitScreen()
-        );
+        sRVisible.set(judgedSRVisibility());
         switch (desktopMode) {
             case NAVIGATION_MODE -> {
                 if (ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
                     Logger.d(TAG, "切到地图桌面，导航中，则隐藏所有卡片");
                     FloatViewManager.getInstance().hideAllCardWidgets(false);
-                } else if (!FloatViewManager.getInstance().judgedWidgetIsVisible()) {
+                } else if (StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()) == null) {
                     Logger.d(TAG, "切到地图桌面，非导航中，显示所有卡片");
                     FloatViewManager.getInstance().showAllCardWidgets();
                 }
@@ -1561,7 +1556,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return false;
         }
         // 如果容器里面有Fragment,隐藏
-        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null) {
+        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null && !ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
             return false;
         }
         return true;
@@ -1582,9 +1577,22 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return false;
         }
         // 如果容器里面有Fragment,隐藏
-        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null) {
+        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null && !ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkViewState();
+    }
+
+    private void checkViewState() {
+        Logger.d(TAG, "checkViewState");
+        sRVisible.set(judgedSRVisibility());
+        mScaleViewVisibility.set(judgedScaleViewVisibility());
+        bottomNaviVisibility.set(judgedBottomNaviVisibility());
     }
 }

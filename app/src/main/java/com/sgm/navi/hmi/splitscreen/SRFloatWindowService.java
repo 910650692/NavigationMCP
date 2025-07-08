@@ -12,6 +12,7 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -98,9 +99,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
         mNaviStatusAdapter = NavistatusAdapter.getInstance();
         mWindowManager = (WindowManager) AppCache.getInstance().getMContext().getSystemService(WINDOW_SERVICE);
         currentUiMode = AppCache.getInstance().getMContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        if (ConvertUtils.equals(mNaviStatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-            mNaviEtaInfo = mNaviPackage.getCurrentNaviEtaInfo();
-        }
+        mNaviEtaInfo = mNaviPackage.getCurrentNaviEtaInfo();
         captureScreenUtils = CaptureScreenUtils.getInstance();
     }
 
@@ -225,12 +224,13 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT
         );
-
+        layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
         int top = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_top);
         int left = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_left);
         Logger.i(TAG, "LauncherWindowPosition: " + top + "; " + left);
         layoutParams.x = left;
         layoutParams.y = top;
+
         mWindowManager.addView(mView, layoutParams);
 //        initClickListener();
         mBinding.cardTbtView.setVisibility(
