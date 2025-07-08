@@ -158,7 +158,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + SuggestionSearchResult.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -185,7 +186,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + KeywordSearchResultV2.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -206,7 +208,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameter, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result)
         );
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + AggregateSearchResult.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -229,7 +232,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameter, result),
                 (errCode, result) -> notifySearchSuccess((int) searchResult.taskId, searchRequestParameter, result)
         );
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + SearchEnrouteResult.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -244,8 +248,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameter, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result)
         );
-
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + SearchBatchPoiDetailResult.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -270,7 +274,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + KeywordSearchResultV2.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -290,8 +295,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, requestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
-
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + PoiDetailSearchResult.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -311,7 +316,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result)
         );
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + KeywordSearchResultV2.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -333,8 +339,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result)
         );
-
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + SearchNearestResult.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -357,8 +363,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, parameter, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), parameter, result)
         );
-
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + SearchDeepInfoResult.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -381,8 +387,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, parameter, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), parameter, result)
         );
-
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + SearchLineDeepInfoResult.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -402,7 +408,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 (taskId, result) -> notifySearchSuccess(taskId, searchRequestParameterBuilder, result),
                 (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result)
         );
-        mSearchObserversHelper.registerCallback(mTaskId.get(), callbackWrapper);
+        String callbackName = mTaskId.get() + SearchAlongWayResult.class.getSimpleName();
+        mSearchObserversHelper.registerCallback(callbackName, callbackWrapper);
         return mTaskId.get();
     }
 
@@ -537,7 +544,6 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @param taskId                  任务ID
      */
     private <T> void notifySearchSuccess(final int taskId, final SearchRequestParameter requestParameterBuilder, final T result) {
-        mSearchObserversHelper.unregisterCallback(taskId);
         mSearchNotificationHelper.notifySearchSuccess(taskId, requestParameterBuilder, result);
     }
 
