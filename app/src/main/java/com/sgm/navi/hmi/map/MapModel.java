@@ -713,6 +713,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            mViewModel.hideStartIcon();
             mSettingPackage.setSettingChangeCallback(mapTypeId.name(), this);
             layerPackage.setDefaultCarMode(mapTypeId);
             mapPackage.setMapCenter(mapTypeId, new GeoPoint(positionPackage.getLastCarLocation().getLongitude(),

@@ -463,7 +463,7 @@
             android:id="@+id/main_start"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black">
+            android:visibility="@{ViewModel.startIconVisibility ? View.VISIBLE : View.GONE}">
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/main_img"
@@ -499,6 +499,7 @@
                 app:layout_constraintTop_toBottomOf="@id/activating_img"
                 app:layout_constraintEnd_toEndOf="parent"/>
         </com.sgm.navi.ui.view.SkinConstraintLayout>
+
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/screen_scale_date"
             android:layout_width="wrap_content"
@@ -513,5 +514,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
     </com.sgm.navi.ui.view.SkinConstraintLayout>
+
 </layout>

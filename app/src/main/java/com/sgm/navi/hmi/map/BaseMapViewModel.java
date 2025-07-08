@@ -103,6 +103,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private boolean mFirstLaunch = false;
     private boolean mInitSdkSuccess = false;
 
+    public ObservableBoolean startIconVisibility;
     public ObservableBoolean backToCcPVisibility;
     public ObservableBoolean mainBTNVisibility;
     public ObservableBoolean mScaleViewVisibility;
@@ -147,7 +148,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public BaseMapViewModel(@NonNull Application application) {
         super(application);
-
+        startIconVisibility = new ObservableBoolean(true);
         backToCcPVisibility = new ObservableBoolean(false);
         mainBTNVisibility = new ObservableBoolean(true);
         mScaleViewVisibility = new ObservableBoolean(true);
@@ -275,6 +276,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void showActivatingView(final boolean show) {
         mView.showActivatingView(show);
+    }
+
+    public void hideStartIcon() {
+        startIconVisibility.set(false);
     }
 
     /**

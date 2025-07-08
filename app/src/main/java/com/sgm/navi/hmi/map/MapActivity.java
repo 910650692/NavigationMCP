@@ -247,7 +247,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     public void doAfterInitSdk() {
-        mBinding.mainStart.setVisibility(View.GONE);
         //initData
         mViewModel.loadMapView(mBinding.mainMapview);
         // 给限行设置点击事件
