@@ -112,9 +112,14 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
         if (currentImersiveStatus != mImersiveStatus) {
             mImersiveStatus = currentImersiveStatus;
         } else {
+            if (ImersiveStatus.TOUCH.equals(currentImersiveStatus)) {
+                if (!ConvertUtils.isNull(mScreenViewModel)) {
+                    mScreenViewModel.initTimer();
+                }
+            }
             return;
         }
-        if (mScreenViewModel != null) {
+        if (!ConvertUtils.isNull(mScreenViewModel)) {
             mScreenViewModel.onImmersiveStatusChange(currentImersiveStatus);
         }
     }

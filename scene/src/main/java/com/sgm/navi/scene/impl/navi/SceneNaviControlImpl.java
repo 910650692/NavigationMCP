@@ -310,8 +310,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
         Logger.i(TAG, "onImmersiveStatusChange currentImersiveStatus：",
                 currentImersiveStatus);
-        if (currentImersiveStatus == ImersiveStatus.TOUCH) {
-        } else {
+        if (ImersiveStatus.IMERSIVE.equals(currentImersiveStatus)) {
             showMain();
         }
     }
@@ -337,6 +336,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     @Override
     public void showMain() {
         try {
+            cancelTimer();
             NaviSceneManager.getInstance().notifySceneReset();
             isShowMoreSetup(true);
             mScreenView.updateOverview(mNaviPackage.getPreviewStatus() ?
