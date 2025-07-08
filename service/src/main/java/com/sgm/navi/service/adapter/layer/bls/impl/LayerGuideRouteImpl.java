@@ -13,6 +13,7 @@ import com.autonavi.gbl.common.path.model.RestAreaInfo;
 import com.autonavi.gbl.common.path.model.RoutePoint;
 import com.autonavi.gbl.common.path.model.RoutePoints;
 import com.autonavi.gbl.common.path.option.PathInfo;
+import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.autonavi.gbl.guide.model.CrossType;
 import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.layer.BizGuideRouteControl;
@@ -953,6 +954,15 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, getMapType(), "updateLocalTrafficEventInfo vecTrafficEventInfo size = ", vecTrafficEventInfo.size());
         ArrayList<BizLocalTrafficEventInfo> vecTrafficEventInfoBls = new ArrayList<BizLocalTrafficEventInfo>();
         getLayerRoadFacilityControl().updateLocalTrafficEventInfo(vecTrafficEventInfoBls);
+    }
+
+    public void setCrossImageInfo(CrossImageInfo info) {
+        if (!ConvertUtils.isEmpty(info)) {
+            getLayerRoadCrossControl().setCrossImageInfo(info);
+            if (Logger.openLog) {
+                Logger.d(TAG, "info ",  info);
+            }
+        }
     }
 
     public boolean showCross(CrossImageEntity crossInfo) {

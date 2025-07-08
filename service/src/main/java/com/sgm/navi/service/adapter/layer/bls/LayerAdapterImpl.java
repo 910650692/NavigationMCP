@@ -3,6 +3,7 @@ package com.sgm.navi.service.adapter.layer.bls;
 import android.graphics.Rect;
 
 import com.autonavi.gbl.common.model.Coord2DDouble;
+import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.autonavi.gbl.guide.model.CrossType;
 import com.autonavi.gbl.layer.model.BizLayerUtil;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -453,6 +454,10 @@ public class LayerAdapterImpl implements ILayerApi {
 
     public Rect getRoadCrossRect(MapType mapTypeId) {
         return layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().getRoadCrossRect();
+    }
+
+    public void setCrossImageInfo(MapType mapTypeId, CrossImageInfo info) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setCrossImageInfo(info);
     }
 
     /*========================================= 路口大图 =========================================*/

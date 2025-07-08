@@ -1,7 +1,7 @@
 {
   "virtual_bus": {
     "car_layer": 1,
-    "rct_route_layer": 0,
+    "rct_route_layer": 1,
     "cruise_congestion_layer": 1,
     "cruise_lane_layer": 1,
     "guide_mix_fork_layer": 1,

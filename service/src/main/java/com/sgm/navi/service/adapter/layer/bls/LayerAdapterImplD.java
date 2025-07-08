@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.layer.bls;
 
 import android.graphics.Rect;
 
+import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.sgm.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.sgm.navi.service.adapter.layer.ILayerApi;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -362,6 +363,10 @@ public class LayerAdapterImplD implements ILayerApi {
     @Override
     public Rect getRoadCrossRect(MapType mapTypeId) {
         return new Rect();
+    }
+
+    public void setCrossImageInfo(MapType mapTypeId, CrossImageInfo info) {
+
     }
 
     @Override

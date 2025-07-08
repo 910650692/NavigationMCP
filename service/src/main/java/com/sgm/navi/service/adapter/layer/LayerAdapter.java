@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.layer;
 
 import android.graphics.Rect;
 
+import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.autonavi.gbl.guide.model.CrossType;
 import com.sgm.navi.service.AdapterConfig;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -336,6 +337,10 @@ public class LayerAdapter {
 
     public Rect getRoadCrossRect(MapType mapTypeId) {
         return mLayerApi.getRoadCrossRect(mapTypeId);
+    }
+
+    public void setCrossImageInfo(MapType mapTypeId, CrossImageInfo info) {
+        mLayerApi.setCrossImageInfo(mapTypeId, info);
     }
 
     /*========================================= 路口大图 =========================================*/
