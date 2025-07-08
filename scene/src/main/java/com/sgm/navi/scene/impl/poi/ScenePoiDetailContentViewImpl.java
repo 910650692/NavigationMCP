@@ -26,19 +26,25 @@ import com.sgm.navi.service.define.search.ChildInfo;
 import com.sgm.navi.service.define.search.ETAInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.sgm.navi.service.define.search.ServiceAreaInfo;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.user.account.AccountPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.ui.base.StackManager;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author baipeng0904
@@ -373,7 +379,41 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         mSearchPackage.abortSearch(taskId);
     }
 
-    public void getPointType(String pointTypeCOde){
-        mSearchPackage.getPointTypeCode(pointTypeCOde);
+    /**
+     * 0x01 加油站
+     * 0x02 餐饮
+     * 0x04 卫生间
+     * 0x08 汽修
+     * 0x10 购物
+     * 0x20 住宿
+     * 0x40 充电站
+     * @param pid 服务区PID
+     * @return 展示列表
+     */
+    public List<ServiceAreaInfo.ServiceAreaChild> getRestInfo(final String pid){
+        Long sapaDetail = mSearchPackage.getRestAreaSapaDetail(pid);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"sapaDetail:" ,sapaDetail);
+        List<ServiceAreaInfo.ServiceAreaChild> ServiceAreaList = new ArrayList<>();
+        ArrayList<Integer> list = Stream.of(0x01,0x02,0x04,0x08,0x10,0x20,0x40).collect(Collectors.toCollection(ArrayList::new));
+        list.forEach(integer -> {
+            if((sapaDetail & integer) != 0){
+                String type = switch (integer) {
+//                    case 0x01 -> "010200";
+                    case 0x02 -> "050100";
+                    case 0x04 -> "200300";
+                    case 0x08 -> "010000";
+                    case 0x10 -> "060400";
+                    case 0x20 -> "150904";
+                    case 0x40 -> "011100";
+                    default -> "";
+                };
+                if(!ConvertUtils.isEmpty(type)){
+                    ServiceAreaInfo.ServiceAreaChild child = new ServiceAreaInfo.ServiceAreaChild();
+                    child.setTypeCode(type);
+                    ServiceAreaList.add(child);
+                }
+            }
+        });
+        return ServiceAreaList;
     }
 }

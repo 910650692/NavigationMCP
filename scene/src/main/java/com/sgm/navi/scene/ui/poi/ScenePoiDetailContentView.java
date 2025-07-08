@@ -45,6 +45,7 @@ import com.sgm.navi.scene.impl.poi.ScenePoiDetailContentViewImpl;
 import com.sgm.navi.scene.impl.search.SearchFragmentFactory;
 import com.sgm.navi.scene.ui.adapter.PoiDetailsScenicChildAdapter;
 import com.sgm.navi.scene.ui.adapter.RoutePOIGasStationAdapter;
+import com.sgm.navi.scene.ui.adapter.RoutePOIIconAdapter;
 import com.sgm.navi.scene.ui.route.SceneRouteDescendantsView;
 import com.sgm.navi.scene.ui.search.SearchConfirmDialog;
 import com.sgm.navi.scene.ui.search.SearchPhoneDialog;
@@ -64,6 +65,7 @@ import com.sgm.navi.service.define.search.GasStationInfo;
 import com.sgm.navi.service.define.search.ParkingInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.sgm.navi.service.define.search.ServiceAreaInfo;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
@@ -73,6 +75,7 @@ import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.ui.view.SkinImageView;
+import com.sgm.navi.ui.view.SkinRecyclerView;
 import com.sgm.navi.ui.view.SkinTextView;
 
 import org.json.JSONException;
@@ -1289,7 +1292,19 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * 刷新服务区视图
      */
     private void refreshServiceAreaView() {
-        mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setVisibility(GONE);
+        List<ServiceAreaInfo.ServiceAreaChild> list = mScreenViewModel.getRestInfo(mPoiInfoEntity.getPid());
+        if(!ConvertUtils.isEmpty(list)){
+            mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setVisibility(VISIBLE);
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            SkinRecyclerView poiServiceAreaFacility = mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaFacility;
+            poiServiceAreaFacility.setLayoutManager(layoutManager);
+            final RoutePOIIconAdapter mPoiIconAdapter = new RoutePOIIconAdapter();
+            poiServiceAreaFacility.setAdapter(mPoiIconAdapter);
+            mPoiIconAdapter.setRouteBeanList(list);
+        }else{
+            mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaFacility.setVisibility(GONE);
+        }
         final List<GasStationInfo> gasStationInfos = mPoiInfoEntity.getStationList();
         if (gasStationInfos == null || gasStationInfos.isEmpty()) {
             mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaOil.setVisibility(GONE);

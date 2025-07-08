@@ -9,6 +9,8 @@ import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.autonavi.gbl.common.path.model.RestAreaInfo;
+import com.autonavi.gbl.common.path.option.PathInfo;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -52,6 +54,7 @@ import com.sgm.navi.service.greendao.history.History;
 import com.sgm.navi.service.greendao.history.HistoryManager;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2320,5 +2323,22 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             return "";
         }
         return mReservationPreNum;
+    }
+
+    public long getRestAreaSapaDetail(final String pid){
+        PathInfo currentPathInfo = OpenApiHelper.getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
+        long sapaDetail = 0;
+        if(!ConvertUtils.isEmpty(currentPathInfo)){
+            ArrayList<RestAreaInfo> restAreaInfo = currentPathInfo.getRestAreas(0,255);
+            ArrayList<RestAreaInfo> restFilterAreaInfos = new ArrayList<>();
+
+            if(!ConvertUtils.isEmpty(restAreaInfo)){
+                restFilterAreaInfos = restAreaInfo.stream().filter(v -> pid.equals(v.servicePOIID)).collect(Collectors.toCollection(ArrayList::new));
+            }
+            if(!ConvertUtils.isEmpty(restFilterAreaInfos)){
+                sapaDetail = restFilterAreaInfos.get(0).sapaDetail;
+            }
+        }
+        return sapaDetail;
     }
 }
