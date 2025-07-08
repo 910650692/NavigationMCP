@@ -1799,6 +1799,15 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     /**
+     * 清除限行线
+     *
+     * @param mapTypeId 屏幕Id
+     */
+    public void clearRestrictPolyline(MapType mapTypeId) {
+        mLayerAdapter.clearRestrictPolyline(mapTypeId);
+    }
+
+    /**
      * 设置避开道路
      *
      * @param routeAvoidInfo 避开参数

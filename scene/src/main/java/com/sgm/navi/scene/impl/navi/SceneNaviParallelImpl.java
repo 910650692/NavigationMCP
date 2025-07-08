@@ -12,6 +12,7 @@ import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
+import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.position.LocalParallelRoadEntity;
@@ -218,6 +219,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
                 }
                 int flag = mCurrentParallelRoadInfo.getFlag();
                 int hwFlag = mCurrentParallelRoadInfo.getHwFlag();
+                RoutePackage.getInstance().clearRestrictPolyline(MapType.MAIN_SCREEN_MAIN_MAP);
                 RoutePackage.getInstance().requestSwitchParallelRoute(mSwitchRoadType,locInfoBean, roadID, (short) flag, (short) hwFlag);
             }
             mIsSwitchParallelEnabled = true;
