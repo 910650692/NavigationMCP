@@ -70,6 +70,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RouteAdapterImpl implements IRouteApi {
     private static final String TAG = MapDefaultFinalTag.ROUTE_SERVICE_TAG;
     private static final String NUM_ONE = "1";
+    public static final ArrayList<String> BANDS = new ArrayList<>(List.of("国家电网"));
     private RouteService mRouteService;
     private RouteAdapterImplHelper mAdapterImplHelper;
     private RouteOption mLastRouteOption;
@@ -202,7 +203,7 @@ public class RouteAdapterImpl implements IRouteApi {
         mRouteService.control(RouteControlKey.RouteControlKeepChargingStation, BevPowerCarUtils.getInstance().bevCarElicOpen ? NUM_ONE : "0");
         if (BevPowerCarUtils.getInstance().bevCarElicOpen) {
             final RouteChargingPreference chargingPreference = new RouteChargingPreference();
-            chargingPreference.brands.addAll(mRouteService.getSupportedChargingPreference().brands);
+            chargingPreference.brands.addAll(BANDS);
             mRouteService.setChargingPreference(chargingPreference);
             ElecInfoConfig elecInfoConfig = getElecInfoConfig();
             mRouteService.setElecInfoConfig(elecInfoConfig);
