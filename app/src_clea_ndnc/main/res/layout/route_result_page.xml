@@ -260,7 +260,7 @@
             clickCommand="@{ViewModel.getSupplementClick()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_660"
+            android:layout_marginStart="@dimen/dp_570"
             android:visibility="@{ViewModel.getSecondaryPoiVisibility() == 2 ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent" />
 

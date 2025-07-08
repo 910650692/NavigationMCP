@@ -37,9 +37,9 @@
             android:textSize="@dimen/sp_26"
             android:text="推荐充电2次,共60分钟"
             android:layout_marginStart="@dimen/dp_26"
-            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginBottom="@dimen/dp_4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/route_charge_start" />
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_charge_start"
