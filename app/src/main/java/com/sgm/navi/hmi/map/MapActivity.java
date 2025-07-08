@@ -544,4 +544,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             Logger.d(TAG, "checkConfig and need update!");
         }
     }
+
+    public void notifyStepOneThirdScreen() {
+        mViewModel.notifyStepOneThirdScreen();
+    }
 }

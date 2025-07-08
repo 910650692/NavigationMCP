@@ -1602,4 +1602,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mScaleViewVisibility.set(judgedScaleViewVisibility());
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
     }
+
+    public void notifyStepOneThirdScreen() {
+        checkViewState();
+    }
 }

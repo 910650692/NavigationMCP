@@ -9,13 +9,17 @@ import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentSplitBinding;
+import com.sgm.navi.hmi.map.MapActivity;
+import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.base.StackManager;
 
 /**
  * @author: QiuYaWei
@@ -44,6 +48,10 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
         } else {
             mViewModel.initView();
             mBinding.sceneNaviTbt.showOrHideGpsSign(false);
+            BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+            if (baseActivity instanceof MapActivity) {
+                ((MapActivity)baseActivity).notifyStepOneThirdScreen();
+            }
         }
     }
 

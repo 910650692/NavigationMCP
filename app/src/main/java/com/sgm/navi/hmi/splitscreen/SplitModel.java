@@ -43,7 +43,6 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     private final MapType MAP_TYPE = MapType.MAIN_SCREEN_MAIN_MAP;
     private final String CALLBACK_KEY = "SplitModel";
     private final NavistatusAdapter mNaviStatusAdapter;
-    private boolean mPreviewIsOnShowing = false; // 全览状态，true代表正在全览
     private ImersiveStatus mImmersiveStatus;
     private String mNaviStatus;
     public SplitModel() {
@@ -148,7 +147,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     }
 
     public void openOrCloseImmersive(boolean isOpenImmersive) {
-        Logger.d(TAG, MAP_TOUCH, "openOrCloseImmersive:" , isOpenImmersive, " mPreviewIsOnShowing:" , mPreviewIsOnShowing);
+        Logger.d(TAG, MAP_TOUCH, "openOrCloseImmersive:" , isOpenImmersive);
         final ImersiveStatus status = isOpenImmersive ? ImersiveStatus.IMERSIVE : ImersiveStatus.TOUCH;
         if (ImmersiveStatusScene.getInstance().getCurrentImersiveStatus(MAP_TYPE) != status) {
             ImmersiveStatusScene.getInstance().setImmersiveStatus(MAP_TYPE, status);
@@ -175,7 +174,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
             Logger.d(TAG, "非导航态无需显示或者关闭全览！");
             return;
         }
-        if (mPreviewIsOnShowing) {
+        if (mNaviPackage.getPreviewStatus()) {
             closePreview();
         } else {
             showPreview();

@@ -148,11 +148,10 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public void startPreviewSchedule() {
         try {
             stopPreviewSchedule();
+            mIsOnShowPreview.set(true);
             previewScheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
-                if (mIsOnShowPreview.get()) {
-                    mModel.closePreview();
-                    mIsOnShowPreview.set(false);
-                }
+                mModel.closePreview();
+                mIsOnShowPreview.set(false);
             }, TOTAL_TIME);
         } catch (Exception e) {
             Logger.e(TAG, "startPreviewSchedule failed:" + e.getMessage());
@@ -171,6 +170,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
             Logger.e(TAG, "stopPreviewSchedule failed:" + e.getMessage());
         } finally {
             previewScheduledFuture = null;
+            mIsOnShowPreview.set(false);
         }
     }
 
