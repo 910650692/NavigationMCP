@@ -600,10 +600,10 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     @Override
     public void onPlayTTS(final SoundInfoEntity info) {
-        Logger.i(TAG, "onPlayTTS: " + (info == null ? "" : info.getText()));
         if (info == null) {
             return;
         }
+        Logger.i(TAG, "onPlayTTS: ", info.getText(), " soundType:", info.getSoundType());
         ThreadManager.getInstance().postUi(() -> {
             try {
                 if (NaviAdapter.getInstance().getMCountDownLatch() != null) {
