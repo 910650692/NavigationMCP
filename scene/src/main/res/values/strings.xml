@@ -243,7 +243,7 @@
     <string name="st_add_home">设置为家</string>
     <string name="st_add_company">设置为公司</string>
     <string name="st_collect_add">添加</string>
-    <string name="st_poi_details_bottom_around">搜索</string>
+    <string name="st_poi_details_bottom_around">周边</string>
     <string name="st_poi_details_favorite">收藏</string>
     <string name="st_poi_details_bottom_phone">电话</string>
     <string name="st_along_way_point">途经点</string>
