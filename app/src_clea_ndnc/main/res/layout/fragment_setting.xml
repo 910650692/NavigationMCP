@@ -10,7 +10,7 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_1110"
         android:layout_height="@dimen/dp_1078"
         android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:clickable="true">
@@ -58,9 +58,9 @@
             android:id="@+id/fragment_container"
             android:layout_width="@dimen/dp_745"
             android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_26"
             android:layout_marginTop="@dimen/dp_34"
             android:layout_marginBottom="@dimen/dp_34"
-            android:layout_marginStart="@dimen/dp_26"
             android:layout_weight="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/skinView5"
