@@ -173,6 +173,7 @@
     <color name="setting_broadcast_voice_operate_bg">#FF2461EA</color>
     <color name="setting_line">#33000000</color>
     <color name="setting_switch_selected">#FF2461EA</color>
+    <color name="setting_switch_unselected">#338E97B9</color>
     <color name="setting_car_number_tip">#80000000</color>
     <color name="setting_car_connected">#B3000000</color>
     <color name="setting_car_connected_function_des">#B0000000</color>

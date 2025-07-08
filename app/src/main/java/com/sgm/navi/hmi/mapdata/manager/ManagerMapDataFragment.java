@@ -11,6 +11,7 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.BR;
+import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentManagerMapDataBinding;
 import com.sgm.navi.hmi.mapdata.DownloadReminderDialog;
@@ -236,12 +237,20 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     public void setStartAllTaskStatus(final boolean isChecked) {
         ThreadManager.getInstance().postUi(() -> {
             if (isChecked) {
-                mBinding.allDataDownload.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_select));
+                if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
+                    mBinding.allDataDownload.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_select_sw1225));
+                } else {
+                    mBinding.allDataDownload.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_select));
+                }
                 mBinding.tvDownloadAllStart.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
                 mBinding.imgDownloadAllStart.setImageDrawable(ResourceUtils.Companion.getInstance().
                         getDrawable(R.drawable.img_download_all_start_select));
             } else {
-                mBinding.allDataDownload.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
+                if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
+                    mBinding.allDataDownload.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_unselect_sw1225));
+                } else {
+                    mBinding.allDataDownload.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
+                }
                 mBinding.tvDownloadAllStart.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
                 mBinding.imgDownloadAllStart.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_download_all_start));
             }
@@ -255,12 +264,20 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     public void setPauseAllTaskStatus(final boolean isChecked) {
         ThreadManager.getInstance().postUi(() -> {
             if (isChecked) {
-                mBinding.allDataSuspend.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_select));
+                if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
+                    mBinding.allDataSuspend.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_select_sw1225));
+                } else {
+                    mBinding.allDataSuspend.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_select));
+                }
                 mBinding.tvDownloadAllSuspend.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
                 mBinding.imgDownloadAllSuspend.setImageDrawable(ResourceUtils.Companion.getInstance().
                         getDrawable(R.drawable.img_download_all_suspend_select));
             } else {
-                mBinding.allDataSuspend.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
+                if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
+                    mBinding.allDataSuspend.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_unselect_sw1225));
+                } else {
+                    mBinding.allDataSuspend.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
+                }
                 mBinding.tvDownloadAllSuspend.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
                 mBinding.imgDownloadAllSuspend.setImageDrawable(ResourceUtils.Companion.getInstance().
                         getDrawable(R.drawable.img_download_all_suspend));

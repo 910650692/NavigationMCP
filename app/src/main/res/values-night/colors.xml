@@ -119,6 +119,7 @@
     <color name="bg_setting_car_connected_help_sub_title">#B3FFFFFF</color>
     <color name="bg_setting_car_number_selector">#FF2C2D36</color>
     <color name="bg_setting_favorite_rename">#FF1E1F26</color>
+    <color name="setting_switch_unselected">#FF2C2D36</color>
 
     <color name="offline_hint_text">#80FFFFFF</color>
     <color name="offline_recommend_download">#80FFFFFF</color>
