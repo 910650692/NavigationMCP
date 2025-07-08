@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.search.model.AggregateSearchResult;
@@ -44,6 +45,7 @@ import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.R;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.ChildInfo;
@@ -703,8 +705,10 @@ public final class SearchResultMapper {
         }
         if (!ConvertUtils.isEmpty(result.pos)) {
             poiInfoEntity.setAddress(result.pos);
-        } else {
+        } else if (!ConvertUtils.isEmpty(poiItem.address)) {
             poiInfoEntity.setAddress(poiItem.address);
+        } else {
+            poiInfoEntity.setAddress(AppCache.getInstance().getMContext().getString(R.string.nearby_poi_address, poiInfoEntity.getName()));
         }
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "current " + poiPoint.getLon() + " " + poiPoint.getLat()
                 + " result " + poiItem.point.lon + " " + poiItem.point.lat + " id: " + poiItem.poiid
