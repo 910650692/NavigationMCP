@@ -499,14 +499,16 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (ConvertUtils.isEmpty(naviInfoBean)) return;
         checkShowViaDetail(naviInfoBean);
         mNaviEtaInfo = naviInfoBean;
-        if (mIsNeedUpdateViaList && null != mViewModel) {
+        if (mIsNeedUpdateViaList && !ConvertUtils.isNull(mViewModel)) {
             mViewModel.updateViaListImm();
         }
-        mViewModel.onNaviInfo(naviInfoBean);
-        if (mTipManager != null) {
+        if (!ConvertUtils.isNull(mViewModel)) {
+            mViewModel.onNaviInfo(naviInfoBean);
+        }
+        if (!ConvertUtils.isNull(mTipManager)) {
             mTipManager.setNextViaChargeStation(naviInfoBean);
         }
-        if (mViaListManager != null) {
+        if (!ConvertUtils.isNull(mViaListManager)) {
             mViaListManager.onNaviInfo(naviInfoBean);
         }
         if (mIsShowCrossImage) {
@@ -618,12 +620,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             boolean isDeleteSuccess = mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                     poiInfo, false);
             // 删除后更新途经点列表信息
-            if (null != mViewModel) {
+            if (!ConvertUtils.isNull(mViewModel)) {
                 mViewModel.updateViaListImm();
             }
             Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = ", isDeleteSuccess);
         }
-        mViewModel.onUpdateViaPass(viaIndex);
+        if (!ConvertUtils.isNull(mViewModel)) {
+            mViewModel.onUpdateViaPass(viaIndex);
+        }
     }
 
     @Override
@@ -701,7 +705,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void skipAlongWayFragment() {
         Logger.i(TAG, "skipAlongWayFragment");
-        addFragment(new MainAlongWaySearchFragment(), null);
+        addFragment(new MainAlongWaySearchFragment(), new Bundle());
     }
 
     @Override
@@ -768,7 +772,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void skipSettingFragment() {
         Logger.i(TAG, "skipSettingFragment");
-        addFragment(new SettingFragment(), null);
+        addFragment(new SettingFragment(), new Bundle());
     }
 
     @Override
@@ -802,10 +806,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         // 清楚图层的途经点扎标
         mNaviPackage.removeViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, mCurrentViaIndex + "");
         // 清楚tbt面板的途经点信息
-        if (mViewModel != null) {
+        if (!ConvertUtils.isNull(mViewModel)) {
             mViewModel.onNaviInfoByViaArrived(mNaviEtaInfo);
+            mViewModel.onUpdateViaPass(-1);
         }
-        mViewModel.onUpdateViaPass(-1);
     }
 
     @Override

@@ -354,10 +354,12 @@ public class BaseNaviGuidanceViewModel extends
      * 导航停止
      */
     public void onNaviStop() {
-        mView.onNaviStop();
+        if (!ConvertUtils.isNull(mView)) {
+            mView.onNaviStop();
+        }
         closeAllFragment();
         if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
-            addFragment(new SplitFragment(), null);
+            addFragment(new SplitFragment(), new Bundle());
         }
     }
 
@@ -733,13 +735,13 @@ public class BaseNaviGuidanceViewModel extends
      * 恢复导航数据
      */
     public void restoreNavigation() {
-        if (null == mModelSaveEntity) {
+        if (ConvertUtils.isEmpty(mModelSaveEntity)) {
             Logger.i(TAG, "mModelSaveEntity is null");
             return;
         }
         final SpeedOverallEntity speedOverallEntity = mModelSaveEntity.getSpeedOverallEntity();
-        boolean isNeedShowSpeedCameraInfo = Objects.equals(mNaviSpeedVisibility.get(),
-                Boolean.TRUE) && speedOverallEntity != null;
+        boolean isNeedShowSpeedCameraInfo = !ConvertUtils.isNull(mNaviSpeedVisibility) &&
+                Boolean.TRUE.equals(mNaviSpeedVisibility.get()) && speedOverallEntity != null;
         if (isNeedShowSpeedCameraInfo) {
             onNaviSpeedCameraInfo(speedOverallEntity);
         }
@@ -751,7 +753,8 @@ public class BaseNaviGuidanceViewModel extends
         }
         final CrossImageEntity naviImageInfo = mModelSaveEntity.getCrossImageEntity();
         boolean isNeedRestoreCrossImageInfo = naviImageInfo != null &&
-                Objects.equals(mNaviCrossImageVisibility.get(), Boolean.TRUE);
+                !ConvertUtils.isNull(mNaviCrossImageVisibility) &&
+                Boolean.TRUE.equals(mNaviCrossImageVisibility.get());
         if (isNeedRestoreCrossImageInfo) {
             onCrossProgress(mModelSaveEntity.getCrossProgress());
             onCrossImageInfo(true, naviImageInfo);
@@ -768,7 +771,8 @@ public class BaseNaviGuidanceViewModel extends
         }
         LaneInfoEntity laneInfo = mModelSaveEntity.getLaneInfo();
         boolean isNeedRestoreLaneInfo = laneInfo != null &&
-                Objects.equals(mNaviLanesVisibility.get(), Boolean.TRUE);
+                !ConvertUtils.isNull(mNaviLanesVisibility) &&
+                Boolean.TRUE.equals(mNaviLanesVisibility.get());
         if (isNeedRestoreLaneInfo) {
             onLaneInfo(mIsShowLane, laneInfo);
         }
@@ -778,11 +782,12 @@ public class BaseNaviGuidanceViewModel extends
         }
         showViaDetail(mModelSaveEntity.isIsViaDetailShow());
         updateNewestViaPoint(mModelSaveEntity.getNaviViaEntity());
-        if (Objects.equals(mNaviSapaDetailVisibility.get(), Boolean.TRUE)) {
+        if (!ConvertUtils.isNull(mNaviSapaDetailVisibility) &&
+                Boolean.TRUE.equals(mNaviSapaDetailVisibility.get())) {
             skipNaviSapaDetailScene(mModelSaveEntity.getSapaDetailType(),
                     mModelSaveEntity.getSapaInfoEntity());
         }
-        if (null != mView) {
+        if (!ConvertUtils.isNull(mView)) {
             mView.updateViewRadius();
         }
     }
