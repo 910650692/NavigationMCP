@@ -831,9 +831,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 }
             }
         }
-        Logger.i(TAG, getMapType(), "设置路线 更新引导路线数据 -> ", bizPathInfoAttrs, "默认选中路线 -> ", selectIndex);
         int result = getLayerGuideRouteControl().setPathInfos(bizPathInfoAttrs, selectIndex);
-        Logger.d(TAG, getMapType(), "设置路线 result : ", result);
+        Logger.d(TAG, getMapType(), "设置路线 result : ", result, " 默认选中路线 -> ", selectIndex);
     }
 
     /**
