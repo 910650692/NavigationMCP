@@ -58,6 +58,7 @@ import com.sgm.navi.service.define.search.SearchCategoryLocalInfo;
 import com.sgm.navi.service.define.search.SearchChildCategoryLocalInfo;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
+import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
@@ -1014,7 +1015,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             if (null != mAdapter) {
                 mAdapter.clearList();
             }
-            if (searchResultEntity != null && searchResultEntity.getPoiType() == 0) {
+            if (searchResultEntity != null
+                    && searchResultEntity.getPoiType() == 0
+                    && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) {
                 //离线搜索无数据时，跳转城市列表搜索界面
                 final Fragment fragment = (Fragment) ARouter.getInstance()
                         .build(RoutePath.Search.OFFLINE_SEARCH_FRAGMENT)
@@ -1023,6 +1026,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
             //搜索无数据时，展示无结果页面
             mViewBinding.searchResultNoData.setVisibility(VISIBLE);
+            if (searchResultEntity != null && searchResultEntity.getPoiType() == 0 && ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) {
+                mViewBinding.searchResultNoData.setText(R.string.search_offline_no_city_hint);
+            }else{
+                mViewBinding.searchResultNoData.setText(R.string.sug_search_result_no_data);
+            }
+
             return;
         }
         //有数据时，隐藏异常提示界面
