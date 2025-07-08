@@ -957,6 +957,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         mTaskId = mScreenViewModel.getMTaskId();
+        if(mIsFilterViewShow){
+            hideFilterPage();
+        }
         final String chargeType = ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
         final String gasType = ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_station);
         mChildQuickList = new ArrayList<>();
