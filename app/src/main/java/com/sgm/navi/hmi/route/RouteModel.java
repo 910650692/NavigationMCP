@@ -1035,7 +1035,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     mViewModel.updateSelectRouteUI(routeIndex);
                     mViewModel.showNormalRouteUI(true);
                 }
-                mSearchPackage.clearLabelMark();
+//                mSearchPackage.clearLabelMark();
                 mViewModel.cancelTimer();
                 clearWeatherView();
                 clearRestArea();

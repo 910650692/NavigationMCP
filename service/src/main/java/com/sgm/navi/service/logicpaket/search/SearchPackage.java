@@ -1707,7 +1707,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (mNaviPackage.getFixedOverViewStatus()) {
             return;
         }
-        mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+        if (isNaviStatus()) {
+            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+        }
     }
 
     /**
@@ -1719,7 +1721,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (mNaviPackage.getFixedOverViewStatus()) {
             return;
         }
-        mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+        if (isNaviStatus()) {
+            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+        }
     }
 
     /**
@@ -1815,6 +1819,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 NaviStatus.NaviStatusType.LIGHT_NAVING,
                 NaviStatus.NaviStatusType.ROUTING,
                 NaviStatus.NaviStatusType.SELECT_ROUTE
+        ));
+        return validStatuses.contains(currentNaviStatus);
+    }
+
+    public boolean isNaviStatus() {
+        final String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();
+        final Set<String> validStatuses = new HashSet<>(Set.of(
+                NaviStatus.NaviStatusType.NAVING,
+                NaviStatus.NaviStatusType.LIGHT_NAVING
         ));
         return validStatuses.contains(currentNaviStatus);
     }
