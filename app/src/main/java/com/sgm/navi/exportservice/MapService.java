@@ -38,6 +38,7 @@ public class MapService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
+        super.onStartCommand(intent, flags, startId);
         Logger.d(TAG, "onStartCommand");
         return START_STICKY;
     }

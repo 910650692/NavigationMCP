@@ -154,7 +154,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
 
     public NaviAutoApiBinder() {
         StartService.getInstance().registerSdkCallback("", this);
-        if(!StartService.getInstance().checkSdkIsNeedInit()){
+        if (!StartService.getInstance().checkSdkIsNeedInit()) {
             registerCallback();
         }
         mGuidePanelStatus = getGuidePanelStatus(TAG);
@@ -172,7 +172,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         registerCallback();
     }
 
-    private void registerCallback(){
+    private void registerCallback() {
         initPositionCallback();
         initSearchCallback();
         initNaviStatusCallback();
@@ -765,7 +765,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
 
     private String transformBeanDefine(final String orig) {
         if (ConvertUtils.isEmpty(orig)) {
-            return null;
+            Logger.d(TAG, "empty orig bean");
+            return "";
         }
         final List<PoiInfoForExport> poiList = GsonUtils.fromJson2List(orig,new TypeToken<List<PoiInfoForExport>>(){}.getType());
         final List<BaseFsaPoiInfo> poiExportList = new ArrayList<>();
