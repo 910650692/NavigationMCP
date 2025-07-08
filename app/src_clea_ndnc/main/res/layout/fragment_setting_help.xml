@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_help"
                 android:textSize="@dimen/sp_29"
-                android:textColor="@color/setting_bg_tab_text_select"
+                android:textColor="@color/black"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

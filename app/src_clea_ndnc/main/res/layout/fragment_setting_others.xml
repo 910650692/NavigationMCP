@@ -49,7 +49,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_others_account"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/sp_29" />
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -134,7 +134,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_track_history"
-                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:textColor="@color/black"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -176,7 +176,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_others_privacy_permission"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/sp_29" />
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -217,7 +217,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/sp_29"
                     android:layout_marginStart="@dimen/dp_26"/>
 
@@ -254,7 +254,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_others_about"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/sp_29" />
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -308,7 +308,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_others_clear_memory"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/sp_29" />
 
                     <com.sgm.navi.ui.view.SkinTextView

@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/setting_broadcast_voice"
                 android:textSize="@dimen/sp_29"
-                android:textColor="@color/setting_bg_tab_text_select" />
+                android:textColor="@color/black" />
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mOpenBroadcastVoiceListPage}"
@@ -55,7 +55,7 @@
                     android:layout_marginTop="@dimen/dp_40"
                     android:text="@string/setting_broadcast_voice_current_name"
                     android:textSize="@dimen/sp_29"
-                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:textColor="@color/black"
                     app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_current"
                     app:layout_constraintTop_toTopOf="parent"/>
 
@@ -113,7 +113,7 @@
                 android:layout_marginTop="@dimen/dp_51"
                 android:text="@string/setting_broadcast_navi"
                 android:textSize="@dimen/sp_29"
-                android:textColor="@color/setting_bg_tab_text_select" />
+                android:textColor="@color/black" />
 
             <com.sgm.navi.ui.view.SkinRadioGroup
                 android:id="@+id/navi_broadcast"
@@ -189,7 +189,7 @@
                     android:layout_marginStart="@dimen/dp_20"
                     android:text="@string/setting_broadcast_cruise"
                     android:textSize="@dimen/sp_29"
-                    android:textColor="@color/setting_bg_tab_text_select"/>
+                    android:textColor="@color/black"/>
 
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
