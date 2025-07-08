@@ -1,5 +1,6 @@
 package com.sgm.navi.service.adapter.navi;
 
+import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.sgm.navi.service.define.navi.CameraInfoEntity;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
@@ -59,6 +60,15 @@ public interface GuidanceObserver extends BaseNaviObserver {
      * @param naviImageInfo naviImageInfo
      */
     default void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
+
+    }
+
+    /**
+     * 显示路口大图信息
+     *
+     * @param info CrossImageInfo
+     */
+    default void onShowCrossImage(final CrossImageInfo info) {
 
     }
 

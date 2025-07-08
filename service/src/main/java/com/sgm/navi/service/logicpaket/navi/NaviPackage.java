@@ -10,6 +10,7 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.path.option.PathInfo;
+import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -566,6 +567,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 }
             }
         });
+    }
+
+    @Override
+    public void onShowCrossImage(CrossImageInfo info) {
+        mLayerAdapter.setCrossImageInfo(MapType.MAIN_SCREEN_MAIN_MAP, info);
     }
 
     @Override

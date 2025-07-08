@@ -191,6 +191,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
+                    guidanceObserver.onShowCrossImage(info);
                     guidanceObserver.onCrossImageInfo(isHaveNaviImageInfo, naviImageInfo);
                 }
             }
