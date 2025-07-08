@@ -141,7 +141,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
     private ScheduledFuture mGuideStatusHolder;
     private int mTmcTotalDistance = 0;
     private int mTmcFinishDistance = 0;
-    private String DestName = "目的地";
+    private String DestName = "安吉星地址推荐";
     //当前引导面板状态
     private int mGuidePanelStatus;
 
