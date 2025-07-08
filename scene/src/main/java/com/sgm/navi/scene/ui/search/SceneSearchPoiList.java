@@ -347,7 +347,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "第一个可见位置: " + firstVisiblePosition);
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "最后一个可见位置: " + lastVisiblePosition);
-                    if (mAdapter == null) {
+                    if (mAdapter == null || mResultEntity == null) {
                         return;
                     }
                     final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
