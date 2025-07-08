@@ -1750,7 +1750,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             final View customViewItem = inflater.inflate(R.layout.item_route_charge_progress, routeChargeProgressLayout, false);
             customViewItem.setId(View.generateViewId());
             final SkinTextView distanceText = customViewItem.findViewById(R.id.tv_route_charge);
-            distanceText.setText(poiInfoEntity.getDistance().replace("公里", "km").replace("米","m"));
+            if (poiInfoEntity.getDistance() == null) {
+                distanceText.setText(TimeUtils.getInstance().getDistanceString(poiInfoEntity.getSort_distance()));
+            } else {
+                distanceText.setText(poiInfoEntity.getDistance().replace("公里", "km").replace("米","m"));
+            }
             if (mRouteChargeProgressViews == null) {
                 mRouteChargeProgressViews = new ConcurrentHashMap<>();
             }
