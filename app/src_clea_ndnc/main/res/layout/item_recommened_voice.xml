@@ -56,8 +56,9 @@
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/recommend_voice_operate"
-            android:layout_width="@dimen/dp_153"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_65"
+            android:minWidth="@dimen/dp_153"
             android:layout_marginEnd="@dimen/dp_26"
             visibility="@{model.isUsed() ? View.GONE : View.VISIBLE}"
             android:gravity="center"
