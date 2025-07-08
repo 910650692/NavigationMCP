@@ -624,15 +624,15 @@ public class ChargeInfo implements Parcelable {
         mOperatorId = in.readString();
         mStationId = in.readString();
         mBrand = in.readString();
+        mCostItem = in.createTypedArrayList(CostTime.CREATOR);
+        mEquipmentInfo = in.createTypedArrayList(EquipmentInfo.CREATOR);
+        mIsAppointment = in.readBoolean();
         mSlowChargingFree = in.readInt();
         mSlowChargingTotal = in.readInt();
         mFastChargingFree = in.readInt();
         mFastChargingTotal = in.readInt();
         mParkFee = in.readString();
         mLowPrice = in.readString();
-        mCostItem = in.createTypedArrayList(CostTime.CREATOR);
-        mEquipmentInfo = in.createTypedArrayList(EquipmentInfo.CREATOR);
-        mIsAppointment = in.readBoolean();
         mLatestChargeTimestamp = in.readLong();
         mSearchTimestamp = in.readLong();
     }
