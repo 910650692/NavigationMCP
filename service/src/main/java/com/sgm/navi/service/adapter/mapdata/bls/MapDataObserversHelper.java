@@ -400,7 +400,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
             } else {
                 Logger.e(TAG, "getCityInfo: info == null" + adCode);
             }
-            Logger.d(TAG, "getCityInfo: cityInfo = " + GsonUtils.toJson(cityInfo));
+            Logger.d(TAG, "getCityInfo: cityInfo: ", cityInfo);
             return cityInfo;
         }
         Logger.d(TAG, "getCityInfo: null");

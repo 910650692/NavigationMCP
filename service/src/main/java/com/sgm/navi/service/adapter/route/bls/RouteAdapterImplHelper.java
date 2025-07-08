@@ -692,12 +692,12 @@ public class RouteAdapterImplHelper {
                 }
             }
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, requestId);
-            Logger.i(TAG, "从请求队列中获取结果对象 " + requestRouteResult);
             if (null == requestRouteResult) {
                 //除了reRoute/requestRoute外其余一概不处理
-                Logger.i(TAG, "下发路线");
+                Logger.i(TAG, "非常规算路， 结果终止路线数据下发");
                 return;
             }
+            Logger.i(TAG, "从请求队列中获取结果对象 " + requestRouteResult);
             //专为通勤模式添加回调
             if (requestRouteResult.getMRouteRequestCallBackType() != -1) {
                 handlerTMCForMap(pathInfoList, requestId, requestRouteResult.getMMapTypeId()

@@ -7,11 +7,11 @@ import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
+import com.autonavi.gbl.common.path.model.ChargeStationInfo;
 import com.autonavi.gbl.common.path.model.ChargingStation;
 import com.autonavi.gbl.common.path.model.ElecVehicleETAInfo;
 import com.autonavi.gbl.common.path.model.EnergyEndPoint;
 import com.autonavi.gbl.common.path.model.LightBarItem;
-import com.autonavi.gbl.common.path.model.RoadClass;
 import com.autonavi.gbl.common.path.model.TollGateInfo;
 import com.autonavi.gbl.common.path.model.TrafficItem;
 import com.autonavi.gbl.common.path.model.ViaMergeInfo;
@@ -70,9 +70,11 @@ import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.TrafficLightCountdownEntity;
+import com.sgm.navi.service.define.route.RouteChargeStationDetailInfo;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.utils.NumberUtils;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -835,21 +837,46 @@ public final class NaviDataFormatHelper {
         final List<FyElecVehicleETAInfo> desObj = new ArrayList<>(elecVehicleETAInfo.size());
         for (ElecVehicleETAInfo etaInfo : elecVehicleETAInfo) {
             if (null == etaInfo) continue;
+
             FyElecVehicleETAInfo fyElecVehicleETAInfo = getFyElecVehicleETAInfo(etaInfo);
 
             ArrayList<ChargingStation> chargeStationInfo = etaInfo.chargeStationInfo;
+
             if (null != chargeStationInfo) {
-                ArrayList<FyChargingStation> fyChargingStations = GsonUtils.fromJson2List(chargeStationInfo, FyChargingStation.class);
+                ArrayList<FyChargingStation> fyChargingStations = new ArrayList<>(chargeStationInfo.size());
+                for (ChargingStation chargeStation : chargeStationInfo) {
+                    FyChargingStation fyChargingStation = new FyChargingStation();
+                    BigInteger chargeSum = chargeStation.chargeEnrgySum;
+                    if (null != chargeSum) {
+                        fyChargingStation.setChargeEnrgySum(chargeSum.longValue());
+                    }
+                    fyChargingStation.setChargeInfo(getRouteChargeStationDetailInfo(chargeStation.chargeInfo));
+                    fyChargingStations.add(fyChargingStation);
+                }
                 fyElecVehicleETAInfo.setChargeStationInfo(fyChargingStations);
             }
-            ArrayList<ViaMergeInfo> viaMergeInfos = etaInfo.viaMergeInfo;
-            if (null != viaMergeInfos) {
-                ArrayList<FyViaMergeInfo> viaMergeInfo = GsonUtils.fromJson2List(viaMergeInfos, FyViaMergeInfo.class);
-                fyElecVehicleETAInfo.setViaMergeInfo(viaMergeInfo);
-            }
+
             desObj.add(fyElecVehicleETAInfo);
         }
         return desObj;
+    }
+
+    private static @NonNull RouteChargeStationDetailInfo getRouteChargeStationDetailInfo(ChargeStationInfo chargeStation) {
+        RouteChargeStationDetailInfo chargeStationDetailInfo = new RouteChargeStationDetailInfo();
+        if (null != chargeStation) {
+            chargeStationDetailInfo.setMIndex(chargeStation.index);
+            chargeStationDetailInfo.setMName(chargeStation.name);
+            chargeStationDetailInfo.setMRemainingCapacity(chargeStation.remainingCapacity);
+            chargeStationDetailInfo.setMRemainingPercent(chargeStation.remainingPercent);
+            chargeStationDetailInfo.setMShow(new com.sgm.navi.service.define.route.Coord2DDouble(chargeStation.show.lon, chargeStation.show.lat));
+            chargeStationDetailInfo.setMProjective(new com.sgm.navi.service.define.route.Coord2DDouble(chargeStation.projective.lon, chargeStation.projective.lat));
+            chargeStationDetailInfo.setMPoiID(chargeStation.poiID);
+            chargeStationDetailInfo.setMBrandName(chargeStation.brandName);
+            chargeStationDetailInfo.setMMaxPower(chargeStation.maxPower);
+            chargeStationDetailInfo.setMChargePercent(chargeStation.chargePercent);
+            chargeStationDetailInfo.setMChargeTime(chargeStation.chargeTime);
+        }
+        return chargeStationDetailInfo;
     }
 
     private static @NonNull FyElecVehicleETAInfo getFyElecVehicleETAInfo(ElecVehicleETAInfo etaInfo) {
