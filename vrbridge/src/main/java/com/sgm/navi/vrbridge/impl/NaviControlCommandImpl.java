@@ -1506,12 +1506,12 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      * @return CallResponse
      */
     @Override
-    public CallResponse onTimeLeftAsk(@Nullable final String start, @Nullable final String arrival, final RespCallback respCallback) {
+    public CallResponse onTimeLeftAsk(@Nullable final String start, String arrival, final RespCallback respCallback) {
         if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onTimeLeftAsk: start = ", start, ", arrival = ", arrival);
         }
         if (TextUtils.isEmpty(arrival)) {
-            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NO_EMPTY_DEST);
+            arrival = IVrBridgeConstant.PoiType.DESTINATION;
         }
 
         final CallResponse response;

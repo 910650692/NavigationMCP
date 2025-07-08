@@ -1229,8 +1229,8 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 break;
             default:
                 break;
+        }
     }
-}
 
 /**
  * 跳转至补能规划界面
@@ -1449,5 +1449,12 @@ public void setPoint() {
 
     public int getSearchLoadingType() {
         return mSearchLoadingType;
+    }
+
+    @Override
+    public void onVoiceStartNavigation() {
+        if (null != mViewModel) {
+            mViewModel.getStartNaviClick().call();
+        }
     }
 }

@@ -1045,11 +1045,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.SELECT_ROUTE:
                     //选择路线
+                    final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+                    Logger.d(IVrBridgeConstant.TAG, "current status:" + curStatus);
                     ThreadManager.getInstance().execute(() -> {
-                        if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)
-                                || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
+                        if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus) || NaviStatus.NaviStatusType.NAVING.equals(curStatus)) {
                             final int routeIndex = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.ROUTE_INDEX, 0);
                             mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, routeIndex);
+                            if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
+                                mRoutePackage.voiceStartNavi();
+                            }
                         }
                     });
                     break;

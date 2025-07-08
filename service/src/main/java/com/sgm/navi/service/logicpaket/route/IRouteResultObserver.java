@@ -206,4 +206,9 @@ public interface IRouteResultObserver {
     default void onRouteDetails(List<RouteLineSegmentInfo> routeLineDetail) {
 
     }
+
+    /**
+     * 语音选路后发起导航
+     */
+    default void onVoiceStartNavigation() {}
 }

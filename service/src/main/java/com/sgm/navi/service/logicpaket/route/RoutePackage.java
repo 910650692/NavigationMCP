@@ -2029,4 +2029,18 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
 
     //------------算路沿途搜***************************************************/
+
+    /**
+     * 语音选择路线后直接发起导航
+     */
+    public void voiceStartNavi() {
+        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+            if (ConvertUtils.isEmpty(routeResultObserver)) {
+                continue;
+            }
+            routeResultObserver.onVoiceStartNavigation();
+        }
+    }
+
+
 }
