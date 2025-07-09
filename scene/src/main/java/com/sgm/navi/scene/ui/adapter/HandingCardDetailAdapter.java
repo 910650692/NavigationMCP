@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -34,6 +35,8 @@ import java.util.List;
  * Description: [在这里描述文件功能]
  */
 public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDetailAdapter.MyViewHolder> {
+
+    private static final String TAG = "HandingCardDetailAdapter";
     private List<PoiInfoEntity> dataList = new ArrayList<>();
     private HandCardType mType = HandCardType.CHARGE;
     private Context mContext;
@@ -70,16 +73,26 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
             default -> {
             }
         }
-        holder.binding.clCharge.itemRoot.setVisibility(mType == HandCardType.CHARGE ? View.VISIBLE : View.GONE);
-        holder.binding.clGas.itemRoot.setVisibility(mType == HandCardType.GAS ? View.VISIBLE : View.GONE);
-        holder.binding.clPark.sclListItem.setVisibility(mType == HandCardType.PARK ? View.VISIBLE : View.GONE);
-        holder.binding.clCharge.itemRoot.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
-        holder.binding.clGas.itemRoot.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
-        holder.binding.clPark.sclListItem.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
+
+        final ItemHandingCardDetailBinding binding = holder.binding;
+        if (binding == null){
+            Logger.d(TAG, "MyViewHolder.binding == null");
+            return;
+        }
+        binding.clCharge.itemRoot.setVisibility(mType == HandCardType.CHARGE ? View.VISIBLE : View.GONE);
+        binding.clGas.itemRoot.setVisibility(mType == HandCardType.GAS ? View.VISIBLE : View.GONE);
+        binding.clPark.sclListItem.setVisibility(mType == HandCardType.PARK ? View.VISIBLE : View.GONE);
+        binding.clCharge.itemRoot.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
+        binding.clGas.itemRoot.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
+        binding.clPark.sclListItem.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
     }
 
     private void setChargeUi(MyViewHolder holder, int position) {
         final ItemHandingCardDetailBinding binding = holder.binding;
+        if (binding == null){
+            Logger.d(TAG, "MyViewHolder.binding == null");
+            return;
+        }
         binding.clCharge.tvRecLabel.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
         final PoiInfoEntity poiInfo = dataList.get(position);
         final ChargeInfo chargeInfo = ConvertUtils.isEmpty(poiInfo.getChargeInfoList()) ? null : poiInfo.getChargeInfoList().get(0);
@@ -136,6 +149,11 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
     private void setGasUi(MyViewHolder holder, int position) {
         final ItemHandingCardDetailBinding binding = holder.binding;
         final PoiInfoEntity poiInfo = dataList.get(position);
+
+        if (binding == null){
+            Logger.d(TAG, "MyViewHolder.binding == null");
+            return;
+        }
         binding.clGas.tvRecLabel.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
         binding.clGas.stvNum.setText(String.valueOf(position + 1));
         binding.clGas.tvTitle.setText(poiInfo.getName());
@@ -191,6 +209,10 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
 
     private void setParkUi(MyViewHolder holder, int position) {
         final ItemHandingCardDetailBinding binding = holder.binding;
+        if (binding == null){
+            Logger.d(TAG, "MyViewHolder.binding == null");
+            return;
+        }
         binding.clPark.tvRecommend.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
         final PoiInfoEntity poiInfo = dataList.get(position);
         final List<ParkingInfo> parkingInfos = poiInfo.getParkingInfoList();

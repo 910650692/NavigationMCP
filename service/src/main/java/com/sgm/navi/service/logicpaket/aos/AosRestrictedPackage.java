@@ -101,39 +101,49 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
 
     @Override
     public void onDrawRestrictionAndDetails(RouteRestrictionParam param) {
-        for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
-            observer.queryLimitResult(param);
+        synchronized (restrictedObserverList) {
+            for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
+                observer.queryLimitResult(param);
+            }
         }
     }
 
     @Override
     public void onTrafficRestrict(TrafficRestrictResponseParam trafficRestrictResponseParam) {
-        for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
-            observer.queryLimitEndNumberResult(trafficRestrictResponseParam);
+        synchronized (restrictedObserverList) {
+            for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
+                observer.queryLimitEndNumberResult(trafficRestrictResponseParam);
+            }
         }
     }
 
     @Override
     public void onTrafficQueryDetail(FyGTraEventDetail gTraEventDetail) {
         QueryRestrictedObserver.super.onTrafficQueryDetail(gTraEventDetail);
-        for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
-            observer.queryTrafficEventDetailResult(gTraEventDetail);
+        synchronized (restrictedObserverList) {
+            for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
+                observer.queryTrafficEventDetailResult(gTraEventDetail);
+            }
         }
     }
 
     @Override
     public void onTrafficUploadFinished(boolean isSuccess) {
         QueryRestrictedObserver.super.onTrafficUploadFinished(isSuccess);
-        for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
-            observer.onTrafficUploadFinished(isSuccess);
+        synchronized (restrictedObserverList) {
+            for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
+                observer.onTrafficUploadFinished(isSuccess);
+            }
         }
     }
 
     @Override
     public void onDynamicPraiseQueryFinished(FyCriticism fyCriticism) {
         QueryRestrictedObserver.super.onDynamicPraiseQueryFinished(fyCriticism);
-        for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
-            observer.onDynamicPraiseQueryFinished(fyCriticism);
+        synchronized (restrictedObserverList) {
+            for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
+                observer.onDynamicPraiseQueryFinished(fyCriticism);
+            }
         }
     }
 
@@ -155,8 +165,10 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
             }
         }
 
-        for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
-            observer.isHoliday(isHoliday);
+        synchronized (restrictedObserverList) {
+            for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
+                observer.isHoliday(isHoliday);
+            }
         }
 
     }
