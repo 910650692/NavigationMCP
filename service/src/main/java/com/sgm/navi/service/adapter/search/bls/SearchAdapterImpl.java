@@ -39,6 +39,8 @@ import com.autonavi.gbl.search.model.SuggestionSearchResult;
 import com.autonavi.gbl.search.observer.IKeyWordSearchObserverV2;
 import com.autonavi.gbl.util.errorcode.common.Service;
 import com.autonavi.gbl.util.model.TaskResult;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -819,7 +821,26 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     public int updateCollectStatus(SearchRequestParameter searchRequestParameter){
         mTaskId.incrementAndGet();
-        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+        Gson gson = new GsonBuilder()
+                .disableHtmlEscaping()
+                .addSerializationExclusionStrategy(new ExclusionStrategy() {
+                    @Override
+                    public boolean shouldSkipField(FieldAttributes f) {
+                        return !isBasicType(f.getDeclaredClass());
+                    }
+
+                    @Override
+                    public boolean shouldSkipClass(Class<?> clazz) {
+                        return false;
+                    }
+
+                    private boolean isBasicType(Class<?> clazz) {
+                        return clazz.isPrimitive() || clazz == String.class || clazz == Integer.class ||
+                                clazz == Long.class || clazz == Boolean.class || clazz == Float.class ||
+                                clazz == Double.class;
+                    }
+                })
+                .create();
         HashMap<String, Object> map = new HashMap();
         map.put("savedStations",searchRequestParameter.getSavedStationsJson());
         map.put("updateType","FULL");

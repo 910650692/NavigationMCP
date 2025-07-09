@@ -2,6 +2,8 @@ package com.sgm.navi.mapservice.util;
 
 import android.util.Log;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -34,7 +36,26 @@ public class LogUtils {
 
     private static final int LOG_MAX_LENGTH = 1024 * 2;
 
-    private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    private static final Gson gson = new GsonBuilder()
+            .disableHtmlEscaping()
+            .addSerializationExclusionStrategy(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    return !isBasicType(f.getDeclaredClass());
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+
+                private boolean isBasicType(Class<?> clazz) {
+                    return clazz.isPrimitive() || clazz == String.class || clazz == Integer.class ||
+                            clazz == Long.class || clazz == Boolean.class || clazz == Float.class ||
+                            clazz == Double.class;
+                }
+            })
+            .create();
 
     public static void setDefaultTag(String defaultTag) {
         DEFAULT_TAG = defaultTag;
