@@ -143,6 +143,7 @@ public interface IMapApi {
 
     /*退出全览*/
     void exitPreview(MapType mapTypeId);
+    void exitPreview(MapType mapTypeId, boolean bCenter);
 
     /*锁定地图缩放*/
     void setLockMapPinchZoom(MapType mapTypeId, boolean isLock);

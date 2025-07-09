@@ -346,8 +346,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
                         DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
             }
-            //全览之后开启导航，需要取消全览
-            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
             // 延时绘制终点扎标，减少峰值消耗
             ThreadManager.getInstance().postDelay(mFirstDrawEndPoint, NumberUtils.NUM_1000);
             // 开始三分钟查询一次终点POI信息
@@ -361,6 +359,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mMapPackage.setMapStateStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                     MapStateStyle.MAP_NAVI);
             if (!mClusterMapOpenCloseManager.isClusterOpen()) {
+                //全览之后开启导航，需要取消全览
+                mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP,
+                        DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
                 mNaviPackage.setClusterFixOverViewStatus(false);
                 mMapPackage.goToCarPosition(mapTypeId);
                 mLayerPackage.setFollowMode(mapTypeId, true);

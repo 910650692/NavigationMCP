@@ -271,6 +271,11 @@ public class MapAdapterImpl implements IMapApi {
     }
 
     @Override
+    public void exitPreview(MapType mapTypeId, boolean bCenter) {
+        mapViewPoolManager.getMapViewImpl(mapTypeId).exitPreview(bCenter);
+    }
+
+    @Override
     public void updateUiStyle(MapType mapTypeId, ThemeType uiMode) {
         mapViewPoolManager.getMapViewImpl(mapTypeId).updateUiStyle(uiMode);
     }

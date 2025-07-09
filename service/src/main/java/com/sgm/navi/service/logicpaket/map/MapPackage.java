@@ -329,6 +329,13 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         mMapAdapter.exitPreview(mapTypeId);
     }
 
+    public void exitPreview(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean bCenter) {
+        Logger.d(TAG, "exitPreview");
+        mLayerPackage.setDynamicLevelLock(mapTypeId, dynamicLevelMode, false);
+        setLockMapRollAngle(mapTypeId, false);
+        mMapAdapter.exitPreview(mapTypeId, bCenter);
+    }
+
 
     @Override
     public void onMapCenterChanged(MapType mapTypeId, double lon, double lat) {

@@ -230,6 +230,10 @@ public class MapAdapter {
         mIMapApi.exitPreview(mapTypeId);
     }
 
+    public void exitPreview(MapType mapTypeId, boolean bCenter) {
+        mIMapApi.exitPreview(mapTypeId, bCenter);
+    }
+
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {
         mIMapApi.updateUiStyle(mapTypeId, type);
         mSettingAdapter.setConfigKeyDayNightMode(type);

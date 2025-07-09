@@ -242,7 +242,8 @@ public final class OpenApiHelper {
         Logger.i(TAG, "exitPreview");
         NAVI_PACKAGE.setPreviewStatus(false);
         // 退出全览
-        MAP_PACKAGE.exitPreview(mapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+        MAP_PACKAGE.exitPreview(mapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+//        MAP_PACKAGE.exitPreview(mapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
         // 回到当前位置
         MAP_PACKAGE.goToCarPosition(mapTypeId, false, false);
         LAYER_PACKAGE.setFollowMode(mapTypeId, true);

@@ -348,6 +348,11 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().exitPreview(false);
     }
 
+    public void exitPreview(boolean bCenter) {
+        if(Logger.openLog) Logger.d(TAG, "exitPreview: ", bCenter);
+        getMapview().exitPreview(bCenter);
+    }
+
     public int getCurrentScale() {
         return getMapview().getOperatorScale().getScale((int) getCurrentZoomLevel());
     }
