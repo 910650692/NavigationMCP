@@ -227,8 +227,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             return;
         }
         BuryProperty buryProperty = new BuryProperty.Builder()
-                .setParams(BuryConstant.ProperType.BURY_KEY_REMAINING_TIME, TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), mNaviEtaInfo.getRemainTime()))
-                .setParams(BuryConstant.ProperType.BURY_KEY_TRIP_DISTANCE, TimeUtils.getRemainInfo(AppCache.getInstance().getMContext(), mNaviEtaInfo.getRemainDist(), mNaviEtaInfo.getRemainTime()))
+                .setParams(BuryConstant.ProperType.BURY_KEY_REMAINING_TIME, TimeUtils.getRemainingTime(AppCache.getInstance().getMContext(), mNaviEtaInfo.getRemainTime()))
+                .setParams(BuryConstant.ProperType.BURY_KEY_TRIP_DISTANCE, TimeUtils.getRemainingMileage(AppCache.getInstance().getMContext(), mNaviEtaInfo.getRemainDist()))
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }

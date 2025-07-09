@@ -850,6 +850,10 @@ public class TimeUtils {
         return builder.toString();
     }
 
+    public static String getRemainingTime(Context context, int time) {
+        return switchHourAndMimuteFromSecond(context, time);
+    }
+
     public static String getRemainingMileage(Context context, int distance) {
         StringBuilder builder = new StringBuilder();
         String[] etaDistance = ConvertUtils.formatDistanceArray(context, distance);
