@@ -56,7 +56,6 @@ import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
-import com.sgm.navi.service.define.route.RoutePoiType;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.ChildInfo;
 import com.sgm.navi.service.define.search.ETAInfo;
@@ -72,14 +71,10 @@ import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.StackManager;
-import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.ui.view.SkinImageView;
 import com.sgm.navi.ui.view.SkinRecyclerView;
 import com.sgm.navi.ui.view.SkinTextView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -236,17 +231,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(poiInfoEntity));
 
         //for burying point
-        final JSONObject params = new JSONObject();
-        try {
-            params.put(BuryConstant.Key.ROUTE_POI_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
-            params.put(BuryConstant.Key.POI_INFO_ENTRY, poiInfoEntity);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (poiInfoEntity != null && !ConvertUtils.isEmpty(poiInfoEntity.getName())) {
+            final BuryProperty properties = new BuryProperty.Builder()
+                    .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, poiInfoEntity.getName())
+                    .build();
+            BuryPointController.getInstance().setBuryProps(properties);
         }
-        final BuryProperty properties = new BuryProperty.Builder()
-                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, params.toString())
-                .build();
-        BuryPointController.getInstance().setBuryProps(properties);
     }
 
     /**
