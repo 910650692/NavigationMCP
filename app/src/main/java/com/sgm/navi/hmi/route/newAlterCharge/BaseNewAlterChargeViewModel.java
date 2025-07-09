@@ -17,6 +17,7 @@ import com.sgm.navi.scene.ui.search.SearchConfirmDialog;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationParam;
 import com.sgm.navi.service.define.route.RouteSupplementParams;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -206,6 +207,21 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
      */
     public void replaceSupplement(final PoiInfoEntity newPoiInfoEntity, final PoiInfoEntity oldPoiInfoEntity) {
         mModel.replaceSupplement(newPoiInfoEntity, oldPoiInfoEntity);
+    }
+
+    /**
+     * 清除图层备选充电站扎标
+     */
+    public void clearLayerItem() {
+        mModel.clearLayerItem();
+    }
+
+    /**
+     * 备选充电站扎标
+     * @param RouteAlterChargeStationInfos 替换点信息
+     */
+    public void updateRouteReplaceChargePoints(final ArrayList<RouteAlterChargeStationInfo> RouteAlterChargeStationInfos) {
+        mModel.updateRouteReplaceChargePoints(RouteAlterChargeStationInfos);
     }
 
     /**

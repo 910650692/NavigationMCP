@@ -41,6 +41,7 @@ import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.route.EvRangeOnRouteInfo;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlongCityParam;
+import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationParam;
 import com.sgm.navi.service.define.route.RouteAvoidInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
@@ -408,7 +409,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             }
             routeResultObserver.onRouteAlterChargeStationInfo(routeAlterChargeStationParam);
         }
-        mLayerAdapter.updateRouteReplaceChargePoints(MapType.MAIN_SCREEN_MAIN_MAP, routeAlterChargeStationParam.getMRouteAlterChargeStationInfos());
+    }
+
+    public void updateRouteReplaceChargePoints(final MapType mapTypeId, final ArrayList<RouteAlterChargeStationInfo> RouteAlterChargeStationInfos) {
+        mLayerAdapter.updateRouteReplaceChargePoints(mapTypeId, RouteAlterChargeStationInfos);
     }
 
     @Override

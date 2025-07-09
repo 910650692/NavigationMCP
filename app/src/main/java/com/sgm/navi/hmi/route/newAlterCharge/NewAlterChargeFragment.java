@@ -82,6 +82,15 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
             public void onItemClick(PoiInfoEntity newPoiInfoEntity, PoiInfoEntity oldPoiInfoEntity) {
                 mViewModel.replaceSupplement(newPoiInfoEntity, oldPoiInfoEntity);
             }
+
+            @Override
+            public void onAlterShowClick(ArrayList<RouteAlterChargeStationInfo> routeAlterChargeStationInfos) {
+                if (routeAlterChargeStationInfos == null || routeAlterChargeStationInfos.isEmpty()) {
+                    mViewModel.clearLayerItem();
+                } else {
+                    mViewModel.updateRouteReplaceChargePoints(routeAlterChargeStationInfos);
+                }
+            }
         });
     }
 
@@ -274,13 +283,15 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                 mBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(String.valueOf(chargeInfo.getFast_free()));
                 mBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(ResourceUtils.Companion.getInstance()
                         .getString(R.string.route_details_jg) + chargeInfo.getFast_total());
-                mBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.setText(getString(R.string.route_charge_info_format
+                mBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.setText(ResourceUtils.Companion.getInstance()
+                        .getString(R.string.route_charge_info_format
                         , chargeInfo.getFastPower() , chargeInfo.getFastVolt()));
                 mBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(String.valueOf(chargeInfo.getSlow_free()));
                 mBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal.setText(ResourceUtils.Companion.getInstance()
                         .getString(R.string.route_details_jg) + chargeInfo.getSlow_total());
                 mBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot
-                        .setText(getString(R.string.route_charge_info_format, chargeInfo.getSlowPower(), chargeInfo.getSlowVolt()));
+                        .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_charge_info_format,
+                                chargeInfo.getSlowPower(), chargeInfo.getSlowVolt()));
                 mBinding.scenePoiDetailsChargingStationView.poiChargePrice
                         .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free)
                                 + chargeInfo.getCurrentElePrice()

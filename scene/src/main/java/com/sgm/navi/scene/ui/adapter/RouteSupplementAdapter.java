@@ -32,12 +32,14 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
     private ArrayList<RouteSupplementInfo> mRouteSupplementInfos;
     private ArrayList<PoiInfoEntity> mPoiInfoEntities;
     private ConcurrentHashMap<Integer, RouteAlterChargeStationParam> mAlterChargeStation;
+    private ConcurrentHashMap<Integer, RouteAlterChargeStationParam> mAlterChargeStationShow;
     private OnItemClickListener mItemClickListener;
 
     public RouteSupplementAdapter() {
         mRouteSupplementInfos = new ArrayList<>();
         mPoiInfoEntities = new ArrayList<>();
         mAlterChargeStation = new ConcurrentHashMap<>();
+        mAlterChargeStationShow = new ConcurrentHashMap<>();
     }
 
     /***
@@ -259,6 +261,7 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
                             holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.setVisibility(View.GONE);
                             holder.mRouteSupplementItemBinding.ivSupplementReplace.setBackground(ResourceUtils
                                     .Companion.getInstance().getDrawable(R.drawable.img_route_down));
+                            mAlterChargeStationShow.remove(position);
                         } else {
                             holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.setVisibility(View.VISIBLE);
                             holder.mRouteSupplementItemBinding.ivSupplementReplace.setBackground(ResourceUtils
@@ -266,6 +269,24 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
                             ArrayList<PoiInfoEntity> replaceSupplementPoi =  routeReplaceSupplementAdapter.getPoiInfoEntities();
                             if ((replaceSupplementPoi == null || replaceSupplementPoi.isEmpty()) && mItemClickListener != null) {
                                 mItemClickListener.onExpandClick(routeReplaceSupplementAdapter, routeReplaceSupplementAdapter.getRouteAlterChargeStationInfo());
+                            }
+                            RouteAlterChargeStationParam alterCharge = mAlterChargeStation.get(position);
+                            if (mAlterChargeStationShow.get(position) == null && alterCharge != null) {
+                                mAlterChargeStationShow.put(position, alterCharge);
+                            }
+                        }
+                        if (mItemClickListener != null) {
+                            if (mAlterChargeStationShow == null || mAlterChargeStationShow.isEmpty()) {
+                                mItemClickListener.onAlterShowClick(null);
+                            } else {
+                                ArrayList<RouteAlterChargeStationInfo> routeAlterChargeStationInfos = new ArrayList<>();
+                                for (RouteAlterChargeStationParam alterChargeStation : mAlterChargeStationShow.values()){
+                                    if (alterChargeStation.getMRouteAlterChargeStationInfos() == null) {
+                                        continue;
+                                    }
+                                    routeAlterChargeStationInfos.addAll(alterChargeStation.getMRouteAlterChargeStationInfos());
+                                }
+                                mItemClickListener.onAlterShowClick(routeAlterChargeStationInfos);
                             }
                         }
                     }
@@ -307,6 +328,12 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
          * @param oldPoiInfoEntity 被替换充电站
          */
         void onItemClick(PoiInfoEntity newPoiInfoEntity, PoiInfoEntity oldPoiInfoEntity);
+
+        /***
+         * 备选补能点扎点事件
+         * @param routeAlterChargeStationInfos 扎点替换充电站
+         */
+        void onAlterShowClick(ArrayList<RouteAlterChargeStationInfo> routeAlterChargeStationInfos);
 
     }
 }

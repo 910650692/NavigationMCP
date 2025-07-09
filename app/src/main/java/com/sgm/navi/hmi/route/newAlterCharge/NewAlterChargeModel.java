@@ -12,12 +12,14 @@ import com.sgm.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationParam;
 import com.sgm.navi.service.define.search.ETAInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.logicpaket.layer.ILayerPackageCallBack;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
@@ -136,7 +138,14 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
      * 清除图层备选充电站扎标
      */
     public void clearLayerItem() {
+        Logger.d(TAG, "clearLayerItem");
         mRoutePackage.clearRouteItemByType(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE);
+        MapPackage.getInstance().resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP,2);
+    }
+
+    public void updateRouteReplaceChargePoints(final ArrayList<RouteAlterChargeStationInfo> RouteAlterChargeStationInfos) {
+        Logger.d(TAG, "updateRouteReplaceChargePoints : " + RouteAlterChargeStationInfos.size());
+        mRoutePackage.updateRouteReplaceChargePoints(MapType.MAIN_SCREEN_MAIN_MAP, RouteAlterChargeStationInfos);
     }
 
     @Override
