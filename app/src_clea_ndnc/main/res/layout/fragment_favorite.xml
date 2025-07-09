@@ -329,7 +329,6 @@
                     android:layout_height="match_parent"
                     android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginBottom="@dimen/dp_110"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
