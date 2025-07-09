@@ -30,6 +30,7 @@ import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentNaviGuidanceBinding;
 import com.sgm.navi.scene.RoutePath;
+import com.sgm.navi.scene.dialog.RouteLoadingDialog;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
@@ -85,6 +86,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private boolean mIsBroadcastRegistered;
     private boolean mIs24HourFormat;
     private NaviEtaInfo mCurrentNaviInfo;
+    private RouteLoadingDialog mRouteRequestLoadingDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -995,6 +997,48 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (mSceneNaviControlMoreView != null &&
                 mSceneNaviControlMoreView.getVisibility() == VISIBLE) {
             mSceneNaviControlMoreView.updateSceneVisible(false);
+        }
+    }
+
+    /***
+     * 算路请求弹框展示
+     */
+    public void showProgressUI() {
+        if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog) && mRouteRequestLoadingDialog.isShowing()) {
+            Logger.d("mRouteRequestLoadingDialog is showing");
+            return;
+        }
+        final Context context = this.getContext();
+        if (context == null) {
+            return;
+        }
+        if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
+            if (mRouteRequestLoadingDialog == null) {
+                mRouteRequestLoadingDialog = new RouteLoadingDialog(context);
+                mRouteRequestLoadingDialog.setDialogClickListener(mViewModel);
+            }
+            if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
+                mRouteRequestLoadingDialog.show();
+            }
+        }
+    }
+
+    /***
+     * 算路请求弹框关闭
+     */
+    public void hideProgressUI() {
+        if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
+            mRouteRequestLoadingDialog.dismiss();
+            mRouteRequestLoadingDialog = null;
+        }
+    }
+
+    /**
+     * 显示离线算路文言
+     */
+    public void showOfflineProgressUI() {
+        if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog) && mRouteRequestLoadingDialog.isShowing()) {
+            mRouteRequestLoadingDialog.showOfflineRouting();
         }
     }
 }

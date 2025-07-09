@@ -57,7 +57,8 @@ import java.util.Objects;
  */
 public class BaseNaviGuidanceViewModel extends
         BaseViewModel<NaviGuidanceFragment, NaviGuidanceModel> implements
-        ISceneRoutePreferenceCallBack, NaviGuidanceModel.OnNetStatusChangeListener {
+        ISceneRoutePreferenceCallBack, NaviGuidanceModel.OnNetStatusChangeListener,
+        IBaseDialogClickListener {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_VIEW_MODEL;
     public ObservableField<Boolean> mNaviLanesVisibility;//车道线
     public ObservableField<Boolean> mNaviViaListVisibility;//途径点列表
@@ -881,4 +882,53 @@ public class BaseNaviGuidanceViewModel extends
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_WAKEUP)
     private void sendBuryPointForWakeup() {
     }
+
+
+    @Override
+    public void onCancelClick() {
+        mModel.cancelRoute();
+    }
+
+    /***
+     * 展示算路弹框
+     */
+    public void showProgressUI() {
+        ThreadManager.getInstance().postUi(() -> {
+            mView.showProgressUI();
+            //重算路关闭Route/Guidance上面所有页面
+            closeAllFragmentUpRoute();
+        });
+    }
+
+    /***
+     * 隐藏算路弹框
+     * @param success 算路成功
+     */
+    public void hideProgressUI(final boolean success) {
+        ThreadManager.getInstance().postUi(() -> {
+            mView.hideProgressUI();
+            if (success) {
+                mModel.showSuccessMsg();
+            }
+        });
+    }
+
+    /***
+     * 展示离线算路中弹框
+     */
+    public void showOfflineProgressUI() {
+        ThreadManager.getInstance().postUi(() -> {
+            mView.showOfflineProgressUI();
+        });
+    }
+
+    /***
+     * 只展示算路中弹框
+     */
+    public void showProgressUIOnly() {
+        ThreadManager.getInstance().postUi(() -> {
+            mView.showProgressUI();
+        });
+    }
+
 }

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -34,6 +35,7 @@ import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.adapter.navi.bls.NaviDataFormatHelper;
 import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.define.layer.RouteLineLayerParam;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
@@ -55,6 +57,7 @@ import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.define.route.FyRouteOption;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationParam;
@@ -160,6 +163,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private long mCurrentViaIndex;
     // 记录手动提前到达的途经点名称
     private String mArrivedViaPoiId;
+    private String mSuccessMsg = "";
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -1229,6 +1233,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onRouteSuccess(String successMsg) {
         Logger.i(TAG, "onRouteSuccess");
+        mSuccessMsg = successMsg;
         // 如果是预览状态，还是进入预览
         if (mNaviPackage.getPreviewStatus()) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -1473,5 +1478,78 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             return allPoiParamList.get(NumberUtils.NUM_1).getPoiID();
         }
         return "";
+    }
+
+    @Override
+    public void onRouteRequest() {
+        if (!ConvertUtils.isNull(mViewModel)) {
+            mViewModel.showProgressUI();
+        }
+    }
+
+    @Override
+    public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.hideProgressUI(true);
+        }
+        mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
+    }
+
+    @Override
+    public void onRouteFail(MapType mapTypeId, String errorMsg) {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.hideProgressUI(false);
+        }
+        if (!ConvertUtils.isEmpty(errorMsg)) {
+            ThreadManager.getInstance().postUi(() -> {
+                ToastUtils.Companion.getInstance().showCustomToastView(errorMsg);
+            });
+        }
+    }
+
+    @Override
+    public void onRouteOffline(MapType mapTypeId, String errorMsg) {
+        if (!ConvertUtils.isEmpty(errorMsg)) {
+            ThreadManager.getInstance().postUi(() -> {
+                ToastUtils.Companion.getInstance().showCustomToastView(errorMsg);
+            });
+        }
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.showOfflineProgressUI();
+        }
+    }
+
+    @Override
+    public void onReroute(FyRouteOption routeOption) {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            Logger.i(TAG, "偏航引发算路");
+            mViewModel.showProgressUIOnly();
+        }
+    }
+
+    @Override
+    public void onReRouteError() {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            Logger.i(TAG, "静默算路失败");
+            mViewModel.hideProgressUI(false);
+        }
+    }
+
+    /***
+     * 显示成功toast
+     */
+    public void showSuccessMsg() {
+        if (!ConvertUtils.isEmpty(mSuccessMsg)) {
+            ThreadManager.getInstance().postUi(() -> {
+                ToastUtils.Companion.getInstance().showCustomToastView(mSuccessMsg);
+            });
+        }
+    }
+
+    /**
+     * 取消算路
+     */
+    public void cancelRoute() {
+        mRoutePackage.abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 }
