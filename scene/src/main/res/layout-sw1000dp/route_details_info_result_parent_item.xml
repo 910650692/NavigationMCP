@@ -22,13 +22,13 @@
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/item_root_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_130"
+            android:layout_height="@dimen/dp_124"
             />
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_detail_info_item_img_bg"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_130"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_124"
             android:outlineSpotShadowColor="@color/bg_route_shadow_list"
             app:layout_constraintStart_toStartOf="@+id/item_root_view"
             app:layout_constraintTop_toTopOf="@+id/item_root_view"/>
@@ -42,16 +42,19 @@
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_detail_info_item_img"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_15"
             android:src="@drawable/img_tbt_exit_hud_sou2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg" />
 
         <CheckBox
             android:id="@+id/route_detail_info_item_cbx"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/dp_41"
+            android:layout_height="@dimen/dp_41"
+            android:layout_marginStart="@dimen/dp_25"
             android:background="@drawable/route_details_selector"
             android:button="@null"
             app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg"
@@ -62,26 +65,27 @@
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_detail_info_item_road_name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_29"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_height="@dimen/dp_38"
+            android:layout_marginStart="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_22"
             android:textColor="@color/floating_search_item_night"
             android:textSize="@dimen/sp_29"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
+            app:layout_goneMarginStart="@dimen/dp_90"
+            app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img"
             app:layout_constraintTop_toTopOf="@+id/item_root_view"
             tools:text="晨晖路" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_detail_info_item_description"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_29"
-            android:layout_marginBottom="@dimen/dp_18"
+            android:layout_height="@dimen/dp_33"
+            android:layout_marginStart="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_22"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_26"
+            app:layout_goneMarginStart="@dimen/dp_90"
             app:layout_constraintBottom_toBottomOf="@+id/item_root_view"
-            app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img"
             tools:text="42米 红绿灯1个" />
 
         <com.sgm.navi.ui.view.SkinImageView
@@ -99,7 +103,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/dp_130"/>
+            android:layout_marginTop="@dimen/dp_124"/>
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
