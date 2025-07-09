@@ -1,11 +1,11 @@
 {
   "point_layer_item_style": {
     "normal_style": {
-      "poi_marker_id": "global_image_b_poi_9_day_night",
+      "poi_marker_id": "global_image_b_poi_9_hl_day_night",
       "poi_marker_info": "marker_info_point_center_up"
     },
     "focus_style": {
-      "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+      "poi_marker_id": "global_image_b_poi_9_hl_day_night",
       "poi_marker_info": "marker_info_point_center_up"
     }
   }

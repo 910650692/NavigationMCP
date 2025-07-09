@@ -41,7 +41,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     //搜索列表可见数字扎标
     private static final String KEY_SEARCH_LIST_INDEX = "search_list_index";
     //充电桩列表可见数字扎标
-    private static final String KEY_SEARCH_LIST_CHARGE_INDEX = "search_list_charge_index";
+    private static final String KEY_SEARCH_LIST_CHARGE_VISIBLE_INDEX = "search_list_charge_index";
 
     private final AtomicReference<List<PoiInfoEntity>> mPoiInfoList = new AtomicReference(new ArrayList<>());
 
@@ -52,12 +52,13 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
 
     @Override
     public String provideLayerItemStyleJson(BaseLayer layer, LayerItem item) {
+        boolean focus = item.getFocus();
         switch (item.getBusinessType()) {
             case BizSearchType.BizSearchTypePoiParentPoint -> {
                 int index = getIndexOfLayerItem(item);
                 if (index <= 11 && (mPoiInfoList.get().size() > (index -1))) {
                     PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index - 1);
-                    if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
+                    if ((!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) || focus) {
                         Logger.d(TAG, "搜索列表可见数字扎标-index =" + index);
                         return KEY_SEARCH_LIST_INDEX + "_" + index;
                     }
@@ -84,9 +85,13 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 int index = getIndexOfLayerItem(item);
                 if (index <= 11 && (mPoiInfoList.get().size() > (index - 1))) {
                     PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index - 1);
-                    if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
-                        Logger.d(TAG, "搜索充电桩 列表可见数字扎标-index =" + index);
-                        return KEY_SEARCH_LIST_CHARGE_INDEX + "_" + index;
+                    if (!ConvertUtils.isEmpty(poiInfoEntity)) {
+                        if (poiInfoEntity.isMIsVisible() || focus) {
+                            if (Logger.openLog) {
+                                Logger.d(TAG, "搜索充电桩 列表可见数字大扎标-index =" + index);
+                            }
+                            return KEY_SEARCH_LIST_CHARGE_VISIBLE_INDEX + "_" + index;
+                        }
                     }
                 }
             }

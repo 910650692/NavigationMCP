@@ -13,8 +13,16 @@
       }
     },
     "focus_style": {
-      "poi_marker_id": "global_image_b_poi_red_hl_day_night",
-      "poi_marker_info": "marker_info_point_center_up"
+      "poi_marker_id": "layer_icon_search_poi_index_1",
+      "poi_marker_info": "{\"anchor\":9,\"x_ratio\":0.5,\"y_ratio\":0.900}",
+      "bg_marker_info": "marker_info_point_center_up",
+      "bg_marker_id": "search_list_charge_index_label.xml",
+      "bg_show_rect": {
+        "y1": 0,
+        "x1": 0,
+        "y2": 0.25,
+        "x2": 1
+      }
     }
   }
 }
