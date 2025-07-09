@@ -84,7 +84,7 @@ public final class VoiceSearchManager {
 
     private boolean mListPageOpened; //搜索结果页面是否展示
 
-    private boolean mShouldPlayRouteMsg; //是否应该播报路线规划结果
+    private int mPlanRouteResult; //是否应该播报路线规划结果
 
 
     public static VoiceSearchManager getInstance() {
@@ -434,10 +434,8 @@ public final class VoiceSearchManager {
             }
             final PoiInfoEntity homeCompanyInfo = getHomeCompanyPoiInfo(type);
             if (null != homeCompanyInfo) {
-                if (!inNaviStatus()) {
-                    //单目的地涉及家和公司，需要播报路线规划结果
-                    mShouldPlayRouteMsg = true;
-                }
+                //单目的地涉及家和公司，需要播报路线规划结果
+                mPlanRouteResult = 0;
                 planRoute(homeCompanyInfo, null);
             } else {
                 if (type == 1) {
@@ -555,12 +553,14 @@ public final class VoiceSearchManager {
                 sendClosePage();
                 break;
             case IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY:
+                mPlanRouteResult = 0;
                 saveAndNaviToHomeCompany(poiInfo);
                 break;
             case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
                 addCommonFavorite(poiInfo, false);
                 break;
             default:
+                mPlanRouteResult = 0;
                 planRoute(poiInfo, null);
                 break;
         }
@@ -570,15 +570,33 @@ public final class VoiceSearchManager {
      * 根据路线结果数目回复提示信息.
      */
     public void playRouteResult() {
-        if (mShouldPlayRouteMsg) {
-            mShouldPlayRouteMsg = false;
-            if (null != mPoiCallback) {
-                Logger.w(IVrBridgeConstant.TAG, "begin tts poiCallBack");
-                final CallResponse routeResponse = CallResponse.createSuccessResponse();
-                routeResponse.setSubCallResult(NaviSubCallResult.RESP_MULTI_POI_SEARCH_SUCCESS);
-                mPoiCallback.onResponse(routeResponse);
-            }
+        if (mPlanRouteResult < 0) {
+            return;
         }
+
+        final CallResponse routeResponse = CallResponse.createSuccessResponse();
+        switch (mPlanRouteResult) {
+            case 0:
+                //使用PoiCallback回调
+                if (null != mPoiCallback) {
+                    mPoiCallback.onResponse(routeResponse);
+                }
+                break;
+            case 1:
+                //使用RespCallback回调
+                if (null != mRespCallback) {
+                    mRespCallback.onResponse(routeResponse);
+                }
+                break;
+            case 2:
+                //多目的地回调
+                routeResponse.setSubCallResult(NaviSubCallResult.RESP_MULTI_POI_SEARCH_SUCCESS);
+                if (null != mPoiCallback) {
+                    mPoiCallback.onResponse(routeResponse);
+                }
+                break;
+        }
+        mPlanRouteResult = -1;
     }
 
 
@@ -667,6 +685,7 @@ public final class VoiceSearchManager {
 
         if (judgeNaviStatusForRouting()) {
             //当前为导航态，更换目的地直接发起快速导航
+            mPlanRouteResult = -1;
             RoutePackage.getInstance().requestRouteFromSpeech(requestParam);
         } else {
             //打开算路界面
@@ -771,8 +790,7 @@ public final class VoiceSearchManager {
         } else {
             mNormalDestList.put(size, singleDestInfo);
         }
-        //多目的地默认播报规划结果，等处理有泛型POI时再改成不播报
-        mShouldPlayRouteMsg = true;
+
         //家和公司需要先判断是否已经设置，泛型POI需要依次展示搜索结果
         if (containHome) {
             final PoiInfoEntity homeInfo = getHomeCompanyPoiInfo(1);
@@ -838,7 +856,6 @@ public final class VoiceSearchManager {
 
         //继续先澄清泛型再搜索普通poi
         if (null != mGenericsDestList && mGenericsDestList.size() > 0) {
-            mShouldPlayRouteMsg = false;
             //继续澄清下一个泛型
             mProcessDestIndex = mGenericsDestList.keyAt(0);
             if(Logger.openLog) {
@@ -900,6 +917,7 @@ public final class VoiceSearchManager {
                 Logger.d(IVrBridgeConstant.TAG, "multipleDest viaSize:", size);
             }
             //规划路线
+            mPlanRouteResult = 2;
             planRoute(endPoi, viaList);
         }
     }
@@ -912,15 +930,17 @@ public final class VoiceSearchManager {
      * @param respCallback RespCallback，语音响应回调.
      */
     public void handlePoiSelectIndex(final String sessionId, final int index, final RespCallback respCallback) {
+
+        final int searchSize = null != mSearchResultList ? mSearchResultList.size() : 0;
         if(Logger.openLog) {
-            Logger.d(IVrBridgeConstant.TAG, "selectPoiIndex: ", index);
+            Logger.d(IVrBridgeConstant.TAG, "selectPoiIndex: ", index, "resultSize", searchSize);
         }
-        if (null == mSearchResultList || mSearchResultList.isEmpty()) {
+        if (searchSize == 0) {
             responsePreviousSearchEmpty(respCallback);
             return;
         }
 
-        if (mSearchResultList.size() > index) {
+        if (searchSize > index) {
             final PoiInfoEntity poiInfoEntity = mSearchResultList.get(index);
             if (null != poiInfoEntity) {
                 disposeSelectedPoi(poiInfoEntity, respCallback);
@@ -1122,6 +1142,9 @@ public final class VoiceSearchManager {
      * @param respCallback 语音响应回调.
      */
     private void disposeSelectedPoi(final PoiInfoEntity poiInfo, final RespCallback respCallback) {
+        if (Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "processSelectPoi, searchType", mSearchType);
+        }
         mSearchResultList.clear();
         mRespCallback = respCallback;
         switch (mSearchType) {
@@ -1143,6 +1166,7 @@ public final class VoiceSearchManager {
                 if (mRespCallback != null) {
                     mRespCallback.onResponse(CallResponse.createSuccessResponse());
                 }
+                mPlanRouteResult = 1;
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo);
                 break;
             case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
@@ -1150,13 +1174,11 @@ public final class VoiceSearchManager {
                 sendClosePage();
                 break;
             case IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY:
+                mPlanRouteResult = 1;
                 saveAndNaviToHomeCompany(poiInfo);
                 break;
             default:
-                //所选poi作为目的地发起算路
-                if (mRespCallback != null) {
-                    mRespCallback.onResponse(CallResponse.createSuccessResponse());
-                }
+                mPlanRouteResult = 1;
                 planRoute(poiInfo, null);
                 break;
         }
@@ -1554,6 +1576,7 @@ public final class VoiceSearchManager {
         Logger.w(IVrBridgeConstant.TAG, "naviToHomeCompany searchResultSize:" + size + ", geoSearch:" + geoSearch);
         if (size == 1) {
             if (geoSearch) {
+                mPlanRouteResult = 0;
                 saveAndNaviToHomeCompany(mSearchResultList.get(0));
             } else {
                 // 非逆地理搜结果只有一个，需要等待poi详情搜结果返回再处理
@@ -1577,10 +1600,6 @@ public final class VoiceSearchManager {
             type = 2;
         }
         saveHomeCompany(poiInfo, type);
-        if (!inNaviStatus()) {
-            //单目的地涉及家和公司，需要播报路线规划结果
-            mShouldPlayRouteMsg = true;
-        }
         planRoute(poiInfo, null);
     }
 

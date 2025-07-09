@@ -53,17 +53,33 @@ public final class VoiceConvertUtil {
                 poiBean.setLongitude(geoPoint.getLon());
                 poiBean.setLatitude(geoPoint.getLat());
             }
-            final String distance = poiBean.getDistance();
 
+            final String distance = poiBean.getDistance();
             if (null != geoPoint && (TextUtils.isEmpty(distance) || ZERO_DIST.equals(distance))) {
-                poiBean.setDistance(SearchPackage.getInstance().calcStraightDistance(geoPoint));
+                poiBean.setDistance(formatDistance(geoPoint));
             } else {
                 poiBean.setDistance(poiBean.getDistance());
             }
+
             poiBeanList.add(poiBean);
         }
 
         return poiBeanList;
+    }
+
+    private static String formatDistance(GeoPoint geoPoint) {
+        String distance = SearchPackage.getInstance().calcStraightDistance(geoPoint);
+        if (TextUtils.isEmpty(distance)) {
+            return "";
+        }
+
+        if (distance.endsWith("Km")) {
+            return distance.substring(0, distance.length() - 2) + "千米";
+        } else if (distance.endsWith("m")) {
+            return distance.substring(0, distance.length() - 1) + "米";
+        }
+
+        return distance;
     }
 
     /**

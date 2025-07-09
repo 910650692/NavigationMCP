@@ -139,6 +139,7 @@ public final class MapStateManager {
                 AMapStateUtils.saveMapState(mBuilder.build());
                 VoiceSearchManager.getInstance().playRouteResult();
             } else {
+                mBuilder.setPathCount(0);
                 AMapStateUtils.saveMapState(mBuilder.build());
             }
         }
