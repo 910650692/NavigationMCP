@@ -1393,7 +1393,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         }
         setPreviewStatus(false);
         setFixedOverViewStatus(false);
-        stopSpeech();
         mLayerAdapter.setVisibleGuideSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, false);
         clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
         mLayerAdapter.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);

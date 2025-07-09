@@ -113,6 +113,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         Logger.i(TAG, "closeNavi");
         if (mCallBack != null) {
             mCallBack.closeNavi();
+            mCallBack.stopSpeech();
         }
         mNaviPackage.onNaviClose(true);
         mNaviPackage.stopNavigation();
