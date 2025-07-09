@@ -19,12 +19,7 @@ public class MountAngleManager {
         // TODO: 2025/2/25 此处后期可做车型区分
         info.yaw = 0.0f;
         info.pitch = 0.0f;
-        //TODO flavor判断需要优化，当前缺陷：Flavor名称改动后遗漏改动风险
-        if (BuildConfig.FLAVOR.equals("clea_8775")) {
-            info.roll = 180.0f;
-        } else {
-            info.roll = 0.0f;
-        }
+        info.roll = 0.0f;
         info.x = 0; //原x轴
         info.y = 1; //原y轴
         info.z = 2; //原z轴
