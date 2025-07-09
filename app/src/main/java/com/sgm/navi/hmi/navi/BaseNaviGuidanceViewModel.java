@@ -11,6 +11,8 @@ import androidx.databinding.ObservableField;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.burypoint.anno.HookMethod;
+import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -259,6 +261,10 @@ public class BaseNaviGuidanceViewModel extends
                 break;
             case NAVI_CONTINUE:
                 mNaviContinueVisibility.set(isVisible);
+                //For Bury Point
+                if (isVisible) {
+                    sendBuryPointForWakeup();
+                }
                 break;
             case NAVI_SUSPEND_CARD:
                 mHandingCardVisibility.set(isVisible);
@@ -869,5 +875,10 @@ public class BaseNaviGuidanceViewModel extends
         if (mView != null) {
             mView.onMapSwipe();
         }
+    }
+
+    //埋点使用，不准删除
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_WAKEUP)
+    private void sendBuryPointForWakeup() {
     }
 }

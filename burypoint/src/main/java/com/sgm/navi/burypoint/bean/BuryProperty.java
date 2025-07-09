@@ -1,5 +1,7 @@
 package com.sgm.navi.burypoint.bean;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,4 +51,18 @@ public class BuryProperty {
         }
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("BuryProperty{");
+        if (params != null && !params.isEmpty()) {
+            for (BuryParam param : params) {
+                sb.append(param.getKey()).append("=").append(param.getValue()).append(", ");
+            }
+            sb.setLength(sb.length() - 2); // Remove the last comma and space
+        }
+        sb.append('}');
+        return sb.toString();
+    }
 }

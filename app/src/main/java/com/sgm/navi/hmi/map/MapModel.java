@@ -742,11 +742,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         // 退出巡航
         stopCruise();
 
-        //For Bury Point
-        if (NaviStatusPackage.getInstance().isGuidanceActive()) {
-            sendBuryPointForWakeup();
-        }
-
         //三指飞屏 并将MapActivity推至后台
         openThreeFingerFlyingScreen(touchEvent);
     }
@@ -1897,11 +1892,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         // 退出巡航
         stopCruise();
         mapPackage.mfcMoveMap(MapType.MAIN_SCREEN_MAIN_MAP, mfcController, moveDis);
-    }
-
-    //埋点使用，不准删除
-    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_WAKEUP)
-    private void sendBuryPointForWakeup() {
     }
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_POPUP)
