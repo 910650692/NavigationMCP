@@ -186,7 +186,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack,
         ScreenTypeUtils.SplitScreenChangeListener {
 
-    private CommonManager mCommonManager;
+    private final CommonManager mCommonManager;
     private final IActivateObserver mActObserver;
     private StartupExceptionDialog mStartExceptionDialog = null;
 
@@ -2006,7 +2006,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 NaviStatus.NaviStatusType.NAVING)) {
             Logger.e(TAG, "openGuideFragment");
             // Activity被意外destroy需要恢复页面的时候Fragment栈一定是空的
-            if (mViewModel.isFragmentStackNull()) {
+            if (mViewModel != null && mViewModel.isFragmentStackNull()) {
                 addFragment(new NaviGuidanceFragment(), null);
             }
         }

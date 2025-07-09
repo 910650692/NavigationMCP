@@ -352,7 +352,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public Action backToSelfParking = () -> {
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         //取消倒计时
-        mModel.cancelSelfParkingTimer();
+        if(mModel != null) mModel.cancelSelfParkingTimer();
     };
 
     // 播报和静音切换
@@ -1348,7 +1348,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         @HookMethod(eventName = BuryConstant.EventName.AMAP_ACCOUNT_POPUP_BINDINGNOW)
         public void call() {
             mPopGuideLoginShow.set(false);
-            mModel.guideLoginBind();
+            if(mModel != null) mModel.guideLoginBind();
         }
     };
 
@@ -1490,6 +1490,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void openGuideFragment(){
+        if(mModel == null) return;
         mModel.openGuideFragment();
     }
 
