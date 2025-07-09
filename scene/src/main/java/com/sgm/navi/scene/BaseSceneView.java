@@ -127,6 +127,13 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
         }
     }
 
+    protected void closeCurrentFragment(final boolean nextShow) {
+        BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
+        if (activity != null) {
+            activity.closeFragment(nextShow);
+        }
+    }
+
     protected void closeAllFragmentAndSearchView() {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
         activity.closeAllFragmentAndSearchView();
