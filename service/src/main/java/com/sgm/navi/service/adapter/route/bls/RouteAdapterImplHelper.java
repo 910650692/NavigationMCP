@@ -1411,6 +1411,7 @@ public class RouteAdapterImplHelper {
      * @return 限行消息
      */
     private RouteRestrictionInfo getRouteRestrictionInfo(final RestrictionInfo info) {
+        Logger.d(TAG, "info: " + info.title + " rule: " + info.ruleIDs);
         final RouteRestrictionInfo infos = new RouteRestrictionInfo();
         infos.setMTitle(info.title);
         infos.setMDesc(info.desc);
