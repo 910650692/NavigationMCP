@@ -20,23 +20,24 @@
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_route_child_poi"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_58"
+            android:layout_height="@dimen/dp_38"
             android:maxWidth="@dimen/dp_294"
             android:gravity="center"
             android:singleLine="true"
             android:ellipsize="end"
             android:textColor="@color/text_color_route_item_select"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
             android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tool:text="航站楼1" />
-        
+
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_item_selected"
             android:layout_width="@dimen/dp_78"
             android:layout_height="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_4"
             android:background="@color/bg_route_button_select_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tv_route_child_poi"

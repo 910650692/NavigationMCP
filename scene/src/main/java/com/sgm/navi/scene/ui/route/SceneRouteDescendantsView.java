@@ -165,14 +165,14 @@ public class SceneRouteDescendantsView extends BaseSceneView<SceneRouteDescendan
                 break;
             case AutoMapConstant.ChildType.HAS_CHILD_NO_GRAND:
                 mViewBinding.lyDescendantsView.setVisibility(View.VISIBLE);
-                mViewBinding.sceneRouteDescendantsTopView.setVisibility(View.GONE);
+                mViewBinding.routeDescendantsText.setVisibility(View.GONE);
+                mViewBinding.routeDescendantsList.setVisibility(View.GONE);
                 if (null != mRouteSecondaryPoiAdapter) {
                     mRouteSecondaryPoiAdapter.setChildInfoList(poiInfoEntity.getChildInfoList(), poiInfoEntity);
                 }
                 break;
             case AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND:
                 mViewBinding.lyDescendantsView.setVisibility(View.VISIBLE);
-                mViewBinding.sceneRouteDescendantsTopView.setVisibility(View.VISIBLE);
                 mViewBinding.routeDescendantsText.setVisibility(View.GONE);
                 mViewBinding.routeDescendantsList.setVisibility(View.VISIBLE);
                 if (mRouteSecondaryPoiAdapter != null) {
@@ -182,7 +182,6 @@ public class SceneRouteDescendantsView extends BaseSceneView<SceneRouteDescendan
                 break;
             case AutoMapConstant.ChildType.CHILD_HAS_GRAND:
                 mViewBinding.lyDescendantsView.setVisibility(View.VISIBLE);
-                mViewBinding.sceneRouteDescendantsTopView.setVisibility(View.VISIBLE);
                 mViewBinding.routeDescendantsText.setVisibility(View.VISIBLE);
                 mViewBinding.routeDescendantsList.setVisibility(View.GONE);
                 if (null != mRouteSecondaryPoiAdapter) {

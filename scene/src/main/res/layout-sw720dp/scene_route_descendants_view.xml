@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="Scene"
             type="com.sgm.navi.scene.api.route.ISceneRouteDetailsResultList" />
@@ -13,56 +14,41 @@
         android:id="@+id/ly_descendants_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/dp_34"
+        android:paddingEnd="@dimen/dp_34">
 
-        <com.sgm.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/scene_route_descendants_top_view"
-            android:layout_width="match_parent"
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_descendants_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
+            android:text="@string/route_multiple_destinations"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/route_descendants_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_34"
-                android:text="@string/route_multiple_destinations"
-                android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_29"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <com.sgm.navi.ui.view.SkinRecyclerView
-                android:id="@+id/route_descendants_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:layout_marginStart="@dimen/dp_34"
-                android:layout_marginEnd="@dimen/dp_34"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/route_descendants_text"
-                app:layout_constraintWidth_default="wrap"
-                app:layout_constraintWidth_max="@dimen/dp_778"
-                app:layout_constraintWidth_min="@dimen/dp_477" />
-
-
-        </com.sgm.navi.ui.view.SkinConstraintLayout>
+        <com.sgm.navi.ui.view.SkinRecyclerView
+            android:id="@+id/route_descendants_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/route_descendants_text"
+            app:layout_constraintWidth_default="wrap"
+            app:layout_constraintWidth_max="@dimen/dp_778"
+            app:layout_constraintWidth_min="@dimen/dp_477" />
 
         <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/rv_secondary_poi"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_26"
-            android:layout_marginStart="@dimen/dp_34"
-            android:layout_marginEnd="@dimen/dp_34"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/dp_15"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scene_route_descendants_top_view"
+            app:layout_constraintTop_toBottomOf="@+id/route_descendants_list"
             app:layout_constraintWidth_default="wrap"
             app:layout_constraintWidth_max="@dimen/dp_778"
             app:layout_constraintWidth_min="@dimen/dp_477"
-            app:layout_goneMarginTop="@dimen/dp_0" />
+            app:layout_goneMarginTop="@dimen/dp_26" />
 
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
