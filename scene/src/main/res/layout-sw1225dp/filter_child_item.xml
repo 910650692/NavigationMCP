@@ -17,7 +17,8 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/filter_child_root"
-        android:layout_width="@dimen/dp_147"
+        android:layout_width="@dimen/dp_150"
+        android:paddingHorizontal="@dimen/dp_14"
         android:layout_height="@dimen/dp_65"
         android:background="@drawable/custom_filter_item_bg_selector_day_sw1225"
         >
@@ -26,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="快充"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_25"
             android:gravity="center"
             android:singleLine="true"
             android:ellipsize="end"

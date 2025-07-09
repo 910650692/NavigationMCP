@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.scene.BuildConfig;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.api.search.IOnFilterItemClickListener;
 import com.sgm.navi.scene.databinding.FilterItemBinding;
@@ -89,8 +90,15 @@ public class FilterListAdapter extends RecyclerView.Adapter<FilterListAdapter.Ho
             filterTitle = localInfo.getName().endsWith(filterTitleMore) ? localInfo.getName().replace(filterTitleMore,"") : localInfo.getName();
         }
         holder.mFilterItemBinding.filterText.setText(filterTitle);
-        holder.mFilterItemBinding.filterImg.setImageResource(ConvertUtils.equals(mCurrentExpandName,
-                localInfo.getName()) ? R.drawable.img_up_48 : R.drawable.img_under_the_48);
+        if (BuildConfig.FLAVOR.equals("clea_8255")
+                || BuildConfig.FLAVOR.equals("clea_local_8155")
+                || BuildConfig.FLAVOR.equals("clea_8775")) {
+            holder.mFilterItemBinding.filterImg.setImageResource(ConvertUtils.equals(mCurrentExpandName,
+                    localInfo.getName()) ? R.drawable.img_up_36 : R.drawable.img_under_the_36);
+        }else{
+            holder.mFilterItemBinding.filterImg.setImageResource(ConvertUtils.equals(mCurrentExpandName,
+                    localInfo.getName()) ? R.drawable.img_up_48 : R.drawable.img_under_the_48);
+        }
         if (localInfo.getCategoryLocalInfos() != null && !localInfo.getCategoryLocalInfos().isEmpty()) {
             holder.mFilterItemBinding.filterImg.setVisibility(View.VISIBLE);
         } else {

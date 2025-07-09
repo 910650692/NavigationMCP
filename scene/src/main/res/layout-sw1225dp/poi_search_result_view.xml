@@ -142,8 +142,13 @@
                     android:id="@+id/search_filter_view"
                     layout="@layout/search_filter_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="0dp"
                     android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHeight_default="wrap"
+                    app:layout_constraintHeight_max="@dimen/dp_898"
+                    app:layout_constraintHeight_min="@dimen/dp_579"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:visibility="gone" />
 
                 <com.sgm.navi.ui.view.SkinTextView
