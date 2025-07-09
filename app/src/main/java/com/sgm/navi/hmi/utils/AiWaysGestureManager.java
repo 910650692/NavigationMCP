@@ -95,14 +95,9 @@ public class AiWaysGestureManager {
         mGestureDetector.setOnDoubleTapListener(new AiwaysDoubleTapListener());
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
         mAiwaysMultiFingerSplit = new AiwaysMultiFingerSplit();
-        if (context == null) {
-            mMinimumFlingVelocity = ViewConfiguration.getMinimumFlingVelocity();
-            mMaximumFlingVelocity = ViewConfiguration.getMaximumFlingVelocity();
-        } else {
-            final ViewConfiguration configuration = ViewConfiguration.get(context);
-            mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
-            mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
-        }
+        final ViewConfiguration configuration = ViewConfiguration.get(context);
+        mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
+        mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
     }
     public boolean onTouchEvent(MotionEvent event) {
         final boolean gestureProcessed = mGestureDetector.onTouchEvent(event);

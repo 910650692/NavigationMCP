@@ -1907,24 +1907,27 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void addGestureListening() {
-        aiwaysGestureManager = new AiWaysGestureManager(AppCache.getInstance().getMContext(), new AiwaysGestureListener() {
-            @Override
-            public boolean mutiFingerSlipAction(GestureEvent gestureEvent, float startX, float startY, float endX, float endY, float velocityX, float velocityY) {
-                if ((gestureEvent == GestureEvent.THREE_GINGER_LEFT_SLIP)) {
-                    Logger.d(TAG, "三指左滑=====||||");
-                    ThreeFingerFlyingScreenManager.getInstance().triggerFlyingScreen(true);
-                    if (stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).isTaskRoot() && ProcessManager.isAppInForeground()){
-                        stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).moveTaskToBack(true);
+        if (AppCache.getInstance().getMContext()!=null){
+            Logger.d(TAG, "addGestureListening: ");
+            aiwaysGestureManager = new AiWaysGestureManager(AppCache.getInstance().getMContext(), new AiwaysGestureListener() {
+                @Override
+                public boolean mutiFingerSlipAction(GestureEvent gestureEvent, float startX, float startY, float endX, float endY, float velocityX, float velocityY) {
+                    if ((gestureEvent == GestureEvent.THREE_GINGER_LEFT_SLIP)) {
+                        Logger.d(TAG, "三指左滑=====||||");
+                        ThreeFingerFlyingScreenManager.getInstance().triggerFlyingScreen(true);
+                        if (stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).isTaskRoot() && ProcessManager.isAppInForeground()){
+                            stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()).moveTaskToBack(true);
+                        }
+                        return true;
+                    } else if ((gestureEvent == GestureEvent.THREE_GINGER_RIGHT_SLIP)) {
+                        Logger.d(TAG, "三指右滑=====||||");
+                        ThreeFingerFlyingScreenManager.getInstance().triggerFlyingScreen(false);
+                        return true;
                     }
-                    return true;
-                } else if ((gestureEvent == GestureEvent.THREE_GINGER_RIGHT_SLIP)) {
-                    Logger.d(TAG, "三指右滑=====||||");
-                    ThreeFingerFlyingScreenManager.getInstance().triggerFlyingScreen(false);
-                    return true;
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        }
     }
 
     /**
