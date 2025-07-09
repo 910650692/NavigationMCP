@@ -26,9 +26,9 @@ import com.sgm.navi.service.adapter.position.PositionAdapter;
 import com.sgm.navi.service.adapter.route.RouteAdapter;
 import com.sgm.navi.service.adapter.search.ISearchResultCallback;
 import com.sgm.navi.service.adapter.search.SearchAdapter;
-import com.sgm.navi.service.adapter.user.usertrack.UserTrackAdapter;
 import com.sgm.navi.service.adapter.search.cloudByPatac.bean.SavedStations;
 import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.sgm.navi.service.adapter.user.usertrack.UserTrackAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.bean.PreviewParams;
 import com.sgm.navi.service.define.code.UserDataCode;
@@ -152,7 +152,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         }
         if (searchResultEntity != null) {
             addPoiMarker(searchResultEntity, requestParameter);
-            sentBuryPointForSearch(searchResultEntity.getKeyword());
+            if (requestParameter.getSearchType() != AutoMapConstant.SearchType.SEARCH_SUGGESTION
+                    && !ConvertUtils.isEmpty(searchResultEntity.getKeyword())) {
+                sentBuryPointForSearch(searchResultEntity.getKeyword());
+            }
         }
     }
 
