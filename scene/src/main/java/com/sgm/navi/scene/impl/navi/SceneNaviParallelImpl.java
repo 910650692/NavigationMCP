@@ -16,6 +16,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.position.LocalParallelRoadEntity;
+import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.position.IPositionPackageCallback;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
@@ -240,7 +241,16 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
          */
         @Override
         public void onParallelRoadUpdate(final LocParallelInfoEntity entity) {
-            Logger.i(TAG, "onParallelRoadUpdate平行路切换 ", entity.toString());
+            if (ConvertUtils.isNull(entity)) {
+                return;
+            }
+            if (Logger.openLog) {
+                Logger.i(TAG, "onParallelRoadUpdate平行路切换 ", entity.toString());
+            }
+            // 如果在非平行路切换期间，可以切换主辅路
+            if (entity.getStatus() == NumberUtils.NUM_0) {
+                mIsSwitchParallelEnabled = true;
+            }
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override
                 public void run() {
