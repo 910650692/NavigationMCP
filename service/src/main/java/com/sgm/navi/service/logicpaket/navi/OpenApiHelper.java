@@ -168,27 +168,6 @@ public final class OpenApiHelper {
         return taskId;
     }
 
-    /**
-     * @param poiId poiId
-     * @return 返回搜索的taskId
-     */
-    public static int poiIdSearch(String poiId) {
-        return SEARCH_PACKAGE.poiIdSearch(poiId);
-    }
-
-    /**
-     * 终点停车场专用搜索接口
-     * @return 返回搜索结果
-     */
-    public static int getParkSearchResult() {
-        int taskId = -1;
-        final RouteParam endPoint = ROUTE_PACKAGE.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-        taskId = SEARCH_PACKAGE.aroundSearch(1, ResourceUtils.Companion.getInstance().
-                getString(R.string.navi_parking_list),
-                new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), "2000", true);
-        return taskId;
-    }
-
     public static int getSearchType() {
         return CURRENT_SEARCH_TYPE;
     }

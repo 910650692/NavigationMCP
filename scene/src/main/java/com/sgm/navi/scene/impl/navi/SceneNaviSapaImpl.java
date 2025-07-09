@@ -25,6 +25,7 @@ import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
+import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 import com.sgm.navi.ui.action.Action;
 
@@ -345,7 +346,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
         // 电车和插混的才搜索显示充电桩的信息
         if (powerType == 1 || powerType == 2) {
             if (!mCurrentServicePoiId.equals(poiId)) {
-                mTaskId = OpenApiHelper.poiIdSearch(poiId);
+                mTaskId = SearchPackage.getInstance().poiIdSearch(poiId, true);
                 Logger.i(TAG, "search servicePoiID taskId = ", mTaskId);
                 mCurrentServicePoiId = poiId;
             }
@@ -660,7 +661,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
     }
 
     @Override
-    public void onSearchResult(final int taskId, final int errorCode, final String message,
+    public void onSilentSearchResult(final int taskId, final int errorCode, final String message,
                                final SearchResultEntity searchResultEntity) {
         Logger.i(TAG, "onSearchResult: taskId = ", taskId, ", errorCode = ", errorCode,
                 ", message = ", message);
@@ -713,14 +714,23 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
         }, NumberUtils.NUM_0, NumberUtils.NUM_1);
     }
 
-    private Runnable mRefreshChargeInfo = new Runnable() {
+    private final Runnable mRefreshChargeInfo = new Runnable() {
         @Override
         public void run() {
             Logger.i(TAG, "mRefreshChargeInfo");
-            if (mViewVisible.get() == 0) {
-                mScreenView.updateOnlyServiceUi();
-            } else if (mViewVisible.get() == 2) {
-                mScreenView.updateFirstServiceUi();
+            try {
+                if (mViewVisible != null) {
+                    Integer viewVisible = mViewVisible.get();
+                    if (viewVisible != null && mScreenView != null) {
+                        if (viewVisible == 0) {
+                            mScreenView.updateOnlyServiceUi();
+                        } else if (viewVisible == 2) {
+                            mScreenView.updateFirstServiceUi();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Logger.e(TAG, "mRefreshChargeInfo error: ", e.getMessage());
             }
         }
     };
