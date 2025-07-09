@@ -788,6 +788,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             final PoiInfoEntity poiInfo = new PoiInfoEntity();
             poiInfo.setPoint(entity.getRealPos());
             poiInfo.setPid(entity.getPid());
+            poiInfo.setName(entity.getName());
+            poiInfo.setAddress(entity.getAddress());
             final boolean result = mRoutePackage.removeVia(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), poiInfo, true);
             mViewModel.notifyDeleteViaPointResult(result, entity);
         }
