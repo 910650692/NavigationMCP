@@ -145,8 +145,15 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
             holder.mTerminalParkingItemBinding.sktvParkingItemSufficientNum.setText(getBusStatusString(position));
         }
         // 当前位置显示
-        holder.mTerminalParkingItemBinding.sktvParkingItemDistance.setText(
-                AppCache.getInstance().getMContext().getString(R.string.st_distance_to_finish, SearchPackage.getInstance().calcStraightDistance(poiEntity.getMPoint(),mEndPoint)));
+        if (!ConvertUtils.isEmpty(poiEntity) && !ConvertUtils.isEmpty(poiEntity.getPoint())
+                && !ConvertUtils.isEmpty(mEndPoint)) {
+            holder.mTerminalParkingItemBinding.sktvParkingItemDistance.setVisibility(VISIBLE);
+            holder.mTerminalParkingItemBinding.sktvParkingItemDistance.setText(
+                    AppCache.getInstance().getMContext().getString(R.string.st_distance_to_finish,
+                            SearchPackage.getInstance().calcStraightDistance(poiEntity.getPoint(), mEndPoint)));
+        } else {
+            holder.mTerminalParkingItemBinding.sktvParkingItemDistance.setVisibility(GONE);
+        }
         if (!ConvertUtils.isEmpty(poiEntity) && !ConvertUtils.isEmpty(poiEntity.getMPoint())) {
             holder.mTerminalParkingItemBinding.textNavi.setText(SearchPackage.getInstance().calcStraightDistance(poiEntity.getMPoint()));
         }

@@ -296,12 +296,16 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             mViewBinding.collectTitleBarView.collectBarTextView.setText(getResources().getString(R.string.shc_get_point));
             mViewBinding.collectTitleBarView.sclCollectAdd.setVisibility(View.GONE);
         }
-        mAdapter.setCollectionType(collectionType);
+        if (mAdapter != null) {
+            mAdapter.setCollectionType(collectionType);
+        }
     }
 
     public void setHomeCompanyType(final int homeCompanyType) {
         this.mHomeCompanyType = homeCompanyType;
-        mAdapter.setHomeCompanyType(mHomeCompanyType);
+        if (mAdapter != null) {
+            mAdapter.setHomeCompanyType(mHomeCompanyType);
+        }
     }
 
     /**
