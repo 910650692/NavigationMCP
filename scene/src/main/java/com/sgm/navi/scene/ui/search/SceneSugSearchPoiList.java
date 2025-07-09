@@ -138,7 +138,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                         .build(RoutePath.Search.POI_DETAILS_FRAGMENT)
                         .navigation();
                 addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
-                        AutoMapConstant.SourceFragment.SUG_SEARCH_FRAGMENT, AutoMapConstant.PoiType.POI_KEYWORD, poiInfoEntity));
+                        AutoMapConstant.SourceFragment.SUG_SEARCH_FRAGMENT, AutoMapConstant.PoiType.POI_SUGGESTION, poiInfoEntity));
                 hideInput();
             }
 

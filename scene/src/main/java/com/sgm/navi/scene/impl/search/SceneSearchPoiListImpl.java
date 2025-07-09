@@ -341,7 +341,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      * @param searchType 扎标对应的搜索类型
      */
     public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index, final int searchType) {
-        mSearchPackage.setSelectIndex(poiInfoEntity, index, searchType);
+        mSearchPackage.setSelectIndex(poiInfoEntity, index, searchType, false);
     }
 
     /**

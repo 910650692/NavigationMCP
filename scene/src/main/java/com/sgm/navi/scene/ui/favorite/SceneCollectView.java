@@ -134,7 +134,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                 } else {
                     // 正常状态下收藏夹进去 项目 应该是去算路 POI_COLLECTION
                     addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
-                            AutoMapConstant.SourceFragment.FRAGMENT_COLLECTION, AutoMapConstant.PoiType.POI_KEYWORD, poiInfoEntity));
+                            AutoMapConstant.SourceFragment.FRAGMENT_COLLECTION, AutoMapConstant.PoiType.POI_HISTORY_LIST_CLICK, poiInfoEntity));
                 }
             }
 

@@ -91,6 +91,6 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
      * @param index 选中下标
      */
     public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index) {
-        mSearchPackage.setSelectIndex(poiInfoEntity, index, AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH);
+        mSearchPackage.setSelectIndex(poiInfoEntity, index, AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH, true);
     }
 }

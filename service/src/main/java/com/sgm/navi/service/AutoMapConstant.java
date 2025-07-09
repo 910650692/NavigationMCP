@@ -241,7 +241,8 @@ public interface AutoMapConstant {
             PoiType.POI_AROUND,
             PoiType.POI_MAP_CLICK,
             PoiType.POI_DELETE_AROUND,
-            PoiType.POI_MAP_CAR_CLICK
+            PoiType.POI_MAP_CAR_CLICK,
+            PoiType.POI_HISTORY_LIST_CLICK
     })
     @interface PoiType {
         int POI_SUGGESTION = 0; // 预搜索
@@ -254,6 +255,7 @@ public interface AutoMapConstant {
         int POI_MAP_CLICK = 7; // 地图点击
         int POI_DELETE_AROUND = 8;//删除途径点
         int POI_MAP_CAR_CLICK = 9;//自车位点击事件
+        int POI_HISTORY_LIST_CLICK = 10;//历史记录/收藏列表点击事件
     }
 
     /*** ！！！沿途批量搜索支持类型！！！ */

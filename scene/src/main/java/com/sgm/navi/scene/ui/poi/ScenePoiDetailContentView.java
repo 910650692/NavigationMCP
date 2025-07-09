@@ -213,8 +213,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
 
         } else {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " , poiInfo.getPoint().getLon()
-                    + " ,lat" + poiInfo.getPoint().getLat());
+            if (poiInfo != null) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point: " , poiInfo.getPoint());
+            }
             if (mIsEnd) {
                 ThreadManager.getInstance().execute(() -> mRoutePackage.requestChangeEnd(mMapTypeId, poiInfo));
             } else {
@@ -421,9 +422,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             //1064667，地图点击详情页完全展示后，再通知地图显示“回车位”按钮
             mScreenViewModel.NotifyMapTimer();
         }
-        if (mScreenViewModel != null && mPoiType != AutoMapConstant.PoiType.POI_MAP_CLICK
-                && mPoiType != AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
-            //非地图选点和自车位点击事件，不用扎PoiLabel标。隐藏扎标
+        if (mScreenViewModel != null && mPoiType == AutoMapConstant.PoiType.POI_KEYWORD) {
+            //搜索结果列表点击进入详情页，不用扎PoiLabel标。隐藏扎标
             mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
         }
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty() || ConvertUtils.isEmpty(mScreenViewModel)) {
@@ -1871,6 +1871,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             case AutoMapConstant.PoiType.POI_KEYWORD:
             case AutoMapConstant.PoiType.POI_MAP_CLICK:
             case AutoMapConstant.PoiType.POI_AROUND:
+            case AutoMapConstant.PoiType.POI_HISTORY_LIST_CLICK:
                 if (mScreenViewModel.isAlongWaySearch() && !mIsEnd) {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "添加途径点");
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(null);
@@ -2021,6 +2022,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 case AutoMapConstant.PoiType.POI_KEYWORD:
                 case AutoMapConstant.PoiType.POI_AROUND:
                 case AutoMapConstant.PoiType.POI_MAP_CLICK:
+                case AutoMapConstant.PoiType.POI_HISTORY_LIST_CLICK:
                     handleRouteClick();
                     break;
                 case AutoMapConstant.PoiType.POI_HOME:

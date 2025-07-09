@@ -139,6 +139,9 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
             }
 
         } else {
+            if (mBinding != null) {
+                mBinding.scenePoiList.clearLabelVisibleState();
+            }
             updateShowState(false);
         }
     }

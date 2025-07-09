@@ -258,6 +258,18 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
                 if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
                     mScreenViewModel.setSelectIndex(poiInfoEntity, position, mSearchType);
+                    final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
+                    if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                        // 遍历所有可见的item
+                        for (int i = 0; i < poiInfoEntities.size(); i++) {
+                            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                                if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntity.getPid())) {
+                                    poiInfoEntities.get(i).setMIsVisible(false);
+                                }
+                            }
+                        }
+                        mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, true);
+                    }
                 }
                 final int poiType = getPoiType(mAdapter.getHomeCompanyType());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " , poiType , " homeCompany: " , mAdapter.getHomeCompanyType());
@@ -1215,15 +1227,34 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 for (int i = 0; i < poiInfoEntities.size(); i++) {
                     if (!ConvertUtils.isEmpty(poiInfoEntities)) {
                         if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntity.getPid())) {
+                            poiInfoEntities.get(i).setMIsVisible(false);
                             index = i;
                         }
                     }
                 }
+                mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, false);
             }
             mScreenViewModel.setSelectIndex(poiInfoEntity, index, mSearchType);
         }
 
 
+    }
+
+    public void clearLabelVisibleState() {
+        if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
+            final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
+            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                // 遍历所有可见的item
+                for (int i = 0; i < poiInfoEntities.size(); i++) {
+                    if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                        if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntities.get(i).getPid())) {
+                            poiInfoEntities.get(i).setMIsVisible(false);
+                        }
+                    }
+                }
+                mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, false);
+            }
+        }
     }
 
     /**

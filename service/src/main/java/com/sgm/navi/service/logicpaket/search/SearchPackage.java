@@ -1498,7 +1498,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param index 需要高亮的下标
      * @param searchType 扎标对应的搜索类型
      */
-    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index, final int searchType) {
+    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index, final int searchType, boolean isNeedShow) {
         if (ConvertUtils.isEmpty(poiInfoEntity)) {
             return;
         }
@@ -1538,7 +1538,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT,
                     layerItemSearchResult, false);
         }
-        showPreview(poiList);
+        if (isNeedShow) {
+            showPreview(poiList);
+        }
     }
 
     /**
