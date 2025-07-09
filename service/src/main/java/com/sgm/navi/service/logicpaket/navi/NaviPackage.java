@@ -68,6 +68,7 @@ import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.signal.SignalPackage;
+import com.sgm.navi.service.logicpaket.user.account.AccountPackage;
 import com.sgm.navi.service.tts.NaviMediaPlayer;
 import com.sgm.navi.service.tts.TTSPlayHelper;
 
@@ -285,80 +286,90 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * @param isCompleted 是否完成导航 由于逻辑调整，现对此做出解释，默认插入时都为true，只有在接收下电信号时如果距离大于1KM则为false
      **/
     public void addNaviRecord(final boolean isCompleted) {
-        final List<RouteParam> allPoiParamList = mRouteAdapter.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
-        final boolean isEmpty = ConvertUtils.isEmpty(allPoiParamList);
-        Logger.i(TAG, "isCompleted= " + isCompleted + ",isEmpty：" + isEmpty);
-        if (!isEmpty) {
-            final RouteParam startParam = allPoiParamList.get(0);
-            final RouteParam endParam = allPoiParamList.get(allPoiParamList.size() - 1);
-            RouteSpeechRequestParam routeSpeechRequestParam = new RouteSpeechRequestParam();
-            final History history = new History();
-            String key = endParam.getName();
-            history.setMKeyWord(key);
-            String endPoiId = endParam.getPoiID();
-            history.setMPoiId(endPoiId);
-            String startName = startParam.getName();
-            history.setMStartPoiName(startName);
-            String endName = endParam.getName();
-            history.setMEndPoiName(endName);
-            GeoPoint startPoint = startParam.getRealPos();
-            history.setMStartPoint(startPoint.toString());
-            GeoPoint endPoint = endParam.getRealPos();
-            history.setMEndPoint(endPoint.toString());
-            history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
-            history.setMIsCompleted(isCompleted);
-            Date date = new Date();
-            history.setMUpdateTime(date);
-            List<PoiInfoEntity> midPoint = new ArrayList<>();
-            // [0]代表起点 [size-1]代表终点
-            for (int i = 0; i < allPoiParamList.size(); i++) {
-                RouteParam routeParam = allPoiParamList.get(i);
-                PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
-                poiInfoEntity.setName(routeParam.getName());
-                poiInfoEntity.setAddress(routeParam.getAddress());
-                poiInfoEntity.setPid(routeParam.getPoiID());
-                poiInfoEntity.setPoint(routeParam.getRealPos());
-                if (i == 0) {
-                } else if (i == allPoiParamList.size() - 1) {
-                    poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
-                    routeSpeechRequestParam.setMEndPoiInfoEntity(poiInfoEntity);
-                } else {
-                    poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_WAY);
-                    midPoint.add(poiInfoEntity);
+        ThreadManager.getInstance().execute(() -> {
+            if (mRouteAdapter == null) {
+                Logger.w(TAG, "addNaviRecord", "mRouteAdapter == null");
+                return;
+            }
+            if (mUserTrackAdapter == null) {
+                Logger.w(TAG, "addNaviRecord", "mUserTrackAdapter == null");
+                return;
+            }
+            if (mManager == null) {
+                Logger.w(TAG, "addNaviRecord", "mManager == null");
+                return;
+            }
+            final List<RouteParam> allPoiParamList = mRouteAdapter.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+            final boolean isEmpty = ConvertUtils.isEmpty(allPoiParamList);
+            Logger.i(TAG, "isCompleted= " + isCompleted + ",isEmpty：" + isEmpty);
+            if (!isEmpty) {
+                final RouteParam startParam = allPoiParamList.get(0);
+                final RouteParam endParam = allPoiParamList.get(allPoiParamList.size() - 1);
+                RouteSpeechRequestParam routeSpeechRequestParam = new RouteSpeechRequestParam();
+                final History history = new History();
+                String key = endParam.getName();
+                history.setMKeyWord(key);
+                String endPoiId = endParam.getPoiID();
+                history.setMPoiId(endPoiId);
+                String startName = startParam.getName();
+                history.setMStartPoiName(startName);
+                String endName = endParam.getName();
+                history.setMEndPoiName(endName);
+                GeoPoint startPoint = startParam.getRealPos();
+                history.setMStartPoint(startPoint.toString());
+                GeoPoint endPoint = endParam.getRealPos();
+                history.setMEndPoint(endPoint.toString());
+                history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
+                history.setMIsCompleted(isCompleted);
+                Date date = new Date();
+                history.setMUpdateTime(date);
+                List<PoiInfoEntity> midPoint = new ArrayList<>();
+                // [0]代表起点 [size-1]代表终点
+                for (int i = 0; i < allPoiParamList.size(); i++) {
+                    RouteParam routeParam = allPoiParamList.get(i);
+                    PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+                    poiInfoEntity.setName(routeParam.getName());
+                    poiInfoEntity.setAddress(routeParam.getAddress());
+                    poiInfoEntity.setPid(routeParam.getPoiID());
+                    poiInfoEntity.setPoint(routeParam.getRealPos());
+                    if (i == 0) {
+                    } else if (i == allPoiParamList.size() - 1) {
+                        poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
+                        routeSpeechRequestParam.setMEndPoiInfoEntity(poiInfoEntity);
+                    } else {
+                        poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_WAY);
+                        midPoint.add(poiInfoEntity);
+                    }
                 }
-            }
-            routeSpeechRequestParam.setMViaPoiInfoEntityList(midPoint);
-            history.setMViaPoint(GsonUtils.toJson(routeSpeechRequestParam));
-            Logger.i(TAG, "addNaviRecord history name:" + history.getMEndPoiName());
-            if (isCompleted) {
+                routeSpeechRequestParam.setMViaPoiInfoEntityList(midPoint);
+                history.setMViaPoint(GsonUtils.toJson(routeSpeechRequestParam));//jcs
+                Logger.i(TAG, "addNaviRecord history name:" + history.getMEndPoiName());
                 mManager.insertOrReplace(history);
-            } else {
-                mManager.insertValue(history);
-            }
-            // 如果登陆了话就将数据传给高德
-            if (mUserTrackAdapter.isLogin()) {
-                HistoryRouteItemBean historyRouteItemBean = new HistoryRouteItemBean();
+                // 如果登陆了话就将数据传给高德
+                if (AccountPackage.getInstance().isLogin()) {
+                    HistoryRouteItemBean historyRouteItemBean = new HistoryRouteItemBean();
 //                historyRouteItemBean.setId(key);
-                historyRouteItemBean.setStartLoc(startPoint);
-                historyRouteItemBean.setEndLoc(endPoint);
-                historyRouteItemBean.setIsCompleted(isCompleted);
-                historyRouteItemBean.setUpdateTime(date.getTime());
-                historyRouteItemBean.setType(
-                        AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
-                HistoryPoiItemBean startPoiItemBean = new HistoryPoiItemBean();
-                startPoiItemBean.setPoiId(startParam.getPoiID());
-                startPoiItemBean.setName(startName);
-                historyRouteItemBean.setFromPoi(startPoiItemBean);
-                HistoryPoiItemBean endPoiItemBean = new HistoryPoiItemBean();
-                endPoiItemBean.setPoiId(endPoiId);
-                endPoiItemBean.setName(endName);
-                historyRouteItemBean.setToPoi(endPoiItemBean);
-                mUserTrackAdapter.addHistoryRoute(historyRouteItemBean);
+                    historyRouteItemBean.setStartLoc(startPoint);
+                    historyRouteItemBean.setEndLoc(endPoint);
+                    historyRouteItemBean.setIsCompleted(isCompleted);
+                    historyRouteItemBean.setUpdateTime(date.getTime());
+                    historyRouteItemBean.setType(
+                            AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
+                    HistoryPoiItemBean startPoiItemBean = new HistoryPoiItemBean();
+                    startPoiItemBean.setPoiId(startParam.getPoiID());
+                    startPoiItemBean.setName(startName);
+                    historyRouteItemBean.setFromPoi(startPoiItemBean);
+                    HistoryPoiItemBean endPoiItemBean = new HistoryPoiItemBean();
+                    endPoiItemBean.setPoiId(endPoiId);
+                    endPoiItemBean.setName(endName);
+                    historyRouteItemBean.setToPoi(endPoiItemBean);
+                    mUserTrackAdapter.addHistoryRoute(historyRouteItemBean);
+                }
+            } else if (isCompleted) {
+                // 下电后不再弹出继续导航
+                mManager.updateUncompletedNavi();
             }
-        } else if (isCompleted) {
-            // 下电后不再弹出继续导航
-            mManager.updateUncompletedNavi();
-        }
+        });
     }
 
     public static NaviPackage getInstance() {

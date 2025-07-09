@@ -53,21 +53,15 @@ public class HistoryManager {
     }
 
     /**
-     * Use key and value for data history.
-     * @param info save info
-     */
-    public void insertValue(final History info) {
-        Logger.d(TAG, "insertOrReplace");
-        insertOrReplace(info);
-    }
-
-    /**
      * 修改或者更新数据
-     * @param info save info
+     * @param history save history
      */
-    public void insertOrReplace(final History info) {
-        Logger.d(TAG, "insertOrReplace name:"+(info != null?info.getMEndPoiName() : "info==null"));
-        final History history = GsonUtils.convertToT(info, History.class);
+    public void insertOrReplace(final History history) {
+        if (ConvertUtils.isNull(history)) {
+            Logger.i(TAG, "insertOrReplace history is null");
+            return;
+        }
+        Logger.d(TAG, "insertOrReplace name:" + history.getMEndPoiName());
         history.setMUpdateTime(new Date());
         mSearchHistoryDao.insertOrReplace(history);
     }
