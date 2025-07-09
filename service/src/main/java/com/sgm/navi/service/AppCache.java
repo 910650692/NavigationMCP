@@ -42,7 +42,6 @@ public class AppCache {
             }
             return;
         }
-
         final boolean appForeground = ProcessManager.isAppInForeground();
         if (appForeground) {
             return;
