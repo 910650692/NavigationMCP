@@ -19,9 +19,7 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
 
     public BaseViewModel(final @NonNull Application application) {
         super(application);
-        if(Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "Constructor");
-        }
+        Logger.i(getClass().getSimpleName(), "Constructor");
         this.mApplication = application;
         mModel = initModel();
     }
@@ -33,9 +31,7 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
      * @param screenId 页面标识
      */
     public void attachView(final V baseView, final String screenId) {
-        if(Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "attachView", "screenId: ", screenId);
-        }
+        Logger.i(getClass().getSimpleName(), "attachView", "screenId: ", screenId);
         mView = baseView;
         mModel.onAttachViewModel(this);
         mScreenId = screenId;
@@ -43,54 +39,40 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
 
     @Override
     public void onAny(final LifecycleOwner owner, final Lifecycle.Event event) {
-        if(Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "onAny", event.name());
-        }
+        Logger.i(getClass().getSimpleName(), "onAny", event.name());
     }
 
     @Override
     public void onCreate() {
-        if(Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "onCreate");
-        }
+        Logger.i(getClass().getSimpleName(), "onCreate");
         mModel.onCreate();
     }
 
     @Override
     public void onResume() {
-        if(Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "onResume");
-        }
+        Logger.i(getClass().getSimpleName(), "onResume");
     }
 
     @Override
     public void onStart() {
-        if(Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "onStart");
-        }
+        Logger.i(getClass().getSimpleName(), "onStart");
         mModel.onStart();
     }
 
     @Override
     public void onStop() {
-        if(Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "onStop");
-        }
+        Logger.i(getClass().getSimpleName(), "onStop");
         mModel.onStop();
     }
 
     @Override
     public void onPause() {
-        if(Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "onPause");
-        }
+        Logger.i(getClass().getSimpleName(), "onPause");
     }
 
     @Override
     public void onDestroy() {
-        if(Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "onDestroy");
-        }
+        Logger.i(getClass().getSimpleName(), "onDestroy");
         mModel.onDestroy();
     }
 

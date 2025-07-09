@@ -33,9 +33,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     public BaseActivity() {
         super();
-        if (Logger.openLog) {
-            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate before");
-        }
+        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate before");
         mStackManager = StackManager.getInstance();
         onCreateBefore();
         mStackManager.push(mScreenId, this);
@@ -44,9 +42,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     protected void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Logger.openLog) {
-            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate start");
-        }
+        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate start");
         setImmersiveStatusBar();
         createViewModel();
         boolean isBindView = onCreateViewBefore();
@@ -55,77 +51,65 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         onInitView();
         onInitObserver();
         onInitData();
-        if (Logger.openLog) {
-            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate end");
-        }
+        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreate end");
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        Logger.i(LIFE_CYCLE_TAG, "onSaveInstanceState");
         outState.putBoolean("onConfigurationChanged", true);
-        if (Logger.openLog) {
-            Logger.i(LIFE_CYCLE_TAG, "onSaveInstanceState");
-        }
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        boolean onConfigurationChanged = savedInstanceState.getBoolean("onConfigurationChanged");
-        if (Logger.openLog) {
-            Logger.i(LIFE_CYCLE_TAG, "onRestoreInstanceState", onConfigurationChanged);
-        }
+        Logger.i(LIFE_CYCLE_TAG, "onRestoreInstanceState", savedInstanceState.getBoolean("onConfigurationChanged"));
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (Logger.openLog) {
-            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onResume");
-        }
+        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onResume");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (Logger.openLog) {
-            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStart");
-        }
+        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (Logger.openLog) {
-            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStop");
-        }
+        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (Logger.openLog) {
-            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDestroy");
-        }
+        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDestroy");
         mStackManager.removeBaseView(mScreenId, this);
     }
 
     @Override
     public void finish() {
         super.finish();
+        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "finish");
         mStackManager.popActivity(mScreenId);
-    }
-
-    public void finishNoPop() {
-        super.finish();
     }
 
     @Override
     public void onBackPressed() {
-        if (Logger.openLog) {
-            Logger.i(getClass().getSimpleName(), "阻止返回键");
-        }
+        super.onBackPressed();
+        Logger.i(getClass().getSimpleName(), "阻止返回键");
     }
 
     @Override

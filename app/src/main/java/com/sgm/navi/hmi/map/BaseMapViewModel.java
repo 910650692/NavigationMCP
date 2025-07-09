@@ -49,6 +49,7 @@ import com.sgm.navi.hmi.search.mainsearch.MainSearchFragment;
 import com.sgm.navi.hmi.search.searchresult.SearchResultFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
+import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -192,7 +193,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Override
     public void onCreate() {
         super.onCreate();
-        checkAgreementRights();
+        if(!StartService.getInstance().checkSdkIsNeedInit()) {
+            startIconVisibility = new ObservableBoolean(false);
+        }else {
+            checkAgreementRights();
+        }
     }
 
     @Override

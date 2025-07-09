@@ -36,6 +36,7 @@ import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.startup.ActivateFailedDialog;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
@@ -94,18 +95,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
         mBinding.cruiseLayout.tvCurrentRoadName.setSoundEffectsEnabled(false);
-        mBinding.cruiseLayout.tvCurrentRoadName.setOnClickListener(view -> {
-
-        });
-
         mRotateAnim = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
         mRotateAnim.setDuration(2000);
         mRotateAnim.setRepeatCount(Animation.INFINITE);
         mRotateAnim.setInterpolator(new LinearInterpolator());
         mBinding.mainImg.setVisibility(View.VISIBLE);
-        mBinding.mainImg.setOnClickListener(v -> {
-            FloatViewManager.getInstance().hideAllCardWidgets(false);
-        });
+        mBinding.mainImg.setOnClickListener(v -> FloatViewManager.getInstance().hideAllCardWidgets(false));
         mBinding.mainImg.post(() -> {
             if (mViewModel.isSupportSplitScreen()) {
                 checkConfig();
@@ -155,7 +150,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     @Override
     public void onInitView() {
-
+        if(!StartService.getInstance().checkSdkIsNeedInit()){
+            mViewModel.loadMapView(mBinding.mainMapview);
+        }
     }
 
     @Override
