@@ -762,7 +762,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 Logger.e(TAG, "mModel or mView is null");
                 return;
             }
-            mModel.clearSearchLabel();
             mModel.clearWeatherView();
             mView.hideTrip();
             startNavi(false);
@@ -810,7 +809,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         };
 
         mStartSimNaviClick = () -> {
-            mModel.clearSearchLabel();
             mModel.clearWeatherView();
             mView.hideTrip();
             startNavi(true);
@@ -835,7 +833,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mView.clearSceneTabUI(false);
             mView.clearSceneGasTabUI(false);
             hideRouteSearchListUI();
-            mModel.clearSearchLabel();
             mModel.clearRestArea();
         };
     }
@@ -853,7 +850,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mView.clearSceneTabUI(false);
             mView.clearSceneGasTabUI(false);
             hideRouteSearchChargeListUI();
-            mModel.clearSearchLabel();
         };
 
         mChargeRefreshClick = () -> ToastUtils.Companion.getInstance().showCustomToastView(
@@ -869,7 +865,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mView.clearSceneTabUI(false);
             mView.clearSceneGasTabUI(false);
             hideRouteSearchChargeListUI();
-            mModel.clearSearchLabel();
         };
     }
 
@@ -1061,7 +1056,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             if (mTimes == NumberUtils.NUM_0) {
                 ThreadManager.getInstance().postUi(() -> {
                     cancelTimer();
-                    mModel.clearSearchLabel();
                     mModel.clearWeatherView();
                     mView.hideTrip();
                     startNavi(false);
@@ -1933,7 +1927,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                     hideRouteSearchDetailsUI();
                     hideRouteSearchListUI();
                     hideRouteSearchChargeListUI();
-                    mModel.clearSearchLabel();
                 }
                 break;
             case 1:
@@ -1964,7 +1957,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                     hideRouteSearchDetailsUI();
                     hideRouteSearchListUI();
                     hideRouteSearchChargeListUI();
-                    mModel.clearSearchLabel();
                 }
                 break;
             default:
@@ -1993,7 +1985,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         } else {
             hideRouteSearchDetailsUI();
             hideRouteSearchListUI();
-            mModel.clearSearchLabel();
         }
         mIsChargingSelect = !mIsChargingSelect;
     };
@@ -2014,7 +2005,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         } else {
             hideRouteSearchDetailsUI();
             hideRouteSearchListUI();
-            mModel.clearSearchLabel();
         }
         mIsGasSelect = !mIsGasSelect;
     };

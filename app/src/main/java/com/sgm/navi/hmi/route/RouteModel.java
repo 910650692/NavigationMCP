@@ -225,7 +225,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * */
     public void getSearchListAndShow() {
         mListSearchType = 3;
-        clearSearchLabel();
         ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteRestArea(getCurrentIndex()));
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mSearchLoadingType = AutoMapConstant.RouteSearchType.SearchRestArea;
@@ -238,7 +237,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * */
     public void setSearchListAndShow() {
         mListSearchType = 3;
-        clearSearchLabel();
         if (ConvertUtils.isEmpty(mRouteRestAreaInfos)) {
             return;
         }
@@ -280,7 +278,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * */
     public void getSearchListChargeAndShow(final String keyWord, final int searchType) {
         mListSearchType = searchType;
-        clearSearchLabel();
         if (searchType == 0) {
             mLocalTaskId = mSearchPackage.enRouteKeywordSearch(keyWord);
         } else if (searchType == 1) {
@@ -517,12 +514,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
     }
 
-    /**
-     * 清除搜索扎点
-     * */
-    public void clearSearchLabel() {
-        mSearchPackage.clearLabelMark();
-    }
+
 
     /**
      * 绘制天气图层
@@ -975,7 +967,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteRequest() {
-        mSearchPackage.clearLabelMark();
         mRoutePackage.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, false);
         clearWeatherView();
         clearRestArea();

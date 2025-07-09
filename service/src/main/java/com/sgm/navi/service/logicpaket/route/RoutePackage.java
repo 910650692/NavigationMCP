@@ -1478,6 +1478,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             }
         }
         mLayerAdapter.setSelectedPathIndex(mapTypeId, routeIndex);
+        mLayerAdapter.showPreviewView(mapTypeId);
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
             mNaviAdapter.setNaviPath(routeIndex, routeLineLayerParam);
         }
