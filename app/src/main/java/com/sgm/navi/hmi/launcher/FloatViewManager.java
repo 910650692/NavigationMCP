@@ -25,7 +25,10 @@ import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.vrbridge.MapStateManager;
 
@@ -95,13 +98,25 @@ public class FloatViewManager {
         @Override
         public void onChange(boolean selfChange, @Nullable Uri uri) {
             super.onChange(selfChange, uri);
+            int launcherDeskMode =MapStateManager.getInstance().getLauncherDeskMode();
             currentDeskMode = Settings.Global.getInt(mContentResolver, DESKTOP_MODE_KEY, DesktopMode.KANZI_MODE.getValue());
             Logger.i(TAG, "onChange", selfChange, currentDeskMode);
             MapStateManager.getInstance().setLauncherDeskMode(currentDeskMode);
             notifyDeskModeChanged();
-            if (!StartService.getInstance().checkSdkIsNeedInit()
-                    && !StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), "RouteFragment")) {
-                LayerPackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+
+            if(StartService.getInstance().checkSdkIsNeedInit()) return;
+            if(launcherDeskMode == DesktopMode.NAVIGATION_MODE.value || currentDeskMode == DesktopMode.NAVIGATION_MODE.value){
+                String mapStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+                if (mapStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
+                    RoutePackage.getInstance().abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
+                    return;
+                }
+                if (mapStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
+                    RoutePackage.getInstance().clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
+                    RoutePackage.getInstance().clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+                    RoutePackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+                    LayerPackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+                }
             }
         }
     };
