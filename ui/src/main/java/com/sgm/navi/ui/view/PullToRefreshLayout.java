@@ -178,6 +178,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
                 mCurrentY = event.getY();
                 float dura = (mCurrentY - mTouchY) / 3.0f;
                 if (dura > 0 && mCanRefresh) {
+                    mFooterView.getView().getLayoutParams().height = (int) 0;
                     dura = Math.min(head_height_2, dura);
                     dura = Math.max(0, dura);
                     mHeaderView.getView().getLayoutParams().height = (int) dura;
@@ -185,6 +186,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
                     requestLayout();
                     mHeaderView.progress(dura, head_height);
                 } else {
+                    mHeaderView.getView().getLayoutParams().height = (int) 0;
                     dura = Math.min(foot_height_2, Math.abs(dura));
                     dura = Math.max(0, Math.abs(dura));
                     mFooterView.getView().getLayoutParams().height = (int) dura;
@@ -329,7 +331,6 @@ public class PullToRefreshLayout extends SkinFrameLayout {
             if (state == State.RefreshState.REFRESH) {
                 mRefresh = false;
                 mHeaderView.normal();
-
             } else {
                 mLoadMore = false;
                 mFooterView.normal();
