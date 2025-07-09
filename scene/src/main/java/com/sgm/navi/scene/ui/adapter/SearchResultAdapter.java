@@ -209,6 +209,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
             holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_add));
+
             if (isBelongSamePoi(mGasChargeAlongList, mPoiEntities.get(position))) {
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
@@ -458,7 +459,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private boolean isBelongSamePoi(final List<RouteParam> local, final PoiInfoEntity poiInfoEntity) {
         if (local.isEmpty()) {
-            return false;
+            return mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP,poiInfoEntity);
         }
         for (RouteParam param : local) {
             if (RoutePackage.getInstance().isTheSamePoi(param, poiInfoEntity)) {
