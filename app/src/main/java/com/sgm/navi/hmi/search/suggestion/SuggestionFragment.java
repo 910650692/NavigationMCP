@@ -51,13 +51,18 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
     public void onGetFragmentData() {
         super.onGetFragmentData();
         getBundleData();
-        mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
     }
 
     @Override
     public void onReStoreFragment() {
         super.onReStoreFragment();
         mViewModel.onReStoreFragment();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
     }
 
     @Override
