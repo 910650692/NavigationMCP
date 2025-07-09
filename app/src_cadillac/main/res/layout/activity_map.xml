@@ -738,7 +738,11 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
-
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/protect_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"/>
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

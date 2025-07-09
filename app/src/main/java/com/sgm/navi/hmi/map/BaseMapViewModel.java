@@ -253,16 +253,38 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             public void onCommitClick() {
                 mModel.updateFirstLauncherFlag();
                 mModel.checkPermission();
+                closeProtectView();
             }
 
             @Override
             public void onCancelClick() {
-                StackManager.getInstance().exitApp();
-                FloatViewManager.getInstance().showAllCardWidgets();
+                if (FloatViewManager.getInstance().isNaviDeskBg()) {
+                    Logger.d(TAG, "桌面地图情况");
+                    mView.protectMap(AutoMapConstant.CANCEL_AUTO_PROTOCOL);
+                } else {
+                    StackManager.getInstance().exitApp();
+                    FloatViewManager.getInstance().showAllCardWidgets();
+                }
             }
         });
         reminderDialog.show();
         FloatViewManager.getInstance().hideAllCardWidgets(false);
+    }
+
+    public void closeProtectView() {
+        mView.closeProtectView();
+    }
+
+    public void showProtectView() {
+        mView.showProtectView();
+    }
+
+    public void protectMap(final int situation) {
+        mView.protectMap(situation);
+    }
+
+    public void checkAuthorizationExpired() {
+        mModel.checkAuthorizationExpired();
     }
 
     /**

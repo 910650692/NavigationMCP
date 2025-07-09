@@ -22,6 +22,9 @@ public interface AutoMapConstant {
 
     int DELAY_MINUTE = 1;
 
+    int CANCEL_AUTO_PROTOCOL = 1;
+    int CANCEL_LOCATION_PROTOCOL = 2;
+
 
     /*** ！！！搜索相关,搜索类型,只能添加不能删除！！！*/
     @IntDef({SearchType.SEARCH_SUGGESTION,

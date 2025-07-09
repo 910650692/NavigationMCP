@@ -447,9 +447,9 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
             locInfoBean.setLongitude(Double.parseDouble(keyLng));
             locInfoBean.setLatitude(Double.parseDouble(keyLat));
         } else {
-            locInfoBean.setLongitude(SettingConstant.DEFAULT_LON_SH);
-            locInfoBean.setLatitude(SettingConstant.DEFAULT_LAT_SH);
-            locInfoBean.setAltitude(SettingConstant.DEFAULT_ALT_SH);
+            locInfoBean.setLongitude(SettingConstant.DEFAULT_LON_BJ);
+            locInfoBean.setLatitude(SettingConstant.DEFAULT_LAT_BJ);
+            locInfoBean.setAltitude(SettingConstant.DEFAULT_ALT_BJ);
         }
     }
 

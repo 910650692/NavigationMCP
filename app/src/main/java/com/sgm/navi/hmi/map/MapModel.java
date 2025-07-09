@@ -1831,6 +1831,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (!isShowDialog) {
             return;
         }
+        mViewModel.showProtectView();
         authorizationRequestDialog = new AuthorizationRequestDialog(
                 stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
         authorizationRequestDialog.setEndDate(endDate);
@@ -1838,6 +1839,17 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             @Override
             public void onCommitClick() {
                 mSettingPackage.setPrivacyStatus(true);
+                mViewModel.closeProtectView();
+            }
+
+            @Override
+            public void onCancelClick() {
+                if (FloatViewManager.getInstance().isNaviDeskBg()) {
+                    Logger.d(TAG, "桌面地图情况");
+                    mViewModel.protectMap(AutoMapConstant.CANCEL_LOCATION_PROTOCOL);
+                } else {
+                    StackManager.getInstance().exitApp();
+                }
             }
         });
         mViewModel.showAuthorizationRequestDialog(authorizationRequestDialog);

@@ -35,6 +35,7 @@ import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.startup.ActivateFailedDialog;
+import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.screen.ScreenType;
@@ -106,6 +107,41 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 checkConfig();
             }
         });
+    }
+
+    /**
+     * 桌面地图不同意协议后处理
+     *
+     * @param situation 1是高德协议， 2是定位协议
+     */
+    public void protectMap(final int situation) {
+        switch (situation) {
+            case AutoMapConstant.CANCEL_AUTO_PROTOCOL:
+                Logger.d(TAG, "protectMap: 高德协议");
+                mBinding.protectView.setOnClickListener(v -> {
+                    mViewModel.checkPrivacyRights();
+                    mBinding.protectView.setOnClickListener(null);
+                });
+                break;
+            case AutoMapConstant.CANCEL_LOCATION_PROTOCOL:
+                Logger.d(TAG, "protectMap: 定位协议");
+                mBinding.protectView.setOnClickListener(v -> {
+                    mViewModel.checkAuthorizationExpired();
+                    mBinding.protectView.setOnClickListener(null);
+                });
+                break;
+            default:
+                Logger.e(TAG, "protectMap: situation is not supported");
+                break;
+        }
+    }
+
+    public void closeProtectView() {
+        mBinding.protectView.setVisibility(View.GONE);
+    }
+
+    public void showProtectView() {
+        mBinding.protectView.setVisibility(View.VISIBLE);
     }
 
     private void updateTimeText() {

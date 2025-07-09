@@ -5,11 +5,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.DialogAuthorizationRequestBinding;
+import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.ui.dialog.BaseDialog;
 import com.android.utils.log.Logger;
 
@@ -31,6 +33,12 @@ public class AuthorizationRequestDialog extends BaseDialog<DialogAuthorizationRe
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setCanceledOnTouchOutside(false);
+        mViewBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloatViewManager.getInstance().hideAllCardWidgets(false);
+            }
+        });
     }
 
     @Override
@@ -46,15 +54,14 @@ public class AuthorizationRequestDialog extends BaseDialog<DialogAuthorizationRe
     @Override
     protected void initListener() {
         mViewBinding.dialogConfirm.setOnClickListener(v -> {
-            cancel();
             if (mDialogClickListener != null) {
                 mDialogClickListener.onCommitClick();
             }
+            dismiss();
         });
 
         mViewBinding.dialogCancel.setOnClickListener(v -> {
             cancel();
-            System.exit(0);
         });
     }
 
