@@ -193,10 +193,6 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
      */
     public void setDownloadingView(final ArrayList<ProvDataInfo> provDataInfos) {
         downloadingInfos = provDataInfos;
-
-        if (mIsDownloadedPage) {
-            return;
-        }
         int size = 0;
         if (provDataInfos != null && !provDataInfos.isEmpty()) {
             for (int i = 0; i < provDataInfos.size(); i++) {
@@ -204,9 +200,12 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
                 size = city.size() + size;
             }
         }
-        mDownloadingNoDataVisibility.setValue(size == 0);
+
+        if (!mIsDownloadedPage) {
+            mDownloadingNoDataVisibility.setValue(size == 0);
+            mView.updateDownloadingView(provDataInfos);
+        }
         mAllDownloadingDataSize.setValue(size);
-        mView.updateDownloadingView(provDataInfos);
     }
 
     /**
