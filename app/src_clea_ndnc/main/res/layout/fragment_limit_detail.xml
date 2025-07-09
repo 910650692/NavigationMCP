@@ -73,7 +73,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/iv_loading"
                 app:layout_constraintStart_toStartOf="@+id/iv_loading"
                 app:layout_constraintTop_toBottomOf="@+id/iv_loading"
-                app:layout_goneMarginBottom="@dimen/dp_225" />
+                app:layout_goneMarginTop="@dimen/dp_225"/>
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_retry"
