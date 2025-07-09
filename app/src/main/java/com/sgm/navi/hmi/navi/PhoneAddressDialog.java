@@ -7,7 +7,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.databinding.DialogPhoneAddressBinding;
 import com.sgm.navi.ui.dialog.BaseDialog;
 
@@ -63,10 +65,23 @@ public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
         window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT);
         final WindowManager.LayoutParams params = window.getAttributes();
-        params.x = (int) this.getContext().getResources()
-                .getDimension(com.sgm.navi.service.R.dimen.dp_650);
-        params.y = (int) this.getContext().getResources()
-                .getDimension(com.sgm.navi.service.R.dimen.dp_90);
+        if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
+            params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_417);
+            params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_85);
+        }else{
+            params.x = 517;
+            params.y = 85;
+        }
         window.setAttributes(params);
+    }
+
+    public void resetDialogParams(int x){
+        final Window window = getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.x = x;
+            window.setAttributes(params);
+            window.getDecorView().requestLayout();
+        }
     }
 }

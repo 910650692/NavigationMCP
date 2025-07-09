@@ -16,6 +16,8 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 
 import androidx.core.app.ActivityCompat;
+import androidx.databinding.Observable;
+import androidx.databinding.ObservableBoolean;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -227,6 +229,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private boolean isReallyMove = false;
 
+    private PhoneAddressDialog phoneAddressDialog;
+
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
         mCommonManager = CommonManager.getInstance();
@@ -336,6 +340,17 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 });
         FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
         FloatViewManager.getInstance().addDeskCardVisibleChangeListener(this);
+        mViewModel.mainBTNVisibility.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                boolean value = ((ObservableBoolean) sender).get();
+                if (phoneAddressDialog != null && phoneAddressDialog.isShowing()) {
+                    phoneAddressDialog.resetDialogParams(
+                            value ? ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_417)
+                                    : ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_600));
+                }
+            }
+        });
     }
 
     @Override
@@ -1340,7 +1355,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             if (Logger.openLog) {
                 Logger.i(TAG, "notifyAimPoiPushMessage ", GsonUtils.toJson(msg));
             }
-            final PhoneAddressDialog phoneAddressDialog = new PhoneAddressDialog(
+            phoneAddressDialog = new PhoneAddressDialog(
                     stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
             phoneAddressDialog.setTitle(msg.getName());
             phoneAddressDialog.setDialogClickListener(new IBaseDialogClickListener() {
