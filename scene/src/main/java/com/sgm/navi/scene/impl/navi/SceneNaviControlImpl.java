@@ -89,7 +89,13 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         // 初始化静音状态
         int muteStatus = SettingPackage.getInstance().getConfigKeyMute();
         Logger.i(TAG, "init muteStatus:", muteStatus);
-        mNaviPackage.setCurrentNaviVolume(getNaviVolume());
+        int currentNaviVolume = getNaviVolume();
+        if (currentNaviVolume <= NumberUtils.NUM_0) {
+            setNaviVolume(NumberUtils.NUM_31);
+            mNaviPackage.setCurrentNaviVolume(NumberUtils.NUM_31);
+        } else {
+            mNaviPackage.setCurrentNaviVolume(currentNaviVolume);
+        }
         mIsMute = muteStatus == 1;
         mNaviPackage.setMuteByHmi(mIsMute);
         updateVariationVoice();

@@ -1387,7 +1387,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void closeNavi() {
         Logger.i(TAG, "closeNavi");
-        mSettingPackage.setConfigKeyMute(NumberUtils.NUM_0);
         mViewModel.onNaviStop();
         mRoutePackage.removeAllRouteInfo(MapType.MAIN_SCREEN_MAIN_MAP);
     }

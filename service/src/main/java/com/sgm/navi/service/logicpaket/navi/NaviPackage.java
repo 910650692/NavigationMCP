@@ -137,7 +137,10 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     @Override
     public void onSdkInitSuccess() {
-        mSettingAdapter.setConfigKeyMute(NumberUtils.NUM_0);
+        int muteStatus = mSettingAdapter.getConfigKeyMute();
+        if (muteStatus == NumberUtils.NUM_1) {
+            mSettingAdapter.setConfigKeyMute(NumberUtils.NUM_0);
+        }
         StartService.getInstance().unregisterSdkCallback(this);
     }
 
@@ -1388,6 +1391,15 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void closeNavi() {
         Logger.i(TAG, "closeNavi");
         String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();
+        int muteStatus = mSettingAdapter.getConfigKeyMute();
+        if (muteStatus == NumberUtils.NUM_1) {
+            mSettingAdapter.setConfigKeyMute(NumberUtils.NUM_0);
+            if (mLastSystemNaviVolume > NumberUtils.NUM_0) {
+                mSignalAdapter.setNaviVolume(mLastSystemNaviVolume);
+            } else {
+                mSignalAdapter.setNaviVolume(NumberUtils.NUM_31);
+            }
+        }
         if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
         }
