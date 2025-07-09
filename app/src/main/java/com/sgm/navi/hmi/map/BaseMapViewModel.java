@@ -609,6 +609,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
+        sRVisible.set(false);
         cancelTimer();
     }
 
