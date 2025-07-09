@@ -268,7 +268,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             if (ConvertUtils.isEmpty(mPoiEntities) && mOnItemClickListener != null) {
                 mOnItemClickListener.onListCleared();
             }
-            holder.mResultItemBinding.swipeMenuLayout.smoothClose();
+            holder.mResultItemBinding.swipeMenuLayout.quickClose();
         });
     }
 
