@@ -67,6 +67,7 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
         calculatePreviewRect();
     }
 
+    @SuppressWarnings("SWAPPED_ARGUMENTS")
     public void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
         mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfoEntity);
     }

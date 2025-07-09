@@ -193,6 +193,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
         });
     }
 
+    @SuppressWarnings("FORWARD_NULL")
     private void initView() {
         Logger.i(TAG, "initView");
         if (!checkHasOverLay()) {

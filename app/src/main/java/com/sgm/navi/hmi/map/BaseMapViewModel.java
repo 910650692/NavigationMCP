@@ -1415,7 +1415,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return false;
     }
 
-    private void checkStatusCloseAllFragmentAndClearAllLabel() {
+    public void checkStatusCloseAllFragmentAndClearAllLabel() {
         mModel.checkStatusCloseAllFragmentAndClearAllLabel();
     }
 
@@ -1536,18 +1536,22 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private boolean judgedBottomNaviVisibility() {
        // 1/3屏需要隐藏
        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+           Logger.d(TAG, "judgedBottomNaviVisibility", "1/3屏需要隐藏");
            return false;
        }
        // 导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏
        if (FloatViewManager.getInstance().isNaviDeskBg() && FloatViewManager.getInstance().judgedWidgetIsVisible()) {
+           Logger.d(TAG, "judgedBottomNaviVisibility","导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏");
            return false;
        }
        // 巡航态模式下，隐藏底部导航按钮
         if (ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
+            Logger.d(TAG, "judgedBottomNaviVisibility", "巡航态模式下，隐藏底部导航按钮");
             return false;
         }
         // 如果容器里面有Fragment,隐藏
         if (StackManager.getInstance().getCurrentFragment(mScreenId) != null) {
+            Logger.d(TAG, "judgedBottomNaviVisibility",  "如果容器里面有Fragment,隐藏");
             return false;
         }
        return true;
@@ -1561,14 +1565,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private boolean judgedScaleViewVisibility() {
         // 1/3屏需要隐藏
         if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            Logger.d(TAG, "judgedScaleViewVisibility", "1/3屏需要隐藏");
             return false;
         }
         // 导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏
         if (FloatViewManager.getInstance().isNaviDeskBg() && FloatViewManager.getInstance().judgedWidgetIsVisible()) {
+            Logger.d(TAG, "judgedScaleViewVisibility", "导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏");
             return false;
         }
         // 如果容器里面有Fragment,隐藏
-        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null && !ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
+        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null) {
+            Logger.d(TAG, "judgedScaleViewVisibility", "如果容器里面有Fragment,隐藏");
             return false;
         }
         return true;
@@ -1582,14 +1589,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private boolean judgedSRVisibility() {
         // 1/3屏需要隐藏
         if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            Logger.d(TAG, "judgedSRVisibility", "1/3屏需要隐藏");
             return false;
         }
-        // 导航桌面背景模式下，需要隐藏
-        if (FloatViewManager.getInstance().isNaviDeskBg()) {
-            return false;
-        }
-        // 如果容器里面有Fragment,隐藏
-        if (StackManager.getInstance().getCurrentFragment(mScreenId) != null && !ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
+        // 导航桌面背景下，widgets显示，则隐藏
+        if (FloatViewManager.getInstance().isNaviDeskBg() && FloatViewManager.getInstance().judgedWidgetIsVisible()) {
+            Logger.d(TAG, "judgedSRVisibility", "导航桌面背景下，widgets显示，则隐藏");
             return false;
         }
         return true;

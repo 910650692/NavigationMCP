@@ -400,6 +400,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
             mViewModel.notifyScreenSizeChanged();
             mViewModel.onNaviStatusChange();
+            mViewModel.checkStatusCloseAllFragmentAndClearAllLabel();
             setSplitFragment();
             mViewModel.toSetCarPosition();
         }
@@ -538,8 +539,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             ScreenTypeUtils.getInstance().setScreenType(getResources().getConfiguration());
             mViewModel.notifyScreenSizeChanged();
             mViewModel.onNaviStatusChange();
-            setSplitFragment();
-//            mViewModel.toSetCarPosition();
+            mViewModel.checkStatusCloseAllFragmentAndClearAllLabel();
             Logger.d(TAG, "checkConfig and need update!");
         }
     }

@@ -1993,12 +1993,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
             return;
         }
-        mViewModel.closeAllFragment();
-        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
-            RoutePackage.getInstance().abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
-            return;
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            mViewModel.closeAllFragment();
         }
-        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
+        if ((currentNaviStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE) || currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING)) && ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            RoutePackage.getInstance().abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
             RoutePackage.getInstance().clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
             RoutePackage.getInstance().clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
             RoutePackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);

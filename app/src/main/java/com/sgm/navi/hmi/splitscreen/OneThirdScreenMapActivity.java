@@ -102,6 +102,7 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
         mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
     }
 
+    @SuppressWarnings("SWAPPED_ARGUMENTS")
     public void calculatePreviewRect() {
         if (mPreviewRect.right == 0) {
             mBinding.sceneNaviTbt.post(() -> {

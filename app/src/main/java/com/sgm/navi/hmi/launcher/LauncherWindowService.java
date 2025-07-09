@@ -179,6 +179,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         });
     }
 
+    @SuppressWarnings("FORWARD_NULL")
     private void initView() {
         Logger.i(TAG, "initView");
         if (!checkHasOverLay()) {

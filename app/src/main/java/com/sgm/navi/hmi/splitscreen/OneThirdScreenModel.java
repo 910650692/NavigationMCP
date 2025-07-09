@@ -5,6 +5,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 
 
+import androidx.annotation.NonNull;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.mapservice.bean.INaviConstant;
@@ -212,6 +214,9 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
     }
 
     private MapType getMapType() {
+        if (ConvertUtils.isNull(mViewModel)) {
+            return MapType.MAIN_SCREEN_MAIN_MAP;
+        }
         return mViewModel.getMapView().provideMapTypeId();
     }
 

@@ -47,6 +47,7 @@ public class TrafficModel extends BaseModel<BaseTrafficViewModel> implements IAo
         return layerPackage.calcStraightDistance(positionPackage.currentGeo, endPoint);
     }
 
+    @SuppressWarnings("FORWARD_NULL")
     @Override
     public void queryTrafficEventDetailResult(@Nullable final FyGTraEventDetail detail) {
         IAosRestrictedObserver.super.queryTrafficEventDetailResult(detail);

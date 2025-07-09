@@ -64,6 +64,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
     }
 
     public void queryTrafficEvent(PoiInfoEntity entity) {
+        if (ConvertUtils.isNull(mModel)) return;
         currentIndex = 0;
         if (fyGTraEventDetail.get() == null || !fyGTraEventDetail.get().isRequestSuccess || poiInfo != entity) {
             uiState.set(TrafficEventUiState.LOADING);
@@ -168,6 +169,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
         }
     }
 
+    @SuppressWarnings({"FORWARD_NULL", "REVERSE_INULL"})
     public void updateUi(final FyGTraEventDetail gTraEventDetail, boolean isFromChild) {
         Logger.i(TAG, "updateUi:" + (gTraEventDetail != null), "isSuccess:" + gTraEventDetail.isRequestSuccess);
         mLoadingDesc.set(gTraEventDetail.isRequestSuccess ? AppCache.getInstance().getMContext().getString(R.string.limit_loading)
