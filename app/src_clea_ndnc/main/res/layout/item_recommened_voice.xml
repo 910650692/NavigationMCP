@@ -34,13 +34,13 @@
             android:id="@+id/recommend_voice_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{model.getName()}"
-            android:textSize="@dimen/sp_29"
-            android:textColor="@color/setting_bg_tab_text_select"
             android:layout_marginStart="@dimen/dp_14"
+            android:text="@{model.getName()}"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_29"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/recommend_voice_header"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"

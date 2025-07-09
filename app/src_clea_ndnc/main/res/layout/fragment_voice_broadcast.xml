@@ -37,12 +37,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_broadcast_voice_head"
-                android:textColor="@color/setting_bg_tab_text_select"
+                android:textColor="@color/black"
                 android:textSize="@dimen/sp_29"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
@@ -82,25 +82,25 @@
                         android:id="@+id/current_voice_broadcast_current_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/setting_broadcast_voice_current_name"
-                        android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_29"
                         android:layout_marginStart="@dimen/dp_14"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="@string/setting_broadcast_voice_current_name"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_29"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/current_voice_broadcast_header"/>
+                        app:layout_constraintStart_toEndOf="@+id/current_voice_broadcast_header"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/current_voice_broadcast_current_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/setting_broadcast_voice_current_use"
-                        android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_22"
                         android:layout_marginEnd="@dimen/dp_26"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="@string/setting_broadcast_voice_current_use"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_22"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </com.sgm.navi.ui.view.SkinConstraintLayout>
 
@@ -143,13 +143,13 @@
                         android:id="@+id/default_voice_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/setting_broadcast_voice_current_name"
-                        android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_29"
                         android:layout_marginStart="@dimen/dp_14"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="@string/setting_broadcast_voice_current_name"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_29"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/default_voice_header"/>
+                        app:layout_constraintStart_toEndOf="@+id/default_voice_header"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.sgm.navi.ui.view.SkinTextView
                         clickCommand="@{viewModel.mSwitchDefaultVoice}"
@@ -160,7 +160,7 @@
                         android:layout_width="@dimen/dp_153"
                         android:layout_height="@dimen/dp_65"
                         android:text="@{viewModel.mIsDefaultVoiceUsed ? @string/setting_broadcast_voice_current_size : @string/setting_broadcast_voice_operate_use}"
-                        android:textColor="@{viewModel.mIsDefaultVoiceUsed ? @color/setting_bg_tab_text_select : @color/setting_white}"
+                        android:textColor="@{viewModel.mIsDefaultVoiceUsed ? @color/black : @color/setting_white}"
                         android:textSize="@dimen/sp_22"
                         android:layout_marginEnd="@dimen/dp_26"
                         app:layout_constraintTop_toTopOf="parent"
@@ -173,13 +173,13 @@
                     android:id="@+id/recommend_voice_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/setting_broadcast_voice_recommend"
-                    android:textColor="@color/setting_bg_voice_text"
-                    android:textSize="@dimen/sp_29"
                     android:layout_marginStart="@dimen/dp_34"
                     android:layout_marginTop="@dimen/dp_26"
-                    app:layout_constraintTop_toBottomOf="@+id/default_voice_broadcast_layout"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    android:text="@string/setting_broadcast_voice_recommend"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_29"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/default_voice_broadcast_layout" />
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/recommend_voice_list"
