@@ -165,6 +165,10 @@ public class LayerAdapterImplD implements ILayerApi {
 
     }
 
+    public void initGuideRouteHUDMode(MapType mapTypeId) {
+
+    }
+
     @Override
     public void setStartPointVisible(MapType mapTypeId, boolean visible) {
 

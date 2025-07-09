@@ -294,7 +294,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         setPathPoints(routeResult);
         //设置路线样式风格
         setMainMapPathDrawStyle(false, false, true);
-        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyRemainPoint, true);
         updatePaths();
     }
 
@@ -831,6 +830,29 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, getMapType(), "设置路线 result : ", result, " 默认选中路线 -> ", selectIndex);
     }
 
+    public void initGuideRouteHUDMode() {
+        Logger.d(TAG, "initGuideRouteHUDMode");
+        setStartPointVisible(false);
+        setEndPointVisible(false);
+        setRouteJamBubblesVisible(false);
+        setRouteEnergyEmptyPointVisible(false);
+        setGuideTrafficVisible(false);
+        setGuideLabelVisible(false);
+        setTrafficLightVisible(true);
+    }
+
+    /* 设置起点扎标是否显示 */
+    public void setStartPointVisible(boolean visible) {
+        Logger.d(TAG, getMapType(), "setStartPointVisible visible ", visible);
+        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeStartPoint, visible);
+    }
+
+    /* 设置终点扎标是否显示 */
+    private void setEndPointVisible(boolean visible) {
+        Logger.d(TAG, getMapType(), "setEndPointVisible visible ", visible);
+        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEndPoint, visible);
+    }
+
     /**
      * 设置行前拥堵气泡是否显示
      */
@@ -846,9 +868,23 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeEnergyEmptyPoint, isShow);
     }
 
+    /* 设置交通设施是否显示 */
     public void setGuideTrafficVisible(boolean isShow) {
+        Logger.d(TAG, getMapType(), "setGuideTrafficVisible visible ", isShow);
         getLayerRoadFacilityControl().enableLayer(BizRoadFacilityType.BizRoadFacilityTypeGuideTrafficSignalLight, isShow);
         getLayerRoadFacilityControl().setVisible(BizRoadFacilityType.BizRoadFacilityTypeGuideTrafficSignalLight, isShow);
+    }
+
+    /* 设置多备选路线标签是否显示 */
+    private void setGuideLabelVisible(boolean isShow) {
+        Logger.d(TAG, getMapType(), "setGuideTrafficVisible visible ", isShow);
+        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeGuideLabel, isShow);
+    }
+
+    /* 设置红绿灯是否显示 */
+    private void setTrafficLightVisible(boolean isShow) {
+        Logger.d(TAG, getMapType(), "setTrafficLightVisible visible ", isShow);
+        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeTrafficLight , isShow);
     }
 
     /*设置图元显示、开启碰撞*/
@@ -1014,12 +1050,6 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             case NaviConstant.CrossType.CROSS_TYPE_3_D -> CrossType.CrossType3D;
             default -> CrossType.AUTO_UNKNOWN_ERROR;
         };
-    }
-
-    /* 设置起点扎标是否显示 */
-    public void setStartPointVisible(boolean visible) {
-        Logger.d(TAG, getMapType(), "setStartPointVisible visible ", visible);
-        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeStartPoint, visible);
     }
 
     /**

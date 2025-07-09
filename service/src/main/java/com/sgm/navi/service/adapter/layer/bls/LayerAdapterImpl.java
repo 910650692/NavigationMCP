@@ -163,6 +163,11 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setStartPointVisible(visible);
     }
 
+    /* HUD样式初始化 */
+    public void initGuideRouteHUDMode(MapType mapTypeId) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().initGuideRouteHUDMode();
+    }
+
     /* 路线替换补能扎标 */
     public void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().updateRouteReplaceChargePoints(chargeStationInfos);

@@ -145,6 +145,11 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.setStartPointVisible(mapTypeId, visible);
     }
 
+    /* HUD样式初始化 */
+    public void initGuideRouteHUDMode(MapType mapTypeId) {
+        mLayerAdapter.initGuideRouteHUDMode(mapTypeId);
+    }
+
     /* 途经点扎标设置是否选中 */
     public void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index) {
         mLayerAdapter.setRouteViaPointSelectStatus(mapTypeId, isSelect, index);

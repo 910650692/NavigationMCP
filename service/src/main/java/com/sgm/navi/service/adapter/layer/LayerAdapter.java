@@ -216,6 +216,11 @@ public class LayerAdapter {
         mLayerApi.setRouteViaPointSelectStatus(mapTypeId, isSelect, index);
     }
 
+    /* HUD样式初始化 */
+    public void initGuideRouteHUDMode(MapType mapTypeId) {
+        mLayerApi.initGuideRouteHUDMode(mapTypeId);
+    }
+
     /**
      * 更新引导路线数据
      *

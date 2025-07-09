@@ -134,6 +134,9 @@ public interface ILayerApi {
     /* 设置能量耗尽点扎标是否显示 只在全览态展示 */
     void setRouteEnergyEmptyPointVisible(MapType mapTypeId, boolean isShow);
 
+    /* HUD样式初始化 */
+    void initGuideRouteHUDMode(MapType mapTypeId);
+
     /*========================================= ROUTE LAYER START =========================================*/
 
     /*图层点击注册监听*/
