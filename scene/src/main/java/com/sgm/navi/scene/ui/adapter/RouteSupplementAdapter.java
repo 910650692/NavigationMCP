@@ -154,8 +154,8 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
             holder.mRouteSupplementItemBinding.tvSupplementFastTotal.setText(fastTotal.substring(1));
         }
 
-        final String slowFree = chargeInfo.getSlow_free() == -1 ? "" : String.valueOf(chargeInfo.getFast_free());
-        final String slowTotal = chargeInfo.getSlow_total() == -1 ? "" : "/" + chargeInfo.getFast_total();
+        final String slowFree = chargeInfo.getSlow_free() == -1 ? "" : String.valueOf(chargeInfo.getSlow_free());
+        final String slowTotal = chargeInfo.getSlow_total() == -1 ? "" : "/" + chargeInfo.getSlow_total();
         holder.mRouteSupplementItemBinding.tvSupplementSlowCurrent.setText(slowFree);
         holder.mRouteSupplementItemBinding.tvSupplementSlowTotal.setText(slowTotal);
         holder.mRouteSupplementItemBinding.tvSupplementSlowTotal.setVisibility(View.VISIBLE);
@@ -171,10 +171,11 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
         }
 
         if (chargeInfo.getCurrentElePrice().startsWith("-")) {
-            holder.mRouteSupplementItemBinding.tvSupplementSpend.setText(String.format(
-                    AppCache.getInstance().getMContext().getResources().getString(R.string.charge_price_simple),
-                    "--"));
+            holder.mRouteSupplementItemBinding.tvSupplementSpendImage.setVisibility(View.GONE);
+            holder.mRouteSupplementItemBinding.tvSupplementSpend.setVisibility(View.GONE);
         } else {
+            holder.mRouteSupplementItemBinding.tvSupplementSpendImage.setVisibility(View.VISIBLE);
+            holder.mRouteSupplementItemBinding.tvSupplementSpend.setVisibility(View.VISIBLE);
             holder.mRouteSupplementItemBinding.tvSupplementSpend.setText(String.format(
                     AppCache.getInstance().getMContext().getResources().getString(R.string.charge_price_simple),
                     chargeInfo.getCurrentElePrice()));

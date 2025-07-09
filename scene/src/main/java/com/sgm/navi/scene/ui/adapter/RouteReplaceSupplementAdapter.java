@@ -129,8 +129,8 @@ public class RouteReplaceSupplementAdapter extends RecyclerView.Adapter<RouteRep
             holder.mRouteReplaceSupplementItemBinding.tvReplacePointFastTotal.setText(fastTotal.substring(1));
         }
 
-        final String slowFree = chargeInfo.getSlow_free() == -1 ? "" : String.valueOf(chargeInfo.getFast_free());
-        final String slowTotal = chargeInfo.getSlow_total() == -1 ? "" : "/" + chargeInfo.getFast_total();
+        final String slowFree = chargeInfo.getSlow_free() == -1 ? "" : String.valueOf(chargeInfo.getSlow_free());
+        final String slowTotal = chargeInfo.getSlow_total() == -1 ? "" : "/" + chargeInfo.getSlow_total();
         holder.mRouteReplaceSupplementItemBinding.tvReplacePointSlowCurrent.setText(slowFree);
         holder.mRouteReplaceSupplementItemBinding.tvReplacePointSlowTotal.setText(slowTotal);
         holder.mRouteReplaceSupplementItemBinding.tvReplacePointSlowTotal.setVisibility(View.VISIBLE);
@@ -146,10 +146,11 @@ public class RouteReplaceSupplementAdapter extends RecyclerView.Adapter<RouteRep
         }
 
         if (chargeInfo.getCurrentElePrice().startsWith("-")) {
-            holder.mRouteReplaceSupplementItemBinding.tvReplacePointSpend.setText(String.format(
-                    AppCache.getInstance().getMContext().getResources().getString(R.string.charge_price_simple),
-                    "--"));
+            holder.mRouteReplaceSupplementItemBinding.tvReplacePointSpend.setVisibility(View.GONE);
+            holder.mRouteReplaceSupplementItemBinding.tvReplacePointSpendImage.setVisibility(View.GONE);
         } else {
+            holder.mRouteReplaceSupplementItemBinding.tvReplacePointSpend.setVisibility(View.VISIBLE);
+            holder.mRouteReplaceSupplementItemBinding.tvReplacePointSpendImage.setVisibility(View.VISIBLE);
             holder.mRouteReplaceSupplementItemBinding.tvReplacePointSpend.setText(String.format(
                     AppCache.getInstance().getMContext().getResources().getString(R.string.charge_price_simple),
                     chargeInfo.getCurrentElePrice()));
