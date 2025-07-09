@@ -207,21 +207,25 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         final RecyclerView.ItemDecoration gridDecoration = new GridSpacingItemDecoration(getContext(),
                 mSpanCount, mChildVerticalSpacing, mChildHorizontalSpacing, false);
         mViewBinding.searchFilterView.searchFilterList1Child.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
+        mViewBinding.searchFilterView.searchFilterList1Child.setNestedScrollingEnabled(false);
         mFilterOneChildAdapter = new FilterChildListAdapter();
         mViewBinding.searchFilterView.searchFilterList1Child.setAdapter(mFilterOneChildAdapter);
         mViewBinding.searchFilterView.searchFilterList1Child.addItemDecoration(gridDecoration);
 
         mViewBinding.searchFilterView.searchFilterList2Child.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
+        mViewBinding.searchFilterView.searchFilterList2Child.setNestedScrollingEnabled(false);
         mFilterTwoChildAdapter = new FilterChildListAdapter();
         mViewBinding.searchFilterView.searchFilterList2Child.setAdapter(mFilterTwoChildAdapter);
         mViewBinding.searchFilterView.searchFilterList2Child.addItemDecoration(gridDecoration);
 
         mViewBinding.searchFilterView.searchFilterList3Child.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
+        mViewBinding.searchFilterView.searchFilterList3Child.setNestedScrollingEnabled(false);
         mFilterThreeChildAdapter = new FilterChildListAdapter();
         mViewBinding.searchFilterView.searchFilterList3Child.setAdapter(mFilterThreeChildAdapter);
         mViewBinding.searchFilterView.searchFilterList3Child.addItemDecoration(gridDecoration);
 
         mViewBinding.searchFilterView.searchFilterList4Child.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
+        mViewBinding.searchFilterView.searchFilterList4Child.setNestedScrollingEnabled(false);
         mFilterFourChildAdapter = new FilterChildListAdapter();
         mViewBinding.searchFilterView.searchFilterList4Child.setAdapter(mFilterFourChildAdapter);
         mViewBinding.searchFilterView.searchFilterList4Child.addItemDecoration(gridDecoration);
