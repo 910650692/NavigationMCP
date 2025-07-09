@@ -82,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_30"
                         android:text="@string/offline_manager_map_title"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/sp_29"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -132,7 +132,7 @@
                         android:layout_marginStart="@dimen/dp_26"
                         android:layout_marginTop="@dimen/dp_22"
                         android:text="@string/offline_current_map_title"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/sp_29"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -196,7 +196,7 @@
                         android:layout_marginTop="@dimen/dp_17"
                         android:drawableEnd="@drawable/img_right"
                         android:text="@string/offline_near_offline_data"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/sp_29"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -242,7 +242,7 @@
                     android:layout_marginTop="@dimen/dp_26"
                     android:layout_marginStart="@dimen/dp_34"
                     android:text="@string/offline_text_all_data"
-                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/sp_29"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/view_current_data" />
@@ -280,7 +280,7 @@
                                 android:layout_marginTop="@dimen/dp_21"
                                 android:gravity="center"
                                 android:text="@string/offline_item_city_title"
-                                android:textColor="@color/setting_bg_tab_text_select"
+                                android:textColor="@color/black"
                                 android:textSize="@dimen/sp_29"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
