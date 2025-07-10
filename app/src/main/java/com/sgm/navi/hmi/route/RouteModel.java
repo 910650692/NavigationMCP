@@ -334,6 +334,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             return;
         }
         mTaskMap.clear();
+        mSearchLoadingType = AutoMapConstant.RouteSearchType.SearchRestAreaDetail;
         mLocalTaskId = mSearchPackage.deppInfoSearch(poiInfoEntity.getPid()
                 , new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat()));
         mTaskMap.put(mLocalTaskId, poiInfoEntity);
