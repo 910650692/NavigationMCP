@@ -22,6 +22,9 @@ import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
+import com.sgm.navi.service.define.route.RoutePriorityType;
+import com.sgm.navi.service.define.route.RouteRequestParam;
+import com.sgm.navi.service.define.route.RouteWayID;
 import com.sgm.navi.service.define.search.ChildInfo;
 import com.sgm.navi.service.define.search.ETAInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -60,6 +63,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     private final LayerPackage mLayerPackage;
     private final MapPackage mMapPackage;
     private int mTaskId;
+    private boolean mClearAutoAddVia = false;
     // 动力类型标定
     public MutableLiveData<Integer> mPowerType = new MutableLiveData<>();
 
@@ -80,6 +84,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         mLayerPackage = LayerPackage.getInstance();
         mMapPackage = MapPackage.getInstance();
         mPowerType.setValue(-1);
+        mClearAutoAddVia = false;
     }
 
     @Override
@@ -93,6 +98,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         } else {
             Bundle bundle = new Bundle();
             bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+            bundle.putBoolean(NaviConstant.CLEAR_AUTO_ADD_VIA, mClearAutoAddVia);
             Fragment fragment = StackManager.getInstance().getCurrentFragment(mMapTypeId.name());
             if (fragment != null) {
                 StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
@@ -415,5 +421,10 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
             }
         });
         return ServiceAreaList;
+    }
+
+    public void deleteAutoAddChargeStation(){
+        mClearAutoAddVia = true;
+        closeFragment();
     }
 }

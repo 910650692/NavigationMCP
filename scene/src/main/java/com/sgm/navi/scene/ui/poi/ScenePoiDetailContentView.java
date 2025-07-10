@@ -115,6 +115,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private PoiInfoEntity mJumpPoiInfo;
     private RoutePackage mRoutePackage = RoutePackage.getInstance();
 
+    private Integer mViaType = -1;
+
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
     }
@@ -2095,8 +2097,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     }
                     break;
                 case AutoMapConstant.PoiType.POI_DELETE_AROUND:
-                    mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
-                            mPoiInfoEntity, true);
+                    if(mViaType > -1){
+                        showDeleteAllTip();
+                    }else{
+                        mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
+                                mPoiInfoEntity, true);
+                    }
                     break;
                 case AutoMapConstant.PoiType.POI_MAP_CAR_CLICK:
                     handleFavoriteClick();
@@ -2123,6 +2129,17 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 }
             }
         });
+    }
+
+    public void showDeleteAllTip() {
+        new ChargeStationDeletTipDialog(getContext(), new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                IBaseDialogClickListener.super.onCommitClick();
+                Logger.i(MapDefaultFinalTag.SEARCH_HMI_TAG, "确定删除！");
+                mScreenViewModel.deleteAutoAddChargeStation();
+            }
+        }).show();
     }
 
     /**
@@ -2196,6 +2213,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     public void setViaIndexSelect(boolean isSelect,int index){
         if(!ConvertUtils.isNull(mScreenViewModel) && index != -1){
+            mViaType = index;
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"setViaIndexSelect: ",index,"isSelect: ", isSelect);
             mScreenViewModel.setRouteViaPointSelect(isSelect,index);
         }

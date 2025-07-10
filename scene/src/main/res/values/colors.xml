@@ -21,6 +21,7 @@
     <color name="search_icon_FCCC73_color">#FCCC73</color>
     <color name="search_icon_8E97B9_color">#8E97B9</color>
     <color name="search_icon_delete_white">#FFFFFF</color>
+    <color name="setting_line">#33000000</color>
 
     <color name="search_deep_text_day">#000000</color>
     <color name="search_shallow_text_day">#80000000</color>

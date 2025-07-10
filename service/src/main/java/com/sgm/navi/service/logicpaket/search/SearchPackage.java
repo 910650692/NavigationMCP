@@ -1125,7 +1125,6 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public List<History> getSearchKeywordRecord() {
         if (isLogin()) {
             final ArrayList<SearchHistoryItemBean> searchHistoryItemBeans = mUserTrackAdapter.getSearchHistory();
-            searchHistoryItemBeans.get(1).setUpdateTime(0);
             final List<History> searchHistoryList = Optional.ofNullable(searchHistoryItemBeans)
                     .orElse(new ArrayList<>())
                     .stream()

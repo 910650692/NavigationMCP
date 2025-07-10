@@ -13,6 +13,7 @@ public interface NaviConstant {
     String KEY_NO_HIDE_FRAGMENT = "no_hide_fragment";
     String NAVI_CONTROL = "NAVI_CONTROL";
     String VIA_POSITION = "VIA_POSITION";
+    String CLEAR_AUTO_ADD_VIA = "CLEAR_AUTO_ADD_VIA";
     // 导航转向图标宽度信息
     int TURN_ICON_SIZE = ScreenUtils.Companion.getInstance().dp2px(155);
     int NEXT_TURN_ICON_SIZE = ScreenUtils.Companion.getInstance().dp2px(100);
