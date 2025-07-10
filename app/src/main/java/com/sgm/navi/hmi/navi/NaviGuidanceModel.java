@@ -283,7 +283,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mFirstDrawEndPoint = new Runnable() {
             @Override
             public void run() {
-                drawEndPoint(mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP));
+                endPoiSearch();
             }
         };
         mUpdateViaList = new Runnable() {
