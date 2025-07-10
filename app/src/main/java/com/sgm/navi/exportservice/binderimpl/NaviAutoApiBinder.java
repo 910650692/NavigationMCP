@@ -889,6 +889,12 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                 }
                 mBaseTurnInfo = GsonUtils.convertToT(naviETAInfo, BaseTurnInfo.class);
                 mBaseTurnInfo.setSRManeuverID(convertTurnIDType(naviETAInfo.getCurManeuverID()));
+                if (naviETAInfo.NaviInfoData != null
+                        && naviETAInfo.NaviInfoData.get(naviETAInfo.NaviInfoFlag) != null
+                        && naviETAInfo.NaviInfoData.get(naviETAInfo.NaviInfoFlag).segmentRemain != null) {
+                    mBaseTurnInfo.setNextDist(naviETAInfo.NaviInfoData.get(naviETAInfo.NaviInfoFlag).segmentRemain.dist);
+                }
+                Logger.d(TAG, "nextDist:" + mBaseTurnInfo.getNextDist());
                 formatEtaInfo();
                 dispatchTurnInfo();
             }

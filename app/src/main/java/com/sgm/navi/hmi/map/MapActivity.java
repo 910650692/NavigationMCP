@@ -256,6 +256,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_HIDE)
     protected void onStop() {
         Logger.i(TAG, "onStop");
+        mViewModel.dismissAuthorizationDialog();
         super.onStop();
     }
 

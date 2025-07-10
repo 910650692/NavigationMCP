@@ -274,6 +274,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 
+    public void dismissAuthorizationDialog() {
+        mModel.dismissAuthorizationRequestDialog();
+    }
+
     public void reminderDialogReCreate(){
         if (reminderDialog != null && reminderDialog.isShowing()) {
             reminderDialog.dismiss();

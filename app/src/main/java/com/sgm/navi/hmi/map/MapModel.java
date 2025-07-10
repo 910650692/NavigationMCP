@@ -1855,6 +1855,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mViewModel.showAuthorizationRequestDialog(authorizationRequestDialog);
     }
 
+    public void dismissAuthorizationRequestDialog() {
+        if (authorizationRequestDialog != null && authorizationRequestDialog.isShowing()) {
+            Logger.d(TAG, "dismissAuthorizationRequestDialog: ");
+            authorizationRequestDialog.dismiss();
+        }
+    }
+
     @Override
     public void onMarkClickCallBack(final PoiInfoEntity poiInfoEntity) {
         SearchResultCallback.super.onMarkClickCallBack(poiInfoEntity);
