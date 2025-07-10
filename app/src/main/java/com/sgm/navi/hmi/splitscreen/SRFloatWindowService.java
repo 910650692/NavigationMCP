@@ -41,6 +41,8 @@ import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.logicpaket.layer.ILayerPackageCallBack;
+import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.IEglScreenshotCallBack;
 import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
@@ -53,7 +55,8 @@ import com.sgm.navi.service.logicpaket.navi.NaviPackage;
  * Date: 2025/4/24
  * Description: [SR全屏的悬浮窗]
  */
-public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, ComponentCallbacks, CaptureScreenUtils.CaptureScreenCallBack {
+public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, ComponentCallbacks,
+        CaptureScreenUtils.CaptureScreenCallBack, ILayerPackageCallBack {
     private static final String TAG = "SRFloatWindowService";
     private WindowManager mWindowManager;
     private View mView;
@@ -74,6 +77,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
     private boolean mCrossImgIsOnShowing = false;
     private CaptureScreenUtils captureScreenUtils;
     private final int DisplayId = 0;
+    private LayerPackage mLayerPackage;
     private SRFloatWindowService() {
 
     }
@@ -101,6 +105,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
         currentUiMode = AppCache.getInstance().getMContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         mNaviEtaInfo = mNaviPackage.getCurrentNaviEtaInfo();
         captureScreenUtils = CaptureScreenUtils.getInstance();
+        mLayerPackage = LayerPackage.getInstance();
     }
 
     private void initCallBacks() {
@@ -109,6 +114,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
 //        mMapPackage.registerEGLScreenshotCallBack(KEY, this);
         AppCache.getInstance().getMContext().registerComponentCallbacks(this);
         captureScreenUtils.registerListener(this);
+        mLayerPackage.registerCallBack(MAP_TYPE, this);
     }
 
     private void unInitCallBacks() {
@@ -118,6 +124,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
         mMapPackage.unRegisterCallback(MAP_TYPE, this);
 //        mMapPackage.unregisterEGLScreenshotCallBack(KEY, this);
         captureScreenUtils.unRegisterListener(this);
+        mLayerPackage.unRegisterCallBack(MAP_TYPE, this);
     }
 
     /***
@@ -326,6 +333,18 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
         if (!ConvertUtils.isNull(bitmap) && !ConvertUtils.isNull(mBinding)) {
             mBinding.ivCross.setImageBitmap(bitmap);
         }
+    }
+
+    @Override
+    public void onCrossImageVisibleChanged(MapType mapTypeId, boolean visible) {
+        ILayerPackageCallBack.super.onCrossImageVisibleChanged(mapTypeId, visible);
+        this.mCrossImgIsOnShowing = visible;
+        Logger.d(TAG, "onCrossImageVisibleChanged", visible);
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mBinding) && !visible) {
+                mBinding.ivCross.setVisibility(View.GONE);
+            }
+        });
     }
 
     public void changeCrossVisible(boolean isVisible) {

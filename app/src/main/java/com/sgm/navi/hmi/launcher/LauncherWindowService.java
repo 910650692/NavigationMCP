@@ -39,6 +39,8 @@ import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.logicpaket.layer.ILayerPackageCallBack;
+import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.IEglScreenshotCallBack;
 import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
@@ -58,7 +60,7 @@ import com.sgm.navi.vrbridge.MapStateManager;
  * Description: [在这里描述文件功能]
  */
 public class LauncherWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, CaptureScreenUtils.CaptureScreenCallBack, ComponentCallbacks,
-        NaviStatusCallback {
+        NaviStatusCallback, ILayerPackageCallBack {
     private static final String TAG = "LauncherWindowService";
     private WindowManager mWindowManager;
     private View mView;
@@ -81,7 +83,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private CaptureScreenUtils captureScreenUtils;
     private String currentNaviStatus;
     private final int DisplayId = 0;
-
+    private LayerPackage mLayerPackage;
     private LauncherWindowService() {
 
     }
@@ -112,6 +114,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         captureScreenUtils = CaptureScreenUtils.getInstance();
         currentNaviStatus = mNaviStatusPackage.getCurrentNaviStatus();
         mRoutePackage = RoutePackage.getInstance();
+        mLayerPackage = LayerPackage.getInstance();
     }
 
     private void initCallBacks() {
@@ -122,6 +125,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         AppCache.getInstance().getMContext().registerComponentCallbacks(this);
         captureScreenUtils.registerListener(this);
         mNaviStatusPackage.registerObserver(KEY, this);
+        mLayerPackage.registerCallBack(MAP_TYPE, this);
     }
 
     private void unInitCallBacks() {
@@ -133,6 +137,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         mFloatManager.unBindLauncherService();
         captureScreenUtils.unRegisterListener(this);
         mNaviStatusPackage.unregisterObserver(KEY);
+        mLayerPackage.unRegisterCallBack(MAP_TYPE, this);
     }
 
     private void initClickListener() {
@@ -339,6 +344,18 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         Logger.i(TAG, "onNaviStatusChange", naviStatus);
         this.currentNaviStatus = naviStatus;
         changeUiTypeOnNaviStatusChanged();
+    }
+
+    @Override
+    public void onCrossImageVisibleChanged(MapType mapTypeId, boolean visible) {
+        ILayerPackageCallBack.super.onCrossImageVisibleChanged(mapTypeId, visible);
+        this.mCrossImgIsOnShowing = visible;
+        Logger.d(TAG, "onCrossImageVisibleChanged", visible);
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mBinding) && !visible) {
+                mBinding.ivCross.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void changeUiTypeOnNaviStatusChanged() {

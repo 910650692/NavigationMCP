@@ -31,4 +31,7 @@ public interface ILayerPackageCallBack {
 
     }
 
+    default void onCrossImageVisibleChanged(MapType mapTypeId, boolean visible) {
+
+    }
 }

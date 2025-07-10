@@ -2,6 +2,7 @@ package com.sgm.navi.service.logicpaket.layer;
 
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
@@ -273,11 +274,13 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     /* 设置栅格图图片数据 */
     public boolean showCross(MapType mapTypeId, LayerItemCrossEntity crossEntity) {
+        notifyCrossImageVisibleChanged(mapTypeId, true);
         return mLayerAdapter.showCross(mapTypeId, crossEntity);
     }
 
     /* 根据放大路口类型隐藏对应的路口大图 */
     public boolean hideCross(MapType mapTypeId, int type) {
+        notifyCrossImageVisibleChanged(mapTypeId, false);
         return mLayerAdapter.hideCross(mapTypeId, type);
     }
 
@@ -292,5 +295,16 @@ public class LayerPackage implements ILayerAdapterCallBack {
     /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
     public void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock) {
         mLayerAdapter.setDynamicLevelLock(mapTypeId, dynamicLevelMode, isLock);
+    }
+
+    private void notifyCrossImageVisibleChanged(MapType mapTypeId, boolean visible) {
+        if (callbacks.containsKey(mapTypeId)) {
+            ThreadManager.getInstance().execute(() -> {
+                callbacks.get(mapTypeId).forEach(callBack -> {
+                    Logger.d(TAG, "notifyCrossImageVisibleChanged");
+                    callBack.onCrossImageVisibleChanged(mapTypeId, visible);
+                });
+            });
+        }
     }
 }
