@@ -53,7 +53,10 @@ public class NaviService extends Service {
     private static OneTimeWorkRequest vrBridgeWorkRequest;
     private static OneTimeWorkRequest carModelsFeatureWorkRequest;
     private static final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+
     private boolean mHasRegisterBroadcast = false;
+    private SteeringWheelButtonReceiver mWheelButtonReceiver;
+    private PoiPushReceiver mPoiPushReceiver;
 
     public NaviService() {
         initBroadcast();
@@ -108,6 +111,16 @@ public class NaviService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (null != AppCache.getInstance().getMContext()) {
+            if (null != mWheelButtonReceiver) {
+                AppCache.getInstance().getMContext().unregisterReceiver(mWheelButtonReceiver);
+                mWheelButtonReceiver = null;
+            }
+            if (null != mPoiPushReceiver) {
+                AppCache.getInstance().getMContext().unregisterReceiver(mPoiPushReceiver);
+                mPoiPushReceiver = null;
+            }
+        }
         Logger.i(TAG, "onDestroy");
     }
 
@@ -115,13 +128,13 @@ public class NaviService extends Service {
         if (mHasRegisterBroadcast) {
             return;
         }
-        SteeringWheelButtonReceiver steeringWheelButtonReceiver = new SteeringWheelButtonReceiver();
+        mWheelButtonReceiver = new SteeringWheelButtonReceiver();
         IntentFilter intentFilter = new IntentFilter(SteeringWheelButtonReceiver.ACTION);
-        AppCache.getInstance().getMContext().registerReceiver(steeringWheelButtonReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+        AppCache.getInstance().getMContext().registerReceiver(mWheelButtonReceiver, intentFilter, Context.RECEIVER_EXPORTED);
 
-        PoiPushReceiver poiPushReceiver = new PoiPushReceiver();
+        mPoiPushReceiver = new PoiPushReceiver();
         IntentFilter poiFilter = new IntentFilter(PoiPushReceiver.PUSH_ACTION);
-        AppCache.getInstance().getMContext().registerReceiver(poiPushReceiver, poiFilter, Context.RECEIVER_EXPORTED);
+        AppCache.getInstance().getMContext().registerReceiver(mPoiPushReceiver, poiFilter, Context.RECEIVER_EXPORTED);
         mHasRegisterBroadcast = true;
     }
 
