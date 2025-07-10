@@ -442,13 +442,15 @@ public class L2Adapter {
                 Logger.i(TAG, PREFIX + "引导状态 null");
                 return;
             }
-            if (mNaviStatus.equals(naviStatus)) {
-                return;
+            if (mNaviStatus != null){
+                if (mNaviStatus.equals(naviStatus)) {
+                    return;
+                }
+                mNaviStatus = naviStatus;
+                l2NaviBean.clear();
+                mNaviEtaInfo = null;
+                Logger.i(TAG, PREFIX + "引导状态", naviStatus);
             }
-            mNaviStatus = naviStatus;
-            l2NaviBean.clear();
-            mNaviEtaInfo = null;
-            Logger.i(TAG, PREFIX + "引导状态", naviStatus);
         }
     };
 
