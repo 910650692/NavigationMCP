@@ -85,9 +85,13 @@ public class PermissionUtils {
     }
 
     public void requestPermission() {
-        Logger.i(TAG, "requestPermission permissionList size-> " + permissionList.size());
-        if (ConvertUtils.isEmpty(permissionList)) requestDeniedPermission();
-        else requestPermission(permissionList.get(0));
+        if (ConvertUtils.isEmpty(permissionList)) {
+            requestDeniedPermission();
+            Logger.i(TAG, "requestPermission permissionList is Empty");
+        } else {
+            requestPermission(permissionList.get(0));
+            Logger.i(TAG, "requestPermission permissionList size-> " + permissionList.size());
+        }
     }
 
     public void requestDeniedPermission() {
@@ -98,6 +102,9 @@ public class PermissionUtils {
         if (deniedPermissionRequestNum >= DENIED_PERMISSION_REQUEST_NUM) {
             permissionsObserver.onPermissionsFail();
             return;
+        }
+        if (Logger.openLog) {
+            Logger.i(TAG, "requestDeniedPermission");
         }
         deniedPermissionRequestNum += 1;
         permissionList.clear();
