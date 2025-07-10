@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.NaviService;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AppCache;
@@ -71,14 +72,16 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
     @Override
     public void onSdkInitSuccess() {
         Logger.d(TAG, "Sdk init success");
-        MapPackage.getInstance().createMapView(getMapId());
-        Logger.d(TAG, "HUD底图创建完成");
         MapPackage.getInstance().registerCallback(getMapId(), this);
         RoutePackage.getInstance().registerRouteObserver(mViewModel.mScreenId, this);
         NaviPackage.getInstance().registerObserver(mViewModel.mScreenId, this);
         CruisePackage.getInstance().registerObserver(mViewModel.mScreenId, this);
         NavistatusAdapter.getInstance().registerCallback(this);
-        mViewModel.loadMapView();
+        ThreadManager.getInstance().postUi(() -> {
+            MapPackage.getInstance().createMapView(getMapId());
+            Logger.d(TAG, "HUD底图创建完成");
+            mViewModel.loadMapView();
+        });
     }
 
     @Override

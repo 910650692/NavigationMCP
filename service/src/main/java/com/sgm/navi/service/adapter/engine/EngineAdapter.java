@@ -37,6 +37,10 @@ public final class EngineAdapter {
         mIEngineApi.checkSdkLimit();
     }
 
+    public boolean engineIsInit() {
+        return mIEngineApi.engineIsInit();
+    }
+
     public void initBaseLibs() {
         mIEngineApi.initBaseLibs();
     }

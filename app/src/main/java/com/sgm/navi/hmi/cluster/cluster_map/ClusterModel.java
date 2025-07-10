@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.NaviService;
 import com.sgm.navi.hmi.cluster.ClusterViewModel;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
@@ -236,11 +237,6 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
      */
     public void initClusterMapAndObservers(String from) {
         Logger.d(TAG, "sdk 成功",from);
-        boolean mapViewInitResult = MapPackage.getInstance().createMapView(MapType.CLUSTER_MAP);
-        Logger.d(TAG, "mapViewInitResult: ==" , mapViewInitResult);
-        if (!mapViewInitResult) return;
-        mViewModel.loadMapView();
-        isInItMapView = true;
         MapPackage.getInstance().registerCallback(getMapId(), this);
         RoutePackage.getInstance().registerRouteObserver(mViewModel.mScreenId, this);
         NaviPackage.getInstance().registerObserver(mViewModel.mScreenId, this);
@@ -248,6 +244,13 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         NavistatusAdapter.getInstance().registerCallback(this);
         // 监听设置包变化
         SettingPackage.getInstance().setSettingChangeCallback(getMapId().name(), this);
+        ThreadManager.getInstance().postUi(() -> {
+            boolean mapViewInitResult = MapPackage.getInstance().createMapView(MapType.CLUSTER_MAP);
+            Logger.d(TAG, "mapViewInitResult: ==" , mapViewInitResult);
+            if (!mapViewInitResult) return;
+            mViewModel.loadMapView();
+            isInItMapView = true;
+        });
     }
 
     public void registerClusterMap() {

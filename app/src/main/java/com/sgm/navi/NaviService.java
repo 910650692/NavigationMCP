@@ -85,14 +85,16 @@ public class NaviService extends Service {
         } else {
             startForeground(FOREGROUND_SERVICE_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE);
         }
+        ThreadManager.getInstance().execute(() -> {
+            boolean sdkStatus = StartService.getInstance().checkSdkIsNeedInit();
+            Logger.i(TAG, "校验Sdk是否需要初始化sdkStatus：", sdkStatus);
+            if (sdkStatus) StartService.getInstance().startInitSdk();
+        });
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.i(TAG, "onStartCommand");
-        boolean sdkStatus = StartService.getInstance().checkSdkIsNeedInit();
-        Logger.i(TAG, "校验Sdk是否需要初始化sdkStatus：", sdkStatus);
-        if (sdkStatus) StartService.getInstance().startInitSdk();
         stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }

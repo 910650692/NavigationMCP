@@ -90,4 +90,6 @@ public interface IEngineApi {
      * @return Chanel Name
      */
     String getChanelName();
+
+    boolean engineIsInit();
 }

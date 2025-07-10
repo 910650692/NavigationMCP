@@ -426,8 +426,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ActivatePackage.getInstance().addActObserver(mActObserver);
         StartService.getInstance().unregisterSdkCallback(this);
         setPackageAfterSdkInit();
-        mViewModel.setSdkInitStatus(true);
         FloatViewManager.getInstance().showAllCardWidgets();
+        ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
     }
 
     @Override
@@ -540,6 +540,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
+        if (null == mapPackage || null == layerPackage) {
+            onSdkInitSuccess();
+            return;
+        }
         boolean mapViewInitResult = MapPackage.getInstance().createMapView(MapType.MAIN_SCREEN_MAIN_MAP);
         if (!mapViewInitResult) return;
         mapPackage.bindMapView(mapSurfaceView);
@@ -548,7 +552,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapPackage.registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         layerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         ImmersiveStatusScene.getInstance().registerCallback("MapModel", this);
-        //mapdevices绑定成功后适配深浅色模式
+        //map devices绑定成功后适配深浅色模式
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(mapSurfaceView.getMapViewContext()) ? ThemeType.NIGHT : ThemeType.DAY);
         if (Logger.openLog) {

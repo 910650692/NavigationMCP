@@ -195,14 +195,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     @Override
     public void onInitView() {
-        if(!StartService.getInstance().checkSdkIsNeedInit()){
+        if(StartService.getInstance().checkSdkIsAvailable()){
             mViewModel.loadMapView(mBinding.mainMapview);
         }
-    }
-
-    @Override
-    public void onInitObserver() {
-
     }
 
     @Override

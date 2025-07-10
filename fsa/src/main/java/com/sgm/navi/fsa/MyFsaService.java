@@ -236,7 +236,6 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final StartService.ISdkInitCallback mEngineObserver = new StartService.ISdkInitCallback() {
         @Override
         public void onSdkInitSuccess() {
-            StartService.ISdkInitCallback.super.onSdkInitSuccess();
             Logger.d(FsaConstant.FSA_TAG, "serviceEngine init success");
             initFsaService();
             addPackageListener();

@@ -104,6 +104,14 @@ public class StartService {
     }
 
     /**
+     * 检测引擎是否可用
+     * @return true 引擎可用/false 引擎不可用
+     */
+    public boolean checkSdkIsAvailable(){
+        return 0 == engineActive && EnginePackage.getInstance().engineIsInit();
+    }
+
+    /**
      * 检测引擎状态
      *
      * @return true 需要重新初始化/false 不需要初始化
@@ -115,11 +123,11 @@ public class StartService {
             return true;
         } else if (1 == engineActive) {
             Logger.i(TAG, "Engine init progress......");
-            conformInitializingCallback();
+            ThreadManager.getInstance().execute(this::conformInitializingCallback);
             return false;
         } else {
             Logger.i(TAG, "Engine already init finish");
-            conformSuccessCallback();
+            ThreadManager.getInstance().execute(this::conformSuccessCallback);
             return false;
         }
     }
@@ -301,9 +309,11 @@ public class StartService {
     private void conformFailCallback(int initSdkResult, String msg) {
         Logger.i(TAG, "Sdk init fail", "sdkInitCallbacks : ", sdkInitCallbacks.size());
         engineActive = -1;
-        for (ISdkInitCallback callback : sdkInitCallbacks) {
-            callback.onSdkInitFail(initSdkResult, msg);
-        }
+        ThreadManager.getInstance().execute(() -> {
+            for (ISdkInitCallback callback : sdkInitCallbacks) {
+                callback.onSdkInitFail(initSdkResult, msg);
+            }
+        });
     }
 
     /**

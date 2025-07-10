@@ -40,6 +40,10 @@ public class EnginePackage implements EngineObserver {
         mEngineAdapter.checkSdkLimit();
     }
 
+    public boolean engineIsInit() {
+        return mEngineAdapter.engineIsInit();
+    }
+
     public void initBaseLibs() {
         mEngineAdapter.initBaseLibs();
     }

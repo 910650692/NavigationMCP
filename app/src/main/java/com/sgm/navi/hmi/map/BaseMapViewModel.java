@@ -193,7 +193,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Override
     public void onCreate() {
         super.onCreate();
-        if(!StartService.getInstance().checkSdkIsNeedInit()) {
+        if(StartService.getInstance().checkSdkIsAvailable()) {
             startIconVisibility = new ObservableBoolean(false);
         }else {
             checkAgreementRights();

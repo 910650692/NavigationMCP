@@ -5,6 +5,7 @@ import android.content.Intent;
 import androidx.core.app.ActivityCompat;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.NaviService;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
@@ -74,7 +75,7 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
     @Override
     public void onSdkInitSuccess() {
         Logger.d(TAG, "引擎初始化成功");
-        loadMapView();
+        ThreadManager.getInstance().postUi(this::loadMapView);
     }
 
     @Override

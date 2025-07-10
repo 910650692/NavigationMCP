@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * TODO说明
@@ -50,6 +51,7 @@ public class EngineAdapterImpl implements IEngineApi {
     // TODO: 配置父子渠道包，每次更新aar包时都要核实一下
     private static final String mChanelName = "C13953968867";
     private static final String mGmcL2ChanelName = "C13953984967";
+    private final AtomicBoolean mIsEngineInit = new AtomicBoolean(false);
 
     public EngineAdapterImpl() {
         mEngineObserverList = new ArrayList<>();
@@ -58,7 +60,8 @@ public class EngineAdapterImpl implements IEngineApi {
     @Override
     public void loadLibrary() {
         try {
-            Logger.i(TAG, "load gbl xxx.so");
+            mIsEngineInit.set(false);
+            Logger.i(TAG, "load gbl xxx.so", "mIsEngineInit : ", mIsEngineInit);
             System.loadLibrary("Gbl");
             onEngineObserver(10008);
         } catch (UnsatisfiedLinkError e) {
@@ -81,6 +84,10 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public void initBaseLibs() {
+        if (mIsEngineInit.get()) {
+            Logger.i(TAG, "引擎已经初始化过，无需重复初始化 ", mIsEngineInit);
+            return;
+        }
         final int initBaseLibsResult = initEngineParam();
         if (!ConvertUtils.equals(0, initBaseLibsResult)) {
             onEngineObserver(10004);
@@ -91,6 +98,13 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public void initBL() {
+        if (mIsEngineInit.get()) {
+            if (mIsEngineInit.get()) {
+                Logger.i(TAG, "引擎已经初始化过，无需重复初始化 " , mIsEngineInit);
+                return;
+            }
+            return;
+        }
         final int overDue = isOverdue();
         if (!ConvertUtils.equals(0, overDue)) return;
         final int sdkResultCode = initSDKParam();
@@ -98,6 +112,7 @@ public class EngineAdapterImpl implements IEngineApi {
             onEngineObserver(10006);
             return;
         }
+        mIsEngineInit.set(true);
         onEngineObserver(0);
     }
 
@@ -119,6 +134,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public void unInit() {
+        mIsEngineInit.set(false);
         ServiceMgr.getServiceMgrInstance().unInitBL();
         ServiceMgr.getServiceMgrInstance().unInitBaseLibs();
         mEngineObserverList.clear();
@@ -159,6 +175,11 @@ public class EngineAdapterImpl implements IEngineApi {
             return mGmcL2ChanelName;
         }
         return mChanelName;
+    }
+
+    @Override
+    public boolean engineIsInit() {
+        return mIsEngineInit.get();
     }
 
     /**

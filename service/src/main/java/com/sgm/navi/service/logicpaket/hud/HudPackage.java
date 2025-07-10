@@ -2,6 +2,7 @@ package com.sgm.navi.service.logicpaket.hud;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
@@ -94,7 +95,7 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
 
     @Override
     public void onSdkInitSuccess() {
-        MapPackage.getInstance().createMapView(MapType.HUD_MAP);
+        ThreadManager.getInstance().postUi(() -> MapPackage.getInstance().createMapView(MapType.HUD_MAP));
     }
 
     @Override
