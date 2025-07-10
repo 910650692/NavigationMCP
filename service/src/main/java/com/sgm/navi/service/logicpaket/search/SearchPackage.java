@@ -1338,7 +1338,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 break;
             case AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH:
                 createTerminalParkPoiMarker(searchResultEntity.getPoiList(), 0);
-                createCenterPoiMarker(requestParameter);
+//                createCenterPoiMarker(requestParameter);
                 break;
             case AutoMapConstant.SearchType.GEO_SEARCH:
             case AutoMapConstant.SearchType.POI_SEARCH:
