@@ -214,13 +214,14 @@ public class FloatViewManager {
         });
     }
 
+    // TODO 这里有优化空间，待优化
     public void hideAllCardWidgets(boolean isNeedStartTimer) {
+        if (!isNaviDeskBg()) {
+            Logger.d(TAG, "hideAllCardWidgets", "当前桌面背景不是导航桌面背景,不需要隐藏！");
+            return;
+        }
         ThreadManager.getInstance().execute(() -> {
             Logger.i(TAG, "hideAllCardWidgets", isNeedStartTimer);
-            if (!isNaviDeskBg()) {
-                Logger.d(TAG, "hideAllCardWidgets", "当前桌面背景不是导航桌面背景,不需要隐藏！");
-                return;
-            }
             stopTimer();
             try {
                 if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {

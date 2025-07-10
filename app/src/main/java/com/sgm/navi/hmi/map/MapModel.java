@@ -770,6 +770,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
         //三指飞屏 并将MapActivity推至后台
         openThreeFingerFlyingScreen(touchEvent);
+        FloatViewManager.getInstance().hideWidgetsOnMapTouch();
     }
 
     private void openThreeFingerFlyingScreen(MotionEvent touchEvent) {
@@ -834,8 +835,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (Logger.openLog) {
             Logger.d(TAG, "onImmersiveStatusChange: ", parkingViewExist(), ", currentImersiveStatus: ", currentImersiveStatus);
         }
-        //todo 亚威
-        showOrHideWidgetsOnImersiveStatusChanged(currentImersiveStatus);
         if (ScreenTypeUtils.getInstance().isOneThirdScreen() || parkingViewExist()) {
             if (currentImersiveStatus == ImersiveStatus.TOUCH) {
                 mViewModel.showOrHideSelfParkingView(true);
@@ -869,16 +868,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.NAVING) ||
                 TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
             mViewModel.showOrHideSelfParkingView(false);
-        }
-    }
-
-    /***
-     * 隐藏Widgets
-     * @param currentImersiveStatus
-     */
-    private void showOrHideWidgetsOnImersiveStatusChanged(ImersiveStatus currentImersiveStatus) {
-        if (currentImersiveStatus == ImersiveStatus.TOUCH) {
-            FloatViewManager.getInstance().hideWidgetsOnMapTouch();
         }
     }
 
