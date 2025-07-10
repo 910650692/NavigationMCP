@@ -330,6 +330,7 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_12"
                 android:button="@drawable/switch_route_button"
+                android:background="@android:color/transparent"
                 android:visibility="@{ViewModel.getBatterCheckBoxVisibility() ? View.VISIBLE : View.GONE}"
                 android:checked="false"
                 android:thumb="@null"

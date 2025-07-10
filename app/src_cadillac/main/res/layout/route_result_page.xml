@@ -404,6 +404,7 @@
                         android:focusable="false"
                         android:thumb="@null"
                         android:track="@null"
+                        android:background="@android:color/transparent"
                         android:visibility="@{ViewModel.getBatterCheckBoxVisibility() ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
                         app:layout_constraintEnd_toEndOf="@id/route_line_info_bg_prefer"
