@@ -37,7 +37,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
     protected static final int SCENE_STATE_INIT = 0x00;
     public static final int SCENE_STATE_SHOW = 0x01;
     protected static final int SCENE_STATE_HIDE = 0x02;
-    protected static final int SCENE_STATE_CLOSE = 0x03;
+    public static final int SCENE_STATE_CLOSE = 0x03;
 
     protected static final int CLOSE_COUNTDOWN_8 = 8;
     protected static final int CLOSE_COUNTDOWN_5 = 5;

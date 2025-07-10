@@ -316,10 +316,6 @@ public class BaseNaviGuidanceViewModel extends
             Logger.i(TAG, "onNaviSAPAInfo sapaInfoEntity is null");
             return;
         }
-        if (ConvertUtils.isEmpty(sapaInfoEntity.getList())) {
-            Logger.i(TAG, "onNaviSAPAInfo sapaInfoEntity list is empty");
-            return;
-        }
         mModelSaveEntity.setSapaInfoEntity(sapaInfoEntity);
         mView.onNaviSAPAInfo(sapaInfoEntity);
     }

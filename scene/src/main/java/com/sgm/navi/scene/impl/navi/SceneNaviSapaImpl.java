@@ -14,6 +14,7 @@ import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.scene.ui.navi.SceneNaviSapaView;
 import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
+import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
@@ -274,7 +275,14 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
      * @param sapaInfoEntity SAPA信息
      */
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
-        Logger.i(TAG, "SceneNaviSAPAImpl onNaviSAPAInfo type: ", sapaInfoEntity.toString());
+        if (Logger.openLog) {
+            Logger.i(TAG, "SceneNaviSAPAImpl onNaviSAPAInfo type: ",
+                    sapaInfoEntity.toString());
+        }
+        if (ConvertUtils.isEmpty(sapaInfoEntity.getList())) {
+            updateSceneVisible(false);
+            return;
+        }
         mSapaInfoEntity = sapaInfoEntity;
         switch (sapaInfoEntity.getType()) {
             // 服务区/收费站为0
@@ -380,7 +388,10 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
      * @param isVisible 是否显示
      */
     private void updateSceneVisible(final boolean isVisible){
-        if(mScreenView.isVisible() == isVisible) return;
+        if(mScreenView.isVisible() == isVisible &&
+                mScreenView.getSceneState() ==
+                        (isVisible ? NaviSceneBase.SCENE_STATE_SHOW :
+                                NaviSceneBase.SCENE_STATE_CLOSE)) return;
         Logger.i(TAG, "SceneNaviSAPAImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
@@ -663,9 +674,9 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
     @Override
     public void onSilentSearchResult(final int taskId, final int errorCode, final String message,
                                final SearchResultEntity searchResultEntity) {
-        Logger.i(TAG, "onSearchResult: taskId = ", taskId, ", errorCode = ", errorCode,
-                ", message = ", message);
         if (mTaskId == taskId) {
+            Logger.i(TAG, "onSearchResult: taskId = ", taskId, ", errorCode = ", errorCode,
+                    ", message = ", message);
             if (null != searchResultEntity) {
                 List<PoiInfoEntity> poiInfoEntityList = searchResultEntity.getPoiList();
                 for (PoiInfoEntity poiInfoEntity : poiInfoEntityList) {
