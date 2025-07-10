@@ -1125,6 +1125,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public List<History> getSearchKeywordRecord() {
         if (isLogin()) {
             final ArrayList<SearchHistoryItemBean> searchHistoryItemBeans = mUserTrackAdapter.getSearchHistory();
+            searchHistoryItemBeans.get(1).setUpdateTime(0);
             final List<History> searchHistoryList = Optional.ofNullable(searchHistoryItemBeans)
                     .orElse(new ArrayList<>())
                     .stream()
@@ -1203,7 +1204,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         history.setMEndPoiName(item.getToPoi().getName());
         history.setMKeyWord(item.getToPoi().getName());
         history.setMIsCompleted(item.getIsCompleted());
-        history.setMUpdateTime(item.getUpdateTime() == 0 ? new Date() : new Date(item.getUpdateTime()));
+        history.setMUpdateTime(new Date(item.getUpdateTime()));
         return history;
     }
 
