@@ -68,13 +68,13 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
         holder.mFavoriteBinding.setModel(mFavoriteInfoList.get(position));
         holder.mFavoriteBinding.swipeMenuLayout.setSwipeEnabled(mType == 0);
         holder.mFavoriteBinding.setLayoutPosition(String.valueOf(position + 1));
-        holder.mFavoriteBinding.itemFavoriteDistance.setText(
-                SearchPackage.getInstance().calcStraightDistance(mFavoriteInfoList.get(position).getPoint()));
-        Logger.d(MapDefaultFinalTag.FAVORITE_SERVICE_TAG, "mPoiInfoEntity.getDistance() is: "
-                + holder.mFavoriteBinding.itemFavoriteDistance.getText() + mFavoriteInfoList.get(position).getAddress());
         if (mFavoriteInfoList.get(position).getFavoriteInfo().getTop_time() != 0) {
             holder.mFavoriteBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.setting_bg_top));
             holder.mFavoriteBinding.itemFavoriteTopText.setText("取消");
+            holder.mFavoriteBinding.itemFavoriteDistance.setText(
+                    SearchPackage.getInstance().calcStraightDistance(mFavoriteInfoList.get(position).getPoint()));
+            Logger.d(MapDefaultFinalTag.FAVORITE_SERVICE_TAG, "mPoiInfoEntity.getDistance() is: "
+                    + holder.mFavoriteBinding.itemFavoriteDistance.getText() + mFavoriteInfoList.get(position).getAddress());
             holder.mFavoriteBinding.itemFavoriteDistance.setVisibility(View.VISIBLE);
             holder.mFavoriteBinding.itemFavoriteLine.setVisibility(View.VISIBLE);
             holder.mFavoriteBinding.itemFavoriteTopTag.setVisibility(View.GONE);

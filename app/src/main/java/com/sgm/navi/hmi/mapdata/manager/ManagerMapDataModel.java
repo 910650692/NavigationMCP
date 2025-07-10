@@ -158,7 +158,7 @@ public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> impl
     public List<String> getCachedCityList() {
         List<String> list = new ArrayList<>() ;
         String value = mCommonManager.getValueByKey(UserDataCode.MAP_DATA_DOWNLOADED_CITY_LIST);
-        if (!TextUtils.isEmpty(value) && value.contains(",")) {
+        if (!TextUtils.isEmpty(value)) {
             String[] split = value.split(",");
             list = Arrays.asList(split);
         }
