@@ -27,11 +27,11 @@
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_36"
             android:background="@drawable/bg_route_search_details_status"
+            android:gravity="center"
             android:padding="@dimen/dp_5"
             android:text="@{ViewModel.getRouteSearchStatus()}"
             android:textColor="@color/text_route_search_detail_title"
             android:textSize="@dimen/sp_22"
-            android:gravity="center"
             android:visibility="@{ViewModel.getRouteSearchStatusVisibility() ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/sk_poi_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_14"
             android:layout_marginTop="@dimen/dp_35"
@@ -50,9 +50,11 @@
             android:text="@{ViewModel.getRouteSearchName()}"
             android:textColor="@color/text_route_detail_title"
             android:textSize="@dimen/sp_32"
+            app:layout_constraintEnd_toStartOf="@+id/skinImageView"
             app:layout_constraintStart_toEndOf="@+id/sk_poi_status"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
+            app:layout_goneMarginStart="@dimen/dp_30"
+            tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/skinImageView"
@@ -180,18 +182,20 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_106"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_38"
-            app:layout_constraintTop_toBottomOf="@id/poi_base_layout"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/poi_base_layout">
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_start_route"
                 clickCommand="@{ViewModel.getRouteSearchDetailsAddRemoveClick()}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="@dimen/dp_77"
+                android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_2"
                 android:background="@drawable/bg_details_bottom_go_here"
                 android:gravity="center"
@@ -201,6 +205,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/stl_function"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_goneMarginEnd="@dimen/dp_0"
                 tools:text="添加途经点" />
 
 
@@ -208,10 +213,9 @@
                 android:id="@+id/stl_function"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_14"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/stv_start_route">
+                tools:visibility="visible">
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/stl_phone"
@@ -220,7 +224,8 @@
                     android:layout_height="match_parent"
                     app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
                     app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:visibility="visible">
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_phone"
@@ -252,7 +257,8 @@
                     android:layout_marginStart="@dimen/dp_25"
                     android:visibility="gone"
                     app:layout_constraintEnd_toStartOf="@+id/stl_poi_favorites"
-                    app:layout_constraintStart_toEndOf="@+id/stl_phone">
+                    app:layout_constraintStart_toEndOf="@+id/stl_phone"
+                    tools:visibility="gone">
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_around_search"
@@ -283,7 +289,8 @@
                     android:layout_marginStart="@dimen/dp_25"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/stl_around_search">
+                    app:layout_constraintStart_toEndOf="@+id/stl_around_search"
+                    tools:visibility="gone">
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_poi_favorites"

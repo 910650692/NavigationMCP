@@ -1022,6 +1022,13 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 poiServiceAreaOil.setVisibility(View.GONE);
             }
         }
+
+        if (mRoutePoiDetailsPageView.stlPhone.getVisibility() == View.GONE
+                && mRoutePoiDetailsPageView.stlAroundSearch.getVisibility() == View.GONE
+                && mRoutePoiDetailsPageView.stlPoiFavorites.getVisibility() == View.GONE) {
+            mRoutePoiDetailsPageView.stlFunction.setVisibility(View.GONE);
+        }
+
     }
 
     /***
