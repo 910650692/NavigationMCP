@@ -124,6 +124,14 @@ public final class MapStateManager {
         AMapStateUtils.saveMapState(mBuilder.build());
 
         registerCallback();
+        // 每隔10s给语音传递定位信息
+        ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
+            if (null != locInfoBean) {
+                mLastLocationUpdateTime = System.currentTimeMillis();
+                AMapStateUtils.saveMapLocation(locInfoBean);
+            }
+        }, 0, 10);
         mMapStateInitiated = true;
     }
 
