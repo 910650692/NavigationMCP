@@ -13,6 +13,7 @@ import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
@@ -55,13 +56,15 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
     public void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy called");
-        LayerPackage.getInstance().unInitLayer(mView.getMapView().provideMapTypeId());
         MapPackage.getInstance().unBindMapView(mView.getMapView());
-        MapPackage.getInstance().destroyMapView(mView.getMapView().provideMapTypeId());
     }
 
     public void loadMapView(){
         mView.bindMapView();
+    }
+
+    public IBaseScreenMapView getMapView(){
+        return mView.getMapView();
     }
 
     public void updateEta(NaviEtaInfo naviEtaInfo) {

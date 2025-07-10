@@ -1,18 +1,13 @@
-package com.sgm.navi.service.logicpaket.cluster;
+package com.sgm.navi.service.logicpaket.clusterorhud;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.sgm.navi.service.adapter.navi.NaviAdapter;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.utils.NumberUtils;
-import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
-import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ClusterRouteHelper {
     public static final String TAG = "ClusterRouteHelper";
@@ -48,7 +43,7 @@ public class ClusterRouteHelper {
     /**
      * 显示当前主路线的路径
      */
-    public static void onlyShowCurrentPath() {
+    public static void onlyShowCurrentPath(MapType mapType) {
         Logger.i(TAG, "cluster onlyShowCurrentPath");
         PathInfo pathInfo = OpenApiHelper.getCurrentPathInfo(MAIN_MAP_TYPE);
         if (null == pathInfo) {
@@ -57,6 +52,6 @@ public class ClusterRouteHelper {
         }
         ArrayList<PathInfo> pathInfoList = new ArrayList<>();
         pathInfoList.add(pathInfo);
-        NaviAdapter.getInstance().updatePathInfo(MapType.CLUSTER_MAP, pathInfoList, 0);
+        NaviAdapter.getInstance().updatePathInfo(mapType, pathInfoList, 0);
     }
 }

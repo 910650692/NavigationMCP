@@ -1,11 +1,9 @@
 package com.sgm.navi.hmi.cluster.cluster_map;
 
 import android.content.Intent;
-import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.NaviService;
@@ -13,6 +11,7 @@ import com.sgm.navi.hmi.cluster.ClusterViewModel;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.StartService;
+import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
@@ -25,7 +24,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
-import com.sgm.navi.service.logicpaket.cluster.ClusterRouteHelper;
+import com.sgm.navi.service.logicpaket.clusterorhud.ClusterRouteHelper;
 import com.sgm.navi.service.logicpaket.cruise.CruisePackage;
 import com.sgm.navi.service.logicpaket.cruise.ICruiseObserver;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
@@ -33,7 +32,6 @@ import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
-import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
@@ -46,7 +44,7 @@ import com.sgm.navi.hmi.BuildConfig;
 public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPackageCallback,
         IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback ,SettingPackage.SettingChangeCallback{
     private static final String TAG = "ClusterModel";
-    private static float MAP_ZOOM_LEVEL_DEFAULT = 17F;
+    private static final float MAP_ZOOM_LEVEL_DEFAULT = 17F;
     private boolean isInItMapView= false;
 
     private final static String VALUE_NAVI_CAR_LOGO_DEFAULT = "setting_car_logo_default";
@@ -75,6 +73,8 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         NavistatusAdapter.getInstance().unRegisterCallback(this);
         StartService.getInstance().unregisterSdkCallback(this);
         NaviPackage.getInstance().unregisterObserver(mViewModel.mScreenId);
+        SettingPackage.getInstance().unRegisterSettingChangeCallback(getMapId().name());
+        LayerPackage.getInstance().unInitLayer(mViewModel.getMapView().provideMapTypeId());
     }
 
     private MapType getMapId() {
@@ -97,43 +97,40 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
     @Override
     public void onMapLoadSuccess(final MapType mMapTypeId) {
         if (mMapTypeId == MapType.CLUSTER_MAP) {
+            LayerAdapter.getInstance().initLayer(MapType.CLUSTER_MAP);
             Logger.d(TAG, "仪表底图加载完成", mMapTypeId.name());
-            //设置地图中心点
             MapPackage.getInstance().setMapCenter(mMapTypeId, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
                     PositionPackage.getInstance().getLastCarLocation().getLatitude()));
-            //回车位保存中心
             LayerPackage.getInstance().setCarPosition(mMapTypeId, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
                     PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
                     PositionPackage.getInstance().getLastCarLocation().getCourse()));
             MapPackage.getInstance().goToCarPosition(mMapTypeId);
-            // 根据主屏的车标模式设置车标模式     mLayerPackage.getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP)获取主图的车标样式
             LayerPackage.getInstance().setCarMode(mMapTypeId, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
-            Logger.d(TAG, "车标样式仪表获取主图的",LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
             LayerPackage.getInstance().initCarLogoByFlavor(mMapTypeId,  BuildConfig.FLAVOR);
             LayerPackage.getInstance().setFollowMode(mMapTypeId, true);
             MapPackage.getInstance().switchMapMode(MapType.CLUSTER_MAP, MapMode.UP_3D,false);
             MapPackage.getInstance().setZoomLevel(mMapTypeId, MAP_ZOOM_LEVEL_DEFAULT);
             MapAdapter.getInstance().updateUiStyle(MapType.CLUSTER_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
-            //设置走过的路线是否为灰色
-            //LayerPackage.getInstance().setPassGray(getMapId(), true);
-            //设置地图文字大小
-            boolean mapViewTextSize = SettingPackage.getInstance().getMapViewTextSize();
-            if (mapViewTextSize) {
+            LayerAdapter.getInstance().setStartPointVisible(MapType.CLUSTER_MAP,false);
+            if (SettingPackage.getInstance().getMapViewTextSize()) {
                 MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1f);
             } else {
                 MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.8f);
             }
-
-            if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)
-                    || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.LIGHT_NAVING)){
-                Logger.d(TAG, "导航中显示导航路线");
-                RoutePackage.getInstance().showRouteLine(getMapId());
-            }
-            //mapview加载完成,隐藏占位图
-            //mViewModel.setHideLoadingPage();
+            showRouteLine();
         }
     }
 
+    private void showRouteLine() {
+        if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)
+                || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.LIGHT_NAVING)){
+            Logger.d(TAG, "导航中显示导航路线");
+            RoutePackage.getInstance().showRouteLine(getMapId());
+        }else {
+            Logger.d(TAG, "非导航中不显示导航路线");
+            RoutePackage.getInstance().clearRouteLine(getMapId());
+        }
+    }
 
 
     @Override
@@ -267,34 +264,31 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
 
     @Override
     public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
-        //偏航以后仪表没有重新算路
         String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         Logger.d(TAG, "onRouteDrawLine", "currentNaviStatus = ", currentNaviStatus);
-        if (!NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)
-                && !NaviStatus.NaviStatusType.LIGHT_NAVING.equals(currentNaviStatus)) {
-            return;
+        if (NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)
+                || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(currentNaviStatus)) {
+            RoutePackage.getInstance().showRouteLine(MapType.CLUSTER_MAP);
         }
-        RoutePackage.getInstance().showRouteLine(getMapId());
     }
-
-
-//    @Override
-//    public void onDeletePath(ArrayList<Long> pathIDList) {
-//        if (!ConvertUtils.isEmpty(pathIDList)) {
-//            for (long pathId : pathIDList) {
-//                Logger.i(TAG, "onDeletePath pathId = ", pathId);
-//                RoutePackage.getInstance().removeRouteLineInfo(MapType.CLUSTER_MAP, pathId);
-//            }
-//            ClusterRouteHelper.refreshPathList();
-//        }
-//    }
 
     //备选路线
     @Override
     public void onSelectMainPathStatus(long pathID, int result) {
         Logger.i(TAG, "onSelectMainPathStatus pathID = ", pathID, " result = ", result);
         if (result == NaviConstant.ChangeNaviPathResult.CHANGE_NAVI_PATH_RESULT_SUCCESS && NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
-            ClusterRouteHelper.onlyShowCurrentPath();
+            ClusterRouteHelper.onlyShowCurrentPath(MapType.CLUSTER_MAP);
         }
     }
+
+    //    @Override
+    //    public void onDeletePath(ArrayList<Long> pathIDList) {
+    //        if (!ConvertUtils.isEmpty(pathIDList)) {
+    //            for (long pathId : pathIDList) {
+    //                Logger.i(TAG, "onDeletePath pathId = ", pathId);
+    //                RoutePackage.getInstance().removeRouteLineInfo(MapType.CLUSTER_MAP, pathId);
+    //            }
+    //            ClusterRouteHelper.refreshPathList();
+    //        }
+    //    }
 }

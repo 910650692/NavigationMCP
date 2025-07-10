@@ -12,11 +12,13 @@ import androidx.core.content.ContextCompat;
 
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.fsa.FsaConstant;
+import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.cluster.ClusterViewModel;
 import com.sgm.navi.hmi.databinding.ActivityClusterBinding;
-import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
@@ -25,12 +27,16 @@ import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.ui.base.BaseActivity;
-import com.sgm.navi.ui.view.SkinConstraintLayout;
 import com.sgm.navi.utils.ActivityCloseManager;
 import com.sgm.navi.utils.OnCloseActivityListener;
 
 public class ClusterActivity extends BaseActivity<ActivityClusterBinding, ClusterViewModel> implements OnCloseActivityListener{
     private static final String TAG = "ClusterActivityTAG";
+    //挖洞
+    private static final String MAP_DISPLAYING_TRUE = "{\"isMapDisplaying\":true}";
+    //填洞
+    private static final String MAP_DISPLAYING_FALSE = "{\"isMapDisplaying\":false}";
+
 
     @Override
     public void onCreateBefore() {
@@ -48,7 +54,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     }
 
     @Override
-    public void onInitView() {
+    public void onInitView(){
         Logger.d(TAG, "onInitView");
         ActivityCloseManager.getInstance().addOnCloseListener(this);
         mViewModel.registerClusterMap();
@@ -60,31 +66,46 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         Logger.d(TAG, "onInitData");
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Logger.d(TAG, "----onStart");
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        Logger.d(TAG, "onResume");
-        getRootView().setVisibility(VISIBLE);
+        Logger.d(TAG, "----onResume");
         mViewModel.remainingMileageConstraintLayoutVisibility.set(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Logger.d(TAG, "onPause");
+        Logger.d(TAG, "----onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Logger.d(TAG, "onStop");
+        Logger.d(TAG, "----onStop");
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean z) {
+        super.onWindowFocusChanged(z);
+        Logger.d(TAG, "----onWindowFocusChanged: " + z);
+    }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Logger.d(TAG, "onDestroy");
+        Logger.d(TAG, "----onDestroy");
         ActivityCloseManager.getInstance().removeOnCloseListener(this);
+        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_FALSE);
+        ThreadManager.getInstance().removeHandleTask(mRunnable);
     }
 
     @Override
@@ -106,27 +127,9 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         return mBinding.clusterMapview;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Logger.d(TAG, "onStart");
-    }
-
-    public SkinConstraintLayout getRootView() {
-        return mBinding.cluster;
-    }
-
-    public void bindMapView() {
-        mBinding.clusterMapview.post(() -> {
-            Logger.d(TAG, "bindMapView");
-            MapPackage.getInstance().bindMapView(mBinding.clusterMapview);
-            LayerAdapter.getInstance().initLayer(MapType.CLUSTER_MAP);
-        });
-    }
     public void setDayShowHide(boolean isShow){
         mBinding.stvArrivalDay.setVisibility(isShow ? VISIBLE : GONE);
     }
-
 
     public void initViewTheme(){
         int cluster_unit_transparent_sixty = ContextCompat.getColor(this, com.sgm.navi.ui.R.color.cluster_unit_transparent_sixty);
@@ -140,14 +143,30 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         mBinding.remainingMileageConstraintLayout.setBackgroundDrawable(cluster_title_view_bg);
     }
 
+
     @Override
     public void onClose(boolean isCluster) {
         if (isCluster){
-            Logger.d(TAG, "ClusterActivity onClose");
-            getRootView().setVisibility(GONE);
-            //finishAndRemoveTask();
-            //moveTaskToBack(true);
+            Logger.d(TAG, "----ClusterActivity onClose");
+            mBinding.cluster.setVisibility(GONE);
             finishAndRemoveTask();
         }
     }
+
+    /**
+     * 绑定地图
+     */
+    public void bindMapView() {
+        Logger.d(TAG, "bindMapView");
+        MapPackage.getInstance().bindMapView(mBinding.clusterMapview);
+        ThreadManager.getInstance().postDelay(mRunnable,800L);
+    }
+
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Logger.d(TAG, "mRunnable run");
+            MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE);
+        }
+    };
 }

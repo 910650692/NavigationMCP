@@ -79,13 +79,13 @@
 
         <activity
             android:name=".cluster.cluster_map.ClusterActivity"
-            android:exported="true"
             android:configChanges="uiMode|locale|layoutDirection"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:taskAffinity="com.sgm.navi.hmi.cluster.cluster_map"
-            android:launchMode="singleInstance"
-            android:theme="@style/ClusterTheme"
-            android:excludeFromRecents="true">
+            android:theme="@style/ClusterTheme">
             <intent-filter>
                 <action android:name="com.sgm.navi.hmi.cluster_map.ClusterActivity" />
                 <category android:name="android.intent.category.DEFAULT" />

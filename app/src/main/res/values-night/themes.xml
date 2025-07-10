@@ -17,10 +17,14 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
-    <style name="BaseClusterTheme" parent="Base.Theme.NaviApp">
+    <style name="BaseClusterTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowShowWallpaper">true</item>
     </style>
 
 </resources>

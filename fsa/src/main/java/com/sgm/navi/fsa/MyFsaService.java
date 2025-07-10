@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.hardware.display.DisplayManager;
-import android.os.Build;
-import android.view.Display;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.WorkerThread;
 
@@ -129,6 +128,19 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     public static MyFsaService getInstance() {
         return MyFsaServiceHolder.INSTANCE;
     }
+
+    private final Handler handler = new Handler(Looper.getMainLooper(), msg -> {
+        // 根据消息类型处理不同的事件
+        switch (msg.what) {
+            case 0:
+                switchClusterActivity(true);
+                break;
+            case 1:
+                switchClusterActivity(false);
+                break;
+        }
+        return true;
+    });
 
     @Override
     public void onThreeFingerFlyingScreenCall(boolean isLeft) {
@@ -311,7 +323,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      * @param payload 客户端事件所带的参数，区分请求内容.
      */
     private void handlePayload1(final String payload) {
-        Logger.d(FsaConstant.FSA_TAG, "handlePayload1" , ThreadManager.getInstance().isMainThread());
+        Logger.d(FsaConstant.FSA_TAG, "----handlePayload1" , ThreadManager.getInstance().isMainThread());
         switch (payload) {
             case FsaConstant.FsaEventPayload.OPEN_HUD_MAP:
                 updateMapDisplayStatus(true);
@@ -439,26 +451,15 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         }
     }
 
-
-    private static final String MAP_DISPLAYING_TRUE = "{\"isMapDisplaying\":true}";
-    private static final String MAP_DISPLAYING_FALSE = "{\"isMapDisplaying\":false}";
-
-    private String buildMapDisplayJson(boolean isOpen) {
-        return isOpen ? MAP_DISPLAYING_TRUE : MAP_DISPLAYING_FALSE;
-    }
-
     private void updateMapDisplayStatus(boolean isOpen) {
-        Logger.d(TAG, "updateMapDisplayStatus: " , isOpen);
-        String json = buildMapDisplayJson(isOpen);
-        //Logger.d(TAG, "Map display status changed: " , json);
-        // 发送挖洞事件
-        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, json);
         try {
-            Logger.d(TAG, "switchClusterActivity(isOpen);");
-            ThreadManager.getInstance().postUi(() -> {
-                switchClusterActivity(isOpen);
-            });
-            //switchHudActivity(isOpen);
+            Logger.d(TAG, "----switchClusterActivity();"+isOpen);
+            handler.removeCallbacksAndMessages(null);
+            if (isOpen) {
+                handler.sendEmptyMessageDelayed(0,500);
+            }else {
+                handler.sendEmptyMessageDelayed(1,500);
+            }
         } catch (Exception e) {
             Logger.e(TAG, "Failed to switch ClusterActivity state", e);
         }
@@ -905,32 +906,21 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     private void switchClusterActivity(final boolean isOpen) {
         int secondeDid = 2; // 仪表的DisplayId
-//        final DisplayManager displayManager = AppCache.getInstance().getMContext().getSystemService(DisplayManager.class);
-//        if (BuildConfig.DEBUG && displayManager != null) {
-//            for (Display display : displayManager.getDisplays()) {
-//                if (display == null) {
-//                    continue;
-//                }
-//                Logger.d(FsaConstant.FSA_TAG, "dispaly: " , display.getName() , ", id " , display.getDisplayId() , " :" , display);
-//            }
-//        }
         if (CalibrationPackage.getInstance().architecture() == IS_CLEA){//CLEA平台 仪表的DisplayId=3
             secondeDid = 3;
         }
-        Logger.d(FsaConstant.FSA_TAG, "switchClusterActivity: " , isOpen , secondeDid);
         if (isOpen) {
-            Logger.d(FsaConstant.FSA_TAG, "open ClusterActivity");
+            Logger.d(FsaConstant.FSA_TAG, "----open ClusterActivity",secondeDid);
             final ActivityOptions options = ActivityOptions.makeBasic();
             options.setLaunchDisplayId(secondeDid);
             final Intent intent = new Intent();
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setAction("com.sgm.navi.hmi.cluster_map.ClusterActivity");
             intent.putExtra("isOpen", isOpen);
             AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
         } else {
-            Logger.d(FsaConstant.FSA_TAG, "close ClusterActivity");
-            ThreadManager.getInstance().postUi(() -> {
-                ActivityCloseManager.getInstance().triggerClose(true);});
+            Logger.d(FsaConstant.FSA_TAG, "----close ClusterActivity");
+            ActivityCloseManager.getInstance().triggerClose(true);
         }
     }
 
