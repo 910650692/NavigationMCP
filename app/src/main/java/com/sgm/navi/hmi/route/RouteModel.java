@@ -1431,6 +1431,9 @@ public void setPoint() {
             if (mRouteRestrictionParams != null) {
                 showRestrictionView(mRouteRestrictionParams);
             }
+            if (mRouteParams != null) {
+                mViewModel.setViaListUI(mRouteParams);
+            }
 
         }
     }
