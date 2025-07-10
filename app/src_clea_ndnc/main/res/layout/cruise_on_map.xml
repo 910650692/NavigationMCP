@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -11,7 +12,7 @@
             type="com.sgm.navi.hmi.map.MapViewModel" />
     </data>
 
-    <com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="false"
@@ -35,13 +36,14 @@
         <View
             android:id="@+id/view_bg"
             clickCommand="@{ViewModel.muteOrUnMute}"
-            android:layout_width="@dimen/dp_140"
-            android:layout_height="@dimen/dp_124"
-            android:background="@drawable/bg_common_with_corner"
+            android:layout_width="@dimen/dp_208"
+            android:layout_height="@dimen/dp_192"
+            android:layout_marginStart="@dimen/dp_m_34"
+            android:layout_marginBottom="@dimen/dp_96"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:focusable="true"
-            android:layout_marginTop="@dimen/dp_695"
-            app:layout_constraintStart_toStartOf="@id/cruise_lanes_view"
-            app:layout_constraintTop_toBottomOf="@id/cruise_lanes_view"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/cruise_lanes_view" />
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_voice"

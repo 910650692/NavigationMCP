@@ -391,7 +391,7 @@
             layout="@layout/cruise_on_map"
             app:viewModel="@{ViewModel}"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_17"
             android:visibility="@{ViewModel.cruiseVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
