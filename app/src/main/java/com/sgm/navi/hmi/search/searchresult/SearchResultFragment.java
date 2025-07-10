@@ -93,8 +93,8 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         mBinding.scenePoiList.setPoiInfoEntity(entity);
         mBinding.scenePoiList.setRange(range);
         mBinding.scenePoiList.setCityCode(cityCode);
-        mBinding.scenePoiList.setEditText(searchType, keyword);
         mBinding.scenePoiList.setRouteAround(Objects.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_ROUTE));
+        mBinding.scenePoiList.setEditText(searchType, keyword);
         if (searchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
             mViewModel.registerRouteCallback();
         }

@@ -459,7 +459,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private boolean isBelongSamePoi(final List<RouteParam> local, final PoiInfoEntity poiInfoEntity) {
         if (local.isEmpty()) {
-            return mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP,poiInfoEntity);
+            return false;
         }
         for (RouteParam param : local) {
             if (RoutePackage.getInstance().isTheSamePoi(param, poiInfoEntity)) {

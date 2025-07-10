@@ -909,6 +909,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "设置搜索框文本并进行搜索 - 类型: " + searchType + ", 关键字: " + searchText);
         this.mSearchType = searchType;
         this.mSearchText = searchText;
+        if ((mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
+                || mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH)
+                && (ConvertUtils.equals(searchText, "充电站") || (ConvertUtils.equals(searchText, "加油站")))) {
+            //沿途搜并且品类是充电站和加油站时需要批量添加
+            mRouteAround = true;
+        }
         mViewBinding.searchTextBarView.searchBarTextView.setText(searchText);
         this.mPageNum = 1;
         performSearch(mPageNum, searchText, false);
@@ -1069,12 +1075,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 final String queryType = com.android.utils.ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
                 mViewBinding.routeRightTabListChargeScene.setSearchCharge(queryType.equals(searchResultEntity.getKeyword()));
             }
+            updateRouteList();
+            if (mAdapter != null) {
+                mAdapter.updateAlongList(mGasChargeAlongList);
+            }
             if ((mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
                     || mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) && mRouteAround) {
-                updateRouteList();
-                if (mAdapter != null) {
-                    mAdapter.updateAlongList(mGasChargeAlongList);
-                }
+
                 List<PoiInfoEntity> poiInfoEntities = searchResultEntity.getPoiList();
                 mRoutePackage.setRouteAlongSearch(true);
                 if (mRoutePackage.isRouteTips()) {
@@ -1648,7 +1655,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mGasChargeAlongList.clear();
         mRouteGasChargeAlongList.clear();
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (allPoiParamList.size() >= 2) {
+        if (!ConvertUtils.isEmpty(allPoiParamList) && allPoiParamList.size() >= 2) {
             allPoiParamList.remove(0);
             allPoiParamList.remove(allPoiParamList.size() - 1);
         } else {
