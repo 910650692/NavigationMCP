@@ -18,7 +18,8 @@
             android:id="@+id/layout_route_charge_progress"
             android:layout_width="@dimen/dp_824"
             android:layout_height="@dimen/dp_186"
-            android:layout_marginStart="@dimen/dp_565"
+            android:layout_marginStart="@dimen/dp_562"
+            android:layout_marginTop="@dimen/dp_m_34"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:clickable="true"
             android:paddingHorizontal="@dimen/dp_34"
@@ -45,6 +46,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_charge_start"
                 android:layout_width="@dimen/dp_34"
@@ -250,15 +252,15 @@
                     android:layout_width="@dimen/dp_228"
                     android:layout_height="@dimen/dp_77"
                     android:layout_marginEnd="@dimen/dp_34"
-                    android:layout_marginBottom="@dimen/dp_34"
                     android:background="@drawable/bg_route_refresh_route_button"
                     android:gravity="center"
                     android:text="@string/dsc_cancel"
                     android:textColor="@color/text_route_defult"
                     android:textSize="@dimen/sp_29"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/route_charge_list_along_way_sure"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/route_charge_list_along_way_sure"
                     tools:visibility="visible" />
 
 
