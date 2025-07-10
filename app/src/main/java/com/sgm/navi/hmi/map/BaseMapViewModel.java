@@ -607,6 +607,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
+        Logger.i(TAG, "setMapCenterInScreen() mainBTNVisibility: " , mainBTNVisibility
+                , " bottomNaviVisibility: " , bottomNaviVisibility);
     }
 
     public void setMapCenterInScreen(final Bundle bundle) {
@@ -643,6 +645,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
         cancelTimer();
+        Logger.i(TAG, "setMapCenterInScreen(bundle) mainBTNVisibility: " , mainBTNVisibility
+                , " bottomNaviVisibility: " , bottomNaviVisibility);
     }
 
     public void resetMapCenterInScreen() {
@@ -657,6 +661,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             mPopGuideLoginShow.set(true);
         }
         initTimer();
+        Logger.i(TAG, "resetMapCenterInScreen mainBTNVisibility: " , mainBTNVisibility
+                , " bottomNaviVisibility: " , bottomNaviVisibility);
     }
 
     public void showParkingView() {
@@ -1226,6 +1232,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void showOrHiddenCruise(boolean isShow) {
+        Logger.i(TAG, "showOrHiddenCruise: " ,
+                "bottomNaviVisibility: " , judgedBottomNaviVisibility());
         cruiseVisibility.set(isShow);
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
     }
@@ -1519,7 +1527,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void onDeskCardVisibleStateChange(boolean isVisible) {
         ThreadManager.getInstance().execute(() -> {
-            Logger.d(TAG, "onDeskCardVisibleStateChange", "isVisible", isVisible);
+            Logger.d(TAG, "onDeskCardVisibleStateChange: ", "isVisible", isVisible ,
+                    "bottomNaviVisibility: " , judgedBottomNaviVisibility());
             bottomNaviVisibility.set(judgedBottomNaviVisibility());
             mScaleViewVisibility.set(judgedScaleViewVisibility());
             sRVisible.set(judgedSRVisibility());
@@ -1643,7 +1652,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     private void checkViewState() {
-        Logger.d(TAG, "checkViewState");
+        Logger.d(TAG, "checkViewState: " , "bottomNaviVisibility: " , judgedBottomNaviVisibility());
         sRVisible.set(judgedSRVisibility());
         mScaleViewVisibility.set(judgedScaleViewVisibility());
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
