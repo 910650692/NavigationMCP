@@ -644,6 +644,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             public void onChildListExpandCollapse(final List<SearchChildCategoryLocalInfo> childList, final int position) {
                 mCurrentSelectedIndex3 = position;
                 refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
+                mFilterThreeChildAdapter.setCharge(!ConvertUtils.isEmpty(getEditText()) && getEditText().startsWith("充电站"));
                 mFilterThreeChildAdapter.setCategoryList(childList);
             }
         });

@@ -27,6 +27,7 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
     private final List<SearchChildCategoryLocalInfo> mSearchCategoryLocalInfos;
     private IOnFilterChildItemClickListener mFilterItemClickListener;
     private boolean mIsCollapse = true;
+    private boolean mIsCharge = false;
 
     public boolean isCollapse() {
         return mIsCollapse;
@@ -34,6 +35,10 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
 
     public void setCollapse(final boolean collapse) {
         mIsCollapse = collapse;
+    }
+
+    public void setCharge(final boolean isCharge) {
+        mIsCharge = isCharge;
     }
     public FilterChildListAdapter() {
         mSearchCategoryLocalInfos = new ArrayList<>();
@@ -74,10 +79,15 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
         if(mSearchCategoryLocalInfos.isEmpty()){
             return 0;
         }
-        if (mIsCollapse) {
-            return Math.min(mSearchCategoryLocalInfos.size(), 9);
+        if (!mIsCharge) {
+            if (mIsCollapse) {
+                return Math.min(mSearchCategoryLocalInfos.size(), 9);
+            } else {
+                return mSearchCategoryLocalInfos.size() + 1;
+            }
+        } else {
+            return mSearchCategoryLocalInfos.size();
         }
-        return mSearchCategoryLocalInfos.size() + 1;
     }
 
     @Override
@@ -100,7 +110,7 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder localInfo is null");
             return;
         }
-        if (mIsCollapse && position == 8 && mSearchCategoryLocalInfos.size() > 9) {
+        if (!mIsCharge && mIsCollapse && position == 8 && mSearchCategoryLocalInfos.size() > 9) {
             holder.mfilterItemBinding.filterChildImg.setVisibility(View.VISIBLE);
             holder.mfilterItemBinding.filterChildText.setVisibility(View.GONE);
             holder.mfilterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
