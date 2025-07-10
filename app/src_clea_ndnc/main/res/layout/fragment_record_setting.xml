@@ -48,7 +48,7 @@
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.sgm.navi.ui.view.SkinCheckBox
+        <com.sgm.navi.scene.ui.setting.DynamicCheckBox
             clickCommand="@{ViewModel.mSwitchRecordSetting}"
             android:id="@+id/record_setting_auto_check"
             android:layout_width="wrap_content"
