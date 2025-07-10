@@ -256,6 +256,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             //界面可见时重新适配深浅色模式
             mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                     ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
+            if (Logger.openLog) {
+                Logger.d(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(this));
+            }
         }
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
     }

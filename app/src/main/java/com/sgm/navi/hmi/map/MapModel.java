@@ -547,6 +547,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         //mapdevices绑定成功后适配深浅色模式
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(mapSurfaceView.getMapViewContext()) ? ThemeType.NIGHT : ThemeType.DAY);
+        if (Logger.openLog) {
+            Logger.d(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(mapSurfaceView.getMapViewContext()));
+        }
     }
 
     public void startListenMsg() {

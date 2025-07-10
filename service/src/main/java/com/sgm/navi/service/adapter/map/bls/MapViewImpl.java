@@ -475,7 +475,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         final MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         final int preTime = styleParam.time;
         final int expectTime = uiMode == ThemeType.NIGHT ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
-        Logger.d(TAG, "preTime:", preTime, "expectTime:", expectTime);
+        Logger.d(TAG, "uiMode ", uiMode, "preTime:", preTime, "expectTime:", expectTime);
         if (preTime != expectTime) {
             styleParam.time = expectTime;
             initTheme(uiMode == ThemeType.NIGHT);
