@@ -279,6 +279,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible" />
+
+        <!-- 拦截层 -->
+        <View
+            android:id="@+id/overlay_interceptor"
+            android:layout_width="@dimen/dp_545"
+            android:layout_height="@dimen/dp_124"
+            android:layout_marginBottom="@dimen/dp_130"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

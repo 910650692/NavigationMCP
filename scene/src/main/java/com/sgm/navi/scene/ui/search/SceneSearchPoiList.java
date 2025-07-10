@@ -977,6 +977,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if (!ConvertUtils.isNull(mAnimator) && mAnimator.isRunning()) {
             showLoading(false);
         }
+        mViewBinding.overlayInterceptor.setVisibility(GONE);
         if (ConvertUtils.isEmpty(mScreenViewModel)) {
             return;
         }
@@ -1379,7 +1380,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     @Override
     public void onTabListGasChargeClick(final int tabIndex) {
         mScreenViewModel.onTabListGasChargeClick(mResultEntity.getKeyword(), tabIndex);
+        showLoading(true);
         mViewBinding.routeRightTabListChargeScene.updateUi();
+        mViewBinding.overlayInterceptor.setVisibility(VISIBLE);
         if (mViewBinding.routeChargeListAlongWaySure == null || mViewBinding.routeChargeListAlongWayCancel == null
                 || mViewBinding.layoutRouteChargeProgress == null) {
             Logger.e(TAG, "view is null");

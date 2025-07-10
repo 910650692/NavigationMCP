@@ -269,6 +269,19 @@
             android:layout_marginStart="@dimen/dp_m_9"
             app:layout_constraintBottom_toBottomOf="@id/root_view"
             app:layout_constraintStart_toEndOf="@+id/root_view" />
+
+        <!-- 拦截层 -->
+        <View
+            android:id="@+id/overlay_interceptor"
+            android:layout_width="@dimen/dp_204"
+            android:layout_height="@dimen/dp_494"
+            android:padding="@dimen/dp_29"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/dp_m_9"
+            app:layout_constraintBottom_toBottomOf="@id/root_view"
+            app:layout_constraintStart_toEndOf="@+id/root_view" />
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>
