@@ -1,5 +1,7 @@
 package com.sgm.navi.hmi.startup;
 
+import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
+
 import android.content.Intent;
 import android.text.TextUtils;
 
@@ -102,6 +104,9 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
     @Override
     public void onPermissionsFail() {
+        if (Logger.openLog) {
+            Logger.printStackTrace(NAVI_EXIT,true);
+        }
         Logger.i(TAG, "权限申请失败无法进行下一步");
         ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.permission_quest_fail));
         //权限失败就会一直停留在启动页，应当杀掉进程，待用户下次进入时重新申请权限

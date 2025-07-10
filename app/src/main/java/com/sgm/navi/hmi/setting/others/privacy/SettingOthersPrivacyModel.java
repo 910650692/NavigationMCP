@@ -1,7 +1,10 @@
 package com.sgm.navi.hmi.setting.others.privacy;
 
+import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
+
 import android.text.TextUtils;
 
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.setting.SettingController;
@@ -64,6 +67,9 @@ public class SettingOthersPrivacyModel extends BaseModel<SettingOthersPrivacyVie
     @Override
     public void onNaviStatusChange(final String naviStatus) {
         if (!mSettingPackage.getPrivacyStatus() && TextUtils.equals(naviStatus, NaviStatus.NaviStatusType.NO_STATUS)) {
+            if (Logger.openLog) {
+                Logger.printStackTrace(NAVI_EXIT,true);
+            }
             System.exit(0);
         }
     }

@@ -40,6 +40,9 @@ public class AppCrashRecord implements Thread.UncaughtExceptionHandler {
             if (defaultHandler != null) {
                 defaultHandler.uncaughtException(thread, ex);
             } else {
+                if (Logger.openLog) {
+                    Logger.printStackTrace("NaviApp_Exit",true);
+                }
                 System.exit(1);
             }
         }

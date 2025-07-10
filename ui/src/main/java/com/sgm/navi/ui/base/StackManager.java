@@ -439,6 +439,9 @@ public final class StackManager {
      * 退出应用
      */
     public void exitApp() {
+        if (Logger.openLog) {
+            Logger.printStackTrace("NaviApp_Exit",true);
+        }
         System.exit(0);
     }
 

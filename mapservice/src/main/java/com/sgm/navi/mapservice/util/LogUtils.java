@@ -247,4 +247,22 @@ public class LogUtils {
         }
         return -1;
     }
+
+    protected static void printStackTrace(String tag, boolean info) {
+        StackTraceElement[] traceElements = Thread.currentThread().getStackTrace();
+        StringBuilder stackTrace = new StringBuilder();
+        for (StackTraceElement element : traceElements) {
+            if (element != null) {
+                String elementStr = element.toString();
+                if (elementStr.contains("com.sgm")) {
+                    stackTrace.append(elementStr).append("\n");
+                }
+            }
+        }
+        if (info) {
+            info(tag, stackTrace.toString());
+        } else {
+            debug(tag, stackTrace.toString());
+        }
+    }
 }

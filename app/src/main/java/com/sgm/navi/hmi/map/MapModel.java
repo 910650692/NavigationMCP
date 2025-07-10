@@ -3,6 +3,7 @@ package com.sgm.navi.hmi.map;
 import static com.sgm.navi.hmi.utils.AiWaysGestureManager.AiwaysGestureListener;
 import static com.sgm.navi.hmi.utils.AiWaysGestureManager.GestureEvent;
 import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -415,6 +416,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onPermissionsFail() {
+        if (Logger.openLog) {
+            Logger.printStackTrace(NAVI_EXIT,true);
+        }
         Logger.i(TAG, "权限申请失败无法进行下一步");
         ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.permission_quest_fail));
         System.exit(0);
@@ -2002,6 +2006,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
             if (!(value || NaviStatusPackage.getInstance().isGuidanceActive())) {
                 //非引导态，拒绝隐私权限，退出应用
+                if (Logger.openLog) {
+                    Logger.printStackTrace(NAVI_EXIT,true);
+                }
                 System.exit(0);
             }
         }

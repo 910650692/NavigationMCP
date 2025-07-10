@@ -75,4 +75,8 @@ public class Logger {
     public static String getCurrentTagName() {
         return LogUtils.getCurrentTagName();
     }
+
+    public static void printStackTrace(String tag, boolean info) {
+        LogUtils.printStackTrace(tag, info);
+    }
 }

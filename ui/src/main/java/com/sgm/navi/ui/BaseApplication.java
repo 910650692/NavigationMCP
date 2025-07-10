@@ -23,7 +23,7 @@ public class BaseApplication extends Application implements Application.Activity
         UtilsManager.init(this);
         if (DeviceUtils.isCar(this) && getSystemService(UserManager.class).isSystemUser()) {
             if(Logger.openLog) {
-                Logger.d(TAG, "CurrentisSystemuser,killprocess");
+                Logger.d(TAG, "NaviApp_Exit CurrentisSystemuser,killprocess");
             }
             System.exit(0);
         }

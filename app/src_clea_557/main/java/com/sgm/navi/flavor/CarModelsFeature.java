@@ -1,5 +1,5 @@
 package com.sgm.navi.flavor;
-
+import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -22,6 +22,9 @@ public class CarModelsFeature extends BaseCarModelsFeature {
 
     @Override
     public void exitApp() {
+        if (Logger.openLog) {
+            Logger.printStackTrace(NAVI_EXIT,true);
+        }
         System.exit(0);
     }
 

@@ -1,5 +1,7 @@
 package com.sgm.navi;
 
+import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
+
 import android.app.Activity;
 import android.app.Application;
 
@@ -67,7 +69,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
             } catch (InterruptedException e) {
                 Logger.w(TAG, "killSelf exception", e.getMessage());
             }
-            Logger.e("NaviApp_Start", "isExternalStorageAvailable is false");
+            Logger.e(NAVI_EXIT, "isExternalStorageAvailable is false");
             System.exit(1);
         });
     }

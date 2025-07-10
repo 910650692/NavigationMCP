@@ -72,4 +72,8 @@ public class Logger {
     public static boolean isDebugLevel() {
         return LogUtils.isDebugLevel();
     }
+
+    public static void printStackTrace(String tag, boolean info) {
+        LogUtils.printStackTrace(tag, info);
+    }
 }

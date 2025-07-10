@@ -1,5 +1,7 @@
 package com.sgm.navi.hmi.setting.others;
 
+import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
+
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.Window;
