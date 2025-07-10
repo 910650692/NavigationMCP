@@ -89,6 +89,7 @@ public class BaseNaviGuidanceViewModel extends
     public ObservableField<Boolean> mHandingCardVisibility;// 悬挂卡
     public ObservableField<Boolean> mHandingCardDetailVisibility;// 悬挂卡-详情
     public ObservableField<Boolean> mNaviViaDetailVisibility;// 途经点-详情
+    public ObservableField<Boolean> mNaviLeftContentVisibility;// 引导左侧部分布局内容
     //车牌信息
     private String mCurrentPlateNumber;
     //限行信息
@@ -133,6 +134,7 @@ public class BaseNaviGuidanceViewModel extends
         mHandingCardVisibility = new ObservableField<>(false);
         mHandingCardDetailVisibility = new ObservableField<>(false);
         mNaviViaDetailVisibility = new ObservableField<>(false);
+        mNaviLeftContentVisibility = new ObservableField<>(true);
         mModelSaveEntity = new NaviModelSaveEntity();
         mSceneStatus = new HashMap<>();
     }

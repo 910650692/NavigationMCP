@@ -722,6 +722,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     public void showNaviContent() {
         Logger.i(TAG, "showNaviContent");
+        if (!ConvertUtils.isNull(mViewModel)) {
+            mViewModel.mNaviLeftContentVisibility.set(true);
+        }
         mBinding.naviSceneContainer.setVisibility(VISIBLE);
         // 如果路口大图还是显示状态就继续显示
         if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
@@ -735,7 +738,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
             mBinding.sceneNaviCrossImage.hideLayerCross();
         }
-        mBinding.naviSceneContainer.setVisibility(INVISIBLE);
+        if (!ConvertUtils.isNull(mViewModel)) {
+            mViewModel.mNaviLeftContentVisibility.set(false);
+        }
     }
 
     public void backToNaviFragment() {

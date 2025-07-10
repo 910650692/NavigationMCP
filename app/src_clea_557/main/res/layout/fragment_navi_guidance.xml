@@ -19,6 +19,7 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/navi_scene_container"
+            android:visibility="@{ViewModel.mNaviLeftContentVisibility?View.VISIBLE:View.INVISIBLE}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:maxHeight="@dimen/dp_772">
