@@ -6,23 +6,24 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
+import androidx.databinding.Observable;
+import androidx.databinding.ObservableBoolean;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.SpUtils;
 import com.android.utils.ThemeUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -35,13 +36,11 @@ import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.startup.ActivateFailedDialog;
+import com.sgm.navi.scene.dialog.MsgTopDialog;
+import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
-import com.sgm.navi.service.define.screen.ScreenType;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
-import com.sgm.navi.scene.dialog.MsgTopDialog;
-import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MainScreenMapView;
@@ -50,8 +49,9 @@ import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
+import com.sgm.navi.service.define.screen.ScreenType;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
-import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.FragmentIntent;
@@ -105,6 +105,21 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.mainImg.post(() -> {
             if (mViewModel.isSupportSplitScreen()) {
                 checkConfig();
+            }
+        });
+        mViewModel.mainBTNVisibility.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                boolean value = ((ObservableBoolean) sender).get();
+                ConstraintLayout.LayoutParams layoutParams =  (ConstraintLayout.LayoutParams)mBinding.includeMessageCenter.getRoot().getLayoutParams();
+                if(!value){
+                    layoutParams.startToEnd = mBinding.layoutFragment.getId();
+                    layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_m_17));
+                }else{
+                    layoutParams.startToEnd = mBinding.searchMainTab.getId();
+                    layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_17));
+                }
+                mBinding.includeMessageCenter.getRoot().setLayoutParams(layoutParams);
             }
         });
     }
