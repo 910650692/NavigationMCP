@@ -253,6 +253,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         mRouteViaPointAdapter.setDeleteViaPointListener(index -> {
             mViewModel.cancelTimer();
             mViewModel.deleteViaParamMode(index);
+            mViewModel.getViaPoiListAllVisibility().set(false);
         });
         routeLineViaPoiRecycle.setAdapter(mRouteViaPointAdapter);
         final ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
