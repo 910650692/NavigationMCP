@@ -1727,11 +1727,11 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "clearLabelMark");
         sMarkerInfoMap.clear();
         mLayerAdapter.clearAllSearchLayerItems(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (mNaviPackage.getFixedOverViewStatus()) {
+        if (mNaviPackage.getFixedOverViewStatus() || mNaviPackage.getClusterFixOverViewStatus()) {
             return;
         }
         if (isNaviStatus()) {
-            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
         }
     }
 

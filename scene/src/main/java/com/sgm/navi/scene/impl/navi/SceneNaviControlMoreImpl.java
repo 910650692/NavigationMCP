@@ -274,7 +274,6 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     public void alongSearch(final int index) {
         Logger.i(TAG, "alongSearch index:", index, " mVehicleType:", mVehicleType);
         setImmersiveStatus(ImersiveStatus.TOUCH);
-        OpenApiHelper.enterPreview(mMapTypeId);
         switch (index) {
             case 0:
                 if (mVehicleType == 1) {//电车
