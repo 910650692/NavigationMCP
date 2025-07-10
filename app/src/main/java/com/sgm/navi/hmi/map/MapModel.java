@@ -2015,8 +2015,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             RoutePackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
             return;
         }
-        searchPackage.clearPoiLabelMark();
-        searchPackage.clearLabelMark();
+        if (!ConvertUtils.isNull(searchPackage)) {
+            searchPackage.clearPoiLabelMark();
+            searchPackage.clearLabelMark();
+        }
     }
 
     @Override
