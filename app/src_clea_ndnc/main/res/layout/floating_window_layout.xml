@@ -31,7 +31,7 @@
                     android:layout_height="@dimen/dp_54"
                     android:src="@drawable/img_basic_ic_home"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_bus"
+                    android:layout_marginStart="@dimen/dp_42"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -52,7 +52,7 @@
                     android:layout_height="@dimen/dp_54"
                     android:src="@drawable/img_basic_ic_search"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
+                    android:layout_marginEnd="@dimen/dp_42"
                     app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
