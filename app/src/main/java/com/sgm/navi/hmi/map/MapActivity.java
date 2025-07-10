@@ -8,11 +8,9 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,11 +34,12 @@ import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.startup.ActivateFailedDialog;
-import com.sgm.navi.scene.dialog.MsgTopDialog;
-import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.sgm.navi.scene.dialog.MsgTopDialog;
+import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MainScreenMapView;
@@ -49,8 +48,6 @@ import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
-import com.sgm.navi.service.define.screen.ScreenType;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
@@ -82,6 +79,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private Runnable mOpenGuideRunnable;
 
     private Runnable timerRunnable = null;
+    private int mCurrentUiMode;
 
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
@@ -102,11 +100,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mRotateAnim.setInterpolator(new LinearInterpolator());
         mBinding.mainImg.setVisibility(View.VISIBLE);
         mBinding.mainImg.setOnClickListener(v -> FloatViewManager.getInstance().hideAllCardWidgets(false));
-        mBinding.mainImg.post(() -> {
-            if (mViewModel.isSupportSplitScreen()) {
-                checkConfig();
-            }
-        });
+        mCurrentUiMode = getResources().getConfiguration().uiMode;
         mViewModel.mainBTNVisibility.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
@@ -250,8 +244,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onResume() {
         super.onResume();
-        checkScreen();
+        FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
         if (mViewModel.getSdkInitStatus()) {
+            ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
             mViewModel.getCurrentCityLimit();
             //界面可见时重新适配深浅色模式
             mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -260,11 +255,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 Logger.d(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(this));
             }
         }
-        FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
-    }
-
-    private void checkScreen() {
-        ScreenTypeUtils.getInstance().isSameScreenType(getResources().getDisplayMetrics());
     }
 
     @Override
@@ -442,40 +432,21 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (null != mViewModel) {
-            mViewModel.reminderDialogReCreate();
-            mBinding.mainImg.setImageResource(R.drawable.logo_startup);
-        }
         if (null == mViewModel || !mViewModel.getSdkInitStatus()) {
+            Logger.e(TAG, "error");
             return;
         }
+        mViewModel.reminderDialogReCreate();
+        mBinding.mainImg.setImageResource(R.drawable.logo_startup);
+        ScreenTypeUtils.getInstance().setScreenType(newConfig);
+        //模式更改不重新触发trips
         mViewModel.mIsChangingConfigurations.set(true);
-        if (mViewModel.isSupportSplitScreen()) {
-            Logger.d("screen_change_used", newConfig.screenWidthDp);
-            ScreenTypeUtils.getInstance().setScreenType(newConfig);
-            mViewModel.notifyScreenSizeChanged();
-            mViewModel.onNaviStatusChange();
-            mViewModel.checkStatusCloseAllFragmentAndClearAllLabel();
-            setSplitFragment();
-            mViewModel.toSetCarPosition();
-        }
-        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
-                ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
-        recreate();
-    }
-
-    private void setSplitFragment() {
-        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
-            Logger.d("screen_change_used", "打开1/3屏幕布局");
-            addFragment(SplitFragment.getInstance(), null);
-        } else {
-            final BaseFragment baseFragment = mStackManager.getCurrentFragment(mScreenId);
-            if (baseFragment instanceof SplitFragment) {
-                Logger.d("screen_change_used", "关闭1/3屏幕布局");
-                closeFragment(true);
-            } else {
-                Logger.d("screen_change_used", "不包含1/3屏幕布局");
-            }
+        int newUiMode = newConfig.uiMode;
+        if (mCurrentUiMode != newUiMode) {
+            mCurrentUiMode = newUiMode;
+            mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+                    ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
+            recreate();
         }
     }
 
@@ -587,19 +558,16 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
         return super.dispatchTouchEvent(ev);
     }
-
-    private void checkConfig() {
-        final ScreenType currentScreenType = ScreenTypeUtils.getInstance().calculateScreenType(getResources().getConfiguration());
-        if (currentScreenType != ScreenTypeUtils.getInstance().getScreenType() && mViewModel.isSupportSplitScreen()) {
-            ScreenTypeUtils.getInstance().setScreenType(getResources().getConfiguration());
-            mViewModel.notifyScreenSizeChanged();
-            mViewModel.onNaviStatusChange();
-            mViewModel.checkStatusCloseAllFragmentAndClearAllLabel();
-            Logger.d(TAG, "checkConfig and need update!");
-        }
-    }
-
     public void notifyStepOneThirdScreen() {
         mViewModel.notifyStepOneThirdScreen();
+    }
+
+    public void closeSplitFragment() {
+        final BaseFragment baseFragment = mStackManager.getCurrentFragment(mScreenId);
+        if (baseFragment instanceof SplitFragment) {
+            closeFragment(true);
+        } else {
+            Logger.d("screen_change_used", "不包含1/3屏幕布局");
+        }
     }
 }

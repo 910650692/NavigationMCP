@@ -92,9 +92,6 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public void changeMapViewParams(IBaseScreenMapView mapView) {
-        if (ScreenTypeUtils.getInstance().isFullScreen()) {
-            return;
-        }
         int mapViewWidth;
         int mapViewHeight;
         int screenWidth;
@@ -105,14 +102,19 @@ public class MapAdapterImpl implements IMapApi {
             mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(723);
             mapViewHeight = 1440;
             screenWidth = ScreenUtils.Companion.getInstance().dp2px(723);
-            screenHeight = 1440;
-        } else {
+            screenHeight =  1440;
+        } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen()){
             //平板 1431 1179
             //台架 1439 1066
             mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
-            mapViewHeight = 1440;
+            mapViewHeight =  1440;
             screenWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
-            screenHeight = 1440;
+            screenHeight =  1440;
+        } else {
+            mapViewWidth = (int) mapView.getMapViewWidth();
+            mapViewHeight = (int) mapView.getMapViewHeight();
+            screenWidth = (int) mapView.getScreenWidth();
+            screenHeight = (int) mapView.getScreenHeight();
         }
         Logger.d("screen_change_used", mapViewWidth,mapViewHeight,screenWidth,screenHeight);
         MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),mapViewWidth

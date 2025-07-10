@@ -82,7 +82,6 @@ import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
-import com.sgm.navi.service.logicpaket.user.forecast.IForecastAddressCallBack;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseViewModel;
@@ -604,7 +603,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
-        sRVisible.set(false);
     }
 
     public void setMapCenterInScreen(final Bundle bundle) {
@@ -640,7 +638,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
-        sRVisible.set(false);
         cancelTimer();
     }
 
@@ -1157,7 +1154,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || currentStatus == NaviStatus.NaviStatusType.LIGHT_NAVING;
     }
 
-    public void onNaviStatusChange() {
+    public void updateLimitInfo() {
         updateLimitInfo(routeRestrictionParam);
     }
 
@@ -1452,10 +1449,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return false;
     }
 
-    public void checkStatusCloseAllFragmentAndClearAllLabel() {
-        mModel.checkStatusCloseAllFragmentAndClearAllLabel();
-    }
-
     public Action switchSr = () -> {
     };
 
@@ -1652,5 +1645,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void notifyStepOneThirdScreen() {
         checkViewState();
+    }
+
+    public void closeSplitFragment() {
+        mView.closeSplitFragment();
     }
 }

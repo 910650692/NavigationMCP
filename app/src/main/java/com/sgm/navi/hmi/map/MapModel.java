@@ -56,6 +56,7 @@ import com.sgm.navi.hmi.navi.PhoneAddressDialog;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
+import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.startup.StartupExceptionDialog;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
 import com.sgm.navi.hmi.utils.AiWaysGestureManager;
@@ -177,7 +178,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack,
         ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
-        IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback, OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack {
+        IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback,
+        OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack, ScreenTypeUtils.SplitScreenChangeListener {
 
     private CommonManager mCommonManager;
     private final IActivateObserver mActObserver;
@@ -340,6 +342,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 });
         FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
         FloatViewManager.getInstance().addDeskCardVisibleChangeListener(this);
+        ScreenTypeUtils.getInstance().addSplitScreenChangeListener(TAG, this);
         mViewModel.mainBTNVisibility.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
@@ -389,6 +392,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
         AgreementPackage.getInstance().unRegisterAgreementCallback("StartupModel");
         FloatViewManager.getInstance().removeDeskCardVisibleChangeListener(this);
+        ScreenTypeUtils.getInstance().removeSplitScreenChangeListener(TAG);
         clearDialog();
     }
 
@@ -959,7 +963,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onNaviStatusChange(String naviStatus) {
-        mViewModel.onNaviStatusChange();
+        mViewModel.updateLimitInfo();
         mapModelHelp.onNaviStatusChange(naviStatus);
         Logger.i(TAG, "onNaviStatusChange:" , naviStatus);
         layerPackage.hideOrShowFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP, NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) || NaviStatus.NaviStatusType.CRUISE.equals(naviStatus));
@@ -2003,27 +2007,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
     }
 
-    public void checkStatusCloseAllFragmentAndClearAllLabel() {
-        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
-            return;
-        }
-        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
-            mViewModel.closeAllFragment();
-        }
-        if ((currentNaviStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE) || currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING)) && ScreenTypeUtils.getInstance().isOneThirdScreen()) {
-            RoutePackage.getInstance().abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
-            RoutePackage.getInstance().clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
-            RoutePackage.getInstance().clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
-            RoutePackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
-            return;
-        }
-        if (!ConvertUtils.isNull(searchPackage)) {
-            searchPackage.clearPoiLabelMark();
-            searchPackage.clearLabelMark();
-        }
-    }
-
     @Override
     public void onDeskBackgroundChange(FloatViewManager.DesktopMode desktopMode) {
         mViewModel.onDeskBackgroundChange(desktopMode);
@@ -2059,5 +2042,47 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         } else {
             mViewModel.toCompanyFragment();
         }
+    }
+
+    @Override
+    public void onSplitScreenChanged() {
+        if (mViewModel == null) {
+            Logger.e(TAG, "mViewModel is null");
+            return;
+        }
+        mapPackage.changeMapViewParams(mViewModel.getMapView());
+        mViewModel.initVisibleAreaPoint();
+        mViewModel.notifyScreenSizeChanged();
+        mViewModel.updateLimitInfo();
+        mViewModel.toSetCarPosition();
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            Logger.d("screen_change_used", "打开1/3屏幕布局");
+            checkStatusCloseAllFragmentAndClearAllLabel();
+            addFragment(SplitFragment.getInstance(), null);
+        } else {
+            Logger.d("screen_change_used", "关闭1/3屏幕布局");
+            mViewModel.closeSplitFragment();
+        }
+    }
+
+    public void checkStatusCloseAllFragmentAndClearAllLabel() {
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING) || currentNaviStatus.equals(NaviStatus.NaviStatusType.LIGHT_NAVING)) {
+            Logger.d("screen_change_used", "当前导航状态不允许关闭所有Fragment和清除标记");
+            return;
+        }
+        mViewModel.closeAllFragment();
+        RoutePackage routePackage = RoutePackage.getInstance();
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
+            routePackage.abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
+        if ((currentNaviStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE))) {
+            routePackage.clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
+            routePackage.clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+            routePackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+            return;
+        }
+        searchPackage.clearPoiLabelMark();
+        searchPackage.clearLabelMark();
     }
 }

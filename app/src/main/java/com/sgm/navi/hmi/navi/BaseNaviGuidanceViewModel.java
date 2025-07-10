@@ -366,7 +366,7 @@ public class BaseNaviGuidanceViewModel extends
         }
         closeAllFragment();
         if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
-            addFragment(new SplitFragment(), new Bundle());
+            addFragment(SplitFragment.getInstance(), new Bundle());
         }
     }
 
