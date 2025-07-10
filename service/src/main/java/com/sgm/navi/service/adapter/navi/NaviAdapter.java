@@ -24,6 +24,7 @@ import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.route.RouteParam;
+import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public final class NaviAdapter {
     private SoundInfoEntity mSoundInfoEntity;
     @Getter
     private volatile CountDownLatch mCountDownLatch;
+    private Object mPathInfo;
 
     private ArrayList<NaviInfoEntity> mNaviInfoEntities = new ArrayList<>();
     public static final int THREE_SECONDS = 3 * 1000;
@@ -121,6 +123,15 @@ public final class NaviAdapter {
      */
     public boolean startNavigation(final NaviStartType naviStartType) {
         updateBroadcastParam(mSettingAdapter.getConfigKeyBroadcastMode(), true);
+        if (!ConvertUtils.isNull(mPathInfo) && mPathInfo instanceof PathInfo pathInfo) {
+            // 如果路径长度大于150km或者是模拟导航，不显示备选路线，因为模拟导航不支持点击切换路线，所以这里也显示一条主路
+            if (pathInfo.getLength() >= NumberUtils.NUM_150 * NumberUtils.NUM_1000 ||
+                    NaviStartType.NAVI_TYPE_SIMULATION.equals(naviStartType)) {
+                ArrayList<PathInfo> pathInfoList = new ArrayList<>();
+                pathInfoList.add(pathInfo);
+                updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, 0);
+            }
+        }
         return mNaviApi.startNavigation(naviStartType);
     }
 
@@ -135,12 +146,27 @@ public final class NaviAdapter {
      * @param routeLineLayerParam routeLineLayerParam
      */
     public void updateNaviPath(final RouteLineLayerParam routeLineLayerParam) {
+        setPathInfo(routeLineLayerParam);
         mNaviApi.updateNaviPath(routeLineLayerParam);
         mLayerAdapter.updateGuideCarStyle(MapType.MAIN_SCREEN_MAIN_MAP);
         mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
     }
     public void setNaviPath(final int routeIndex, final RouteLineLayerParam routeLineLayerParam) {
+        setPathInfo(routeLineLayerParam);
         mNaviApi.setNaviPath(routeIndex, routeLineLayerParam);
+    }
+
+    private void setPathInfo(final RouteLineLayerParam routeLineLayerParam) {
+        if (ConvertUtils.isNull(routeLineLayerParam)) {
+            return;
+        }
+        ArrayList<?> mPathInfoList = routeLineLayerParam.getMPathInfoList();
+        int selectIndex = routeLineLayerParam.getMSelectIndex();
+        if (!ConvertUtils.isEmpty(mPathInfoList) &&
+                selectIndex < mPathInfoList.size() &&
+                selectIndex >= 0) {
+            mPathInfo = mPathInfoList.get(selectIndex);
+        }
     }
 
     public static NaviAdapter getInstance() {
