@@ -424,6 +424,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if (null != mViewModel) {
+            mViewModel.reminderDialogReCreate();
+            mBinding.mainImg.setImageResource(R.drawable.logo_startup);
+        }
         if (null == mViewModel || !mViewModel.getSdkInitStatus()) {
             return;
         }

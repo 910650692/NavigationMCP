@@ -146,6 +146,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private ScheduledFuture mScheduledFuture;
     private ScheduledFuture goHomeTimer;
     private final int mTimer = 300;
+    public ReminderDialog reminderDialog = null;
 
     public BaseMapViewModel(@NonNull Application application) {
         super(application);
@@ -211,6 +212,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (reminderDialog != null && reminderDialog.isShowing()) {
+            reminderDialog.dismiss();
+        }
     }
 
     public boolean getSdkInitStatus() {
@@ -248,7 +252,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * 打开隐私权限弹窗
      */
     public void popAgreementDialog() {
-        ReminderDialog reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
+        reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
                 mModel.updateFirstLauncherFlag();
@@ -271,6 +275,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 
+    public void reminderDialogReCreate(){
+        if (reminderDialog != null && reminderDialog.isShowing()) {
+            reminderDialog.dismiss();
+            reminderDialog = null;
+            popAgreementDialog();
+        }
+    }
     public void closeProtectView() {
         mView.closeProtectView();
     }
