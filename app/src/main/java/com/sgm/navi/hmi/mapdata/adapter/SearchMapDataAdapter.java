@@ -90,7 +90,15 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         int itemCount = 0;
+        if(mProvinceList.isEmpty()) {
+            Logger.w(TAG, "mProvinceList is empty, no data to bind");
+            return;
+        }
         for (ProvDataInfo provDataInfo : mProvinceList) {
+            if(provDataInfo == null) {
+                Logger.w(TAG, "provDataInfo is null at position " + position);
+                continue;
+            }
             if (position == itemCount) {
                 if (provDataInfo.isParentCity()) {
                     ((ChildViewHolder) holder).bind(provDataInfo, null);

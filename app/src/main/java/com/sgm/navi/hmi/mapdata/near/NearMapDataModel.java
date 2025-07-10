@@ -85,7 +85,7 @@ public class NearMapDataModel extends BaseModel<NearMapDataViewModel> implements
     @Override
     public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
         Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: cityDataInfo = " + GsonUtils.toJson(cityDataInfo));
-        if (cityDataInfo != null){
+        if (cityDataInfo != null && mViewModel != null) {
             mViewModel.onDownLoadStatus(cityDataInfo);
         }
     }

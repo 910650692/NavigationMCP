@@ -105,10 +105,14 @@ public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> impl
 
     @Override
     public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
+        if (cityDataInfo == null) {
+            Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: cityDataInfo is null");
+            return;
+        }
         Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: mViewModel = ",
                 (mViewModel == null), "; cityDataInfo = ", cityDataInfo.getAdcode(),
                 cityDataInfo.getAreaType(), cityDataInfo.getName());
-        if (mViewModel != null && cityDataInfo != null) {
+        if (mViewModel != null) {
             mViewModel.onDownLoadStatus(cityDataInfo);
         }
     }

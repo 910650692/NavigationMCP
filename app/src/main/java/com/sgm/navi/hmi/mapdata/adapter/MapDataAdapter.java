@@ -255,9 +255,13 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             // 下载 or 暂停下载
             mDownloadBtnView.setOnClickListener(v -> {
                 Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+                if (downloadItem == null) {
+                    Logger.i("downloadItem is null");
+                    return;
+                }
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 cityAdCodes.add(downloadItem.getAdcode());
-                if (onChildClickListener != null && downloadItem != null) {
+                if (onChildClickListener != null) {
                     switch (downloadItem.getTaskState()) {
                         case UserDataCode.TASK_STATUS_CODE_DOING:  // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
                         case UserDataCode.TASK_STATUS_CODE_DONE:   // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
@@ -293,7 +297,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 Logger.d("parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
                 final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
-                if (cityDataInfos != null && cityDataInfos.size() != 0) {
+                if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
                     for (CityDataInfo info : cityDataInfos) {
                         if (info != null && info.getDownLoadInfo() != null) {
                             if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
@@ -313,10 +317,14 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
             // 全部暂停下载
             allPause.setOnClickListener(view -> {
+                if (parent == null) {
+                    Logger.d("parent is null");
+                    return;
+                }
                 Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
                 final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
-                if (cityDataInfos != null && cityDataInfos.size() != 0) {
+                if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
                     for (CityDataInfo info : cityDataInfos) {
                         if (info != null && info.getDownLoadInfo() != null) {
                             if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||

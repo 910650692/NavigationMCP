@@ -153,8 +153,16 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
         mBinding.drivingRecordTabGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final RadioGroup radioGroup, final int i) {
+                if(getActivity() == null) {
+                    Logger.w("DrivingRecordFragment", "getActivity() is null");
+                    return;
+                }
                 // 获取被选中的RadioButton
                 final RadioButton checkedRadioButton = getActivity().findViewById(i);
+                if (checkedRadioButton == null) {
+                    Logger.w("DrivingRecordFragment", "checkedRadioButton is null for id: " + i);
+                    return;
+                }
                 // 执行你想要的操作，例如获取被选中的文本
                 selectedText = checkedRadioButton.getText().toString();
                 // 打印或处理选中的文本

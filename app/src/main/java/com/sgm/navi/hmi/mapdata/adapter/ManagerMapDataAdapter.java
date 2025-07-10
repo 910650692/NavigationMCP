@@ -208,7 +208,7 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 cityAdCodes.add(downloadItem.getAdcode());
-                if (onChildClickListener != null && downloadItem != null) {
+                if (onChildClickListener != null) {
                     switch (downloadItem.getTaskState()) {
                         case UserDataCode.TASK_STATUS_CODE_DOING:  // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
                         case UserDataCode.TASK_STATUS_CODE_DONE:   // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）

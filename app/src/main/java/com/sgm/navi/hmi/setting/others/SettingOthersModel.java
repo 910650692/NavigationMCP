@@ -69,6 +69,10 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
      * 初始化视图
      */
     public void initView() {
+        if(mViewModel == null) {
+            Logger.e("SettingOthersModel", "ViewModel is null, cannot initialize view.");
+            return;
+        }
         mWeChatPackage.sendReqWsPpAutoWeixinStatus();
         mViewModel.updatePrivacyStatus(mSettingPackage.getPrivacyStatus());
         mViewModel.updateUserInfo(mAccountPackage.getUserInfo().getNickname(), mAccountPackage.getUserInfo().getAvatar());

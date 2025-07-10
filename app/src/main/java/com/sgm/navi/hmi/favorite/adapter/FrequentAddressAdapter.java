@@ -64,6 +64,7 @@ public class FrequentAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.mItemClickListener = itemClickListener;
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(final @NonNull ViewGroup parent, final int viewType) {
         if (viewType == TYPE_TEXT) {
@@ -73,7 +74,9 @@ public class FrequentAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             final View view = LayoutInflater.from(mContext).inflate(R.layout.item_add_frequent_address, parent, false);
             return new ImageViewHolder(view);
         }
-        return null; // 这行代码实际上不会被执行，因为上面已经覆盖了所有可能的viewType
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_add_frequent_address, parent, false);
+        return new ImageViewHolder(view);
+        //return null; // 这行代码实际上不会被执行，因为上面已经覆盖了所有可能的viewType
     }
 
     @Override
