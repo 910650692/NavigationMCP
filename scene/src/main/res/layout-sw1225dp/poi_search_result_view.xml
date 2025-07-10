@@ -175,12 +175,14 @@
                     android:id="@+id/il_loading"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_607"
+                    android:visibility="gone"
                     />
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_loading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_24"
+                    android:visibility="gone"
                     android:src="@drawable/icon_limit_loading"
                     app:layout_constraintBottom_toBottomOf="@+id/il_loading"
                     app:layout_constraintEnd_toEndOf="@+id/il_loading"
