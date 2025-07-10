@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.baidu.bridge.BridgeSdk;
 import com.baidu.oneos.protocol.IStateManager;
 import com.baidu.oneos.protocol.SystemStateCons.NaviStateCons;
@@ -31,96 +32,98 @@ final public class AMapStateUtils {
             return;
         }
 
-        JSONObject data = null;
-        try {
-            final String mapStateStr = GsonUtils.toJson(mapState);
-            data = new JSONObject(mapStateStr);
-        } catch (JSONException exception) {
-            Logger.e(IVrBridgeConstant.TAG, "parse mapState error");
-        }
-        if (null == data) {
-            return;
-        }
+        ThreadManager.getInstance().execute(() -> {
+            JSONObject data = null;
+            try {
+                final String mapStateStr = GsonUtils.toJson(mapState);
+                data = new JSONObject(mapStateStr);
+            } catch (JSONException exception) {
+                Logger.e(IVrBridgeConstant.TAG, "parse mapState error");
+            }
+            if (null == data) {
+                return;
+            }
 
-        final HashMap<String, Object> map = new HashMap<>();
-        map.put(NaviStateCons.KEY_CURRENT_MAP_TYPE, "A_MAP");
-        saveMapStateBoolean(map, data);
-        if (data.has("mCurrMapMode")) {
-            map.put(NaviStateCons.KEY_PERSPECTIVE_MODE, data.optInt("mCurrMapMode"));
-        }
-        boolean isMute = false;
-        if (data.has("mIsMute")) {
-            isMute = data.optBoolean("mIsMute");
-            if (isMute) {
-                map.put(NaviStateCons.KEY_BROADCAST_MODE, 2);
+            final HashMap<String, Object> map = new HashMap<>();
+            map.put(NaviStateCons.KEY_CURRENT_MAP_TYPE, "A_MAP");
+            saveMapStateBoolean(map, data);
+            if (data.has("mCurrMapMode")) {
+                map.put(NaviStateCons.KEY_PERSPECTIVE_MODE, data.optInt("mCurrMapMode"));
             }
-        }
-        if (data.has("mBroadcastMode")) {
-            map.put(NaviStateCons.KEY_BROADCAST_MODE, isMute ? 2
-                    : data.optInt("mBroadcastMode"));
-        }
-        if (data.has("mPathCount")) {
-            map.put(NaviStateCons.KEY_PLANE_ROUTE_NUM, data.optInt("mPathCount"));
-        }
-        if (data.has("mViaPointsCount")) {
-            map.put(NaviStateCons.KEY_PASSING_POINT_NUM, data.optInt("mViaPointsCount"));
-        }
-        if (data.has("mViaPointsMaxCount")) {
-            map.put(NaviStateCons.KEY_PASSING_POINT_MAX_COUNT,
-                    data.optInt("mViaPointsMaxCount"));
-        }
-        if (data.has("mIsParallelFlagMain")) {
-            map.put(NaviStateCons.KEY_ON_MAIN_ROAD, data.optInt("mIsParallelFlagMain"));
-        }
-        if (data.has("mIsParallelBridge")) {
-            map.put(NaviStateCons.KEY_ON_BRIDGE, data.optInt("mIsParallelBridge"));
-        }
-        if (data.has("mCurrPlanPref")) {
-            map.put(NaviStateCons.KEY_ROAD_PREFERENCE, data.optInt("mCurrPlanPref"));
-        }
-        int maxMapSize = -1;
-        if (data.has("mMaxZoomLevel")) {
-            maxMapSize = data.optInt("mMaxZoomLevel");
-            map.put(NaviStateCons.KEY_MAX_MAP_SIZE, maxMapSize);
-        }
-        int minMapSize = -1;
-        if (data.has("mMinZoomLevel")) {
-            minMapSize = data.optInt("mMinZoomLevel");
-            map.put(NaviStateCons.KEY_MIN_MAP_SIZE, minMapSize);
-        }
-        int currMapSize = -1;
-        if (data.has("mCurrZoomLevel")) {
-            currMapSize = data.optInt("mCurrZoomLevel");
-            map.put(NaviStateCons.KEY_CURRENT_MAP_SIZE, currMapSize);
-        }
-        if (currMapSize != -1) {
-            if (maxMapSize != -1) {
-                map.put(NaviStateCons.KEY_MAX_MAP, currMapSize == maxMapSize);
+            boolean isMute = false;
+            if (data.has("mIsMute")) {
+                isMute = data.optBoolean("mIsMute");
+                if (isMute) {
+                    map.put(NaviStateCons.KEY_BROADCAST_MODE, 2);
+                }
             }
-            if (minMapSize != -1) {
-                map.put(NaviStateCons.KEY_MIN_MAP, currMapSize == minMapSize);
+            if (data.has("mBroadcastMode")) {
+                map.put(NaviStateCons.KEY_BROADCAST_MODE, isMute ? 2
+                        : data.optInt("mBroadcastMode"));
             }
-        }
-        if (data.has("mEndPoiName")) {
-            map.put(NaviStateCons.KEY_DEST_NAME, data.optString("mEndPoiName"));
-        }
-        if (data.has("mEndPoiCity")) {
-            map.put(NaviStateCons.KEY_DEST_CITY, data.optString("mEndPoiCity"));
-        }
-        if (data.has("mMaxVolumeLevel")) {
-            map.put(NaviStateCons.KEY_MAX_VOLUME, data.optInt("mMaxVolumeLevel"));
-        }
-        if (data.has("mCurrentVolumeLevel")) {
-            map.put(NaviStateCons.KEY_CURRENT_VOLUME, data.optInt("mCurrentVolumeLevel"));
-        }
-        try {
-            final IStateManager bdStateManager = BridgeSdk.getInstance().getRemote(IStateManager.class);
-            if (null != bdStateManager) {
-                bdStateManager.updateNaviState(map);
+            if (data.has("mPathCount")) {
+                map.put(NaviStateCons.KEY_PLANE_ROUTE_NUM, data.optInt("mPathCount"));
             }
-        } catch (ClassCastException | NullPointerException exception) {
-            Logger.e(IVrBridgeConstant.TAG, "updateNaviState: " + exception.getMessage());
-        }
+            if (data.has("mViaPointsCount")) {
+                map.put(NaviStateCons.KEY_PASSING_POINT_NUM, data.optInt("mViaPointsCount"));
+            }
+            if (data.has("mViaPointsMaxCount")) {
+                map.put(NaviStateCons.KEY_PASSING_POINT_MAX_COUNT,
+                        data.optInt("mViaPointsMaxCount"));
+            }
+            if (data.has("mIsParallelFlagMain")) {
+                map.put(NaviStateCons.KEY_ON_MAIN_ROAD, data.optInt("mIsParallelFlagMain"));
+            }
+            if (data.has("mIsParallelBridge")) {
+                map.put(NaviStateCons.KEY_ON_BRIDGE, data.optInt("mIsParallelBridge"));
+            }
+            if (data.has("mCurrPlanPref")) {
+                map.put(NaviStateCons.KEY_ROAD_PREFERENCE, data.optInt("mCurrPlanPref"));
+            }
+            int maxMapSize = -1;
+            if (data.has("mMaxZoomLevel")) {
+                maxMapSize = data.optInt("mMaxZoomLevel");
+                map.put(NaviStateCons.KEY_MAX_MAP_SIZE, maxMapSize);
+            }
+            int minMapSize = -1;
+            if (data.has("mMinZoomLevel")) {
+                minMapSize = data.optInt("mMinZoomLevel");
+                map.put(NaviStateCons.KEY_MIN_MAP_SIZE, minMapSize);
+            }
+            int currMapSize = -1;
+            if (data.has("mCurrZoomLevel")) {
+                currMapSize = data.optInt("mCurrZoomLevel");
+                map.put(NaviStateCons.KEY_CURRENT_MAP_SIZE, currMapSize);
+            }
+            if (currMapSize != -1) {
+                if (maxMapSize != -1) {
+                    map.put(NaviStateCons.KEY_MAX_MAP, currMapSize == maxMapSize);
+                }
+                if (minMapSize != -1) {
+                    map.put(NaviStateCons.KEY_MIN_MAP, currMapSize == minMapSize);
+                }
+            }
+            if (data.has("mEndPoiName")) {
+                map.put(NaviStateCons.KEY_DEST_NAME, data.optString("mEndPoiName"));
+            }
+            if (data.has("mEndPoiCity")) {
+                map.put(NaviStateCons.KEY_DEST_CITY, data.optString("mEndPoiCity"));
+            }
+            if (data.has("mMaxVolumeLevel")) {
+                map.put(NaviStateCons.KEY_MAX_VOLUME, data.optInt("mMaxVolumeLevel"));
+            }
+            if (data.has("mCurrentVolumeLevel")) {
+                map.put(NaviStateCons.KEY_CURRENT_VOLUME, data.optInt("mCurrentVolumeLevel"));
+            }
+            try {
+                final IStateManager bdStateManager = BridgeSdk.getInstance().getRemote(IStateManager.class);
+                if (null != bdStateManager) {
+                    bdStateManager.updateNaviState(map);
+                }
+            } catch (ClassCastException | NullPointerException exception) {
+                Logger.e(IVrBridgeConstant.TAG, "updateNaviState: " + exception.getMessage());
+            }
+        });
     }
 
     /**

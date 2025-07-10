@@ -70,8 +70,10 @@ public class SceneScaleView extends BaseSceneView<SceneScaleBinding, SceneScaleI
 
             if (scale.equals("1000公里")) {
                 mViewBinding.screenScaleReduce.setAlpha(0.5f);
+                mViewBinding.screenScaleAdd.setAlpha(1.0f);
             } else if (scale.equals("5米")) {
                 mViewBinding.screenScaleAdd.setAlpha(0.5f);
+                mViewBinding.screenScaleReduce.setAlpha(1.0f);
             } else {
                 mViewBinding.screenScaleAdd.setAlpha(1.0f);
                 mViewBinding.screenScaleReduce.setAlpha(1.0f);
