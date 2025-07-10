@@ -73,7 +73,8 @@ public final class VoiceConvertUtil {
             return "";
         }
 
-        if (distance.endsWith("Km")) {
+
+        if (distance.endsWith("km")) {
             return distance.substring(0, distance.length() - 2) + "千米";
         } else if (distance.endsWith("m")) {
             return distance.substring(0, distance.length() - 1) + "米";

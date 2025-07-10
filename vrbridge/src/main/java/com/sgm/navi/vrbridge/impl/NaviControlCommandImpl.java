@@ -2054,7 +2054,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         }
 
         if (!precess) {
-            return CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_FILTER_TYPE);
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_FILTER_TYPE);
         } else {
             return CallResponse.createSuccessResponse();
         }

@@ -1156,16 +1156,10 @@ public final class VoiceSearchManager {
             case IVrBridgeConstant.VoiceSearchType.WITH_PASS_BY:
                 //选中的点为泛型poi，继续处理下一个点
                 dealNextMultipleDest(poiInfo);
-                if (mRespCallback != null) {
-                    mRespCallback.onResponse(CallResponse.createSuccessResponse());
-                }
                 break;
             case IVrBridgeConstant.VoiceSearchType.ALONG_WAY:
                 //选中poi作为途径点
                 mAlongToAround = false;
-                if (mRespCallback != null) {
-                    mRespCallback.onResponse(CallResponse.createSuccessResponse());
-                }
                 mPlanRouteResult = 1;
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo);
                 break;
