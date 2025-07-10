@@ -969,6 +969,8 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     @Override
     public void onRouteRequest() {
         mRoutePackage.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, false);
+        //清除搜索图层扎标
+        mSearchPackage.clearLabelMark();
         clearWeatherView();
         clearRestArea();
         clearRestrictionView();
