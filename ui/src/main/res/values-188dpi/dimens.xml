@@ -3995,8 +3995,8 @@
     <dimen name="one_third_screen_cross_pic_height">349dp</dimen>
     <dimen name="one_third_screen_car_logo_bottom">827dp</dimen>
     <!--桌面悬浮窗的位置-->
-    <dimen name="launcher_position_top">35dp</dimen>
-    <dimen name="launcher_position_left">34dp</dimen>
+    <dimen name="launcher_position_top">46dp</dimen>
+    <dimen name="launcher_position_left">36dp</dimen>
 
     <dimen name="navi_cadillac_cluster_navi_text_size">52px</dimen>
     <dimen name="navi_cadillac_cluster_navi_unit_size">44px</dimen>
