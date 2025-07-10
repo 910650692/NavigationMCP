@@ -1737,14 +1737,16 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             if (isShow) {
                 mViewBinding.poiSecondAddress.setText(getContext().getString(R.string.address_loading_my_car));
             } else {
-                if (ConvertUtils.isEmpty(mPoiInfoEntity.getAddress())) {
-                    //地址为空时，显示地区名称
-                    CityDataInfo cityDataInfo = mScreenViewModel.getCityInfo(mPoiInfoEntity.getAdCode());
-                    if (!ConvertUtils.isEmpty(cityDataInfo)) {
-                        mViewBinding.poiSecondAddress.setText(cityDataInfo.getName());
+                if (mPoiInfoEntity != null) {
+                    if (ConvertUtils.isEmpty(mPoiInfoEntity.getAddress())) {
+                        //地址为空时，显示地区名称
+                        CityDataInfo cityDataInfo = mScreenViewModel.getCityInfo(mPoiInfoEntity.getAdCode());
+                        if (!ConvertUtils.isEmpty(cityDataInfo)) {
+                            mViewBinding.poiSecondAddress.setText(cityDataInfo.getName());
+                        }
+                    } else {
+                        mViewBinding.poiSecondAddress.setText(mPoiInfoEntity.getAddress());
                     }
-                } else {
-                    mViewBinding.poiSecondAddress.setText(mPoiInfoEntity.getAddress());
                 }
             }
         } else {
