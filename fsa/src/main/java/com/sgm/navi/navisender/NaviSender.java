@@ -165,7 +165,7 @@ public class NaviSender {
             mSdNavigationStatusGroup.setNaviStatCrntRdLvl_Inv(1);
             mSdNavigationStatusGroup.setNaviStatCrntRdLvl(curRoadClass); // 当前道路类型
             mSignalPackage.setSdNavigationStatus(mSdNavigationStatusGroup);
-            if (BuildConfig.DEBUG)
+            if (Logger.isDebugLevel())
                 Logger.d(TAG, PREFIX, "定位回调", locationInfo.getOnGuideRoad(), locationInfo.getRoadClass());
         }
     };
@@ -209,7 +209,7 @@ public class NaviSender {
                 chargeStationRemainDist = naviTimeAndDist.dist;
                 chargeStationRemainTime = naviTimeAndDist.time;
             }
-            if (BuildConfig.DEBUG) Logger.d(TAG, PREFIX, "引导面板回调", naviETAInfo.getRemainDist(), naviETAInfo.getRemainTime(), viaRemain, chargeStationRemainDist, chargeStationRemainTime);
+            if (Logger.isDebugLevel()) Logger.d(TAG, PREFIX, "引导面板回调", naviETAInfo.getRemainDist(), naviETAInfo.getRemainTime(), viaRemain, chargeStationRemainDist, chargeStationRemainTime);
         }
 
         @Override
@@ -254,7 +254,7 @@ public class NaviSender {
                     int distance = 0;
                     for (int i = 0; i < tmcInfoData.size(); i++) {
                         NaviTmcInfo.NaviTmcInfoData naviTmcInfoData = tmcInfoData.get(i);
-                        if (BuildConfig.DEBUG)
+                        if (Logger.isDebugLevel())
                             Logger.d(TAG, PREFIX, "拥堵路段原始", naviTmcInfoData);
                         if (naviTmcInfoData == null) {
                             continue;
@@ -273,17 +273,16 @@ public class NaviSender {
                         }
                         int travelTime = naviTmcInfoData.getTravelTime();
                         mSignalPackage.setDistanceToTrafficJamRoad(distance / 10); // 车辆距离拥堵路段的长度 单位m
-                        mSignalPackage.setDistanceToTrafficJamRoadAvailability(1);
-                        mSignalPackage.setDistanceOnTrafficJamRoad(naviTmcInfoData.getDistance() / 10); // 导航中前方拥堵路段的长度 单位km
-                        mSignalPackage.setDistanceOnTrafficJamRoadAvailability(1);
+                        mSignalPackage.setDistanceToTrafficJamRoadAvailability(0);
+                        mSignalPackage.setDistanceOnTrafficJamRoad((float) naviTmcInfoData.getDistance() / 10); // 导航中前方拥堵路段的长度 单位km
+                        mSignalPackage.setDistanceOnTrafficJamRoadAvailability(0);
                         int speed = travelTime == 0 ? 0 : (int) (naviTmcInfoData.getDistance() / travelTime * 3.6);
                         mSignalPackage.setTrafficJamRoadAverageSpeed(speed); // 导航中形式经过拥堵路段的平均速度 单位km/h
-                        mSignalPackage.setTrafficJamRoadAverageSpeedAvailability(1);
-                        if (BuildConfig.DEBUG)
+                        mSignalPackage.setTrafficJamRoadAverageSpeedAvailability(0);
+                        if (Logger.isDebugLevel())
                             Logger.d(TAG, PREFIX, "拥堵路段发送", distance, naviTmcInfoData.getDistance(), speed);
                         break;
                     }
-                    sendTrafficJamRoadInvalid();
                 } else {
                     sendTrafficJamRoadInvalid();
                 }

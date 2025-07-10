@@ -353,7 +353,7 @@ public final class SignalPackage implements SignalAdapterCallback {
      * 在拥堵路段行驶的距离
      * @param value
      */
-    public void setDistanceOnTrafficJamRoad(int value) {
+    public void setDistanceOnTrafficJamRoad(float value) {
         mSignalAdapter.setDistanceOnTrafficJamRoad(value);
     }
 

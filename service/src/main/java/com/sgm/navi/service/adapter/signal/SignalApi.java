@@ -145,7 +145,7 @@ public interface SignalApi {
 
     void setDistanceToTrafficJamRoadAvailability(int value);
 
-    void setDistanceOnTrafficJamRoad(int value);
+    void setDistanceOnTrafficJamRoad(float value);
 
     void setDistanceOnTrafficJamRoadAvailability(int value);
 

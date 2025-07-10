@@ -576,13 +576,13 @@ public class SignalAdapterImpl implements SignalApi {
         if (!VehicleController.isGBArch()) {
             return -1;
         }
-        if (BuildConfig.DEBUG) Logger.d(TAG, "getBatteryEnergy: " + mBatteryEnergy);
+        if (Logger.isDebugLevel()) Logger.d(TAG, "getBatteryEnergy: " + mBatteryEnergy);
         return mBatteryEnergy;
     }
 
     @Override
     public float getOutsideTemperature() {
-        if (BuildConfig.DEBUG) Logger.d(TAG, "getOutsideTemperature: " + mOutsideTemperature);
+        if (Logger.isDebugLevel()) Logger.d(TAG, "getOutsideTemperature: " + mOutsideTemperature);
         return mOutsideTemperature;
     }
 
@@ -719,7 +719,7 @@ public class SignalAdapterImpl implements SignalApi {
     //region clea can功能接口
     @Override
     public void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup) {
-        Logger.d(TAG, sdNavigationStatusGroup);
+        if (Logger.isDebugLevel()) Logger.d(TAG, sdNavigationStatusGroup.toString());
         try {
             mPropertyManager.setProperty(Integer[].class, PatacProperty.SD_NAVIGATION_STATUS_GROUP,
                     VehicleArea.GLOBAL, sdNavigationStatusGroup.toArray());
@@ -773,10 +773,10 @@ public class SignalAdapterImpl implements SignalApi {
     }
 
     @Override
-    public void setDistanceOnTrafficJamRoad(int value) {
+    public void setDistanceOnTrafficJamRoad(float value) {
         Logger.d(TAG, value);
         try {
-            mPropertyManager.setProperty(Integer.class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD
+            mPropertyManager.setProperty(Float.class, PatacProperty.DISTANCE_ON_TRAFFIC_JAM_ROAD
                     , VehicleArea.GLOBAL, value);
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
@@ -818,7 +818,7 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public void setRoadConditionGroup(RoadConditionGroup roadConditionGroup) {
-        if (BuildConfig.DEBUG) Logger.d(TAG, roadConditionGroup);
+        if (Logger.isDebugLevel()) Logger.d(TAG, roadConditionGroup);
         int propertyId = 0;
         if (Objects.equals(BuildConfig.FLAVOR, "clea_local_8155")) {
             propertyId = 557928600;

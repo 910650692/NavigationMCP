@@ -112,6 +112,14 @@ public class SdNavigationStatusGroup {
 
     @Override
     public String toString() {
-        return Arrays.toString(signalArray);
+        return "{naviStatus=" + naviStat +
+                ", onGuideRoad=" + naviStatCrntRdMpConf +
+                ", roadClass_inv=" + naviStatCrntRdLvl_Inv +
+                ", roadClass=" + naviStatCrntRdLvl +
+                ", distVia_Inv=" + naviStatDistToViaPoint_Inv +
+                ", distVia=" + naviStatDistToViaPoint +
+                ", remainDist_Inv=" + naviStatRmnDist_Inv +
+                ", remainDist=" + naviStatRmnDist +
+                '}';
     }
 }

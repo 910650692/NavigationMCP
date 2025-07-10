@@ -153,7 +153,7 @@ public class L2Adapter {
             l2NaviBean.setMTunnelInfo(tunnelInfo);
             int rampDist = getRampDist(naviEtaInfo);
             l2NaviBean.setRampDist(rampDist);
-            if (BuildConfig.DEBUG) Logger.i(TAG, PREFIX , "引导面板: ", "pathID= " + naviEtaInfo.pathID, "remainDist= " + naviEtaInfo.getRemainDist(), "locationLinkIndex= " + locationLinkIndex, "locationLinkOffset= " + locationLinkOffset, "roadClass= " + curRoadClass, "guideDist= " + dist, "roadClass= " + maneuverId, "tunnelDist= " + tunnelInfo.getTunnelDist(), "tunnelLength= " + tunnelInfo.getTunnelLength(), "rampDist= " + rampDist);
+            if (Logger.isDebugLevel()) Logger.i(TAG, PREFIX , "引导面板: ", "pathID= " + naviEtaInfo.pathID, "remainDist= " + naviEtaInfo.getRemainDist(), "locationLinkIndex= " + locationLinkIndex, "locationLinkOffset= " + locationLinkOffset, "roadClass= " + curRoadClass, "guideDist= " + dist, "roadClass= " + maneuverId, "tunnelDist= " + tunnelInfo.getTunnelDist(), "tunnelLength= " + tunnelInfo.getTunnelLength(), "rampDist= " + rampDist);
         }
 
         @Override
@@ -199,7 +199,7 @@ public class L2Adapter {
                     break;
                 }
             }
-            if (BuildConfig.DEBUG) Logger.i(TAG, PREFIX , "后续车道信息", laneInfoList);
+            if (Logger.isDebugLevel()) Logger.i(TAG, PREFIX , "后续车道信息", laneInfoList);
         }
 
         @Override

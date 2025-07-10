@@ -192,7 +192,7 @@ public final class SignalAdapter {
         mSignalApi.setDistanceToTrafficJamRoadAvailability(value);
     }
 
-    public void setDistanceOnTrafficJamRoad(int value) {
+    public void setDistanceOnTrafficJamRoad(float value) {
         if (mSignalApi == null) {
             return;
         }
