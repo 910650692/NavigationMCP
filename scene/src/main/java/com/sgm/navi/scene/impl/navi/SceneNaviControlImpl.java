@@ -135,7 +135,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public void moreSetup() {
         Logger.i(TAG, "moreSetup");
         initTimer();
-        setImmersiveStatus(ImersiveStatus.TOUCH);
         if(mCallBack != null){
             mCallBack.skipNaviControlMoreScene();
         }
@@ -172,7 +171,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             setImmersiveStatus(ImersiveStatus.IMERSIVE);
             exitPreview();
         } else { // 非固定全览下退出全览
-            setImmersiveStatus(ImersiveStatus.TOUCH);
             if (mNaviPackage.getPreviewStatus()) {
                 isShowMoreSetup(true);
                 exitPreview();
@@ -198,7 +196,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         if (mNaviPackage.getPreviewStatus() && !mNaviPackage.getFixedOverViewStatus()) {//固定全览
             onFixedOverView();
         } else {
-            setImmersiveStatus(ImersiveStatus.TOUCH);
             changeMuteStatus();
             updateSystemNaviVolume(mIsMute);
             if (!mIsMute) {
