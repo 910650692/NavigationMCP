@@ -68,7 +68,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     private ScheduledFuture previewScheduledFuture;
 
     public void initView() {
-        if (ConvertUtils.isNull(mView)) return;
+        if (ConvertUtils.isNull(mView) || ConvertUtils.isNull(mModel)) return;
         mTopNaviBarVisibility.set(!mModel.isOnNavigating());
         mNaviActionBarVisibility.set(mModel.isOnNavigating());
         mNaviBroadIsMute.set(mModel.isMute());

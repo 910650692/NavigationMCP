@@ -9,6 +9,7 @@ import com.sgm.navi.hmi.launcher.IDeskBackgroundChangeListener;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
+import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.map.MapType;
@@ -33,7 +34,7 @@ import com.sgm.navi.ui.base.BaseModel;
  * Description: [在这里描述文件功能]
  */
 public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPackageCallback, IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack,
-        ISceneCallback, INaviStatusCallback, IDeskBackgroundChangeListener {
+        ISceneCallback, INaviStatusCallback, IDeskBackgroundChangeListener, StartService.ISdkInitCallback {
     private static final String TAG = "SplitModel";
     private MapPackage mMapPackage;
     private NaviPackage mNaviPackage;
@@ -42,43 +43,77 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     private CalibrationPackage mCalibrationPackage;
     private final MapType MAP_TYPE = MapType.MAIN_SCREEN_MAIN_MAP;
     private final String CALLBACK_KEY = "SplitModel";
-    private final NavistatusAdapter mNaviStatusAdapter;
+    private NavistatusAdapter mNaviStatusAdapter;
     private ImersiveStatus mImmersiveStatus;
     private String mNaviStatus;
+    private boolean isParameterInited = false;
     public SplitModel() {
-        mMapPackage = MapPackage.getInstance();
-        mNaviPackage = NaviPackage.getInstance();
-        mLayerPackage = LayerPackage.getInstance();
-        mNaviStatusAdapter = NavistatusAdapter.getInstance();
-        mRoutePackage = RoutePackage.getInstance();
-        mCalibrationPackage = CalibrationPackage.getInstance();
-        // 隐藏路口大图
-        if (!ConvertUtils.isNull(mNaviPackage.getLastCrossEntity())) {
-            mLayerPackage.hideCross(MapType.MAIN_SCREEN_MAIN_MAP, mNaviPackage.getLastCrossEntity().getType());
+        StartService.getInstance().registerSdkCallback(CALLBACK_KEY, this);
+        if (StartService.getInstance().checkSdkIsNeedInit()) {
+            Logger.e(TAG, "sdk not init!");
+            return;
         }
+        initParameter();
+    }
+
+    @Override
+    public void onSdkInitSuccess() {
+        StartService.ISdkInitCallback.super.onSdkInitSuccess();
+        Logger.d(TAG, "onSdkInitSuccess");
+        initParameter();
+    }
+
+    private void initParameter() {
+        if (!isParameterInited) {
+            mMapPackage = MapPackage.getInstance();
+            mNaviPackage = NaviPackage.getInstance();
+            mLayerPackage = LayerPackage.getInstance();
+            mNaviStatusAdapter = NavistatusAdapter.getInstance();
+            mRoutePackage = RoutePackage.getInstance();
+            mCalibrationPackage = CalibrationPackage.getInstance();
+            // 隐藏路口大图
+            if (!ConvertUtils.isNull(mNaviPackage.getLastCrossEntity())) {
+                mLayerPackage.hideCross(MapType.MAIN_SCREEN_MAIN_MAP, mNaviPackage.getLastCrossEntity().getType());
+            }
+            initListener();
+        }
+        isParameterInited = true;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mNaviPackage.registerObserver(CALLBACK_KEY, this);
-        ImmersiveStatusScene.getInstance().registerCallback(CALLBACK_KEY, this);
-        mNaviStatusAdapter.registerCallback(this);
-        FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
-        mNaviStatus = mNaviStatusAdapter.getCurrentNaviStatus();
-        mImmersiveStatus = ImmersiveStatusScene.getInstance().getCurrentImersiveStatus(MAP_TYPE);
-        lockMapSomeActions(true);
+        initListener();
+    }
+
+    private void initListener() {
+        if (isParameterInited) {
+            mNaviPackage.registerObserver(CALLBACK_KEY, this);
+            ImmersiveStatusScene.getInstance().registerCallback(CALLBACK_KEY, this);
+            mNaviStatusAdapter.registerCallback(this);
+            FloatViewManager.getInstance().addDeskBackgroundChangeListener(this);
+            mNaviStatus = mNaviStatusAdapter.getCurrentNaviStatus();
+            mImmersiveStatus = ImmersiveStatusScene.getInstance().getCurrentImersiveStatus(MAP_TYPE);
+            lockMapSomeActions(true);
+        }
+    }
+
+    private void unInitListener() {
+        if (isParameterInited) {
+            lockMapSomeActions(false);
+            ImmersiveStatusScene.getInstance().unRegisterCallback(CALLBACK_KEY);
+            mNaviPackage.unregisterObserver(CALLBACK_KEY);
+            mMapPackage.unRegisterCallback(MAP_TYPE, this);
+            mNaviStatusAdapter.unRegisterCallback(this);
+            FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
+        }
+        StartService.getInstance().unregisterSdkCallback(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        lockMapSomeActions(false);
-        ImmersiveStatusScene.getInstance().unRegisterCallback(CALLBACK_KEY);
-        mNaviPackage.unregisterObserver(CALLBACK_KEY);
-        mMapPackage.unRegisterCallback(MAP_TYPE, this);
-        mNaviStatusAdapter.unRegisterCallback(this);
-        FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
+        unInitListener();
     }
 
     @Override
