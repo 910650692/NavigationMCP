@@ -99,7 +99,9 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                 if (TextUtils.isEmpty(url)) {
                     mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_default_user_icon));
                 } else {
-                    ViewAdapterKt.loadImageUrl(mBinding.accountImg, url, R.drawable.img_default_user_icon, R.drawable.img_default_user_icon);
+                    if (getActivity() != null) {
+                        ViewAdapterKt.loadImageUrl(mBinding.accountImg, url, R.drawable.img_default_user_icon, R.drawable.img_default_user_icon);
+                    }
                 }
                 setCarConnectStatus(true);
                 setWeChatStatus(mViewModel.getWechatStatus());
