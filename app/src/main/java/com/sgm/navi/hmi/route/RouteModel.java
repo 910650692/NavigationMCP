@@ -1299,6 +1299,10 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
         if (mParkSearchId == taskId) {
             if (searchResultEntity != null && searchResultEntity.getMTotal() > 0
                     && mRoutePackage.isRouteState()) {
+                if (mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP) == null) {
+                    Logger.d(TAG, "The endpoint is null");
+                    return;
+                }
                 PoiInfoEntity endPoiEntity = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getMPoiInfoEntity();
                 if (endPoiEntity != null && endPoiEntity.getPointTypeCode() != null && endPoiEntity.getPointTypeCode().startsWith("1509")) {
                     Logger.d(TAG, "The endpoint is the parking");
