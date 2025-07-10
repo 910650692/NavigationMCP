@@ -113,7 +113,12 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
         Logger.i(TAG, MAP_TOUCH, " select:", select);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.TOUCH);
         try {
-            ThreadManager.getInstance().execute(() -> mSearchPackage.createPoiMarker(mList, select));
+            ThreadManager.getInstance().execute(() -> {
+                switch (mType) {
+                    case CHARGE, GAS -> mSearchPackage.createEnRoutePoiMarkerLimit(mList);
+                    case PARK -> mSearchPackage.createPoiMarker(mList, select);
+                }
+            });
         } catch (Exception e) {
             Logger.e(TAG, "showPreview e:", e.getMessage());
         }

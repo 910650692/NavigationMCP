@@ -1,5 +1,7 @@
 package com.sgm.navi.scene.ui.adapter;
 
+import static com.sgm.navi.scene.util.HandCardType.PARK;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +12,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.thread.ThreadManager;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -59,7 +61,11 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
         ThreadManager.getInstance().postDelay(() -> {
             if (!ConvertUtils.isEmpty(dataList) && !ConvertUtils.isNull(mItemClickListener)) {
                 PoiInfoEntity poiInfo = dataList.get(0);
-                mItemClickListener.onItemSelect(0, poiInfo, AutoMapConstant.SearchType.AROUND_SEARCH);
+                int searchType = AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH;
+                if (mType == PARK) {
+                    searchType = AutoMapConstant.SearchType.AROUND_SEARCH;
+                }
+                mItemClickListener.onItemSelect(0, poiInfo, searchType);
             }
         }, 200);
     }
@@ -89,7 +95,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
         }
         binding.clCharge.itemRoot.setVisibility(mType == HandCardType.CHARGE ? View.VISIBLE : View.GONE);
         binding.clGas.itemRoot.setVisibility(mType == HandCardType.GAS ? View.VISIBLE : View.GONE);
-        binding.clPark.sclListItem.setVisibility(mType == HandCardType.PARK ? View.VISIBLE : View.GONE);
+        binding.clPark.sclListItem.setVisibility(mType == PARK ? View.VISIBLE : View.GONE);
         binding.clCharge.itemRoot.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
         binding.clGas.itemRoot.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
         binding.clPark.sclListItem.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
@@ -144,7 +150,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
                     mSelectIndex = position;
                     notifyDataSetChanged();
                 }
-                mItemClickListener.onItemSelect(mSelectIndex, poiInfo, AutoMapConstant.SearchType.AROUND_SEARCH);
+                mItemClickListener.onItemSelect(mSelectIndex, poiInfo, AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH);
             }
         });
         binding.clCharge.viewNaviNow.setOnClickListener(v -> {
@@ -205,7 +211,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
                     mSelectIndex = position;
                     notifyDataSetChanged();
                 }
-                mItemClickListener.onItemSelect(mSelectIndex, poiInfo, AutoMapConstant.SearchType.AROUND_SEARCH);
+                mItemClickListener.onItemSelect(mSelectIndex, poiInfo, AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH);
             }
         });
         binding.clGas.viewNaviNow.setOnClickListener(v -> {

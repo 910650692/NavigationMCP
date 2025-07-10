@@ -1412,6 +1412,23 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         showPreview(poiList);
     }
 
+    /**
+     * 沿途搜结果列表扎标 限制最大数量
+     * @param poiList 搜索结果列表
+     */
+    public void createEnRoutePoiMarkerLimit(final List<PoiInfoEntity> poiList) {
+        if (ConvertUtils.isEmpty(poiList)) {
+            return;
+        }
+        final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
+        layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
+        final LayerPointItemType layerPointItemType = LayerPointItemType.SEARCH_POI_ALONG_ROUTE;
+        sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
+        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
+                layerItemSearchResult, true);
+        showPreview(poiList);
+    }
+
 
     /**
      * 搜索结果列表扎标
