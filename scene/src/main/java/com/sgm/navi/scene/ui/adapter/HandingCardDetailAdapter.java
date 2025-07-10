@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.thread.ThreadManager;
 import com.android.utils.log.Logger;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
@@ -20,6 +21,7 @@ import com.sgm.navi.scene.databinding.ItemHandingCardDetailBinding;
 import com.sgm.navi.scene.ui.navi.hangingcard.CardManager;
 import com.sgm.navi.scene.ui.navi.hangingcard.OnHandingCardItemClickListener;
 import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.GasStationInfo;
 import com.sgm.navi.service.define.search.ParkingInfo;
@@ -54,6 +56,12 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
         mType = type;
         mSelectIndex = 0;
         notifyDataSetChanged();
+        ThreadManager.getInstance().postDelay(() -> {
+            if (!ConvertUtils.isEmpty(dataList) && !ConvertUtils.isNull(mItemClickListener)) {
+                PoiInfoEntity poiInfo = dataList.get(0);
+                mItemClickListener.onItemSelect(0, poiInfo, AutoMapConstant.SearchType.AROUND_SEARCH);
+            }
+        }, 200);
     }
 
     @NonNull
@@ -136,7 +144,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
                     mSelectIndex = position;
                     notifyDataSetChanged();
                 }
-                mItemClickListener.onItemSelect(mSelectIndex);
+                mItemClickListener.onItemSelect(mSelectIndex, poiInfo, AutoMapConstant.SearchType.AROUND_SEARCH);
             }
         });
         binding.clCharge.viewNaviNow.setOnClickListener(v -> {
@@ -197,7 +205,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
                     mSelectIndex = position;
                     notifyDataSetChanged();
                 }
-                mItemClickListener.onItemSelect(mSelectIndex);
+                mItemClickListener.onItemSelect(mSelectIndex, poiInfo, AutoMapConstant.SearchType.AROUND_SEARCH);
             }
         });
         binding.clGas.viewNaviNow.setOnClickListener(v -> {
@@ -225,7 +233,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
         binding.clPark.tvDistance.setText(poiInfo.getDistance());
         binding.clPark.sclListItem.setOnClickListener(v -> {
             if (mItemClickListener != null && mSelectIndex != position) {
-                mItemClickListener.onItemSelect(position);
+                mItemClickListener.onItemSelect(position, poiInfo, AutoMapConstant.SearchType.AROUND_SEARCH);
                 final int tIndex = mSelectIndex;
                 mSelectIndex = position;
                 notifyItemChanged(tIndex);

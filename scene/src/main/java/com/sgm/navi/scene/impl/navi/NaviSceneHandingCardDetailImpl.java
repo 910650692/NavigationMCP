@@ -65,8 +65,13 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
     }
 
     @Override
-    public void onItemSelect(int position) {
-        // TODO 选中
+    public void onItemSelect(int position,PoiInfoEntity poiInfo,int searchType) {
+        if (mScreenView == null) {
+            Logger.w(TAG, "mScreenView is null!");
+            return;
+        }
+        mScreenView.resetCountdown();
+        mSearchPackage.setSelectIndex(poiInfo,position,searchType,true);
     }
 
     @Override
