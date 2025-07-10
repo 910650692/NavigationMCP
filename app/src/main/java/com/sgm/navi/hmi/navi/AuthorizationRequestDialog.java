@@ -54,10 +54,10 @@ public class AuthorizationRequestDialog extends BaseDialog<DialogAuthorizationRe
     @Override
     protected void initListener() {
         mViewBinding.dialogConfirm.setOnClickListener(v -> {
+            dismiss();
             if (mDialogClickListener != null) {
                 mDialogClickListener.onCommitClick();
             }
-            dismiss();
         });
 
         mViewBinding.dialogCancel.setOnClickListener(v -> {
