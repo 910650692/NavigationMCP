@@ -59,6 +59,14 @@ android {
         }
     }
 
+    sourceSets {
+        clea_8775{
+            res.srcDirs = ['src/main/res/sw1225dp']
+        }
+        clea_local_8155{
+            res.srcDirs = ['src/main/res/sw1225dp']
+        }
+    }
 }
 
 dependencies {
