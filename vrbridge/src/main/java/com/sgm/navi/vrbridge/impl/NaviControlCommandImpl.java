@@ -399,7 +399,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     private void stopNavigation() {
         RoutePackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
-        NaviPackage.getInstance().stopNavigation();
+        NaviPackage.getInstance().stopNavigation(true);
         NaviPackage.getInstance().setPreviewStatus(false);
     }
 

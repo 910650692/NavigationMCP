@@ -167,7 +167,7 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
     }
 
     public void stopNavi() {
-        mNaviPackage.stopNavigation();
+        mNaviPackage.stopNavigation(true);
     }
 
     @Override

@@ -142,7 +142,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     }
 
     public void stopNavi() {
-        mNaviPackage.stopNavigation();
+        mNaviPackage.stopNavigation(true);
     }
 
     public void showPreview() {

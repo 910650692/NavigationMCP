@@ -205,9 +205,10 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     /**
+     * isManual 是否手动结束导航
      * @return 是否停止导航成功
      */
-    public boolean stopNavigation() {
+    public boolean stopNavigation(boolean isManual) {
         if (mNaviAdapter == null) {
             Logger.e(TAG, "stopNavigation", "mNaviAdapter == null");
             return false;
@@ -217,7 +218,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
-            sendBuryPointForCloseNavi();
+            if(isManual) {
+                sendBuryPointForCloseNavi();
+            }
         }
         return result;
     }

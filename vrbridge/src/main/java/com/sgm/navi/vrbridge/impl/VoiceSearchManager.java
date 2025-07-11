@@ -430,7 +430,7 @@ public final class VoiceSearchManager {
         if (type == 1 || type == 2) {
             //回家或去公司需要要先结束当前导航
             if (MapStateManager.getInstance().isNaviStatus()) {
-                NaviPackage.getInstance().stopNavigation();
+                NaviPackage.getInstance().stopNavigation(true);
             }
             final PoiInfoEntity homeCompanyInfo = getHomeCompanyPoiInfo(type);
             if (null != homeCompanyInfo) {

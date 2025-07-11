@@ -1705,7 +1705,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         }
         boolean result = false;
         if (isNaviStatus(INNER_CLIENT)) {
-            result = NaviPackage.getInstance().stopNavigation();
+            result = NaviPackage.getInstance().stopNavigation(true);
         }
         return result;
     }

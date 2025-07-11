@@ -122,7 +122,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             mCallBack.stopSpeech();
         }
         mNaviPackage.onNaviClose(true);
-        mNaviPackage.stopNavigation();
+        mNaviPackage.stopNavigation(true);
         cancelTimer();
     }
 

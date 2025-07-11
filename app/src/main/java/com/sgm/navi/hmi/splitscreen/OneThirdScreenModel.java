@@ -239,7 +239,7 @@ public class OneThirdScreenModel extends BaseModel<BaseOneThirdScreenViewModel> 
     }
 
     public void stopNavi() {
-        mNaviPackage.stopNavigation();
+        mNaviPackage.stopNavigation(true);
     }
 
     public void showPreview() {
