@@ -1,7 +1,7 @@
 {
   "car_layer_style": {
     "car_marker": {
-      "track_marker_id": "global_image_car_mini_day_night",
+      "track_marker_id": "carlogo_hud",
       "track_arc_marker_id": "-1",
       "compass_marker_id": "-1",
       "compass_indicator_marker_id": "-1",

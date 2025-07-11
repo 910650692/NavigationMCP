@@ -24,4 +24,7 @@
     <color name="layer_search_charge_icon_stroke_color">#000000</color>
     <color name="layer_search_charge_icon_inside_fill_color">#00000000</color>
     <color name="layer_search_charge_appointment_color">#FF2461EA</color>
+
+    <color name="hud_color_route">#63FF37</color>
+    <color name="hud_color_route_passed">#955600</color>
 </resources>

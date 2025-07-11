@@ -38,7 +38,7 @@ public final class LayersPool {
         int engineId = EngineAdapter.getInstance().engineID(mapTypeId);
 //        int eagleEyeEngineId = EngineAdapter.getInstance().eagleEyeEngineID(mapTypeId);
 
-        Logger.d(TAG, "初始化 styleBlPath :", styleBlPath);
+        Logger.d(TAG, mapType,  " 初始化 styleBlPath :", styleBlPath);
         boolean result = bizControlService.init(engineId, styleBlPath);
         Logger.d(TAG, "初始化 engineId :", engineId, " ;result :" + result);
 //        result = bizControlService.init(eagleEyeEngineId, styleBlPath);

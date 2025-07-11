@@ -838,12 +838,12 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     public void initGuideRouteHUDMode() {
         Logger.d(TAG, "initGuideRouteHUDMode");
-        setStartPointVisible(false);
-        setEndPointVisible(false);
-        setRouteJamBubblesVisible(false);
-        setRouteEnergyEmptyPointVisible(false);
-        setGuideTrafficVisible(false);
-        setGuideLabelVisible(false);
+//        setStartPointVisible(false);
+//        setEndPointVisible(false);
+//        setRouteJamBubblesVisible(false);
+//        setRouteEnergyEmptyPointVisible(false);
+//        setGuideTrafficVisible(false);
+//        setGuideLabelVisible(false);
         setTrafficLightVisible(true);
     }
 
