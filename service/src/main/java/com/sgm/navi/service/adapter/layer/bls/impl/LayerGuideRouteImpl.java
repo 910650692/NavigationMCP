@@ -3,6 +3,7 @@ package com.sgm.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
@@ -20,6 +21,7 @@ import com.autonavi.gbl.layer.BizGuideRouteControl;
 import com.autonavi.gbl.layer.GuideLabelLayerItem;
 import com.autonavi.gbl.layer.RoutePathPointItem;
 import com.autonavi.gbl.layer.RouteTrafficEventTipsLayerItem;
+import com.autonavi.gbl.layer.ViaChargeStationLayerItem;
 import com.autonavi.gbl.layer.model.BizEnergyKeyInfo;
 import com.autonavi.gbl.layer.model.BizLocalTrafficEventInfo;
 import com.autonavi.gbl.layer.model.BizOddInfo;
@@ -1070,6 +1072,16 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                         if (pathId == LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
                             getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaPoint).removeItem(id);
                         }
+                    }
+                }
+            }
+            //删除自定义补能充电站扎标
+            case ROUTE_POINT_VIA_CHARGE_STATION -> {
+                ArrayList<LayerItem> allItems = getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaChargeStationPoint).getAllItems();
+                for (LayerItem allItem : allItems) {
+                    if (allItem instanceof ViaChargeStationLayerItem viaPoint) {
+                        String id = allItem.getID();
+                        getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaChargeStationPoint).removeItem(id);
                     }
                 }
             }

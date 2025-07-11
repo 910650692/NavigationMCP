@@ -1208,6 +1208,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     /**
+     * 删除所有补能规划扎标
+     */
+    public void clearAllViaChargeStation() {
+        mRoutePackage.clearRouteItemByType(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.ROUTE_POINT_VIA_CHARGE_STATION);
+    }
+
+    /**
      * @param keyWord    搜索关键字
      * @param searchType 搜索类型
      */

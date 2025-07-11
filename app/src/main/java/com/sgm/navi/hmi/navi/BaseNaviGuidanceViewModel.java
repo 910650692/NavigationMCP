@@ -634,6 +634,7 @@ public class BaseNaviGuidanceViewModel extends
                 IBaseDialogClickListener.super.onCommitClick();
                 Logger.i(TAG, "确定删除！");
                 mModel.deleteAutoAddChargeStation();
+                mModel.clearAllViaChargeStation();
             }
         }).show();
     }
