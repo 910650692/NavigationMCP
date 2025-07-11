@@ -1152,7 +1152,7 @@ public final class SearchResultMapper {
                 .setFast_free(fastFree)
                 .setFast_total(fastTotal)
                 .setMBrand(poiInfo.chargingStationInfo.brand_desc)
-                .setCurrentElePrice( price > 0 ? String.valueOf(price) : "0.00")
+                .setCurrentElePrice( price > 0 ? String.valueOf(price) : "")
                 .setCurrentServicePrice(poiInfo.chargingStationInfo.parkPrice);
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "slow free: " + poiInfo.chargingStationInfo.slow_free
                 + " slow total: " + poiInfo.chargingStationInfo.slow_total
