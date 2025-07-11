@@ -26,7 +26,8 @@
         <com.sgm.navi.ui.view.SkinEditText
             android:id="@+id/search_bar_edit_view"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:layout_marginStart="@dimen/dp_14"
             android:layout_marginEnd="@dimen/dp_10"
             android:background="@null"
