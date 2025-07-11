@@ -345,7 +345,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                     }
                 }
                 routeSpeechRequestParam.setMViaPoiInfoEntityList(midPoint);
-                history.setMViaPoint(GsonUtils.toJson(routeSpeechRequestParam));//jcs
+                history.setMViaPoint(GsonUtils.toJson(routeSpeechRequestParam));
                 Logger.i(TAG, "addNaviRecord history name:" + history.getMEndPoiName());
                 mManager.insertOrReplace(history);
                 // 如果登陆了话就将数据传给高德

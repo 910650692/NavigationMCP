@@ -375,7 +375,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public Action openHomeFragment = new Action() {
         @Override
-        @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_HOME)
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_HOME_QUICKACCESS)
         public void call() {
             try {
                 PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
@@ -397,7 +397,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public Action openCompanyFragment = new Action() {
         @Override
-        @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_WORK)
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_WORK_QUICKACCESS)
         public void call() {
             try {
                 PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_COMPANY);

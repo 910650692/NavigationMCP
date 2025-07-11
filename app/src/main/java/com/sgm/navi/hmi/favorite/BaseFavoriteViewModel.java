@@ -144,8 +144,8 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     @HookMethod()
     private void goHomeOrCompany(int type){
         String eventName = switch(type){
-            case AutoMapConstant.HomeCompanyType.HOME -> BuryConstant.EventName.AMAP_HOME_QUICKACCESS;
-            case AutoMapConstant.HomeCompanyType.COMPANY -> BuryConstant.EventName.AMAP_WORK_QUICKACCESS;
+            case AutoMapConstant.HomeCompanyType.HOME -> BuryConstant.EventName.AMAP_WIDGET_HOME;
+            case AutoMapConstant.HomeCompanyType.COMPANY -> BuryConstant.EventName.AMAP_WIDGET_WORK;
             default -> "";
         };
         BuryPointController.getInstance().setEventName(eventName);
