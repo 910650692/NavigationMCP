@@ -5918,6 +5918,22 @@
           "poi_marker_info": "marker_info_route_via_point"
         }
       }
+    },
+    "point_guide_traffic_signal_light_left": {
+      "point_layer_item_style": {
+        "normal_style": {
+          "poi_marker_id": "guide_traffic_signal_light_left.xml",
+          "poi_marker_info": "marker_info_guide_traffic_signal_light_left"
+        }
+      }
+    },
+    "point_guide_traffic_signal_light_right": {
+      "point_layer_item_style": {
+        "normal_style": {
+          "poi_marker_id": "guide_traffic_signal_light_right.xml",
+          "poi_marker_info": "marker_info_guide_traffic_signal_light_right"
+        }
+      }
     }
   }
 }
