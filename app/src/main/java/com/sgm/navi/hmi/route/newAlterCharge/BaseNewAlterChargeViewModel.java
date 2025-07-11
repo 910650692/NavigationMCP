@@ -33,7 +33,7 @@ import java.util.List;
 
 public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFragment, NewAlterChargeModel> {
     private static final String TAG = "BaseAlterChargeViewModel";
-    private ObservableField<Boolean> mShowAlterCharge;
+    private ObservableField<Integer> mShowAlterChargeType;
     /**POI详情页面**/
     private ObservableField<Boolean> mRouteSearchStatusVisibility;
     private ObservableField<Boolean> mRoutePhoneVisibility;
@@ -45,9 +45,36 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     private ObservableField<Integer> mRouteSearchTypeVisibility;
     private ObservableField<String> mRouteCurrentName;
     private RouteAlterChargeStationParam mRouteAlterChargeStationParam;
+    private RouteSupplementParams mRouteSupplementParams;
+    private String mSearchPoi;
+    private boolean mSearchDetail = false;
 
-    public ObservableField<Boolean> getShowAlterCharge() {
-        return mShowAlterCharge;
+    public String getSearchPoi() {
+        return mSearchPoi;
+    }
+
+    public void setSearchPoi(String mSearchPoi) {
+        this.mSearchPoi = mSearchPoi;
+    }
+
+    public boolean isSearchDetail() {
+        return mSearchDetail;
+    }
+
+    public void setSearchDetail(boolean mSearchDetail) {
+        this.mSearchDetail = mSearchDetail;
+    }
+
+    public RouteSupplementParams getRouteSupplementParams() {
+        return mRouteSupplementParams;
+    }
+
+    public void setRouteSupplementParams(RouteSupplementParams mRouteSupplementParams) {
+        this.mRouteSupplementParams = mRouteSupplementParams;
+    }
+
+    public ObservableField<Integer> getShowAlterChargeType() {
+        return mShowAlterChargeType;
     }
 
     public ObservableField<Boolean> getRoutePhoneVisibility() {
@@ -98,6 +125,10 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
 
     private PoiInfoEntity mDetailsEntry;
     private RouteSupplementParams mCurrentRouteSupplementParams;
+    private PoiInfoEntity mNewPoiInfoEntity;
+    private PoiInfoEntity mOldPoiInfoEntity;
+    private boolean mAlterButton = false;
+
 
     public void setCurrentRouteSupplementParams(RouteSupplementParams mCurrentRouteSupplementParams) {
         this.mCurrentRouteSupplementParams = mCurrentRouteSupplementParams;
@@ -105,7 +136,7 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
 
     public BaseNewAlterChargeViewModel(final @NonNull Application application) {
         super(application);
-        mShowAlterCharge = new ObservableField<>(true);
+        mShowAlterChargeType = new ObservableField<>(0);
         mRoutePhoneVisibility = new ObservableField<>(false);
         mRouteSearchStatusVisibility = new ObservableField<>(false);
         mRouteSearchStatus = new ObservableField<>("");
@@ -152,8 +183,10 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
      * 恢复充电站列表信息
      */
     public void reStoreFragment() {
-        if (mDetailsEntry != null && Boolean.FALSE.equals(getShowAlterCharge().get())) {
+        Integer showType = getShowAlterChargeType().get();
+        if (mDetailsEntry != null && showType != null && showType == 2) {
             showChargeStationDetail(mDetailsEntry);
+            return;
         }
         if (mCurrentRouteSupplementParams != null) {
             mView.getSupplementList(mCurrentRouteSupplementParams);
@@ -162,10 +195,25 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
 
     /**
      * 请求当前充电站详情信息
+     * @param newPoiInfoEntity 替换充电站
+     * @param oldPoiInfoEntity 被替换充电站
+     */
+    public void setAlterButton(final PoiInfoEntity newPoiInfoEntity, final PoiInfoEntity oldPoiInfoEntity, boolean isAlterButton) {
+        mNewPoiInfoEntity = newPoiInfoEntity;
+        mOldPoiInfoEntity = oldPoiInfoEntity;
+        mAlterButton = isAlterButton;
+    }
+
+    /**
+     * 请求当前充电站详情信息
      * @param poiId poiID
      */
     public void getCurrentDetails(final String poiId) {
         mModel.getCurrentDetails(poiId);
+    }
+
+    public boolean getAlterButton() {
+        return mAlterButton;
     }
 
     /**
@@ -210,6 +258,17 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     }
 
     /**
+     * 替换按钮点击
+     */
+    public void detailReplaceClick() {
+        if (mNewPoiInfoEntity == null || mOldPoiInfoEntity == null) {
+            Logger.e(TAG, "no poiInfoEntity");
+            return;
+        }
+        mModel.replaceSupplement(mNewPoiInfoEntity, mOldPoiInfoEntity);
+    }
+
+    /**
      * 清除图层备选充电站扎标
      */
     public void clearLayerItem() {
@@ -248,9 +307,9 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
                         poiInfoEntities.getPoint().getLat()))
                 .thenAccept(etaInfo -> {
                     ThreadManager.getInstance().postUi(() -> {
-                        mView.showPOIDetailCharge(etaInfo.getLeftCharge());
                         mRouteSearchElec.set(ResourceUtils.Companion.getInstance().getString(
                                 com.sgm.navi.scene.R.string.remain_charge, etaInfo.getLeftCharge()));
+                        mView.showPOIDetailCharge(etaInfo.getLeftCharge());
                     });
 
                 })
@@ -278,7 +337,7 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     }
 
     private final Action mCloseDetail = () -> {
-        mShowAlterCharge.set(true);
+        mShowAlterChargeType.set(1);
     };
 
     public Action getCloseDetail() {

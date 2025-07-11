@@ -88,6 +88,14 @@ public class RouteReplaceSupplementAdapter extends RecyclerView.Adapter<RouteRep
                     }
                 }
             });
+            holder.mRouteReplaceSupplementItemBinding.lyRouteSupplementPoi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mItemClickListener != null) {
+                        mItemClickListener.onItemDetailsClick(poiInfoEntity);
+                    }
+                }
+            });
         }
 
         if (position < mRouteAlterChargeStationInfo.size()) {
@@ -185,10 +193,16 @@ public class RouteReplaceSupplementAdapter extends RecyclerView.Adapter<RouteRep
 
     public interface OnItemClickListener {
         /***
-         * 子节点点击事件
+         * 子节点替换点击事件
          * @param poiInfoEntity poi详情数据
          */
         void onItemClick(PoiInfoEntity poiInfoEntity);
+
+        /***
+         * 子节点详情点击事件
+         * @param poiInfoEntity poi详情数据
+         */
+        void onItemDetailsClick(PoiInfoEntity poiInfoEntity);
 
     }
 }

@@ -20,7 +20,7 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{viewModel.showAlterCharge ?  View.VISIBLE : View.GONE}">
+            android:visibility="@{viewModel.showAlterChargeType  == 1 ?  View.VISIBLE : View.GONE}">
 
             <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
@@ -34,9 +34,9 @@
                     clickCommand="@{viewModel.closePage}"
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
-                    android:layout_marginTop="@dimen/dp_23"
                     android:layout_marginStart="@dimen/dp_12"
-                    android:src="@drawable/icon_poi_details_close"/>
+                    android:layout_marginTop="@dimen/dp_23"
+                    android:src="@drawable/img_route_back_sw1225" />
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
@@ -80,13 +80,14 @@
             android:clickable="true"
             android:paddingVertical="@dimen/dp_29"
             android:paddingHorizontal="@dimen/dp_29"
-            android:visibility="@{viewModel.showAlterCharge ?  View.GONE : View.VISIBLE}"
+            android:visibility="@{viewModel.showAlterChargeType == 2?  View.VISIBLE : View.GONE}"
             tool:visibility="gone">
 
             <com.sgm.navi.ui.view.SkinScrollView
                 android:id="@+id/poi_base_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:scrollbars="none"
                 android:layout_marginBottom="@dimen/dp_34"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -160,19 +161,22 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_14"
                         android:layout_marginEnd="@dimen/dp_10"
-                        android:maxLines="2"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:maxWidth="@dimen/dp_311"
                         android:text="@{viewModel.routeSearchTimeAndDistance}"
                         android:textColor="@color/text_route_detail_title"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_29"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
-                        tool:text="5.2公里   30分钟" />
+                        tool:text="1657公里   17小时36分钟" />
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_arrival_capacity"
                         android:layout_width="@dimen/dp_36"
                         android:layout_height="@dimen/dp_36"
                         android:src="@drawable/img_electricity_medium_48"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/poi_arrival_capacity"
                         app:layout_constraintEnd_toStartOf="@+id/poi_arrival_capacity"
                         app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
@@ -187,10 +191,10 @@
                         android:maxLines="1"
                         android:text="@{viewModel.routeSearchElec}"
                         android:textColor="@color/text_route_detail_title"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_29"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
-                        tool:text="15%到达" />
+                        tool:text="100%到达" />
 
                     <com.sgm.navi.ui.view.SkinConstraintLayout
                         android:id="@+id/poi_content_layout"
@@ -283,6 +287,69 @@
                 </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/cs_poi_no_result"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_608"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:paddingVertical="@dimen/dp_29"
+            android:paddingHorizontal="@dimen/dp_29"
+            android:visibility="@{viewModel.showAlterChargeType  == 3 ?  View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:src="@drawable/icon_limit_loading"
+                app:layout_constraintBottom_toTopOf="@id/no_result_hint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/no_result_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/load_failed"
+                android:textColor="@color/search_color_ffffff_70"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toTopOf="@+id/no_result_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_loading"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/no_result_button"
+                android:layout_width="@dimen/dp_225"
+                android:layout_height="@dimen/dp_65"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/bg_setting_confirm"
+                android:gravity="center"
+                android:text="@string/reload"
+                android:textColor="@color/search_go_here"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/no_result_hint" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginEnd="@dimen/dp_22"
+                clickCommand="@{viewModel.closePage}"
+                android:src="@drawable/icon_poi_details_close"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 

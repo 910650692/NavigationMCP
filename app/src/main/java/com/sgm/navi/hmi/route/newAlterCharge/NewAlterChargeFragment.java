@@ -1,8 +1,10 @@
 package com.sgm.navi.hmi.route.newAlterCharge;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +23,7 @@ import com.sgm.navi.scene.ui.adapter.RouteReplaceSupplementAdapter;
 import com.sgm.navi.scene.ui.adapter.RouteSupplementAdapter;
 import com.sgm.navi.scene.ui.search.RouteSearchLoadingDialog;
 import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.service.define.mapdata.CityDataInfo;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationParam;
 import com.sgm.navi.service.define.route.RouteSupplementInfo;
@@ -41,11 +44,18 @@ import java.util.ArrayList;
 @Route(path = RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT)
 public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeBinding, NewAlterChargeViewModel> {
     private static final String TAG = "NewAlterChargeFragment";
-    private PoiInfoEntity mDetailPoiInfoEntity;
     private RouteSupplementAdapter mAdapter;
     private RouteReplaceSupplementAdapter mCurrentAlterAdapter;
     private ArrayList<RouteSupplementInfo> mRouteSupplementInfos;
     private RouteSearchLoadingDialog mSearchLoadingDialog;
+    private ValueAnimator mAnimator;
+    private float mAngelTemp = 0;
+    private final Runnable mTimeoutTask = new Runnable() {
+        @Override
+        public void run() {
+            showLoadingFail();
+        }
+    };
 
 
     @Override
@@ -63,6 +73,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         mAdapter = new RouteSupplementAdapter();
         mBinding.rvSupplement.setLayoutManager(new LinearLayoutManager(requireContext()));
         mBinding.rvSupplement.setAdapter(mAdapter);
+        initLoadAnim(mBinding.ivLoading);
         mAdapter.setItemClickListener(new RouteSupplementAdapter.OnItemClickListener() {
             @Override
             public void onExpandClick(RouteReplaceSupplementAdapter routeReplaceSupplementAdapter,
@@ -91,6 +102,11 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                     mViewModel.updateRouteReplaceChargePoints(routeAlterChargeStationInfos);
                 }
             }
+
+            @Override
+            public void onItemDetailsClick(PoiInfoEntity newPoiInfoEntity, PoiInfoEntity oldPoiInfoEntity) {
+                showAlterSupplementDetails(newPoiInfoEntity, oldPoiInfoEntity);
+            }
         });
     }
 
@@ -111,12 +127,15 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
                 bundle.getParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         if (routeChargeStationDetailInfo != null && routeSupplementParams != null) {
+            mViewModel.setSearchDetail(true);
             mViewModel.setCurrentRouteSupplementParams(routeSupplementParams);
             showSupplementDetails(routeChargeStationDetailInfo);
+            mViewModel.setRouteSupplementParams(routeSupplementParams);
             getSupplementList(routeSupplementParams);
         }else if (routeSupplementParams != null) {
+            mViewModel.setSearchDetail(false);
             mViewModel.setCurrentRouteSupplementParams(routeSupplementParams);
-            mViewModel.getShowAlterCharge().set(true);
+            mViewModel.setRouteSupplementParams(routeSupplementParams);
             getSupplementList(routeSupplementParams);
         }
 
@@ -155,9 +174,30 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
             return;
         }
 
-        mViewModel.getShowAlterCharge().set(false);
+        showLoading(true);
         mViewModel.getRouteCurrentName().set(routeChargeStationDetailInfo.getMName());
+        mViewModel.setAlterButton(null, null, false);
+        mViewModel.setSearchPoi(routeChargeStationDetailInfo.getMPoiID());
         mViewModel.getCurrentDetails(routeChargeStationDetailInfo.getMPoiID());
+    }
+
+    /**
+     * 设置替换补能点详情数据
+     * @param newPoiInfoEntity 替换充电站
+     * @param oldPoiInfoEntity 被替换充电站
+     */
+    private void showAlterSupplementDetails(final PoiInfoEntity newPoiInfoEntity, final PoiInfoEntity oldPoiInfoEntity) {
+        if (newPoiInfoEntity == null || oldPoiInfoEntity == null) {
+            Logger.d(TAG, "PoiInfoEntity is null");
+            return;
+        }
+
+        showLoading(true);
+        mViewModel.setSearchDetail(true);
+        mViewModel.setSearchPoi(newPoiInfoEntity.getPid());
+        mViewModel.getRouteCurrentName().set(newPoiInfoEntity.getMName());
+        mViewModel.setAlterButton(newPoiInfoEntity, oldPoiInfoEntity, true);
+        mViewModel.getCurrentDetails(newPoiInfoEntity.getPid());
     }
 
     /**
@@ -165,6 +205,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
      * @param routeSupplementParams 参数
      */
     public void getSupplementList(final RouteSupplementParams routeSupplementParams) {
+        showLoading(true);
         if (routeSupplementParams == null) {
             Logger.d(TAG, "routeChargeStationDetailInfo is null");
             return;
@@ -195,7 +236,11 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         mBinding.stlAlter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                mViewModel.getCloseDetail().call();
+                if (mViewModel.getAlterButton()) {
+                    mViewModel.detailReplaceClick();
+                } else {
+                    mViewModel.getCloseDetail().call();
+                }
             }
         });
     }
@@ -220,9 +265,11 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
             Logger.d(TAG, "poiInfoEntities is null");
             return;
         }
-        mDetailPoiInfoEntity = poiInfoEntities;
         ThreadManager.getInstance().postUi(() -> {
-            mViewModel.getShowAlterCharge().set(false);
+            if (mViewModel.isSearchDetail()) {
+                mViewModel.getShowAlterChargeType().set(2);
+                ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+            }
             mViewModel.getRouteSearchName().set(poiInfoEntities.getName());
             mViewModel.getRouteSearchAddress().set(poiInfoEntities.getAddress());
             ViewAdapterKt.loadImageUrl(mBinding.scenePoiDetailsChargingStationView.poiChargeImg,
@@ -292,14 +339,30 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                 mBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot
                         .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_charge_info_format,
                                 chargeInfo.getSlowPower(), chargeInfo.getSlowVolt()));
-                mBinding.scenePoiDetailsChargingStationView.poiChargePrice
-                        .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free)
-                                + chargeInfo.getCurrentElePrice()
-                                + ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free_unit));
+                if (chargeInfo.getCurrentElePrice() == null || chargeInfo.getCurrentElePrice().equals("--")) {
+                    mBinding.scenePoiDetailsChargingStationView.poiChargePrice.setVisibility(View.GONE);
+                } else {
+                    mBinding.scenePoiDetailsChargingStationView.poiChargePrice.setVisibility(View.VISIBLE);
+                    mBinding.scenePoiDetailsChargingStationView.poiChargePrice
+                            .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free)
+                                    + chargeInfo.getCurrentElePrice()
+                                    + ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free_unit));
+                }
 
-                mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice
-                        .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_park_free)
-                                +chargeInfo.getCurrentServicePrice());
+                if (chargeInfo.getCurrentServicePrice() == null || chargeInfo.getCurrentServicePrice().isEmpty()) {
+                    mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setVisibility(View.GONE);
+                } else {
+                    mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setVisibility(View.VISIBLE);
+                    mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice
+                            .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_park_free)
+                                    +chargeInfo.getCurrentServicePrice());
+                }
+            }
+
+            if (mViewModel.getAlterButton()) {
+                mBinding.stvAlter.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_alter));
+            } else {
+                mBinding.stvAlter.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_check_alter));
             }
 
         });
@@ -311,6 +374,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
      */
     public void showPOIDetailCharge(final int leftCharge) {
         if (!ConvertUtils.isEmpty(leftCharge)) {
+            mBinding.sivArrivalCapacity.setVisibility(View.VISIBLE);
             //50%以上电量，显示满电量图片，20-50%电量，显示半电量图片
             //0-20电量，显示低电量图片，文本变红
             //小于0%电量，显示空电量图片，文本变红
@@ -330,11 +394,18 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                 mBinding.sivArrivalCapacity.setImageResource(com.sgm.navi.scene.R.drawable.img_electricity_empty_42);
                 mBinding.poiArrivalCapacity.setTextColor(
                         ResourceUtils.Companion.getInstance().getColor(com.sgm.navi.scene.R.color.search_color_delete_bg));
+                int chargeTime = (int) Math.abs(leftCharge)/100 + 1;
+                mViewModel.getRouteSearchElec().set(ResourceUtils.Companion.getInstance().getString(
+                        com.sgm.navi.scene.R.string.remain_charge_travel, chargeTime));
             }
         }
     }
 
     public void setSilentSearchResult(final ArrayList<PoiInfoEntity> poiInfoEntities) {
+        if (!mViewModel.isSearchDetail()) {
+            mViewModel.getShowAlterChargeType().set(1);
+            ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+        }
         if (poiInfoEntities == null || poiInfoEntities.isEmpty()) {
             return;
         }
@@ -380,6 +451,95 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
             mSearchLoadingDialog.dismiss();
             mSearchLoadingDialog = null;
+        }
+    }
+
+    /**
+     * 初始化加载动画
+     * @param sivLoading 加载动画视图
+     */
+    private void initLoadAnim(final View sivLoading) {
+        // 如果动画已存在并正在运行，则取消并清理
+        if (mAnimator != null) {
+            if (mAnimator.isRunning()) {
+                mAnimator.cancel();
+            }
+            mAnimator = null;
+        }
+
+        // 创建属性动画，从 0 到 360 度循环旋转
+        mAnimator = ValueAnimator.ofFloat(0f, 360f);
+        mAnimator.setDuration(2000); // 动画持续时间
+        mAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
+        mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
+        // 添加动画更新监听器
+        mAnimator.addUpdateListener(animation -> {
+            final float angle = (float) animation.getAnimatedValue();
+            if (shouldSkipUpdate(angle)) {
+                return;
+            }
+            sivLoading.setRotation(angle);
+        });
+    }
+
+    /**
+     *用于控制角度变化频率的辅助方法
+     *@param angle 当前角度
+     *@return 是否跳过更新
+     */
+    private boolean shouldSkipUpdate(final float angle) {
+        final float changeAngle = angle - mAngelTemp;
+        final float angleStep = 10;
+        if (changeAngle > 0f && changeAngle <= angleStep) {
+            return true; // 跳过更新，避免高频调用浪费资源
+        }
+        mAngelTemp = angle; // 更新临时角度值
+        return false;
+    }
+
+    /**
+     * 是否显示加载动画
+     * @param isShow 是否显示
+     */
+    public void showLoading(final boolean isShow) {
+        ThreadManager.getInstance().postUi(() -> {
+            mViewModel.getShowAlterChargeType().set(3);
+            ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+            ThreadManager.getInstance().postDelay(mTimeoutTask, 8000);
+            mBinding.ivLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
+            mBinding.noResultHint.setText(ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.address_loading));
+            mBinding.noResultButton.setVisibility(View.GONE);
+            if (mAnimator != null) {
+                if (isShow) {
+                    mAnimator.start();
+                } else {
+                    mAnimator.cancel();
+                }
+            }
+        });
+    }
+
+
+    public void showLoadingFail() {
+        if (!ConvertUtils.isEmpty(mBinding) && getContext() != null) {
+            mViewModel.getShowAlterChargeType().set(3);
+            mBinding.noResultButton.setVisibility(View.VISIBLE);
+            mBinding.noResultHint.setText(ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.load_failed));
+            mBinding.ivLoading.setVisibility(View.GONE);
+            if (mAnimator != null) {
+                mAnimator.cancel();
+            }
+            mBinding.noResultButton.setOnClickListener((view) -> {
+                if (mViewModel.isSearchDetail() && mViewModel.getSearchPoi() != null) {
+                    showLoading(true);
+                    mViewModel.getCurrentDetails(mViewModel.getSearchPoi());
+                } else if (!mViewModel.isSearchDetail() && mViewModel.getRouteSupplementParams() != null) {
+                    if (mAdapter != null) {
+                        mAdapter.clearAlterChargeStation();
+                    }
+                    getSupplementList(mViewModel.getRouteSupplementParams());
+                }
+            });
         }
     }
 }

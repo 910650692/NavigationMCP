@@ -76,6 +76,15 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
         });
     }
 
+    /***
+     * 清除可替换补能点数据
+     */
+    public void clearAlterChargeStation() {
+        ThreadManager.getInstance().postUi(() -> {
+            mAlterChargeStation.clear();
+        });
+    }
+
     @NonNull
     @Override
     public Holder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
@@ -300,6 +309,13 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
                             mItemClickListener.onItemClick(newPoiInfoEntity, mPoiInfoEntities.get(position));
                         }
                     }
+
+                    @Override
+                    public void onItemDetailsClick(PoiInfoEntity poiInfoEntity) {
+                        if (mItemClickListener != null ) {
+                            mItemClickListener.onItemDetailsClick(poiInfoEntity, mPoiInfoEntities.get(position));
+                        }
+                    }
                 });
             }
         } else {
@@ -335,6 +351,13 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
          * @param routeAlterChargeStationInfos 扎点替换充电站
          */
         void onAlterShowClick(ArrayList<RouteAlterChargeStationInfo> routeAlterChargeStationInfos);
+
+        /***
+         * 子节点详情点击事件
+         * @param newPoiInfoEntity 替换充电站
+         * @param oldPoiInfoEntity 被替换充电站
+         */
+        void onItemDetailsClick(PoiInfoEntity newPoiInfoEntity, PoiInfoEntity oldPoiInfoEntity);
 
     }
 }
