@@ -82,7 +82,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private int mCurrentUiMode;
 
     @Override
-    @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     public void onCreateBefore() {
         mScreenId = MapType.MAIN_SCREEN_MAIN_MAP.name();
         isMapActivity = true;
@@ -237,6 +236,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     protected void onResume() {
         super.onResume();
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
