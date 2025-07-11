@@ -343,6 +343,11 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             cancelTimer();
             NaviSceneManager.getInstance().notifySceneReset();
             isShowMoreSetup(true);
+            boolean isPreview = mNaviPackage.getPreviewStatus();
+            boolean isFixedOverview = mNaviPackage.getFixedOverViewStatus();
+            if (!isFixedOverview && isPreview) {
+                OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            }
             mScreenView.updateOverview(mNaviPackage.getPreviewStatus() ?
                     NaviConstant.OverviewType.OVERVIEW_FIXED :
                     NaviConstant.OverviewType.OVERVIEW_DEFAULT);

@@ -164,6 +164,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     // 记录手动提前到达的途经点名称
     private String mArrivedViaPoiId;
     private String mSuccessMsg = "";
+    private boolean mIsAutoReRoute = true;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -656,6 +657,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
         RouteWayID routeWayID = requestRouteResult.getMRouteWay();
+        mIsAutoReRoute = requestRouteResult.isMAutoRouting();
         Logger.i(TAG, "onRouteResult routeWayID = ", routeWayID);
         if (routeWayID.equals(RouteWayID.ROUTE_WAY_ADD_VIA) ||
                 routeWayID.equals(RouteWayID.ROUTE_WAY_ADD_ALL_VIA) ||
@@ -1503,6 +1505,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViewModel.hideProgressUI(true);
         }
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
+        if (!mIsAutoReRoute) {
+            OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(
+                    MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
+        }
     }
 
     @Override

@@ -296,8 +296,11 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         setPathPoints(routeResult);
         //设置路线样式风格
         setMainMapPathDrawStyle(false, false, true);
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        boolean isNaving = currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING);
         //设置全览  只对主屏生效 偏航重算不全览
-        if (getMapType() == MapType.MAIN_SCREEN_MAIN_MAP && !routeResult.isMAutoRouting()) {
+        if (getMapType() == MapType.MAIN_SCREEN_MAIN_MAP && !routeResult.isMAutoRouting() &&
+                !isNaving) {
             showPreviewView();
         }
         updatePaths();
