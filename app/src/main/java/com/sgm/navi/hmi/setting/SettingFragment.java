@@ -151,6 +151,12 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
     public void onStart() {
         super.onStart();
         showFragment(mBinding.tabLayout.getSelectedTabPosition());
+        final Bundle bundle = getArguments();
+        if (bundle != null) {
+            final int id = bundle.getInt(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB);
+            showFragment(id - 1);
+            mBinding.tabLayout.selectTab(mBinding.tabLayout.getTabAt(id - 1));
+        }
     }
 
     @Override
