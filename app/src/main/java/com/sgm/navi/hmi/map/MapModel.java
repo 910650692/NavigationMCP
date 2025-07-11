@@ -80,7 +80,9 @@ import com.sgm.navi.service.define.bean.MapLabelItemBean;
 import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
+import com.sgm.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.sgm.navi.service.define.layer.refix.LayerItemUserFavorite;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapNotifyType;
@@ -180,7 +182,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack,
         ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
         IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback,
-        OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack, ScreenTypeUtils.SplitScreenChangeListener {
+        OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack,
+        ScreenTypeUtils.SplitScreenChangeListener {
 
     private CommonManager mCommonManager;
     private final IActivateObserver mActObserver;
@@ -355,6 +358,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 }
             }
         });
+        LayerPackage.getInstance().registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
     }
 
     @Override
@@ -395,6 +399,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         FloatViewManager.getInstance().removeDeskCardVisibleChangeListener(this);
         ScreenTypeUtils.getInstance().removeSplitScreenChangeListener(TAG);
         clearDialog();
+        LayerPackage.getInstance().unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
     }
 
     public void clearDialog() {
@@ -985,9 +990,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onQueryTrafficEvent(MapType mapTypeId, PoiInfoEntity poiInfo) {
+        Logger.i(TAG, "onQueryTrafficEvent:");
         if (TextUtils.equals(mapTypeId.name(), mViewModel.mScreenId)) {
             IMapPackageCallback.super.onQueryTrafficEvent(mapTypeId, poiInfo);
-            mViewModel.openTrafficDetailFragment(poiInfo);
+            mViewModel.openTrafficDetailFragment(poiInfo, true);
             ThreadManager.getInstance().postDelay(() -> {
                 mViewModel.showOrHideSelfParkingView(true);
             }, 600);
@@ -2091,5 +2097,21 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
         searchPackage.clearPoiLabelMark();
         searchPackage.clearLabelMark();
+    }
+
+    @Override
+    public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
+        if (Logger.openLog) {
+            Logger.i(TAG, "onRouteItemClick: mapTypeId: ", mapTypeId, ", type: ", type,
+                    ", result: ", result.toString());
+        }
+        if (Objects.requireNonNull(type) == LayerPointItemType.ROUTE_POINT_TRAFFIC_EVENT) {
+            Logger.i(TAG, "onRouteItemClick: ROUTE_POINT_TRAFFIC_EVENT");
+            if (!ConvertUtils.isNull(mViewModel)) {
+                PoiInfoEntity poiInfo = new PoiInfoEntity();
+                poiInfo.setPid(result.getEventID() + "");
+                mViewModel.openTrafficDetailFragment(poiInfo, false);
+            }
+        }
     }
 }

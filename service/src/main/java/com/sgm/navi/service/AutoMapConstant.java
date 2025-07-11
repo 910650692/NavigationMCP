@@ -120,6 +120,7 @@ public interface AutoMapConstant {
 
     @interface TrafficEventBundleKey {
         String BUNDLE_KEY_ENTITY = "bundle_key_entity";
+        String BUNDLE_KEY_IS_NEED_CONVERT = "BUNDLE_KEY_IS_NEED_CONVERT";
     }
 
     @interface RecordDetailsBundleKey {

@@ -873,9 +873,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         addFragment(new RouteFragment(), args);
     }
 
-    public void openTrafficDetailFragment(PoiInfoEntity entity) {
+    public void openTrafficDetailFragment(PoiInfoEntity entity, boolean isNeedConvert) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(AutoMapConstant.TrafficEventBundleKey.BUNDLE_KEY_ENTITY, entity);
+        bundle.putBoolean(AutoMapConstant.TrafficEventBundleKey.BUNDLE_KEY_IS_NEED_CONVERT,
+                isNeedConvert);
         TrafficEventFragment trafficEventFragment;
         BaseFragment fragment = StackManager.getInstance().getCurrentFragment(mScreenId);
         final Lifecycle.State currentState = mView.getLifecycle().getCurrentState();

@@ -46,8 +46,8 @@ public class BlAosAdapter {
         return mBlAosApi.queryRestrictedEndNumber(restrictedParam);
     }
 
-    public long queryTrafficEventInfo(String eventId) {
-        return mBlAosApi.queryTrafficEventInfo(eventId);
+    public long queryTrafficEventInfo(String eventId, boolean isNeedConvert) {
+        return mBlAosApi.queryTrafficEventInfo(eventId, isNeedConvert);
     }
 
     public long updateTrafficEvent(FyTrafficUploadParameter parameter) {

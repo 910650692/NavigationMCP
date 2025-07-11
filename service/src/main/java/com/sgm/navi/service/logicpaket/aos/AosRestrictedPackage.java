@@ -65,8 +65,8 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
         return mBlAosAdapter.queryRestrictedEndNumber(restrictedParam);
     }
 
-    public long queryTrafficEventInfo(String eventId) {
-        return mBlAosAdapter.queryTrafficEventInfo(eventId);
+    public long queryTrafficEventInfo(String eventId, boolean isNeedConvert) {
+        return mBlAosAdapter.queryTrafficEventInfo(eventId, isNeedConvert);
     }
 
     public long queryTrafficPraiseInfo(String eventId) {

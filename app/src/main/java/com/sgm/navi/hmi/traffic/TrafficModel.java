@@ -73,10 +73,10 @@ public class TrafficModel extends BaseModel<BaseTrafficViewModel> implements IAo
         mViewModel.updatePrimaseStatus(fyCriticism);
     }
 
-    public void queryTrafficEventInfo(PoiInfoEntity entity) {
+    public void queryTrafficEventInfo(PoiInfoEntity entity, boolean isNeedConvert) {
         Logger.i(TAG, "queryTrafficEventInfo");
         if (aosRestrictedPackage != null) {
-            taskId = aosRestrictedPackage.queryTrafficEventInfo(entity.getPid());
+            taskId = aosRestrictedPackage.queryTrafficEventInfo(entity.getPid(), isNeedConvert);
         }
     }
 

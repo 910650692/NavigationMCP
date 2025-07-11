@@ -43,7 +43,7 @@ public interface IBlAosApi {
      * @param poiId
      * @return
      */
-    long queryTrafficEventInfo(String poiId);
+    long queryTrafficEventInfo(String poiId, boolean isNeedConvert);
 
     /**
      * 更新交通事件

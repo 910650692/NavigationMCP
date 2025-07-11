@@ -112,11 +112,10 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
     }
 
     @Override
-    public long queryTrafficEventInfo(String poiId) {
-        if (!isInit()) initBlAosService();
+    public long queryTrafficEventInfo(String poiId, boolean isNeedConvert) {
         if (!isInit()) initBlAosService();
         GTrafficEventDetailRequestParam javaRequest = new GTrafficEventDetailRequestParam();
-        javaRequest.eventid = BlToolPoiID.poiIDToEventID(poiId);
+        javaRequest.eventid = isNeedConvert ? BlToolPoiID.poiIDToEventID(poiId) : poiId;
         long taskId = mBLAosService.sendReqTrafficEventDetail(javaRequest, this);
         Logger.d(TAG, "queryTrafficEventInfo--请求任务Id", taskId);
         ConvertUtils.push(trafficEventDetailMap, taskId, new FyGTraEventDetail());

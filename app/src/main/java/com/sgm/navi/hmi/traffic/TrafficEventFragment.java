@@ -89,8 +89,10 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
         Bundle bundle = getArguments();
         if (bundle != null) {
             PoiInfoEntity entity = bundle.getParcelable(AutoMapConstant.TrafficEventBundleKey.BUNDLE_KEY_ENTITY);
+            boolean isNeedConvert = bundle.getBoolean(
+                    AutoMapConstant.TrafficEventBundleKey.BUNDLE_KEY_IS_NEED_CONVERT, true);
             if (entity != null && mViewModel != null) {
-                mViewModel.queryTrafficEvent(entity);
+                mViewModel.queryTrafficEvent(entity, isNeedConvert);
             }
         }
     }

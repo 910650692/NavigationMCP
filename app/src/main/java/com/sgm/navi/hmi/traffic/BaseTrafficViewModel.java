@@ -53,6 +53,8 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
 
     private int currentIndex = 0;
     private boolean isDoThumb = false; // 去点赞
+    // 是否需要将ConvertId转化为
+    private boolean mIsNeedConvert;
 
     public BaseTrafficViewModel(@NonNull Application application) {
         super(application);
@@ -63,13 +65,14 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
         return new TrafficModel();
     }
 
-    public void queryTrafficEvent(PoiInfoEntity entity) {
+    public void queryTrafficEvent(PoiInfoEntity entity, boolean isNeedConvert) {
         if (ConvertUtils.isNull(mModel)) return;
         currentIndex = 0;
         if (fyGTraEventDetail.get() == null || !fyGTraEventDetail.get().isRequestSuccess || poiInfo != entity) {
             uiState.set(TrafficEventUiState.LOADING);
             mLoadingDesc.set(AppCache.getInstance().getMContext().getString(R.string.limit_loading));
-            mModel.queryTrafficEventInfo(entity);
+            mIsNeedConvert = isNeedConvert;
+            mModel.queryTrafficEventInfo(entity, isNeedConvert);
             this.poiInfo = entity;
         } else {
             updateUi(fyGTraEventDetail.get(), false);
@@ -85,7 +88,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
 
     // 首次进入，数据加载失败重试
     public Action retryLoadAll = () -> {
-        queryTrafficEvent(poiInfo);
+        queryTrafficEvent(poiInfo, mIsNeedConvert);
     };
 
     // 上报交通事件，确认存在
