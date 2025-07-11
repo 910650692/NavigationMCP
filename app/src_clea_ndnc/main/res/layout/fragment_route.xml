@@ -118,11 +118,11 @@
 
         <ViewStub
             android:id="@+id/route_line_info_root"
-            android:layout="@layout/route_result_page"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dp_237"
+            android:layout_marginBottom="@dimen/dp_247"
             android:clickable="false"
+            android:layout="@layout/route_result_page"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

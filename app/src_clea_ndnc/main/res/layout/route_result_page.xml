@@ -290,7 +290,7 @@
             android:id="@+id/route_line_info_prefer_root"
             android:layout_width="@dimen/dp_613"
             android:layout_height="@dimen/dp_0"
-            android:layout_marginTop="@dimen/dp_m_51"
+            android:layout_marginTop="@dimen/dp_m_41"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:clickable="true"
             android:paddingHorizontal="@dimen/dp_30"
