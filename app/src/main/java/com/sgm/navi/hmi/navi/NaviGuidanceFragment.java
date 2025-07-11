@@ -765,8 +765,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     @Override
     protected void onNewIntent(final Bundle bundle) {
         super.onNewIntent(bundle);
+        final boolean clearAutoAddVia = bundle.getBoolean(NaviConstant.CLEAR_AUTO_ADD_VIA, false);
         final int isNaviControl = bundle.getInt(NaviConstant.NAVI_CONTROL, 0);
-        Logger.i(TAG, "onNewIntent isNaviControl:", isNaviControl);
+        Logger.i(TAG, "onNewIntent isNaviControl:", isNaviControl, " clearAutoAddVia:", clearAutoAddVia);
         if (isNaviControl == 1) {
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override
@@ -779,6 +780,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                     }
                 }
             });
+        }
+        if (clearAutoAddVia && mViewModel != null) {
+            mViewModel.deleteAutoAddChargeStation();
         }
     }
 

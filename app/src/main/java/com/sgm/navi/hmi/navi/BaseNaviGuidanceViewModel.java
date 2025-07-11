@@ -930,4 +930,9 @@ public class BaseNaviGuidanceViewModel extends
         });
     }
 
+    public void deleteAutoAddChargeStation() {
+        if (mModel != null) {
+            mModel.deleteAutoAddChargeStation();
+        }
+    }
 }
