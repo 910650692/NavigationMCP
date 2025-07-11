@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -42,6 +43,7 @@ import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.signal.SignalPackage;
 import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.view.SkinRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ import java.util.List;
  * @author sgm
  * @version $Revision.*$
  */
-public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBinding, SceneNaviViaListImpl> {
+public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBinding, SceneNaviViaListImpl> implements SkinRecyclerView.OnAnyTouchListener {
     private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_LIST;
     private NaviViaListAdapter mNaviViaListAdapter;
 
@@ -127,6 +129,9 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mViewBinding != null && mViewBinding.srvAddVia != null) {
+            mViewBinding.srvAddVia.removeOnAnyTouchListener();
+        }
         mISceneCallback = null;
     }
 
@@ -179,7 +184,6 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                     }
                     addFragment((BaseFragment) fragment, bundle, false);
                     mISceneCallback.hideNaviContent();
-                    resetTimer();
                 }
             }
 
@@ -191,19 +195,10 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                     Logger.i(TAG, "entity:", (entity == null ? "null" : entity.getPid() +
                             ":" + entity.getName()));
                     mISceneCallback.deleteViaPoint(entity);
-                    resetTimer();
                 }
             }
         });
-
-        mViewBinding.srvAddVia.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                resetTimer();
-            }
-        });
-
+        mViewBinding.srvAddVia.setOnAnyTouchListener(this);
     }
 
     /**
@@ -341,5 +336,10 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         if (mScreenViewModel != null) {
             mScreenViewModel.updateSceneVisible(isVisible, true);
         }
+    }
+
+    @Override
+    public void onAnyTouch(MotionEvent event) {
+        resetTimer();
     }
 }
