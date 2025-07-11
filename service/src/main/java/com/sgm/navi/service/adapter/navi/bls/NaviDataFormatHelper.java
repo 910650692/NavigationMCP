@@ -218,16 +218,15 @@ public final class NaviDataFormatHelper {
      * @return SapaInfoEntity
      */
     public static SapaInfoEntity formatTollGateInfo(final TollGateInfo tollGateInfo) {
-        final SapaInfoEntity sapaInfoEntity = new SapaInfoEntity();
-        if (tollGateInfo != null) {
-            if (mCurrentSapaInfoEntity != null) {
-                mCurrentSapaInfoEntity.setLaneTypes(tollGateInfo.laneTypes);
-                return mCurrentSapaInfoEntity;
-            } else {
-                sapaInfoEntity.setLaneTypes(tollGateInfo.laneTypes);
-            }
+        if (ConvertUtils.isNull(mCurrentSapaInfoEntity)) {
+            mCurrentSapaInfoEntity = new SapaInfoEntity();
         }
-        return sapaInfoEntity;
+        if (tollGateInfo != null) {
+            mCurrentSapaInfoEntity.setLaneTypes(tollGateInfo.laneTypes);
+        } else {
+            mCurrentSapaInfoEntity.setLaneTypes(new ArrayList<>());
+        }
+        return mCurrentSapaInfoEntity;
     }
 
     /**
@@ -616,37 +615,38 @@ public final class NaviDataFormatHelper {
      * @return SapaInfoEntity
      */
     public static SapaInfoEntity forMatSAPAInfo(final ArrayList<NaviFacility> list) {
-        final SapaInfoEntity sapaInfoEntity = new SapaInfoEntity();
+        if (ConvertUtils.isNull(mCurrentSapaInfoEntity)) {
+            mCurrentSapaInfoEntity = new SapaInfoEntity();
+        }
         if (!ConvertUtils.isEmpty(list)) {
             final int size = list.size();
             final ArrayList<SapaInfoEntity.SAPAItem> sapaItems = new ArrayList<>();
             final NaviFacility first = list.get(0);
             if (first.type == NaviFacilityType.NaviFacilityTypeServiceArea) {//服务区
-                sapaInfoEntity.setType(NaviConstant.SapaItemsType.SPAS_LIST);
+                mCurrentSapaInfoEntity.setType(NaviConstant.SapaItemsType.SPAS_LIST);
             } else if (first.type == NaviFacilityType.NaviFacilityTypeTollGate) {//收费站
-                sapaInfoEntity.setType(NaviConstant.SapaItemsType.TOLL_STATION_LIST);
+                mCurrentSapaInfoEntity.setType(NaviConstant.SapaItemsType.TOLL_STATION_LIST);
             }
             sapaItems.add(getSAPAItem(first));
             if (size > 1) {
                 final NaviFacility second = list.get(1);
                 if (first.type == NaviFacilityType.NaviFacilityTypeServiceArea && second.type == NaviFacilityType.NaviFacilityTypeServiceArea) {
-                    sapaInfoEntity.setType(NaviConstant.SapaItemsType.SPAS_LIST);//两个服务区
+                    mCurrentSapaInfoEntity.setType(NaviConstant.SapaItemsType.SPAS_LIST);//两个服务区
                     sapaItems.add(getSAPAItem(second));
                 } else if ((first.type == NaviFacilityType.NaviFacilityTypeServiceArea && second.type == NaviFacilityType.NaviFacilityTypeTollGate)
                         || (first.type == NaviFacilityType.NaviFacilityTypeTollGate && second.type == NaviFacilityType.NaviFacilityTypeServiceArea)) {
-                    sapaInfoEntity.setType(NaviConstant.SapaItemsType.TOLL_STATION_AND_SPAS);//一个服务区一个收费站
+                    mCurrentSapaInfoEntity.setType(NaviConstant.SapaItemsType.TOLL_STATION_AND_SPAS);//一个服务区一个收费站
                     sapaItems.add(getSAPAItem(second));
                 } else if (first.type == NaviFacilityType.NaviFacilityTypeTollGate && second.type == NaviFacilityType.NaviFacilityTypeTollGate) {
-                    sapaInfoEntity.setType(NaviConstant.SapaItemsType.TOLL_STATION_LIST);//两个收费站
+                    mCurrentSapaInfoEntity.setType(NaviConstant.SapaItemsType.TOLL_STATION_LIST);//两个收费站
                     sapaItems.add(getSAPAItem(second));
                 }
             }
-            sapaInfoEntity.setList(sapaItems);
+            mCurrentSapaInfoEntity.setList(sapaItems);
         } else {
-            sapaInfoEntity.setType(NaviConstant.SapaItemsType.AUTO_UNKNOWN_ERROR);
+            mCurrentSapaInfoEntity.setType(NaviConstant.SapaItemsType.AUTO_UNKNOWN_ERROR);
         }
-        mCurrentSapaInfoEntity = sapaInfoEntity;
-        return sapaInfoEntity;
+        return mCurrentSapaInfoEntity;
     }
 
     /**
