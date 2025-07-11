@@ -1621,7 +1621,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         // 如果容器里面有Fragment,隐藏
         if (StackManager.getInstance().getCurrentFragment(mScreenId) != null) {
             Logger.d(TAG, "judgedScaleViewVisibility", "如果容器里面有Fragment,隐藏");
-            return false;
+            return true;
         }
         return true;
     }
