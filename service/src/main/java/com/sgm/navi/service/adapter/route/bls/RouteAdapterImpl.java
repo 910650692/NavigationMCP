@@ -70,7 +70,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RouteAdapterImpl implements IRouteApi {
     private static final String TAG = MapDefaultFinalTag.ROUTE_SERVICE_TAG;
     private static final String NUM_ONE = "1";
-    public static final ArrayList<String> BANDS = new ArrayList<>(List.of("国家电网"));
+    public static final ArrayList<String> BANDS = new ArrayList<>(List.of("国家电网","南方电网","中国铁塔"));
     private RouteService mRouteService;
     private RouteAdapterImplHelper mAdapterImplHelper;
     private RouteOption mLastRouteOption;
