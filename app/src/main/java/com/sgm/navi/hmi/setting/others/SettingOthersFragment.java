@@ -1,7 +1,9 @@
 package com.sgm.navi.hmi.setting.others;
 
-import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.Window;
@@ -259,21 +261,16 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
      * 重启应用
      */
     private void restartApp() {
-        ThreadManager.getInstance().postDelay(new Runnable() {
-            @Override
-            public void run() {
-                final Intent i = requireContext().getPackageManager()
-                        .getLaunchIntentForPackage(requireContext().getPackageName());
-                if (i != null) {
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.putExtra(BuryConstant.EventName.AMAP_RETURN_DEFAULT, BuryConstant.EventName.AMAP_RETURN_DEFAULT_CODE);
-                    startActivity(i);
-                    android.os.Process.killProcess(android.os.Process.myPid());
-                    System.exit(0);
-                }
-            }
-        }, 500);
+        final Intent i = requireContext().getPackageManager().getLaunchIntentForPackage(requireContext().getPackageName());
+        Logger.i(TAG, "restartApp: 重启应用");
+        if (i != null) {
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(requireContext(), 0, i, PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager)requireContext().getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, pendingIntent); // 1秒后重启
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
+        }
     }
 
     /**
