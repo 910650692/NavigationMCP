@@ -61,7 +61,7 @@ dependencies {
     defauleApi libs.net.basic
     buickApi libs.net.basic
     cadiApi libs.net.basic
-    clea_local_8155Api libs.net.basic
+    clea_local_8155Api libs.net.vcupro
     clea_8255Api libs.net.vcupro
     clea_8775Api libs.net.vcupro
 }
