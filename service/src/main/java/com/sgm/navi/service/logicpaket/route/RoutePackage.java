@@ -1677,6 +1677,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     private void updateParamList(final MapType mapTypeId) {
         final List<RouteParam> routeParamList = mViaRouteParams.get(mapTypeId);
+        if (routeParamList == null) {
+            Logger.e(TAG, "no route Param List");
+            return;
+        }
         final List<RouteParam> routeParamVias = new ArrayList<>();
         routeParamVias.addAll(routeParamList);
         mSaveViaRouteParams.put(mapTypeId, routeParamVias);
@@ -1693,6 +1697,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     private void reGetParamList(final MapType mapTypeId) {
         if (!ConvertUtils.isEmpty(mSaveViaRouteParams)) {
             final List<RouteParam> routeParamList = mSaveViaRouteParams.get(mapTypeId);
+            if (routeParamList == null) {
+                Logger.e(TAG, "no route Param List");
+                return;
+            }
             final List<RouteParam> routeParamVias = new ArrayList<>();
             routeParamVias.addAll(routeParamList);
             mViaRouteParams.put(mapTypeId, routeParamVias);
