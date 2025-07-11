@@ -10,6 +10,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.flavor.CarModelsFeature;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.patacnetlib.PatacNetClient;
 import com.sgm.navi.service.AppCache;
@@ -41,6 +42,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
     public void onTerminate() {
         super.onTerminate();
         Logger.i(TAG, "onTerminate");
+        CarModelsFeature.getInstance().unRegisterBroadcast();
         StartService.getInstance().unSdkInit();
     }
 

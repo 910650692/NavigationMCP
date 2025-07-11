@@ -1,10 +1,14 @@
 package com.sgm.navi.flavor;
 
+import android.content.Context;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.DeviceUtils;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.broadcast.PoiPushReceiver;
+import com.sgm.navi.broadcast.SteeringWheelButtonReceiver;
 import com.sgm.navi.burypoint.BuryManager;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.service.AppCache;
@@ -18,6 +22,11 @@ import java.math.RoundingMode;
  * @date 2025/1/2
  */
 public abstract class BaseCarModelsFeature {
+
+    private boolean mHasRegister;
+    private SteeringWheelButtonReceiver mWheelButtonReceiver;
+    private PoiPushReceiver mPoiPushReceiver;
+
     BaseCarModelsFeature() {
         initPublicComponent();
     }
@@ -25,6 +34,7 @@ public abstract class BaseCarModelsFeature {
     private void initPublicComponent() {
         initARouter();
         initDataTrack();
+        initBroadcast();
     }
 
     /**
@@ -61,6 +71,34 @@ public abstract class BaseCarModelsFeature {
                     .append("\n");
         }
         Log.e("lvww", stringBuilder.toString());
+    }
+
+    private void initBroadcast() {
+        if (mHasRegister) {
+            return;
+        }
+        mWheelButtonReceiver = new SteeringWheelButtonReceiver();
+        IntentFilter intentFilter = new IntentFilter(SteeringWheelButtonReceiver.ACTION);
+        AppCache.getInstance().getMContext().registerReceiver(mWheelButtonReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+
+        mPoiPushReceiver = new PoiPushReceiver();
+        IntentFilter poiFilter = new IntentFilter(PoiPushReceiver.PUSH_ACTION);
+        AppCache.getInstance().getMContext().registerReceiver(mPoiPushReceiver, poiFilter, Context.RECEIVER_EXPORTED);
+        mHasRegister = true;
+    }
+
+    public void unRegisterBroadcast() {
+        if (null != AppCache.getInstance().getMContext() && mHasRegister) {
+            if (null != mWheelButtonReceiver) {
+                AppCache.getInstance().getMContext().unregisterReceiver(mWheelButtonReceiver);
+                mWheelButtonReceiver = null;
+            }
+            if (null != mPoiPushReceiver) {
+                AppCache.getInstance().getMContext().unregisterReceiver(mPoiPushReceiver);
+                mPoiPushReceiver = null;
+            }
+            mHasRegister = false;
+        }
     }
 
     /**
