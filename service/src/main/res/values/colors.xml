@@ -2,4 +2,5 @@
 <resources>
     <color name="traffic_event_icon_bg">#F8F8FA</color>
     <color name="route_charge_param_color">#CCFFFFFF</color>
+    <color name="default_mapview_ground_color">#F4F4FA</color>
 </resources>

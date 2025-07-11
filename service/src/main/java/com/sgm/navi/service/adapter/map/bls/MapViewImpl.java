@@ -2,6 +2,7 @@
 package com.sgm.navi.service.adapter.map.bls;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -623,9 +624,9 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        Logger.d(TAG, mapType, " onAttachedToWindow");
         getMapview().addGestureObserver(this);
         getMapview().addMapviewObserver(this);
-        Logger.d(TAG, mapType, " onAttachedToWindow");
     }
 
     @Override
@@ -637,11 +638,15 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         Logger.d(TAG, mapType, " onDetachedFromWindow");
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        EGLSurfaceAttr eglSurfaceAttr = getGLSurfaceAttribute();
+        eglSurfaceAttr.isNeedInitDraw = false;
+        eglSurfaceAttr.initColor = ResourceUtils.Companion.getInstance().getColor(R.color.default_mapview_ground_color);
         super.surfaceCreated(holder);
+        Logger.d(TAG, mapType, " onMapLoadSuccess");
         if (callback != null) {
-            Logger.d(TAG, mapType, " onMapLoadSuccess");
             callback.onMapLoadSuccess(mapType);
             getMapview().getLayerMgr().updateStyle();
         }
@@ -650,7 +655,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     @Override
     public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
         boolean openScreen = mapViewParams.isOpenScreen();
-        Logger.d(TAG, mapType, "onSurfaceChanged", "openScreen", openScreen);
+        Logger.d(TAG, mapType, "deviceId", deviceId, "onSurfaceChanged", "openScreen", openScreen);
         if (openScreen) startScreenshot();
     }
 
