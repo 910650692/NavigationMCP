@@ -511,7 +511,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , taskId
                 , " currentId: " , mScreenViewModel.getMTaskId());
 
-        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId())) {
             return;
         }
         ArrayList<PoiInfoEntity> list = new ArrayList<>();
