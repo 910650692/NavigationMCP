@@ -99,6 +99,7 @@
             android:exported="true"
             android:taskAffinity="com.sgm.navi.hmi.hud"
             android:launchMode="singleInstance"
+            android:theme="@style/HUDTheme"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="com.sgm.navi.hmi.hud.HudActivity" />

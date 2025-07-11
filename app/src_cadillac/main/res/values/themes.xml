@@ -5,4 +5,7 @@
     <style name="ClusterTheme" parent="BaseClusterTheme" >
         <item name="android:font">@font/cadillac</item>
     </style>
+    <style name="HUDTheme" parent="BaseHUDTheme" >
+        <item name="android:font">@font/cadillac</item>
+    </style>
 </resources>

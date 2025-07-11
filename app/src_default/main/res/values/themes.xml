@@ -10,4 +10,7 @@
         <item name="tabPaddingTop">0dp</item>
         <item name="tabPaddingBottom">0dp</item>
     </style>
+    <style name="HUDTheme" parent="BaseHUDTheme" >
+        <item name="android:font">@font/buick</item>
+    </style>
 </resources>
