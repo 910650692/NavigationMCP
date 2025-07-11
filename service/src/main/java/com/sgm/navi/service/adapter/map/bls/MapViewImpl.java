@@ -394,6 +394,17 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         return resultOk == Service.ErrorCodeOK;
     }
 
+    public boolean setHUDMapMode(MapMode mapMode) {
+        MapviewModeParam mapviewModeParam = new MapviewModeParam();
+        mapviewModeParam.bChangeCenter = true;
+        mapviewModeParam.mode = MapviewMode.MapviewModeCar;
+        mapviewModeParam.mapZoomLevel = AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT_HUD;
+        int resultOk = getMapview().setMapMode(mapviewModeParam, true);
+        getMapview().resetTickCount(1);
+        Logger.d(TAG, mapType, "setMapMode ", mapMode);
+        return resultOk == Service.ErrorCodeOK;
+    }
+
     public void goToCarPosition(boolean bAnimation, boolean changeLevel) {
         MapPositionParam pos = new MapPositionParam();
         pos.lon = MapModelDtoConstants.FLOAT_INVALID_VALUE;

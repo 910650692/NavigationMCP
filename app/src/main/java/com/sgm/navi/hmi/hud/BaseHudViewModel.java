@@ -24,23 +24,6 @@ public class BaseHudViewModel extends BaseViewModel<HudActivity, HudModel> {
         return new HudModel();
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Logger.d(TAG, "onCreate called");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Logger.d(TAG, "onDestroy called");
-    }
-
-    public void loadMapView(){
-        Logger.d(TAG, "Loading map view");
-        MapPackage.getInstance().bindMapView(mView.getMapView());
-    }
-
     public IBaseScreenMapView getMapView() {
         Logger.d(TAG, "Getting map view");
         return mView.getMapView();

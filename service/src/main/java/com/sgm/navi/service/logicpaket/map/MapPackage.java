@@ -196,6 +196,9 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     public boolean switchMapMode(MapType mapTypeId) {
         return mMapAdapter.switchMapMode(mapTypeId);
     }
+    public void switchHudMapMode(MapType mapTypeId, MapMode mapMode) {
+        mMapAdapter.switchHudMapMode(mapTypeId, mapMode);
+    }
 
     public MapMode getCurrentMapMode(MapType mapTypeId) {
         return mMapAdapter.getCurrentMapMode(mapTypeId);

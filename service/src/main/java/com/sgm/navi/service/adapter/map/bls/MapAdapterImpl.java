@@ -233,6 +233,11 @@ public class MapAdapterImpl implements IMapApi {
     }
 
     @Override
+    public void setMapHudMode(MapType mapTypeId, MapMode mapMode) {
+        mapViewPoolManager.getMapViewImpl(mapTypeId).setHUDMapMode(mapMode);
+    }
+
+    @Override
     public void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle) {
         mapViewPoolManager.getMapViewImpl(mapTypeId).setMapStyle(mapStateStyle);
     }

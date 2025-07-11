@@ -4,9 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.android.utils.ScreenUtils;
+import com.android.utils.log.Logger;
 import com.sgm.navi.service.utils.HudMapConfigUtil;
 
 public class HUDMapView extends FullScreenMapView {
@@ -15,6 +14,13 @@ public class HUDMapView extends FullScreenMapView {
 
     public HUDMapView(@NonNull Context context) {
         super(context);
+    }
+
+    public HUDMapView(@NonNull Context context, @NonNull AttributeSet attrs) {
+        super(context, attrs);
+    }
+    public HUDMapView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     public void setOpenScreen(boolean openScreenStatus){
@@ -30,36 +36,29 @@ public class HUDMapView extends FullScreenMapView {
         return MapType.HUD_MAP;
     }
 
-    public HUDMapView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public HUDMapView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
     @Override
     public long getMapViewWidth() {
-        return ScreenUtils.Companion.getInstance().dp2px(HudMapConfigUtil.getHudMapWidth());
+        return HudMapConfigUtil.getInstance().getHudMapWidth();
     }
 
     @Override
     public long getMapViewHeight() {
-        return ScreenUtils.Companion.getInstance().dp2px(HudMapConfigUtil.getHudMapHeight());
+        return HudMapConfigUtil.getInstance().getHudMapHeight();
     }
 
     @Override
     public long getScreenWidth() {
-        return ScreenUtils.Companion.getInstance().dp2px(HudMapConfigUtil.getHudMapWidth());
+        return HudMapConfigUtil.getInstance().getHudMapWidth();
     }
 
     @Override
     public long getScreenHeight() {
-        return ScreenUtils.Companion.getInstance().dp2px(HudMapConfigUtil.getHudMapHeight());
+        return HudMapConfigUtil.getInstance().getHudMapHeight();
     }
 
     @Override
     public boolean isOpenScreen() {
+        Logger.d("HUDMapView", "isOpenScreen", "mOpenScreenStatus", mOpenScreenStatus);
         return mOpenScreenStatus;
     }
 

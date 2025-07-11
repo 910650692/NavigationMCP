@@ -98,11 +98,11 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
     public void setHudMapViewWH(){
         IBaseScreenMapView hudMapView = getMapView();
         mBinding.hudMapview.setIsBindView(true);
+        mBinding.hudMapview.setOpenScreen(false);
         if (hudMapView instanceof View) {
             View mapView = (View) hudMapView;
-            ScreenUtils screenUtils = ScreenUtils.Companion.getInstance();
-            int widthDp = screenUtils.dp2px(HudMapConfigUtil.getHudMapWidth());
-            int heightDp = screenUtils.dp2px(HudMapConfigUtil.getHudMapHeight());
+            int widthDp = HudMapConfigUtil.getInstance().getHudMapWidth();
+            int heightDp = HudMapConfigUtil.getInstance().getHudMapHeight();;
             ViewGroup.LayoutParams params = mapView.getLayoutParams();
             params.width = widthDp;
             params.height = heightDp;

@@ -12,7 +12,6 @@ import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
 import com.sgm.navi.service.define.layer.refix.CarModeType;
-import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.HUDMapView;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
@@ -29,6 +28,7 @@ import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -39,6 +39,8 @@ import java.util.HashMap;
 public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCallback, IRouteResultObserver, IGuidanceObserver {
     private static final String TAG = MapDefaultFinalTag.HUD_SERVICE_TAG;
     private IBaseScreenMapView mMapSurfaceView = null;
+    //车标距离底部边距
+    private static final int HUD_MAP_CAR_BOTTOM = 64;
     private HashMap<String, IHudCallback> hudCallbackMap = new HashMap<>();
 
     private static final class Helper {
@@ -46,24 +48,25 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
     }
 
     private HudPackage() {
-        StartService.getInstance().registerSdkCallback(TAG, this);
+    }
+
+    public void initHudService(){
         MapAdapter.getInstance().registerCallback(MapType.HUD_MAP, this);
         NaviPackage.getInstance().registerObserver(TAG, this);
         RoutePackage.getInstance().registerRouteObserver(TAG, this);
     }
-
     public void registerHudCallback(String key, IHudCallback hudCallback) {
         ConvertUtils.push(hudCallbackMap, key, hudCallback);
         Logger.d(TAG, "registerHudCallback hudCallbackMap： " + hudCallbackMap.size());
     }
 
-    public void initHudService() {
+    public void createHudView() {
         if (null != mMapSurfaceView) return;
         Logger.d(TAG, "init Hud Service");
-        initHudService(null);
+        createHudView(null);
     }
 
-    public void initHudService(IBaseScreenMapView mapSurfaceView) {
+    public void createHudView(IBaseScreenMapView mapSurfaceView) {
         Logger.d(TAG, "init Hud Service");
         if (null == mapSurfaceView) {
             mapSurfaceView = new HUDMapView(AppCache.getInstance().getMContext());
@@ -71,7 +74,13 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         mMapSurfaceView = mapSurfaceView;
         boolean sdkStatus = StartService.getInstance().checkSdkIsNeedInit();
         Logger.i(TAG, "校验Sdk是否需要初始化sdkStatus：" + sdkStatus);
-        if (sdkStatus) StartService.getInstance().startInitSdk();
+        if (sdkStatus) {
+            StartService.getInstance().registerSdkCallback(TAG,this);
+            StartService.getInstance().startInitSdk();
+        }else {
+            Logger.d(TAG, "HUDMapViewBindMapView......");
+            MapPackage.getInstance().bindMapView(mMapSurfaceView);
+        }
         Logger.d(TAG, "HUDMapView地图创建中......");
     }
 
@@ -95,7 +104,9 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
 
     @Override
     public void onSdkInitSuccess() {
+        StartService.getInstance().unregisterSdkCallback(this);
         ThreadManager.getInstance().postUi(() -> MapPackage.getInstance().createMapView(MapType.HUD_MAP));
+        MapPackage.getInstance().bindMapView(mMapSurfaceView);
     }
 
     @Override
@@ -106,30 +117,45 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
 
     @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
+        Logger.d(TAG, "onMapLoadSuccess", "mapTypeId:" + mapTypeId.name());
         if (mapTypeId == MapType.HUD_MAP){
-            initLayer();
+            LayerAdapter.getInstance().initLayer(MapType.HUD_MAP);
+            LayerPackage.getInstance().initGuideRouteHUDMode(MapType.HUD_MAP);
+            //设置地图中心点
+            setHudMapCenter(MapType.HUD_MAP);
+            //回车位保存中心
+            setHudMapCarPosition(MapType.HUD_MAP);
+            LayerPackage.getInstance().setCarMode(MapType.HUD_MAP, CarModeType.CAR_MODE_DEFAULT);
+            MapPackage.getInstance().switchHudMapMode(MapType.HUD_MAP, MapMode.UP_2D);
+            LayerPackage.getInstance().setFollowMode(MapType.HUD_MAP, true);
+            MapPackage.getInstance().updateUiStyle(MapType.HUD_MAP, ThemeType.NIGHT);
+            LayerPackage.getInstance().closeDynamicLevel(MapType.HUD_MAP);
+            long l = mMapSurfaceView.getMapViewHeight() - HUD_MAP_CAR_BOTTOM;
+            MapAdapter.getInstance().setHudMapCenterInScreen(MapType.HUD_MAP,(int)mMapSurfaceView.getMapViewWidth() / 2 , (int)l);
+            if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
+                Logger.d(TAG, "导航中显示导航路线 hud");
+                hudDrawLine();
+            }else {
+                RoutePackage.getInstance().clearRouteLine(MapType.HUD_MAP);
+            }
+            Logger.d(TAG, "HUDMapView地图加载完成",MapPackage.getInstance().getZoomLevel(MapType.HUD_MAP));
         }
     }
 
-    private void initLayer() {
-        MapPackage.getInstance().bindMapView(mMapSurfaceView);
-        LayerAdapter.getInstance().initLayer(MapType.HUD_MAP);
-        LayerAdapter.getInstance().setCarPosition(MapType.HUD_MAP, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
-                PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
-                PositionPackage.getInstance().getLastCarLocation().getCourse()));
-        MapPackage.getInstance().setMapCenter(MapType.HUD_MAP, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
-                PositionPackage.getInstance().getLastCarLocation().getLatitude()));
-        MapPackage.getInstance().goToCarPosition(MapType.HUD_MAP,false,false);
-        LayerAdapter.getInstance().setCarMode(MapType.HUD_MAP, CarModeType.CAR_MODE_DEFAULT);
-        MapPackage.getInstance().switchMapMode(MapType.HUD_MAP, MapMode.UP_2D, false);
-        LayerAdapter.getInstance().setFollowMode(MapType.HUD_MAP, true);
-        MapAdapter.getInstance().updateUiStyle(MapType.HUD_MAP, ThemeType.NIGHT);
-        LayerAdapter.getInstance().setDynamicLevelLock(MapType.HUD_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
-        if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)
-                || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.LIGHT_NAVING)){
-            Logger.d(TAG, "导航中显示导航路线 hud");
-            RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
-        }
+    @Override
+    public void onMapScaleChanged(MapType mapTypeId, int currentScale) {
+        //mViewModel.updateOnMapScaleChanged(currentScale);
+        Logger.d(TAG, "onMapScaleChanged " , mapTypeId.name() , " " , currentScale);
+    }
+
+    @Override
+    public void onDeletePath(ArrayList<Long> pathIDList) {//
+
+    }
+
+    @Override
+    public void onSelectMainPathStatus(long pathID, int result) {
+        hudDrawLine();
     }
 
     @Override
@@ -142,13 +168,14 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
 
     @Override
     public void onNaviStop() {
-        //TODO
+        Logger.d(TAG, "导航结束显示导航路线 hud");
         RoutePackage.getInstance().clearRouteLine(MapType.HUD_MAP);
     }
 
     @Override
     public void onNaviStart() {
-        RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
+        Logger.d(TAG, "导航开始显示导航路线 hud");
+        hudDrawLine();
     }
 
     @Override
@@ -156,10 +183,26 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         //偏航以后HUD没有重新算路
         String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         Logger.d(TAG, "onRouteDrawLine", "currentNaviStatus = ", currentNaviStatus);
-        if (!NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)
-                && !NaviStatus.NaviStatusType.LIGHT_NAVING.equals(currentNaviStatus)) {
-            return;
+        if (NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)) {
+            hudDrawLine();
         }
+    }
+
+    //设置HUDMap中心点
+    public void setHudMapCenter(MapType mapType){
+        MapPackage.getInstance().setMapCenter(mapType, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
+                PositionPackage.getInstance().getLastCarLocation().getLatitude()));
+    }
+    //设置HUDMap车位置
+    public void setHudMapCarPosition(MapType mapType) {
+        LayerPackage.getInstance().setCarPosition(mapType, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
+                PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
+                PositionPackage.getInstance().getLastCarLocation().getCourse()));
+    }
+
+    public void hudDrawLine(){
+        //ClusterRouteHelper.getInstance().onlyShowCurrentPath(MapType.HUD_MAP);
         RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
+        //LayerAdapter.getInstance().setSelectedPathIndex(MapType.HUD_MAP,RoutePackage.getInstance().getSelectRouteIndex().get(MapType.MAIN_SCREEN_MAIN_MAP));
     }
 }

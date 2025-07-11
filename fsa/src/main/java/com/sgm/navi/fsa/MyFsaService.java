@@ -445,8 +445,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
         } else {
             //关闭HUD
-            ThreadManager.getInstance().postUi(() -> {
-                ActivityCloseManager.getInstance().triggerClose(false);});
+            ActivityCloseManager.getInstance().triggerClose(false);
         }
     }
 
@@ -1103,6 +1102,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             Logger.d(TAG, "导航开启 + mIsHudServiceStart：" , mIsHudServiceStart);
             if (!mIsHudServiceStart) return;
             HudPackage.getInstance().initHudService();
+            HudPackage.getInstance().createHudView();
             HudPackage.getInstance().registerHudCallback(TAG, hudCallback);
         }
 

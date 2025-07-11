@@ -168,6 +168,9 @@ public class MapAdapter {
         };
         return mIMapApi.setMapMode(mapTypeId, mapMode);
     }
+    public void switchHudMapMode(MapType mapTypeId, MapMode mapMode) {
+        mIMapApi.setMapHudMode(mapTypeId, mapMode);
+    }
 
     public void setLockMapPinchZoom(MapType mapTypeId, boolean isLock) {
         mIMapApi.setLockMapPinchZoom(mapTypeId, isLock);
