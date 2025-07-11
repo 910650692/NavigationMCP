@@ -1,17 +1,18 @@
 package com.sgm.navi.hmi.navi;
 
 import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_CONTROL;
 import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_ETA;
 import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TBT;
 import static com.sgm.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TMC;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -53,7 +55,6 @@ import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
-import com.sgm.navi.service.define.navi.NaviInfoEntity;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
@@ -84,6 +85,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     private int mBroadCastModeAfterCall = NumberUtils.NUM_ERROR;
     private BroadcastReceiver mTimeFormatReceiver;
     private boolean mIsBroadcastRegistered;
+    private boolean mIsPhoneListenerAdded;
     private boolean mIs24HourFormat;
     private NaviEtaInfo mCurrentNaviInfo;
     private RouteLoadingDialog mRouteRequestLoadingDialog;
@@ -91,6 +93,35 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addTelPhoneListener();
+        mTimeFormatReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (Intent.ACTION_TIME_CHANGED.equals(intent.getAction()) ||
+                        Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) {
+                    Logger.d(TAG, "onReceive ACTION_TIME_CHANGED or ACTION_LOCALE_CHANGED");
+                    boolean is24Hour = getTimeFormatIs24Hour();
+                    if (is24Hour != mIs24HourFormat) {
+                        if (mBinding != null && mBinding.sceneNaviEta != null) {
+                            mBinding.sceneNaviEta.refreshArriveTime();
+                        }
+                        mIs24HourFormat = is24Hour;
+                    }
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
+        requireContext().registerReceiver(mTimeFormatReceiver, filter);
+        mIsBroadcastRegistered = true;
+    }
+
+    private void addTelPhoneListener() {
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         mPhoneStateListener = new PhoneStateListener() {
             @Override
             public void onCallStateChanged(int state, String phoneNumber) {
@@ -126,27 +157,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (telephonyManager != null) {
             telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
-        mTimeFormatReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (Intent.ACTION_TIME_CHANGED.equals(intent.getAction()) ||
-                        Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) {
-                    Logger.d(TAG, "onReceive ACTION_TIME_CHANGED or ACTION_LOCALE_CHANGED");
-                    boolean is24Hour = getTimeFormatIs24Hour();
-                    if (is24Hour != mIs24HourFormat) {
-                        if (mBinding != null && mBinding.sceneNaviEta != null) {
-                            mBinding.sceneNaviEta.refreshArriveTime();
-                        }
-                        mIs24HourFormat = is24Hour;
-                    }
-                }
-            }
-        };
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_TIME_CHANGED);
-        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
-        requireContext().registerReceiver(mTimeFormatReceiver, filter);
-        mIsBroadcastRegistered = true;
+        mIsPhoneListenerAdded = true;
     }
 
     private boolean getTimeFormatIs24Hour() {
@@ -922,12 +933,14 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TelephonyManager telephonyManager = (TelephonyManager) requireContext().
-                getSystemService(Context.TELEPHONY_SERVICE);
-        if (telephonyManager != null) {
-            telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+        if (mIsPhoneListenerAdded) {
+            TelephonyManager telephonyManager = (TelephonyManager) requireContext().
+                    getSystemService(Context.TELEPHONY_SERVICE);
+            if (telephonyManager != null) {
+                telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+            }
+            mPhoneStateListener = null;
         }
-        mPhoneStateListener = null;
         mSceneCallback = null;
         if (mIsBroadcastRegistered) {
             requireContext().unregisterReceiver(mTimeFormatReceiver);
