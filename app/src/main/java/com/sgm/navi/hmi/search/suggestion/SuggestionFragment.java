@@ -62,7 +62,7 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
     @Override
     public void onResume() {
         super.onResume();
-        mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
+//        mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
     }
 
     @Override
