@@ -241,7 +241,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onResume();
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
         if (mViewModel.getSdkInitStatus()) {
-            ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
+            if (mViewModel.isSupportSplitScreen()) {
+                ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
+            }
             mViewModel.getCurrentCityLimit();
             //界面可见时重新适配深浅色模式
             mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -434,7 +436,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
         mViewModel.reminderDialogReCreate();
         mBinding.mainImg.setImageResource(R.drawable.logo_startup);
-        ScreenTypeUtils.getInstance().setScreenType(newConfig);
+        if (mViewModel.isSupportSplitScreen()) {
+            ScreenTypeUtils.getInstance().setScreenType(newConfig);
+        }
         //模式更改不重新触发trips
         mViewModel.mIsChangingConfigurations.set(true);
         int newUiMode = newConfig.uiMode;
