@@ -141,7 +141,7 @@
             android:layout_marginStart="@dimen/dp_34"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_34"
-            android:background="@color/color_20_000000"
+            android:background="@color/setting_line"
             app:layout_constraintTop_toBottomOf="@+id/cl_driving_end" />
 
         <!--导航里程-->
