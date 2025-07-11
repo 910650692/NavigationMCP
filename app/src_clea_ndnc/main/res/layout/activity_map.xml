@@ -285,20 +285,20 @@
             clickCommand="@{ViewModel.backToSelfParking}"
             android:layout_width="@dimen/dp_191"
             android:layout_height="@dimen/dp_78"
+            android:layout_marginEnd="@dimen/dp_845"
             android:layout_marginBottom="@dimen/dp_130"
-            android:layout_marginEnd="@dimen/dp_141"
             android:background="@drawable/bg_search_main_tab"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="@{ViewModel.backToParkingVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/line_views"
             app:layout_constraintEnd_toEndOf="parent">
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
                 android:src="@drawable/img_parking_space_58" />
+
             <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
