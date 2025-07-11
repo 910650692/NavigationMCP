@@ -168,6 +168,7 @@
             </com.sgm.navi.ui.view.SkinRadioGroup>
 
             <com.sgm.navi.ui.view.SkinLinearLayout
+                clickCommand="@{viewModel.mSwitchCruiseBroadcastClick}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
