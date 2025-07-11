@@ -79,7 +79,7 @@ public class DrSensorManager implements SensorEventListener {
     }
 
     public synchronized void init() {
-        Logger.i(TAG, "init status=" + mIsStarted.get());
+        Logger.i(TAG, "init status=", mIsStarted.get());
         if (mIsStarted.compareAndSet(false, true)) {
             Logger.i(TAG, "real init");
             mHandler = new Handler(ThreadManager.getInstance().getLooper(LooperType.SENSOR));
@@ -91,9 +91,9 @@ public class DrSensorManager implements SensorEventListener {
     }
 
     public void uninit() {
-        Logger.i(TAG, "unInit cur status=" + mIsStarted.get());
+        Logger.i(TAG, "unInit cur status=", mIsStarted.get());
         if (mIsStarted.compareAndSet(true, false)) {
-            Logger.i(TAG, "real stop ");
+            Logger.i(TAG, "real stop");
             stopSensorReport();
             mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
             mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
@@ -120,14 +120,17 @@ public class DrSensorManager implements SensorEventListener {
                     mDirectChannel.configure(mAccelerometer, SensorDirectChannel.RATE_NORMAL);
                 }
             }
-            Logger.d(TAG, ",mIsSupported：" + mIsSupported);
+            Logger.d(TAG, ",mIsSupported：", mIsSupported);
         } catch (Exception e) {
-            Logger.e(TAG, "Exception：" + e.toString());
+            Logger.e(TAG, "Exception：", e);
         }
     }
 
     private void startSensorReport() {
-        Logger.d(TAG, " startTimerTask :" + mIsGyroReady.get() + ",mIsAccReady.get()：" + mIsAccReady.get() + ",mCarSpeed " + mCarSpeed + ",mTemperatureCount：" + mTemperatureCount.get());
+        Logger.d(TAG, "startTimerTask :", mIsGyroReady.get()
+                , "mIsAccReady.get()：", mIsAccReady.get()
+                , "mCarSpeed", mCarSpeed
+                , "mTemperatureCount：", mTemperatureCount.get());
         if (mIsGyroReady.get() == 1) {
             setLocGyroInfo();
         }

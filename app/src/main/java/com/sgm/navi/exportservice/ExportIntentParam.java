@@ -1,5 +1,6 @@
 package com.sgm.navi.exportservice;
 
+import com.android.utils.log.Logger;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 public class ExportIntentParam {
@@ -17,6 +18,7 @@ public class ExportIntentParam {
 
     public static void setIntentPage(final int intentPage) {
         mIntentPage = intentPage;
+        Logger.d("ExportIntentParam", "intentPage : ", mIntentPage);
     }
 
     public static String getKeyword() {
@@ -25,6 +27,7 @@ public class ExportIntentParam {
 
     public static void setKeyword(final String keyword) {
         mKeyword = keyword;
+        Logger.d("ExportIntentParam", "intentPage : ", mKeyword);
     }
 
     public static PoiInfoEntity getPoiInfo() {

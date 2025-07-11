@@ -28,17 +28,18 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     protected BaseActivity mActivity;
     protected String mScreenId;
 
+    private final String TAG = "fragment_life_cycle";
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
-    private final String LIFE_CYCLE_TAG = "fragment_life_cycle";
 
     public BaseFragment() {
-        Logger.i(getClass().getSimpleName(), "onCreate before");
+        Logger.i(TAG, getClass().getSimpleName(), "onCreate before");
         onCreateBefore();
     }
 
     @Override
     public void onAttach(final @NonNull Context context) {
         super.onAttach(context);
+        Logger.i(TAG, getClass().getSimpleName(), "onAttach");
         mActivity = (BaseActivity) context;
         mScreenId = mActivity.mScreenId;
     }
@@ -46,27 +47,27 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.i(getClass().getSimpleName(), "onCreate start");
+        Logger.i(TAG, getClass().getSimpleName(), "onCreate start");
         createViewModel();
-        Logger.i(getClass().getSimpleName(), "onCreate end");
+        Logger.i(TAG, getClass().getSimpleName(), "onCreate end");
     }
 
     @Nullable
     @Override
     public View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container, final @Nullable Bundle savedInstanceState) {
-        Logger.i(getClass().getSimpleName(), "onCreateView start");
+        Logger.i(TAG, getClass().getSimpleName(), "onCreateView start");
         mBinding = DataBindingUtil.inflate(inflater, onLayoutId(), container, false);
         bindViewModel();
         onInitView();
         final View rootView = mBinding.getRoot();
-        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onCreateView end");
+        Logger.i(TAG, getClass().getSimpleName(), "onCreateView end");
         return rootView;
     }
 
     @Override
     public void onViewCreated(final @NonNull View view, final @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Logger.i(getClass().getSimpleName(), "onViewCreated start");
+        Logger.i(TAG, getClass().getSimpleName(), "onViewCreated start");
         onInitObserver();
         onInitData();
         if (ConvertUtils.isEmpty(savedInstanceState)
@@ -77,7 +78,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
             //todo 请在此方法里面使用保存数据刷新UI
             onReStoreFragment();
         }
-        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onViewCreated end");
+        Logger.i(TAG, getClass().getSimpleName(), "onViewCreated end");
     }
 
     @Override
@@ -89,19 +90,19 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onStart() {
         super.onStart();
-        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onStart");
+        Logger.i(TAG, getClass().getSimpleName(), "onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onResume");
+        Logger.i(TAG, getClass().getSimpleName(), "onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onPause");
+        Logger.i(TAG, getClass().getSimpleName(), "onPause");
     }
 
     @Override
@@ -116,19 +117,19 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDestroyView");
+        Logger.i(TAG, getClass().getSimpleName(), "onDestroyView");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDetach");
+        Logger.i(TAG, getClass().getSimpleName(), "onDetach");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDestroy");
+        Logger.i(TAG, getClass().getSimpleName(), "onDestroy");
     }
 
     @Override

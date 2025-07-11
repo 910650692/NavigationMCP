@@ -30,7 +30,7 @@ public class VehicleSpeedController {
                 carPropertyManager = (CarPropertyManager) car.getCarManager(Car.PROPERTY_SERVICE);
             }
         } catch (Exception e) {
-            Logger.e(TAG, "e：" + e.toString());
+            Logger.e(TAG, "e：" + e);
         }
         mISpeedCallback = callback;
     }
@@ -48,7 +48,7 @@ public class VehicleSpeedController {
         }
         // 注册监听器
         boolean result = carPropertyManager.registerCallback(speedCallback, VehiclePropertyIds.PERF_VEHICLE_SPEED, 10);
-        Logger.d(TAG, "result: " + result);
+        Logger.d(TAG, "result: ", result);
     }
 
     private final CarPropertyEventCallback speedCallback = new CarPropertyEventCallback() {
@@ -65,7 +65,7 @@ public class VehicleSpeedController {
         @Override
         public void onErrorEvent(int propertyId, int zone) {
             // 处理错误
-            Logger.e(TAG, "Error occurred for property ID: " + propertyId);
+            Logger.e(TAG, "Error occurred for property ID: ", propertyId);
         }
     };
 
@@ -74,7 +74,7 @@ public class VehicleSpeedController {
      */
     private void onSpeedChanged(float speed) {
         // 更新 UI 或处理车速数据
-        Logger.d(TAG, "Current speed: " + speed + " m/s");
+        Logger.d(TAG, "Current speed: %f m/s", speed);
         if (mISpeedCallback != null) {
             mISpeedCallback.onPulseSpeedChanged((float) (speed * MPS_TO_KPH_FACTOR));
         }
@@ -92,7 +92,7 @@ public class VehicleSpeedController {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        Logger.i(TAG, "finalize: ");
+        Logger.i(TAG, "finalize:");
         unregisterCallback();
     }
 }

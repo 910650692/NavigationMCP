@@ -49,13 +49,12 @@ import com.sgm.navi.hmi.search.mainsearch.MainSearchFragment;
 import com.sgm.navi.hmi.search.searchresult.SearchResultFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
-import com.sgm.navi.service.StartService;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.AutoMapConstant.PoiType;
+import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.aos.RestrictedArea;
 import com.sgm.navi.service.define.aos.RestrictedAreaDetail;
@@ -74,6 +73,7 @@ import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.route.RouteRestrictionParam;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
 import com.sgm.navi.service.define.route.RouteTMCParam;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;
@@ -332,7 +332,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mInitSdkSuccess = successful;
         if (successful) {
             mView.doAfterInitSdk();
-            mModel.checkContinueNavi(mView);
+            mModel.checkContinueNavi();
             mModel.checkAuthorizationExpired();
         }
     }
@@ -357,13 +357,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     // 播报和静音切换
     public Action muteOrUnMute = () -> {
-        mModel.setCruiseVoice(!muteVisibility.get());
+        mModel.setCruiseVoice(Boolean.FALSE.equals(muteVisibility.get()));
     };
 
     public Action openSearchFragment = new Action() {
         @Override
         @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_SEARCH)
         public void call() {
+            Logger.i(TAG, "openSearchFragment");
             Bundle bundle = new Bundle();
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON,
                     AutoMapConstant.SearchType.MAIN_SEARCH_ICON);
@@ -377,10 +378,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         @Override
         @HookMethod(eventName = BuryConstant.EventName.AMAP_HOME_QUICKACCESS)
         public void call() {
+            Logger.i(TAG, "openHomeFragment");
             try {
                 PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
                 if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
-                    if (Logger.openLog) Logger.d(TAG, "hava data");
+                    Logger.d(TAG, "hava data");
                     //直接进入导航到家
                     SearchPackage.getInstance().clearLabelMark();
                     startRoute(poiInfoEntity);
@@ -399,6 +401,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         @Override
         @HookMethod(eventName = BuryConstant.EventName.AMAP_WORK_QUICKACCESS)
         public void call() {
+            Logger.i(TAG, "openCompanyFragment");
             try {
                 PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_COMPANY);
                 if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {

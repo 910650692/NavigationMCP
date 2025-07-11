@@ -207,7 +207,7 @@ public class RouteAdapterImpl implements IRouteApi {
             mRouteService.setChargingPreference(chargingPreference);
             ElecInfoConfig elecInfoConfig = getElecInfoConfig();
             mRouteService.setElecInfoConfig(elecInfoConfig);
-            Logger.d(TAG, GsonUtils.toJson(elecInfoConfig));
+            Logger.d(TAG, elecInfoConfig);
         }
     }
 

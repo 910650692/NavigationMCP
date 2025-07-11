@@ -6,7 +6,6 @@ import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -14,7 +13,6 @@ import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.MotionEvent;
-import android.view.WindowManager;
 
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.Observable;
@@ -43,7 +41,6 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.flavor.CarModelsFeature;
-import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.account.AccountQRCodeLoginFragment;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
@@ -153,6 +150,7 @@ import com.sgm.navi.service.logicpaket.user.forecast.IForecastAddressCallBack;
 import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushCallBack;
 import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
+import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
@@ -187,7 +185,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack,
         ScreenTypeUtils.SplitScreenChangeListener, FloatWindowReceiver.FloatWindowCallback  {
 
-    private final CommonManager mCommonManager;
+    private static final String TAG = "MapModel";
+    private CommonManager mCommonManager;
     private final IActivateObserver mActObserver;
     private StartupExceptionDialog mStartExceptionDialog = null;
 
@@ -198,7 +197,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private HistoryManager mHistoryManager;
     private AosRestrictedPackage restrictedPackage;
     private AiWaysGestureManager aiwaysGestureManager;
-    private static final String TAG = "MapModel";
     private long limitQueryTaskId;
     private long limitEndNumberTaskId;
     private int mCurrentCityCode;
@@ -1120,7 +1118,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private ContinueNaviDialog mContinueNaviDialog;
 
     /***校验继续导航***/
-    public void checkContinueNavi(Context context) {
+    public void checkContinueNavi() {
         if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
             Logger.i(TAG, "NaviStatusType.NAVING");
             return;
@@ -1160,11 +1158,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 }
                 mViewModel.continueNavi(mUncompletedNavi.getMEndPoiName());
             }
-        } catch (WindowManager.BadTokenException e) {
-            Logger.e(TAG, "showNavTipDialog e-->" + e.getMessage());
-            onCancelContinueNaviClick();
         } catch (Exception exception) {
-            Logger.e(TAG, "showNavTipDialog exception-->" + exception.getMessage());
+            Logger.e(TAG, "showNavTipDialog exception", exception.getMessage());
             onCancelContinueNaviClick();
         }
     }
@@ -1987,6 +1982,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     private void processExportCommand() {
         final int intentPage = ExportIntentParam.getIntentPage();
+        Logger.i(TAG, "open map intent page: ", intentPage);
         if(INaviConstant.OpenIntentPage.NONE == intentPage) {
             return;
         }
