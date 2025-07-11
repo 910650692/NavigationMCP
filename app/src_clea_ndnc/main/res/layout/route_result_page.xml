@@ -274,7 +274,7 @@
             android:clickable="true"
             android:maxWidth="@dimen/dp_1052"
             android:paddingHorizontal="@dimen/dp_29"
-            android:paddingVertical="@dimen/dp_53"
+            android:paddingVertical="@dimen/dp_29"
             android:visibility="@{ViewModel.getSecondaryPoiVisibility() == 1 ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -293,7 +293,7 @@
             android:layout_marginTop="@dimen/dp_m_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:clickable="true"
-            android:paddingHorizontal="@dimen/dp_34"
+            android:paddingHorizontal="@dimen/dp_30"
             android:paddingVertical="@dimen/dp_34"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHeight_max="@dimen/dp_646"
@@ -302,7 +302,7 @@
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_line_info_bg_prefer"
-                android:layout_width="@dimen/dp_545"
+                android:layout_width="@dimen/dp_553"
                 android:layout_height="@dimen/dp_77"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="19dp" />
@@ -340,11 +340,11 @@
                 android:layout_width="@dimen/dp_90"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_12"
+                android:background="@android:color/transparent"
                 android:button="@drawable/switch_route_button"
                 android:checked="false"
                 android:thumb="@null"
                 android:track="@null"
-                android:background="@android:color/transparent"
                 android:visibility="@{ViewModel.getBatterCheckBoxVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
                 app:layout_constraintEnd_toEndOf="@+id/route_line_info_bg_prefer"
@@ -365,7 +365,7 @@
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_line_info_prefer_line"
-                android:layout_width="@dimen/dp_545"
+                android:layout_width="@dimen/dp_553"
                 android:layout_height="@dimen/dp_1"
                 android:visibility="@{ViewModel.getRestrictionVisibility() ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
@@ -374,7 +374,7 @@
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_line_info_scene_route_restriction"
                 clickCommand="@{ViewModel.getRestrictionClick()}"
-                android:layout_width="@dimen/dp_545"
+                android:layout_width="@dimen/dp_553"
                 android:layout_height="@dimen/dp_63"
                 android:background="@{ViewModel.getRestrictionBackground()}"
                 android:visibility="@{ViewModel.getRestrictionVisibility() ? View.VISIBLE : View.GONE}"
@@ -423,7 +423,7 @@
 
             <com.sgm.navi.scene.ui.route.SceneRouteResultListView
                 android:id="@+id/route_line_info_scene_route_result"
-                android:layout_width="@dimen/dp_545"
+                android:layout_width="@dimen/dp_553"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toTopOf="@+id/skinView3"
                 app:layout_constraintStart_toStartOf="parent"
@@ -431,7 +431,7 @@
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/skinView3"
-                android:layout_width="@dimen/dp_545"
+                android:layout_width="@dimen/dp_553"
                 android:layout_height="@dimen/dp_128"
                 android:background="@drawable/bg_route_result_left_right"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -445,6 +445,7 @@
                 android:layout_marginStart="@dimen/dp_26"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:background="@drawable/bg_route_start_navigation_button"
+                app:layout_constraintEnd_toStartOf="@id/route_line_info_bg_route_refresh"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -469,9 +470,11 @@
                 android:layout_width="@dimen/dp_180"
                 android:layout_height="@dimen/dp_77"
                 android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_26"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:background="@drawable/bg_route_refresh_route_button"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/route_line_info_bg_route_start_navi" />
 
             <com.sgm.navi.ui.view.SkinTextView
@@ -491,7 +494,7 @@
             <!--算路偏好-->
             <com.sgm.navi.scene.ui.route.SceneRoutePreferenceView
                 android:id="@+id/route_line_info_scene_route_perference"
-                android:layout_width="@dimen/dp_545"
+                android:layout_width="@dimen/dp_553"
                 android:layout_height="0dp"
                 android:background="@drawable/bg_route_result_preference"
                 android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.VISIBLE : View.GONE}"

@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.scene.BaseSceneView;
 import com.sgm.navi.scene.databinding.SceneRouteDescendantsViewBinding;
@@ -147,7 +149,6 @@ public class SceneRouteDescendantsView extends BaseSceneView<SceneRouteDescendan
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-
     }
 
     /**
@@ -170,6 +171,9 @@ public class SceneRouteDescendantsView extends BaseSceneView<SceneRouteDescendan
                 if (null != mRouteSecondaryPoiAdapter) {
                     mRouteSecondaryPoiAdapter.setChildInfoList(poiInfoEntity.getChildInfoList(), poiInfoEntity);
                 }
+                ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams)mViewBinding.rvSecondaryPoi.getLayoutParams();
+                layoutParams.goneTopMargin = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_0);
+                mViewBinding.rvSecondaryPoi.setLayoutParams(layoutParams);
                 break;
             case AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND:
                 mViewBinding.lyDescendantsView.setVisibility(View.VISIBLE);
