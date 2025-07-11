@@ -250,7 +250,10 @@ public class FragmentIntent {
             if(Logger.openLog) {
                 Logger.i(TAG, "showCurrentFragment", toFragment.isAdded(), " , ", toFragment.isHidden());
             }
-            transaction.show(toFragment);
+
+            if(toFragment.getParentFragmentManager() == fragmentManager){
+                transaction.show(toFragment);
+            }
         }
         final List<Fragment> fragments = fragmentManager.getFragments();
         if (!fragments.isEmpty()) {
