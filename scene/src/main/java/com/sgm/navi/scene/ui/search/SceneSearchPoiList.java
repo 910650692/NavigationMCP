@@ -1464,7 +1464,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         List<SearchChildCategoryLocalInfo> childList = list.get(0).getCategoryLocalInfos();
         int brand = mScreenViewModel.getBrand();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"brand: "+brand);
-        boolean isPowerType = mScreenViewModel.powerType() == 1;
+        boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
         boolean isOffline = searchResultEntity.getPoiType() == 0;
         // 添加自营快筛
         if (isPowerType && !isOffline) {
