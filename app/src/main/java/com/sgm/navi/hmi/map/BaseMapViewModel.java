@@ -195,7 +195,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         super.onCreate();
         if(StartService.getInstance().checkSdkIsAvailable()) {
             startIconVisibility = new ObservableBoolean(false);
-        }else {
+        } else {
             checkAgreementRights();
         }
     }

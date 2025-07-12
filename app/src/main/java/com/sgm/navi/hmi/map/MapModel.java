@@ -169,6 +169,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description TODO
@@ -531,8 +532,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
                 @Override
                 public void onExit() {
-                    StackManager.getInstance().exitApp();
                     FloatViewManager.getInstance().showAllCardWidgets();
+                    if (null != mViewModel) {
+                        mViewModel.moveToBack();
+                    }
+                    ThreadManager.getInstance().asyncDelay(() -> StackManager.getInstance().exitApp(), 800, TimeUnit.MILLISECONDS);
                 }
             });
         }
