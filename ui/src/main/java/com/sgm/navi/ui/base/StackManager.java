@@ -29,13 +29,12 @@ public final class StackManager {
      * @return 栈大小
      */
     public int getFragmentSize(final String screenId) {
-        int size = 0;
-        if (ConvertUtils.isEmpty(mBaseFragmentStack)) {
-            return size;
+        if (ConvertUtils.isEmpty(mBaseFragmentStack) || ConvertUtils.isEmpty(screenId)) {
+            return 0;
         }
         final Stack<BaseFragment> fragments = mBaseFragmentStack.get(screenId);
         if (ConvertUtils.isEmpty(fragments)) {
-            return size;
+            return 0;
         }
         return fragments.size();
     }

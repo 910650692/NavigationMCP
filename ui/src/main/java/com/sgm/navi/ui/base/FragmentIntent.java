@@ -147,7 +147,7 @@ public class FragmentIntent {
             transaction.show(toFragment);
             STACKMANAGER.push(screenId, toFragment);
         } catch (Exception e) {
-            Logger.e(TAG, "Error in addPoiDetailsFragment: " + e.getMessage(), e);
+            Logger.e(TAG, "Error in addPoiDetailsFragment: ", e);
         } finally {
             transaction.commitAllowingStateLoss();
         }
@@ -189,6 +189,8 @@ public class FragmentIntent {
                     if (currentFragment.getParentFragmentManager() == fragmentManager) {
                         transaction.show(toFragment);
                     }
+                } else {
+                    Logger.i(TAG, "回退栈为空，已经没有可显示的Fragment");
                 }
             }
             transaction.commitAllowingStateLoss();
@@ -221,6 +223,8 @@ public class FragmentIntent {
             if (currentFragment.getParentFragmentManager() == fragmentManager) {
                 transaction.show(toFragment);
             }
+        } else {
+            Logger.i(TAG, "回退栈为空，已经没有可显示的Fragment");
         }
         transaction.commitAllowingStateLoss();
         return currentFragment;
@@ -431,11 +435,13 @@ public class FragmentIntent {
         STACKMANAGER.removeAllFragment(screenId);
         if (!ConvertUtils.isEmpty(fragments)) {
             for (Fragment fragment : fragments) {
-                if (fragment instanceof IBaseView) {
-                    IBaseView baseFragment = (BaseFragment) fragment;
+                if (fragment instanceof IBaseView baseFragment) {
                     STACKMANAGER.push(screenId, baseFragment);
                 }
             }
+            Logger.d(TAG, "Stack Fragment Manager", STACKMANAGER.getFragmentSize(screenId));
+        } else {
+            Logger.d(TAG, "fragmentManager管理栈为空");
         }
     }
 }
