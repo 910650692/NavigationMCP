@@ -3,13 +3,14 @@ package com.sgm.navi.service.logicpaket.navistatus;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 public final class NaviStatusPackage implements INaviStatusCallback {
 
-    private NavistatusAdapter mNavistatusAdapter;
-    private Hashtable<String, NaviStatusCallback> mNaviStatusCallbackMap;
+    private final NavistatusAdapter mNavistatusAdapter;
+    private final ConcurrentMap<String, NaviStatusCallback> mNaviStatusCallbackMap;
 
     public static NaviStatusPackage getInstance() {
         return NaviStatusPackage.Helper.NAVI_STATUS_PACKAGE;
@@ -22,7 +23,7 @@ public final class NaviStatusPackage implements INaviStatusCallback {
     private NaviStatusPackage() {
         mNavistatusAdapter = NavistatusAdapter.getInstance();
         mNavistatusAdapter.registerCallback(NaviStatusPackage.this);
-        mNaviStatusCallbackMap = new Hashtable<>();
+        mNaviStatusCallbackMap = new ConcurrentHashMap<>();
     }
 
     /**
