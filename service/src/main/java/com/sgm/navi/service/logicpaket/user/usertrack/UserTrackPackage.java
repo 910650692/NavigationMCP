@@ -188,6 +188,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         if (item == null) {
             return;
         }
+        Logger.d(TAG, "addSearchHistoryToDB: " + item.getName());
         final History history = new History();
         history.setMKeyWord(item.getName());
         history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY);
@@ -324,6 +325,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         history.setMEndPoiName(item.getToPoi().getName());
         history.setMIsCompleted(item.getIsCompleted());
         history.setMUpdateTime(item.getTime());
+        Logger.d(TAG, "toName: " + item.getToPoi().getName() + ", IsCompleted: " + item.getIsCompleted());
         mHistoryManager.insertOrReplace(history);
     }
 
@@ -805,6 +807,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
                 }
                 geoSearch(REVERSE_FASTEST, new GeoPoint(mDepInfo.getTrackPoints().get(mDepInfo.getFastestIndex()).getF64Longitude(),
                         mDepInfo.getTrackPoints().get(mDepInfo.getFastestIndex()).getF64Latitude()));
+                Logger.i(TAG, "逆地理编码完成，开始保存轨迹数据");
                 mHistoryManager.insertOrReplace(mHistory);
             } else if (mReverseType == REVERSE_FASTEST){
                 if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()) {

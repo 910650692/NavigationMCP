@@ -978,10 +978,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             if (mViewModel != null) {
                 MessageCenterType messageCenterType = mViewModel.getCurrentMsgType();
                 if (MessageCenterType.CONTINUE_NAVI.equals(messageCenterType)) {
-                    Action messageCenterGone = mViewModel.messageCenterGone;
-                    if (messageCenterGone != null) {
-                        messageCenterGone.call();
-                    }
+                    mViewModel.closeMessageCenter(false);
                 }
             }
         }
@@ -1189,6 +1186,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (mUncompletedNavi == null) {
             return;
         }
+        Logger.i(TAG, "onCancelContinueNaviClick setMIsCompleted(true)");
         mUncompletedNavi.setMIsCompleted(true);
         mHistoryManager.insertOrReplace(mUncompletedNavi);
     }

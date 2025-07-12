@@ -1,7 +1,6 @@
 package com.sgm.navi.service.greendao.history;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.greendao.DaoMaster;
@@ -61,7 +60,8 @@ public class HistoryManager {
             Logger.i(TAG, "insertOrReplace history is null");
             return;
         }
-        Logger.d(TAG, "insertOrReplace name:" + history.getMEndPoiName());
+        Logger.i(TAG, "name:" + history.getMEndPoiName(), " id:", history.getMId(),
+                " pid:", history.getMPoiId(), " Completed:", history.getMIsCompleted());
         history.setMUpdateTime(new Date());
         mSearchHistoryDao.insertOrReplace(history);
     }
@@ -221,7 +221,9 @@ public class HistoryManager {
                 .list();
         if (ConvertUtils.isEmpty(histories)) {
             Logger.d(TAG, "No uncompleted navigation found to update.");
+            return;
         }
+        Logger.d(TAG, "histories: " + histories.size());
         for (int i = 0; i < histories.size(); i++) {
             History history = histories.get(i);
             if (!ConvertUtils.isEmpty(history)) {

@@ -483,16 +483,23 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     };
 
     public Action messageCenterGone = () -> {
+        closeMessageCenter(true);
+    };
+
+    public void closeMessageCenter(boolean isCompletedNavi) {
+        Logger.d(TAG, "isCompletedNavi: ", isCompletedNavi);
         messageCenterVisible.set(false);
         mModel.deleteMessage();
-        MessageCenterInfo messageCenterInfo = messageCenterEntity.get();
-        if (messageCenterInfo != null) {
-            if (messageCenterInfo.getMsgType() == MessageCenterType.CONTINUE_NAVI) {
-                Logger.i(TAG, "onCancelContinueNaviClick");
-                mModel.onCancelContinueNaviClick();
+        if (isCompletedNavi) {
+            MessageCenterInfo messageCenterInfo = messageCenterEntity.get();
+            if (messageCenterInfo != null) {
+                if (messageCenterInfo.getMsgType() == MessageCenterType.CONTINUE_NAVI) {
+                    Logger.i(TAG, "onCancelContinueNaviClick");
+                    mModel.onCancelContinueNaviClick();
+                }
             }
         }
-    };
+    }
 
     public MessageCenterType getCurrentMsgType() {
         if (messageCenterEntity == null) {
