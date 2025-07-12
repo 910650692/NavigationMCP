@@ -12,6 +12,7 @@ import com.sgm.navi.scene.ui.search.SceneSearchPoiList;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
 import com.sgm.navi.service.define.route.RouteParam;
@@ -19,7 +20,11 @@ import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.sgm.navi.service.logicpaket.layer.LayerPackage;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
@@ -59,6 +64,8 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         }
         mScreenView.clearEditText();
         mSearchPackage.clearLabelMark();
+        //算路页面点击搜索加油站终点后返回，显示全揽画面
+        OpenApiHelper.enterPreview(mMapTypeId);
     }
 
     @Override
