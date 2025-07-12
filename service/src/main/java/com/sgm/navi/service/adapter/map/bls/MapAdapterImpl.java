@@ -2,8 +2,7 @@ package com.sgm.navi.service.adapter.map.bls;
 
 import android.graphics.Rect;
 
-import com.android.utils.ScreenUtils;
-import com.android.utils.gson.GsonUtils;
+import com.android.utils.screen.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.layer.model.BizLayerUtil;
@@ -19,11 +18,9 @@ import com.sgm.navi.service.define.map.MapStateStyle;
 import com.sgm.navi.service.define.map.MapViewParams;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.PointDataInfo;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.mfc.MfcController;
-import com.sgm.navi.service.define.screen.ScreenType;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
-import com.sgm.navi.service.define.utils.BevPowerCarUtils;
+import com.android.utils.screen.ScreenTypeUtils;
 
 import java.util.ArrayList;
 

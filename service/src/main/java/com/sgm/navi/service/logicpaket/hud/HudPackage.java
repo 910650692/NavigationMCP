@@ -17,7 +17,7 @@ import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;

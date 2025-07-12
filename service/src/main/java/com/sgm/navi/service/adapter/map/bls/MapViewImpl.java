@@ -11,7 +11,7 @@ import android.view.SurfaceHolder;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.ThemeUtils;
+import com.android.utils.theme.ThemeUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -31,6 +31,7 @@ import com.autonavi.gbl.map.model.BusinessDeviceThreadMode;
 import com.autonavi.gbl.map.model.DeviceAttribute;
 import com.autonavi.gbl.map.model.EGLDeviceWorkMode;
 import com.autonavi.gbl.map.model.EGLSurfaceAttr;
+import com.autonavi.gbl.map.model.GestureConfigure;
 import com.autonavi.gbl.map.model.MapBusinessDataType;
 import com.autonavi.gbl.map.model.MapControllerStatesType;
 import com.autonavi.gbl.map.model.MapLabelItem;
@@ -82,7 +83,7 @@ import com.sgm.navi.service.define.map.MapStateStyle;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.MapViewParams;
 import com.sgm.navi.service.define.map.PointDataInfo;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.mfc.MfcController;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
@@ -213,6 +214,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, true);
         //设置地形阴影图开
         getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_STATE_IS_TOPOGRAPHY_SHOW, true);//开启地形阴影图
+        getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_STATE_IS_TOPOGRAPHY_SHOW, true);//开启地形阴影图
+        GestureConfigure gestureConfig = new GestureConfigure();
+        gestureConfig.fRotateRate = -1;
+        getMapview().getOperatorGesture().setGestureConfigure(gestureConfig);
     }
 
 

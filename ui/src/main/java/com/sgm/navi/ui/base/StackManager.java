@@ -8,6 +8,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,24 +40,41 @@ public final class StackManager {
         return fragments.size();
     }
 
+    /**
+     * 获取fragment栈的大小.
+     *
+     * @param screenId 屏幕ID
+     * @return 栈大小
+     */
+    public int getActivitySize(final String screenId) {
+        if (ConvertUtils.isEmpty(mBaseActivityStack) || ConvertUtils.isEmpty(mBaseActivityStack.get(screenId))) {
+            return 0;
+        }
+        final Stack<BaseActivity> activities = mBaseActivityStack.get(screenId);
+        if (ConvertUtils.isEmpty(activities)) {
+            return 0;
+        }
+        return activities.size();
+    }
+
     /***
      *
      * @param screenId
      * @param fragmentSimpleName
      * @return 返回是否存在相同类名的对象
      */
-    public boolean isExistFragment(final String screenId,final String fragmentSimpleName) {
+    public boolean isExistFragment(final String screenId, final String fragmentSimpleName) {
         boolean isExist = false;
         if (ConvertUtils.isEmpty(mBaseFragmentStack) || ConvertUtils.isEmpty(mBaseFragmentStack.get(screenId))) {
             isExist = false;
         } else {
-           final Stack<BaseFragment> fragments = mBaseFragmentStack.get(screenId);
-           for (BaseFragment baseFragment : fragments) {
+            final Stack<BaseFragment> fragments = mBaseFragmentStack.get(screenId);
+            for (BaseFragment baseFragment : fragments) {
                 if (TextUtils.equals(baseFragment.getClass().getSimpleName(), fragmentSimpleName)) {
                     isExist = true;
                     break;
                 }
-           }
+            }
         }
         return isExist;
     }
@@ -126,23 +144,6 @@ public final class StackManager {
      *
      * @return 视图实例
      */
-    @Nullable
-    public BaseActivity getFirstActivity() {
-        if (ConvertUtils.isEmpty(mBaseActivityStack)) {
-            return null;
-        }
-        final String firstKey = mBaseActivityStack.keySet().stream().findFirst().get();
-        if (TextUtils.isEmpty(firstKey)) {
-            return null;
-        }
-        return getCurrentActivity(firstKey);
-    }
-
-    /**
-     * 获取正在显示的视图.
-     *
-     * @return 视图实例
-     */
     public BaseActivity getMainCurrentActivity() {
         final Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, "MAIN_SCREEN_MAIN_MAP");
         return ConvertUtils.peek(activities);
@@ -163,17 +164,17 @@ public final class StackManager {
      * 判断Activity是否存在
      *
      * @param screenId 屏幕UD
-     * @param cls Activity 类名
+     * @param cls      Activity 类名
      * @return Activity是否存在
      */
-    public Boolean isActivityExist(final String screenId,final Class cls) {
+    public Boolean isActivityExist(final String screenId, final Class cls) {
         final Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         AtomicBoolean isExist = new AtomicBoolean(false);
         if (ConvertUtils.isEmpty(activities)) {
             return isExist.get();
         }
         activities.forEach(baseActivity -> {
-            if (ConvertUtils.equals(baseActivity.getClass().getSimpleName(),cls.getSimpleName())) {
+            if (ConvertUtils.equals(baseActivity.getClass().getSimpleName(), cls.getSimpleName())) {
                 isExist.set(true);
             }
         });
@@ -187,7 +188,7 @@ public final class StackManager {
             return null;
         }
         activities.forEach(activity -> {
-            if (ConvertUtils.equals(activity.getClass().getSimpleName(),cls.getSimpleName())) {
+            if (ConvertUtils.equals(activity.getClass().getSimpleName(), cls.getSimpleName())) {
                 baseActivity.set(activity);
             }
         });
@@ -231,6 +232,27 @@ public final class StackManager {
         }
         final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
         return ConvertUtils.pop(fragmentStack);
+    }
+
+    /**
+     * 移除指定下标之前的所有Fragment.
+     */
+    public List<BaseFragment> removeFsIndexBefore(final String screenId, int index) {
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
+        if (ConvertUtils.isEmpty(fragmentStack) || 0 > index || index > fragmentStack.size())
+            return new Stack<>();
+        List<BaseFragment> baseFragments = fragmentStack.subList(0, index);
+        return baseFragments;
+    }
+
+    public List<BaseFragment> removeFsIndexBefore(final String screenId, String baseView) {
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
+        if (ConvertUtils.isEmpty(fragmentStack) || ConvertUtils.isEmpty(baseView))
+            return new Stack<>();
+        int firstIndex = isContainFragment(screenId, baseView);
+        if(0 > firstIndex) return new Stack<>();
+        List<BaseFragment> baseFragments = fragmentStack.subList(0, firstIndex);
+        return baseFragments;
     }
 
     /**
@@ -323,13 +345,13 @@ public final class StackManager {
     }
 
     public boolean isContainActivity(final String screenId, final String className) {
-        if(ConvertUtils.isEmpty(className)) return false;
-        if(isActivityStackNull(screenId)) return false;
+        if (ConvertUtils.isEmpty(className)) return false;
+        if (isActivityStackNull(screenId)) return false;
         Stack<BaseActivity> activityStack = getBaseActivityStack(screenId);
         for (BaseActivity activity : activityStack) {
-            if(ConvertUtils.isEmpty(activity)) continue;
+            if (ConvertUtils.isEmpty(activity)) continue;
             Logger.d("StackManager", activity.getClass().getSimpleName());
-            if(ConvertUtils.equals(activity.getClass().getSimpleName(), className)) return true;
+            if (ConvertUtils.equals(activity.getClass().getSimpleName(), className)) return true;
         }
         return false;
     }
@@ -350,6 +372,19 @@ public final class StackManager {
             return getIndexFragment(screenId, getFragmentIndex(screenId, fragment));
         }
         return null;
+    }
+
+    public int isContainFragment(final String screenId, final String className) {
+        if (ConvertUtils.isEmpty(className)) return -1;
+        if (isFragmentStackNull(screenId)) return -1;
+        Stack<BaseFragment> fragmentStack = getBaseFragmentStack(screenId);
+        for (int i = 0; i < fragmentStack.size(); i++) {
+            BaseFragment fragment = fragmentStack.get(i);
+            if (ConvertUtils.isEmpty(fragment)) continue;
+            Logger.d("StackManager", fragment.getClass().getSimpleName());
+            if (ConvertUtils.equals(fragment.getClass().getSimpleName(), className)) return i;
+        }
+        return -1;
     }
 
     /**
@@ -439,7 +474,7 @@ public final class StackManager {
      */
     public void exitApp() {
         if (Logger.openLog) {
-            Logger.printStackTrace("NaviApp_Exit",true);
+            Logger.printStackTrace("NaviApp_Exit", true);
         }
         System.exit(0);
     }

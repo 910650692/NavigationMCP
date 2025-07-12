@@ -1,10 +1,7 @@
 package com.sgm.navi.hmi.splitscreen;
 
-import android.app.ActivityOptions;
 import android.app.Application;
-import android.content.Intent;
 import android.graphics.Rect;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -14,12 +11,11 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
-import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;

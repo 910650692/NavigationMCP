@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ScreenUtils;
+import com.android.utils.screen.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.broadcast.FloatWindowReceiver;
@@ -30,7 +30,6 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.exportservice.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
-import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.hmi.utils.CaptureScreenUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;

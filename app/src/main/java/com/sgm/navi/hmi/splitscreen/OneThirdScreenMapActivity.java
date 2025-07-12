@@ -1,23 +1,21 @@
 package com.sgm.navi.hmi.splitscreen;
 
-import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.TypedValue;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.library.baseAdapters.BR;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
-import com.android.utils.ScreenUtils;
-import com.android.utils.ThemeUtils;
+import com.android.utils.screen.ScreenUtils;
+import com.android.utils.theme.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.ActivityOneThirdScreenMapBinding;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
@@ -33,7 +31,6 @@ import com.sgm.navi.ui.base.BaseActivity;
  */
 public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScreenMapBinding, OneThirdScreenViewModel> {
     private static final String TAG = "NDOneThirdScreenMapActivity";
-    private int currentUiMode;
     private Rect mPreviewRect = new Rect(0, 0, 0, 0);
     @Override
     public void onCreateBefore() {
@@ -55,7 +52,6 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
     public void onInitView() {
         mViewModel.loadMapView();
         mBinding.sceneNaviTbt.showOrHideGpsSign(false);
-        currentUiMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         mViewModel.onConfigurationChanged(ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
     }
 
@@ -150,18 +146,6 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
         } else {
             return false;
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        final int tmpUiMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        if (currentUiMode != tmpUiMode) {
-            mViewModel.onConfigurationChanged(ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
-            recreate();
-            Logger.i(TAG, "主题发生变化，重置UI！");
-        }
-        currentUiMode = tmpUiMode;
     }
 
     public Rect getPreviewRect() {

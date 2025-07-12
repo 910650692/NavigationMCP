@@ -5,7 +5,7 @@ import com.sgm.navi.service.AdapterConfig;
 import com.sgm.navi.service.define.voice.VoiceInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class VoiceAdapter {
@@ -50,7 +50,7 @@ public class VoiceAdapter {
         return mVoiceApi.getVoiceIdList(downLoadMode, engineType);
     }
 
-    public HashMap<Integer, VoiceInfo> getRecommendVoiceList(){
+    public Map<Integer, VoiceInfo> getRecommendVoiceList(){
         return mVoiceApi.getRecommendVoiceList();
     }
 

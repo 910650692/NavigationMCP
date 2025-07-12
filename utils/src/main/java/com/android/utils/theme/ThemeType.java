@@ -1,4 +1,4 @@
-package com.sgm.navi.service.define.map;
+package com.android.utils.theme;
 
 /**
  * @author: QiuYaWei
@@ -19,6 +19,15 @@ public enum ThemeType {
             case NIGHT -> 18;
             case AUTO -> 16;
             default -> 17;
+        };
+    }
+
+    public static ThemeType getThemeTypeByValue(int value) {
+        return switch (value) {
+            case 17 -> DAY;
+            case 18 -> NIGHT;
+            case 16 -> AUTO;
+            default -> UN_KNOWN;
         };
     }
 }

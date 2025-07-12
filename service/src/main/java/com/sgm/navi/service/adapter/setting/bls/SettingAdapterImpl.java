@@ -12,7 +12,7 @@ import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.setting.SettingAdapterCallback;
 import com.sgm.navi.service.adapter.setting.SettingApi;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
 import com.sgm.navi.service.define.setting.SettingController;
 

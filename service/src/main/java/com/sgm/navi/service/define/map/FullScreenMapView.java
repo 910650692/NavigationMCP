@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.utils.ScreenUtils;
+import com.android.utils.screen.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.MapDefaultFinalTag;
 

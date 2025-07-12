@@ -11,6 +11,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 
 import java.util.List;
+import java.util.Stack;
 
 
 @SuppressLint("CommitTransaction")
@@ -168,11 +169,10 @@ public class FragmentIntent {
             currentFragment = STACKMANAGER.popFragment(screenId);
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
             if (!ConvertUtils.isEmpty(currentFragment)) {
+                Logger.i(TAG, "currentFragment 出栈");
                 transaction.remove(currentFragment);
             } else {
-                if (Logger.openLog) {
-                    Logger.i(TAG, "对象为空无法移除", currentFragment);
-                }
+                Logger.i(TAG, "对象为空无法移除", currentFragment);
             }
             if (nextShow) {
                 final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
@@ -239,26 +239,19 @@ public class FragmentIntent {
     public static void showCurrentFragment(final String screenId, final FragmentManager fragmentManager) {
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
-        if (Logger.openLog && toFragment != null) {
-            Logger.i(TAG, "showCurrentFragment", toFragment.getClass().getSimpleName());
+        if (ConvertUtils.isEmpty(toFragment)) return;
+        if (Logger.openLog) {
+            Logger.i(TAG, "showCurrentFragment", toFragment.getClass().getSimpleName(), toFragment.isAdded(), toFragment.isHidden());
         }
-        if (!ConvertUtils.isEmpty(toFragment)) {
-            if (Logger.openLog) {
-                Logger.i(TAG, "showCurrentFragment", toFragment.isAdded(), " , ", toFragment.isHidden());
-            }
-
-            if (toFragment.getParentFragmentManager() == fragmentManager) {
+        try {
+            FragmentManager fragmentManager1 = toFragment.getParentFragmentManager();
+            if (fragmentManager1 != fragmentManager || toFragment.isHidden()) {
+                Logger.i(TAG, "restore toFragment", toFragment.getClass().getName());
                 transaction.show(toFragment);
             }
-        }
-        final List<Fragment> fragments = fragmentManager.getFragments();
-        if (!fragments.isEmpty()) {
-            for (int t = 0; t < fragments.size(); t++) {
-                if (Logger.openLog) {
-                    Logger.i(TAG, "showCurrentFragment", fragments.get(t).getClass().getSimpleName());
-                    Logger.i(TAG, "showCurrentFragment", fragments.get(t).isHidden());
-                }
-            }
+        } catch (IllegalStateException exception) {
+            Logger.i(TAG, " not associated with a fragment manager", toFragment.getClass().getName());
+            transaction.show(toFragment);
         }
         transaction.commit();
     }
@@ -309,6 +302,25 @@ public class FragmentIntent {
             transaction.show(fragment);
         }
         transaction.commitAllowingStateLoss();
+    }
+
+
+    /**
+     * 关闭指定视图之上的所有Fragment.
+     *
+     * @param screenId        视图Id
+     * @param fragmentManager 碎片管理器
+     * @param className       指定视图的类名
+     */
+    public static void closeIndexBeforeFragment(final String screenId, final FragmentManager fragmentManager, String className) {
+        List<BaseFragment> fragments = STACKMANAGER.removeFsIndexBefore(screenId, className);
+        if (ConvertUtils.isEmpty(fragments)) return;
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        for (BaseFragment fragment : fragments) {
+            transaction.remove(fragment);
+        }
+        transaction.commitAllowingStateLoss();
+        fragments.clear();
     }
 
     /**
@@ -417,11 +429,117 @@ public class FragmentIntent {
         STACKMANAGER.removeAllFragment(screenId);
     }
 
+    public static void closeAllFragment(final FragmentManager fragmentManager) {
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        List<Fragment> fragmentList = fragmentManager.getFragments();
+        if (ConvertUtils.isEmpty(fragmentList)) return;
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            transaction.remove(fragment);
+        }
+        transaction.commitAllowingStateLoss();
+    }
+
     /**
      * 关闭所有Fragment
      */
     public void closeAllFragment() {
         STACKMANAGER.removeAllFragment();
+    }
+
+    /**
+     * 恢复单个Fragment
+     *
+     * @param screenId        屏幕ID
+     * @param containerId     容器ID
+     * @param fragmentManager fragmentManager
+     * @param toFragment      BaseFragment
+     * @param bundle          参数
+     */
+    public static void restoreFragment(final String screenId, final int containerId,
+                                       final FragmentManager fragmentManager,
+                                       BaseFragment toFragment,
+                                       final Bundle bundle) {
+        try {
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.remove(toFragment);
+            Logger.i(TAG, "toFragment new instance before " + toFragment);
+            toFragment = toFragment.newInstances();
+            Logger.i(TAG, "toFragment new instance after " + toFragment);
+            toFragment.setArguments(bundle);
+            transaction.add(containerId, toFragment);
+            transaction.show(toFragment);
+            STACKMANAGER.push(screenId, toFragment);
+            transaction.commitAllowingStateLoss();
+        } catch (IllegalAccessException | InstantiationException e) {
+            Logger.d(TAG, "addFragment", e.getMessage());
+        }
+    }
+
+    /**
+     * 添加Fragment
+     *
+     * @param screenId        屏幕ID
+     * @param containerId     容器ID
+     * @param fragmentManager fragmentManager
+     */
+    public static void restoreFragments(final String screenId, final int containerId,
+                                       final FragmentManager fragmentManager) {
+        try {
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
+            Stack<BaseFragment> fragmentList = new Stack<>();
+            fragmentList.addAll(STACKMANAGER.getBaseFragmentStack(screenId));
+            for (int i = 0; i < fragmentList.size(); i++){
+                BaseFragment toFragment = fragmentList.get(i);
+                STACKMANAGER.removeBaseView(screenId, toFragment);
+                transaction.remove(toFragment);
+                Bundle bundle = toFragment.getArguments();
+                Logger.i(TAG, "toFragment new instance before " + toFragment);
+                toFragment = toFragment.newInstances();
+                Logger.i(TAG, "toFragment new instance after " + toFragment);
+                toFragment.setArguments(bundle);
+                transaction.add(containerId, toFragment);
+                transaction.hide(toFragment);
+                STACKMANAGER.push(screenId, toFragment);
+            }
+            transaction.show(STACKMANAGER.getCurrentFragment(screenId));
+            transaction.commitAllowingStateLoss();
+        } catch (IllegalAccessException | InstantiationException e) {
+            Logger.d(TAG, "addFragment", e.getMessage());
+        }
+    }
+
+    /**
+     * 添加Fragment
+     *
+     * @param screenId        屏幕ID
+     * @param containerId     容器ID
+     * @param fragmentManager fragmentManager
+     */
+    public static void restoreAllFragment(final String screenId, final int containerId,
+                                          final FragmentManager fragmentManager) {
+        try {
+            final FragmentTransaction transaction = fragmentManager.beginTransaction();
+            Stack<BaseFragment> fragmentList = new Stack<>();
+            fragmentList.addAll(STACKMANAGER.getBaseFragmentStack(screenId));
+            int size = fragmentList.size();
+            for (int i = 0; i < size; i++) {
+                BaseFragment toFragment = fragmentList.get(i);
+                Bundle bundle = new Bundle();
+                bundle.putInt("key_change_save_instance", 1);
+                transaction.remove(toFragment);
+                STACKMANAGER.removeBaseView(screenId, toFragment);
+                toFragment = toFragment.getClass().newInstance();
+                Logger.i(TAG, "toFragment new instance after " + toFragment);
+                toFragment.setArguments(bundle);
+                transaction.add(containerId, toFragment);
+                transaction.hide(toFragment);
+                STACKMANAGER.push(screenId, toFragment);
+            }
+            transaction.show(STACKMANAGER.getCurrentFragment(screenId));
+            transaction.commitAllowingStateLoss();
+        } catch (IllegalAccessException | InstantiationException e) {
+            Logger.d(TAG, "addFragment", e.getMessage());
+        }
     }
 
     /**
@@ -443,5 +561,9 @@ public class FragmentIntent {
         } else {
             Logger.d(TAG, "fragmentManager管理栈为空");
         }
+    }
+
+    public static void syncFragmentFragmentManager() {
+
     }
 }

@@ -3,7 +3,7 @@ package com.sgm.navi.service.adapter.voice;
 import com.sgm.navi.service.define.voice.VoiceInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 public interface VoiceApi {
 
@@ -44,7 +44,7 @@ public interface VoiceApi {
      */
     ArrayList<Integer> getVoiceIdList(int downloadMode, int engineType);
 
-    HashMap<Integer, VoiceInfo> getRecommendVoiceList();
+    Map<Integer, VoiceInfo> getRecommendVoiceList();
 
     /**
      * 根据语音包id获取语音信息

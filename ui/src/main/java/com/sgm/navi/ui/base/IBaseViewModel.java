@@ -90,6 +90,8 @@ public interface IBaseViewModel extends LifecycleObserver {
      */
     void closeAllFragmentUpRoute();
 
+    void closeAllFragmentUpRoute(String className);
+
     /**
      * 关闭所有Fragment，并关闭SearchView
      *

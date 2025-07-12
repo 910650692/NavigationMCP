@@ -4,7 +4,7 @@ import android.content.Intent;
 
 import androidx.core.app.ActivityCompat;
 
-import com.android.utils.ThemeUtils;
+import com.android.utils.theme.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.NaviService;
@@ -22,7 +22,7 @@ import com.sgm.navi.service.define.layer.RouteLineLayerParam;
 import com.sgm.navi.service.define.layer.refix.CarModeType;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.clusterorhud.ClusterRouteHelper;

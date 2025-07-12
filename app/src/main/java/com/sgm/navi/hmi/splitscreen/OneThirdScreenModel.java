@@ -5,8 +5,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 
 
-import androidx.annotation.NonNull;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.mapservice.bean.INaviConstant;
@@ -19,7 +17,7 @@ import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;

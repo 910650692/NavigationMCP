@@ -27,8 +27,8 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.ScreenUtils;
-import com.android.utils.ThemeUtils;
+import com.android.utils.screen.ScreenUtils;
+import com.android.utils.theme.ThemeUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.file.FileUtils;
@@ -53,7 +53,6 @@ import com.sgm.navi.hmi.message.MessageCenterHelper;
 import com.sgm.navi.hmi.navi.AuthorizationRequestDialog;
 import com.sgm.navi.hmi.navi.ContinueNaviDialog;
 import com.sgm.navi.hmi.navi.ForecastAddressDialog;
-import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.navi.PhoneAddressDialog;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
@@ -91,7 +90,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.MapVisibleAreaDataManager;
 import com.sgm.navi.service.define.map.MapVisibleAreaInfo;
 import com.sgm.navi.service.define.map.MapVisibleAreaType;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.message.MessageCenterInfo;
 import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.mfc.MfcController;
@@ -104,7 +103,7 @@ import com.sgm.navi.service.define.route.RoutePoiType;
 import com.sgm.navi.service.define.route.RouteRestrictionParam;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
 import com.sgm.navi.service.define.route.RouteTMCParam;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.FavoriteInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.setting.SettingController;
@@ -569,7 +568,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         layerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         ImmersiveStatusScene.getInstance().registerCallback("MapModel", this);
         //map devices绑定成功后适配深浅色模式
-        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+        updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(mapSurfaceView.getMapViewContext()) ? ThemeType.NIGHT : ThemeType.DAY);
         if (Logger.openLog) {
             Logger.d(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(mapSurfaceView.getMapViewContext()));
@@ -2002,20 +2001,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
     }
 
-    public void openGuideFragment() {
-        if (Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-            // Activity被意外destroy需要恢复页面的时候Fragment栈一定是空的
-            if (mViewModel == null || mViewModel.isFragmentStackNull()) {
-                Logger.i(TAG, " add NaviGuidanceFragment");
-                addFragment(new NaviGuidanceFragment(), null);
-            } else {
-                Logger.i(TAG, "openGuideFragment StackNull:", mViewModel.isFragmentStackNull());
-            }
-        } else {
-            Logger.e(TAG, "openGuideFragment NaviStatus is not NAVING");
-        }
-    }
-
     @Override
     public void onUpdateSetting(String key, boolean value) {
         if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
@@ -2083,8 +2068,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             addFragment(SplitFragment.getInstance(), null);
         } else {
             Logger.d("screen_change_used", "关闭1/3屏幕布局");
-            mViewModel.closeSplitFragment();
+            mViewModel.closeSplitFragment(false);
         }
+    }
+
+    @Override
+    public void applySplitTheme() {
+        Logger.d("screen_change_used", "applySplitTheme");
+        mViewModel.closeSplitFragment(true);
     }
 
     public void checkStatusCloseAllFragmentAndClearAllLabel() {

@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import com.android.utils.ThemeUtils;
+import com.android.utils.theme.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.fsa.FsaConstant;
@@ -22,7 +22,7 @@ import com.sgm.navi.hmi.databinding.ActivityClusterBinding;
 import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;

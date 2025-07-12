@@ -70,12 +70,13 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         Logger.i(TAG, getClass().getSimpleName(), "onViewCreated start");
         onInitObserver();
         onInitData();
-        if (ConvertUtils.isEmpty(savedInstanceState)
-                || Boolean.FALSE.equals(Objects.requireNonNull(savedInstanceState).getBoolean(KEY_CHANGE_SAVE_INSTANCE))) {
+        if (ConvertUtils.isEmpty(savedInstanceState)) {
             //todo 请在此方法里面请求数据，并将数据保存
+            Logger.d(TAG, getClass().getSimpleName(), "onGetFragmentData");
             onGetFragmentData();
         } else {
             //todo 请在此方法里面使用保存数据刷新UI
+            Logger.d(TAG, getClass().getSimpleName(), "onReStoreFragment");
             onReStoreFragment();
         }
         Logger.i(TAG, getClass().getSimpleName(), "onViewCreated end");
@@ -84,7 +85,17 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_CHANGE_SAVE_INSTANCE, true);
+        outState.putInt(KEY_CHANGE_SAVE_INSTANCE, 1);
+    }
+
+    @Override
+    public void refreshFragment() {
+        mActivity.refreshFragment();
+    }
+
+    @Override
+    public void restoreFragments() {
+        mActivity.restoreFragments();
     }
 
     @Override
@@ -189,6 +200,14 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
+    public void closeAllFragmentUpRoute(String className) {
+        if (mActivity == null) {
+            return;
+        }
+        mActivity.closeAllFragmentUpRoute(className);
+    }
+
+    @Override
     public void closeAllFragmentUpNavi() {
         if (mActivity == null) {
             return;
@@ -218,6 +237,10 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
 
     protected void onNewIntent(final Bundle bundle) {
 
+    }
+
+    protected BaseFragment newInstances() throws IllegalAccessException, java.lang.InstantiationException {
+        return this.getClass().newInstance();
     }
 
 

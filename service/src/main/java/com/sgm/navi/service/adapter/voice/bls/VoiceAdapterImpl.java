@@ -23,16 +23,18 @@ import com.sgm.navi.service.define.voice.VoiceInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListObserver, IImageObserver, IDownloadObserver {
     private static final String TAG = VoiceAdapterImpl.class.getSimpleName();
     private final Hashtable<String, VoiceAdapterCallback> callbacks;
     private VoiceService voiceService;
-    HashMap<Integer, VoiceInfo> recommendVoiceList;
+    ConcurrentHashMap<Integer, VoiceInfo> recommendVoiceList;
 
     public VoiceAdapterImpl() {
         callbacks = new Hashtable<>();
-        recommendVoiceList = new HashMap<>();
+        recommendVoiceList = new ConcurrentHashMap<>();
 
     }
     @Override
@@ -153,9 +155,9 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
     }
 
     @Override
-    public HashMap<Integer, VoiceInfo> getRecommendVoiceList() {
+    public Map<Integer, VoiceInfo> getRecommendVoiceList() {
         if(recommendVoiceList == null || recommendVoiceList.isEmpty()){
-            HashMap<Integer, VoiceInfo> voiceList = new HashMap<>();
+            ConcurrentHashMap<Integer, VoiceInfo> voiceList = new ConcurrentHashMap<>();
             ArrayList<Integer> voiceIdList = getVoiceIdList(DownLoadMode.DOWNLOAD_MODE_NET.ordinal());
             if (voiceIdList != null && voiceIdList.size() > 0) {
                 for (int i = 0; i < voiceIdList.size(); i++) {

@@ -1,11 +1,9 @@
 package com.sgm.navi.hmi.splitscreen;
 
 import android.graphics.Rect;
-import android.util.TypedValue;
 
 import androidx.databinding.library.baseAdapters.BR;
 
-import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentSplitBinding;
@@ -16,7 +14,7 @@ import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.screen.ScreenTypeUtils;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.StackManager;

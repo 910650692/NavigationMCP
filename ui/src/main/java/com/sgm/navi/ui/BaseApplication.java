@@ -13,6 +13,7 @@ import com.android.utils.process.ProcessManager;
 import com.android.utils.UtilsManager;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessStatus;
+import com.android.utils.theme.ThemeUtils;
 
 public class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
     public static final String TAG = "BaseApplication";
@@ -21,6 +22,7 @@ public class BaseApplication extends Application implements Application.Activity
     public void onCreate() {
         super.onCreate();
         UtilsManager.init(this);
+        ThemeUtils.INSTANCE.setAppThemeFollowSystem(this);
         if (DeviceUtils.isCar(this) && getSystemService(UserManager.class).isSystemUser()) {
             if(Logger.openLog) {
                 Logger.d(TAG, "NaviApp_Exit CurrentisSystemuser,killprocess");

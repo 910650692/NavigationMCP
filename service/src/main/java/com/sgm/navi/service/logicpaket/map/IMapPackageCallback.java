@@ -8,7 +8,7 @@ import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.service.define.map.ThemeType;
+import com.android.utils.theme.ThemeType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;

@@ -17,8 +17,8 @@ import com.sgm.navi.service.define.voice.OperationStatus;
 import com.sgm.navi.service.define.voice.VoiceInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVoiceBroadcastAdapter.Holder>{
 
@@ -37,7 +37,7 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
      * @param voiceInfoList
      */
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(final HashMap<Integer, VoiceInfo> voiceInfoList) {
+    public void setData(final Map<Integer, VoiceInfo> voiceInfoList) {
         mVoiceInfoList = new ArrayList<>(voiceInfoList.values());
         notifyDataSetChanged();
     }

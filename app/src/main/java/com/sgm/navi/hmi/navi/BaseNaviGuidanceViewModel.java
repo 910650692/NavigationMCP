@@ -37,7 +37,7 @@ import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.route.RouteRequestParam;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.screen.ScreenTypeUtils;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
@@ -122,7 +122,7 @@ public class BaseNaviGuidanceViewModel extends
         mNaviSpeedVisibility = new ObservableField<>(false);
         mNaviSapaVisibility = new ObservableField<>(false);
         mNaviCrossImageVisibility = new ObservableField<>(false);
-        mNaviControlVisibility = new ObservableField<>(false);
+        mNaviControlVisibility = new ObservableField<>(true);
         mNaviViaArrivedPopVisibility = new ObservableField<>(false);
         mNaviSapaDetailVisibility = new ObservableField<>(false);
         mNaviDriveReportVisibility = new ObservableField<>(false);
@@ -907,7 +907,7 @@ public class BaseNaviGuidanceViewModel extends
         ThreadManager.getInstance().postUi(() -> {
             mView.showProgressUI();
             //重算路关闭Route/Guidance上面所有页面
-            closeAllFragmentUpRoute();
+            closeAllFragmentUpRoute(mView.getClass().getName());
         });
     }
 

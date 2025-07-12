@@ -26,12 +26,13 @@ import com.sgm.navi.ui.base.BaseViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoiceBroadcastFragment, SettingVoiceBroadcastModel> {
 
     private static final String TAG = BaseSettingVoiceBroadcastViewModel.class.getSimpleName();
 
-    HashMap<Integer, VoiceInfo> recommendVoiceList = new HashMap<>();
+    Map<Integer, VoiceInfo> recommendVoiceList = new HashMap<>();
     public MutableLiveData<Boolean> mIsDefaultVoiceUsed = new MutableLiveData<>(true);
 
     public BaseSettingVoiceBroadcastViewModel(final @NonNull Application application) {

@@ -2,7 +2,7 @@ package com.sgm.navi.service.adapter.navi;
 
 import androidx.annotation.IntDef;
 
-import com.android.utils.ScreenUtils;
+import com.android.utils.screen.ScreenUtils;
 
 public interface NaviConstant {
     boolean IS_SYSTEM_AUDIO = true;

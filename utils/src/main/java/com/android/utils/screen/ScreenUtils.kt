@@ -1,4 +1,4 @@
-package com.android.utils
+package com.android.utils.screen
 
 import android.app.Activity
 import android.content.Context
@@ -13,7 +13,7 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
-import androidx.core.content.getSystemService
+import com.android.utils.ConvertUtils
 import java.io.BufferedOutputStream
 import java.io.PrintStream
 

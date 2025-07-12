@@ -1,6 +1,6 @@
 package com.sgm.navi.service.define.map;
 
-import com.android.utils.ScreenUtils;
+import com.android.utils.screen.ScreenUtils;
 import com.sgm.navi.service.AppCache;
 
 import lombok.Getter;

@@ -5,7 +5,7 @@ import com.sgm.navi.service.define.bevpower.ElecCommonParameter;
 import com.sgm.navi.service.define.bevpower.ElecSpeedCostList;
 import com.sgm.navi.service.define.bevpower.PowertrainLoss;
 import com.google.gson.reflect.TypeToken;
-import com.sgm.navi.service.define.screen.ScreenType;
+import com.android.utils.screen.ScreenType;
 
 import java.util.ArrayList;
 import java.util.List;

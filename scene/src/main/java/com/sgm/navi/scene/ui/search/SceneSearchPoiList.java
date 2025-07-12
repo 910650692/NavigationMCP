@@ -978,6 +978,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if (!ConvertUtils.isNull(mAnimator) && mAnimator.isRunning()) {
             showLoading(false);
         }
+        if(null == mViewBinding) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "视图为空 无法刷新布局");
+            return;
+        }
         mViewBinding.overlayInterceptor.setVisibility(GONE);
         if (ConvertUtils.isEmpty(mScreenViewModel)) {
             return;
