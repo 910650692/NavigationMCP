@@ -134,6 +134,20 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private RouteWeatherDetailsPageBinding mRouteWeatherPageView;
     private RoutePoiDetailsPageBinding mRoutePoiDetailsPageView;
 
+    private final Runnable mSearchTimeoutTask = new Runnable() {
+        @Override
+        public void run() {
+            if (mViewModel != null) {
+                mViewModel.onSearchClose();
+                hideSearchProgressUI();
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.route_search_loading_fail));
+            } else {
+                Logger.e(TAG, "View model is null");
+            }
+        }
+    };
+
     @Override
     public int onLayoutId() {
         return R.layout.fragment_route;
@@ -1398,12 +1412,15 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 mSearchLoadingDialog.show();
             }
         }
+        ThreadManager.getInstance().removeHandleTask(mSearchTimeoutTask);
+        ThreadManager.getInstance().postDelay(mSearchTimeoutTask, 8000);
     }
 
     /***
      * 搜索请求弹框关闭
      */
     public void hideSearchProgressUI() {
+        ThreadManager.getInstance().removeHandleTask(mSearchTimeoutTask);
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
             mSearchLoadingDialog.dismiss();
             mSearchLoadingDialog = null;

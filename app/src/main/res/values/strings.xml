@@ -222,6 +222,7 @@
     <string name="route_poi_phone">电话 :%s</string>
     <string name="route_search_offline_warn">无网络连接，请检查网络后重试</string>
     <string name="route_search_online_warn">很抱歉，未找到结果</string>
+    <string name="route_search_loading_fail">加载失败，请稍后重试</string>
 
     <!-- 账号相关 -->
     <string name="account_title">账号中心</string>

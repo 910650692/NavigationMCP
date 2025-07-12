@@ -202,10 +202,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             Logger.e(TAG, "天气请求失败");
             return;
         }
-        ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteWeather(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex()));
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mSearchLoadingType = AutoMapConstant.RouteSearchType.SearchWeather;
             mViewModel.showSearchProgressUI();
+            ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteWeather(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex()));
         }
     }
 
@@ -225,10 +225,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * */
     public void getSearchListAndShow() {
         mListSearchType = 3;
-        ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteRestArea(getCurrentIndex()));
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mSearchLoadingType = AutoMapConstant.RouteSearchType.SearchRestArea;
             mViewModel.showSearchProgressUI();
+            ThreadManager.getInstance().execute(() -> mRoutePackage.requestRouteRestArea(getCurrentIndex()));
         }
     }
 

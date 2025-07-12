@@ -1892,9 +1892,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mView.setRouteDetailsEndName(mEndName.get());
             mView.setAvoidStatusUI(false);
             mCurrentPageHistory.add("1");
-            mModel.requestRouteDetails(index);
             mModel.setSearchLoadingType(AutoMapConstant.RouteSearchType.SearchRouteDetail);
             showSearchProgressUI();
+            mModel.requestRouteDetails(index);
         } else {
             mModel.onRouteSelect(index);
         }
