@@ -753,7 +753,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
-            mViewModel.hideStartIcon();
             mSettingPackage.setSettingChangeCallback(mapTypeId.name(), this);
             layerPackage.setDefaultCarMode(mapTypeId);
             mapPackage.setMapCenter(mapTypeId, new GeoPoint(positionPackage.getLastCarLocation().getLongitude(),
@@ -761,6 +760,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             signalPackage.registerObserver(mapTypeId.name(), this);
             setMapCenterInScreen();
             mapPackage.goToCarPosition(mapTypeId);
+            ThreadManager.getInstance().postDelay(() -> mViewModel.hideStartIcon(), 600);
             naviPackage.registerObserver(mViewModel.mScreenId, this);
             // 注册监听
             cruisePackage.registerObserver(mViewModel.mScreenId, this);

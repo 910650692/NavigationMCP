@@ -440,7 +440,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.reminderDialogReCreate();
         mBinding.mainImg.setImageResource(R.drawable.logo_startup);
         if (mViewModel.isSupportSplitScreen()) {
+            mViewModel.showStartIcon();
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
+            ThreadManager.getInstance().postDelay(() -> mViewModel.hideStartIcon(), 200);
         }
         //模式更改不重新触发trips
         mViewModel.mIsChangingConfigurations.set(true);

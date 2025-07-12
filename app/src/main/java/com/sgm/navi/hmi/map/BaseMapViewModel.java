@@ -194,7 +194,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void onCreate() {
         super.onCreate();
         if(StartService.getInstance().checkSdkIsAvailable()) {
-            startIconVisibility = new ObservableBoolean(false);
+//            startIconVisibility = new ObservableBoolean(false);
         } else {
             checkAgreementRights();
         }
@@ -321,6 +321,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void hideStartIcon() {
         startIconVisibility.set(false);
+    }
+
+    public void showStartIcon() {
+        startIconVisibility.set(true);
     }
 
     /**
