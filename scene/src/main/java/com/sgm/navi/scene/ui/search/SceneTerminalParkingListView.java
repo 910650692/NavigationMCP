@@ -166,14 +166,14 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
             public void run() {
                 PoiInfoEntity minPoi = poiList.get(0);
                 int index = 0;
-                for (int i = 1; i < poiList.size(); i++) {
-                    int curParkDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(poiList.get(i).getMPoint());
-                    int minParkDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(minPoi.getMPoint());
-                    if(curParkDistance < minParkDistance){
-                        minPoi = poiList.get(i);
-                        index = i;
-                    }
-                }
+//                for (int i = 1; i < poiList.size(); i++) {
+//                    int curParkDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(poiList.get(i).getMPoint());
+//                    int minParkDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(minPoi.getMPoint());
+//                    if(curParkDistance < minParkDistance){
+//                        minPoi = poiList.get(i);
+//                        index = i;
+//                    }
+//                }
                 mAdapter.updateSelectedPosition(index);
                 layoutManager.scrollToPositionWithOffset(index, 0);
                 PoiInfoEntity finalMinPoi = minPoi;
