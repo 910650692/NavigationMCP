@@ -823,6 +823,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             }
             final String result = String.format(format, kilometer);
             mView.updateOnMapScaleChanged(result);
+            Logger.d(TAG,"scale: ",scale,", result: ",result);
         } catch (Exception exception) {
             Logger.e(TAG, "updateOnMapScaleChanged, format error:" + exception.getMessage());
         }
