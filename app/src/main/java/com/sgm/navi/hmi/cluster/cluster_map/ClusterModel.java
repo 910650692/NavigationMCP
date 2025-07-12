@@ -119,6 +119,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
                 MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.8f);
             }
             showRouteLine();
+            LayerPackage.getInstance().setStartPointVisible(MapType.CLUSTER_MAP, false);
         }
     }
 
