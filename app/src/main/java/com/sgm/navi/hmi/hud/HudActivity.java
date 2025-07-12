@@ -82,7 +82,7 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Logger.d(TAG, "onConfigurationChanged");
-        updateMapThemeType();
+//        updateMapThemeType();
     }
 
     private void updateMapThemeType() {
