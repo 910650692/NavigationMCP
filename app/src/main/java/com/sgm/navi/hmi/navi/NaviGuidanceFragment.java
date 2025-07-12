@@ -267,9 +267,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     @Override
     public void onGetFragmentData() {
-        Logger.i(TAG, "onGetFragmentData");
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         String naviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        Logger.i(TAG, "onGetFragmentData", "naviStatus:", naviStatus);
         if (mViewModel == null) {
             Logger.e(TAG, "mViewModel is null");
             return;
@@ -285,6 +285,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mViewModel.restoreNavigationByRebuild();
             initLazyView();
         }
+        mViewModel.refreshMapMode();
         mViewModel.setDefultPlateNumberAndAvoidLimitSave();
         mViewModel.initShowScene(NAVI_SCENE_CONTROL, NAVI_SCENE_TBT, NAVI_SCENE_ETA, NAVI_SCENE_TMC);
         mIs24HourFormat = getTimeFormatIs24Hour();

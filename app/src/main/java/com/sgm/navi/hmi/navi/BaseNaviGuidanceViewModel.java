@@ -24,6 +24,7 @@ import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
@@ -37,6 +38,8 @@ import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.sgm.navi.service.logicpaket.layer.LayerPackage;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.tts.NaviMediaPlayer;
@@ -292,6 +295,15 @@ public class BaseNaviGuidanceViewModel extends
     public void startNavigation(final Bundle bundle) {
         mModel.startNavigation(bundle);
         mView.startNavigation();
+    }
+
+    /**
+     * 恢复导航后更新地图模式
+     */
+    public void refreshMapMode() {
+        MapMode currentMapMode = MapPackage.getInstance().getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
+        MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, currentMapMode, true);
+        LayerPackage.getInstance().setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
     }
 
     /**

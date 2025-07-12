@@ -1129,6 +1129,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 if (mUncompletedNavi == null) return;
                 Date mUpdateTime = mUncompletedNavi.getMUpdateTime();
                 if (mUpdateTime == null) {
+                    Logger.i(TAG, "mUpdateTime null");
                     return;
                 }
                 long targetTimeMillis = mUpdateTime.getTime();
