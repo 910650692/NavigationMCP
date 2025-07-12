@@ -326,7 +326,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.sgm.navi.ui.view.SkinFrameLayout
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/layout_fragment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

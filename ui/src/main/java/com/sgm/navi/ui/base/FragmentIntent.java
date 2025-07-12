@@ -444,8 +444,5 @@ public class FragmentIntent {
                 }
             }
         }
-        if(Logger.openLog) {
-            Logger.d(TAG, "同步后的默认栈：", STACKMANAGER.getBaseFragmentStack(screenId));
-        }
     }
 }
