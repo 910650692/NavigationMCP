@@ -156,6 +156,8 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
                 if (ConvertUtils.isEmpty(naviInfoBean)) return;
                 mNaviEtaInfo = naviInfoBean;
                 updateTbT();
+            } else {
+                mNaviEtaInfo = naviInfoBean;
             }
         });
     }
@@ -255,10 +257,18 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
             updateTbT();
         }
         mBinding.ivCross.setVisibility(mCrossImgIsOnShowing ? View.VISIBLE : View.GONE);
+
+        if (!ConvertUtils.isNull(mBinding)) {
+            updateTbT();
+        }
     }
 
     private void updateTbT() {
-        if (ConvertUtils.isNull(mNaviEtaInfo)) return;
+        if (ConvertUtils.isNull(mBinding) || ConvertUtils.isNull(mNaviEtaInfo)) {
+            Logger.w(TAG, "updateTbT() skipped: mBinding or mNaviEtaInfo is null");
+            return;
+        }
+
         mBinding.sceneNaviTbt.onNaviInfo(mNaviEtaInfo);
         mBinding.sceneNaviEta.onNaviInfo(mNaviEtaInfo);
         mBinding.sceneNaviTmc.onNaviInfo(mNaviEtaInfo);
@@ -296,6 +306,10 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
             } else if (!ConvertUtils.isNull(mView)) {
                 mView.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
                 mView.setFocusable(isShow);
+
+                if (isShow && !ConvertUtils.isNull(mBinding)) {
+                    updateTbT();
+                }
             } else {
                 initView();
             }
