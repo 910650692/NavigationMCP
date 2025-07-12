@@ -118,6 +118,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
         });
         setMusicShowUI(FloatWindowReceiver.isLauncherStatus, FloatWindowReceiver.musicWindowWidth);
+        mOpenGuideRunnable = () -> mViewModel.openGuideFragment();
+        ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
     }
 
     /**
@@ -314,8 +316,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mViewModel.checkPopGuideLogin();
         }
         if(Boolean.FALSE.equals(mViewModel.mIsChangingConfigurations.get())) mViewModel.getOnlineForecastArrivedData();
-        mOpenGuideRunnable = () -> mViewModel.openGuideFragment();
-        ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
     }
 
     @Override

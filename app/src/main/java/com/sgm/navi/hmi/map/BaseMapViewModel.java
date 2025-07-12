@@ -1504,7 +1504,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void openGuideFragment(){
-        if(mModel == null) return;
+        if(mModel == null) {
+            Logger.e(TAG, "openGuideFragment mModel is null");
+            return;
+        }
         mModel.openGuideFragment();
     }
 

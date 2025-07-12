@@ -151,7 +151,6 @@ import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushCallBack;
 import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.sgm.navi.ui.BuildConfig;
-import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
 import com.sgm.navi.ui.base.StackManager;
@@ -1999,13 +1998,16 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void openGuideFragment() {
-        if (Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(),
-                NaviStatus.NaviStatusType.NAVING)) {
-            Logger.e(TAG, "openGuideFragment");
+        if (Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
             // Activity被意外destroy需要恢复页面的时候Fragment栈一定是空的
-            if (mViewModel != null && mViewModel.isFragmentStackNull()) {
+            if (mViewModel == null || mViewModel.isFragmentStackNull()) {
+                Logger.i(TAG, " add NaviGuidanceFragment");
                 addFragment(new NaviGuidanceFragment(), null);
+            } else {
+                Logger.i(TAG, "openGuideFragment StackNull:", mViewModel.isFragmentStackNull());
             }
+        } else {
+            Logger.e(TAG, "openGuideFragment NaviStatus is not NAVING");
         }
     }
 

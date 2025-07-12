@@ -54,7 +54,7 @@ public class FragmentIntent {
         }
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         if (STACKMANAGER.isFragmentStackNull(screenId)) {
-            Logger.i(TAG, "current fragment stack is null");
+            Logger.i(TAG, "current fragment stack is null", screenId, toFragment.getClass().getName());
             toFragment.setArguments(bundle);
             transaction.add(containerId, toFragment);
             transaction.show(toFragment);
