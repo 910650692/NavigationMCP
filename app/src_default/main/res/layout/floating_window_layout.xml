@@ -7,6 +7,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/float_window"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
         <com.sgm.navi.ui.view.SkinCardView
             android:id="@+id/card_navi_view"
             android:layout_width="@dimen/dp_365"
@@ -15,7 +24,7 @@
             app:cardBackgroundColor="@color/common_bg_color"
             app:cardCornerRadius="@dimen/dp_18"
             app:cardElevation="@dimen/dp_30"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
 
@@ -65,7 +74,7 @@
             app:cardBackgroundColor="@color/common_bg_color"
             app:cardCornerRadius="@dimen/dp_18"
             app:cardElevation="@dimen/dp_30"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone">
 

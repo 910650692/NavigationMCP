@@ -161,6 +161,15 @@
         </receiver>
 
         <receiver
+            android:name="com.sgm.navi.broadcast.FloatWindowReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="patac.hmi.intent.action.FLOAT_WINDOW_SIDE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name="com.sgm.navi.broadcast.BootCompletedReceiver"
             android:enabled="true"
             android:exported="true"

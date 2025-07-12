@@ -36,6 +36,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.NaviService;
+import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -184,7 +185,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
         IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback,
         OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack,
-        ScreenTypeUtils.SplitScreenChangeListener {
+        ScreenTypeUtils.SplitScreenChangeListener, FloatWindowReceiver.FloatWindowCallback  {
 
     private final CommonManager mCommonManager;
     private final IActivateObserver mActObserver;
@@ -360,6 +361,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         });
         LayerPackage.getInstance().registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
+        FloatWindowReceiver.registerCallback(TAG, this);
     }
 
     @Override
@@ -401,6 +403,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ScreenTypeUtils.getInstance().removeSplitScreenChangeListener(TAG);
         clearDialog();
         LayerPackage.getInstance().unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
+        FloatWindowReceiver.unregisterCallback(TAG);
     }
 
     public void clearDialog() {
@@ -2118,5 +2121,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 mViewModel.openTrafficDetailFragment(poiInfo, false);
             }
         }
+    }
+
+    @Override
+    public void onWindowSideChanged(boolean isOpenFloat, int windowWidth) {
+        Logger.d(TAG, "悬浮窗开关：" + isOpenFloat + "  悬浮窗宽度：" + windowWidth);
+        mViewModel.setMusicShowUI(isOpenFloat, windowWidth);
     }
 }

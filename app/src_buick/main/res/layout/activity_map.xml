@@ -24,6 +24,17 @@
             android:layout_height="match_parent" />
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/float_window"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_85"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/search_main_tab"
             clickCommand="@{ViewModel.intercept}"
             android:layout_width="wrap_content"
@@ -31,7 +42,7 @@
             android:layout_marginStart="@dimen/dp_437"
             android:layout_marginTop="@dimen/dp_41"
             android:visibility="@{ViewModel.mainBTNVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
@@ -218,8 +229,8 @@
             android:paddingStart="@dimen/dp_29"
             android:paddingEnd="@dimen/dp_65"
             android:visibility="@{ViewModel.bottomNaviVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toEndOf="@id/float_window"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_routing"
@@ -334,7 +345,7 @@
             android:layout_marginTop="@dimen/dp_41"
             android:maxWidth="@dimen/dp_1000"
             android:minWidth="@dimen/dp_1042"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
 

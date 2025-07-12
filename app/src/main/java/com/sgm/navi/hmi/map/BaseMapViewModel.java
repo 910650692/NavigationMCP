@@ -1667,4 +1667,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void closeSplitFragment() {
         mView.closeSplitFragment();
     }
+
+    public void setMusicShowUI(boolean isOpenFloat, int windowWidth) {
+        if (mView != null) {
+            mView.setMusicShowUI(isOpenFloat, windowWidth);
+        }
+    }
 }

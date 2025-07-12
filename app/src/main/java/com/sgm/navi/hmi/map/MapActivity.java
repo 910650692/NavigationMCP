@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -24,6 +25,7 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.BR;
@@ -115,6 +117,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 mBinding.includeMessageCenter.getRoot().setLayoutParams(layoutParams);
             }
         });
+        setMusicShowUI(FloatWindowReceiver.isLauncherStatus, FloatWindowReceiver.musicWindowWidth);
     }
 
     /**
@@ -568,6 +571,20 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             closeFragment(true);
         } else {
             Logger.d("screen_change_used", "不包含1/3屏幕布局");
+        }
+    }
+
+    public void setMusicShowUI(boolean isOpenFloat, int windowWidth) {
+        Logger.d(TAG, "悬浮窗开关：" + isOpenFloat + "  悬浮窗宽度：" + windowWidth);
+        if (mBinding == null){
+            return;
+        }
+        if (isOpenFloat){
+            ViewGroup.LayoutParams floatParams = mBinding.floatWindow.getLayoutParams();
+            floatParams.width = windowWidth;
+            mBinding.floatWindow.setVisibility(View.INVISIBLE);
+        } else {
+            mBinding.floatWindow.setVisibility(View.GONE);
         }
     }
 }

@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.exportservice.ExportIntentParam;
@@ -60,7 +62,7 @@ import com.sgm.navi.vrbridge.MapStateManager;
  * Description: [在这里描述文件功能]
  */
 public class LauncherWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, CaptureScreenUtils.CaptureScreenCallBack, ComponentCallbacks,
-        NaviStatusCallback, ILayerPackageCallBack {
+        NaviStatusCallback, ILayerPackageCallBack, FloatWindowReceiver.FloatWindowCallback {
     private static final String TAG = "LauncherWindowService";
     private WindowManager mWindowManager;
     private View mView;
@@ -84,6 +86,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private String currentNaviStatus;
     private final int DisplayId = 0;
     private LayerPackage mLayerPackage;
+
     private LauncherWindowService() {
 
     }
@@ -138,6 +141,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         captureScreenUtils.unRegisterListener(this);
         mNaviStatusPackage.unregisterObserver(KEY);
         mLayerPackage.unRegisterCallBack(MAP_TYPE, this);
+        FloatWindowReceiver.unregisterCallback(TAG);
     }
 
     private void initClickListener() {
@@ -207,6 +211,14 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         );
         mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(context), null);
         mView = mBinding.getRoot();
+        if (FloatWindowReceiver.isLauncherStatus){
+            ViewGroup.LayoutParams floatParams = mBinding.floatWindow.getLayoutParams();
+            floatParams.width = FloatWindowReceiver.musicWindowWidth + 36;
+            mBinding.floatWindow.setVisibility(View.INVISIBLE);
+        } else {
+            mBinding.floatWindow.setVisibility(View.GONE);
+        }
+
 
         final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -229,6 +241,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         changeUiTypeOnNaviStatusChanged();
         updateLanInfo(mIsShowLane, mLastLanInfo);
         updateTbT(mNaviEtaInfo);
+        FloatWindowReceiver.registerCallback(TAG, this);
     }
 
     private void updateTbT(NaviEtaInfo etaInfo) {
@@ -390,6 +403,22 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     public static LauncherWindowService getInstance() {
         return InstanceHolder.instance;
+    }
+
+    @Override
+    public void onWindowSideChanged(boolean isOpenFloat, int windowWidth) {
+        Logger.d(TAG, "悬浮窗开关：" + isOpenFloat + "  悬浮窗宽度：" + windowWidth);
+        if (mBinding == null){
+            return;
+        }
+
+        if (isOpenFloat){
+            ViewGroup.LayoutParams floatParams = mBinding.floatWindow.getLayoutParams();
+            floatParams.width = windowWidth + 36;
+            mBinding.floatWindow.setVisibility(View.INVISIBLE);
+        } else {
+            mBinding.floatWindow.setVisibility(View.GONE);
+        }
     }
 
     private static final class InstanceHolder {
