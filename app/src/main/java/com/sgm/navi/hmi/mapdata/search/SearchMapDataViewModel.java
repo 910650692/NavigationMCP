@@ -51,6 +51,7 @@ public class SearchMapDataViewModel extends BaseViewModel<SearchMapDataFragment,
      */
     public Action mClearEdit = () -> {
         mView.clearEditText();
+        closeFragment(true);
     };
 
     /**
