@@ -22,10 +22,11 @@
         <com.sgm.navi.scene.ui.navi.SceneNaviLanesView
             android:id="@+id/cruise_lanes_view"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_87"
+            android:layout_height="@dimen/dp_95"
             android:layout_marginStart="@dimen/dp_34"
             android:minWidth="@dimen/dp_430"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/bg_common_with_corner"
             android:clickable="true"
             android:focusable="false"

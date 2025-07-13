@@ -403,10 +403,10 @@
             app:viewModel="@{ViewModel}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_17"
             android:visibility="@{ViewModel.cruiseVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_main_tab" />
+            android:layout_marginTop="@dimen/dp_85"
+            app:layout_constraintTop_toTopOf="@id/search_main_tab" />
 
 
 
