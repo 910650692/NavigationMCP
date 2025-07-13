@@ -984,7 +984,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) && !mSettingPackage.getPrivacyStatus()) {
             //导航结束，判断当前隐私协议状态，如果为拒绝，退出应用
             if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
-                CarModelsFeature.getInstance().exitApp();
+                if (authorizationRequestDialog != null && !authorizationRequestDialog.isShowing()) {
+                    CarModelsFeature.getInstance().exitApp();
+                }
             }
         }
     }
