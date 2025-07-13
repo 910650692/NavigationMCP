@@ -1,6 +1,7 @@
 package com.sgm.navi.service.logicpaket.user.behavior;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
@@ -264,6 +265,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
         }
 
         if (isLogin() && type != 3) {
+            removeFavorite(poiInfo);
             itemId =  mBehaviorAdapter.addFavorite(poiInfo);
         } else {
             if (poiInfo.getFavoriteInfo() == null) {
