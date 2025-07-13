@@ -1,6 +1,8 @@
 package com.sgm.navi.hmi.mapdata;
 
 import android.app.Application;
+import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -77,7 +79,9 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      * 跳转到下载管理页面
      */
     public Action mToManagerMapDataView = () -> {
-        addFragment(new ManagerMapDataFragment(), null);
+        final Bundle bundle = new Bundle();
+        bundle.putInt("MapDataTab", TextUtils.equals(mAllDownloadingDataSize.getValue(), "0") ? 1 : 0);
+        addFragment(new ManagerMapDataFragment(), bundle);
     };
 
     /**

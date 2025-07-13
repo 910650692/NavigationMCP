@@ -1,6 +1,7 @@
 package com.sgm.navi.hmi.mapdata.manager;
 
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import com.sgm.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataBinding, ManagerMapDataViewModel> {
     private ManagerMapDataAdapter mDownloadingMapDataAdapter;
@@ -52,6 +54,10 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     @Override
     public void onInitData() {
         setDownloadedTitleStatus(false);
+        final Bundle bundle = getArguments();
+        if (bundle.getInt("MapDataTab") == 1) {
+            mViewModel.mDownloadedClickView.call();
+        }
     }
 
     /**
