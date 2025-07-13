@@ -56,6 +56,7 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
     protected void onResume() {
         super.onResume();
         Logger.d(TAG, "onResume");
+        mBinding.hudMapview.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Logger.d(TAG, "onConfigurationChanged");
-//        updateMapThemeType();
+        // updateMapThemeType();
     }
 
     private void updateMapThemeType() {
@@ -114,8 +115,8 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
     public void onClose(boolean isCluster) {
         if (!isCluster){
             Logger.d(TAG, "hud close");
-            mBinding.hud.setVisibility(View.GONE);
-            finishAndRemoveTask();
+            mBinding.hudMapview.setVisibility(View.GONE);
+            //finishAndRemoveTask();
         }
     }
 }
