@@ -1,9 +1,5 @@
 package com.sgm.navi.exportservice.binderimpl;
 
-import android.app.ActivityOptions;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
@@ -14,7 +10,7 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
-import com.sgm.navi.exportservice.ExportIntentParam;
+import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.fsa.FsaConstant;
 import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.fsa.bean.PoiInfoForExport;

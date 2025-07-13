@@ -1,10 +1,7 @@
 package com.sgm.navi.hmi.splitscreen;
 
-import android.app.ActivityOptions;
 import android.app.Application;
-import android.content.Intent;
 import android.graphics.Rect;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,9 +11,8 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.patac.sgmsystemextendservicelib.PatacSESConstants;
-import com.sgm.navi.exportservice.ExportIntentParam;
+import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
-import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;

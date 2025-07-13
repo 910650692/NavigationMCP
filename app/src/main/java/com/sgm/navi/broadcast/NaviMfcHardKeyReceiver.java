@@ -1,6 +1,5 @@
 package com.sgm.navi.broadcast;
 
-import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +8,11 @@ import android.view.KeyEvent;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.sgm.navi.exportservice.ExportIntentParam;
+import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
-import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;
-import com.sgm.navi.service.define.map.MapType;
 
 import java.util.Objects;
 

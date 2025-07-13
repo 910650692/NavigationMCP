@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.CarModeType;
 import com.sgm.navi.service.define.map.MapMode;
@@ -18,6 +19,8 @@ import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.logicpaket.signal.SignalPackage;
+import com.sgm.navi.service.utils.ExportIntentParam;
+import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -62,9 +65,21 @@ public class MapModelHelp {
      */
     public void restoreSetting() {
         // 路况开启恢复
-        final boolean iShowTmc = mSettingPackage.getConfigKeyRoadEvent();
-        Logger.i(TAG, "restoreUserPreference", "iShowTmc:" , iShowTmc);
-        mMapPackage.setTrafficStates(mMapTypeId, iShowTmc);
+        final int intentPage = ExportIntentParam.getIntentPage();
+        if (intentPage == INaviConstant.OpenIntentPage.ROAD_CONDITION) {
+            final boolean open = ExportIntentParam.getIntParam() == 1;
+            if (Logger.openLog) {
+                Logger.i(TAG,"showTmc by voice intent" , open);
+            }
+            ExportIntentParam.setIntentPage(-1);
+            mMapPackage.setTrafficStates(mMapTypeId, open);
+        } else {
+            final boolean iShowTmc = mSettingPackage.getConfigKeyRoadEvent();
+            if (Logger.openLog) {
+                Logger.i(TAG,"showTmc by voice savedData" , iShowTmc);
+            }
+            mMapPackage.setTrafficStates(mMapTypeId, iShowTmc);
+        }
         // 视角
         resetMapAngel();
         // 车标

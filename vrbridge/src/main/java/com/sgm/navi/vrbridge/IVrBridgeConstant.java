@@ -198,7 +198,7 @@ public interface IVrBridgeConstant {
         String COLLECT_COMMON = "collect_poi"; //收藏指定poi
         String CHANGE_VIEW = "map_view"; //切换地图视角
         String ZOOM_LEVEL = "zoom_level"; //缩放底图
-        String ROUTE_NAVIGATION = "route_navi";
+        String ROUTE_NAVIGATION = "route_navi"; //搜索导航意图
     }
 
     interface ResponseString {
@@ -461,15 +461,22 @@ public interface IVrBridgeConstant {
         String PAGE_ERROR_PARAM = "错误的参数";
     }
 
-    public interface PoiPageType {
+    interface PoiPageType {
         String DIRECTION = "direction";
         String INDEX = "index";
         String REVERSE_INDEX = "index_reverse";
     }
 
-    public interface PageTypeValue {
+    interface PageTypeValue {
         String DOWN = "DOWN";
         String UP = "UP";
     }
+
+    interface VrExportPage {
+        int ROAD_CONDITION = 8; //打开或关闭路况
+        int ZOOM_LEVEL = 9;
+    }
+
+
 
 }

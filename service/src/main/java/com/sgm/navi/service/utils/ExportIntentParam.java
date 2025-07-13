@@ -1,4 +1,4 @@
-package com.sgm.navi.exportservice;
+package com.sgm.navi.service.utils;
 
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -11,6 +11,8 @@ public class ExportIntentParam {
     private static String mKeyword;
     //传递过来的poi信息，可作为你地理搜索仅持有经纬度或路线规划终点
     private static PoiInfoEntity mPoiInfo;
+    //部分语音指令需要传递的参数
+    private static int mIntParam = -1;
 
     public static int getIntentPage() {
         return mIntentPage;
@@ -36,5 +38,13 @@ public class ExportIntentParam {
 
     public static void setPoiInfo(final PoiInfoEntity poiInfo) {
         mPoiInfo = poiInfo;
+    }
+
+    public static int getIntParam() {
+        return mIntParam;
+    }
+
+    public static void setIntParam(final int intParam) {
+        mIntParam = intParam;
     }
 }

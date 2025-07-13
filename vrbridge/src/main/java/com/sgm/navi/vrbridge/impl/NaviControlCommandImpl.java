@@ -46,6 +46,7 @@ import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
+import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 import com.sgm.navi.vrbridge.MapStateManager;
 import com.sgm.navi.vrbridge.VoiceConvertUtil;
@@ -433,13 +434,18 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onTrafficModeToggle open: ", open, ", curStatus: ", curTrafficMode);
         }
-        MapStateManager.getInstance().openMapWhenBackground();
+        final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
 
         final StringBuilder builder = new StringBuilder();
         if (open == curTrafficMode) {
             builder.append("当前").append(IVrBridgeConstant.ROAD_CONDITION).append("已").append(open ? "打开" : "关闭");
         } else {
-            MapPackage.getInstance().setTrafficStates(MapType.MAIN_SCREEN_MAIN_MAP, open);
+            if (saveCommand) {
+                ExportIntentParam.setIntentPage(IVrBridgeConstant.VrExportPage.ROAD_CONDITION);
+                ExportIntentParam.setIntParam(open ? 1 : 0);
+            } else {
+                MapPackage.getInstance().setTrafficStates(MapType.MAIN_SCREEN_MAIN_MAP, open);
+            }
             builder.append("已").append(open ? "打开" : "关闭").append(IVrBridgeConstant.ROAD_CONDITION);
         }
         final CallResponse response = CallResponse.createSuccessResponse(builder.toString());
@@ -2398,6 +2404,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 processZoomCommand(zoomType, size, respCallback);
                 break;
             case IVrBridgeConstant.VoiceCommandAction.ROUTE_NAVIGATION:
+                //搜索导航意图
                 final SingleCommandInfo routeNaviCommand = mCommandParamList.remove(0);
                 if (null != routeNaviCommand && null != routeNaviCommand.getArrivalBean()
                         && null != routeNaviCommand.getPoiCallback()) {
