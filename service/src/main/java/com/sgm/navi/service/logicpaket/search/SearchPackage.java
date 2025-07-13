@@ -1480,6 +1480,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (ConvertUtils.isEmpty(poiList)) {
             return;
         }
+        ThreadManager.getInstance().removeHandleTask(exitPreviewRunnable);
         final List<PreviewParams.PointD> points = poiList.stream()
                 .filter(poiInfo -> poiInfo.getPoint() != null)
                 .map(poiInfo -> new PreviewParams.PointD(poiInfo.getPoint().getLon(), poiInfo.getPoint().getLat()))
@@ -1500,7 +1501,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param poiList poi边界点的经纬度列表
      */
     private void showBoundsPreview(final List<GeoPoint> poiList) {
-        if (ConvertUtils.isEmpty(poiList)) {
+        if (ConvertUtils.isEmpty(poiList) || isNaviStatus()) {
             return;
         }
         final List<PreviewParams.PointD> points = poiList.stream()
@@ -1719,6 +1720,13 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "createLabelMarker result:" + addResult);
     }
 
+    private final Runnable exitPreviewRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+        }
+    };
+
     /**
      *清除所有搜索图层的扎标
      */
@@ -1730,7 +1738,8 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             return;
         }
         if (isNaviStatus()) {
-            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+            ThreadManager.getInstance().postDelay(exitPreviewRunnable, 800);
+//            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
         }
     }
 
@@ -1743,9 +1752,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (mNaviPackage.getFixedOverViewStatus()) {
             return;
         }
-        if (isNaviStatus()) {
-            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
-        }
+//        if (isNaviStatus()) {
+//            ThreadManager.getInstance().postDelay(exitPreviewRunnable, 800);
+//            mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+//        }
     }
 
     /**
