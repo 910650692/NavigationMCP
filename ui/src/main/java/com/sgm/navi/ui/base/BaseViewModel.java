@@ -84,18 +84,15 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
         }
         final BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(mScreenId);
         if (!ConvertUtils.isNull(currentFragment) && ConvertUtils.equals(currentFragment.getClass().getName(), fragment.getClass().getName())) {
-<<<<<<< HEAD
 //                fragment.setArguments(bundle);
             Logger.i(getClass().getSimpleName(), "addFragment refreshFragment");
             currentFragment.refreshFragment(bundle);
         } else if (!ConvertUtils.isNull(mView)) {
             Logger.i(getClass().getSimpleName(), "addFragment");
-=======
             Logger.d(getClass().getSimpleName(), "currentFragment already is exist");
             currentFragment.refreshFragment(bundle);
         } else if (!ConvertUtils.isNull(mView)) {
             Logger.d(getClass().getSimpleName(), "add new fragment");
->>>>>>> 05bc47b5 (RTC_ID:1083711)
             mView.addFragment(fragment, bundle);
         }
     }
