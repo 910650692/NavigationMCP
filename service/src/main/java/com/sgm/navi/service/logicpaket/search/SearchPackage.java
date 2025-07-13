@@ -1170,7 +1170,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             if (!ConvertUtils.isEmpty(historyList)) {
                 historyList.sort(Comparator.comparing(History::getMUpdateTime).reversed());
                 historyList.stream().filter(history -> !ConvertUtils.isEmpty(history.getMKeyWord()));
-                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "size :" + historyList.size());
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "getNaviRecord isLogin size :" + historyList.size());
             }
             return historyList;
         } else {
@@ -1178,7 +1178,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             if (!ConvertUtils.isEmpty(historyList)) {
                 historyList.sort(Comparator.comparing(History::getMUpdateTime).reversed());
                 historyList.stream().filter(history -> !ConvertUtils.isEmpty(history.getMKeyWord()));
-                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "size :" + historyList.size());
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "getNaviRecord size :" + historyList.size());
             }
             return historyList;
         }

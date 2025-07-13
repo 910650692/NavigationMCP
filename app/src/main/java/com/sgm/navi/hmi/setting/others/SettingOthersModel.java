@@ -24,6 +24,7 @@ import com.sgm.navi.ui.base.BaseModel;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 public class SettingOthersModel extends BaseModel<SettingOthersViewModel> 
         implements SettingUpdateObservable.SettingUpdateObserver, AccountCallBack, WeChatCallBack {
@@ -63,6 +64,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         SettingUpdateObservable.getInstance().removeObserver(MODEL_NAME, this);
         mAccountPackage.unRegisterCallBack(MODEL_NAME);
         mWeChatPackage.unRegisterCallBack(MODEL_NAME);
+        stopPollingReqWsPpAutoWeixinStatus();
     }
 
     /**
@@ -73,7 +75,9 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
             Logger.e("SettingOthersModel", "ViewModel is null, cannot initialize view.");
             return;
         }
-        mWeChatPackage.sendReqWsPpAutoWeixinStatus();
+        if (getIsLogin()) {
+            startPollingReqWsPpAutoWeixinStatus();
+        }
         mViewModel.updatePrivacyStatus(mSettingPackage.getPrivacyStatus());
         mViewModel.updateUserInfo(mAccountPackage.getUserInfo().getNickname(), mAccountPackage.getUserInfo().getAvatar());
         getSdkVersion();
@@ -102,6 +106,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         if (result != null && result.getCode() == 1) {
             mViewModel.clearUserInfo();
         }
+        stopPollingReqWsPpAutoWeixinStatus();
     }
 
     /**
@@ -112,7 +117,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         if (result != null && result.getCode() == 1) {
             if (result.getProfileInfo() != null) {
                 mViewModel.updateUserInfo(result.getProfileInfo().getNickname(), result.getProfileInfo().getAvatar());
-                mWeChatPackage.sendReqWsPpAutoWeixinStatus();
+                startPollingReqWsPpAutoWeixinStatus();
                 //For Bury Point
                 sendBuryPointForCompleteBindingAccount();
             }
@@ -124,10 +129,25 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         if (result != null && result.getCode() == 1) {
             if (result.getProfileInfo() != null) {
                 mViewModel.updateUserInfo(result.getProfileInfo().getNickname(), result.getProfileInfo().getAvatar());
-                mWeChatPackage.sendReqWsPpAutoWeixinStatus();
+                startPollingReqWsPpAutoWeixinStatus();
                 //For Bury Point
                 sendBuryPointForCompleteBindingAccount();
             }
+        }
+    }
+
+    private ScheduledFuture mScheduledFuture;
+    public void startPollingReqWsPpAutoWeixinStatus() {
+        stopPollingReqWsPpAutoWeixinStatus();
+        mScheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(() -> {
+            mWeChatPackage.sendReqWsPpAutoWeixinStatus();
+        }, 0, 2);
+    }
+
+    private void stopPollingReqWsPpAutoWeixinStatus(){
+        if (mScheduledFuture != null) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
         }
     }
 

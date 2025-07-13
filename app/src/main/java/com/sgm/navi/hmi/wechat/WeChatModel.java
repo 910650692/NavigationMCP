@@ -71,10 +71,15 @@ public class WeChatModel extends BaseModel<WeChatViewModel> implements WeChatCal
         }
     }
 
+    private int resultCode;
     @Override
     public void notifyWeixinStatus(final BLResponseBean result) {
         if (result != null) {
-            Logger.d(TAG,"notifyWeixinStatus = " + GsonUtils.toJson(result));
+            Logger.d(TAG, "notifyWeixinStatus = " + GsonUtils.toJson(result));
+            if (resultCode == result.getCode()) {
+                return;
+            }
+            resultCode = result.getCode();
             if (result.getCode() == 14 || result.getCode() == 10060) {
                 mViewModel.setIsBind(false);
                 mViewModel.startAnimation();
