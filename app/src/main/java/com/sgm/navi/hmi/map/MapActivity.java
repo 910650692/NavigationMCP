@@ -224,10 +224,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     protected void onResume() {
         super.onResume();
+        if (mViewModel.isSupportSplitScreen()) {
+            ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
+        }
         if (mViewModel.getSdkInitStatus()) {
-            if (mViewModel.isSupportSplitScreen()) {
-                ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
-            }
             mViewModel.getCurrentCityLimit();
         }
     }
