@@ -25,6 +25,7 @@ import com.sgm.navi.scene.ui.navi.SceneNaviControlMoreView;
 import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.view.SwipeView;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.map.MapMode;
@@ -48,8 +49,8 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CONTROL_MORE_IMPL;
     private final NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
-    private RoutePackage mRoutePackage;
-    private SettingPackage mSettingPackage;
+    private final RoutePackage mRoutePackage;
+    private final SettingPackage mSettingPackage;
     private ImmersiveStatusScene mImmersiveStatusScene;
     private long mLastClickTime;
     private int mVehicleType;
@@ -121,6 +122,10 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_REFRESHMAP)
     public void refreshRoute() {
         Logger.i(TAG, "refreshRoute");
+        if (!mSettingPackage.getPrivacyStatus()) {
+            privacyToast();
+            return;
+        }
         long currentTime = System.currentTimeMillis();
         boolean isCanRefreshRoute = currentTime - mLastClickTime > NumberUtils.NUM_2000;
         if (!isCanRefreshRoute) {
@@ -173,6 +178,10 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     @Override
     public void naviBroadcast() {
         Logger.i(TAG, "naviBroadcast");
+        if (!mSettingPackage.getPrivacyStatus()) {
+            privacyToast();
+            return;
+        }
         setImmersiveStatus(ImersiveStatus.TOUCH);
         switchBroadcastMode();
     }
@@ -233,6 +242,10 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     @Override
     public void routePreference() {
         Logger.i(TAG, "routePreference");
+        if (!mSettingPackage.getPrivacyStatus()) {
+            privacyToast();
+            return;
+        }
         setImmersiveStatus(ImersiveStatus.TOUCH);
         if (mCallBack != null) {
             mCallBack.skipNaviPreferenceScene();
@@ -273,6 +286,10 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     @Override
     public void alongSearch(final int index) {
         Logger.i(TAG, "alongSearch index:", index, " mVehicleType:", mVehicleType);
+        if (!mSettingPackage.getPrivacyStatus()) {
+            privacyToast();
+            return;
+        }
         setImmersiveStatus(ImersiveStatus.TOUCH);
         switch (index) {
             case 0:
@@ -436,5 +453,9 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     @Override
     public void onClick() {
         backControl();
+    }
+
+    private void privacyToast() {
+        ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(com.sgm.navi.scene.R.string.open_privacy_permission));
     }
 }

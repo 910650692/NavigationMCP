@@ -370,6 +370,7 @@
     <string name="filter_select_fast">快充</string>
     <string name="filter_select_free_park">免费停车</string>
     <string name="latest_charge">%s内有人充电</string>
+    <string name="open_privacy_permission">请打开隐私权限</string>
     <!--搜索主页快捷搜-->
     <string-array name="main_search_categories_name">
         <item>加油站</item>

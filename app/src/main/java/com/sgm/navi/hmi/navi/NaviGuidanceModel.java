@@ -29,6 +29,7 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
@@ -711,6 +712,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void skipAlongWayFragment() {
+        if (!mSettingPackage.getPrivacyStatus()) {
+            Logger.i(TAG, " PrivacyStatus is false");
+            ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(com.sgm.navi.scene.R.string.open_privacy_permission));
+            return;
+        }
         Logger.i(TAG, "skipAlongWayFragment");
         addFragment(new MainAlongWaySearchFragment(), new Bundle());
     }
@@ -784,6 +790,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void deleteViaPoint(final NaviViaEntity entity) {
+        if (!mSettingPackage.getPrivacyStatus()){
+            Logger.i(TAG, " PrivacyStatus is false");
+            ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(com.sgm.navi.scene.R.string.open_privacy_permission));
+            return;
+        }
         ISceneCallback.super.deleteViaPoint(entity);
         if (entity.getChargeInfo() != null && entity.getChargeInfo().isAutoAdd()) {
             showDeleteAllTip(entity);
