@@ -62,6 +62,7 @@
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginEnd="@dimen/dp_7"
+                android:layout_marginTop="@dimen/dp_5"
                 android:src="@drawable/img_route_add_point_sw1225"
                 app:layout_constraintBottom_toBottomOf="@+id/route_line_info_tv_search_waypoint"
                 app:layout_constraintEnd_toStartOf="@id/route_line_info_tv_search_waypoint"
