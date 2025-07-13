@@ -14,7 +14,7 @@
             android:layout_width="@dimen/dp_49"
             android:layout_height="@dimen/dp_49"
             android:src="@drawable/img_back_58"
-            android:layout_marginTop="@dimen/dp_26"
+            android:layout_marginTop="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_23"
             android:layout_marginStart="@dimen/dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
