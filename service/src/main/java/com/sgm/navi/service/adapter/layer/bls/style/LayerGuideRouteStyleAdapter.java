@@ -24,6 +24,7 @@ import com.autonavi.gbl.layer.BizRoadFacilityControl;
 import com.autonavi.gbl.layer.RoutePathPointItem;
 import com.autonavi.gbl.layer.ViaChargeStationLayerItem;
 import com.autonavi.gbl.layer.model.BizRoadCrossType;
+import com.autonavi.gbl.layer.model.BizRoadFacilityType;
 import com.autonavi.gbl.layer.model.BizRouteType;
 import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
@@ -746,6 +747,35 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     //隐藏途经点右上角关闭按钮
                     customUpdatePairs.add(createUpdateStylePair("click_delete_focus", "display:none;"));
                     customUpdatePairs.add(createUpdateStylePair("click_delete", "display:none;"));
+                }
+            }
+            case BizRouteType.BizRouteTypeGuideLabel -> {
+                //备选路线标签深色文字颜色适配
+                if (isNightMode) {
+                    customUpdatePairs.add(createUpdateStylePair("label_text", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("time_diff_text", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("cost_text1", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("distance_diff_text", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("traffic_light_text", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("cost_text2", "color:#ffffff;"));
+                }
+            }
+            case BizRoadFacilityType.BizRoadFacilityTypeGuideCameraActive -> {
+                //导航态电子眼深色文字颜色适配
+                if (isNightMode) {
+                    customUpdatePairs.add(createUpdateStylePair("distance_text", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("distance_text_penalty", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("speed_text2", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("speed_text3", "color:#ffffff;"));
+                }
+            }
+            case BizRoadFacilityType.BizRoadFacilityTypeCruiseCameraActive -> {
+                //巡航态电子眼深色文字颜色适配
+                if (isNightMode) {
+                    customUpdatePairs.add(createUpdateStylePair("distance_text", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("distance_text_penalty", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("speed_text2", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("speed_text3", "color:#ffffff;"));
                 }
             }
         }
