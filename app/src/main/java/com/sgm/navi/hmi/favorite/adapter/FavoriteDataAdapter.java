@@ -37,9 +37,25 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
      */
     @SuppressLint("NotifyDataSetChanged")
     public void setData(final List<PoiInfoEntity> list, final int type) {
-        mFavoriteInfoList = list;
         this.mType = type;
-        notifyDataSetChanged();
+        final int oldSize = mFavoriteInfoList.size();
+        final int newSize = list.size();
+
+        mFavoriteInfoList.clear();
+        mFavoriteInfoList.addAll(list);
+
+        if (oldSize == 0 && newSize > 0) {
+            notifyItemRangeInserted(0, newSize);
+        } else if (oldSize > 0 && newSize == 0) {
+            notifyItemRangeRemoved(0, oldSize);
+        } else if (oldSize > 0) {
+            notifyItemRangeChanged(0, Math.min(oldSize, newSize));
+            if (newSize > oldSize) {
+                notifyItemRangeInserted(oldSize, newSize - oldSize);
+            } else if (newSize < oldSize) {
+                notifyItemRangeRemoved(newSize, oldSize - newSize);
+            }
+        }
     }
 
     public void setItemClickListener(final OnItemClickListener itemClickListener) {
