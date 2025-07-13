@@ -391,12 +391,18 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     if (fastTotal == 0 && slowTotal == 0) {
                         customUpdatePairs.add(createUpdateStylePair("search_charge_label", "display:none;"));
                     }
+                    if (item.getFocus()) {
+                        customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_focus.png"));
+                    }
 
                     if (isNightMode) {
                         customUpdatePairs.add(createUpdateStylePair("search_charge_label", "background-image:layer_image_search_along_way_charge_bg_night.9.png;"));
                         customUpdatePairs.add(createUpdateStylePair("div_position", "background-image:layer_image_charge_index_bg_night.png;"));
-                        // TODO: 列表联动
-                        customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_add_night.png"));
+                        if (item.getFocus()) {
+                            customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_focus_night.png"));
+                        } else {
+                            customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_add_night.png"));
+                        }
                     }
                 }
                 break;

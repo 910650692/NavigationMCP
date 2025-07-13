@@ -112,6 +112,15 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                             BizSearchType.BizSearchTypePoiParentPoint, String.valueOf(index), true);
                     Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT:" + result);
                 }
+                case SEARCH_POI_ALONG_ROUTE_ADD -> {
+                    LayerItem item = getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiAlongRoute).getItem(String.valueOf(index));
+                    if (item != null) {
+                        int result = getLayerSearchControl().setFocus(
+                                BizSearchType.BizSearchTypePoiAlongRoute, String.valueOf(index), true);
+                        Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_ADD:" + result);
+                    }
+                    getLayerSearchControl().updateStyle(BizSearchType.BizSearchTypePoiAlongRoute);
+                }
             }
         }
     }
@@ -124,6 +133,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.d(TAG, "icon_add_click");
             index = Integer.parseInt(item.getID());
             type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD;
+            setSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, index);
         } else {
             switch (item.getBusinessType()) {
                 // 搜索图层内容点击
