@@ -31,7 +31,9 @@ import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.sgm.navi.ui.base.StackManager;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -109,7 +111,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void keywordSearch(final int pageNum, final String keyword) {
         logSearch("keywordSearch", keyword);
-        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, false);
+        mTaskId = mSearchPackage.keywordSearch(pageNum, isChargingGeneralSearchText(keyword), false);
         SearchHistoryItemBean item = new SearchHistoryItemBean();
         item.setName(keyword);
         item.setUpdateTime(System.currentTimeMillis());
@@ -133,7 +135,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void keywordSearch(final int pageNum, final String keyword, final boolean isReSearch) {
         logSearch("keywordSearch", keyword);
-        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, false, isReSearch);
+        mTaskId = mSearchPackage.keywordSearch(pageNum, isChargingGeneralSearchText(keyword), false, isReSearch);
         final SearchHistoryItemBean item = new SearchHistoryItemBean();
         item.setName(keyword);
         item.setUpdateTime(System.currentTimeMillis());
@@ -149,7 +151,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void keywordSearch(final int pageNum, final String keyword, final int adCode, final boolean isSilent, final boolean isReSearch) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "keywordSearch", keyword);
-        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent, isReSearch);
+        mTaskId = mSearchPackage.keywordSearch(pageNum, isChargingGeneralSearchText(keyword), adCode, isSilent, isReSearch);
         final SearchHistoryItemBean item = new SearchHistoryItemBean();
         item.setName(keyword);
         item.setUpdateTime(System.currentTimeMillis());
@@ -167,7 +169,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void keywordSearch(final int pageNum, final String keyword, final String retain, final String classifyData, final boolean isSilentSearch) {
         logSearch("keywordSearch classifyData: ", classifyData);
-        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, retain, classifyData, isSilentSearch);
+        mTaskId = mSearchPackage.keywordSearch(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch);
         SearchHistoryItemBean item = new SearchHistoryItemBean();
         item.setName(keyword);
         item.setUpdateTime(System.currentTimeMillis());
@@ -185,7 +187,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void keywordSearchByQuickFilter(final int pageNum, final String keyword, final String retain, final String classifyData, final boolean isSilentSearch) {
         logSearch("keywordSearch classifyData: ", classifyData);
-        mTaskId = mSearchPackage.keywordSearchByQuickFilter(pageNum, keyword, retain, classifyData, isSilentSearch);
+        mTaskId = mSearchPackage.keywordSearchByQuickFilter(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch);
         SearchHistoryItemBean item = new SearchHistoryItemBean();
         item.setName(keyword);
         item.setUpdateTime(System.currentTimeMillis());
@@ -208,11 +210,11 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             final GeoPoint userLoc = new GeoPoint();
             userLoc.setLon(PositionPackage.getInstance().getLastCarLocation().getLongitude());
             userLoc.setLat(PositionPackage.getInstance().getLastCarLocation().getLatitude());
-            mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, retain, classifyData, isSilentSearch, userLoc);
+            mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch, userLoc);
             return;
         }
         final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
-        mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, retain, classifyData, isSilentSearch, geoPoint);
+        mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch, geoPoint);
 
     }
 
@@ -224,11 +226,11 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void aroundSearch(final int pageNum, final String keyword, final PoiInfoEntity poiInfoEntity) {
         if (poiInfoEntity == null || poiInfoEntity.getPoint() == null) {
-            mTaskId = mSearchPackage.aroundSearch(pageNum, keyword);
+            mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword));
             return;
         }
         final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
-        mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, geoPoint, false);
+        mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), geoPoint, false);
     }
 
     /**
@@ -246,18 +248,18 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
                 final GeoPoint userLoc = new GeoPoint();
                 userLoc.setLon(PositionPackage.getInstance().getLastCarLocation().getLongitude());
                 userLoc.setLat(PositionPackage.getInstance().getLastCarLocation().getLatitude());
-                mTaskId = mSearchPackage.reAroundSearch(pageNum, keyword, userLoc, range);
+                mTaskId = mSearchPackage.reAroundSearch(pageNum, isChargingGeneralSearchText(keyword), userLoc, range);
             } else {
-                mTaskId = mSearchPackage.aroundSearch(pageNum, keyword);
+                mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword));
             }
             return;
         }
         final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
         logSearch("aroundSearch", keyword);
         if (isReSearch) {
-            mTaskId = mSearchPackage.reAroundSearch(pageNum, keyword, geoPoint, range);
+            mTaskId = mSearchPackage.reAroundSearch(pageNum, isChargingGeneralSearchText(keyword), geoPoint, range);
         } else {
-            mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, geoPoint, range, false);
+            mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), geoPoint, range, false);
         }
     }
 
@@ -267,7 +269,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void alongWaySearch(final String keyword) {
         logSearch("alongWaySearch", keyword);
-        mTaskId = mSearchPackage.enRouteKeywordSearch(keyword);
+        mTaskId = mSearchPackage.enRouteKeywordSearch(isChargingGeneralSearchText(keyword));
     }
 
     /**
@@ -277,7 +279,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     public void alongWaySearch(final String keyword, final String retain,
                                final String classifyData, final boolean isSilentSearch) {
         logSearch("alongWaySearch classifyData: ", classifyData);
-        mTaskId = mSearchPackage.enRouteKeywordSearch(keyword,retain,classifyData,isSilentSearch);
+        mTaskId = mSearchPackage.enRouteKeywordSearch(isChargingGeneralSearchText(keyword),retain,classifyData,isSilentSearch);
     }
 
     /**
@@ -359,14 +361,14 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     public void onTabListGasChargeClick(final String keyword, final int tabIndex) {
         mListSearchType = tabIndex;
         if (tabIndex == 0) {
-            mTaskId = mSearchPackage.enRouteKeywordSearch(keyword);
+            mTaskId = mSearchPackage.enRouteKeywordSearch(isChargingGeneralSearchText(keyword));
         } else if (tabIndex == 1) {
             final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
             if (endPoint != null && !ConvertUtils.isEmpty(endPoint.getRealPos())) {
-                mTaskId = mSearchPackage.aroundSearch(1, keyword, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
+                mTaskId = mSearchPackage.aroundSearch(1, isChargingGeneralSearchText(keyword), new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
             }
         } else {
-            mTaskId = mSearchPackage.aroundSearch(1, keyword);
+            mTaskId = mSearchPackage.aroundSearch(1, isChargingGeneralSearchText(keyword));
         }
     }
 
@@ -412,5 +414,29 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
 
     public int getBrand(){
         return mCalibrationPackage.brand();
+    }
+
+
+    /**
+     * 转换泛搜关键字，根据UE需求
+     * 搜索关键词包含以下要素时需要统一展示充电站结果（关键词显示保留用户输入值）：充电站、充电桩、快充、充电、补能
+     * @param keyword 关键字
+     * @return 转换后的关键字
+     */
+    private String isChargingGeneralSearchText(final String keyword) {
+        if (!ConvertUtils.isEmpty(keyword)) {
+            final Set<String> chargingGeneralText = new HashSet<>(Set.of(
+                    "充电桩",
+                    "快冲",
+                    "充电",
+                    "补能"
+            ));
+            if (chargingGeneralText.contains(keyword)) {
+                return "充电站";
+            } else {
+                return keyword;
+            }
+        }
+        return keyword;
     }
 }
