@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.Window;
 
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -234,6 +236,11 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
+                        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                            ToastUtils.Companion.getInstance().showCustomToastView(
+                                    ResourceUtils.Companion.getInstance().getString(R.string.setting_qr_code_load_offline_toast));
+                            return;
+                        }
                         mViewModel.setLogoutAccountDialogShown(false);
                         mViewModel.logoutAccount();
                     }
