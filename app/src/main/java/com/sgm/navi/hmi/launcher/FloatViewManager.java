@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
@@ -36,6 +37,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 
 public class FloatViewManager {
+    private final int MOVE_DISTANCE = 20;
+    private int startX;
+    private int startY;
     private static final String TAG = "FloatViewManager";
     private boolean isServiceConnect = false;
     private ILauncherModeManager mLauncherModeManager;
@@ -143,10 +147,24 @@ public class FloatViewManager {
     /***
      * 地图触摸,隐藏小卡片
      */
-    public void hideWidgetsOnMapTouch() {
+    public void hideWidgetsOnMapTouch(MotionEvent touchEvent) {
         Logger.d(TAG, "hideWidgetsOnMapTouch");
         if (!isNaviDeskBg()) return;
-        hideAllCardWidgets(StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0);
+        switch (touchEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startX = (int) touchEvent.getX();
+                startY = (int) touchEvent.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_UP:
+                if (Math.abs(touchEvent.getX() - startX) >= MOVE_DISTANCE || Math.abs(touchEvent.getY() - startY) >= MOVE_DISTANCE) {
+                    hideAllCardWidgets(StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0);
+                }
+                break;
+            default:
+                break;
+
+        }
     }
 
     private static final class Holder {

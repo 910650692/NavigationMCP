@@ -968,7 +968,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void updateUiStyle(MapType mapTypeId, ThemeType isNight) {
-        mModel.updateUiStyle(mapTypeId, isNight);
+        if (!StartService.getInstance().checkSdkIsNeedInit()) {
+            mModel.updateUiStyle(mapTypeId, isNight);
+        }
     }
 
     // TODO 到了下班时间收到回家推送消息，显示回家UI---待推送功能实现
@@ -1679,12 +1681,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        checkViewState();
     }
 
     private void checkViewState() {

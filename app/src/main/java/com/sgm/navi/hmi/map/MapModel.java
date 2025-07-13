@@ -785,7 +785,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
         //三指飞屏 并将MapActivity推至后台
         openThreeFingerFlyingScreen(touchEvent);
-        FloatViewManager.getInstance().hideWidgetsOnMapTouch();
+        FloatViewManager.getInstance().hideWidgetsOnMapTouch(touchEvent);
     }
 
     private void openThreeFingerFlyingScreen(MotionEvent touchEvent) {
