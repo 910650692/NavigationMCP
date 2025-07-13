@@ -179,6 +179,7 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                     final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
                     final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                             .setPid(history.getMPoiId())
+                            .setAddress(history.getMAddress())
                             .setName(history.getMEndPoiName())
                             .setPoint(historyPoint);
                     final Fragment fragment = (Fragment) ARouter.getInstance()
@@ -194,7 +195,7 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
             public void onNaviClick(final int position, final History history) {
                 final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
                 poiInfoEntity.setName(history.getMEndPoiName());
-                poiInfoEntity.setAddress(history.getMEndPoiName());
+                poiInfoEntity.setAddress(history.getMAddress());
                 poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
                 poiInfoEntity.setPid(history.getMPoiId());
                 final int commonName = mSearchResultAdapter.getHomeCompanyType();

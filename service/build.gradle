@@ -42,7 +42,7 @@ android {
 
     //greendao配置
     greendao {
-        schemaVersion 16 // 数据库 schema 的版本号，用于数据库升级
+        schemaVersion 17 // 数据库 schema 的版本号，用于数据库升级
 //        daoPackage 'com.sgm.navi.service.greendao' // 生成 DAO 类的包名
 //        targetGenDir 'src/main/java' // 生成文件的目录（通常建议放在 build/generated/source/greendao 下，以避免与源代码混淆）
     }

@@ -217,6 +217,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                     final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
                     final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                             .setPid(history.getMPoiId())
+                            .setAddress(history.getMAddress())
                             .setPoint(historyPoint);
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Search.POI_DETAILS_FRAGMENT)
@@ -231,7 +232,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             public void onNaviClick(final int position, final History history) {
                 final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
                 poiInfoEntity.setName(history.getMEndPoiName());
-                poiInfoEntity.setAddress(history.getMEndPoiName());
+                poiInfoEntity.setAddress(history.getMAddress());
                 poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
                 poiInfoEntity.setPid(history.getMPoiId());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onNaviClick: historyPoint = " , history.getMEndPoint());

@@ -180,7 +180,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                         .setPid(mHistory.getMPoiId())
                         .setName(mHistory.getMEndPoiName())
-                        .setAddress(mHistory.getMEndPoiName());
+                        .setAddress(mHistory.getMAddress());
                 if (!ConvertUtils.isEmpty(mPoiEntities.get(position).getMEndPoint())) {
                     poiInfoEntity.setPoint(parseGeoPoint(mPoiEntities.get(position).getMEndPoint()));
                 }
@@ -217,7 +217,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     case 0:
                         final PoiInfoEntity favInfo = new PoiInfoEntity();
                         favInfo.setName(mHistory.getMEndPoiName());
-                        favInfo.setAddress(mHistory.getMEndPoiName());
+                        favInfo.setAddress(mHistory.getMAddress());
                         favInfo.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
                         favInfo.setPid(mHistory.getMPoiId());
                         final GeoPoint historyPoint = parseGeoPoint(mHistory.getMEndPoint());
@@ -360,7 +360,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
         final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                 .setName(history.getMEndPoiName())
-                .setAddress(history.getMEndPoiName())
+                .setAddress(history.getMAddress())
                 .setPid(history.getMPoiId())
                 .setPoint(historyPoint);
         final FavoriteInfo info = new FavoriteInfo().setCommonName(0);

@@ -210,6 +210,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                     final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
                     final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                             .setPid(history.getMPoiId())
+                            .setAddress(history.getMAddress())
                             .setName(history.getMKeyWord())
                             .setPoint(historyPoint);
                     final Fragment fragment = (Fragment) ARouter.getInstance()
@@ -224,7 +225,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
             public void onNaviClick(final int position, final History history) {
                 final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
                 poiInfoEntity.setName(history.getMEndPoiName());
-                poiInfoEntity.setAddress(history.getMEndPoiName());
+                poiInfoEntity.setAddress(history.getMAddress());
                 poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
                 poiInfoEntity.setPid(history.getMPoiId());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onNaviClick: historyPoint = " , history.getMEndPoint());

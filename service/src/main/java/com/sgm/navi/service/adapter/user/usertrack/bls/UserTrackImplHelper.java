@@ -130,6 +130,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
         if (!ConvertUtils.isEmpty(item)) {
             bean.setName(item.name);
             bean.setUpdateTime(item.update_time);
+            bean.setAddress(item.address);
             Logger.d(TAG, "getSearchHistoryItem: " + GsonUtils.toJson(bean));
         }
         return bean;

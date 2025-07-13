@@ -329,6 +329,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 history.setMIsCompleted(isCompleted);
                 Date date = new Date();
                 history.setMUpdateTime(date);
+                history.setMAddress(endParam.getAddress());
                 List<PoiInfoEntity> midPoint = new ArrayList<>();
                 // [0]代表起点 [size-1]代表终点
                 for (int i = 0; i < allPoiParamList.size(); i++) {
@@ -368,6 +369,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                     HistoryPoiItemBean endPoiItemBean = new HistoryPoiItemBean();
                     endPoiItemBean.setPoiId(endPoiId);
                     endPoiItemBean.setName(endName);
+                    endPoiItemBean.setAddress(endParam.getAddress());
                     historyRouteItemBean.setToPoi(endPoiItemBean);
                     mUserTrackAdapter.addHistoryRoute(historyRouteItemBean);
                 }

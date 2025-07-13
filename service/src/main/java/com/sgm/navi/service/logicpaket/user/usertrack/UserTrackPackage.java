@@ -192,6 +192,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         final History history = new History();
         history.setMKeyWord(item.getName());
         history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY);
+        history.setMAddress(item.getAddress());
         mHistoryManager.insertOrReplace(history);
     }
 
@@ -325,6 +326,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         history.setMEndPoiName(item.getToPoi().getName());
         history.setMIsCompleted(item.getIsCompleted());
         history.setMUpdateTime(item.getTime());
+        history.setMAddress(item.getToPoi().getAddress().toString());
         Logger.d(TAG, "toName: " + item.getToPoi().getName() + ", IsCompleted: " + item.getIsCompleted());
         mHistoryManager.insertOrReplace(history);
     }

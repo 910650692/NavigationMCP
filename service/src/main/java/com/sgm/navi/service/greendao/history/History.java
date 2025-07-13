@@ -25,6 +25,9 @@ public class History {
     @Property(nameInDb = "naviHistoryId")
     private String mNaviHistoryId;
 
+    @Property(nameInDb = "address")
+    private String mAddress;
+
     @Property(nameInDb = "startPoint")
     private String mStartPoint;
 
@@ -79,15 +82,17 @@ public class History {
     }
 
     @Keep
-    public History(final Long id, final String keyWord, final String poiId, final String naviHistoryId, final String startPoint,
-                   final String endPoint, final String startPoiName, final String endPoiName, final int type,
-                   final Date updateTime, final boolean isCompleted, final int rideRunType, final int timeInterval,
+    public History(final Long id, final String keyWord, final String poiId, final String naviHistoryId,
+                   final String address, final String startPoint, final String endPoint,
+                   final String startPoiName, final String endPoiName, final int type, final Date updateTime,
+                   final boolean isCompleted, final int rideRunType, final int timeInterval,
                    final int runDistance, final int maxSpeed, final String viaPoint, final String startName,
                    final int averageSpeed, final String trackFileName, final String filePath) {
         this.mId = id;
         this.mKeyWord = keyWord;
         this.mPoiId = poiId;
         this.mNaviHistoryId = naviHistoryId;
+        this.mAddress = address;
         this.mStartPoint = startPoint;
         this.mEndPoint = endPoint;
         this.mStartPoiName = startPoiName;
@@ -256,6 +261,14 @@ public class History {
 
     public void setMNaviHistoryId(final String naviHistoryId) {
         this.mNaviHistoryId = naviHistoryId;
+    }
+
+    public String getMAddress() {
+        return mAddress;
+    }
+
+    public void setMAddress(String address) {
+        this.mAddress = address;
     }
 
     public String getMViaPoint() {
