@@ -3,8 +3,11 @@ package com.sgm.navi.hmi.map;
 import static com.sgm.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.MotionEvent;
@@ -1398,6 +1401,24 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void moveToBack() {
         if (null != mView) {
             mView.moveTaskToBack(false);
+        }
+    }
+
+    public void exitSelf() {
+        if (FloatViewManager.getInstance().isNaviDeskBg()) {
+            final Intent intent = mView.getPackageManager().getLaunchIntentForPackage(mView.getPackageName());
+            Logger.i(TAG, "桌面地图restartApp: 重启应用");
+            if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(mView, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+                AlarmManager alarmManager = (AlarmManager)mView.getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, pendingIntent); // 1秒后重启
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+            }
+        } else {
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
         }
     }
 

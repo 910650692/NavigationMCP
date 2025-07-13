@@ -6,6 +6,9 @@ import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -2021,7 +2024,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 if (Logger.openLog) {
                     Logger.printStackTrace(NAVI_EXIT,true);
                 }
-                System.exit(0);
+                mViewModel.exitSelf();
             }
         }
     }
