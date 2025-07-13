@@ -119,6 +119,11 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
 
     // 补能计划
     public Action mChargingPlan = () -> {
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.navi_setting_offline_toast));
+            return;
+        }
         final boolean value = Boolean.FALSE.equals(mIsChargingPlan.getValue());
         SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN, value);
         mIsChargingPlan.setValue(value);
@@ -209,6 +214,11 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
 
     // 实时路况
     public Action mRoadConditionClick = () -> {
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.navi_setting_offline_toast));
+            return;
+        }
         final boolean value = Boolean.FALSE.equals(mIsRoadCondition.getValue());
         MapPackage.getInstance().setTrafficStates(MapType.MAIN_SCREEN_MAIN_MAP, value);
         mIsRoadCondition.setValue(value);
@@ -217,6 +227,11 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
 
     // 收藏点
     public Action mFavoritePointClick = () -> {
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.navi_setting_offline_toast));
+            return;
+        }
         final boolean value = Boolean.FALSE.equals(mIsFavoritePoint.getValue());
         mIsFavoritePoint.setValue(value);
         mModel.setFavoritePoint(value);
@@ -226,6 +241,11 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
 
     // 充电站
     public Action mChargingStationClick = () -> {
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.navi_setting_offline_toast));
+            return;
+        }
         final boolean value = Boolean.FALSE.equals(mIsChargingStation.getValue());
         final ArrayList<Integer> typeList = new ArrayList<>();
         typeList.add(25);
