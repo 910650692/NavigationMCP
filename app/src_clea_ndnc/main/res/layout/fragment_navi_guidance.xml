@@ -263,7 +263,7 @@
                 android:id="@+id/scene_navi_last_mile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_marginStart="@dimen/dp_m_47"
                 android:visibility="@{ViewModel.mNaviLastMileVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toEndOf="@id/scl_top_container"
                 app:layout_constraintTop_toTopOf="@id/scl_top_container" />
