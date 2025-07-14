@@ -27,6 +27,7 @@ import com.patac.launcher.PatacLauncherModeConfig;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
@@ -166,6 +167,7 @@ public class FloatViewManager {
     public void hideWidgetsOnMapTouch(MotionEvent touchEvent) {
         Logger.d(TAG, "hideWidgetsOnMapTouch");
         if (!isNaviDeskBg()) return;
+        if (!ScreenTypeUtils.getInstance().isFullScreen()) return;
         switch (touchEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 startX = (int) touchEvent.getX();

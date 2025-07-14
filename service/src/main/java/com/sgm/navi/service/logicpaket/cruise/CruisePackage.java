@@ -21,7 +21,8 @@ import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 
-import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Description TODO
@@ -32,12 +33,12 @@ public class CruisePackage implements CruiseObserver {
     private static final String TAG = "CruisePackage";
     private CruiseAdapter mCruiseAdapter;
     private final LayerAdapter mLayerAdapter;
-    private Hashtable<String, ICruiseObserver> mCruiseObserver;
+    private ConcurrentHashMap<String, ICruiseObserver> mCruiseObserver;
     private NavistatusAdapter mNavistatusAdapter;
     private SpeechAdapter mSpeechAdapter;
 
     private CruisePackage() {
-        mCruiseObserver = new Hashtable<>();
+        mCruiseObserver = new ConcurrentHashMap<>();
         mCruiseAdapter = CruiseAdapter.getInstance();
         mLayerAdapter = LayerAdapter.getInstance();
         mSpeechAdapter = SpeechAdapter.getInstance();
