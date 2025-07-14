@@ -432,6 +432,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 hideFilterPage();
                 return;
             }
+            mScreenViewModel.abortSearchByTaskId();
             if (mIsOpenFromNavi) {
                 mScreenViewModel.closeSearchOpenFromNavi();
             } else {
@@ -1030,7 +1031,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             for (int i = 0; i < mChildQuickList.size(); i++) {
                 mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
             }
-            if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1){
+            if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1 && !ConvertUtils.isEmpty(mChildQuickList.size())){
                 mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
             }else{
                 mAdapter.setQuickLabel("");
@@ -1457,11 +1458,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         List<SearchChildCategoryLocalInfo> childListByHigh = new ArrayList<>();
         // 低配车型
         List<SearchChildCategoryLocalInfo> childListByLow = new ArrayList<>();
-        if (ConvertUtils.isNull(list)) {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "SearchCategoryLocalInfo is empty");
-            return new ArrayList<>();
-        }
-        List<SearchChildCategoryLocalInfo> childList = list.get(0).getCategoryLocalInfos();
         int brand = mScreenViewModel.getBrand();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"brand: "+brand);
         boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
@@ -1474,6 +1470,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             childListByHigh.add(chargeItem);
             childListByLow.add(chargeItem);
         }
+        List<SearchChildCategoryLocalInfo> childList = ConvertUtils.isEmpty(list) ? new ArrayList<>() : list.get(0).getCategoryLocalInfos();
         if (isPowerType) {
             // 添加免费停车快筛
             SearchChildCategoryLocalInfo parkItem = new SearchChildCategoryLocalInfo()
