@@ -42,7 +42,6 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
-import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.flavor.CarModelsFeature;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.account.AccountQRCodeLoginFragment;
@@ -153,6 +152,7 @@ import com.sgm.navi.service.logicpaket.user.forecast.IForecastAddressCallBack;
 import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushCallBack;
 import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
+import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
@@ -1502,7 +1502,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 ArrayList<OftenArrivedItemInfo> mOthers = data.getOthers();
                 if (!ConvertUtils.isEmpty(mOthers)) {
                     OftenArrivedItemInfo mOther = mOthers.get(0);
-                    managerMessage(new MessageCenterInfo(MessageCenterType.GUESS_WANT_GO, "去这里", 0, mOther.getWstrPoiName(), "为你推荐", new Date(), 0, mOther));
+                    if (AppCache.getInstance().isFirstOpenMap()) {
+                        managerMessage(new MessageCenterInfo(MessageCenterType.GUESS_WANT_GO, "去这里", 0, mOther.getWstrPoiName(), "为你推荐", new Date(), 0, mOther));
+                    }
                 }
                 break;
             case AutoMapConstant.GuessPositionType.HOME:
