@@ -949,7 +949,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE,
                 AutoMapConstant.SearchType.SEARCH_KEYWORD);
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
-        addFragment(new SearchResultFragment(), args);
+        addPoiDetailsFragment(new SearchResultFragment(), args);
     }
 
     /**
