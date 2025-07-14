@@ -296,14 +296,15 @@
             clickCommand="@{ViewModel.backToSelfParking}"
             android:layout_width="@dimen/dp_191"
             android:layout_height="@dimen/dp_78"
-            android:layout_marginEnd="@dimen/dp_845"
             android:layout_marginBottom="@dimen/dp_130"
             android:background="@drawable/bg_search_main_tab"
+            android:layout_marginEnd="@dimen/dp_m_73"
             android:gravity="center"
             android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/search_main_tab_bottom"
+            app:layout_constraintEnd_toStartOf="@id/scene_scale_view"
             android:visibility="@{ViewModel.backToParkingVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_49"
