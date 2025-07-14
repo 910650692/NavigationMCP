@@ -61,14 +61,16 @@ public class MapAdapterImpl implements IMapApi {
         int mapViewHeight;
         int screenWidth;
         int screenHeight;
-        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()
+                && mapView.provideMapTypeId() == MapType.MAIN_SCREEN_MAIN_MAP) {
             //平板 740 1179
             //台架 正常 723 1066 异常 723 652
             mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(723);
             mapViewHeight = 1440;
             screenWidth = ScreenUtils.Companion.getInstance().dp2px(723);
             screenHeight =  1440;
-        } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen()){
+        } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen()
+                && mapView.provideMapTypeId() == MapType.MAIN_SCREEN_MAIN_MAP){
             //平板 1431 1179
             //台架 1439 1066
             mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
@@ -96,14 +98,14 @@ public class MapAdapterImpl implements IMapApi {
         int mapViewHeight;
         int screenWidth;
         int screenHeight;
-        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen() && mapView.provideMapTypeId() == MapType.MAIN_SCREEN_MAIN_MAP) {
             //平板 740 1179
             //台架 正常 723 1066 异常 723 652
             mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(723);
             mapViewHeight = 1440;
             screenWidth = ScreenUtils.Companion.getInstance().dp2px(723);
             screenHeight =  1440;
-        } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen()){
+        } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen() && mapView.provideMapTypeId() == MapType.MAIN_SCREEN_MAIN_MAP){
             //平板 1431 1179
             //台架 1439 1066
             mapViewWidth = ScreenUtils.Companion.getInstance().dp2px(1439);
