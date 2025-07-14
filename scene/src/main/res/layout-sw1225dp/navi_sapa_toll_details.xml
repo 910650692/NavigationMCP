@@ -16,6 +16,7 @@
         android:layout_width="@dimen/dp_613"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_shadow_navi_buick">
+
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/siv_toll_details_status_tag"
             android:layout_width="wrap_content"
@@ -27,7 +28,7 @@
             android:paddingHorizontal="@dimen/dp_12"
             android:paddingVertical="@dimen/dp_6"
             android:text="@{sapaDetail.mTollStatusTag}"
-            android:textColor="@color/navi_color_000000_50"
+            android:textColor="@color/navi_color_2461EA_100"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
