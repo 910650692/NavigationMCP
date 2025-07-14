@@ -132,6 +132,7 @@ public interface IVrBridgeConstant {
         String DISTANCE = "DISTANCE";
         String PRIZE = "PRIZE";
         String RATE = "RATE";
+        String RECOMMEND = "RECOMMEND";
     }
 
     interface PoiSortValue {
@@ -140,6 +141,7 @@ public interface IVrBridgeConstant {
         String PRIORITY_RATE = "好评优先";
         String PRIORITY_LOW_PRICE = "低价优先";
         String PRIORITY_HIGH_PRICE = "高价优先";
+        String PRIORITY_DEFAULT = "综合排序";
     }
 
     interface PoiSortRule {

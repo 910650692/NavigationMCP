@@ -75,6 +75,7 @@ public final class VoiceSearchManager {
     private String mPoiType; //地址类型，用于设置家、公司、普通点
 
     private VoiceSearchConditions mSearchCondition; //深度-筛选搜索项
+
     private String mSortValue; //搜索结果列表排序规则
 
     private boolean mAlongToAround = false; //是否为沿途搜转周边搜，在沿途搜结果为空时触发
@@ -1912,6 +1913,10 @@ public final class VoiceSearchManager {
                     mSortValue = IVrBridgeConstant.PoiSortValue.PRIORITY_RATE;
                 }
                 break;
+            case IVrBridgeConstant.PoiSortType.RECOMMEND:
+                //推荐排序
+                mSortValue = IVrBridgeConstant.PoiSortValue.PRIORITY_RECOMMEND;
+                break;
             default:
                 if(Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "unKnown sortType");
@@ -1924,7 +1929,16 @@ public final class VoiceSearchManager {
         } else {
             mSearchType = IVrBridgeConstant.VoiceSearchType.POI_SORT;
             mRespCallback = respCallback;
-            SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
+            if (IVrBridgeConstant.PoiSortValue.PRIORITY_RECOMMEND.equals(mSortValue)) {
+                //综合排序，使用默认搜索第一页的结果
+                if (mCurrentPage < 1) {
+                    mCurrentPage = 1;
+                }
+                SearchPackage.getInstance().keywordSearch(mCurrentPage, mKeyword, false);
+            } else {
+                //为语音增加的接口，按支持的规则排序
+                SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
+            }
         }
     }
 
@@ -1990,7 +2004,10 @@ public final class VoiceSearchManager {
         }
 
         if (appendHint) {
-            final String distance = firstPoi.getDistance();
+            String distance = firstPoi.getDistance();
+            if (TextUtils.isEmpty(distance) || VoiceConvertUtil.ZERO_DIST.equals(distance)) {
+                distance = VoiceConvertUtil.formatDistance(firstPoi.getPoint());
+            }
             builder.append(name).append("距您").append(distance).append("，去这里可以吗");
         }
 
