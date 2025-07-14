@@ -120,6 +120,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private static final int IS_CLEA = 0;
     private static final int IS_BUICK = 1;
     private static final int IS_CADILLAC = 2;
+    private boolean isInitSuccess = false;
 
     private ExportEventCallBack mEventCallBack;
 
@@ -214,7 +215,10 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         if (-1 != engineInit) {
             if (initFsaService()) {
                 sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ONE);
-                activelySendNavigationStatus();
+                if (!isInitSuccess){
+                    activelySendNavigationStatus();
+                }
+                isInitSuccess = true;
             }
             addPackageListener();
         } else {
@@ -241,7 +245,10 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             addPackageListener();
             sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ONE);
             //发送导航状态
-            activelySendNavigationStatus();
+            if (!isInitSuccess){
+                activelySendNavigationStatus();
+            }
+            isInitSuccess = true;
         }
 
         @Override
@@ -252,6 +259,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     };
 
     public void activelySendNavigationStatus() {
+        Logger.i(FsaConstant.FSA_TAG, "activelySendNavigationStatus");
         //发送导航状态
         judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_NAVIGATION, NaviStatus.NaviStatusType.NAVING);
         judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_LIGHT_NAVIGATION, NaviStatus.NaviStatusType.LIGHT_NAVING);
