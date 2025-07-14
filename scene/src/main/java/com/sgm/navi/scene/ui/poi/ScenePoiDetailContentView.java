@@ -1010,9 +1010,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot.
                     setText(slowInfo);
-            mViewBinding.scenePoiDetailsChargingStationView.poiChargePrice.setText(
-                    getContext().getString(
-                            R.string.charge_price, ConvertUtils.stringFormatTwo(chargeInfo.getCurrentElePrice())));
+            if (!ConvertUtils.equals(chargeInfo.getCurrentElePrice(), "--")) {
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargePrice.setText(
+                        getContext().getString(
+                                R.string.charge_price, ConvertUtils.stringFormatTwo(chargeInfo.getCurrentElePrice())));
+            } else {
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargePrice.setVisibility(GONE);
+            }
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setVisibility(
                     ConvertUtils.isEmpty(chargeInfo.getCurrentServicePrice()) ? View.GONE : View.VISIBLE);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setText(
