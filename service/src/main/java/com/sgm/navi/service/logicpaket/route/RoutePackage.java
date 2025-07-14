@@ -1451,6 +1451,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
                 mNaviAdapter.updateNaviPath(routeLineLayerParam);
             } else {
+                routeLineLayerParam.setMRouteType(RoutePriorityType.ROUTE_TYPE_COMMON);//非引导态算路类别为普通算路
                 mNaviAdapter.setNaviPath(0, routeLineLayerParam);
             }
         }

@@ -51,6 +51,7 @@ import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.adapter.route.RouteResultObserver;
 import com.sgm.navi.service.define.aos.RestrictedAreaDetail;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -343,7 +344,11 @@ public class RouteAdapterImplHelper {
         routeOption.setPOIForRequest(poiForRequest);//设置算路行程点
         if (requestRouteResult.isMIsOnlineRoute()) {
             routeOption.setRouteStrategy(mRouteStrategy);
-            routeOption.setRouteType(getRouteType(requestRouteResult.getMRouteType()));//算路类型
+            if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING) ) {
+                routeOption.setRouteType(getRouteType(requestRouteResult.getMRouteType()));//算路类型
+            } else {
+                routeOption.setRouteType(RouteType.RouteTypeCommon);//非导航中设置算路类型为普通算路
+            }
             routeOption.setUserAvoidInfo(mUserAvoidInfo);
             int constrainCode = mRouteConstrainCode;
             if (BevPowerCarUtils.getInstance().isElecPlanRoute) {
@@ -357,7 +362,11 @@ public class RouteAdapterImplHelper {
             routeOption.setVehicleCharge(BevPowerCarUtils.getInstance().initlialHVBattenergy);
             mUserAvoidInfo.linkList.clear();
         } else {
-            routeOption.setRouteType(getRouteType(requestRouteResult.getMRouteType()));//算路类型
+            if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING) ) {
+                routeOption.setRouteType(getRouteType(requestRouteResult.getMRouteType()));//算路类型
+            } else {
+                routeOption.setRouteType(RouteType.RouteTypeCommon);//非导航中设置算路类型为普通算路
+            }
             routeOption.setRouteStrategy(mRouteStrategy);
             routeOption.setConstrainCode(mRouteConstrainCode | RouteConstrainCode.RouteCalcLocal);
             routeOption.setUserAvoidInfo(mUserAvoidInfo);
@@ -722,9 +731,9 @@ public class RouteAdapterImplHelper {
             handlerRouteResult(requestRouteResult, pathInfoList);
             handlerDrawLine(requestRouteResult.getMLineLayerParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
+            handlerChargingStation(requestRouteResult, pathInfoList, requestId, requestRouteResult.getMMapTypeId());
             if (!requestRouteResult.isMAutoRouting()){
-                Logger.i(TAG, "reRoute", "正常路线规划业务，继续执行限行、补能、续航图层刷新动作");
-                handlerChargingStation(requestRouteResult, pathInfoList, requestId, requestRouteResult.getMMapTypeId());
+                Logger.i(TAG, "reRoute", "正常路线规划业务，继续执行限行、续航图层刷新动作");
                 handlerRestriction(requestRouteResult.getMRouteRestrictionParam(), pathInfoList, requestId,
                         requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
                 handlerRange(pathInfoList, requestRouteResult.isMIsOnlineRoute());
