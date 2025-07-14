@@ -699,7 +699,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             tmcModeVisibility.set(false);
             PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
             PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
-            if (!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)) {
+            if (!ConvertUtils.isEmpty(homePoi) || !ConvertUtils.isEmpty(companyPoi)) {
                 mModel.sendReqHolidayList();
             }
         }else {

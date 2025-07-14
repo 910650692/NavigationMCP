@@ -1617,7 +1617,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private void loadNdGoHomeView() {
         if (mViewModel.showNdGoHomeView()) {
             String key = mCommonManager.getValueByKey(UserDataCode.MAP_ND_GO_HOME_KEY);
-            String currentTime = TimeUtils.getInstance().getCurrentDate().replace("-", "");
+            String currentTime = TimeUtils.getInstance().getCurrentTimeToHour();
+            Logger.d(TAG, "key:" + key + ",,, currentTime:" + currentTime);
             if (ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key, currentTime)) {
                 mCommonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY, currentTime);
 
@@ -1626,9 +1627,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 boolean workHours = TimeUtils.isCurrentTimeInSpecialRange(true);
                 GeoPoint nearByHome = mViewModel.nearByHome(true);
                 GeoPoint nearByCompany = mViewModel.nearByHome(false);
-                if (workHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
+                if (workHours && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
                     //判断距离是否大于等于1km 小于等于50km 去公司
-                    boolean distanceCompany = calcStraightDistance(nearByHome, locInfoBean);
+                    boolean distanceCompany = calcStraightDistance(nearByCompany, locInfoBean);
                     if (distanceCompany) {
                         mViewModel.loadNdOfficeTmc(false);
                     }
@@ -1637,9 +1638,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
                 //是否在下班时间段内  在公司附近
                 boolean endofWorkHours = TimeUtils.isCurrentTimeInSpecialRange(false);
-                if (endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
+                if (endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(locInfoBean)) {
                     //判断距离是否大于等于1km 小于等于50km 回家
-                    boolean distanceHome = calcStraightDistance(nearByCompany, locInfoBean);
+                    boolean distanceHome = calcStraightDistance(nearByHome, locInfoBean);
                     if (distanceHome) {
                         mViewModel.loadNdOfficeTmc(true);
                     }

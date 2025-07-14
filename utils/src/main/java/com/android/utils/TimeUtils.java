@@ -37,6 +37,8 @@ public class TimeUtils {
 
     public static final String FORMAT_Y_M_D_H_M = "yyyy-MM-dd HH:mm";
 
+    public static final String FORMAT_Y_M_D_H_2 = "yyyyMMddHH";
+
     public static final String FORMAT_H_M = "HH:mm";
 
     public static final String FORMAT_Y_M_D_H_M_S = "yyyy-MM-dd HH:mm:ss";
@@ -550,6 +552,16 @@ public class TimeUtils {
      */
     public String getCurrentDateEE() {
         setDateFormat(FORMAT_Y_M_D_E);
+        return simpleDateFormat.format(new Date());
+    }
+
+    /**
+     * 获取当前时间，精确到小时
+     *
+     * @return yyyyMMddHH
+     */
+    public String getCurrentTimeToHour() {
+        setDateFormat(FORMAT_Y_M_D_H_2);
         return simpleDateFormat.format(new Date());
     }
 
