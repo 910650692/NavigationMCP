@@ -98,6 +98,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private boolean mIsShow;
     private ScheduledFuture mScheduledFuture;
     private String mReservationPreNum = "";
+    private int mAbortTaskId = 0;
 
     private SearchPackage() {
         mManager = HistoryManager.getInstance();
@@ -143,14 +144,14 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message,
                                final SearchResultEntity searchResultEntity, final SearchRequestParameter requestParameter) {
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchResult=> errorCode: {}, message: {}", errorCode, message);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchResult=> errorCode: {}, message: {}, taskId: {}", errorCode, message, taskId);
         for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
             final String identifier = entry.getKey();
             mCurrentCallbackId.set(identifier);
             final SearchResultCallback callback = entry.getValue();
             callback.onSearchResult(taskId, errorCode, message, searchResultEntity);
         }
-        if (searchResultEntity != null) {
+        if (searchResultEntity != null && taskId != mAbortTaskId) {
             addPoiMarker(searchResultEntity, requestParameter);
             if (requestParameter.getSearchType() != AutoMapConstant.SearchType.SEARCH_SUGGESTION
                     && !ConvertUtils.isEmpty(searchResultEntity.getKeyword())) {
@@ -1227,7 +1228,8 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * 取消单个搜索
      */
     public void abortSearch(final int taskId) {
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Aborting search.");
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Aborting search: ",taskId);
+        mAbortTaskId = taskId;
         mSearchAdapter.abortSearch(taskId);
     }
 

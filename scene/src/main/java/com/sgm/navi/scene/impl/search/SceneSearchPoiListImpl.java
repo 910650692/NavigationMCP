@@ -292,6 +292,14 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     }
 
     /**
+     * 中止当前搜索
+     */
+    public void abortSearchByTaskId() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "abortSearchByTaskId");
+        mSearchPackage.abortSearch(getMTaskId());
+    }
+
+    /**
      * 中止搜索
      * @param taskId 任务id
      */
