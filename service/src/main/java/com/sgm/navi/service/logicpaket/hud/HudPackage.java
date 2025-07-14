@@ -187,7 +187,6 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
             hudDrawLine();
         }
     }
-
     //设置HUDMap中心点
     public void setHudMapCenter(MapType mapType){
         MapPackage.getInstance().setMapCenter(mapType, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
@@ -200,9 +199,14 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
                 PositionPackage.getInstance().getLastCarLocation().getCourse()));
     }
 
-    public void hudDrawLine(){
-        //ClusterRouteHelper.getInstance().onlyShowCurrentPath(MapType.HUD_MAP);
-        RoutePackage.getInstance().showRouteLine(MapType.HUD_MAP);
-        //LayerAdapter.getInstance().setSelectedPathIndex(MapType.HUD_MAP,RoutePackage.getInstance().getSelectRouteIndex().get(MapType.MAIN_SCREEN_MAIN_MAP));
+    public void hudDrawLine() {
+        RoutePackage.getInstance().showOnlyOneRouteLine(MapType.HUD_MAP);
+    }
+
+    //修改地图雪地 非雪地模式
+    private void updateMapThemeType(boolean isSnowMode) {
+        Logger.d(TAG, "updateMapThemeType:isSnowMode:", isSnowMode);
+        ThemeType colorMode = isSnowMode ? ThemeType.DAY : ThemeType.NIGHT;
+        MapAdapter.getInstance().updateUiStyle(MapType.HUD_MAP, colorMode);
     }
 }
