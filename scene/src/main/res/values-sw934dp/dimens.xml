@@ -5,4 +5,7 @@
     <dimen name="hanging_card_second_expand">@dimen/dp_118</dimen>
     <dimen name="hanging_card_third_unexpand">@dimen/dp_140</dimen>
     <dimen name="hanging_card_third_expand">@dimen/dp_236</dimen>
+
+    <dimen name="route_supplement_width">@dimen/dp_100</dimen>
+    <dimen name="route_supplement_total">@dimen/dp_678</dimen>
 </resources>

@@ -374,7 +374,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                             .thenAccept(etaInfo -> {
                                 routeSupplementInfo.get(currentIndex).setMDistance(etaInfo.getDistance());
                                 routeSupplementInfo.get(currentIndex).setMUnitDistance(TimeUtils.getInstance()
-                                        .getDistanceString(etaInfo.getDistance()));
+                                        .getDistanceMsg(etaInfo.getDistance()));
                                 paramTotal.getAndIncrement();
                                 if (paramTotal.get() == routeSupplementInfo.size()) {
                                     infoTotal.getAndIncrement();
