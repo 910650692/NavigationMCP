@@ -57,6 +57,10 @@ public class MessageCenterManager {
      * @param messageCenterInfo    数据
      */
     public void pushMessage(final MessageCenterInfo messageCenterInfo) {
+        if (messageCenterInfo == null) {
+            Logger.i("MessageCenterManager", "messageCenterInfo is null");
+            return;
+        }
         addMessage(messageCenterInfo);
         if(!messageQuenu.isEmpty()){
             cancelTimeCountdown();
@@ -79,6 +83,15 @@ public class MessageCenterManager {
      * @param messageCenterInfo 数据
      */
     private void addMessage(final MessageCenterInfo messageCenterInfo) {
+        if (!messageQuenu.isEmpty()) {
+            for (int i = 0; i < messageQuenu.size(); i++) {
+                MessageCenterInfo info = messageQuenu.get(i);
+                if (messageCenterInfo.getMsgType() == info.getMsgType()) {
+                    Logger.i("MessageCenterManager", "already in the queue, type: " + messageCenterInfo.getMsgType());
+                    return;
+                }
+            }
+        }
         messageQuenu.add(messageCenterInfo);
     }
 
