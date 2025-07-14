@@ -222,7 +222,9 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         }
         if (TextUtils.isEmpty(styleJson)) {
             styleJson = super.getLayerStyle(layer, item, forJava);
-            Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 默认 纹理样式配置 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType());
+            if (Logger.openLog) {
+                Logger.d(TAG, getClass().getSimpleName(), " ", mapType, " 默认 纹理样式配置 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), "\n", styleJson);
+            }
         }
         return styleJson;
     }
@@ -242,8 +244,10 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                         "\n", "纹理信息 :{ markerRes = ", styleInfo.markerId, " ; resID = ", texture.resID, " ; markerId = ", markerId, " }");
             }
         } else {
-            Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 默认 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
-                    "\n", "纹理信息 :{ markerRes = ", styleInfo.markerId, " ; resID = ", texture.resID, " ; markerId = ", markerId, " }");
+            if (Logger.openLog) {
+                Logger.d(TAG, getClass().getSimpleName(), " ", mapType, " 默认 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
+                        "\n", "纹理信息 :{ markerRes = ", styleInfo.markerId, " ; resID = ", texture.resID, " ; markerId = ", markerId, " }");
+            }
         }
         return markerId;
     }

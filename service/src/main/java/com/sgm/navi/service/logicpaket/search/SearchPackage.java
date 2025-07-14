@@ -1474,6 +1474,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         showPreview(poiList);
     }
 
+    public LayerItemSearchResult getLastSearchResult() {
+        return mLayerAdapter.getLastSearchResult();
+    }
+
     /**
      * 移动主图，将搜索扎标移到主图中心点
      * @param poiList 需要扎标的数据列表

@@ -34,6 +34,8 @@ public class LayerAdapter {
     private static final String LAYER_PKG_NAME = LayerAdapter.class.getPackage().getName();
     private static final String LAYER_CLS_NAME = "LayerAdapterImpl";
 
+    private LayerItemSearchResult mLayerItemSearchResult;
+
     private ILayerApi mLayerApi;
 
     public static LayerAdapter getInstance() {
@@ -309,22 +311,32 @@ public class LayerAdapter {
 
     /* 搜索图层扎标接口 */
     public boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
+        mLayerItemSearchResult = searchResult;
         return mLayerApi.updateSearchMarker(mapTypeId, type, searchResult, clearOtherLayerItem);
     }
 
     /* 更新列表可视扎标数据 */
     public void updateSearchResult(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult result) {
+        mLayerItemSearchResult = result;
         mLayerApi.updateSearchResult(mapTypeId, type, result);
     }
 
     /* 清除所有搜索扎标 */
     public void clearAllSearchLayerItems(MapType mapTypeId) {
+        mLayerItemSearchResult = null;
         mLayerApi.clearAllSearchLayerItems(mapTypeId);
     }
 
     /* 清除搜索POI扎标 */
     public void clearSearchPOILayerItems(MapType mapTypeId, LayerPointItemType searchItemType) {
         mLayerApi.clearSearchPOILayerItems(mapTypeId, searchItemType);
+    }
+
+    public LayerItemSearchResult getLastSearchResult() {
+        if (null == mLayerItemSearchResult) {
+            return new LayerItemSearchResult();
+        }
+        return mLayerItemSearchResult;
     }
 
     /*========================================= 搜索图层接口定义=========================================*/

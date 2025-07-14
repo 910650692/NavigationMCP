@@ -770,6 +770,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             cruisePackage.registerObserver(mViewModel.mScreenId, this);
             // 恢复偏好设置
             mapModelHelp.restoreSetting();
+            //恢复列表搜全览
+            ArrayList<PoiInfoEntity> resultPoints = searchPackage.getLastSearchResult().getSearchResultPoints();
+            if(!ConvertUtils.isEmpty(resultPoints)) {
+                if (Logger.openLog) {
+                    Logger.i(TAG, "恢复列表搜全览");
+                }
+                searchPackage.showPreview(resultPoints);
+            }
+
             mViewModel.initTimer();
             addFavoriteToMap();
             speedMonitor.registerSpeedCallBack();

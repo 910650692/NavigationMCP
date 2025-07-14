@@ -76,7 +76,9 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     }
 
     public void setSelect(LayerPointItemType type, int index) {
-        Logger.v(TAG, "setSelect type " + type + " index " + index);
+        if (Logger.openLog) {
+            Logger.d(TAG, "setSelect type " + type + " index " + index);
+        }
         if (getLayerSearchControl() != null) {
             switch (type) {
                 case SEARCH_PARENT_POINT -> {
@@ -174,7 +176,9 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "updateSearchMarker searchResult == null");
             return false;
         }
-        Logger.v(TAG, "updateSearchMarker type " + type);
+        if (Logger.openLog) {
+            Logger.d(TAG, "updateSearchMarker type " + type);
+        }
         boolean result = false;
         switch (type) {
             case SEARCH_PARENT_Line_Road -> {
