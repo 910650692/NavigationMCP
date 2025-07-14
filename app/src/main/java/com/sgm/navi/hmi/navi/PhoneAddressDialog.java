@@ -56,7 +56,7 @@ public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
     /**
      * show dialog
      */
-    public void showDialog() {
+    public void showDialog(boolean isMainBTNVisible) {
         super.showDialog(Gravity.TOP | Gravity.START);
         final Window window = getWindow();
         if (null == window) {
@@ -66,7 +66,11 @@ public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
                 WindowManager.LayoutParams.WRAP_CONTENT);
         final WindowManager.LayoutParams params = window.getAttributes();
         if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
-            params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_417);
+            if (isMainBTNVisible) {
+                params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_417);
+            } else {
+                params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_600);
+            }
             params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_85);
         }else{
             params.x = 517;

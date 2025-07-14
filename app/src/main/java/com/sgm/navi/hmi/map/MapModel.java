@@ -1381,7 +1381,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     mViewModel.startRoute(getPoiInfoEntityFromPushMessage(msg));
                 }
             });
-            phoneAddressDialog.showDialog();
+            phoneAddressDialog.showDialog(mViewModel.mainBTNVisibility.get());
         });
     }
 
