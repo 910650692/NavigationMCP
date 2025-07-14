@@ -1393,6 +1393,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             if (Logger.openLog) {
                 Logger.i(TAG, "notifyAimPoiPushMessage ", GsonUtils.toJson(msg));
             }
+            if (phoneAddressDialog != null && phoneAddressDialog.isShowing()) {
+                phoneAddressDialog.dismiss();
+                phoneAddressDialog = null;
+            }
+
             phoneAddressDialog = new PhoneAddressDialog(
                     stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
             phoneAddressDialog.setTitle(msg.getName());
