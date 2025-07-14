@@ -47,6 +47,9 @@ public interface ILayerApi {
     /* 绘制路线 */
     void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult);
 
+    /* 只绘制当前路线 */
+    void drawOnlyOneRouteLine(MapType mapTypeId, RequestRouteResult routeResult);
+
     /* 路线替换补能扎标 */
     void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos);
 

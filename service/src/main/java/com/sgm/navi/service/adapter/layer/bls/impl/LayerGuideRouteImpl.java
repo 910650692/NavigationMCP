@@ -306,6 +306,35 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         updatePaths();
     }
 
+    /**
+     * 只绘制当前路线
+     *
+     * @param routeResult
+     */
+    public void drawOnlyOneRouteLine(RequestRouteResult routeResult) {
+        if (ConvertUtils.isEmpty(routeResult)) {
+            Logger.e(TAG, "路线绘制参数为空，无法进行路线渲染");
+            return;
+        }
+        Logger.d(TAG, getMapType(), "drawOnlyOneRouteLine  isMAutoRouting ", routeResult.isMAutoRouting());
+        //更新路线图层数据
+        getStyleAdapter().updateRouteResult(routeResult);
+        //设置路线信息
+        setPathInfoByRouteResult(routeResult, true);
+        //设置起点终点途经点
+        setPathPoints(routeResult);
+        //设置路线样式风格
+        setMainMapPathDrawStyle(false, false, true);
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        boolean isNaving = currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING);
+        //设置全览  只对主屏生效 偏航重算不全览
+        if (getMapType() == MapType.MAIN_SCREEN_MAIN_MAP && !routeResult.isMAutoRouting() &&
+                !isNaving) {
+            showPreviewView();
+        }
+        updatePaths();
+    }
+
     /* 更新终点扎标数据 */
     public void updateRouteEndPoint(LayerItemRouteEndPoint endPoint) {
         Logger.d(TAG, getMapType(), "updateRoutePoints endPoint ", endPoint.toString());
@@ -802,6 +831,18 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, getMapType(), "setPathInfoByRouteResult pathInfoList size =", pathInfoList.size());
     }
 
+    // 更新路线数据
+    private void setPathInfoByRouteResult(RequestRouteResult routeResult, boolean isShowOnePath) {
+        if (ConvertUtils.isEmpty(routeResult.getMLineLayerParam()) ||
+                ConvertUtils.isEmpty(routeResult.getMLineLayerParam().getMPathInfoList())) {
+            Logger.e(TAG, getMapType(), "setPathInfoByRouteResult getMPathInfoList is Empty");
+            return;
+        }
+        ArrayList<?> pathInfoList = routeResult.getMLineLayerParam().getMPathInfoList();
+        setPathInfos(pathInfoList, 0, isShowOnePath);
+        Logger.d(TAG, getMapType(), "setPathInfoByRouteResult pathInfoList size =", pathInfoList.size());
+    }
+
     /**
      * 更新引导路线数据
      *
@@ -824,6 +865,47 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                     bizPath.mPathInfo = pathInfo;
                     bizPath.mDrawAtts = new BizRouteDrawCtrlAttrs();
                     bizPath.mDrawAtts.mIsDrawPath = true;//是否要绘制
+                    bizPath.mDrawAtts.mIsDrawPathCamera = true;//是否绘制电子眼
+                    bizPath.mDrawAtts.mIsDrawPathTrafficLight = true; //是否要绘制路线上的交通灯
+                    bizPath.mDrawAtts.mIsDrawArrow = true;//是否要绘制转向箭头
+                    bizPath.mDrawAtts.mIsVisible = true;//是否要显示
+                    bizPath.mDrawAtts.mIsNewRouteForCompareRoute = true;
+                    bizPath.mDrawAtts.mIsTrafficEventOpen = true;//是否要打开交通事件显示开关，默认为开
+                    bizPath.mDrawAtts.mIsHighLightRoadName = true;
+                    bizPathInfoAttrs.add(bizPath);
+                }
+            }
+        }
+        int result = getLayerGuideRouteControl().setPathInfos(bizPathInfoAttrs, selectIndex);
+        Logger.d(TAG, getMapType(), "设置路线 result : ", result, " 默认选中路线 -> ", selectIndex);
+    }
+
+    /**
+     * 更新引导路线数据
+     *
+     * @param pathInfoList
+     * @param selectIndex
+     */
+    private void setPathInfos(ArrayList<?> pathInfoList, int selectIndex, boolean isShowOnePath) {
+        if (ConvertUtils.isEmpty(pathInfoList)) {
+            Logger.e(TAG, getMapType(), "setPathInfos pathInfoList is Empty");
+            return;
+        }
+        long pathCount = pathInfoList == null ? 0 : pathInfoList.size();
+        ArrayList<BizPathInfoAttrs> bizPathInfoAttrs = new ArrayList<>();
+        mPathInfoList = (ArrayList<PathInfo>) pathInfoList;
+        for (int i = 0; i < pathCount; i++) {
+            if (pathInfoList.get(i) instanceof PathInfo) {
+                PathInfo pathInfo = (PathInfo) pathInfoList.get(i);
+                if (null != pathInfo && pathInfo.isValid()) {
+                    BizPathInfoAttrs bizPath = new BizPathInfoAttrs();
+                    bizPath.mPathInfo = pathInfo;
+                    bizPath.mDrawAtts = new BizRouteDrawCtrlAttrs();
+                    if (isShowOnePath && i == selectIndex) {
+                        bizPath.mDrawAtts.mIsDrawPath = true;//是否要绘制
+                    } else {
+                        bizPath.mDrawAtts.mIsDrawPath = false;
+                    }
                     bizPath.mDrawAtts.mIsDrawPathCamera = true;//是否绘制电子眼
                     bizPath.mDrawAtts.mIsDrawPathTrafficLight = true; //是否要绘制路线上的交通灯
                     bizPath.mDrawAtts.mIsDrawArrow = true;//是否要绘制转向箭头

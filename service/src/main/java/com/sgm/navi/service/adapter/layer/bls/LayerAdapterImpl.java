@@ -153,6 +153,15 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().drawRouteLine(routeResult);
     }
 
+    /**
+     * 只绘制当前路线
+     *
+     * @param routeResult
+     */
+    public void drawOnlyOneRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().drawOnlyOneRouteLine(routeResult);
+    }
+
     /* 途经点扎标设置是否选中 */
     public void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setRouteViaPointSelectStatus(isSelect, index);

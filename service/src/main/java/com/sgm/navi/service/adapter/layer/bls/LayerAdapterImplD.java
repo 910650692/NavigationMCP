@@ -61,6 +61,11 @@ public class LayerAdapterImplD implements ILayerApi {
     }
 
     @Override
+    public void drawOnlyOneRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
+
+    }
+
+    @Override
     public void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
 
     }

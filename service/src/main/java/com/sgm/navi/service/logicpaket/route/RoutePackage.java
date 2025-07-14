@@ -1300,6 +1300,17 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     /**
+     * 只绘制当前路线
+     *
+     * @param mapTypeId 屏幕ID
+     */
+    public void showOnlyOneRouteLine(final MapType mapTypeId) {
+        RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (ConvertUtils.isEmpty(requestRouteResult)) return;
+        mLayerAdapter.drawOnlyOneRouteLine(mapTypeId, requestRouteResult);
+    }
+
+    /**
      * 绘制补能点扎标
      *
      * @param mapTypeId 屏幕ID

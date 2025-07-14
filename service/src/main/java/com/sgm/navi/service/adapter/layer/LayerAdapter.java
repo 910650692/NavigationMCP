@@ -121,6 +121,13 @@ public class LayerAdapter {
         mLayerApi.drawRouteLine(mapTypeId, routeResult);
     }
 
+    /**
+     * 只绘制当前路线
+     */
+    public void drawOnlyOneRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
+        mLayerApi.drawOnlyOneRouteLine(mapTypeId, routeResult);
+    }
+
     /* 路线替换补能扎标 */
     public void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
         mLayerApi.updateRouteReplaceChargePoints(mapTypeId, chargeStationInfos);
