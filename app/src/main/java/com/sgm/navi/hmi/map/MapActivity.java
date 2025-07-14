@@ -249,10 +249,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onResume() {
         super.onResume();
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+        if (mViewModel.isSupportSplitScreen()) {
+            ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
+        }
         if (mViewModel.getSdkInitStatus()) {
-            if (mViewModel.isSupportSplitScreen()) {
-                ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
-            }
             mViewModel.getCurrentCityLimit();
             //界面可见时重新适配深浅色模式
             mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
