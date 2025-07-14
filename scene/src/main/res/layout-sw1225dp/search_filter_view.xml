@@ -11,6 +11,7 @@
         tools:visibility="visible">
 
         <com.sgm.navi.ui.view.SkinScrollView
+            android:id="@+id/search_filter_scrollview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_34"
