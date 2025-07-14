@@ -89,9 +89,9 @@ public class NaviMediaPlayer {
         }
         int resId = 0;
         switch (type) {
-            case PlayRingType.PlayRingTypeDing:         // 导航通过音
+            /*case PlayRingType.PlayRingTypeDing:         // 导航通过音
                 resId = R.raw.navi_warning;
-                break;
+                break;*/
             case PlayRingType.PlayRingTypeDong:         // 电子眼高速通过音
                 resId = R.raw.camera;
                 break;
