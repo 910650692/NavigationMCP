@@ -1,4 +1,4 @@
-package com.android.utils.screen;
+package com.sgm.navi.service.define.screen;
 
 
 public enum ScreenType {

@@ -1,6 +1,7 @@
 package com.sgm.navi.service.utils;
 
 import com.android.utils.DeviceUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;

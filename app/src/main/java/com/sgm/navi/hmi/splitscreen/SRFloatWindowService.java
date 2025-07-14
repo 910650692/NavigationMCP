@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.screen.ScreenUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -29,6 +29,7 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
+import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.hmi.utils.CaptureScreenUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;
@@ -288,9 +289,8 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
 
     public void showOrHideFloatView(boolean isShow) {
         Logger.i("screen_change_used", isShow);
-        if(mIsOnShowing == isShow) return;
-        mIsOnShowing = isShow;
         ThreadManager.getInstance().postUi(() -> {
+            mIsOnShowing = isShow;
             if (!isInited) {
                 start();
             } else if (!ConvertUtils.isNull(mView)) {

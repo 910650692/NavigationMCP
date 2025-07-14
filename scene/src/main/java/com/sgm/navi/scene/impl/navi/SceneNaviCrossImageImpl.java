@@ -18,7 +18,7 @@ import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
-import com.android.utils.screen.ScreenTypeUtils;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 

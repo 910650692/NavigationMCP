@@ -9,7 +9,7 @@ import com.sgm.navi.service.logicpaket.voice.VoicePackage;
 import com.sgm.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 
 public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastViewModel> implements VoiceCallback {
     private static final String TAG = SettingVoiceBroadcastModel.class.getSimpleName();
@@ -77,7 +77,7 @@ public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastV
                 dataType + " opType = " + opType + " opreatedIdList = " + opreatedIdList);
     }
 
-    public Map<Integer, VoiceInfo> getRecommendVoiceList(){
+    public HashMap<Integer, VoiceInfo> getRecommendVoiceList(){
         return mVoicePackage.getRecommendVoiceList();
     }
 }

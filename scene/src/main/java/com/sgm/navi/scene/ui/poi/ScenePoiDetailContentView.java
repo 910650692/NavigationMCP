@@ -1792,7 +1792,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         ThreadManager.getInstance().postDelay(mTimeoutTask, 8000);
         mPoiInfoEntity = poiInfo;
-        if(ConvertUtils.isEmpty(null == mPoiInfoEntity) || ConvertUtils.isEmpty(poiInfo.getOperatorId())){
+        if(ConvertUtils.isEmpty(poiInfo.getOperatorId())){
             if(poiInfo.isIsLocres()){
                 ArrayList<PoiInfoEntity> list = new ArrayList<>();
                 list.add(poiInfo);
@@ -1849,7 +1849,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * @param isNeedRefreshNormalView 是否需要刷新NormalView
      */
     public void refreshPoiView(final int poiType, final PoiInfoEntity poiInfoEntity, final boolean isNeedRefreshNormalView) {
-        if (mViewBinding == null || null ==poiInfoEntity) {
+        if (mViewBinding == null) {
             return;
         }
         this.mPoiType = poiType;

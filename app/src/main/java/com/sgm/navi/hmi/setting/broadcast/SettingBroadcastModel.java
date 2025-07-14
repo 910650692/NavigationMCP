@@ -1,7 +1,6 @@
 package com.sgm.navi.hmi.setting.broadcast;
 
 import android.text.TextUtils;
-
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -14,8 +13,8 @@ import com.sgm.navi.service.logicpaket.voice.VoicePackage;
 import com.sgm.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> implements SettingPackage.SettingChangeCallback, ISpeechObserver {
 
@@ -188,7 +187,7 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
     }
 
     public List<String> getRecommendVoiceList() {
-        Map<Integer, VoiceInfo> voiceMap = mVoicePackage.getRecommendVoiceList();
+        HashMap<Integer, VoiceInfo> voiceMap = mVoicePackage.getRecommendVoiceList();
         List<String> mVoiceIcon = new ArrayList<>();
         if(voiceMap != null && !voiceMap.isEmpty()){
             List<VoiceInfo> voiceList = new ArrayList<>(voiceMap.values());

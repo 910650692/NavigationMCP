@@ -1,12 +1,16 @@
-package com.android.utils.screen;
+package com.sgm.navi.service.define.screen;
 
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 
-import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.service.AppCache;
 
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class ScreenTypeUtils {
 
@@ -18,8 +22,11 @@ public class ScreenTypeUtils {
         return InstanceHolder.instance;
     }
 
-    private ScreenType screenType = ScreenType.SCREEN_FULL;
-    private boolean isSRGuideTBTOpen = false;
+    @Getter
+    private ScreenType screenType  = ScreenType.SCREEN_FULL;
+    @Getter
+    @Setter
+    private boolean isSRGuideTBTOpen  = false;
 
     private final ConcurrentHashMap<String, SplitScreenChangeListener> mSplitScreenChangeListeners;
 
@@ -28,7 +35,7 @@ public class ScreenTypeUtils {
     }
 
     public void setScreenType(Configuration configuration) {
-        Logger.d("screen_change_used", configuration.screenWidthDp, "screenType", screenType);
+        Logger.d("screen_change_used", configuration.screenWidthDp);
         ScreenType newScreenType = calculateScreenType(configuration.screenWidthDp);
         if (screenType != newScreenType) {
             screenType = newScreenType;
@@ -39,23 +46,11 @@ public class ScreenTypeUtils {
         }
     }
 
-    public void changeSkinTheme() {
-        Logger.d("screen_change_used", "分屏换肤");
-        callBackScreenChangeTheme();
-    }
-
     private void callBackScreenChange() {
         for (SplitScreenChangeListener listener : mSplitScreenChangeListeners.values()) {
             if (listener != null) {
                 listener.onSplitScreenChanged();
             }
-        }
-    }
-
-    private void callBackScreenChangeTheme() {
-        if (ConvertUtils.isEmpty(mSplitScreenChangeListeners)) return;
-        for (SplitScreenChangeListener listener : mSplitScreenChangeListeners.values()) {
-            if (listener != null) listener.applySplitTheme();
         }
     }
 
@@ -81,10 +76,6 @@ public class ScreenTypeUtils {
         return screenType == ScreenType.SCREEN_2_3;
     }
 
-    public boolean isScreenChange(Configuration configuration) {
-        return ScreenType.SCREEN_FULL != calculateScreenType(configuration.screenWidthDp);
-    }
-
     public void checkScreenType(DisplayMetrics displayMetrics) {
         if (displayMetrics == null) {
             Logger.e("screen_change_used", screenType);
@@ -102,24 +93,8 @@ public class ScreenTypeUtils {
         }
     }
 
-    public ScreenType getScreenType() {
-        return screenType;
-    }
-
-    public void setScreenType(ScreenType screenType) {
-        this.screenType = screenType;
-    }
-
-    public boolean isSRGuideTBTOpen() {
-        return isSRGuideTBTOpen;
-    }
-
-    public void setSRGuideTBTOpen(boolean SRGuideTBTOpen) {
-        isSRGuideTBTOpen = SRGuideTBTOpen;
-    }
-
     public void addSplitScreenChangeListener(String key, SplitScreenChangeListener listener) {
-        if (!mSplitScreenChangeListeners.containsKey(key)) {
+        if (!mSplitScreenChangeListeners.containsKey(key)){
             mSplitScreenChangeListeners.put(key, listener);
         }
     }
@@ -130,7 +105,5 @@ public class ScreenTypeUtils {
 
     public interface SplitScreenChangeListener {
         void onSplitScreenChanged();
-
-        void applySplitTheme();
     }
 }

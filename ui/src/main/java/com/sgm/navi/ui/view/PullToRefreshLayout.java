@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import androidx.core.view.ViewCompat;
 
-import com.android.utils.screen.ScreenUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.ui.view.refresh.FooterView;
 import com.sgm.navi.ui.view.refresh.HeadRefreshView;

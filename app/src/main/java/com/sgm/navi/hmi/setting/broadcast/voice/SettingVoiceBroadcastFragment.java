@@ -17,7 +17,6 @@ import com.sgm.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBroadcastBinding,
@@ -77,7 +76,7 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
      * 设置数据
      * @param voiceInfoList
      */
-    public void setData(final Map<Integer, VoiceInfo> voiceInfoList) {
+    public void setData(final HashMap<Integer, VoiceInfo> voiceInfoList) {
         final String selectedVoice = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PACKAGE);
         if(selectedVoice != null && !selectedVoice.isEmpty()){
             if(Objects.equals(selectedVoice, "default")){

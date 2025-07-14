@@ -17,7 +17,7 @@ import com.sgm.navi.service.adapter.setting.SettingAdapterCallback;
 import com.sgm.navi.service.define.layer.refix.CarModeType;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
-import com.android.utils.theme.ThemeType;
+import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.greendao.favorite.FavoriteManager;

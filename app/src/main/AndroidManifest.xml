@@ -69,7 +69,6 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:resizeableActivity="true"
-            android:taskAffinity="com.sgm.navi"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="DiscouragedApi" >
             <intent-filter>

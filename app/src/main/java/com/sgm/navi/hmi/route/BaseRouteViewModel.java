@@ -1160,7 +1160,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         ThreadManager.getInstance().postUi(() -> {
             mView.showProgressUI();
             //重算路关闭Route/Guidance上面所有页面
-            closeAllFragmentUpRoute(mView.getClass().getName());
+            closeAllFragmentUpRoute();
         });
     }
 

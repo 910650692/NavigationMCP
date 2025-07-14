@@ -10,7 +10,7 @@ import com.sgm.navi.service.define.map.MapStateStyle;
 import com.sgm.navi.service.define.map.MapViewParams;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.PointDataInfo;
-import com.android.utils.theme.ThemeType;
+import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.mfc.MfcController;
 
 import java.util.ArrayList;

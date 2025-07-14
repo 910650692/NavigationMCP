@@ -6,13 +6,16 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.ScreenUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.theme.ThemeType;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.ActivityHudBinding;
+import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.utils.HudMapConfigUtil;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.utils.ActivityCloseManager;
@@ -74,6 +77,20 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
         ActivityCloseManager.getInstance().removeOnCloseListener(this);
         Logger.d(TAG, "onDestroy");
 
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Logger.d(TAG, "onConfigurationChanged");
+        // updateMapThemeType();
+    }
+
+    private void updateMapThemeType() {
+        boolean nightModeEnabled = ThemeUtils.INSTANCE.isNightModeEnabled(this);
+        Logger.d(TAG, "updateMapThemeType:nightModeEnabled:" , nightModeEnabled);
+        ThemeType colorMode = nightModeEnabled ? ThemeType.NIGHT : ThemeType.DAY;
+        MapAdapter.getInstance().updateUiStyle(MapType.HUD_MAP, colorMode);
     }
 
     public IBaseScreenMapView getMapView() {

@@ -1,6 +1,6 @@
 package com.sgm.navi.service.adapter.setting;
 
-import com.android.utils.theme.ThemeType;
+import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
 
 

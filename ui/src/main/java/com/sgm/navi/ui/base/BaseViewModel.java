@@ -89,10 +89,6 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
             currentFragment.refreshFragment(bundle);
         } else if (!ConvertUtils.isNull(mView)) {
             Logger.i(getClass().getSimpleName(), "addFragment");
-            Logger.d(getClass().getSimpleName(), "currentFragment already is exist");
-            currentFragment.refreshFragment(bundle);
-        } else if (!ConvertUtils.isNull(mView)) {
-            Logger.d(getClass().getSimpleName(), "add new fragment");
             mView.addFragment(fragment, bundle);
         }
     }
@@ -120,11 +116,6 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
     @Override
     public void closeAllFragmentUpRoute() {
         mView.closeAllFragmentUpRoute();
-    }
-
-    @Override
-    public void closeAllFragmentUpRoute(String className) {
-        mView.closeAllFragmentUpRoute(className);
     }
 
     @Override

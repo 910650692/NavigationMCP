@@ -23,6 +23,7 @@ import androidx.databinding.ObservableBoolean;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
@@ -41,19 +42,21 @@ import com.sgm.navi.hmi.startup.ActivateFailedDialog;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
-import com.android.utils.screen.ScreenTypeUtils;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MainScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
-import com.android.utils.theme.ThemeType;
+import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
@@ -72,6 +75,8 @@ import java.util.Locale;
 public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> {
 
     private static final String TAG = "MapActivity";
+    private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
+
     private Animation mRotateAnim;
     private ActivateFailedDialog mFailedDialog;
 
@@ -105,11 +110,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
                 boolean value = ((ObservableBoolean) sender).get();
-                ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mBinding.includeMessageCenter.getRoot().getLayoutParams();
-                if (!value) {
+                ConstraintLayout.LayoutParams layoutParams =  (ConstraintLayout.LayoutParams)mBinding.includeMessageCenter.getRoot().getLayoutParams();
+                if(!value){
                     layoutParams.startToEnd = mBinding.layoutFragment.getId();
                     layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_m_17));
-                } else {
+                }else{
                     layoutParams.startToEnd = mBinding.searchMainTab.getId();
                     layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_17));
                 }
@@ -117,6 +122,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
         });
         setMusicShowUI(FloatWindowReceiver.isLauncherStatus, FloatWindowReceiver.musicWindowWidth);
+        mOpenGuideRunnable = () -> mViewModel.openGuideFragment();
+        ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
     }
 
     /**
@@ -221,27 +228,39 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
-    @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
-    protected void onResume() {
-        super.onResume();
-        if (mViewModel.isSupportSplitScreen()) {
-            ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
-        }
-        if (mViewModel.getSdkInitStatus()) {
-            mViewModel.getCurrentCityLimit();
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (!ConvertUtils.isEmpty(outState)) {
+            outState.putBoolean(KEY_CHANGE_SAVE_INSTANCE, true);
         }
     }
 
     @Override
-    public void onApplySkin(ThemeType type, boolean screenType) {
-        super.onApplySkin(type, screenType);
-        if (null == mViewModel || !mViewModel.getSdkInitStatus()) {
-            Logger.e(TAG, "error");
-            return;
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (!ConvertUtils.isEmpty(savedInstanceState)) {
+            boolean isNeedToUpdateData = savedInstanceState.getBoolean(KEY_CHANGE_SAVE_INSTANCE);
+            //todo 页面恢复，请恢复数据
         }
-        mViewModel.updateUiStyle(MapType.valueOf(mScreenId), type);
-        if (screenType) ScreenTypeUtils.getInstance().changeSkinTheme();
-//        ThemeUtils.INSTANCE.setCurrentThemeMainMapView(ThemeUtils.INSTANCE.getCurrentUiMode());
+    }
+
+    @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
+    protected void onResume() {
+        super.onResume();
+        FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+        if (mViewModel.getSdkInitStatus()) {
+            if (mViewModel.isSupportSplitScreen()) {
+                ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
+            }
+            mViewModel.getCurrentCityLimit();
+            //界面可见时重新适配深浅色模式
+            mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+                    ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
+            if (Logger.openLog) {
+                Logger.d(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(this));
+            }
+        }
     }
 
     @Override
@@ -255,7 +274,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_CLOSE)
     protected void onDestroy() {
-        ProcessManager.updateProcessStatus(ProcessStatus.AppRunStatus.DESTROYED);
         stopTime();
         // 退出的时候主动保存一下最后的定位信息
         if (mViewModel.getSdkInitStatus()) {
@@ -263,7 +281,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             ThreadManager.getInstance().removeHandleTask(mOpenGuideRunnable);
         }
 
-        if (mMsgTopDialog != null && mMsgTopDialog.isShowing()) {
+        if(mMsgTopDialog != null && mMsgTopDialog.isShowing()){
             mMsgTopDialog.dismiss();
         }
         mMsgTopDialog = null;
@@ -301,7 +319,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (!mStackManager.isExistFragment(mScreenId, "AccountQRCodeLoginFragment")) {
             mViewModel.checkPopGuideLogin();
         }
-        mViewModel.getOnlineForecastArrivedData();
+        if(Boolean.FALSE.equals(mViewModel.mIsChangingConfigurations.get())) mViewModel.getOnlineForecastArrivedData();
     }
 
     @Override
@@ -407,7 +425,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         });
     }
 
-    public boolean isFragmentStackNull() {
+    public boolean isFragmentStackNull(){
         return mStackManager.isFragmentStackNull(mScreenId);
     }
 
@@ -429,6 +447,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mViewModel.showStartIcon();
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
             ThreadManager.getInstance().postDelay(() -> mViewModel.hideStartIcon(), 200);
+        }
+        //模式更改不重新触发trips
+        mViewModel.mIsChangingConfigurations.set(true);
+        int newUiMode = newConfig.uiMode;
+        if (mCurrentUiMode != newUiMode) {
+            mCurrentUiMode = newUiMode;
+            mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+                    ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
+            recreate();
         }
     }
 
@@ -525,7 +552,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     /**
      * 监听触摸事件，当焦点不在exitText中时隐藏软键盘
-     *
      * @param ev
      * @return
      */
@@ -541,36 +567,30 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
         return super.dispatchTouchEvent(ev);
     }
-
     public void notifyStepOneThirdScreen() {
         mViewModel.notifyStepOneThirdScreen();
     }
 
+    public void closeSplitFragment() {
+        final BaseFragment baseFragment = mStackManager.getCurrentFragment(mScreenId);
+        if (baseFragment instanceof SplitFragment) {
+            closeFragment(true);
+        } else {
+            Logger.d("screen_change_used", "不包含1/3屏幕布局");
+        }
+    }
+
     public void setMusicShowUI(boolean isOpenFloat, int windowWidth) {
         Logger.d(TAG, "悬浮窗开关：" + isOpenFloat + "  悬浮窗宽度：" + windowWidth);
-        if (mBinding == null) {
+        if (mBinding == null){
             return;
         }
-        if (isOpenFloat) {
+        if (isOpenFloat){
             ViewGroup.LayoutParams floatParams = mBinding.floatWindow.getLayoutParams();
             floatParams.width = windowWidth;
             mBinding.floatWindow.setVisibility(View.INVISIBLE);
         } else {
             mBinding.floatWindow.setVisibility(View.GONE);
-        }
-    }
-
-    public void reRefreshView() {
-        if (null == mBinding) {
-            recreate();
-        } else {
-            Logger.d(TAG, "换肤重绘");
-            recreate();
-//            SkinConstraintLayout skinConstraintLayout =  mBinding.searchMainTab;
-//            skinConstraintLayout.removeAllViews();
-//            skinConstraintLayout.addView(mBinding.skSearchMainTab);
-//            skinConstraintLayout.addView(mBinding.skSearchMainTabTmc);
-//            refreshFragment();
         }
     }
 }

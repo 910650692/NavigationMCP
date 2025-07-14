@@ -12,7 +12,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
-import com.android.utils.screen.ScreenUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -30,7 +30,7 @@ import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.MapType;
-import com.android.utils.theme.ThemeType;
+import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.CameraInfoEntity;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
@@ -74,6 +74,7 @@ import com.sgm.navi.utils.ClusterMapOpenCloseManager;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenListener;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.gm.fsa.service.FSAService;
+import com.gm.fsa.service.catalog.FSACatalog;
 import com.iauto.vtserver.VTDescription;
 import com.iauto.vtserver.VTServerBQJni;
 

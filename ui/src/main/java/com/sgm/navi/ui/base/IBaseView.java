@@ -2,9 +2,6 @@ package com.sgm.navi.ui.base;
 
 import android.os.Bundle;
 
-import com.android.utils.screen.ScreenType;
-import com.android.utils.theme.ThemeType;
-
 public interface IBaseView {
     /**
      * Activity必须实现.要在里边确认该Activity的屏幕Id.
@@ -52,10 +49,6 @@ public interface IBaseView {
 
     }
 
-    default void onRestoreInstance(Bundle savedInstanceState) {
-
-    }
-
     /**
      * onInitData
      */
@@ -71,10 +64,6 @@ public interface IBaseView {
      * onReStoreFragment
      */
     default void onGetFragmentData() {
-    }
-
-    default void onApplySkin(ThemeType type, boolean isScreenSplit) {
-
     }
 
     /**
@@ -102,10 +91,6 @@ public interface IBaseView {
      */
     void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle);
 
-    void refreshFragment();
-
-    void restoreFragments();
-
     /**
      * Activity必须实现.
      * <p>
@@ -132,8 +117,6 @@ public interface IBaseView {
      * Activity必须实现.
      */
     void closeAllFragmentUpRoute();
-
-    void closeAllFragmentUpRoute(String className);
 
     /**
      * Activity必须实现.

@@ -3,6 +3,7 @@ package com.sgm.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
@@ -21,6 +22,7 @@ import com.autonavi.gbl.layer.GuideLabelLayerItem;
 import com.autonavi.gbl.layer.RoutePathPointItem;
 import com.autonavi.gbl.layer.RouteTrafficEventTipsLayerItem;
 import com.autonavi.gbl.layer.ViaChargeStationLayerItem;
+import com.autonavi.gbl.layer.model.BizEnergyKeyInfo;
 import com.autonavi.gbl.layer.model.BizLocalTrafficEventInfo;
 import com.autonavi.gbl.layer.model.BizOddInfo;
 import com.autonavi.gbl.layer.model.BizPathInfoAttrs;
@@ -29,7 +31,9 @@ import com.autonavi.gbl.layer.model.BizRouteDrawCtrlAttrs;
 import com.autonavi.gbl.layer.model.BizRouteMapMode;
 import com.autonavi.gbl.layer.model.BizRouteRestAreaInfo;
 import com.autonavi.gbl.layer.model.BizRouteType;
+import com.autonavi.gbl.layer.model.BizRouteViaRoadInfo;
 import com.autonavi.gbl.layer.model.BizRouteWeatherInfo;
+import com.autonavi.gbl.layer.model.BizThreeUrgentInfo;
 import com.autonavi.gbl.layer.model.DynamicLevelParam;
 import com.autonavi.gbl.layer.model.DynamicLevelType;
 import com.autonavi.gbl.layer.model.ODDDrawMode;
@@ -49,8 +53,13 @@ import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
+import com.sgm.navi.service.define.layer.refix.LayerItemRouteEnergyKey;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteOdd;
+import com.sgm.navi.service.define.layer.refix.LayerItemRoutePathInfo;
 import com.sgm.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
+import com.sgm.navi.service.define.layer.refix.LayerItemRouteRestArea;
+import com.sgm.navi.service.define.layer.refix.LayerItemRouteThreeUrgent;
+import com.sgm.navi.service.define.layer.refix.LayerItemRouteViaRoad;
 import com.sgm.navi.service.define.layer.refix.LayerItemTrafficEvent;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
@@ -60,13 +69,16 @@ import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
 import com.sgm.navi.service.define.route.RouteLinePoints;
-import com.android.utils.screen.ScreenTypeUtils;
+import com.sgm.navi.service.define.screen.ScreenType;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapter> {
 

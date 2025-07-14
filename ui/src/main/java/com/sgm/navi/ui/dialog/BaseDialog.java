@@ -12,10 +12,6 @@ import android.view.WindowManager;
 import androidx.annotation.GravityInt;
 import androidx.databinding.ViewDataBinding;
 
-import com.android.utils.log.Logger;
-import com.android.utils.process.ProcessManager;
-import com.android.utils.process.ProcessStatus;
-
 import java.util.Objects;
 
 public abstract class BaseDialog<V extends ViewDataBinding> extends Dialog {
@@ -70,78 +66,38 @@ public abstract class BaseDialog<V extends ViewDataBinding> extends Dialog {
      * @param position 显示位置
      */
     public void showDialog(final @GravityInt int position) {
-        try {
-            int appRunStatus = ProcessManager.getAppRunStatus();
-            Logger.d(TAG, "showDialog: appRunStatus = " + appRunStatus);
-            if(appRunStatus == ProcessStatus.AppRunStatus.PAUSED
-                    || appRunStatus == ProcessStatus.AppRunStatus.STOPPED
-                    || appRunStatus == ProcessStatus.AppRunStatus.DESTROYED){
-                return;
-            }
-            super.show();
-            setCancelable(mOutsideCancel);
-            final Window window = getWindow();
-            if (null == window) {
-                return;
-            }
-            window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-            final WindowManager.LayoutParams params = window.getAttributes();
-            params.gravity = position;
-            window.setAttributes(params);
-            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//        window.setWindowAnimations(R.style.DialogBottomAnimation);
-        } catch (WindowManager.BadTokenException e) {
-            // 捕获异常，通常是因为Activity已经销毁
-            Logger.d(TAG, "showDialog: ", e.getMessage());
+        super.show();
+        setCancelable(mOutsideCancel);
+        final Window window = getWindow();
+        if (null == window) {
+            return;
         }
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        final WindowManager.LayoutParams params = window.getAttributes();
+        params.gravity = position;
+        window.setAttributes(params);
+        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+//        window.setWindowAnimations(R.style.DialogBottomAnimation);
     }
 
     @Override
     public boolean isShowing() {
-        int appRunStatus = ProcessManager.getAppRunStatus();
-        Logger.d(TAG, "showDialog: appRunStatus = " + appRunStatus);
-        if(appRunStatus == ProcessStatus.AppRunStatus.PAUSED
-                || appRunStatus == ProcessStatus.AppRunStatus.STOPPED
-                || appRunStatus == ProcessStatus.AppRunStatus.DESTROYED){
-            return true;
-        }
         return super.isShowing();
     }
 
     @Override
     public void hide() {
-        int appRunStatus = ProcessManager.getAppRunStatus();
-        Logger.d(TAG, "showDialog: appRunStatus = " + appRunStatus);
-        if(appRunStatus == ProcessStatus.AppRunStatus.PAUSED
-                || appRunStatus == ProcessStatus.AppRunStatus.STOPPED
-                || appRunStatus == ProcessStatus.AppRunStatus.DESTROYED){
-            return;
-        }
         if (isShowing()) super.hide();
     }
 
     @Override
     public void dismiss() {
-        int appRunStatus = ProcessManager.getAppRunStatus();
-        Logger.d(TAG, "showDialog: appRunStatus = " + appRunStatus);
-        if(appRunStatus == ProcessStatus.AppRunStatus.PAUSED
-                || appRunStatus == ProcessStatus.AppRunStatus.STOPPED
-                || appRunStatus == ProcessStatus.AppRunStatus.DESTROYED){
-            return;
-        }
         if (isShowing()) super.dismiss();
     }
 
     @Override
     public void cancel() {
-        int appRunStatus = ProcessManager.getAppRunStatus();
-        Logger.d(TAG, "showDialog: appRunStatus = " + appRunStatus);
-        if(appRunStatus == ProcessStatus.AppRunStatus.PAUSED
-                || appRunStatus == ProcessStatus.AppRunStatus.STOPPED
-                || appRunStatus == ProcessStatus.AppRunStatus.DESTROYED){
-            return;
-        }
         if (isShowing()) super.cancel();
     }
 }

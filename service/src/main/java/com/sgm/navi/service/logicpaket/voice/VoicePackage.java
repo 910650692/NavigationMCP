@@ -5,8 +5,8 @@ import com.sgm.navi.service.adapter.voice.VoiceAdapterCallback;
 import com.sgm.navi.service.define.voice.VoiceInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class VoicePackage implements VoiceAdapterCallback {
 
@@ -77,7 +77,7 @@ public class VoicePackage implements VoiceAdapterCallback {
         return voiceAdapter.operate(opType, voiceIdDiyLst);
     }
 
-    public Map<Integer, VoiceInfo> getRecommendVoiceList(){
+    public HashMap<Integer, VoiceInfo> getRecommendVoiceList(){
         return voiceAdapter.getRecommendVoiceList();
     }
 

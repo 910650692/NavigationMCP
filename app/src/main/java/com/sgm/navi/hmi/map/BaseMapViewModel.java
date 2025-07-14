@@ -51,7 +51,6 @@ import com.sgm.navi.hmi.route.RouteFragment;
 import com.sgm.navi.hmi.search.mainsearch.MainSearchFragment;
 import com.sgm.navi.hmi.search.searchresult.SearchResultFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
-import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -67,7 +66,7 @@ import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
-import com.android.utils.theme.ThemeType;
+import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.message.MessageCenterInfo;
 import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
@@ -77,7 +76,7 @@ import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.route.RouteRestrictionParam;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
 import com.sgm.navi.service.define.route.RouteTMCParam;
-import com.android.utils.screen.ScreenTypeUtils;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;
@@ -144,6 +143,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> mGoHomeVisible;
     public ObservableField<Boolean> sRVisible;
     public ObservableField<Boolean> mIsFullScreen;
+    public ObservableField<Boolean> mIsChangingConfigurations;
 
     private ScheduledFuture mScheduledFuture;
     private ScheduledFuture goHomeTimer;
@@ -185,6 +185,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mGoHomeVisible = new ObservableField<>(false);
         sRVisible = new ObservableField<>(isSupportSplitScreen());
         mIsFullScreen = new ObservableField<>(true);
+        mIsChangingConfigurations = new ObservableField<>(false);
     }
 
     @Override
@@ -222,7 +223,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return mInitSdkSuccess;
     }
 
-    private void checkAgreementRights() {
+    private void checkAgreementRights(){
         Logger.i(TAG, "checkAgreementRights");
         if (!mModel.isAllowSGMAgreement()) {
             mModel.showSGMAgreement(true);
@@ -280,14 +281,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.dismissAuthorizationRequestDialog();
     }
 
-    public void reminderDialogReCreate() {
+    public void reminderDialogReCreate(){
         if (reminderDialog != null && reminderDialog.isShowing()) {
             reminderDialog.dismiss();
             reminderDialog = null;
             popAgreementDialog();
         }
     }
-
     public void closeProtectView() {
         mView.closeProtectView();
     }
@@ -350,7 +350,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.stopCruise();
     };
 
-    public void getOnlineForecastArrivedData() {
+    public void getOnlineForecastArrivedData(){
         //猜你想去
         mModel.getOnlineForecastArrivedData(AutoMapConstant.GuessPositionType.OTHER);
     }
@@ -359,7 +359,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public Action backToSelfParking = () -> {
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         //取消倒计时
-        if (mModel != null) mModel.cancelSelfParkingTimer();
+        if(mModel != null) mModel.cancelSelfParkingTimer();
     };
 
     // 播报和静音切换
@@ -455,7 +455,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void searchForExtraKeyword(String keyword) {
         try {
-            Logger.d(SEARCH_HMI_TAG, "searchExtraKeyword: ", keyword);
+            Logger.d(SEARCH_HMI_TAG, "searchExtraKeyword: " , keyword);
             Bundle bundle = new Bundle();
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
             bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
@@ -479,7 +479,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         showOrHideSelfParkingView(false);
         boolean result = mModel.switchMapMode();
         String modeText = mModel.getCurrentMapModelText();
-        if (!result) {
+        if(!result){
             ToastUtils.Companion.getInstance().showCustomToastView(String.
                     format(ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.navi_map_mode_switch_fail), modeText));
             return;
@@ -546,18 +546,18 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mModel.onContinueNaviClick();
             } else if (messageCenterInfo.getMsgType() == MessageCenterType.GUESS_WANT_GO) {
                 OftenArrivedItemInfo oftenArrivedItemInfo = messageCenterInfo.getOftenArrivedItemInfo();
-                if (oftenArrivedItemInfo != null) {
+                if(oftenArrivedItemInfo != null){
                     PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                             .setAddress(oftenArrivedItemInfo.getWstrAddress())
                             .setName(oftenArrivedItemInfo.getWstrPoiName());
-                    if (oftenArrivedItemInfo.getStNaviCoord() != null && oftenArrivedItemInfo.getStNaviCoord().getLat() != NumberUtils.NUM_0 && oftenArrivedItemInfo.getStNaviCoord().getLon() != NumberUtils.NUM_0) {
+                    if(oftenArrivedItemInfo.getStNaviCoord() != null && oftenArrivedItemInfo.getStNaviCoord().getLat() != NumberUtils.NUM_0 && oftenArrivedItemInfo.getStNaviCoord().getLon() != NumberUtils.NUM_0 ){
                         poiInfoEntity.setPoint(oftenArrivedItemInfo.getStNaviCoord());
                         startRoute(poiInfoEntity);
-                    } else if (oftenArrivedItemInfo.getStDisplayCoord() != null && oftenArrivedItemInfo.getStDisplayCoord().getLat() != NumberUtils.NUM_0 && oftenArrivedItemInfo.getStDisplayCoord().getLon() != NumberUtils.NUM_0) {
+                    }else if(oftenArrivedItemInfo.getStDisplayCoord() != null && oftenArrivedItemInfo.getStDisplayCoord().getLat() != NumberUtils.NUM_0 && oftenArrivedItemInfo.getStDisplayCoord().getLon() != NumberUtils.NUM_0 ){
                         poiInfoEntity.setPoint(oftenArrivedItemInfo.getStDisplayCoord());
                         startRoute(poiInfoEntity);
-                    } else {
-                        if (Logger.openLog) Logger.e(TAG, "address is null");
+                    }else{
+                        if(Logger.openLog) Logger.e(TAG, "address is null");
                     }
                 }
             }
@@ -572,7 +572,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return false;
     }
 
-    public boolean isFragmentStackNull() {
+    public boolean isFragmentStackNull(){
         return mView.isFragmentStackNull();
     }
 
@@ -609,13 +609,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void setMapCenterInScreen() {
         Logger.i(TAG, "setMapCenterInScreen");
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        if (baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment || baseFragment instanceof NaviGuidanceFragment) {
+        if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment || baseFragment instanceof NaviGuidanceFragment){
             mModel.goToCarPosition();
             mModel.setMapCenterInScreen();
             mModel.refreshMapMode();
         }
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
-        boolean exist = StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), MainSearchFragment.class.getSimpleName());
+        boolean exist = StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),MainSearchFragment.class.getSimpleName());
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set((NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
@@ -625,25 +625,25 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(false);
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
-        Logger.i(TAG, "setMapCenterInScreen() mainBTNVisibility: ", mainBTNVisibility
-                , " bottomNaviVisibility: ", bottomNaviVisibility);
+        Logger.i(TAG, "setMapCenterInScreen() mainBTNVisibility: " , mainBTNVisibility
+                , " bottomNaviVisibility: " , bottomNaviVisibility);
     }
 
     public void setMapCenterInScreen(final Bundle bundle) {
         int type = -1;
         int searchKey = 0;
-        String fragment = "";
+        String fragment ="";
 
         if (bundle != null) {
             type = bundle.getInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, -1);
             searchKey = bundle.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON, -1);
             fragment = bundle.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
         }
-        Logger.i(TAG, "setMapCenterInScreen type:", type);
+        Logger.i(TAG, "setMapCenterInScreen type:" , type);
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        if (baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment ||
+        if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment ||
                 ((baseFragment instanceof NaviGuidanceFragment) &&
-                        !NaviPackage.getInstance().getPreviewStatus())) {
+                        !NaviPackage.getInstance().getPreviewStatus()) ){
             mModel.goToCarPosition();
             mModel.setMapCenterInScreen();
             mModel.refreshMapMode();
@@ -663,8 +663,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mPopGuideLoginShow.set(false);
         mGoHomeVisible.set(false);
         cancelTimer();
-        Logger.i(TAG, "setMapCenterInScreen(bundle) mainBTNVisibility: ", mainBTNVisibility
-                , " bottomNaviVisibility: ", bottomNaviVisibility);
+        Logger.i(TAG, "setMapCenterInScreen(bundle) mainBTNVisibility: " , mainBTNVisibility
+                , " bottomNaviVisibility: " , bottomNaviVisibility);
     }
 
     public void resetMapCenterInScreen() {
@@ -679,8 +679,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             mPopGuideLoginShow.set(true);
         }
         initTimer();
-        Logger.i(TAG, "resetMapCenterInScreen mainBTNVisibility: ", mainBTNVisibility
-                , " bottomNaviVisibility: ", bottomNaviVisibility);
+        Logger.i(TAG, "resetMapCenterInScreen mainBTNVisibility: " , mainBTNVisibility
+                , " bottomNaviVisibility: " , bottomNaviVisibility);
     }
 
     public void showParkingView() {
@@ -695,14 +695,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
 
         //Nd车型需要先判断是否是节假日
-        if (mModel.showNdGoHomeView()) {
+        if(mModel.showNdGoHomeView()){
             tmcModeVisibility.set(false);
             PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
             PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
             if (!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)) {
                 mModel.sendReqHolidayList();
             }
-        } else {
+        }else {
             PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
             PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
             if (ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
@@ -724,8 +724,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
-    public GeoPoint nearByHome(boolean home) {
-        PoiInfoEntity poiInfoEntity;
+    public GeoPoint nearByHome(boolean home){
+        PoiInfoEntity poiInfoEntity ;
         if (home) {
             poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
         } else {
@@ -737,7 +737,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return null;
     }
 
-    public void loadNdOfficeTmc(boolean home) {
+    public void loadNdOfficeTmc(boolean home){
         mModel.refreshHomeOfficeTMC(home);
     }
 
@@ -759,7 +759,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
-    private void startGoHomeTimer() {
+    private void startGoHomeTimer(){
         cancelTimerGoHomeTimer();
         goHomeTimer = ThreadManager.getInstance().asyncAtFixDelay(new Runnable() {
             @Override
@@ -771,7 +771,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     }
 
-    private void cancelTimerGoHomeTimer() {
+    private void  cancelTimerGoHomeTimer(){
         if (!ConvertUtils.isEmpty(goHomeTimer)) {
             ThreadManager.getInstance().cancelDelayRun(goHomeTimer);
             goHomeTimer = null;
@@ -783,11 +783,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void showOrHideSelfParkingView(boolean visible) {
-        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) return;
+        if(ScreenTypeUtils.getInstance().isOneThirdScreen()) return;
         backToParkingVisibility.set(visible);
     }
 
-    public void addSceneGoHomeCallBackVieModel(int type) {
+    public void addSceneGoHomeCallBackVieModel(int type){
         if (type == AutoMapConstant.HomeCompanyType.HOME) {
             PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
             if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
@@ -795,7 +795,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 SearchPackage.getInstance().clearLabelMark();
                 startRoute(poiInfoEntity);
             }
-        } else if (type == AutoMapConstant.HomeCompanyType.COMPANY) {
+        }else if(type == AutoMapConstant.HomeCompanyType.COMPANY){
             PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_COMPANY);
             if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
                 //直接进入导航到公司
@@ -853,7 +853,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 Logger.i(TAG, "removeTrafficEventFragment-Success!");
             }
         } catch (Exception e) {
-            Logger.e(TAG, "removeTrafficEventFragment failed:", e.getMessage());
+            Logger.e(TAG, "removeTrafficEventFragment failed:" , e.getMessage());
         }
     }
 
@@ -906,7 +906,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         TrafficEventFragment trafficEventFragment;
         BaseFragment fragment = StackManager.getInstance().getCurrentFragment(mScreenId);
         final Lifecycle.State currentState = mView.getLifecycle().getCurrentState();
-        Logger.i(TAG, "openTrafficDetailFragment", "currentState:", currentState.name());
+        Logger.i(TAG, "openTrafficDetailFragment", "currentState:" , currentState.name());
         if (currentState == Lifecycle.State.RESUMED) {
             if (fragment != null && fragment instanceof TrafficEventFragment) {
                 trafficEventFragment = (TrafficEventFragment) fragment;
@@ -1004,7 +1004,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             restrictedArea = param.getMRestrictedArea();
             // 导航中或者算路中不显示
             boolean statusVis = mModel.getNaviStatus() == NaviStatus.NaviStatusType.NO_STATUS || mModel.getNaviStatus() == NaviStatus.NaviStatusType.CRUISE;
-            Logger.d(TAG, "statusVis:", statusVis, "restrictedArea:", (restrictedArea != null));
+            Logger.d(TAG, "statusVis:" , statusVis, "restrictedArea:" , (restrictedArea != null));
 
             boolean flag = false;
             if (restrictedArea == null
@@ -1036,7 +1036,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 //首页消息的显示逻辑  发送package消息
                 final boolean showSameDayLimit = mModel.showSameDayLimit();
                 if (showSameDayLimit) {
-                    Logger.i("showSameDayLimit", "showSameDayLimit", statusVis);
+                    Logger.i("showSameDayLimit", "showSameDayLimit" , statusVis);
                     mModel.managerMessage(new MessageCenterInfo(MessageCenterType.ROAD_LIMIT,
                             ResourceUtils.Companion.getInstance().getString(R.string.message_center_check), 0,
                             ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),
@@ -1048,7 +1048,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     /**
      * 更新限行尾号UI
-     *
      * @param param 尾号限行内容
      */
     public void updateLimitEndNum(final TrafficRestrictResponseParam param) {
@@ -1157,7 +1156,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             messageLineVisibility.set(false);
             messageLineHeightVisibility.set(false);
             messageCloseVisibility.set(false);
-        } else if (messageCenterInfo.getMsgType() == MessageCenterType.GUESS_WANT_GO) {
+        } else if(messageCenterInfo.getMsgType() == MessageCenterType.GUESS_WANT_GO){
             messageCenterContentVisibility.set(true);
         }
     }
@@ -1180,7 +1179,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     /**
      * 如果处于特定状态不允许POI响应点击事件, 排除算路态
-     *
      * @return
      */
     private boolean needInterceptorByVai() {
@@ -1255,8 +1253,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void showOrHiddenCruise(boolean isShow) {
-        Logger.i(TAG, "showOrHiddenCruise: ",
-                "bottomNaviVisibility: ", judgedBottomNaviVisibility());
+        Logger.i(TAG, "showOrHiddenCruise: " ,
+                "bottomNaviVisibility: " , judgedBottomNaviVisibility());
         cruiseVisibility.set(isShow);
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
     }
@@ -1329,20 +1327,20 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
         if (Boolean.FALSE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
             homeTime.set(param.getMTime());
-            if ("计算中...".equals(param.getMTime())) {
+            if("计算中...".equals(param.getMTime())){
                 homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
             }
             mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
         }
         if (Boolean.FALSE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
             companyTime.set(param.getMTime());
-            if ("计算中...".equals(param.getMTime())) {
+            if("计算中...".equals(param.getMTime())){
                 companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
             }
             mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
         }
 
-        if (mModel.showNdGoHomeView()) {
+        if(mModel.showNdGoHomeView()){
             mGoHomeVisible.set(true);
             mView.setNdGoHomeView(param);
             startGoHomeTimer();
@@ -1370,7 +1368,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         @HookMethod(eventName = BuryConstant.EventName.AMAP_ACCOUNT_POPUP_BINDINGNOW)
         public void call() {
             mPopGuideLoginShow.set(false);
-            if (mModel != null) mModel.guideLoginBind();
+            if(mModel != null) mModel.guideLoginBind();
         }
     };
 
@@ -1431,7 +1429,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if(ConvertUtils.isNull(mModel) || ConvertUtils.isNull(mView)) return;
         String title = "";
         String content = "";
-        switch (status) {
+        switch (status){
             case "timeQuick":
                 title = ResourceUtils.Companion.getInstance().getString(R.string.quick_charge_pre);
                 content = ResourceUtils.Companion.getInstance().getString(R.string.quick_charge_pre_content);
@@ -1452,7 +1450,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     /**
      * 处理外部应用打开Map对应页面指令.
-     *
      * @param intentPage
      */
     public void processPageIntent(final int intentPage) {
@@ -1530,6 +1527,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
+    public void openGuideFragment(){
+        if(mModel == null) {
+            Logger.e(TAG, "openGuideFragment mModel is null");
+            return;
+        }
+        mModel.openGuideFragment();
+    }
+
     /**
      * 桌面背景模式切换后如果是导航桌面需要隐藏“分屏按钮”
      *
@@ -1565,8 +1570,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void onDeskCardVisibleStateChange(boolean isVisible) {
         ThreadManager.getInstance().execute(() -> {
-            Logger.d(TAG, "onDeskCardVisibleStateChange: ", "isVisible", isVisible,
-                    "bottomNaviVisibility: ", judgedBottomNaviVisibility());
+            Logger.d(TAG, "onDeskCardVisibleStateChange: ", "isVisible", isVisible ,
+                    "bottomNaviVisibility: " , judgedBottomNaviVisibility());
             bottomNaviVisibility.set(judgedBottomNaviVisibility());
             mScaleViewVisibility.set(judgedScaleViewVisibility());
             sRVisible.set(judgedSRVisibility());
@@ -1574,7 +1579,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void notifyNaviStartOrStop(boolean isNaviStart) {
-        Logger.d(TAG, "notifyNaviStartOrStop", "isNaviStart:", isNaviStart);
+        Logger.d(TAG, "notifyNaviStartOrStop", "isNaviStart:" , isNaviStart);
         if (isNaviStart) {
             FloatViewManager.getInstance().hideAllCardWidgets(false);
         } else {
@@ -1602,9 +1607,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mIsFullScreen.set(ScreenTypeUtils.getInstance().isFullScreen());
     }
 
-    public void toSetCarPosition() {
+    public void toSetCarPosition(){
         //如果切1/3屏时，自车位置按钮显示，则隐藏
-        if (ScreenTypeUtils.getInstance().isOneThirdScreen() && backToParkingVisibility.get()) {
+        if(ScreenTypeUtils.getInstance().isOneThirdScreen() && backToParkingVisibility.get()){
             backToParkingVisibility.set(false);
         }
         mModel.setMapCenterInScreen();
@@ -1617,27 +1622,27 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * @return true 显示
      */
     private boolean judgedBottomNaviVisibility() {
-        // 1/3屏需要隐藏
-        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
-            Logger.d(TAG, "judgedBottomNaviVisibility", "1/3屏需要隐藏");
-            return false;
-        }
-        // 导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏
-        if (FloatViewManager.getInstance().isNaviDeskBg() && FloatViewManager.getInstance().judgedWidgetIsVisible()) {
-            Logger.d(TAG, "judgedBottomNaviVisibility", "导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏");
-            return false;
-        }
-        // 巡航态模式下，隐藏底部导航按钮
+       // 1/3屏需要隐藏
+       if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+           Logger.d(TAG, "judgedBottomNaviVisibility", "1/3屏需要隐藏");
+           return false;
+       }
+       // 导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏
+       if (FloatViewManager.getInstance().isNaviDeskBg() && FloatViewManager.getInstance().judgedWidgetIsVisible()) {
+           Logger.d(TAG, "judgedBottomNaviVisibility","导航桌面背景模式下，如果底部卡片显示的情况下需要隐藏");
+           return false;
+       }
+       // 巡航态模式下，隐藏底部导航按钮
         if (ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
             Logger.d(TAG, "judgedBottomNaviVisibility", "巡航态模式下，隐藏底部导航按钮");
             return false;
         }
         // 如果容器里面有Fragment,隐藏
         if (StackManager.getInstance().getCurrentFragment(mScreenId) != null) {
-            Logger.d(TAG, "judgedBottomNaviVisibility", "如果容器里面有Fragment,隐藏");
+            Logger.d(TAG, "judgedBottomNaviVisibility",  "如果容器里面有Fragment,隐藏");
             return false;
         }
-        return true;
+       return true;
     }
 
     /**
@@ -1684,7 +1689,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     private void checkViewState() {
-        Logger.d(TAG, "checkViewState: ", "bottomNaviVisibility: ", judgedBottomNaviVisibility());
+        Logger.d(TAG, "checkViewState: " , "bottomNaviVisibility: " , judgedBottomNaviVisibility());
         sRVisible.set(judgedSRVisibility());
         mScaleViewVisibility.set(judgedScaleViewVisibility());
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
@@ -1694,20 +1699,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         checkViewState();
     }
 
-    public void closeSplitFragment(boolean applySplitTheme) {
-        final BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(mScreenId);
-        if(applySplitTheme){
-            Logger.d("screen_change_used", "applySplitTheme");
-//            mView.recreate();
-            mView.reRefreshView();
-            return;
-        }
-
-        if (baseFragment instanceof SplitFragment) {
-            closeFragment(true);
-        } else {
-            Logger.d("screen_change_used", "不包含1/3屏幕布局" + baseFragment);
-        }
+    public void closeSplitFragment() {
+        mView.closeSplitFragment();
     }
 
     public void setMusicShowUI(boolean isOpenFloat, int windowWidth) {

@@ -84,7 +84,6 @@ import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
-import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.ui.view.SkinConstraintLayout;
@@ -493,10 +492,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                     }
                 }
             });
-            if(null != mActivity && isAdded() && !mActivity.isFinishing() && !mActivity.isDestroyed()){
-                mMsgTopDialog.showDialog();
-                ThreadManager.getInstance().postDelay(this::hideTrip, TIPS_DELAY);
-            }
+            mMsgTopDialog.showDialog();
+            ThreadManager.getInstance().postDelay(this::hideTrip, TIPS_DELAY);
         }
     }
 
@@ -1570,7 +1567,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
 
     @Override
     public void onDestroy() {
-        hideTrip();
         mViewModel.cancelTimer();
         removeAllViewStub(mRouteListPageStub);
         removeAllViewStub(mRouteDetailsListPageStub);
