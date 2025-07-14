@@ -174,6 +174,8 @@ public class FloatViewManager {
                 startY = (int) touchEvent.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                hideAllCardWidgets(false);
+                break;
             case MotionEvent.ACTION_UP:
                 if (Math.abs(touchEvent.getX() - startX) >= MOVE_DISTANCE || Math.abs(touchEvent.getY() - startY) >= MOVE_DISTANCE) {
                     hideAllCardWidgets(StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0);
