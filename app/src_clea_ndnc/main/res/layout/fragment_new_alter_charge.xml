@@ -51,14 +51,15 @@
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/dp_287"
-                android:maxHeight="@dimen/dp_956"
                 android:layout_marginTop="@dimen/dp_113"
                 android:background="@drawable/bg_shadow_navi_ndlc_8155"
+                android:maxHeight="@dimen/dp_956"
+                android:minHeight="@dimen/dp_287"
                 android:orientation="horizontal"
-                android:paddingVertical="@dimen/dp_29"
                 android:paddingHorizontal="@dimen/dp_29"
-                app:layout_constraintTop_toTopOf="parent">
+                android:paddingVertical="@dimen/dp_29"
+                app:layout_constraintTop_toTopOf="parent"
+                tool:visibility="gone">
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/rv_supplement"
@@ -66,7 +67,7 @@
                     android:layout_height="@dimen/dp_0"
                     android:paddingTop="@dimen/dp_5"
                     android:paddingBottom="@dimen/dp_34"
-                    app:layout_constraintHeight_max="@dimen/dp_922"/>
+                    app:layout_constraintHeight_max="@dimen/dp_922" />
 
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
@@ -75,23 +76,24 @@
         <!--POI details-->
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_603"
-            android:layout_height="@dimen/dp_942"
+            android:layout_height="@dimen/dp_1078"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:clickable="true"
-            android:paddingVertical="@dimen/dp_29"
             android:paddingHorizontal="@dimen/dp_29"
+            android:paddingVertical="@dimen/dp_29"
             android:visibility="@{viewModel.showAlterChargeType == 2?  View.VISIBLE : View.GONE}"
-            tool:visibility="gone">
+            tool:visibility="visible">
 
             <com.sgm.navi.ui.view.SkinScrollView
                 android:id="@+id/poi_base_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:scrollbars="none"
                 android:layout_marginBottom="@dimen/dp_34"
+                android:scrollbars="none"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alter"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/bt_alter">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:layout_width="match_parent"
@@ -161,9 +163,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_14"
                         android:layout_marginEnd="@dimen/dp_10"
-                        android:maxLines="1"
                         android:ellipsize="end"
                         android:maxWidth="@dimen/dp_311"
+                        android:maxLines="1"
                         android:text="@{viewModel.routeSearchTimeAndDistance}"
                         android:textColor="@color/text_route_detail_title"
                         android:textSize="@dimen/sp_29"
@@ -295,11 +297,12 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_608"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
-            android:paddingVertical="@dimen/dp_29"
             android:paddingHorizontal="@dimen/dp_29"
+            android:paddingVertical="@dimen/dp_29"
             android:visibility="@{viewModel.showAlterChargeType  == 3 ?  View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tool:visibility="gone">
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_loading"
@@ -342,11 +345,11 @@
                 app:layout_constraintTop_toBottomOf="@+id/no_result_hint" />
 
             <com.sgm.navi.ui.view.SkinImageView
+                clickCommand="@{viewModel.closePage}"
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
                 android:layout_marginTop="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_22"
-                clickCommand="@{viewModel.closePage}"
                 android:src="@drawable/icon_poi_details_close"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
