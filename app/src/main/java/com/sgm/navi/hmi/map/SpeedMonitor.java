@@ -1,5 +1,9 @@
 package com.sgm.navi.hmi.map;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
@@ -31,6 +35,8 @@ public class SpeedMonitor implements ISpeedCallback {
     private VehicleSpeedController mSpeedController;
     private ScheduledFuture scheduledFuture;
     private float currentSpeed;
+    private long lastTime = 0;
+    private static final long TIME = 1000;
 
     public SpeedMonitor() {
 
@@ -57,37 +63,35 @@ public class SpeedMonitor implements ISpeedCallback {
 
     // 处理车速更新的方法 speed单位 km/h
     private void updateSpeed(float speed) {
-        ThreadManager.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (currentSpeed == speed) {
-                    Logger.d(TAG, "车速没有发生变化！");
-                    return;
-                }
-                currentSpeed = speed;
-                Logger.d(TAG, "当前状态 :",  NaviStatusPackage.getInstance().getCurrentNaviStatus());
-                final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviStatusPackage.getInstance().getCurrentNaviStatus());
-                if (!isReady) {
-                    Logger.d(TAG, "当前状态无需计时");
-                    cancelTicket();
-                    return;
-                }
-                if (speed >= SPEED_THRESHOLD) {
-                    if (!isTiming) {
-                        startSchedule();
-                    } else {
-                        Logger.d(TAG, "正在计时当中...");
-                    }
-                } else {
-                    cancelTicket();
-                }
+        if (currentSpeed == speed) {
+            return;
+        }
+        currentSpeed = speed;
+        Logger.d(TAG, "当前状态 :",  NaviStatusPackage.getInstance().getCurrentNaviStatus());
+        final boolean isReady = ConvertUtils.equals(NaviStatus.NaviStatusType.NO_STATUS, NaviStatusPackage.getInstance().getCurrentNaviStatus());
+        if (!isReady) {
+            Logger.d(TAG, "当前状态无需计时");
+            cancelTicket();
+            return;
+        }
+        if (speed >= SPEED_THRESHOLD) {
+            if (!isTiming) {
+                startSchedule();
+            } else {
+                Logger.d(TAG, "正在计时当中...");
             }
-        });
+        } else {
+            cancelTicket();
+        }
     }
 
     @Override
     public void onPulseSpeedChanged(float speed) {
-        updateSpeed(speed);
+        long currentTime = SystemClock.elapsedRealtime();
+        if (currentTime - lastTime >= TIME) {
+            updateSpeed(speed);
+            lastTime = currentTime;
+        }
     }
 
     public interface CallBack {
