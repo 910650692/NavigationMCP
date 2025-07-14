@@ -9,7 +9,7 @@ import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 
 public class BaseFavoriteRenameViewModel extends BaseViewModel<FavoriteRenameFragment, FavoriteRenameModel> {
-    public MutableLiveData<Boolean> mCloseViewVisibility = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mCloseViewVisibility = new MutableLiveData<>(true);
     public BaseFavoriteRenameViewModel(@NonNull Application application) {
         super(application);
     }
