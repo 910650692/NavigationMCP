@@ -125,6 +125,8 @@ public interface IMapApi {
     /*** 设置底图视角模式 **/
     boolean setMapMode(MapType mapTypeId, MapMode mapMode);
 
+    boolean setMapModeWithLevel(MapType mapTypeId, MapMode mapMode, float level);
+
     void setMapHudMode(MapType mapTypeId, MapMode mapMode);
 
     void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle);

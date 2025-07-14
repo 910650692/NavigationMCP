@@ -6,6 +6,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.mapservice.bean.INaviConstant;
+import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.CarModeType;
 import com.sgm.navi.service.define.map.MapMode;
@@ -64,26 +65,58 @@ public class MapModelHelp {
      * 恢复设置偏好
      */
     public void restoreSetting() {
+        final boolean iShowTmc = mSettingPackage.getConfigKeyRoadEvent();
         // 路况开启恢复
         final int intentPage = ExportIntentParam.getIntentPage();
-        if (intentPage == INaviConstant.OpenIntentPage.ROAD_CONDITION) {
-            final boolean open = ExportIntentParam.getIntParam() == 1;
-            if (Logger.openLog) {
-                Logger.i(TAG,"showTmc by voice intent" , open);
-            }
-            ExportIntentParam.setIntentPage(-1);
-            mMapPackage.setTrafficStates(mMapTypeId, open);
-        } else {
-            final boolean iShowTmc = mSettingPackage.getConfigKeyRoadEvent();
-            if (Logger.openLog) {
-                Logger.i(TAG,"showTmc by voice savedData" , iShowTmc);
-            }
-            mMapPackage.setTrafficStates(mMapTypeId, iShowTmc);
+        switch (intentPage) {
+            case INaviConstant.OpenIntentPage.ROAD_CONDITION:
+                ExportIntentParam.setIntentPage(-1);
+                final boolean open = ExportIntentParam.getIntParam() == 1;
+                if (Logger.openLog) {
+                    Logger.i(TAG,"showTmc by voice intent" , open);
+                }
+                mMapPackage.setTrafficStates(mMapTypeId, open);
+                // 视角
+                resetMapAngel();
+                // 车标
+                restoreCarMode();
+                break;
+            case INaviConstant.OpenIntentPage.ZOOM_LEVEL:
+                ExportIntentParam.setIntentPage(-1);
+                //路况
+                mMapPackage.setTrafficStates(mMapTypeId, iShowTmc);
+                // 车标
+                restoreCarMode();
+                // 根据语音修改缩放等级
+                float curSize = mMapPackage.getZoomLevel(mMapTypeId);
+                float targetSize;
+                final String keyword = ExportIntentParam.getKeyword();
+                final int vrParam = ExportIntentParam.getIntParam();
+                if ("1".equals(keyword)) {
+                    // 放大地图
+                    if (vrParam == Integer.MAX_VALUE) {
+                        targetSize = AutoMapConstant.MAP_ZOOM_LEVEL_MAX;
+                    } else {
+                        targetSize = curSize + AutoMapConstant.MAP_ZOOM_LEVEL_CHANGE_FLAG;
+                    }
+                } else {
+                    // 缩小地图
+                    if (vrParam == Integer.MIN_VALUE) {
+                        targetSize = AutoMapConstant.MAP_ZOOM_LEVEL_MIN;
+                    } else {
+                        targetSize = curSize - AutoMapConstant.MAP_ZOOM_LEVEL_CHANGE_FLAG;
+                    }
+                }
+                resetMapModeWithLevel(targetSize);
+                break;
+            default:
+                mMapPackage.setTrafficStates(mMapTypeId, iShowTmc);
+                // 视角
+                resetMapAngel();
+                // 车标
+                restoreCarMode();
+                break;
         }
-        // 视角
-        resetMapAngel();
-        // 车标
-        restoreCarMode();
     }
 
     /***
@@ -93,18 +126,21 @@ public class MapModelHelp {
         final int carMode = mSettingPackage.getConfigKeyMapviewMode();
         Logger.i(TAG, "resetMapAngel", "carMode:" , carMode);
         switch (carMode) {
-            case 0 -> {
-                mMapPackage.switchMapMode(mMapTypeId, MapMode.UP_2D, true);
-            }
-            case 1 -> {
-                mMapPackage.switchMapMode(mMapTypeId, MapMode.NORTH_2D, true);
-            }
-            case 2 -> {
-                mMapPackage.switchMapMode(mMapTypeId, MapMode.UP_3D, true);
-            }
-            default -> {
-                Logger.e(TAG, "resetMapAngel failed!");
-            }
+            case 0 -> mMapPackage.switchMapMode(mMapTypeId, MapMode.UP_2D, true);
+            case 1 -> mMapPackage.switchMapMode(mMapTypeId, MapMode.NORTH_2D, true);
+            case 2 -> mMapPackage.switchMapMode(mMapTypeId, MapMode.UP_3D, true);
+            default -> Logger.e(TAG, "resetMapAngel failed!");
+        }
+    }
+
+    private void resetMapModeWithLevel(final float levelSize) {
+        final int carMode = mSettingPackage.getConfigKeyMapviewMode();
+        Logger.i(TAG, "resetMapAngel", "carMode:" , carMode);
+        switch (carMode) {
+            case 0 -> mMapPackage.switchMapModeWithLevel(mMapTypeId, MapMode.UP_2D, true, levelSize);
+            case 1 -> mMapPackage.switchMapModeWithLevel(mMapTypeId, MapMode.NORTH_2D, true, levelSize);
+            case 2 -> mMapPackage.switchMapModeWithLevel(mMapTypeId, MapMode.UP_3D, true, levelSize);
+            default -> Logger.e(TAG, "resetMapAngel failed!");
         }
     }
 
@@ -116,18 +152,10 @@ public class MapModelHelp {
         final CarModeType carLogo = mSettingPackage.getCarMode();
         Logger.i(TAG, "restoreCarMode", "车标模式:" , carLogo);
         switch (carLogo) {
-            case CAR_MODE_DEFAULT -> {
-                mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODE_DEFAULT);
-            }
-            case CAR_MODEL_BRAND -> {
-                mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODEL_BRAND);
-            }
-            case CAR_MODEL_SPEED -> {
-                mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODEL_SPEED);
-            }
-            default -> {
-                Logger.w(TAG, "不支持的车标类型！");
-            }
+            case CAR_MODE_DEFAULT -> mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODE_DEFAULT);
+            case CAR_MODEL_BRAND -> mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODEL_BRAND);
+            case CAR_MODEL_SPEED -> mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODEL_SPEED);
+            default -> Logger.w(TAG, "不支持的车标类型！");
         }
     }
 

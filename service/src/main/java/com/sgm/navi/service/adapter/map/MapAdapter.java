@@ -186,19 +186,31 @@ public class MapAdapter {
 
     public boolean setMapMode(MapType mapTypeId, MapMode mapMode, boolean isSave) {
         if(isSave){
-            switch (mapMode) {
-                case UP_2D:
-                    mSettingAdapter.setConfigKeyMapviewMode(0);
-                    break;
-                case UP_3D:
-                    mSettingAdapter.setConfigKeyMapviewMode(2);
-                    break;
-                case NORTH_2D:
-                    mSettingAdapter.setConfigKeyMapviewMode(1);
-                    break;
-            }
+            saveMode(mapMode);
         }
         return mIMapApi.setMapMode(mapTypeId, mapMode);
+    }
+
+    private void saveMode(final MapMode mapMode) {
+        switch (mapMode) {
+            case UP_2D:
+                mSettingAdapter.setConfigKeyMapviewMode(0);
+                break;
+            case UP_3D:
+                mSettingAdapter.setConfigKeyMapviewMode(2);
+                break;
+            case NORTH_2D:
+                mSettingAdapter.setConfigKeyMapviewMode(1);
+                break;
+        }
+    }
+
+    public boolean setMapModeWithLevel(MapType mapTypeId, MapMode mapMode, boolean isSave, float level) {
+        if (isSave) {
+            saveMode(mapMode);
+        }
+
+        return mIMapApi.setMapModeWithLevel(mapTypeId, mapMode, level);
     }
 
     public void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle) {

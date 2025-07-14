@@ -717,6 +717,27 @@ public final class MapStateManager {
     }
 
     /**
+     * 部分语音指令如路况、缩放等级，在应用从后台切换前台时会恢复默认状态
+     * 这时即使处于stop或pause状态也需要保存指令，等onMapLoaded回调后再执行.
+     *
+     * @return 是否需要保存指令 true:保存  false:不保存.
+     */
+    public boolean openMapForRestoreCommand() {
+        final int appRunStatus = ProcessManager.getAppRunStatus();
+        boolean saveCommand = false;
+        Logger.w(IVrBridgeConstant.TAG, "currentAppRunStatus: " + appRunStatus);
+        if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus
+                || ProcessStatus.AppRunStatus.PAUSED == appRunStatus
+                || ProcessStatus.AppRunStatus.STOPPED == appRunStatus) {
+            openMap(appRunStatus);
+            saveCommand = true;
+        }
+
+        return saveCommand;
+    }
+
+
+    /**
      * 切换到前台.
      *
      * @param appStatus Map应用运行状态.

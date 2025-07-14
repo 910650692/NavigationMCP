@@ -474,7 +474,7 @@ public interface IVrBridgeConstant {
 
     interface VrExportPage {
         int ROAD_CONDITION = 8; //打开或关闭路况
-        int ZOOM_LEVEL = 9;
+        int ZOOM_LEVEL = 9; //地图缩放
     }
 
 

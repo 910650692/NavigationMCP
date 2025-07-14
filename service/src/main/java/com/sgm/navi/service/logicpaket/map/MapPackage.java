@@ -208,6 +208,10 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         return mMapAdapter.setMapMode(mapTypeId, mapMode, isSave);
     }
 
+    public boolean switchMapModeWithLevel(MapType mapTypeId, MapMode mapMode, boolean isSave, float level) {
+        return mMapAdapter.setMapModeWithLevel(mapTypeId, mapMode, isSave, level);
+    }
+
     public void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle) {
         mMapAdapter.setMapStateStyle(mapTypeId, mapStateStyle);
     }

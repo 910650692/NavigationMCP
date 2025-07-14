@@ -395,6 +395,35 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         return resultOk == Service.ErrorCodeOK;
     }
 
+    public boolean setMapMode(MapMode mapMode, float level) {
+        if (level > AutoMapConstant.MAP_ZOOM_LEVEL_MAX) {
+            level = AutoMapConstant.MAP_ZOOM_LEVEL_MAX;
+        } else if (level < AutoMapConstant.MAP_ZOOM_LEVEL_MIN) {
+            level = AutoMapConstant.MAP_ZOOM_LEVEL_MIN;
+        }
+        MapviewModeParam mapviewModeParam = new MapviewModeParam();
+        mapviewModeParam.bChangeCenter = true;
+        switch (mapMode) {
+            case UP_2D:
+                mapviewModeParam.mode = MapviewMode.MapviewModeCar;
+                mapviewModeParam.mapZoomLevel = level;
+                break;
+            case UP_3D:
+                mapviewModeParam.mode = MapviewMode.MapviewMode3D;
+                mapviewModeParam.mapZoomLevel = level;
+                mapviewModeParam.pitchAngle = AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE;
+                break;
+            case NORTH_2D:
+                mapviewModeParam.mode = MapviewMode.MapviewModeNorth;
+                mapviewModeParam.mapZoomLevel = level;
+                break;
+        }
+        int resultOk = getMapview().setMapMode(mapviewModeParam, true);
+        getMapview().resetTickCount(1);
+        Logger.d(TAG, mapType, "setMapMode ", mapMode);
+        return resultOk == Service.ErrorCodeOK;
+    }
+
     public boolean setHUDMapMode(MapMode mapMode) {
         MapviewModeParam mapviewModeParam = new MapviewModeParam();
         mapviewModeParam.bChangeCenter = true;

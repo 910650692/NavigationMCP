@@ -139,7 +139,7 @@ public interface INaviConstant {
         int START_NAVIGATION = 6; //开始导航
         int SEARCH_RESULT_PAGE = 7; // 搜索结果页
         int ROAD_CONDITION = 8; //打开或关闭路况
-        int ZOOM_LEVEL = 9;
+        int ZOOM_LEVEL = 9; //缩放地图
     }
 
     interface GuidePanelStatus {

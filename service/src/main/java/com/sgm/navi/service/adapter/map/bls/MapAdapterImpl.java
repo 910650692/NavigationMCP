@@ -235,6 +235,11 @@ public class MapAdapterImpl implements IMapApi {
     }
 
     @Override
+    public boolean setMapModeWithLevel(MapType mapTypeId, MapMode mapMode, float level) {
+        return mapViewPoolManager.getMapViewImpl(mapTypeId).setMapMode(mapMode, level);
+    }
+
+    @Override
     public void setMapHudMode(MapType mapTypeId, MapMode mapMode) {
         mapViewPoolManager.getMapViewImpl(mapTypeId).setHUDMapMode(mapMode);
     }

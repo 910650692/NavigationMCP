@@ -758,7 +758,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     positionPackage.getLastCarLocation().getLatitude()));
             signalPackage.registerObserver(mapTypeId.name(), this);
             setMapCenterInScreen();
-            mapPackage.goToCarPosition(mapTypeId);
+            final int exportIntent = ExportIntentParam.getIntentPage();
+            if (exportIntent == INaviConstant.OpenIntentPage.ZOOM_LEVEL) {
+                mapPackage.goToCarPosition(mapTypeId, false, false);
+            } else {
+                mapPackage.goToCarPosition(mapTypeId);
+            }
             ThreadManager.getInstance().postDelay(() -> mViewModel.hideStartIcon(), 600);
             naviPackage.registerObserver(mViewModel.mScreenId, this);
             // 注册监听
