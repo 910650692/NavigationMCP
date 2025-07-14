@@ -5,6 +5,7 @@ import static android.content.Context.WINDOW_SERVICE;
 
 import android.content.ComponentCallbacks;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -67,6 +68,8 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private WindowManager mWindowManager;
     private View mView;
     private FloatingWindowLayoutBinding mBinding;
+
+    private FloatWindowReceiver floatWindowReceiver;
     private NaviEtaInfo mNaviEtaInfo;
     private NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
@@ -141,7 +144,21 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         captureScreenUtils.unRegisterListener(this);
         mNaviStatusPackage.unregisterObserver(KEY);
         mLayerPackage.unRegisterCallBack(MAP_TYPE, this);
+        unregisterFloatWindowReceiver();
         FloatWindowReceiver.unregisterCallback(TAG);
+    }
+
+    private void unregisterFloatWindowReceiver() {
+        if (floatWindowReceiver != null) {
+            try {
+                AppCache.getInstance().getMContext().unregisterReceiver(floatWindowReceiver);
+                Logger.d(TAG, "注销FloatWindowReceiver成功");
+            } catch (IllegalArgumentException e) {
+                Logger.e(TAG, "注销接收器失败：" + e.getMessage());
+            } finally {
+                floatWindowReceiver = null;
+            }
+        }
     }
 
     private void initClickListener() {
@@ -241,7 +258,41 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         changeUiTypeOnNaviStatusChanged();
         updateLanInfo(mIsShowLane, mLastLanInfo);
         updateTbT(mNaviEtaInfo);
+
+        // 注册媒体悬浮窗广播
+        registerFloatWindowReceiver();
         FloatWindowReceiver.registerCallback(TAG, this);
+    }
+
+    private void registerFloatWindowReceiver() {
+        if (floatWindowReceiver == null) {
+            floatWindowReceiver = new FloatWindowReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("patac.hmi.intent.action.FLOAT_WINDOW_SIDE"); // 匹配广播Action
+
+            String permission = "com.patac.hmi.media.floatwindow.PERMISSION";
+
+            // 根据Android版本选择注册方式，解决SecurityException
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // 注意：如果广播来自其他应用，需用RECEIVER_EXPORTED
+                AppCache.getInstance().getMContext().registerReceiver(
+                        floatWindowReceiver,
+                        filter,
+                        permission,
+                        null,
+                        Context.RECEIVER_EXPORTED // 允许接收外部应用广播
+                );
+            } else {
+                // 低版本直接注册
+                AppCache.getInstance().getMContext().registerReceiver(
+                        floatWindowReceiver,
+                        filter,
+                        permission,
+                        null
+                );
+            }
+            Logger.d(TAG, "动态注册FloatWindowReceiver成功");
+        }
     }
 
     private void updateTbT(NaviEtaInfo etaInfo) {

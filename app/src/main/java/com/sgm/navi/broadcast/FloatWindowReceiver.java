@@ -19,7 +19,7 @@ public class FloatWindowReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if ("patac.hmi.intent.action.FLOAT_WINDOW_SIDE".equals(intent.getAction())) {
             int windowSide = intent.getIntExtra("windowSide", 0);
-            isLauncherStatus = windowSide == 2;
+            isLauncherStatus = windowSide == 1;
             musicWindowWidth = intent.getIntExtra("windowWidth", 0);
             Logger.d(TAG, "收到悬浮窗广播: windowSide=" + windowSide + ", width=" + musicWindowWidth);
 
@@ -47,7 +47,7 @@ public class FloatWindowReceiver extends BroadcastReceiver {
     public interface FloatWindowCallback {
         /**
          * 当悬浮窗位置发生变化时调用
-         * @param isOpenFloat 悬浮窗位置（2=左侧）
+         * @param isOpenFloat 悬浮窗位置（1=显示 6=隐藏）
          * @param windowWidth 悬浮窗宽度
          */
         void onWindowSideChanged(boolean isOpenFloat, int windowWidth);
