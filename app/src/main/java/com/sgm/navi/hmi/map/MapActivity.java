@@ -9,7 +9,6 @@ import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -25,8 +24,6 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.process.ProcessManager;
-import com.android.utils.process.ProcessStatus;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -39,11 +36,12 @@ import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.startup.ActivateFailedDialog;
+import com.sgm.navi.scene.dialog.MsgTopDialog;
+import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
-import com.sgm.navi.scene.dialog.MsgTopDialog;
-import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MainScreenMapView;
@@ -60,7 +58,6 @@ import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
-import com.sgm.navi.ui.view.SkinConstraintLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -290,6 +287,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mFailedDialog.dismiss();
         }
         mFailedDialog = null;
+        AppCache.getInstance().setFirstOpenMap(false);
         Logger.i(TAG, "onDestroy");
         super.onDestroy();
     }

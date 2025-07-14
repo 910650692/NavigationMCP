@@ -20,6 +20,7 @@ public class AppCache {
     private static final String TAG = "AppCache";
     private Context mContext;
     private Application mApplication;
+    private boolean mIsFirstOpenMap = true;
 
     public static AppCache getInstance() {
         return AppCache.Helper.RA;
@@ -69,5 +70,13 @@ public class AppCache {
         } catch (ActivityNotFoundException exception) {
             Logger.e(TAG, "open map error: " + exception.getMessage());
         }
+    }
+
+    public boolean isFirstOpenMap() {
+        return mIsFirstOpenMap;
+    }
+
+    public void setFirstOpenMap(boolean isFirstOpenMap) {
+        this.mIsFirstOpenMap = isFirstOpenMap;
     }
 }

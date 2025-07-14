@@ -34,7 +34,6 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
-import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.favorite.FavoriteHelper;
 import com.sgm.navi.hmi.favorite.HomeCompanyFragment;
@@ -55,6 +54,7 @@ import com.sgm.navi.hmi.traffic.TrafficEventFragment;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.AutoMapConstant.PoiType;
 import com.sgm.navi.service.StartService;
@@ -85,6 +85,7 @@ import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
+import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseViewModel;
@@ -144,6 +145,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> sRVisible;
     public ObservableField<Boolean> mIsFullScreen;
     public ObservableField<Boolean> mIsChangingConfigurations;
+    public ObservableField<Boolean> mIsContinueNaviNotified;
 
     private ScheduledFuture mScheduledFuture;
     private ScheduledFuture goHomeTimer;
@@ -186,6 +188,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         sRVisible = new ObservableField<>(isSupportSplitScreen());
         mIsFullScreen = new ObservableField<>(true);
         mIsChangingConfigurations = new ObservableField<>(false);
+        mIsContinueNaviNotified = new ObservableField<>(false);
     }
 
     @Override
@@ -339,7 +342,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mInitSdkSuccess = successful;
         if (successful) {
             mView.doAfterInitSdk();
-            mModel.checkContinueNavi();
+            if(Logger.openLog) {
+                Logger.d(TAG, "IsFirstOpenMap: ", AppCache.getInstance().isFirstOpenMap(), " mIsContinueNaviNotified:", mIsContinueNaviNotified.get());
+            }
+            if (AppCache.getInstance().isFirstOpenMap() && Boolean.FALSE.equals(mIsContinueNaviNotified.get())) {
+                mIsContinueNaviNotified.set(true);
+                mModel.checkContinueNavi();
+            }
             mModel.checkAuthorizationExpired();
         }
     }
