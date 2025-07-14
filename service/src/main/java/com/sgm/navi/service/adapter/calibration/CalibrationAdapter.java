@@ -28,6 +28,20 @@ public final class CalibrationAdapter {
         mCalibrationApi.init();
     }
 
+    public void registerCallback(final String key, final CalibrationAdapterCallback resultCallback) {
+        if (mCalibrationApi == null) {
+            return;
+        }
+        mCalibrationApi.registerCallback(key, resultCallback);
+    }
+
+    public void unregisterCallback(final String key) {
+        if (mCalibrationApi == null) {
+            return;
+        }
+        mCalibrationApi.unregisterCallback(key);
+    }
+
     /**
      * powerType
      * @return int
@@ -374,5 +388,12 @@ public final class CalibrationAdapter {
             return "";
         }
         return mCalibrationApi.getDeviceId();
+    }
+
+    public boolean getHudSnowMode() {
+        if (mCalibrationApi == null) {
+            return false;
+        }
+        return mCalibrationApi.getHudSnowMode();
     }
 }

@@ -459,4 +459,11 @@ public final class CalibrationPackage {
     public String getDeviceId() {
         return mCalibrationAdapter.getDeviceId();
     }
+
+    /**
+     * 获取hud雪地模式开关状态
+     */
+    public boolean getHudSnowMode() {
+        return mCalibrationAdapter.getHudSnowMode();
+    }
 }

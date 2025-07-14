@@ -6,6 +6,10 @@ public interface CalibrationApi {
 
     void init();
 
+    void registerCallback(String key, CalibrationAdapterCallback resultCallback);
+
+    void unregisterCallback(String key);
+
     /**
      * powerType
      * @return int
@@ -192,5 +196,16 @@ public interface CalibrationApi {
      */
     int vehicleWeight();
 
+    /**
+     * 用于加密Vin的获取devicesId
+     *
+     * @return id
+     */
     String getDeviceId();
+
+    /**
+     * 获取hud雪地模式开关状态
+     *
+     */
+    boolean getHudSnowMode();
 }

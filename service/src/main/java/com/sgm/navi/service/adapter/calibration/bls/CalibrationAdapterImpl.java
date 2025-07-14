@@ -4,22 +4,30 @@ import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.calibration.CalibrationAdapterCallback;
 import com.sgm.navi.service.adapter.calibration.CalibrationApi;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import gm.calibrations.CalId;
 import gm.calibrations.CalibrationManager;
 import patac.manager.PatacServiceManager;
 import patac.manager.PatacServiceNotConnectedException;
+import patac.manager.setting.PatacRemoteSettingsManager;
 import patac.manager.vehicle.PatacVehicleManager;
 
 public class CalibrationAdapterImpl implements CalibrationApi {
     private static final String TAG = MapDefaultFinalTag.CALIBRATION_SERVICE_TAG;
 
+    private ConcurrentHashMap<String, CalibrationAdapterCallback> mCallback = new ConcurrentHashMap<>();
+
     private CalibrationManager mCalibrationManager;
     private PatacServiceManager mPatacServiceManager;
+    private PatacVehicleManager mPatacVehicleManager;
+    private PatacRemoteSettingsManager mPatacRemoteSettingsManager;
+    private boolean mSnowMode;
 
     private int powerType;
     private int GMBrand;
@@ -59,12 +67,7 @@ public class CalibrationAdapterImpl implements CalibrationApi {
     @Override
     public void init() {
         Logger.d(TAG, "init start");
-        if(null == mCalibrationManager){
-            mCalibrationManager = new CalibrationManager();
-        }
-        if(null == mPatacServiceManager){
-            mPatacServiceManager = PatacServiceManager.newInstance(AppCache.getInstance().getMContext());
-        }
+        mCalibrationManager = new CalibrationManager();
         final boolean isPetrol = mCalibrationManager.getBoolean(CalId.VEHICLE_FUEL_TYPE_PETROL, false);
         final boolean isElectric = mCalibrationManager.getBoolean(CalId.VEHICLE_FUEL_TYPE_ELECTRIC, false);
         final boolean isHybrid = mCalibrationManager.getBoolean(CalId.VEHICLE_FUEL_TYPE_HYBRID, false);
@@ -107,7 +110,41 @@ public class CalibrationAdapterImpl implements CalibrationApi {
         SPEED_COSTLIST = mCalibrationManager.getEnumFloatMap("SPEED_COSTLIST");
         AUX_COSTLIST = mCalibrationManager.getFloatArray("AUX_COSTLIST");
         VEHICLE_WEIGHT = mCalibrationManager.getInteger("VEHICLE_WEIGHT", -1);
+        Logger.d(TAG, "init middle");
+        mPatacServiceManager = PatacServiceManager.newInstance(AppCache.getInstance().getMContext());
+        try {
+            getPatacRemoteSettingsManager().registerCallback(TAG, new IPatacRemoteSettingsListener() {
+                @Override
+                public void onAllHudSettingInfoRequest(PatacRemoteSettingsManager.HudSettingInfo hudSettingInfo) {
+                    if (hudSettingInfo == null) {
+                        return;
+                    }
+                    boolean snowMode = hudSettingInfo.getSnowMode();
+                    if (mSnowMode == snowMode) {
+                        return;
+                    }
+                    Logger.d(TAG, "onAllHudSettingInfoRequest: ", mSnowMode);
+                    mSnowMode = snowMode;
+                    for (CalibrationAdapterCallback callback : mCallback.values()) {
+                        callback.onHudSnowModeChanged(mSnowMode);
+                    }
+                }
+            });
+        } catch (PatacServiceNotConnectedException e) {
+            Logger.e(TAG, "getPatacRemoteSettingsManager error: ", e.getMessage());
+            e.printStackTrace();
+        }
         Logger.d(TAG, "init end"); // 10ms
+    }
+
+    @Override
+    public void registerCallback(final String key, final CalibrationAdapterCallback callback) {
+        mCallback.put(key, callback);
+    }
+
+    @Override
+    public void unregisterCallback(String key) {
+        mCallback.remove(key);
     }
 
     @Override
@@ -301,17 +338,51 @@ public class CalibrationAdapterImpl implements CalibrationApi {
 
     /**
      * 用于加密Vin的获取devicesId
+     *
      * @return id
      */
     @Override
     public String getDeviceId() {
         try {
-            final PatacVehicleManager vehicleManager
-                    = (PatacVehicleManager) mPatacServiceManager.getPatacManager(PatacServiceManager.PATAC_VEHICLE_SERVICE);
-            return vehicleManager.getVinId();
+            return getPatacVehicleManager().getVinId();
         } catch (PatacServiceNotConnectedException e) {
+            Logger.e(TAG, "getDeviceId error: ", e.getMessage());
             e.printStackTrace();
         }
         return "";
+    }
+
+    /**
+     * 获取hud雪地模式开关状态
+     *
+     */
+    @Override
+    public boolean getHudSnowMode() {
+        try {
+            PatacRemoteSettingsManager.HudSettingInfo allHudSettingInfo = getPatacRemoteSettingsManager().getAllHudSettingInfo();
+            if (allHudSettingInfo == null) {
+                Logger.e(TAG, "getAllHudSettingInfo error: null");
+                return false;
+            }
+            mSnowMode = allHudSettingInfo.getSnowMode();
+            return mSnowMode;
+        } catch (PatacServiceNotConnectedException e) {
+            Logger.e(TAG, "getHudSnowMode error: ", e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+    private PatacVehicleManager getPatacVehicleManager() throws PatacServiceNotConnectedException {
+        if (mPatacVehicleManager == null) {
+            mPatacVehicleManager = (PatacVehicleManager) mPatacServiceManager.getPatacManager(PatacServiceManager.PATAC_VEHICLE_SERVICE);
+        }
+        return mPatacVehicleManager;
+    }
+
+    private PatacRemoteSettingsManager getPatacRemoteSettingsManager() throws PatacServiceNotConnectedException {
+        if (mPatacRemoteSettingsManager == null) {
+            mPatacRemoteSettingsManager = (PatacRemoteSettingsManager) mPatacServiceManager.getPatacManager(PatacServiceManager.PATAC_REMOTE_SETTINGS_SERVICE);
+        }
+        return mPatacRemoteSettingsManager;
     }
 }

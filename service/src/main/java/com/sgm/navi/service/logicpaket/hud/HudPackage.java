@@ -6,6 +6,8 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
+import com.sgm.navi.service.adapter.calibration.CalibrationAdapter;
+import com.sgm.navi.service.adapter.calibration.CalibrationAdapterCallback;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.map.IMapAdapterCallback;
 import com.sgm.navi.service.adapter.map.MapAdapter;
@@ -54,7 +56,17 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         MapAdapter.getInstance().registerCallback(MapType.HUD_MAP, this);
         NaviPackage.getInstance().registerObserver(TAG, this);
         RoutePackage.getInstance().registerRouteObserver(TAG, this);
+        CalibrationAdapter.getInstance().registerCallback(TAG, mCalibrationAdapterCallback);
+        boolean hudSnowMode = CalibrationAdapter.getInstance().getHudSnowMode();
     }
+
+    private final CalibrationAdapterCallback mCalibrationAdapterCallback = new CalibrationAdapterCallback() {
+        @Override
+        public void onHudSnowModeChanged(boolean snowMode) {
+
+        }
+    };
+
     public void registerHudCallback(String key, IHudCallback hudCallback) {
         ConvertUtils.push(hudCallbackMap, key, hudCallback);
         Logger.d(TAG, "registerHudCallback hudCallbackMap： " + hudCallbackMap.size());
