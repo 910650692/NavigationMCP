@@ -977,6 +977,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mChargeStationReady = false;
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showProgressUI();
+            mViewModel.cancelTimer();
         }
         if (!mRoutePackage.isRouteState()) {
             return;
