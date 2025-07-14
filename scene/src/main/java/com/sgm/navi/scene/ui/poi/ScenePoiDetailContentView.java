@@ -191,7 +191,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "handleRouteClick isMaxRouteParam");
                     return;
                 }
-                if (mRoutePackage.isRouteAlongSearch() && mJumpPoiInfo != null) {
+                if (mRoutePackage.isRouteAlongSearch() && mJumpPoiInfo != null
+                        && mPoiType != AutoMapConstant.PoiType.POI_MAP_CLICK) {
                     mScreenViewModel.closeFragment();
                     mRoutePackage.setRouteAlongInfo(mJumpPoiInfo);
                     return;

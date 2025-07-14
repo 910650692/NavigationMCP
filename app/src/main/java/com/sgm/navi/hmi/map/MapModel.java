@@ -1891,7 +1891,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         final Bundle bundle = new Bundle();
         bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfoEntity);
         bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
-        addPoiDetailsFragment(new PoiDetailsFragment(), bundle);
+        ThreadManager.getInstance().postDelay(() -> addPoiDetailsFragment(new PoiDetailsFragment(), bundle), 600);
     }
 
     public boolean checkPopGuideLogin() {

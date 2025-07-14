@@ -1343,7 +1343,6 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
 //                createCenterPoiMarker(requestParameter);
                 break;
             case AutoMapConstant.SearchType.GEO_SEARCH:
-                break;
             case AutoMapConstant.SearchType.POI_SEARCH:
                 createLabelMarker(searchResultEntity);
                 showPreview(searchResultEntity.getPoiList());
@@ -1975,7 +1974,17 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                         final String identifier = entry.getKey();
                         mCurrentCallbackId.set(identifier);
                         final SearchResultCallback callback = entry.getValue();
-                        threadManager.postUi(() -> callback.onMarkClickCallBack(info));
+                        if (ConvertUtils.equals(callback.getClass().getSimpleName(), "SearchResultModel")) {
+                            // 优先分发给 SearchResultModel 类型的回调
+                            callback.onMarkClickCallBack(info);
+                        }
+                    }
+                    // 再通知其他非 SearchResultModel 类型的回调
+                    for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
+                        final SearchResultCallback callback = entry.getValue();
+                        if (!ConvertUtils.equals(callback.getClass().getSimpleName(), "SearchResultModel")) {
+                            callback.onMarkClickCallBack(info);
+                        }
                     }
                 }
             }

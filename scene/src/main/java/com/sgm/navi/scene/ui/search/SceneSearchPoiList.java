@@ -1270,9 +1270,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         }
                     }
                 }
+                mScreenViewModel.setSelectIndex(poiInfoEntity, index, mSearchType);
                 mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, false);
             }
-            mScreenViewModel.setSelectIndex(poiInfoEntity, index, mSearchType);
         }
 
 
