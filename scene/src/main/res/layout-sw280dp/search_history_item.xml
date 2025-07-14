@@ -136,6 +136,7 @@
                         android:layout_marginStart="@dimen/dp_14"
                         android:layout_marginEnd="@dimen/dp_14"
                         android:focusable="false"
+                        android:visibility="@{poiBean.getMAddress().empty ? View.GONE : View.VISIBLE}"
                         android:background="@color/search_quick_tab_view_color" />
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -146,7 +147,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:focusable="false"
-                        android:text="@{poiBean.getMEndPoiName()}"
+                        android:text="@{poiBean.getMAddress()}"
                         android:textColor="@color/search_quick_tab_view_color"
                         android:textSize="@dimen/sp_38"
                         tools:text="德国慕尼黑啤酒节柏林节柏林披萨慕尼" />

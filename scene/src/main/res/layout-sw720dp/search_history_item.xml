@@ -124,7 +124,7 @@
                         android:layout_marginStart="@dimen/dp_10"
                         android:layout_marginEnd="@dimen/dp_10"
                         android:background="@color/search_quick_tab_view_color"
-                        android:visibility="@{poiBean.getMEndPoiName().empty ? View.GONE : View.VISIBLE}" />
+                        android:visibility="@{poiBean.getMAddress().empty ? View.GONE : View.VISIBLE}" />
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/poi_address"
@@ -133,7 +133,7 @@
                         android:layout_weight="1"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="@{poiBean.getMEndPoiName()}"
+                        android:text="@{poiBean.getMAddress()}"
                         android:textColor="@color/search_quick_tab_view_color"
                         android:textSize="@dimen/dp_26"
                         tools:text="德国慕尼黑啤酒节柏林节柏林披萨慕尼" />
