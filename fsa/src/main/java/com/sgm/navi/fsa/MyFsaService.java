@@ -429,7 +429,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private void switchHudActivity(boolean isHud) {
         int secondeDid = 4; // HUD的DisplayId为4
         //if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && De)
-        //cadi gb hud5
+        //cadi gb hud3  1057563bug  7. 夏陶悦,Xia Taoyue 2025年7月3日 下午2:05//L233 的 HUD 安卓displayid为3
         //buick clea hud4
         if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && CalibrationPackage.getInstance().brand() == IS_BUICK && CalibrationPackage.getInstance().architecture() == IS_CLEA){//buick
             Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: yes IS_BUICK IS_CLEA");
@@ -450,7 +450,11 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setAction("com.sgm.navi.hmi.hud.HudActivity");
             intent.putExtra("isHud", isHud);
-            AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+            try{
+                AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+            } catch (Exception e) {
+                Logger.e(FsaConstant.FSA_TAG, "startActivity error", e);
+            }
         } else {
             //关闭HUD
             ActivityCloseManager.getInstance().triggerClose(false);
@@ -923,7 +927,11 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setAction("com.sgm.navi.hmi.cluster_map.ClusterActivity");
             intent.putExtra("isOpen", isOpen);
-            AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+            try{
+                AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+            } catch (Exception e) {
+                Logger.e(FsaConstant.FSA_TAG, "startActivity error", e);
+            }
         } else {
             Logger.d(FsaConstant.FSA_TAG, "----close ClusterActivity");
             ActivityCloseManager.getInstance().triggerClose(true);
