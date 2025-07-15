@@ -24,11 +24,9 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/float_window"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_34"
-            android:layout_marginTop="@dimen/dp_85"
-            android:visibility="gone"
+            android:layout_width="@dimen/dp_656"
+            android:layout_height="@dimen/dp_1"
+            android:visibility="@{ViewModel.musicTabVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
         </com.sgm.navi.ui.view.SkinConstraintLayout>
@@ -38,7 +36,7 @@
             clickCommand="@{ViewModel.intercept}"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_95"
-            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginStart="@dimen/dp_32"
             android:layout_marginTop="@dimen/dp_85"
             android:background="@drawable/bg_search_main_tab"
             android:visibility="@{ViewModel.mainBTNVisibility ? View.VISIBLE : View.GONE}"
@@ -240,7 +238,7 @@
             clickCommand="@{ViewModel.intercept}"
             android:layout_width="@dimen/dp_366"
             android:layout_height="@dimen/dp_95"
-            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginStart="@dimen/dp_32"
             android:layout_marginBottom="@dimen/dp_130"
             android:background="@drawable/bg_search_main_tab"
             android:visibility="@{ViewModel.bottomNaviVisibility ? View.VISIBLE : View.GONE}"
@@ -361,7 +359,7 @@
             android:id="@+id/layout_fragment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_0"
+            android:layout_marginStart="@dimen/dp_32"
             android:layout_marginTop="@dimen/dp_51"
             app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent"

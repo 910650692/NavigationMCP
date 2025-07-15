@@ -4,6 +4,7 @@ import static android.content.Context.WINDOW_SERVICE;
 
 
 import android.content.ComponentCallbacks;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -15,7 +16,6 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -31,7 +31,6 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
-import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.hmi.utils.CaptureScreenUtils;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.service.AppCache;
@@ -100,12 +99,15 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             initParameters();
             initCallBacks();
             initView();
+            initAndGetMusicTabStatus();
             isInited = true;
         }
     }
 
     public void unInit() {
         unInitCallBacks();
+        unregisterFloatWindowReceiver();
+        FloatWindowReceiver.unregisterCallback(TAG);
     }
 
     private void initParameters() {
@@ -144,8 +146,6 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         captureScreenUtils.unRegisterListener(this);
         mNaviStatusPackage.unregisterObserver(KEY);
         mLayerPackage.unRegisterCallBack(MAP_TYPE, this);
-        unregisterFloatWindowReceiver();
-        FloatWindowReceiver.unregisterCallback(TAG);
     }
 
     private void unregisterFloatWindowReceiver() {
@@ -228,14 +228,12 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         );
         mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(context), null);
         mView = mBinding.getRoot();
-        if (FloatWindowReceiver.isLauncherStatus){
-            ViewGroup.LayoutParams floatParams = mBinding.floatWindow.getLayoutParams();
-            floatParams.width = FloatWindowReceiver.musicWindowWidth + 36;
+
+        if (FloatWindowReceiver.isShowMusicTab){
             mBinding.floatWindow.setVisibility(View.INVISIBLE);
         } else {
             mBinding.floatWindow.setVisibility(View.GONE);
         }
-
 
         final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -258,10 +256,6 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         changeUiTypeOnNaviStatusChanged();
         updateLanInfo(mIsShowLane, mLastLanInfo);
         updateTbT(mNaviEtaInfo);
-
-        // 注册媒体悬浮窗广播
-        registerFloatWindowReceiver();
-        FloatWindowReceiver.registerCallback(TAG, this);
     }
 
     private void registerFloatWindowReceiver() {
@@ -330,6 +324,24 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         if (TextUtils.equals("buick", BuildConfig.FLAVOR)) return;
         Logger.i(TAG, "start service success!");
         InstanceHolder.instance.init();
+    }
+
+    private void initAndGetMusicTabStatus() {
+        try {
+            ContentResolver contentResolver = AppCache.getInstance().getMContext().getContentResolver();
+            int storedValue = Settings.System.getInt(
+                    contentResolver,
+                    "com.patac.hmi.media.float.position"
+            );
+            Logger.d(TAG, "读取到的悬浮窗位置值: " + storedValue);
+            FloatWindowReceiver.isShowMusicTab = storedValue == 2;
+        } catch (Settings.SettingNotFoundException e) {
+            Logger.e(TAG, "未找到设置项: com.patac.hmi.media.float.position");
+        }
+
+        // 注册媒体悬浮窗广播
+        registerFloatWindowReceiver();
+        FloatWindowReceiver.registerCallback(TAG, this);
     }
 
     public static void stopService() {
@@ -457,15 +469,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     }
 
     @Override
-    public void onWindowSideChanged(boolean isOpenFloat, int windowWidth) {
-        Logger.d(TAG, "悬浮窗开关：" + isOpenFloat + "  悬浮窗宽度：" + windowWidth);
+    public void onWindowSideChanged(boolean isOpenFloat) {
         if (mBinding == null){
             return;
         }
-
         if (isOpenFloat){
-            ViewGroup.LayoutParams floatParams = mBinding.floatWindow.getLayoutParams();
-            floatParams.width = windowWidth + 36;
             mBinding.floatWindow.setVisibility(View.INVISIBLE);
         } else {
             mBinding.floatWindow.setVisibility(View.GONE);

@@ -10,8 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FloatWindowReceiver extends BroadcastReceiver {
     private static final String TAG = "FloatWindowReceiver";
-    public static boolean isLauncherStatus = false;
-    public static int musicWindowWidth = 0;
+    public static volatile boolean isShowMusicTab = false;
 
     private static final ConcurrentHashMap<String, FloatWindowCallback> callbacks = new ConcurrentHashMap<>();
 
@@ -19,14 +18,13 @@ public class FloatWindowReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if ("patac.hmi.intent.action.FLOAT_WINDOW_SIDE".equals(intent.getAction())) {
             int windowSide = intent.getIntExtra("windowSide", 0);
-            isLauncherStatus = windowSide == 1;
-            musicWindowWidth = intent.getIntExtra("windowWidth", 0);
-            Logger.d(TAG, "收到悬浮窗广播: windowSide=" + windowSide + ", width=" + musicWindowWidth);
+            isShowMusicTab = windowSide == 1;
+            Logger.d(TAG, "收到悬浮窗广播: windowSide=" + windowSide);
 
             // 遍历所有回调并通知
             for (FloatWindowCallback callback : callbacks.values()) {
                 if (callback != null) {
-                    callback.onWindowSideChanged(isLauncherStatus, musicWindowWidth);
+                    callback.onWindowSideChanged(isShowMusicTab);
                 }
             }
         }
@@ -48,9 +46,8 @@ public class FloatWindowReceiver extends BroadcastReceiver {
         /**
          * 当悬浮窗位置发生变化时调用
          * @param isOpenFloat 悬浮窗位置（1=显示 6=隐藏）
-         * @param windowWidth 悬浮窗宽度
          */
-        void onWindowSideChanged(boolean isOpenFloat, int windowWidth);
+        void onWindowSideChanged(boolean isOpenFloat);
     }
 
 }

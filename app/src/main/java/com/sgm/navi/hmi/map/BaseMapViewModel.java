@@ -30,6 +30,7 @@ import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -145,6 +146,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> muteVisibility;
     public ObservableField<Boolean> mPopGuideLoginShow;
     public ObservableField<Boolean> mGoHomeVisible;
+
+    public ObservableField<Boolean> musicTabVisibility;
     public ObservableField<Boolean> sRVisible;
     public ObservableField<Boolean> mIsFullScreen;
     public ObservableField<Boolean> mIsChangingConfigurations;
@@ -190,6 +193,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mGoHomeVisible = new ObservableField<>(false);
         sRVisible = new ObservableField<>(isSupportSplitScreen());
         mIsFullScreen = new ObservableField<>(true);
+        musicTabVisibility = new ObservableField<>(false);
         mIsChangingConfigurations = new ObservableField<>(false);
         mIsContinueNaviNotified = new ObservableField<>(false);
     }
@@ -1708,11 +1712,5 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void closeSplitFragment() {
         mView.closeSplitFragment();
-    }
-
-    public void setMusicShowUI(boolean isOpenFloat, int windowWidth) {
-        if (mView != null) {
-            mView.setMusicShowUI(isOpenFloat, windowWidth);
-        }
     }
 }

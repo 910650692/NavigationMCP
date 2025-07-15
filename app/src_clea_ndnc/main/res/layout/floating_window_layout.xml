@@ -9,8 +9,9 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/float_window"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_592"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_36"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -21,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_95"
             android:minWidth="@dimen/dp_366"
+            android:layout_marginStart="28dp"
             android:background="@drawable/bg_search_main_tab"
             app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent"
