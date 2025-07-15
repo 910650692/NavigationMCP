@@ -93,7 +93,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         if (!isOpenFromNavi) {
             Fragment fragment = StackManager.getInstance().getCurrentFragment(mMapTypeId.name());
             if (fragment != null) {
-                StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+                StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragmentFromDetail(true);
             }
         } else {
             Bundle bundle = new Bundle();

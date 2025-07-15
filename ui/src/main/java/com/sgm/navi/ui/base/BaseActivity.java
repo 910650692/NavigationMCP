@@ -190,6 +190,15 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
+    public void closeFragmentFromDetail(final boolean nextShow) {
+        FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(), nextShow);
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapTabFromDetail();
+        }
+        onFragmentSizeChanged();
+    }
+
+    @Override
     public void closeAllFragment() {
         FragmentIntent.closeAllFragment(mScreenId, getSupportFragmentManager());
         if (mStackManager.isFragmentStackNull(mScreenId)) {
@@ -309,6 +318,10 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected void onResetMapCenter() {
 
     }
+
+    protected void onResetMapTabFromDetail() {
+
+    };
 
     /***
      * fragment 容器发生变化的时候触发

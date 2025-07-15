@@ -108,6 +108,8 @@ public interface IBaseView {
 
     }
 
+    void closeFragmentFromDetail(boolean nextShow);
+
     /**
      * Activity必须实现.
      */

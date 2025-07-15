@@ -173,6 +173,14 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
+    public void closeFragmentFromDetail(final boolean nextShow) {
+        if (mActivity == null) {
+            return;
+        }
+        mActivity.closeFragmentFromDetail(nextShow);
+    }
+
+    @Override
     public void closeAllFragment() {
         if (mActivity == null) {
             return;

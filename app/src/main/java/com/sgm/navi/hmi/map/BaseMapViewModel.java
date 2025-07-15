@@ -692,6 +692,18 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 , " bottomNaviVisibility: " , bottomNaviVisibility);
     }
 
+    public void resetVisibleInScreen() {
+        mScaleViewVisibility.set(judgedBottomNaviVisibility());
+        mainBTNVisibility.set(true);
+        bottomNaviVisibility.set(judgedBottomNaviVisibility());
+        sRVisible.set(judgedSRVisibility());
+        if (mModel.checkPopGuideLogin()) {
+            mPopGuideLoginShow.set(true);
+        }
+        Logger.i(TAG, "resetMapCenterInScreen mainBTNVisibility: " , mainBTNVisibility
+                , " bottomNaviVisibility: " , bottomNaviVisibility);
+    }
+
     public void showParkingView() {
         mModel.showParkingView();
     }

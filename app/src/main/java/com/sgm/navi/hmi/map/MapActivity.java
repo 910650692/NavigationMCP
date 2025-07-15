@@ -423,6 +423,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         });
     }
 
+    @Override
+    protected void onResetMapTabFromDetail() {
+        Logger.i(TAG, "onResetMapTabFromDetail");
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.searchMainTab.setVisibility(View.VISIBLE);
+            mViewModel.resetVisibleInScreen();
+        });
+    }
+
     public boolean isFragmentStackNull(){
         return mStackManager.isFragmentStackNull(mScreenId);
     }
