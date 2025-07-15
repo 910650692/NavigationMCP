@@ -1357,6 +1357,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void clearRouteLine(final MapType mapTypeId) {
+        Logger.d(TAG, "clearRouteLine: " + mapTypeId);
         mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.clearRouteLine(mapTypeId);
@@ -1759,7 +1760,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mEndPoiEntity.put(mapTypeId, null);
         mSaveViaRouteParams.put(mapTypeId, new ArrayList<>());
         mSaveEndRouteParams.put(mapTypeId, null);
-        clearRouteResultData();
+        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            // 只有主屏清除路线结果数据
+            clearRouteResultData();
+        }
     }
 
     /**

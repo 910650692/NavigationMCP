@@ -148,6 +148,20 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         }
     };
 
+    private final Runnable mRouteLoadingTask = new Runnable() {
+        @Override
+        public void run() {
+            if (mViewModel != null) {
+                mViewModel.onCancelClick();
+                hideProgressUI();
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.route_loading_fail));
+            } else {
+                Logger.e(TAG, "View model is null");
+            }
+        }
+    };
+
     @Override
     public int onLayoutId() {
         return R.layout.fragment_route;
@@ -1355,6 +1369,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             }
             if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
                 mRouteRequestLoadingDialog.show();
+                ThreadManager.getInstance().removeHandleTask(mRouteLoadingTask);
+                ThreadManager.getInstance().postDelay(mRouteLoadingTask, 15000);
             }
         }
     }
@@ -1365,6 +1381,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     public void showOfflineProgressUI() {
         if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog) && mRouteRequestLoadingDialog.isShowing()) {
             mRouteRequestLoadingDialog.showOfflineRouting();
+            ThreadManager.getInstance().removeHandleTask(mRouteLoadingTask);
+            ThreadManager.getInstance().postDelay(mRouteLoadingTask, 15000);
         }
     }
 
@@ -1372,6 +1390,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * 算路请求弹框关闭
      */
     public void hideProgressUI() {
+        ThreadManager.getInstance().removeHandleTask(mRouteLoadingTask);
         if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
             mRouteRequestLoadingDialog.dismiss();
             mRouteRequestLoadingDialog = null;
@@ -1568,6 +1587,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     @Override
     public void onDestroy() {
         mViewModel.cancelTimer();
+        ThreadManager.getInstance().removeHandleTask(mRouteLoadingTask);
+        ThreadManager.getInstance().removeHandleTask(mSearchTimeoutTask);
         removeAllViewStub(mRouteListPageStub);
         removeAllViewStub(mRouteDetailsListPageStub);
         removeAllViewStub(mRouteServiceListPageStub);
