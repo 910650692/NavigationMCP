@@ -214,13 +214,16 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                     @Override
                     @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
                     public void onCommitClick() {
-                        CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
                         CommonManager.getInstance().insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "");
+                        CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
                         mViewModel.clearAll();
                         mViewModel.resetSetting();
                         mViewModel.setResetSettingDialogShown(false);
-                        SettingPackage.getInstance().setPrivacyStatus(false);
-                        restartApp();
+                        if (!SettingPackage.getInstance().getPrivacyStatus()) {
+                            SettingPackage.getInstance().dispatchLocationPrivacyStatus(false);
+                        } else {
+                            SettingPackage.getInstance().setPrivacyStatus(false);
+                        }
                     }
 
                     @Override
@@ -263,22 +266,6 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
     private void clearBackground(final Window window) {
         if (window != null) {
             window.setDimAmount(0f);
-        }
-    }
-
-    /**
-     * 重启应用
-     */
-    private void restartApp() {
-        final Intent i = requireContext().getPackageManager().getLaunchIntentForPackage(requireContext().getPackageName());
-        Logger.i(TAG, "restartApp: 重启应用");
-        if (i != null) {
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(requireContext(), 0, i, PendingIntent.FLAG_IMMUTABLE);
-            AlarmManager alarmManager = (AlarmManager)requireContext().getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, pendingIntent); // 1秒后重启
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(0);
         }
     }
 

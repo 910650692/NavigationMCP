@@ -1055,7 +1055,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             //导航结束，判断当前隐私协议状态，如果为拒绝，退出应用
             if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
                 if (authorizationRequestDialog != null && !authorizationRequestDialog.isShowing()) {
-                    CarModelsFeature.getInstance().exitApp();
+                    mViewModel.exitSelf();
                 }
             }
         }
@@ -1926,7 +1926,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     Logger.d(TAG, "桌面地图情况");
                     mViewModel.protectMap(AutoMapConstant.CANCEL_LOCATION_PROTOCOL);
                 } else {
-                    StackManager.getInstance().exitApp();
+                    mViewModel.moveToBack();
+                    ThreadManager.getInstance().asyncDelay(() -> StackManager.getInstance().exitApp(), 800, TimeUnit.MILLISECONDS);
                 }
             }
         });
@@ -2083,12 +2084,16 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onUpdateSetting(String key, boolean value) {
         if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
-            if (!(value || NaviStatusPackage.getInstance().isGuidanceActive())) {
-                //非引导态，拒绝隐私权限，退出应用
+            if (!value) {
                 if (Logger.openLog) {
                     Logger.printStackTrace(NAVI_EXIT,true);
                 }
-                mViewModel.exitSelf();
+                ThreadManager.getInstance().postDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        mViewModel.exitSelf();
+                    }
+                }, 200);
             }
         }
     }

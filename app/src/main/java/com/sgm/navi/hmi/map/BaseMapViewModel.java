@@ -34,6 +34,8 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
+import com.sgm.navi.service.define.code.UserDataCode;
+import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.favorite.FavoriteHelper;
 import com.sgm.navi.hmi.favorite.HomeCompanyFragment;
@@ -95,6 +97,7 @@ import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description TODO
@@ -271,8 +274,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                     Logger.d(TAG, "桌面地图情况");
                     mView.protectMap(AutoMapConstant.CANCEL_AUTO_PROTOCOL);
                 } else {
-                    StackManager.getInstance().exitApp();
-                    FloatViewManager.getInstance().showAllCardWidgets();
+                    moveToBack();
+                    ThreadManager.getInstance().asyncDelay(new Runnable() {
+                        @Override
+                        public void run() {
+                            StackManager.getInstance().exitApp();
+                            FloatViewManager.getInstance().showAllCardWidgets();
+                        }
+                    }, 800, TimeUnit.MILLISECONDS);
                 }
             }
         });
@@ -1429,21 +1438,25 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void exitSelf() {
-        if (FloatViewManager.getInstance().isNaviDeskBg()) {
+        final String restartFlag = CommonManager.getInstance().getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH);
+        final boolean closeDelay = NaviStatusPackage.getInstance().isGuidanceActive();
+        Logger.d(TAG, "onUpdateSetting: restartFlag = ", restartFlag, " closeDelay = ", closeDelay);
+        if (closeDelay && !ConvertUtils.isEmpty(restartFlag)) {
+            return;
+        }
+        if (ConvertUtils.isEmpty(restartFlag) || FloatViewManager.getInstance().isNaviDeskBg()) {
             final Intent intent = mView.getPackageManager().getLaunchIntentForPackage(mView.getPackageName());
-            Logger.i(TAG, "桌面地图restartApp: 重启应用");
+            Logger.i(TAG, "exitSelf: 重启应用");
             if (intent != null) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(mView, 0, intent, PendingIntent.FLAG_IMMUTABLE);
                 AlarmManager alarmManager = (AlarmManager)mView.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, pendingIntent); // 1秒后重启
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);
+                alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 700, pendingIntent);
             }
-        } else {
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(0);
         }
+        closeAllFragment();
+        moveToBack();
+        ThreadManager.getInstance().asyncDelay(() -> StackManager.getInstance().exitApp(), 400, TimeUnit.MILLISECONDS);
     }
 
     public void chargePreTipDialog(String status){

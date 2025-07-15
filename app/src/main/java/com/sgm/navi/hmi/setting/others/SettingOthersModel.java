@@ -87,7 +87,12 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
     @Override
     public void onUpdateSetting(final String key, final boolean value) {
         if (key.equals(SettingController.KEY_SETTING_PRIVACY_STATUS)) {
-            mViewModel.updatePrivacyStatus(value);
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    mViewModel.updatePrivacyStatus(value);
+                }
+            });
         }
     }
 
