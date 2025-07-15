@@ -1284,6 +1284,18 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         public void onShowCruiseCameraExt(final CruiseInfoEntity cruiseInfoEntity) {
             FsaNaviScene.getInstance().updateCruiseInfoEntity(MyFsaService.this, cruiseInfoEntity);
         }
+
+        @Override
+        public void onUpdateCruiseInfo(CruiseInfoEntity cruiseInfoEntity) {
+            if (cruiseInfoEntity == null) {
+                return;
+            }
+            String roadName = cruiseInfoEntity.getRoadName();
+            if (roadName == null || roadName.isEmpty()) {
+                return;
+            }
+            sendEvent(FsaConstant.FsaFunction.ID_CURRENT_ROAD, roadName);
+        }
     };
 
     private final IMapPackageCallback mIMapPackageCallback = new IMapPackageCallback() {
