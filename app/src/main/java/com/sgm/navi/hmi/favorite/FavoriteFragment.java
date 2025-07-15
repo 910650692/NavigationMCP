@@ -2,7 +2,10 @@ package com.sgm.navi.hmi.favorite;
 
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -74,6 +78,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     private boolean mIsStopScroll;
     private boolean mIsTouchEvent;
     private long mFlingTime = 0;    //惯性滑动时间
+    private final static String PATAC_ACTION_LOGIN = "patac.hmi.user.intent.action.LOGIN";
 
     @Override
     public int onLayoutId() {
@@ -104,9 +109,20 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         initFrequentAddressList();
     }
 
+    BroadcastReceiver mAccountReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Logger.d("onReceive: ","mAccountReceiver onReceive");
+            mViewModel.mChargingInfoClick.call();
+        }
+    };
+
     @Override
     public void onInitObserver() {
         super.onInitObserver();
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(PATAC_ACTION_LOGIN);
+        ContextCompat.registerReceiver(getContext(), mAccountReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED);
     }
 
     @Override
@@ -415,6 +431,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     public void onDestroy() {
         super.onDestroy();
         mViewModel.onDestroy();
+        getContext().unregisterReceiver(mAccountReceiver);
     }
 
     /**

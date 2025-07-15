@@ -83,6 +83,10 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         return new FavoriteModel();
     }
 
+    public FavoriteFragment getView() {
+        return mView;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -109,13 +113,24 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         }
     }
 
+    public void toHomeFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.HOME);
+        addFragment(new HomeCompanyFragment(), bundle);
+    }
+
+    public void toCompanyFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
+        addFragment(new HomeCompanyFragment(), bundle);
+    }
+
     // 添加家
     public Action mGoSettingHome = () -> {
         if (mHome == null) {
-            final Bundle bundle = new Bundle();
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.HOME);
-            addFragment(new HomeCompanyFragment(), bundle);
+            mModel.getOnlineForecastArrivedData(AutoMapConstant.GuessPositionType.HOME);
         } else {
             startRoute(mHome);
             goHomeOrCompany(AutoMapConstant.HomeCompanyType.HOME);
@@ -125,10 +140,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     // 添加公司
     public Action mGoSettingCompany = () -> {
         if (mCompany == null) {
-            final Bundle bundle = new Bundle();
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
-            addFragment(new HomeCompanyFragment(), bundle);
+            mModel.getOnlineForecastArrivedData(AutoMapConstant.GuessPositionType.COMPANY);
         } else {
             startRoute(mCompany);
             goHomeOrCompany(AutoMapConstant.HomeCompanyType.COMPANY);

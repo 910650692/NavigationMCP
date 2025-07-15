@@ -4,32 +4,55 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.alibaba.android.arouter.utils.TextUtils;
+import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.hmi.R;
+import com.sgm.navi.hmi.navi.ForecastAddressDialog;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.position.LocInfoBean;
+import com.sgm.navi.service.define.search.FavoriteInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
+import com.sgm.navi.service.define.user.account.AccountProfileInfo;
+import com.sgm.navi.service.define.user.forecast.ForecastArrivedDataInfo;
+import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.sgm.navi.service.greendao.setting.SettingManager;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
+import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.sgm.navi.service.logicpaket.user.account.AccountPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorCallBack;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
+import com.sgm.navi.service.logicpaket.user.forecast.ForecastCallBack;
+import com.sgm.navi.service.logicpaket.user.forecast.ForecastPackage;
+import com.sgm.navi.service.logicpaket.user.forecast.IForecastAddressCallBack;
 import com.sgm.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
 
-public class FavoriteModel extends BaseModel<FavoriteViewModel> implements BehaviorCallBack, SettingUpdateObservable.SettingUpdateObserver, SearchResultCallback {
+public class FavoriteModel extends BaseModel<FavoriteViewModel> implements BehaviorCallBack,
+        SettingUpdateObservable.SettingUpdateObserver, SearchResultCallback, ForecastCallBack, IForecastAddressCallBack {
     private static final String TAG = FavoriteModel.class.getName();
     private final BehaviorPackage mBehaviorPackage;
     private final SettingManager mSettingManager;
     private final AccountPackage mAccountPackage;
     private final SearchPackage mSearchPackage;
+    private MapPackage mapPackage;
+    private PositionPackage positionPackage;
+    private MapDataPackage mapDataPackage;
+    private final ForecastPackage mforCastPackage;
 
     public FavoriteModel() {
         mBehaviorPackage = BehaviorPackage.getInstance();
@@ -37,6 +60,11 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         mSearchPackage = SearchPackage.getInstance();
         mSettingManager = new SettingManager();
         mSettingManager.init();
+
+        mapPackage = MapPackage.getInstance();
+        positionPackage = PositionPackage.getInstance();
+        mapDataPackage = MapDataPackage.getInstance();
+        mforCastPackage = ForecastPackage.getInstance();
     }
 
     @Override
@@ -45,6 +73,7 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         mBehaviorPackage.registerCallBack(this);
         mSearchPackage.registerCallBack(TAG, this);
         SettingUpdateObservable.getInstance().addObserver("FavoriteModel", this);
+        mforCastPackage.registerCallBack(this);
     }
 
     @Override
@@ -53,6 +82,7 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         mSearchPackage.unRegisterCallBack(TAG);
         mBehaviorPackage.unRegisterCallBack(this);
         SettingUpdateObservable.getInstance().removeObserver("FavoriteModel", this);
+        mforCastPackage.unregisterCallBack(this);
     }
 
     /**
@@ -291,6 +321,123 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
             }else {
                 mViewModel.notifyConnectStationError();
             }
+        }
+    }
+
+    @Override
+    public void onInit(int result) {
+        Logger.d(TAG, "onInit: " + result);
+    }
+
+    @Override
+    public void onSetLoginInfo(int result) {
+        Logger.d(TAG, "onSetLoginInfo: " + result);
+    }
+
+    @Override
+    public void onForecastArrivedData(ForecastArrivedDataInfo data) {
+        if (Logger.openLog)
+            Logger.d(TAG, "onForecastArrivedData: ", "mCompanyOrHomeType: ", mCompanyOrHomeType,
+                    data.getAdCode(), data.getHome(), data.getCompany());
+        //判断是否有家或者公司的数据
+        switch (mCompanyOrHomeType) {
+            case AutoMapConstant.GuessPositionType.HOME:
+                OftenArrivedItemInfo mHomeInfo = (data != null ? data.getHome() : null);
+                if (!ConvertUtils.isEmpty(mHomeInfo) && !ConvertUtils.isEmpty(mHomeInfo.getWstrAddress())) {
+                    showForecastDialog(mCompanyOrHomeType, mHomeInfo);
+                } else {
+                    mViewModel.toHomeFragment();
+                }
+                break;
+            case AutoMapConstant.GuessPositionType.COMPANY:
+                OftenArrivedItemInfo mCompanyInfo = (data != null ? data.getCompany() : null);
+                if (!ConvertUtils.isEmpty(mCompanyInfo) && !ConvertUtils.isEmpty(mCompanyInfo.getWstrAddress())) {
+                    showForecastDialog(mCompanyOrHomeType, mCompanyInfo);
+                } else {
+                    mViewModel.toCompanyFragment();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private ForecastAddressDialog forecastAddressDialog;
+
+    public void showForecastDialog(int type, OftenArrivedItemInfo oftenArrivedItemInfo) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (forecastAddressDialog == null) {
+                forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView().getContext(), this);
+            }
+            forecastAddressDialog.setForecastAddressInfo(type, oftenArrivedItemInfo);
+            if (!forecastAddressDialog.isShowing()) {
+                forecastAddressDialog.show();
+            }
+        });
+    }
+
+    private int mCompanyOrHomeType;
+
+    public void getOnlineForecastArrivedData(int type) {
+        Logger.i(TAG, "getOnlineForecastArrivedData: type " + type);
+        mCompanyOrHomeType = type;
+        //登陆了才去预测数据
+        if (AccountPackage.getInstance().reallyLogin()) {
+            // 获取在线预测常去地点
+            ForecastArrivedDataInfo param = new ForecastArrivedDataInfo();
+            param.setLevel((int) mapPackage.getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP)); // 图面比例尺级别
+            //先拿到经纬度
+            LocInfoBean locInfoBean = positionPackage.getLastCarLocation();
+            if (!ConvertUtils.isEmpty(locInfoBean)) {
+                param.setUserLoc(new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude()));
+                int adCode = mapDataPackage.getAdCodeByLonLat(locInfoBean.getLongitude(), locInfoBean.getLatitude());
+                param.setAdCode(String.valueOf(adCode)); // 所在城市对应 adcode
+            }
+            AccountProfileInfo accountProfileInfo = AccountPackage.getInstance().getUserInfo();
+            if (!ConvertUtils.isEmpty(accountProfileInfo)) {
+                param.setUserId(accountProfileInfo.getUid()); // 登录用户UID
+            }
+            mforCastPackage.getOnlineForecastArrivedData(param);
+        } else {
+            if (AutoMapConstant.GuessPositionType.HOME == type) {
+                mViewModel.toHomeFragment();
+            } else if (AutoMapConstant.GuessPositionType.COMPANY == type) {
+                mViewModel.toCompanyFragment();
+            }
+        }
+    }
+
+    @Override
+    public void AddForecastInfo(int type, OftenArrivedItemInfo oftenArrivedItemInfo) {
+        addHomeOrCompanyInfoToSetting(type, oftenArrivedItemInfo);
+        getHomeFavoriteInfo();
+        getCompanyFavoriteInfo();
+    }
+
+    @Override
+    public void addressClick(int type) {
+        if (AutoMapConstant.HomeCompanyType.HOME == type) {
+            mViewModel.toHomeFragment();
+        } else {
+            mViewModel.toCompanyFragment();
+        }
+    }
+
+    public void addHomeOrCompanyInfoToSetting(int type, OftenArrivedItemInfo oftenArrivedItemInfo) {
+        int favoriteType = (type == AutoMapConstant.HomeCompanyType.HOME) ? 1 : 2;
+        PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        poiInfoEntity.setPid(oftenArrivedItemInfo.getWstrPoiID());
+        poiInfoEntity.setName(oftenArrivedItemInfo.getWstrPoiName());
+        poiInfoEntity.setAddress(oftenArrivedItemInfo.getWstrAddress());
+        poiInfoEntity.setPoint(oftenArrivedItemInfo.getStDisplayCoord());
+        FavoriteInfo favoriteInfo = new FavoriteInfo();
+        favoriteInfo.setMCommonName(favoriteType);
+        poiInfoEntity.setFavoriteInfo(favoriteInfo);
+        mBehaviorPackage.addFavorite(poiInfoEntity, favoriteType);
+        if (favoriteType == 1) {
+            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.forecast_set_home));
+        } else {
+            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.forecast_set_company));
         }
     }
 }
