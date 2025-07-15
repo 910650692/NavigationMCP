@@ -1007,7 +1007,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if (!ConvertUtils.isNull(mAnimator) && mAnimator.isRunning()) {
             showLoading(false);
         }
-        mViewBinding.overlayInterceptor.setVisibility(GONE);
+        if (mViewBinding != null) {
+            mViewBinding.overlayInterceptor.setVisibility(GONE);
+        }
         if (ConvertUtils.isEmpty(mScreenViewModel)) {
             return;
         }
