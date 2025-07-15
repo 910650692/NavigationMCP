@@ -239,14 +239,16 @@ public class AiWaysGestureManager {
         }
         if (pCount == 3) {
             if (startX - endX > 0 && Math.abs(velocityX) > minVelocity
-                    && Math.abs(startX - endX) > Math.abs(startY - endY)) {
-                Logger.d(TAG, "THREE_GINGER_LEFT_SLIP");//三指左滑
+                    && Math.abs(startX - endX) > Math.abs(startY - endY)
+                    && Math.abs(startX - endX) > 300) {
+                Logger.d(TAG, "ZHAOZHAO THREE_GINGER_LEFT_SLIP");//三指左滑
                 return mListener.mutiFingerSlipAction(GestureEvent.THREE_GINGER_LEFT_SLIP, startX , startY, endX, endY, velocityX, velocityY);
             }
 
             if (startX - endX < 0 && Math.abs(velocityX) > minVelocity
-                    && Math.abs(startX - endX) > Math.abs(startY - endY)) {
-                Logger.d(TAG, "THREE_GINGER_RIGHT_SLIP");//三指右滑
+                    && Math.abs(startX - endX) > Math.abs(startY - endY)
+                    && Math.abs(endX - startX) > 300) {
+                Logger.d(TAG, "ZHAOZHAO THREE_GINGER_RIGHT_SLIP");//三指右滑
                 return mListener.mutiFingerSlipAction(GestureEvent.THREE_GINGER_RIGHT_SLIP, startX , startY, endX, endY, velocityX, velocityY);
             }
         }
