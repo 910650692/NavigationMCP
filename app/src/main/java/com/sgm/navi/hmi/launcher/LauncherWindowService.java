@@ -480,6 +480,14 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         }
     }
 
+    @Override
+    public void onNaviStop() {
+        IGuidanceObserver.super.onNaviStop();
+        if (mFloatManager != null) {
+            mFloatManager.onNaviStop();
+        }
+    }
+
     private static final class InstanceHolder {
         private static final LauncherWindowService instance = new LauncherWindowService();
     }

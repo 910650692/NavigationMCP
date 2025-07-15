@@ -37,7 +37,8 @@ import com.sgm.navi.vrbridge.MapStateManager;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 
-public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListener{
+public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListener {
+    private boolean cardWidgetIsOnShowing = false;
     private final int MOVE_DISTANCE = 30;
     private int startX;
     private int startY;
@@ -73,6 +74,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             if (mLauncherModeManager != null) {
                 try {
                     mLauncherModeManager.registerLauncherCallback(mLauncherCallback);
+                    updateWidgetStatus();
                 } catch (RemoteException e) {
                     Logger.e(TAG, "registerLauncherCallback failed", e.getMessage());
                 }
@@ -103,15 +105,15 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         @Override
         public void onChange(boolean selfChange, @Nullable Uri uri) {
             super.onChange(selfChange, uri);
-            int launcherDeskMode =MapStateManager.getInstance().getLauncherDeskMode();
+            int launcherDeskMode = MapStateManager.getInstance().getLauncherDeskMode();
             currentDeskMode = Settings.Global.getInt(mContentResolver, DESKTOP_MODE_KEY, DesktopMode.KANZI_MODE.getValue());
             Logger.i(TAG, "onChange", selfChange, currentDeskMode);
             updateWidgetStatusOnDeskModeChanged();
             MapStateManager.getInstance().setLauncherDeskMode(currentDeskMode);
             notifyDeskModeChanged();
 
-            if(StartService.getInstance().checkSdkIsNeedInit()) return;
-            if(launcherDeskMode == DesktopMode.NAVIGATION_MODE.value || currentDeskMode == DesktopMode.NAVIGATION_MODE.value){
+            if (StartService.getInstance().checkSdkIsNeedInit()) return;
+            if (launcherDeskMode == DesktopMode.NAVIGATION_MODE.value || currentDeskMode == DesktopMode.NAVIGATION_MODE.value) {
                 String mapStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
                 if (mapStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
                     RoutePackage.getInstance().abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -142,6 +144,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
 
     private final CopyOnWriteArrayList<IDeskBackgroundChangeListener> mDeskBackgroundChangeListeners = new CopyOnWriteArrayList<>();
     private final CopyOnWriteArrayList<OnDeskCardVisibleStateChangeListener> mDeskCardVisibleChangeListeners = new CopyOnWriteArrayList<>();
+
     private FloatViewManager() {
         mContentResolver = AppCache.getInstance().getMApplication().getContentResolver();
         mContentResolver.registerContentObserver(uri, true, observer);
@@ -153,7 +156,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
      * 容器里面fragment数量发生改变
      */
     public void showAllCardWidgetsAfterFragmentSizeChanged() {
-        final boolean isEmpty = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <=0 ;
+        final boolean isEmpty = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0;
         final boolean isNoStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS);
         Logger.d(TAG, "showAllCardWidgetsAfterFragmentSizeChanged", isEmpty, isNoStatus);
         if (!isNaviDeskBg()) return;
@@ -168,7 +171,6 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
      * 地图触摸,隐藏小卡片
      */
     public void hideWidgetsOnMapTouch(MotionEvent touchEvent) {
-        Logger.d(TAG, "hideWidgetsOnMapTouch");
         if (!isNaviDeskBg()) return;
         if (!ScreenTypeUtils.getInstance().isFullScreen()) return;
         switch (touchEvent.getAction()) {
@@ -222,12 +224,38 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         final boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
         final int fragmentSize = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name());
         Logger.d(TAG, "updateWidgetStatusOnDeskModeChanged", isFullScreen, fragmentSize);
-        if (!isNaviDeskBg()) return;
-        if (isFullScreen &&  fragmentSize <= 0) {
+        if (!isNaviDeskBg()) {
+            stopTimer();
+            return;
+        } else {
+            cardWidgetIsOnShowing = false;
+        }
+        if (isFullScreen && fragmentSize <= 0) {
             showAllCardWidgets();
         } else {
             hideAllCardWidgets(false);
         }
+    }
+
+    public void updateWidgetStatus() {
+        if (!isServiceConnect || ConvertUtils.isNull(mLauncherModeManager)) {
+            Logger.e(TAG, "updateWidgetStatus failed, service not connect or mLauncherModeManager=null!");
+            return;
+        }
+        ThreadManager.getInstance().execute(() -> {
+            try {
+                final boolean tmpCardOnShowing = mLauncherModeManager.getLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE) == PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER
+                        || mLauncherModeManager.getLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE) == PatacLauncherModeConfig.SHOW_APP_WIDGET;
+                if (tmpCardOnShowing != cardWidgetIsOnShowing) {
+                    notifyDeskCardVisibleStateChange(cardWidgetIsOnShowing);
+                    Logger.d(TAG, "updateWidgetStatus-success", cardWidgetIsOnShowing);
+                } else {
+                    Logger.d(TAG, "card widget status not changed!");
+                }
+            } catch (RemoteException e) {
+                Logger.e(TAG, "updateWidgetStatus failed", e.getMessage());
+            }
+        });
     }
 
     private static final class Holder {
@@ -270,13 +298,18 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             Logger.d(TAG, "showAllCardWidgets", "非全屏无需显示");
             return;
         }
+        if (!isServiceConnect || ConvertUtils.isNull(mLauncherModeManager)) {
+            Logger.e(TAG, "service not connect or mLauncherModeManager = null");
+            return;
+        }
+        if (cardWidgetIsOnShowing) {
+            return;
+        }
         ThreadManager.getInstance().execute(() -> {
             try {
-                if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
-                    mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER);
-                    Logger.i(TAG, "showAllCardWidgets-Success!");
-                    notifyDeskCardVisibleStateChange(true);
-                }
+                mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER);
+                Logger.i(TAG, "showAllCardWidgets-Success!");
+                notifyDeskCardVisibleStateChange(true);
             } catch (Exception e) {
                 Logger.e(TAG, "showAllCardWidgets failed", e.getMessage());
             }
@@ -288,18 +321,22 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             Logger.d(TAG, "hideAllCardWidgets", "当前桌面背景不是导航桌面背景,不需要隐藏！");
             return;
         }
+        if (!isServiceConnect || ConvertUtils.isNull(mLauncherModeManager)) {
+            Logger.d(TAG, "service not connect or mLauncherModeManager = null !");
+            return;
+        }
+        stopTimer();
+        if (isNeedStartTimer) {
+            starTimer();
+        }
+        if (!cardWidgetIsOnShowing) {
+            return;
+        }
         ThreadManager.getInstance().execute(() -> {
-            Logger.i(TAG, "hideAllCardWidgets", isNeedStartTimer);
-            stopTimer();
             try {
-                if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
-                    mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.HIDE_APP_WIDGET_AND_WEATHER);
-                    notifyDeskCardVisibleStateChange(false);
-                    if (isNeedStartTimer) {
-                        starTimer();
-                    }
-                    Logger.i(TAG, "hideAllCardWidgets-Success!");
-                }
+                mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.HIDE_APP_WIDGET_AND_WEATHER);
+                notifyDeskCardVisibleStateChange(false);
+                Logger.i(TAG, "hideAllCardWidgets-Success!");
             } catch (Exception e) {
                 Logger.e(TAG, "showAllCardWidgets failed", e.getMessage());
             }
@@ -307,29 +344,23 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
     }
 
     private void starTimer() {
-        ThreadManager.getInstance().execute(() -> {
-            Logger.i(TAG, "starTimer");
-            try {
-                scheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
-                    showAllCardWidgets();
-                }, DELAY_TIME);
-            } catch (Exception e) {
-                Logger.i(TAG, "starTimer failed", e.getMessage());
-            }
-        });
+        Logger.i(TAG, "starTimer");
+        try {
+            scheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
+                showAllCardWidgets();
+            }, DELAY_TIME);
+        } catch (Exception e) {
+            Logger.i(TAG, "starTimer failed", e.getMessage());
+        }
     }
 
     private void stopTimer() {
-        Logger.i(TAG, "stopTimer start");
         try {
             if (!ConvertUtils.isNull(scheduledFuture) && !scheduledFuture.isDone()) {
-                boolean result = scheduledFuture.cancel(true);
-                Logger.i(TAG, "stopTimer-result", result);
-            } else {
-                Logger.i(TAG, "starTimer failed, scheduledFuture is null or finished!");
+                scheduledFuture.cancel(true);
             }
         } catch (Exception e) {
-            Logger.i(TAG, "starTimer failed", e.getMessage());
+            Logger.e(TAG, "starTimer failed", e.getMessage());
         }
     }
 
@@ -401,6 +432,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
     }
 
     private void notifyDeskCardVisibleStateChange(boolean isVisible) {
+        cardWidgetIsOnShowing = isVisible;
         mDeskCardVisibleChangeListeners.forEach(listener -> listener.onDeskCardVisibleStateChange(isVisible));
     }
 
@@ -409,16 +441,10 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
      * @return true:可见
      */
     public boolean judgedWidgetIsVisible() {
-        try {
-            if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
-                int mode = mLauncherModeManager.getLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE);
-                Logger.d(TAG, "judgedWidgetIsVisible-mode", mode);
-                return mode == PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER || mode == PatacLauncherModeConfig.SHOW_APP_WIDGET;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            return false;
-        }
+        return cardWidgetIsOnShowing;
+    }
+
+    public void onNaviStop() {
+        showAllCardWidgetsAfterFragmentSizeChanged();
     }
 }

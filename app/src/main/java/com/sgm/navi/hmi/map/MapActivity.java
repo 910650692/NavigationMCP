@@ -585,4 +585,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             Logger.d("screen_change_used", "不包含1/3屏幕布局");
         }
     }
+
+    public void updateUiOnHomeKeyClick() {
+        mViewModel.updateUiOnHomeKeyClick();
+    }
 }

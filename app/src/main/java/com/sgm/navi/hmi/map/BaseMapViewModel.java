@@ -363,6 +363,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mModel.checkContinueNavi();
             }
             mModel.checkAuthorizationExpired();
+            bottomNaviVisibility.set(judgedBottomNaviVisibility());
+            sRVisible.set(judgedSRVisibility());
+            mScaleViewVisibility.set(judgedScaleViewVisibility());
         }
     }
 
@@ -1596,13 +1599,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * @param isVisible true显示
      */
     public void onDeskCardVisibleStateChange(boolean isVisible) {
-        ThreadManager.getInstance().execute(() -> {
-            Logger.d(TAG, "onDeskCardVisibleStateChange: ", "isVisible", isVisible ,
-                    "bottomNaviVisibility: " , judgedBottomNaviVisibility());
-            bottomNaviVisibility.set(judgedBottomNaviVisibility());
-            mScaleViewVisibility.set(judgedScaleViewVisibility());
-            sRVisible.set(judgedSRVisibility());
-        });
+        bottomNaviVisibility.set(judgedBottomNaviVisibility());
+        mScaleViewVisibility.set(judgedScaleViewVisibility());
+        sRVisible.set(judgedSRVisibility());
     }
 
     public MapActivity getView() {
@@ -1719,5 +1718,16 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void closeSplitFragment() {
         mView.closeSplitFragment();
+    }
+
+    public void updateUiOnHomeKeyClick() {
+        if (backToParkingVisibility.get()) {
+            backToSelfParking.call();
+            mModel.goToCarPosition();
+            backToParkingVisibility.set(false);
+        }
+        sRVisible.set(judgedSRVisibility());
+        bottomNaviVisibility.set(judgedBottomNaviVisibility());
+        mScaleViewVisibility.set(judgedScaleViewVisibility());
     }
 }

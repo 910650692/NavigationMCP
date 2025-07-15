@@ -154,6 +154,15 @@
             android:foregroundServiceType="shortService" />
 
         <receiver
+            android:name="com.sgm.navi.broadcast.HomeActionBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.patac.launcher.action.NOTIFY_LAUNCHER_RESUME"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name="com.sgm.navi.broadcast.NaviMfcHardKeyReceiver"
             android:enabled="true"
             android:exported="true">
