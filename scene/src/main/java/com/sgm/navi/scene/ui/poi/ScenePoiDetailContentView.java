@@ -79,6 +79,7 @@ import com.sgm.navi.ui.view.SkinTextView;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -601,11 +602,19 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     @Override
                     public void onItemClick(final PoiInfoEntity poiInfo) {
                         mGrandChildSelectInfo = poiInfo;
+                        SearchResultEntity searchResultEntity = new SearchResultEntity()
+                                .setPoiList(Collections.singletonList(poiInfo));
+                        if (mScreenViewModel != null) {
+                            mScreenViewModel.createLabelMarker(searchResultEntity);
+                        }
                     }
 
                     @Override
                     public void onCancelSelectClick(final PoiInfoEntity poiInfoEntity) {
                         mGrandChildSelectInfo = null;
+                        if (mScreenViewModel != null) {
+                            mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
+                        }
                     }
 
                     @Override
@@ -1425,11 +1434,19 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             @Override
                             public void onItemClick(final PoiInfoEntity poiInfo) {
                                 mGrandChildSelectInfo = poiInfo;
+                                SearchResultEntity searchResultEntity = new SearchResultEntity()
+                                        .setPoiList(Collections.singletonList(poiInfo));
+                                if (mScreenViewModel != null) {
+                                    mScreenViewModel.createLabelMarker(searchResultEntity);
+                                }
                             }
 
                             @Override
                             public void onCancelSelectClick(final PoiInfoEntity poiInfoEntity) {
                                 mGrandChildSelectInfo = null;
+                                if (mScreenViewModel != null) {
+                                    mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
+                                }
                             }
 
                             @Override
@@ -1644,11 +1661,19 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             @Override
                             public void onItemClick(final PoiInfoEntity poiInfo) {
                                 mGrandChildSelectInfo = poiInfo;
+                                SearchResultEntity searchResultEntity = new SearchResultEntity()
+                                        .setPoiList(Collections.singletonList(poiInfo));
+                                if (mScreenViewModel != null) {
+                                    mScreenViewModel.createLabelMarker(searchResultEntity);
+                                }
                             }
 
                             @Override
                             public void onCancelSelectClick(final PoiInfoEntity poiInfoEntity) {
                                 mGrandChildSelectInfo = null;
+                                if (mScreenViewModel != null) {
+                                    mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
+                                }
                             }
 
                             @Override
