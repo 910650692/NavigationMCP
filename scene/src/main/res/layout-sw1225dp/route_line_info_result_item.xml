@@ -39,7 +39,7 @@
             android:id="@+id/route_item_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_26"
             android:layout_marginTop="@dimen/dp_20"
             android:textColor="@color/text_color_route_item_select"
             android:textSize="@dimen/sp_29"
@@ -80,7 +80,7 @@
             android:id="@+id/route_item_traffic_light"
             android:layout_width="@dimen/dp_31"
             android:layout_height="@dimen/dp_31"
-            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginStart="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_23"
             android:src="@drawable/img_route_money"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -90,6 +90,7 @@
             android:id="@+id/route_item_traffic_light_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_2"
             android:layout_marginBottom="@dimen/dp_21"
             android:ellipsize="end"
             android:maxLines="1"
@@ -103,50 +104,50 @@
             android:id="@+id/route_item_traffic_price"
             android:layout_width="@dimen/dp_31"
             android:layout_height="@dimen/dp_31"
-            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_2"
             android:layout_marginBottom="@dimen/dp_23"
             android:src="@drawable/img_route_lingt"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/route_item_traffic_light_value" />
+            app:layout_constraintEnd_toStartOf="@+id/route_item_price" />
 
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_21"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_26"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/route_item_traffic_price"
+            app:layout_constraintEnd_toStartOf="@+id/route_item_electricity_img"
             tools:text="3" />
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_item_electricity_img"
             android:layout_width="@dimen/dp_31"
             android:layout_height="@dimen/dp_31"
-            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_23"
             android:src="@drawable/img_route_electricity"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/route_item_price" />
+            app:layout_constraintEnd_toStartOf="@+id/route_item_electricity" />
 
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_electricity"
-            android:layout_width="@dimen/dp_140"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_26"
             android:layout_marginBottom="@dimen/dp_21"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/text_color_route_item_no_select"
-            android:textSize="@dimen/sp_25"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/route_item_electricity_img"
             tools:text="60%到达" />
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
