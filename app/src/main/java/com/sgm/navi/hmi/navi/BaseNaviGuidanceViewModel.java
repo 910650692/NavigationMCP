@@ -183,7 +183,7 @@ public class BaseNaviGuidanceViewModel extends
         final boolean visible = Boolean.FALSE.equals(b);
         final List<NaviViaEntity> viaList = mModel.getViaList();
         if (!ConvertUtils.isEmpty(viaList)) {
-            mView.updateViaListState(viaList);
+            mView.updateViaListState(viaList, false);
             mModel.updateViaListState(viaList);
         }
         mView.showNaviViaList(visible);
@@ -621,7 +621,7 @@ public class BaseNaviGuidanceViewModel extends
         if (!ConvertUtils.isEmpty(viaList)) {
             if (mNaviViaListVisibility != null &&
                     Boolean.TRUE.equals(mNaviViaListVisibility.get())) {
-                mView.updateViaListState(viaList);
+                mView.updateViaListState(viaList, false);
             }
             mView.refreshViaInfo();
             mModel.updateViaListState(viaList);
@@ -634,7 +634,7 @@ public class BaseNaviGuidanceViewModel extends
     public void updateViaListImm() {
         final List<NaviViaEntity> viaList = mModel.getViaList();
         if (!ConvertUtils.isEmpty(viaList)) {
-            mView.updateViaListState(viaList);
+            mView.updateViaListState(viaList, false);
             mModel.updateViaListState(viaList);
         }
     }
@@ -655,8 +655,12 @@ public class BaseNaviGuidanceViewModel extends
         mView.onUpdateTMCLightBarAutoAdd(isShow);
         final List<NaviViaEntity> viaList = mModel.getViaList();
         if (!ConvertUtils.isEmpty(viaList)) {
-            mView.updateViaListState(viaList);
+            mView.updateViaListState(viaList, true);
             mModel.updateViaListState(viaList);
+        } else {
+            if(Logger.openLog) {
+                Logger.d(TAG, " viaList is empty");
+            }
         }
     }
 
@@ -796,7 +800,7 @@ public class BaseNaviGuidanceViewModel extends
         }
         List<NaviViaEntity> viaList = mModelSaveEntity.getViaList();
         if (mView != null) {
-            mView.updateViaListState(viaList);
+            mView.updateViaListState(viaList, false);
         }
         showViaDetail(mModelSaveEntity.isIsViaDetailShow());
         updateNewestViaPoint(mModelSaveEntity.getNaviViaEntity());

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
@@ -231,14 +230,18 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
      *
      * @param list 新途径点集合
      */
-    public void updateViaListState(final List<NaviViaEntity> list) {
-        if (ConvertUtils.isEmpty(list) || null == mScreenViewModel ||
-                null == mNaviViaListAdapter) return;
+    public void updateViaListState(final List<NaviViaEntity> list, boolean forceUpdate) {
+        if (ConvertUtils.isEmpty(list) || null == mScreenViewModel || null == mNaviViaListAdapter) {
+            return;
+        }
         addBatteryLeftData(list);
         mNaviViaEntityList.clear();
         mNaviViaEntityList.addAll(list);
         // 如果是电车在当前页面不立即更新数据，因为有电量数据要更新，直接根据电车回调更新整体数据
-        if (OpenApiHelper.powerType() == 1 && this.isVisible()) {
+        if (OpenApiHelper.powerType() == 1 && this.isVisible() && !forceUpdate) {
+            if (Logger.openLog) {
+                Logger.d(TAG, "电车不立即更新数据，等待电量回调");
+            }
             return;
         }
         notifyList();

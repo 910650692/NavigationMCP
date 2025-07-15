@@ -1218,6 +1218,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void deleteAutoAddChargeStation() {
         mIsShowAutoAdd = false;
         mViewModel.onUpdateViaList(mIsShowAutoAdd);
+        MapPackage.getInstance().resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP,2);
     }
 
     /**

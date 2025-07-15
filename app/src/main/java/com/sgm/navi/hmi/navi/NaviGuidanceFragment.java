@@ -597,7 +597,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      *
      * @param list 途径点列表
      */
-    public void updateViaListState(List<NaviViaEntity> list) {
+    public void updateViaListState(List<NaviViaEntity> list, boolean forceUpdate) {
         if (ConvertUtils.isEmpty(list)) {
             return;
         }
@@ -605,7 +605,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mViewModel.saveViaList(list);
         }
         if (mSceneNaviViaListView != null) {
-            mSceneNaviViaListView.updateViaListState(list);
+            mSceneNaviViaListView.updateViaListState(list, forceUpdate);
         }
     }
 
