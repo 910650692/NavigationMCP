@@ -535,6 +535,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
                             mViewBinding.searchFilterView.searchFilterTitle1.setVisibility(GONE);
                             mViewBinding.searchFilterView.searchFilterList1.setVisibility(GONE);
+                            mViewBinding.searchFilterView.searchFilterList1Child.setVisibility(GONE);
+                        }else{
+                            mViewBinding.searchFilterView.searchFilterTitle1.setVisibility(VISIBLE);
+                            mViewBinding.searchFilterView.searchFilterList1.setVisibility(VISIBLE);
+                            mViewBinding.searchFilterView.searchFilterList1Child.setVisibility(VISIBLE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle1.setText(searchCategoryLocalInfo.getName());
                         mFilterOneAdapter.setMIsExpand(false);
@@ -545,6 +550,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
                             mViewBinding.searchFilterView.searchFilterTitle2.setVisibility(GONE);
                             mViewBinding.searchFilterView.searchFilterList2.setVisibility(GONE);
+                            mViewBinding.searchFilterView.searchFilterList2Child.setVisibility(GONE);
+                        }else{
+                            mViewBinding.searchFilterView.searchFilterTitle2.setVisibility(VISIBLE);
+                            mViewBinding.searchFilterView.searchFilterList2.setVisibility(VISIBLE);
+                            mViewBinding.searchFilterView.searchFilterList2Child.setVisibility(VISIBLE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle2.setText(searchCategoryLocalInfo.getName());
                         mFilterTwoAdapter.setMIsExpand(false);
@@ -555,6 +565,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
                             mViewBinding.searchFilterView.searchFilterTitle3.setVisibility(GONE);
                             mViewBinding.searchFilterView.searchFilterList3.setVisibility(GONE);
+                            mViewBinding.searchFilterView.searchFilterList3Child.setVisibility(GONE);
+                        }else{
+                            mViewBinding.searchFilterView.searchFilterTitle3.setVisibility(VISIBLE);
+                            mViewBinding.searchFilterView.searchFilterList3.setVisibility(VISIBLE);
+                            mViewBinding.searchFilterView.searchFilterList3Child.setVisibility(VISIBLE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle3.setText(searchCategoryLocalInfo.getName());
                         mFilterThreeAdapter.setMIsExpand(false);
@@ -565,6 +580,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
                             mViewBinding.searchFilterView.searchFilterTitle4.setVisibility(GONE);
                             mViewBinding.searchFilterView.searchFilterList4.setVisibility(GONE);
+                            mViewBinding.searchFilterView.searchFilterList4Child.setVisibility(GONE);
+                        }else{
+                            mViewBinding.searchFilterView.searchFilterTitle4.setVisibility(VISIBLE);
+                            mViewBinding.searchFilterView.searchFilterList4.setVisibility(VISIBLE);
+                            mViewBinding.searchFilterView.searchFilterList4Child.setVisibility(VISIBLE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle4.setText(searchCategoryLocalInfo.getName());
                         mFilterFourAdapter.setMIsExpand(false);
