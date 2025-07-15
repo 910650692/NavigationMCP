@@ -18,7 +18,7 @@ import com.sgm.navi.ui.base.BaseFragment;
 
 @Route(path = RoutePath.Search.SUGGESTION_FRAGMENT)
 public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBinding, SuggestionResultViewModel> {
-
+    private boolean mIsFirstInit = true;
     @Override
     public int onLayoutId() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onLayoutId");
@@ -62,12 +62,17 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
     @Override
     public void onResume() {
         super.onResume();
-//        mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
+        if (mIsFirstInit) {
+            //首次进入预搜索界面，主动拉起键盘
+            mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
+        }
+        mIsFirstInit = false;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mIsFirstInit = false;
     }
 
     @Override
