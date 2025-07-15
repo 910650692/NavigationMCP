@@ -127,6 +127,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     // 终点扎标显示内容
     private LayerItemRouteEndPoint mEndPoint;
 
+    private AppFocusHelper mAppFocusHelper;
     private NaviPackage() {
         StartService.getInstance().registerSdkCallback(TAG, this);
         mGuidanceObservers = new ConcurrentHashMap<>();
@@ -142,6 +143,14 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mSettingAdapter.setConfigKeyMute(NumberUtils.NUM_0);
         }
         StartService.getInstance().unregisterSdkCallback(this);
+        mAppFocusHelper = AppFocusHelper.getInstance();
+        mAppFocusHelper.init(AppCache.getInstance().getMContext());
+    }
+
+    public void releaseAppFocus() {
+        if (mAppFocusHelper != null) {
+            mAppFocusHelper.release();
+        }
     }
 
     /**
@@ -169,6 +178,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (mNaviAdapter != null) {
             mNaviAdapter.unInitNaviService();
         }
+        releaseAppFocus();
     }
 
     /**
@@ -197,6 +207,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             //清除终点停车场扎标
             mLayerAdapter.clearLabelItem(MapType.MAIN_SCREEN_MAIN_MAP);
             mLayerAdapter.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
+            if (mAppFocusHelper != null) {
+                mAppFocusHelper.startCarMapNavigation();
+            }
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
@@ -220,6 +233,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mCurrentNaviType = NumberUtils.NUM_ERROR;
             if(isManual) {
                 sendBuryPointForCloseNavi();
+            }
+            if (mAppFocusHelper != null){
+                mAppFocusHelper.stopCarMapNavigation();
             }
         }
         return result;
