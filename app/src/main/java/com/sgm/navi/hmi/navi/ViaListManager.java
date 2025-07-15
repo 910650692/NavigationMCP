@@ -11,7 +11,9 @@ import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ViaListManager {
     private static final String TAG = "ViaListManager";
@@ -21,6 +23,7 @@ public class ViaListManager {
     //途经点充电站信息请求控制
     private int mViaUpdateCount;
     private int mChargeStationTaskId;
+    private List<String> viaIdList;
 
     public ViaListManager(final NaviGuidanceModel naviGuidanceModel) {
         mGuidanceModel = naviGuidanceModel;
@@ -30,7 +33,7 @@ public class ViaListManager {
 
     public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
         if (mViaUpdateCount == 0) {
-            List<String> viaIdList = getViaIdList(mGuidanceModel.getViaList());
+            viaIdList = getViaIdList(mGuidanceModel.getViaList());
             if (!ConvertUtils.isEmpty(viaIdList)) {
                 mChargeStationTaskId = mSearchPackage.poiListSearch(viaIdList, 4, true);
             }
@@ -62,7 +65,8 @@ public class ViaListManager {
             Logger.i(TAG, "errorCode:", errorCode, "message:", message, " 搜索结果:isEmpty(poiInfos)");
             return;
         }
-        mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, poiInfos);
+        List<PoiInfoEntity> tempPoiInfos = sortPoiInfosByIds(poiInfos, viaIdList);
+        mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, tempPoiInfos);
     }
 
     /**
@@ -75,7 +79,7 @@ public class ViaListManager {
         if (ConvertUtils.isEmpty(viaList)) {
             return;
         }
-        List<String> viaIdList = getViaIdList(viaList);
+        viaIdList = getViaIdList(viaList);
         if (!ConvertUtils.isEmpty(viaIdList)) {
             mChargeStationTaskId = mSearchPackage.poiListSearch(viaIdList, 4, true);
         }
@@ -103,5 +107,27 @@ public class ViaListManager {
         return viaIdList;
     }
 
+    /**
+     * 根据poi id数组顺序对PoiInfoEntity列表进行排序
+     * @param poiInfoEntityList poiInfoEntityList
+     * @param poiIdList poi id列表
+     * @return 排序后的poiInfoEntityList
+     */
+    private List<PoiInfoEntity> sortPoiInfosByIds(List<PoiInfoEntity> poiInfoEntityList, List<String> poiIdList) {
+        if (ConvertUtils.isEmpty(poiInfoEntityList) || ConvertUtils.isEmpty(poiIdList)
+                || poiInfoEntityList.size() != poiIdList.size()) {
+            Logger.d(TAG, "id数组和PoiInfoEntity长度不一致");
+            return new ArrayList<>(poiInfoEntityList);
+        }
+        Map<String, PoiInfoEntity> idToObject = new HashMap<>();
+        for(PoiInfoEntity poiInfoEntity: poiInfoEntityList) {
+            idToObject.put(poiInfoEntity.getPid(), poiInfoEntity);
+        }
+        List<PoiInfoEntity> resultList = new ArrayList<>();
+        for(int i = 0; i < poiIdList.size(); i++) {
+            resultList.add(idToObject.get(poiIdList.get(i)));
+        }
+        return resultList;
+    }
 
 }
