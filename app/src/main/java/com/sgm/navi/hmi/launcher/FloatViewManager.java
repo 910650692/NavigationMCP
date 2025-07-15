@@ -37,8 +37,8 @@ import com.sgm.navi.vrbridge.MapStateManager;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 
-public class FloatViewManager {
-    private final int MOVE_DISTANCE = 20;
+public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListener{
+    private final int MOVE_DISTANCE = 30;
     private int startX;
     private int startY;
     private static final String TAG = "FloatViewManager";
@@ -106,6 +106,7 @@ public class FloatViewManager {
             int launcherDeskMode =MapStateManager.getInstance().getLauncherDeskMode();
             currentDeskMode = Settings.Global.getInt(mContentResolver, DESKTOP_MODE_KEY, DesktopMode.KANZI_MODE.getValue());
             Logger.i(TAG, "onChange", selfChange, currentDeskMode);
+            updateWidgetStatusOnDeskModeChanged();
             MapStateManager.getInstance().setLauncherDeskMode(currentDeskMode);
             notifyDeskModeChanged();
 
@@ -145,6 +146,7 @@ public class FloatViewManager {
         mContentResolver = AppCache.getInstance().getMApplication().getContentResolver();
         mContentResolver.registerContentObserver(uri, true, observer);
         getDesktopMode();
+        ScreenTypeUtils.getInstance().addSplitScreenChangeListener(TAG, this);
     }
 
     /**
@@ -152,9 +154,10 @@ public class FloatViewManager {
      */
     public void showAllCardWidgetsAfterFragmentSizeChanged() {
         final boolean isEmpty = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <=0 ;
-        Logger.d(TAG, "showAllCardWidgetsAfterFragmentSizeChanged", isEmpty);
+        final boolean isNoStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS);
+        Logger.d(TAG, "showAllCardWidgetsAfterFragmentSizeChanged", isEmpty, isNoStatus);
         if (!isNaviDeskBg()) return;
-        if (isEmpty) {
+        if (isEmpty && isNoStatus) {
             showAllCardWidgets();
         } else {
             hideAllCardWidgets(false);
@@ -174,16 +177,56 @@ public class FloatViewManager {
                 startY = (int) touchEvent.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                hideAllCardWidgets(false);
+                if (Math.abs(touchEvent.getX() - startX) >= MOVE_DISTANCE || Math.abs(touchEvent.getY() - startY) >= MOVE_DISTANCE) {
+                    hideAllCardWidgets(false);
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 if (Math.abs(touchEvent.getX() - startX) >= MOVE_DISTANCE || Math.abs(touchEvent.getY() - startY) >= MOVE_DISTANCE) {
-                    hideAllCardWidgets(StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0);
+                    final boolean isEmpty = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0;
+                    final boolean isNoStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS);
+                    Logger.d(TAG, "ACTION_UP", isEmpty, isNoStatus);
+                    hideAllCardWidgets(isEmpty && isNoStatus);
                 }
                 break;
             default:
                 break;
 
+        }
+    }
+
+    @Override
+    public void onSplitScreenChanged() {
+        updateWidgetsStatusOnSplitScreenChanged();
+    }
+
+    /***
+     * 更新widgets状态当分屏状态发生改变的时候
+     */
+    private void updateWidgetsStatusOnSplitScreenChanged() {
+        final boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
+        final int fragmentSize = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        Logger.d(TAG, "updateWidgetsStatusOnSplitScreenChanged", isFullScreen, fragmentSize);
+        if (!isNaviDeskBg()) return;
+        if (isFullScreen && StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0) {
+            showAllCardWidgets();
+        } else {
+            hideAllCardWidgets(false);
+        }
+    }
+
+    /***
+     * 更新widgets状态当桌面模式发生变化的时候
+     */
+    private void updateWidgetStatusOnDeskModeChanged() {
+        final boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
+        final int fragmentSize = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        Logger.d(TAG, "updateWidgetStatusOnDeskModeChanged", isFullScreen, fragmentSize);
+        if (!isNaviDeskBg()) return;
+        if (isFullScreen &&  fragmentSize <= 0) {
+            showAllCardWidgets();
+        } else {
+            hideAllCardWidgets(false);
         }
     }
 
@@ -219,16 +262,20 @@ public class FloatViewManager {
      * 显示所有的Widgets
      */
     public void showAllCardWidgets() {
+        if (!isNaviDeskBg()) {
+            Logger.d(TAG, "showAllCardWidgets", "当前桌面背景不是导航桌面背景,不需要显示！");
+            return;
+        }
+        if (!ScreenTypeUtils.getInstance().isFullScreen()) {
+            Logger.d(TAG, "showAllCardWidgets", "非全屏无需显示");
+            return;
+        }
         ThreadManager.getInstance().execute(() -> {
             try {
-                if (!isNaviDeskBg()) {
-                    Logger.d(TAG, "showAllCardWidgets", "当前桌面背景不是导航桌面背景,不需要显示！");
-                    return;
-                }
                 if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
                     mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER);
                     Logger.i(TAG, "showAllCardWidgets-Success!");
-                    notifyDeskCardVisibleStateChange(judgedWidgetIsVisible());
+                    notifyDeskCardVisibleStateChange(true);
                 }
             } catch (Exception e) {
                 Logger.e(TAG, "showAllCardWidgets failed", e.getMessage());
@@ -236,7 +283,6 @@ public class FloatViewManager {
         });
     }
 
-    // TODO 这里有优化空间，待优化
     public void hideAllCardWidgets(boolean isNeedStartTimer) {
         if (!isNaviDeskBg()) {
             Logger.d(TAG, "hideAllCardWidgets", "当前桌面背景不是导航桌面背景,不需要隐藏！");
@@ -248,7 +294,7 @@ public class FloatViewManager {
             try {
                 if (isServiceConnect && !ConvertUtils.isNull(mLauncherModeManager)) {
                     mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.HIDE_APP_WIDGET_AND_WEATHER);
-                    notifyDeskCardVisibleStateChange(judgedWidgetIsVisible());
+                    notifyDeskCardVisibleStateChange(false);
                     if (isNeedStartTimer) {
                         starTimer();
                     }

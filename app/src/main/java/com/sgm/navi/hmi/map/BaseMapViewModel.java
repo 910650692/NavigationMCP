@@ -1552,24 +1552,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void onDeskBackgroundChange(FloatViewManager.DesktopMode desktopMode) {
         Logger.d(TAG, "onDeskBackgroundChange", desktopMode.getValue(), "sRVisible", sRVisible.get());
         sRVisible.set(judgedSRVisibility());
-        switch (desktopMode) {
-            case NAVIGATION_MODE -> {
-                if (ConvertUtils.equals(mModel.getNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-                    Logger.d(TAG, "切到地图桌面，导航中，则隐藏所有卡片");
-                    FloatViewManager.getInstance().hideAllCardWidgets(false);
-                } else if (StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()) == null) {
-                    Logger.d(TAG, "切到地图桌面，非导航中，显示所有卡片");
-                    FloatViewManager.getInstance().showAllCardWidgets();
-                }
-            }
-            default -> {
-                // 切到非地图桌面，如果导航处于前台，则隐藏所有卡片
-                if (ProcessManager.isAppInForeground() && FloatViewManager.getInstance().judgedWidgetIsVisible()) {
-                    Logger.d(TAG, "切到非地图桌面，如果导航处于前台，则隐藏所有卡片");
-                    FloatViewManager.getInstance().hideAllCardWidgets(false);
-                }
-            }
-        }
     }
 
     /**
@@ -1585,15 +1567,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             mScaleViewVisibility.set(judgedScaleViewVisibility());
             sRVisible.set(judgedSRVisibility());
         });
-    }
-
-    public void notifyNaviStartOrStop(boolean isNaviStart) {
-        Logger.d(TAG, "notifyNaviStartOrStop", "isNaviStart:" , isNaviStart);
-        if (isNaviStart) {
-            FloatViewManager.getInstance().hideAllCardWidgets(false);
-        } else {
-            FloatViewManager.getInstance().showAllCardWidgets();
-        }
     }
 
     public MapActivity getView() {

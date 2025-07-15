@@ -1414,13 +1414,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onNaviStop() {
         Logger.i(TAG, "onNaviStop:");
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
-        mViewModel.notifyNaviStartOrStop(false);
-    }
-
-    @Override
-    public void onNaviStart() {
-        IGuidanceObserver.super.onNaviStart();
-        mViewModel.notifyNaviStartOrStop(true);
     }
 
     @Override
@@ -2186,6 +2179,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             if (!ConvertUtils.isNull(mViewModel)) {
                 PoiInfoEntity poiInfo = new PoiInfoEntity();
                 poiInfo.setPid(result.getEventID() + "");
+                poiInfo.setMPoint(new GeoPoint(result.getLog(), result.getLat()));
                 mViewModel.openTrafficDetailFragment(poiInfo, false);
             }
         }
