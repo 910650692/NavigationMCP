@@ -86,7 +86,11 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
         if (!ConvertUtils.isNull(currentFragment) && ConvertUtils.equals(currentFragment.getClass().getName(), fragment.getClass().getName())) {
 //                fragment.setArguments(bundle);
             Logger.i(getClass().getSimpleName(), "addFragment refreshFragment");
-            currentFragment.refreshFragment(bundle);
+            synchronized (this) {
+                if (!ConvertUtils.isNull(currentFragment)) {
+                    currentFragment.refreshFragment(bundle);
+                }
+            }
         } else if (!ConvertUtils.isNull(mView)) {
             Logger.i(getClass().getSimpleName(), "addFragment");
             mView.addFragment(fragment, bundle);
