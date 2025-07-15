@@ -737,7 +737,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 if(mCurrentSelectedQuick == position){
                     mCurrentSelectedQuick = -1;
                     if(!ConvertUtils.isNull(mAdapter)){
-                        mAdapter.setQuickLabel("");
+                        mAdapter.setQuickLabel(new ArrayList<>());
                     }
                     mQuickValue = "";
                     mScreenViewModel.keywordSearch(mPageNum,mSearchText);
@@ -1055,10 +1055,19 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             for (int i = 0; i < mChildQuickList.size(); i++) {
                 mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
             }
-            if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1){
-                mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
+            if(!ConvertUtils.isNull(mAdapter)){
+                ArrayList<String> labelNameList = new ArrayList<>();
+                if(mCurrentSelectedQuick > -1){
+                    labelNameList.add(mChildQuickList.get(mCurrentSelectedQuick).getName());
+                    mAdapter.setQuickLabel(labelNameList);
+                }else {
+                    mAdapter.setQuickLabel(getClassifyDataByChecked());
+                }
             }else{
-                mAdapter.setQuickLabel("");
+                mAdapter.setQuickLabel(new ArrayList<>());
+            }
+            if(ConvertUtils.isEmpty(mChildQuickList)){
+                mViewBinding.searchLabelFilter.setVisibility(GONE);
             }
             mQuickFilterListAdapter.setIconVisible(false);
             mQuickFilterListAdapter.setLabelList(mChildQuickList);
@@ -1074,6 +1083,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
             mQuickFilterListAdapter.setIconVisible(true);
             mQuickFilterListAdapter.setLabelList(mChildQuickList);
+            if(ConvertUtils.isEmpty(mChildQuickList)){
+                mViewBinding.searchLabelFilter.setVisibility(GONE);
+            }
         // 自营站返回
         }else if(searchResultEntity != null && searchResultEntity.getIsNetData()){
             mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
@@ -1082,9 +1094,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
             }
             if(!ConvertUtils.isNull(mAdapter) && mCurrentSelectedQuick > -1 && !ConvertUtils.isEmpty(mChildQuickList.size())){
-                mAdapter.setQuickLabel(mChildQuickList.get(mCurrentSelectedQuick).getName());
+                ArrayList<String> labelNameList = new ArrayList<>();
+                labelNameList.add(mChildQuickList.get(mCurrentSelectedQuick).getName());
+                mAdapter.setQuickLabel(labelNameList);
             }else{
-                mAdapter.setQuickLabel("");
+                mAdapter.setQuickLabel(new ArrayList<>());
+            }
+            if(ConvertUtils.isEmpty(mChildQuickList)){
+                mViewBinding.searchLabelFilter.setVisibility(GONE);
             }
             mQuickFilterListAdapter.setLabelList(mChildQuickList);
         }else{
@@ -1386,6 +1403,33 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchCategoryLocalInfos getClassifyData: " + stringBuilder.toString());
         return stringBuilder.toString();
+    }
+
+    /**
+     * 获取分类数据
+     *
+     * @return 分类数据
+     */
+    private ArrayList<String> getClassifyDataByChecked() {
+        if (ConvertUtils.isEmpty(mLocalInfoList)) {
+            return new ArrayList<>();
+        }
+        final ArrayList<String> labelNameList = new ArrayList<>();
+        for (SearchCategoryLocalInfo searchCategoryLocalInfo : mLocalInfoList) {
+            for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo : searchCategoryLocalInfo.getCategoryLocalInfos()) {
+                if (searchChildCategoryLocalInfo.getChecked() == 1
+                        && !ConvertUtils.isEmpty(searchChildCategoryLocalInfo.getValue()) && !"searchlist_charging_mode_none".equals(searchChildCategoryLocalInfo.getValue())) {
+                    labelNameList.add(searchChildCategoryLocalInfo.getName());
+                }
+                for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
+                    if (searchChildCategoryLocalInfo1.getChecked() == 1
+                            && !ConvertUtils.isEmpty(searchChildCategoryLocalInfo1.getValue()) && !"searchlist_charging_distance_none".equals(searchChildCategoryLocalInfo1.getValue())) {
+                        labelNameList.add(searchChildCategoryLocalInfo1.getName());
+                    }
+                }
+            }
+        }
+        return labelNameList;
     }
 
     /**

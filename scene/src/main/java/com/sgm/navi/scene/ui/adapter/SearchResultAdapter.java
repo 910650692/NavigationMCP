@@ -17,6 +17,7 @@ import android.view.ViewStub;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
@@ -30,6 +31,7 @@ import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.adapter.GasStationAdapter;
 import com.sgm.navi.scene.adapter.GridSpacingItemDecoration;
+import com.sgm.navi.scene.adapter.HorizontalSpaceItemDecoration;
 import com.sgm.navi.scene.databinding.ScenePoiItemCateringViewBinding;
 import com.sgm.navi.scene.databinding.ScenePoiItemChargeViewBinding;
 import com.sgm.navi.scene.databinding.ScenePoiItemGasViewBinding;
@@ -76,8 +78,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private int mParentSelectIndex;
     private int mLastParentSelectIndex;
     private boolean isFirstRefresh = true;
-    private String mLabelName = "";
+    private ArrayList<String> mLabelNameList;
     private List<RouteParam> mGasChargeAlongList = new ArrayList<>();
+    private SearchResultFilterLabelAdapter mSearchResultFilterLabelAdapter;
     public void setOnItemClickListener(final OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
@@ -98,7 +101,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         this.mPoiEntities = new ArrayList<>();
         mSearchPackage = SearchPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
-        mLabelName = "";
+        mLabelNameList = new ArrayList<>();
     }
 
     public void updateAlongList(final List<RouteParam> gasChargeAlongList) {
@@ -289,10 +292,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 refreshNormalView(holder);
                 return;
             }
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mLabelName: "+mLabelName);
-            if(!ConvertUtils.isEmpty(mLabelName)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mLabelName: "+mLabelNameList.size());
+            if(!ConvertUtils.isEmpty(mLabelNameList)){
                 holder.mResultItemBinding.poiChargeLabel.setVisibility(VISIBLE);
-                holder.mResultItemBinding.poiChargeLabel.setText(mLabelName);
+                mSearchResultFilterLabelAdapter = new SearchResultFilterLabelAdapter();
+                holder.mResultItemBinding.poiChargeLabel.setAdapter(mSearchResultFilterLabelAdapter);
+                mSearchResultFilterLabelAdapter.setLabelNameList(mLabelNameList);
             }else{
                 holder.mResultItemBinding.poiChargeLabel.setVisibility(GONE);
             }
@@ -754,6 +759,11 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             this.mResultItemBinding.setHolder(this);
             this.mAdapterReference = new WeakReference<>(adapter);
 
+            final ResultHolder holder = resultItemBinding.getHolder();
+            final RecyclerView.ItemDecoration quickItemDecoration = new HorizontalSpaceItemDecoration(4);
+            holder.mResultItemBinding.poiChargeLabel.setLayoutManager(new LinearLayoutManager(holder.mResultItemBinding.getRoot().getContext(), RecyclerView.HORIZONTAL, false));
+            holder.mResultItemBinding.poiChargeLabel.addItemDecoration(quickItemDecoration);
+
 
             resultItemBinding.getRoot().setOnClickListener(v -> {
                 int position = getAdapterPosition();
@@ -831,11 +841,13 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
     /**
      * 设置快筛label
-     * @param labelName
+     * @param labelNameList
      */
-    public void setQuickLabel(String labelName){
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"QuickLabel: "+labelName);
-        mLabelName = labelName;
+    public void setQuickLabel(ArrayList<String> labelNameList){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"QuickLabel: "+labelNameList.size());
+        mLabelNameList.clear();
+        mLabelNameList.addAll(labelNameList);
+        notifyDataSetChanged();
     }
 
     public String getPriorityString(ArrayList<String> tags) {
