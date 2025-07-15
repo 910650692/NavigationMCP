@@ -4,9 +4,12 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.LinearLayout;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.BR;
@@ -204,6 +207,10 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
                 //城市数据包大小
                 final String sizeString = StringUtils.formatSize(info.getDownLoadInfo().getFullZipSize().longValue());
                 mBinding.countryDataCount.setText(sizeString);
+                if (UserDataCode.TASK_STATUS_CODE_SUCCESS == info.getDownLoadInfo().getTaskState()) {
+                    ((ConstraintLayout.LayoutParams) mBinding.countryDataCount.getLayoutParams()).rightMargin
+                            = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_m_60);
+                }
                 // 下载按钮状态
                 mBinding.countryDownloadView.parseDownloadStatusInfo(info.getDownLoadInfo());
                 final boolean isShowDownloadProgress = info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.sgm.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_119"
     android:layout_marginBottom="@dimen/dp_20"
@@ -37,20 +38,21 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <com.sgm.navi.ui.view.SkinTextView
         android:id="@+id/item_province_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:visibility="gone"
         android:gravity="center"
         android:text="@string/offline_item_city_data"
         android:textColor="@color/setting_bg_tab_text_unselect"
         android:textSize="@dimen/sp_22"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/item_download_status"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/item_download_status" />
+        tools:visibility="visible" />
 
 </com.sgm.navi.ui.view.SkinConstraintLayout>

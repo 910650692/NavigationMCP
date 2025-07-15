@@ -2,6 +2,7 @@ package com.sgm.navi.scene.ui.setting;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,8 +14,11 @@ import com.sgm.navi.scene.R;
 import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.mapdata.CityDownLoadInfo;
 import com.sgm.navi.ui.view.SkinConstraintLayout;
+import com.sgm.navi.ui.view.SkinLinearLayout;
 
 public class DownloadBtnView extends ConstraintLayout {
+
+    private SkinLinearLayout mLinearLayout;
     private ImageView mDownloadViewIcon;
     private TextView mDownloadViewText;
     private SkinConstraintLayout mDownloadViewStatus;
@@ -23,7 +27,7 @@ public class DownloadBtnView extends ConstraintLayout {
      * Constructor.
      *
      * @param context context
-     * @param attrs attributeSet
+     * @param attrs   attributeSet
      */
     public DownloadBtnView(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
@@ -31,10 +35,12 @@ public class DownloadBtnView extends ConstraintLayout {
         mDownloadViewIcon = view.findViewById(R.id.btn_status);
         mDownloadViewText = view.findViewById(R.id.status_tip);
         mDownloadViewStatus = view.findViewById(R.id.download_status);
+        mLinearLayout = view.findViewById(R.id.ll_root);
     }
 
     /**
      * 设置下载按钮提示icon
+     *
      * @param res
      */
     private void setDownloadViewIcon(final int res) {
@@ -43,6 +49,7 @@ public class DownloadBtnView extends ConstraintLayout {
 
     /**
      * 设置下载按钮提示 icon 是否可见
+     *
      * @param visible
      */
     private void setDownloadViewIconVisible(final boolean visible) {
@@ -51,6 +58,7 @@ public class DownloadBtnView extends ConstraintLayout {
 
     /**
      * 设置下载按钮文字
+     *
      * @param text
      */
     private void setDownloadViewText(final String text) {
@@ -59,6 +67,7 @@ public class DownloadBtnView extends ConstraintLayout {
 
     /**
      * 设置下载按钮提示文字颜色
+     *
      * @param res
      */
     private void setDownloadViewTextColor(final int res) {
@@ -67,6 +76,7 @@ public class DownloadBtnView extends ConstraintLayout {
 
     /**
      * 设置下载按钮背景
+     *
      * @param res
      */
     private void setDownloadViewBackground(final int res) {
@@ -79,6 +89,7 @@ public class DownloadBtnView extends ConstraintLayout {
      * @param data OfflineDatas
      */
     public void parseDownloadStatusInfo(final CityDownLoadInfo data) {
+        mLinearLayout.setGravity(Gravity.CENTER);
         switch (data.getTaskState()) {
             case UserDataCode.TASK_STATUS_CODE_READY:
                 if (data.isIsDataUsed()) {
@@ -124,19 +135,20 @@ public class DownloadBtnView extends ConstraintLayout {
                 // 校验完成
                 break;
             case UserDataCode.TASK_STATUS_CODE_UNZIPPING:
-                setDownloadViewText("解压中"+(int) Math.floor(data.getPercent()) + "%");
+                setDownloadViewText("解压中" + (int) Math.floor(data.getPercent()) + "%");
                 setDownloadViewBackground(R.color.transparent);
                 setDownloadViewTextColor(R.color.setting_downloading_color);
                 setDownloadViewIconVisible(false);
                 break;
             case UserDataCode.TASK_STATUS_CODE_UNZIPPED:
-               // 解压完成
+                // 解压完成
                 break;
             case UserDataCode.TASK_STATUS_CODE_SUCCESS:
                 setDownloadViewText("已下载");
                 setDownloadViewBackground(0);
                 setDownloadViewTextColor(R.color.setting_bg_tab_text_unselect);
                 setDownloadViewIconVisible(false);
+                mLinearLayout.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
                 break;
             case UserDataCode.TASK_STATUS_CODE_ERR:
             case UserDataCode.TASK_STATUS_CODE_MAX:

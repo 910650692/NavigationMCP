@@ -4,10 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.ResourceUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.R;
@@ -204,6 +206,13 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             // 城市数据包大小
             final String sizeString = StringUtils.formatSize(downloadItem.getFullZipSize().longValue());
             cityData.setText(sizeString);
+            if (UserDataCode.TASK_STATUS_CODE_SUCCESS == child.getDownLoadInfo().getTaskState()) {
+                ((LinearLayout.LayoutParams) cityData.getLayoutParams()).rightMargin
+                        = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_m_60);
+            } else {
+                ((LinearLayout.LayoutParams) cityData.getLayoutParams()).rightMargin
+                        = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_20);
+            }
 
             if (child.getName().equals("全省下载")) {
                 mDownloadBtnView.setVisibility(View.GONE);

@@ -7,6 +7,7 @@
     android:background="@drawable/shape_bg_download_data">
 
     <com.sgm.navi.ui.view.SkinLinearLayout
+        android:id="@+id/ll_root"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
@@ -20,7 +21,7 @@
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
             android:layout_marginEnd="@dimen/dp_7"
-            android:src="@drawable/img_untop_bwhite_42"/>
+            android:src="@drawable/img_untop_bwhite_42" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/status_tip"
