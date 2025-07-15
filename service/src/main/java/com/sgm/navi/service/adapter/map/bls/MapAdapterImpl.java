@@ -329,4 +329,9 @@ public class MapAdapterImpl implements IMapApi {
     public void updateScreenshotRect(MapType mapTypeId, Rect rect) {
         mapViewPoolManager.getMapViewImpl(mapTypeId).updateScreenshotRect(rect);
     }
+
+    @Override
+    public void setPitchAngle(MapType mapTypeId,float pitchAngle) {
+        mapViewPoolManager.getMapViewImpl(mapTypeId).setPitchAngle(pitchAngle);
+    }
 }

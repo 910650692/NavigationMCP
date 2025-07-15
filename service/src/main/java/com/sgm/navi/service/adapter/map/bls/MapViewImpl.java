@@ -279,6 +279,11 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         Logger.d(TAG, mapType, " setMapCenter");
     }
 
+    public void setPitchAngle(float pitchAngle) {
+        getMapview().getOperatorPosture().setPitchAngle(pitchAngle);
+        Logger.d(TAG, mapType, " setPitchAngle" , pitchAngle);
+    }
+
     public GeoPoint getMapCenter() {
         Coord3DDouble coord3DDouble = getMapview().getOperatorPosture().getMapCenter();
         GeoPoint mapCenter = new GeoPoint();

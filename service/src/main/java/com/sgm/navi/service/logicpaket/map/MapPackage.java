@@ -584,4 +584,9 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     public void updateScreenshotRect(MapType mapTypeId, Rect rect) {
         mMapAdapter.updateScreenshotRect(mapTypeId, rect);
     }
+
+    public void setPitchAngle(MapType mapTypeId, float pitchAngle) {
+        mMapAdapter.setPitchAngle(mapTypeId, pitchAngle);
+    }
+
 }

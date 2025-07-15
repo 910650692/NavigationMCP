@@ -287,4 +287,8 @@ public class MapAdapter {
     public void updateScreenshotRect(MapType mapTypeId, Rect rect) {
         mIMapApi.updateScreenshotRect(mapTypeId, rect);
     }
+
+    public void setPitchAngle(MapType mapTypeId, float pitchAngle) {
+        mIMapApi.setPitchAngle(mapTypeId,pitchAngle);
+    }
 }
