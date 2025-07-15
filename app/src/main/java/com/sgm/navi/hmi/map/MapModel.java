@@ -553,9 +553,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void startInitEngine() {
-        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
-        Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
-        ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
+        if (StartService.getInstance().checkSdkIsAvailable()) {
+            if (null == mapPackage || null == layerPackage) {
+                onSdkInitSuccess();
+            }
+        } else {
+            Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
+            Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
+            ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
+        }
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
