@@ -128,13 +128,10 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                 bundle.getParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         if (routeChargeStationDetailInfo != null && routeSupplementParams != null) {
             mViewModel.setSearchDetail(true);
-            mViewModel.setCurrentRouteSupplementParams(routeSupplementParams);
             showSupplementDetails(routeChargeStationDetailInfo);
             mViewModel.setRouteSupplementParams(routeSupplementParams);
-            getSupplementList(routeSupplementParams);
         }else if (routeSupplementParams != null) {
             mViewModel.setSearchDetail(false);
-            mViewModel.setCurrentRouteSupplementParams(routeSupplementParams);
             mViewModel.setRouteSupplementParams(routeSupplementParams);
             getSupplementList(routeSupplementParams);
         }

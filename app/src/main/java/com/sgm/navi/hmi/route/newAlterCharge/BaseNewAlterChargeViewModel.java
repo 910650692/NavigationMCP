@@ -124,15 +124,9 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     }
 
     private PoiInfoEntity mDetailsEntry;
-    private RouteSupplementParams mCurrentRouteSupplementParams;
     private PoiInfoEntity mNewPoiInfoEntity;
     private PoiInfoEntity mOldPoiInfoEntity;
     private boolean mAlterButton = false;
-
-
-    public void setCurrentRouteSupplementParams(RouteSupplementParams mCurrentRouteSupplementParams) {
-        this.mCurrentRouteSupplementParams = mCurrentRouteSupplementParams;
-    }
 
     public BaseNewAlterChargeViewModel(final @NonNull Application application) {
         super(application);
@@ -188,8 +182,8 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
             showChargeStationDetail(mDetailsEntry);
             return;
         }
-        if (mCurrentRouteSupplementParams != null) {
-            mView.getSupplementList(mCurrentRouteSupplementParams);
+        if (mRouteSupplementParams != null) {
+            mView.getSupplementList(mRouteSupplementParams);
         }
     }
 
@@ -337,7 +331,10 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     }
 
     private final Action mCloseDetail = () -> {
-        mShowAlterChargeType.set(1);
+        setSearchDetail(false);
+        if (mRouteSupplementParams != null && mView != null) {
+            mView.getSupplementList(mRouteSupplementParams);
+        }
     };
 
     public Action getCloseDetail() {

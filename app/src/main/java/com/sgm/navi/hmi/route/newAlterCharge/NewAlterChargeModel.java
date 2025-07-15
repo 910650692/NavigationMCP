@@ -28,7 +28,9 @@ import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 import com.sgm.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,7 +42,9 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
     private ConcurrentHashMap<Long, Integer> mAlterChargeStationTaskId = new ConcurrentHashMap<>();
     private int mCurrentTaskId = -1;
     private int mSupplementListTaskId = -1;
+    private List<String> mSupplementPidList = new ArrayList<>();
     private int mAlterListTaskId = -1;
+    private List<String> mAlterPidList = new ArrayList<>();
 
     public NewAlterChargeModel() {
         mRoutePackage = RoutePackage.getInstance();
@@ -87,6 +91,8 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
      * @param pidList poiID列表
      */
     public void getPoiListSearch(final List<String> pidList) {
+        mSupplementPidList.clear();
+        mSupplementPidList.addAll(pidList);
         mSupplementListTaskId = mSearchPackage.poiListSearch(pidList, 2, true);
     }
 
@@ -95,6 +101,8 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
      * @param pidList poiID列表
      */
     public void getAlterPoiListSearch(final List<String> pidList) {
+        mAlterPidList.clear();
+        mAlterPidList.addAll(pidList);
         mAlterListTaskId = mSearchPackage.poiListSearch(pidList, 2, true);
     }
 
@@ -180,17 +188,24 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
             final ArrayList<PoiInfoEntity> poiInfoEntities = (ArrayList<PoiInfoEntity>) searchResultEntity.getPoiList();
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.PID_LIST_SEARCH
                     && poiInfoEntities != null && !poiInfoEntities.isEmpty()) {
+                if (mSupplementPidList == null || mSupplementPidList.isEmpty() || mSupplementPidList.size() != poiInfoEntities.size()) {
+                    Logger.d(TAG, "data exception");
+                    return;
+                }
                 if (mViewModel != null) {
-                    mViewModel.setSilentSearchResult(poiInfoEntities);
+                    mViewModel.setSilentSearchResult(pidSorting(poiInfoEntities, mSupplementPidList));
                 }
             }
         } else if (mAlterListTaskId == taskId) {
             final ArrayList<PoiInfoEntity> poiInfoEntities = (ArrayList<PoiInfoEntity>) searchResultEntity.getPoiList();
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.PID_LIST_SEARCH
                     && poiInfoEntities != null && !poiInfoEntities.isEmpty()) {
-                Logger.i(TAG, GsonUtils.toJson(poiInfoEntities));
+                if (mAlterPidList == null || mAlterPidList.isEmpty() || mAlterPidList.size() != poiInfoEntities.size()) {
+                    Logger.d(TAG, "data exception");
+                    return;
+                }
                 if (mViewModel != null) {
-                    mViewModel.setAlterSilentSearchResult(poiInfoEntities);
+                    mViewModel.setAlterSilentSearchResult(pidSorting(poiInfoEntities, mAlterPidList));
                 }
             }
         }
@@ -221,5 +236,26 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
     @Override
     public void onRouteSlected(final MapType mapTypeId, final int routeIndex, final boolean isFirst) {
         mViewModel.getClosePage().call();
+    }
+
+
+    public ArrayList<PoiInfoEntity> pidSorting(final ArrayList<PoiInfoEntity> poiInfoEntities, final List<String> pidList) {
+        ArrayList<PoiInfoEntity> sortedList = new ArrayList<>();
+
+        Map<String, PoiInfoEntity> poiMap = new HashMap<>();
+        for (PoiInfoEntity entity : poiInfoEntities) {
+            poiMap.put(entity.getPid(), entity);
+        }
+
+        for (String pid : pidList) {
+            PoiInfoEntity entity = poiMap.get(pid);
+            if (entity != null) {
+                sortedList.add(entity);
+            } else {
+                Logger.d(TAG, "pidSorting: " + pid);
+                sortedList.add(new PoiInfoEntity());
+            }
+        }
+        return sortedList;
     }
 }

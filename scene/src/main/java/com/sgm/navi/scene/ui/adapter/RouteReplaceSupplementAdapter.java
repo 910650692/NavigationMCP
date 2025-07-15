@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.TimeUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.databinding.RouteReplaceSupplementItemBinding;
@@ -120,6 +121,10 @@ public class RouteReplaceSupplementAdapter extends RecyclerView.Adapter<RouteRep
     public void setPoiInfoEntityView(@NonNull final Holder holder, final PoiInfoEntity poiInfoEntity) {
         holder.mRouteReplaceSupplementItemBinding.tvReplacePointName.setText(poiInfoEntity.getMName());
         holder.mRouteReplaceSupplementItemBinding.tvReplacePointAddress.setText(poiInfoEntity.getAddress());
+        if (poiInfoEntity.getChargeInfoList() == null) {
+            Logger.d("chargeInfoList is null");
+            return;
+        }
         final ChargeInfo chargeInfo = poiInfoEntity.getChargeInfoList().get(0);
         final String fastFree = chargeInfo.getFast_free() == -1 ? "" : String.valueOf(chargeInfo.getFast_free());
         final String fastTotal = chargeInfo.getFast_total() == -1 ? "" : "/" + chargeInfo.getFast_total();
