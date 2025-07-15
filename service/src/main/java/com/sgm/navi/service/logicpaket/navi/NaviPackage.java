@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
@@ -143,8 +144,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mSettingAdapter.setConfigKeyMute(NumberUtils.NUM_0);
         }
         StartService.getInstance().unregisterSdkCallback(this);
-        mAppFocusHelper = AppFocusHelper.getInstance();
-        mAppFocusHelper.init(AppCache.getInstance().getMContext());
+        if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
+            Logger.d("AppFocusHelper", "汽车环境，开启导航互斥");
+            mAppFocusHelper = AppFocusHelper.getInstance();
+            mAppFocusHelper.init(AppCache.getInstance().getMContext());
+        }
     }
 
     public void releaseAppFocus() {

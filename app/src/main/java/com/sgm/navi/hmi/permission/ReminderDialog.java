@@ -12,12 +12,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.android.utils.NetWorkUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.DialogUseReminderBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -55,7 +57,7 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
                 mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_service_title);
 
                 if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                    boolean isDarkMode = isDarkModeEnabled();
+                    boolean isDarkMode = ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext());
                     mViewBinding.reminderDetail.netErrorHint.setVisibility(View.INVISIBLE);
                     Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
                     String serviceTermsUrl = isDarkMode ?
@@ -75,7 +77,7 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
             mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_privacy_title);
 
             if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                boolean isDarkMode = isDarkModeEnabled();
+                boolean isDarkMode = ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext());
                 mViewBinding.reminderDetail.netErrorHint.setVisibility(View.INVISIBLE);
                 Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
                 String privacyPolicyUrl = isDarkMode ?
@@ -132,7 +134,6 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        webSettings.setForceDark(WebSettings.FORCE_DARK_ON);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -150,18 +151,14 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-
-                String darkModeCSS = "javascript:(function() {" +
-                        "var style = document.createElement('style');" +
-                        "style.type = 'text/css';" +
-                        "style.innerHTML = 'body { background-color: #121212; color: #ffffff; }';" +
-                        "document.head.appendChild(style);" +
-                        "})()";
-
-                if (isDarkModeEnabled()) {
-                    view.evaluateJavascript(darkModeCSS, null);
-                }
-                view.setVisibility(View.VISIBLE);
+                applyCustomStyles(view);
+                view.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setVisibility(View.VISIBLE);
+                        view.animate().alpha(1f).setDuration(200).start();
+                    }
+                }, 350);
             }
 
             @Override
@@ -173,8 +170,76 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
         });
     }
 
-    private boolean isDarkModeEnabled() {
-        return (getContext().getResources().getConfiguration().uiMode &
-                Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+    private void applyCustomStyles(WebView view) {
+        view.setBackgroundColor(0x00000000);
+
+        StringBuilder cssBuilder = new StringBuilder();
+        cssBuilder.append("javascript:(function() {")
+                .append("var style = document.createElement('style');")
+                .append("style.type = 'text/css';")
+                .append("style.id = 'custom-style';"); // 添加ID便于管理
+
+        final boolean isDark = ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext());
+        Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDark);
+        if (!isDark) {
+            cssBuilder.append("style.innerHTML = '")
+                    .append("html, body { ")
+                    .append("background: transparent !important; ")
+                    .append("background-color: transparent !important; ")
+                    .append("} ")
+                    .append("body, div, p, span, h1, h2, h3, h4, h5, h6, li, td, th, article, section { ")
+                    .append("background-color: transparent !important; ")
+                    .append("background: transparent !important; ")
+                    .append("color: #333333 !important; ")
+                    .append("font-family: monospace !important; ")
+                    .append("font-weight: 400 !important; ")
+                    .append("font-size: 28px !important; ")
+                    .append("line-height: 1.5 !important; ")
+                    .append("} ")
+                    .append("a, a:link, a:visited, a:hover, a:active { ")
+                    .append("color: #245fea !important; ")
+                    .append("font-weight: 400 !important; ")
+                    .append("background: transparent !important; ")
+                    .append("} ")
+                    .append("';");
+        } else {
+            cssBuilder.append("style.innerHTML = '")
+                    .append("html, body { ")
+                    .append("background: transparent !important; ")
+                    .append("background-color: transparent !important; ")
+                    .append("} ")
+                    .append("body, div, p, span, h1, h2, h3, h4, h5, h6, li, td, th, article, section { ")
+                    .append("background-color: transparent !important; ")
+                    .append("background: transparent !important; ")
+                    .append("color: #f0f0f0 !important; ")
+                    .append("font-family: monospace !important; ")
+                    .append("font-weight: 400 !important; ")
+                    .append("font-size: 28px !important; ")
+                    .append("line-height: 1.5 !important; ")
+                    .append("} ")
+                    .append("a, a:link, a:visited, a:hover, a:active { ")
+                    .append("color: #2461ea !important; ")
+                    .append("font-weight: 400 !important; ")
+                    .append("background: transparent !important; ")
+                    .append("} ")
+                    .append("';");
+        }
+
+        cssBuilder.append("var existingStyle = document.getElementById('custom-style');")
+                .append("if (existingStyle) existingStyle.remove();")
+                .append("document.head.appendChild(style);")
+                .append("})()");
+
+        view.evaluateJavascript(cssBuilder.toString(), null);
+
+        // 额外的样式强制应用
+        view.evaluateJavascript(
+                "javascript:" +
+                        "document.documentElement.style.background='transparent';" +
+                        "document.body.style.background='transparent';" +
+                        "document.body.style.fontSize='28px';" +
+                        "document.body.style.fontWeight='400';" +
+                        "document.body.style.color='" + (!ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext()) ? "#333333" : "#f0f0f0") + "';",
+                null);
     }
 }
