@@ -797,6 +797,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             if(mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() || naviPackage.getPreviewStatus())){
                 OpenApiHelper.enterPreview(mapTypeId);
             }
+            mViewModel.showOrHideSelfParkingView(false);
         }
     }
 
