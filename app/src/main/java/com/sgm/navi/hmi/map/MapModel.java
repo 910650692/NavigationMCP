@@ -6,6 +6,7 @@ import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -770,6 +771,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            //通知launcher隐藏遮罩
+            notifyLauncher(true);
             mSettingPackage.setSettingChangeCallback(mapTypeId.name(), this);
             layerPackage.setDefaultCarMode(mapTypeId);
             mapPackage.setMapCenter(mapTypeId, new GeoPoint(positionPackage.getLastCarLocation().getLongitude(),
@@ -2168,6 +2171,19 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         Logger.d(TAG, "悬浮窗开关：" + isOpenFloat);
         if (mViewModel != null) {
             mViewModel.musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
+        }
+    }
+
+    private void notifyLauncher(boolean isStart) {
+        Logger.d("TagLauncher", "地图加载完毕，发送广播");
+        Intent intent = new Intent();
+        intent.setAction("com.sgm.navi.hmi.action.NOTIFY_LAUNCHER_SHOW_HIDE_STARTUP");
+        intent.putExtra("navi_is_start", isStart); //是否是启动时
+        if (mViewModel != null && mViewModel.getView() != null) {
+            mViewModel.getView().sendBroadcast(intent);
+            Logger.d("TagLauncher", "地图加载完毕，发送完毕");
+        } else {
+            Logger.e("TagLauncher", "notifyLauncher: mViewModel or getView is null");
         }
     }
 }
