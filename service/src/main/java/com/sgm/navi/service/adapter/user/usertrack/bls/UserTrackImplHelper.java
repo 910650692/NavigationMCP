@@ -316,6 +316,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
         if (!ConvertUtils.isEmpty(bean)) {
             poi.poiId = bean.getPoiId();
             poi.name = bean.getName();
+            poi.address = bean.getAddress();
         }
         return poi;
     }
@@ -348,6 +349,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 }
                 targetPoi.setEntranceList(entrances);
             }
+            Logger.d(TAG, "getHistoryRouteItemBean1: " + GsonUtils.toJson(targetPoi));
         }
         return targetPoi;
     }

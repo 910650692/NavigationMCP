@@ -1204,6 +1204,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         history.setMEndPoiName(item.getToPoi().getName());
         history.setMKeyWord(item.getToPoi().getName());
         history.setMIsCompleted(item.getIsCompleted());
+        history.setMAddress(item.getToPoi().getAddress());
         history.setMUpdateTime(new Date(item.getUpdateTime()));
         return history;
     }
