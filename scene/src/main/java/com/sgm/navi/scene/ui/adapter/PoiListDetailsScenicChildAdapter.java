@@ -92,7 +92,7 @@ public class PoiListDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiLi
         holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.setTextColor(titleList);
 
         // 交通枢纽且无推荐数据，隐藏
-        if(mPointType == AutoMapConstant.PointTypeCode.TRANSPORT_HUB && ratio <= 0){
+        if(ratio <= 0){
             holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setVisibility(View.GONE);
         }else{
             holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setVisibility(View.VISIBLE);
