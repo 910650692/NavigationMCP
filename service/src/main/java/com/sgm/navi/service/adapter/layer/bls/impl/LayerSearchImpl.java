@@ -589,22 +589,24 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                     viaPoint.mExtraData.chargeStationInfo.brandDesc = chargeInfo.getMBrand();
                 }
                 List<LabelInfo> labelInfos = poiInfoEntity.getMLableList();
-                for (LabelInfo labelInfo : labelInfos) {
-                    switch (labelInfo.getMType()) {
-                        case 1:
-                            viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeBestWay;
-                            break;
-                        case 2:
-                            viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeFastWay;
-                            break;
-                        case 3:
-                            viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeExtraETA;
-                            break;
-                        default:
-                            viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeNone;
-                            break;
+                if (!ConvertUtils.isEmpty(labelInfos)) {
+                    for (LabelInfo labelInfo : labelInfos) {
+                        switch (labelInfo.getMType()) {
+                            case 1:
+                                viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeBestWay;
+                                break;
+                            case 2:
+                                viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeFastWay;
+                                break;
+                            case 3:
+                                viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeExtraETA;
+                                break;
+                            default:
+                                viaPoint.labelType = AlongWayLabelType.AlongWayLabelTypeNone;
+                                break;
+                        }
+                        break;
                     }
-                    break;
                 }
                 break;
             }
