@@ -183,6 +183,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().getOperatorPosture().setZoomLevel(mapType == MapType.HUD_MAP ? AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT_HUD : AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT, true, true);
         // 开启惯性滑动
         getMapview().getOperatorGesture().enableSliding(true);
+        //判断是否为hud
+        if (mapType == MapType.HUD_MAP){
+            getMapview().getOperatorBusiness().setMapZoomScaleAdaptive((int) mapViewParams.getScreenWidth(), (int)mapViewParams.getScreenHeight(), mapViewParams.getDensityDpi());
+        }
     }
 
     /**
@@ -210,7 +214,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         //设置简易三维开
         getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_SIMPLE3D_ON, true);
         // 显示开放图层
-        getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, true);
+        getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, MapType.HUD_MAP != mapType);
         //设置地形阴影图开
         getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_STATE_IS_TOPOGRAPHY_SHOW, true);//开启地形阴影图
     }
@@ -691,6 +695,9 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         boolean openScreen = mapViewParams.isOpenScreen();
         Logger.d(TAG, mapType, "deviceId", deviceId, "onSurfaceChanged", "openScreen", openScreen);
         if (openScreen) startScreenshot();
+        if (mapType == MapType.HUD_MAP){
+            getMapview().getOperatorBusiness().setMapZoomScaleAdaptive((int) mapViewParams.getScreenWidth(), (int)mapViewParams.getScreenHeight(),mapViewParams.getDensityDpi());
+        }
     }
 
     @Override
@@ -846,7 +853,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 if (level < 12F) {
                     getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, false);
                 } else {
-                    getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, true);
+                    getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, MapType.HUD_MAP != mapType);
                 }
                 callback.onMapLevelChanged(mapType, level);
                 callback.onMapScaleChanged(mapType, getCurrentScale());
