@@ -120,6 +120,16 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
             }
             showRouteLine();
             LayerPackage.getInstance().setStartPointVisible(MapType.CLUSTER_MAP, false);
+            initNaviInfo();
+        }
+    }
+
+    public void initNaviInfo() {
+        if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
+            NaviEtaInfo currentNaviEtaInfo = NaviPackage.getInstance().getCurrentNaviEtaInfo();
+            if (currentNaviEtaInfo != null){
+                mViewModel.updateEta(currentNaviEtaInfo);
+            }
         }
     }
 
