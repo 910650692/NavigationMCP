@@ -1425,6 +1425,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         Logger.i(TAG, "closeNavi");
         mViewModel.onNaviStop();
         mRoutePackage.removeAllRouteInfo(MapType.MAIN_SCREEN_MAIN_MAP);
+        clearAllViaChargeStation();
     }
 
     @Override
