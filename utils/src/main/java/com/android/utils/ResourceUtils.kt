@@ -22,7 +22,7 @@ class ResourceUtils private constructor() {
     private var mContext: Context? = null
     private var mResources: Resources? = null
     fun init(context: Context?) {
-        mContext = context
+        mContext = context?.applicationContext
         mResources = mContext!!.resources
     }
 

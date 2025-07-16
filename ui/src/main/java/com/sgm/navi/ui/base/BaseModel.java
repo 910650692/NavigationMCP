@@ -2,6 +2,7 @@ package com.sgm.navi.ui.base;
 
 import android.os.Bundle;
 
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 
 public abstract class BaseModel<VM extends IBaseViewModel> implements IBaseModel<VM> {
@@ -35,6 +36,7 @@ public abstract class BaseModel<VM extends IBaseViewModel> implements IBaseModel
     @Override
     public void onDestroy() {
         Logger.i(getClass().getSimpleName(), "onDestroy");
+        ToastUtils.Companion.getInstance().cancelView();
     }
 
     /**

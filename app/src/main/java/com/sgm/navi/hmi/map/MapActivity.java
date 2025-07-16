@@ -102,21 +102,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.mainImg.setVisibility(View.VISIBLE);
         mBinding.mainImg.setOnClickListener(v -> FloatViewManager.getInstance().hideAllCardWidgets(false));
         mCurrentUiMode = getResources().getConfiguration().uiMode;
-        mViewModel.mainBTNVisibility.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-                boolean value = ((ObservableBoolean) sender).get();
-                ConstraintLayout.LayoutParams layoutParams =  (ConstraintLayout.LayoutParams)mBinding.includeMessageCenter.getRoot().getLayoutParams();
-                if(!value){
-                    layoutParams.startToEnd = mBinding.layoutFragment.getId();
-                    layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_m_17));
-                }else{
-                    layoutParams.startToEnd = mBinding.searchMainTab.getId();
-                    layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_17));
-                }
-                mBinding.includeMessageCenter.getRoot().setLayoutParams(layoutParams);
-            }
-        });
+        mViewModel.mainBTNVisibility.addOnPropertyChangedCallback(propertyChangedCallback);
         mOpenGuideRunnable = () -> mViewModel.openGuideFragment();
         ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
         mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
@@ -270,6 +256,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_CLOSE)
     protected void onDestroy() {
+        PermissionUtils.getInstance().remove();
         stopTime();
         // 退出的时候主动保存一下最后的定位信息
         if (mViewModel.getSdkInitStatus()) {
@@ -287,6 +274,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
         mFailedDialog = null;
         AppCache.getInstance().setFirstOpenMap(false);
+        mViewModel.mainBTNVisibility.removeOnPropertyChangedCallback(propertyChangedCallback);
         Logger.i(TAG, "onDestroy");
         super.onDestroy();
     }
@@ -589,4 +577,20 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void updateUiOnHomeKeyClick() {
         mViewModel.updateUiOnHomeKeyClick();
     }
+
+    private final Observable.OnPropertyChangedCallback propertyChangedCallback =new Observable.OnPropertyChangedCallback() {
+        @Override
+        public void onPropertyChanged(Observable sender, int propertyId) {
+            boolean value = ((ObservableBoolean) sender).get();
+            ConstraintLayout.LayoutParams layoutParams =  (ConstraintLayout.LayoutParams)mBinding.includeMessageCenter.getRoot().getLayoutParams();
+            if(!value){
+                layoutParams.startToEnd = mBinding.layoutFragment.getId();
+                layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_m_17));
+            }else{
+                layoutParams.startToEnd = mBinding.searchMainTab.getId();
+                layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_17));
+            }
+            mBinding.includeMessageCenter.getRoot().setLayoutParams(layoutParams);
+        }
+    };
 }

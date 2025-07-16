@@ -9,7 +9,7 @@ kotlin = "2.0.21"
 
 compileSdk = "34"
 buildSdk = "34.0.0"
-padminSdk = "32"
+padminSdk = "29"
 minSdk = "32"
 rxandroid = "2.1.1"
 targetSdk = "35"

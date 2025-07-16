@@ -96,11 +96,11 @@ public class PermissionUtils {
 
     public void requestDeniedPermission() {
         if (ConvertUtils.isEmpty(deniedPermission)) {
-            permissionsObserver.onPermissionsSuccess();
+            if(!ConvertUtils.isEmpty(permissionsObserver))permissionsObserver.onPermissionsSuccess();
             return;
         }
         if (deniedPermissionRequestNum >= DENIED_PERMISSION_REQUEST_NUM) {
-            permissionsObserver.onPermissionsFail();
+            if(!ConvertUtils.isEmpty(permissionsObserver)) permissionsObserver.onPermissionsFail();
             return;
         }
         if (Logger.openLog) {
@@ -199,7 +199,7 @@ public class PermissionUtils {
     }
 
     private PermissionUtils() {
-        context = StackManager.getInstance().getMainCurrentActivity();
+
     }
 
     public static PermissionUtils getInstance() {

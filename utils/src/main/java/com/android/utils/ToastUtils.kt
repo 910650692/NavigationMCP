@@ -26,7 +26,7 @@ class ToastUtils private constructor() {
     private var myLopper: Looper? = null
 
     fun init(context: Context) {
-        mContext = context
+        mContext = context.applicationContext
     }
 
     @Deprecated(
@@ -96,7 +96,7 @@ class ToastUtils private constructor() {
         ConvertUtils.checkParam("show", view, msg)
         val toastText = view.findViewById<TextView>(R.id.toast_text)
         toastText.text = msg
-        if (mToast == null) mToast = Toast(mContext)
+        if (mToast == null) mToast = Toast.makeText(mContext, msg, Toast.LENGTH_SHORT)
         mToast?.view = view
         mToast?.setDuration(Toast.LENGTH_SHORT)
         mToast?.show()
@@ -123,7 +123,7 @@ class ToastUtils private constructor() {
         sendBuryPointForShowToast(sequence.toString())
     }
 
-    private fun cancelView() {
+    fun cancelView() {
         mToast?.cancel()
         mToast = null
     }

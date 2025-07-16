@@ -408,6 +408,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         clearDialog();
         LayerPackage.getInstance().unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         FloatWindowReceiver.unregisterCallback(TAG);
+        if (!ConvertUtils.isEmpty(authorizationRequestDialog) && authorizationRequestDialog.isShowing()) authorizationRequestDialog.dismiss();
+        authorizationRequestDialog = null;
     }
 
     public void clearDialog() {
