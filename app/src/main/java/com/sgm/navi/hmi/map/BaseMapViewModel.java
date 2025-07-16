@@ -824,6 +824,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void showOrHideSelfParkingView(boolean visible) {
         if(ScreenTypeUtils.getInstance().isOneThirdScreen()) return;
+        Logger.d(TAG, "showOrHideSelfParkingView visible:" + visible);
         backToParkingVisibility.set(visible);
     }
 
@@ -1598,6 +1599,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
         mScaleViewVisibility.set(judgedScaleViewVisibility());
         sRVisible.set(judgedSRVisibility());
+        if (isVisible) {
+            backToParkingVisibility.set(false);
+        }
     }
 
     public MapActivity getView() {
