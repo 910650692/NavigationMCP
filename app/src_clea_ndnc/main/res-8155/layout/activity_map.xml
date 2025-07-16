@@ -346,12 +346,7 @@
             android:layout_marginEnd="@dimen/dp_34"
             android:layout_marginBottom="@dimen/dp_130"
             app:layout_goneMarginBottom="@dimen/dp_0"
-            android:gravity="center"
-            android:textSize="@dimen/sp_30"
-            android:textColor="@color/white_always"
-            android:background="@{ViewModel.mIsFullScreen ? @drawable/map_switch_sr : @drawable/map_sr}"
-            clickCommand="@{ViewModel.switchSr}"
-            android:visibility="@{ViewModel.sRVisible?View.VISIBLE:View.GONE}"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
