@@ -754,7 +754,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         businessTimeIconView.setOnClickListener(v -> {
             mIsBusinessTimeExpanded = !mIsBusinessTimeExpanded;
             final String newText = getContext().getString(R.string.business_hour,
-                    mIsBusinessTimeExpanded ? mPoiInfoEntity.getBusinessTime() : businessTimes[0]).replace("；","\n");
+                    mIsBusinessTimeExpanded ? mPoiInfoEntity.getBusinessTime() : businessTimes[0]).replaceAll("[;；,，]","\n");
 
             businessTime.setText(newText);
             businessTimeIconView.setImageResource(
@@ -780,7 +780,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
                 mViewBinding.scenePoiDetailsNormalView.poiBusinessHoursLayout.setVisibility(View.GONE);
             } else {
-                final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+                final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");
                 final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
 
                 initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsNormalView.poiBusinessIcon,
@@ -930,7 +930,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
             mViewBinding.scenePoiDetailsGasStationView.poiGasOilLayout.setVisibility(View.GONE);
         } else {
-            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");
             final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
 
             initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsGasStationView.poiBusinessIcon,
@@ -1063,7 +1063,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeBusinessLayout.setVisibility(View.GONE);
         } else {
-            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");
             final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
 
             initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsChargingStationView.poiBusinessIcon,
@@ -1214,7 +1214,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
             mViewBinding.scenePoiDetailsCateringView.poiCateringHoursLayout.setVisibility(View.GONE);
         } else {
-            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");
             final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
 
             initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsCateringView.poiBusinessIcon,
@@ -1270,7 +1270,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
             mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotHoursLayout.setVisibility(View.GONE);
         } else {
-            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");
             final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
 
             initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsParkingLotView.poiBusinessIcon,
@@ -1335,7 +1335,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
             mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHoursLayout.setVisibility(View.GONE);
         } else {
-            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");
             final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
 
             initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsServiceAreaView.poiBusinessIcon,
@@ -1556,7 +1556,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursLayout.setVisibility(View.GONE);
         } else {
-            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");
             final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
             initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsScenicSpotView.poiBusinessIcon,
                     mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursContent, businessTimes.length > 1, businessTimes);
