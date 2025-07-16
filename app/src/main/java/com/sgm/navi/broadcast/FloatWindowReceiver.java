@@ -18,7 +18,7 @@ public class FloatWindowReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if ("patac.hmi.intent.action.FLOAT_WINDOW_SIDE".equals(intent.getAction())) {
             int windowSide = intent.getIntExtra("windowSide", 0);
-            isShowMusicTab = windowSide == 1;
+            isShowMusicTab = windowSide == 1 || windowSide == 2;
             Logger.d(TAG, "收到悬浮窗广播: windowSide=" + windowSide);
 
             // 遍历所有回调并通知
