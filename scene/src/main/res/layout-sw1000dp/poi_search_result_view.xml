@@ -30,7 +30,7 @@
             <ProgressBar
                 android:id="@+id/route_charge_progress"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="@dimen/dp_688"
+                android:layout_width="@dimen/dp_650"
                 android:layout_height="@dimen/dp_5"
                 android:clickable="false"
                 android:focusable="false"
@@ -58,7 +58,7 @@
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/route_charge_progress_icons"
-                android:layout_width="@dimen/dp_756"
+                android:layout_width="@dimen/dp_750"
                 android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="@+id/route_charge_progress"
                 app:layout_constraintStart_toStartOf="@+id/route_charge_progress"
@@ -68,13 +68,11 @@
                 android:id="@+id/route_charge_exhaustion_point"
                 android:layout_width="@dimen/dp_34"
                 android:layout_height="@dimen/dp_34"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_20"
                 android:src="@drawable/img_route_charge_exhaustion_point"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/route_charge_progress"
+                app:layout_constraintStart_toStartOf="@+id/route_charge_progress"
                 app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinTextView

@@ -8,4 +8,5 @@
 
     <dimen name="route_supplement_width">@dimen/dp_100</dimen>
     <dimen name="route_supplement_total">@dimen/dp_678</dimen>
+    <dimen name="route_charge_progress_total">@dimen/dp_750</dimen>
 </resources>
