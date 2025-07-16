@@ -548,6 +548,9 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
+            if (!isAdded() || getActivity() == null || getActivity().isFinishing()) {
+                return;
+            }
             if (batter) {
                 if (BuildConfig.FLAVOR.equals("cadi")) {
                     mRouteListPageView.routeLineInfoTvPrefer.setMaxWidth(getResources()
@@ -1450,7 +1453,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * 关闭Trip弹框
      */
     public void hideTrip() {
-        if (!ConvertUtils.isEmpty(mMsgTopDialog)) {
+        if (!ConvertUtils.isEmpty(mMsgTopDialog) && getActivity() != null && !getActivity().isFinishing()) {
             mMsgTopDialog.cancel();
             mMsgTopDialog = null;
         }

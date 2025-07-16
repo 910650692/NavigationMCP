@@ -458,7 +458,12 @@ public class RouteAdapterImplHelper {
      */
     private POIInfo getPOIInfo(final RouteParam routeParam) {
         final POIInfo info = new POIInfo();
-        info.realPos = new Coord2DDouble(routeParam.getRealPos().getLon(), routeParam.getRealPos().getLat());
+        if (routeParam.getRealPos() == null) {
+            Logger.d(TAG, "RouteParam.getRealPos() == null");
+            info.realPos = new Coord2DDouble();
+        } else {
+            info.realPos = new Coord2DDouble(routeParam.getRealPos().getLon(), routeParam.getRealPos().getLat());
+        }
         info.naviPos = new Coord2DDouble();
         info.sigshelter = routeParam.getSigshelter();
         info.type = routeParam.getType();
