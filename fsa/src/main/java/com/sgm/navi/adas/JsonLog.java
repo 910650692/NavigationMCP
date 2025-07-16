@@ -2,6 +2,7 @@ package com.sgm.navi.adas;
 
 import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
+import android.util.Log;
 
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
@@ -39,9 +40,9 @@ public final class JsonLog {
     private static void printLine(final String tag, final boolean isTop) {
         // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
         if (isTop) {
-            Logger.d(tag, "╔═══════════════════════════════════════════════════════════════════════════════════════");
+            Log.d(tag, "╔═══════════════════════════════════════════════════════════════════════════════════════");
         } else {
-            Logger.d(tag, "╚═══════════════════════════════════════════════════════════════════════════════════════");
+            Log.d(tag, "╚═══════════════════════════════════════════════════════════════════════════════════════");
         }
     }
 
@@ -51,6 +52,9 @@ public final class JsonLog {
      * @param json  json
      */
     public static void print(final String tag, final String json) {
+        if (!Logger.isDebugLevel()) {
+            return;
+        }
         if (mExecutorService == null) {
             mExecutorService = Executors.newSingleThreadExecutor();
         }
@@ -60,7 +64,7 @@ public final class JsonLog {
             final String[] lines = message.split(LINE_SEPARATOR);
             for (String line : lines) {
                 // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
-                Logger.d(tag, "║ " + line);
+                Log.d(tag, "║ " + line);
             }
             printLine(tag, false);
         });
@@ -85,6 +89,9 @@ public final class JsonLog {
      */
     @SuppressLint("SimpleDateFormat")
     public static void saveJsonToCache(final String json, final String fileName, final String tag) {
+        if (!Logger.isDebugLevel()) {
+            return;
+        }
         if (mExecutorService == null) {
             mExecutorService = Executors.newSingleThreadExecutor();
         }
@@ -103,7 +110,7 @@ public final class JsonLog {
                 fileWriter.write(message);
             } catch (IOException e) {
                 // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
-                Logger.e(TAG, "Error saving JSON data to cache file: " + file.getAbsolutePath(), e);
+                Log.e(TAG, "Error saving JSON data to cache file: " + file.getAbsolutePath(), e);
             }
         });
     }

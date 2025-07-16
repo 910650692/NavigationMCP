@@ -4,9 +4,11 @@ import com.android.utils.log.Logger;
 import com.sgm.navi.service.adapter.l2.L2Adapter;
 import com.sgm.navi.service.adapter.l2.L2DriveObserver;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
+import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteOdd;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.L2NaviBean;
+import com.sgm.navi.service.define.route.ScSegmentInfo;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.ArrayList;
@@ -84,5 +86,17 @@ public class L2Package {
 
     public int getLinkDist(long curSegIdx, long curLinkIdx) {
         return mL2Adapter.getLinkDist(curSegIdx, curLinkIdx);
+    }
+
+    public GeoPoint getLinkLastGeoPoint(int curSegIdx, int curLinkIdx) {
+        return mL2Adapter.getLinkLastGeoPoint(curSegIdx, curLinkIdx);
+    }
+
+    public ScSegmentInfo getScSegmentInfo(long curPathId, long maxLength) {
+        return mL2Adapter.getScSegmentList(curPathId, maxLength);
+    }
+
+    public GeoPoint getScGeoPoint(int curSegIdx, int curLinkIdx, int curPointIdx) {
+        return mL2Adapter.getScGeoPoint(curSegIdx, curLinkIdx, curPointIdx);
     }
 }

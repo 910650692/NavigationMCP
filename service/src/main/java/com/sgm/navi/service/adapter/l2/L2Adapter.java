@@ -5,13 +5,16 @@ import androidx.annotation.NonNull;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.model.Coord2DInt32;
+import com.autonavi.gbl.common.path.model.CameraExt;
+import com.autonavi.gbl.common.path.model.CameraSpeedLimit;
 import com.autonavi.gbl.common.path.model.Formway;
 import com.autonavi.gbl.common.path.model.LinkType;
+import com.autonavi.gbl.common.path.model.SubCameraExt;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.SegmentInfo;
 import com.autonavi.gbl.guide.model.NaviFacilityType;
-import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.adapter.cruise.CruiseAdapter;
 import com.sgm.navi.service.adapter.cruise.CruiseObserver;
 import com.sgm.navi.service.adapter.navi.GuidanceObserver;
@@ -22,6 +25,7 @@ import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.adapter.position.IPositionAdapterCallback;
 import com.sgm.navi.service.adapter.position.PositionAdapter;
 import com.sgm.navi.service.adapter.route.RouteAdapter;
+import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.cruise.CruiseFacilityEntity;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.MapType;
@@ -39,6 +43,7 @@ import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.route.RouteCurrentPathParam;
+import com.sgm.navi.service.define.route.ScSegmentInfo;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.ArrayList;
@@ -1025,5 +1030,88 @@ public class L2Adapter {
             }
         }
         return -1;
+    }
+
+    public GeoPoint getLinkLastGeoPoint(int curSegIdx, int curLinkIdx) {
+        LinkInfo linkInfo = getLinkInfo(curSegIdx, curLinkIdx);
+        if (linkInfo == null) {
+            return null;
+        }
+        ArrayList<Coord2DInt32> points = linkInfo.getPoints();
+        Coord2DInt32 coord2DInt32 = points.get(points.size() - 1);
+        return new GeoPoint(coord2DInt32.lon, coord2DInt32.lat);
+    }
+
+    public ScSegmentInfo getScSegmentList(long curPathId, long maxLength) {
+        ScSegmentInfo scSegmentInfo = new ScSegmentInfo();
+        PathInfo pathInfo = getPathInfo();
+        if (pathInfo == null) {
+            return null;
+        }
+        if (curPathId == pathInfo.getPathID()) {
+            return null;
+        }
+        scSegmentInfo.setPathId(pathInfo.getPathID());
+        int allLength = 0;
+        long segmentCount = pathInfo.getSegmentCount();
+        int index = 0;
+        END:
+        for (long i = 0; i < segmentCount; i++) {
+            SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
+            long linkCount = segmentInfo.getLinkCount();
+            for (long j = 0; j < linkCount; j++) {
+                LinkInfo linkInfo = segmentInfo.getLinkInfo(j);
+                if (allLength > maxLength) {
+                    break END;
+                }
+                allLength += linkInfo.getLength();
+
+                ScSegmentInfo.ScSegment scSegment = new ScSegmentInfo.ScSegment();
+                scSegment.setIndex(index++);
+                scSegment.setLength(linkInfo.getLength());
+
+                ArrayList<CameraExt> cameraExt = linkInfo.getCameraExt();
+                if (cameraExt != null) {
+                    for (CameraExt ext : cameraExt) {
+                        ScSegmentInfo.ScSpeedLimit scSpeedLimit = new ScSegmentInfo.ScSpeedLimit();
+                        scSpeedLimit.setOffset(linkInfo.getLength() - ext.distToEnd);
+                        ArrayList<SubCameraExt> subCameras = ext.subCameras;
+                        JUMP:
+                        for (SubCameraExt subCamera : subCameras) {
+                            ArrayList<CameraSpeedLimit> speedLimits = subCamera.speedLimits;
+                            for (CameraSpeedLimit speedLimit : speedLimits) {
+                                if (speedLimit.speed != 0 && speedLimit.speed != 0xFF) {
+                                    scSpeedLimit.setSpeed(speedLimit.speed);
+                                    break JUMP;
+                                }
+                            }
+                        }
+                        if (scSpeedLimit.getSpeed() != 0 && scSpeedLimit.getSpeed() != 0xFF) {
+                            scSegment.addScSpeedLimits(scSpeedLimit);
+                        }
+                    }
+                }
+
+                scSegmentInfo.addScSegment(scSegment);
+            }
+        }
+        return scSegmentInfo;
+    }
+
+    public GeoPoint getScGeoPoint(int curSegIdx, int curLinkIdx, int curPointIdx) {
+        PathInfo pathInfo = getPathInfo();
+        if (pathInfo == null) {
+            return null;
+        }
+        try {
+            SegmentInfo segmentInfo = pathInfo.getSegmentInfo(curSegIdx);
+            LinkInfo linkInfo = segmentInfo.getLinkInfo(curLinkIdx);
+            Coord2DInt32 coord2DInt32 = linkInfo.getPoints().get(curPointIdx);
+            return new GeoPoint(coord2DInt32.lon, coord2DInt32.lat);
+        } catch (Exception e) {
+            Logger.e(TAG, "getScSegmentList error");
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -3,27 +3,42 @@ package com.sgm.navi.adas;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.sgm.navi.fsa.BuildConfig;
+import com.gm.cn.adassdk.AdasDataStateListener;
+import com.gm.cn.adassdk.AdasManager;
+import com.gm.cn.adassdk.proto.NaviLinkProto;
+import com.gm.cn.adassdk.proto.RouteInfo;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
+import com.sgm.navi.service.adapter.navi.NaviConstant;
+import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
+import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CameraInfoEntity;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.position.LocInfoBean;
+import com.sgm.navi.service.define.route.RequestRouteResult;
+import com.sgm.navi.service.define.route.RouteParam;
+import com.sgm.navi.service.define.route.ScSegmentInfo;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.cruise.CruisePackage;
 import com.sgm.navi.service.logicpaket.cruise.ICruiseObserver;
+import com.sgm.navi.service.logicpaket.l2.L2Package;
 import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
-import com.gm.cn.adassdk.AdasManager;
-import com.gm.cn.adassdk.proto.NaviLinkProto;
+import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -36,14 +51,27 @@ public final class SuperCruiseManager {
     private NaviLinkProto.SpeedLimit.Builder mSpeedLimitBuilder;
     private AdasManager mAdasManager;
     private ScheduledExecutorService mScheduler;
-    private ScheduledFuture<?> mScheduledFuture;
+    private ScheduledFuture<?> mLinkScheduledFuture;
+    private ScheduledFuture<?> mRouteScheduledFuture;
     private boolean mInitialized = false;
     private int mRoadSpeedLimit = 0;
     private int mEleEyeSpeedLimit = 0;
     private int mZoneSpeedLimit = 0;
     private int mCruiseSpeedLimit = 0;
     private String mNaviStatus = "";
+    private ScSegmentInfo mScSegmentInfo;
 
+    private RouteInfo.RouteProto.Builder mRouteProtoBuilder;
+    private RouteInfo.Route.Builder mRouteBuilder;
+    private List<RouteInfo.Navlaneguidance> mNavlaneguidances = new ArrayList<>();
+    private List<RouteInfo.Maneuver> mManeuvers = new ArrayList<>();
+    private List<RouteInfo.Destination> mDestinations = new ArrayList<>();
+    private List<RouteInfo.Segment> mSegments = new ArrayList<>();
+    private long mRouteLength = 10000;
+    private long mRate = 5;
+    private boolean mReRouting;
+
+    //region 单例
     public static SuperCruiseManager getInstance() {
         return SingleHolder.INSTANCE;
     }
@@ -54,6 +82,95 @@ public final class SuperCruiseManager {
 
     private SuperCruiseManager() {
     }
+    //endregion
+
+    //region 初始化
+    public void init(final AdasManager adasManager) {
+        if (CalibrationPackage.getInstance().adasConfigurationType() != 7) {
+            Logger.i(TAG, "not GB Arch ACP3.1 configuration");
+            return;
+        }
+        if (mInitialized) {
+            Logger.w(TAG, "initialized");
+            return;
+        }
+        Logger.i(TAG, "init start");
+        mRoadInfoBuilder = NaviLinkProto.RoadInfo.newBuilder();
+        mSpeedLimitBuilder = NaviLinkProto.SpeedLimit.newBuilder();
+        mRouteProtoBuilder = RouteInfo.RouteProto.newBuilder();
+        mRouteBuilder = RouteInfo.Route.newBuilder();
+
+        mAdasManager = adasManager;
+        initData();
+        initObserver();
+        initScheduler();
+        mInitialized = true;
+        Logger.i(TAG, "init end");
+    }
+
+    public void uninit() {
+        if (!mInitialized) {
+            Logger.w(TAG, "not initialized");
+            return;
+        }
+        Logger.i(TAG, "uninit");
+        NaviPackage.getInstance().unregisterObserver(TAG);
+        CruisePackage.getInstance().unregisterObserver(TAG);
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
+        mLinkScheduledFuture.cancel(true);
+        mRouteScheduledFuture.cancel(true);
+        mInitialized = false;
+    }
+
+    private void initData() {
+        // 导航状态
+        mNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        // 车道数量
+        mRoadInfoBuilder.setLaneCount(0);
+        // 推荐限速
+        mSpeedLimitBuilder.setRecommendedSpeedLimit(0);
+        // 限速值单位
+        mSpeedLimitBuilder.setSpeedLimitUnit(NaviLinkProto.SpeedLimit.SpeedLimitUnitEnum.KM_PER_HOUR);
+        // 国家代号
+        mRoadInfoBuilder.setCountryCode(NaviLinkProto.RoadInfo.CountryCodeEnum.CN);
+        // 条件限速
+        mSpeedLimitBuilder.setConditionalSpeedLimit(0);
+        // 条件限速
+        mSpeedLimitBuilder.setConditionalSpeedCategory(NaviLinkProto.SpeedLimit.ConditionalSpeedCategoryEnum.CATEGORY_UNKNOWN);
+        // 条件限速类型
+        mSpeedLimitBuilder.setConditionalSpeedType(NaviLinkProto.SpeedLimit.ConditionalSpeedTypeEnum.OTHER_UNKNOWN);
+        // China and China Taiwan, navi should send 1
+        // Hongkong and Aomen, navi should send 0
+        mRoadInfoBuilder.setDrivingSideCategory(NaviLinkProto.RoadInfo.DrivingSideCategoryEnum.NAVILINK_DRIVING_SIDE_LEFT);
+        // 地图数据的日期
+        final Boolean networkCapabilities = NetWorkUtils.Companion.getInstance().checkNetwork();
+        Logger.i(TAG, "initData: networkCapabilities = ", networkCapabilities);
+        if (Boolean.TRUE.equals(networkCapabilities)) {
+            setOnlineMapVersion();
+        } else {
+            setOfflineMapVersion();
+        }
+
+        mRouteBuilder.setId("");
+        mRouteBuilder.setLat(0);
+        mRouteBuilder.setLon(0);
+    }
+
+    private void initObserver() {
+        NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
+        NaviPackage.getInstance().registerObserver(TAG, mIGuidanceObserver);
+        CruisePackage.getInstance().registerObserver(TAG, mICruiseObserver);
+        RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
+        NetWorkUtils.Companion.getInstance().registerNetworkObserver(mNetworkObserver);
+        mAdasManager.addAdasDataListener(mAdasDataStateListener);
+    }
+
+    private void initScheduler() {
+        mScheduler = Executors.newScheduledThreadPool(2);
+        mLinkScheduledFuture = mScheduler.scheduleWithFixedDelay(mLinkTask, 0, 1, TimeUnit.SECONDS);
+//        mRouteScheduledFuture = mScheduler.scheduleWithFixedDelay(mRouteTask, 0, mRate, TimeUnit.SECONDS);
+    }
+    //endregion
 
     private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
         @Override
@@ -65,9 +182,33 @@ public final class SuperCruiseManager {
     private final IGuidanceObserver mIGuidanceObserver = new IGuidanceObserver() {
         @Override
         public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {
-//            if (isShowLane && laneInfoEntity != null && laneInfoEntity.getBackLane() != null) {
-//
-//            }
+            if (!isShowLane || laneInfoEntity == null) {
+                return;
+            }
+            mNavlaneguidances.clear();
+            RouteInfo.Navlaneguidance.Builder builder = RouteInfo.Navlaneguidance.newBuilder();
+            int linkDist = L2Package.getInstance().getLinkDist(laneInfoEntity.getSegmentIdx(), laneInfoEntity.getLinkIdx());
+            builder.setDist(linkDist); // 车道线距离
+            GeoPoint linkLastGeoPoint = L2Package.getInstance().getLinkLastGeoPoint(laneInfoEntity.getSegmentIdx(), laneInfoEntity.getLinkIdx());
+            if (linkLastGeoPoint != null) {
+                builder.setLat(linkLastGeoPoint.getLat());
+                builder.setLon(linkLastGeoPoint.getLon());
+            }
+
+            List<Integer> lanes = new ArrayList<>();
+            List<RouteInfo.ManeuverType> types = new ArrayList<>();
+            ArrayList<Integer> frontLane = laneInfoEntity.getFrontLane();
+            builder.setLanecount(frontLane.size()); // 车道线数量
+            for (int i = 0; i < frontLane.size(); i++) {
+                Integer integer = frontLane.get(i);
+                if (integer != NaviConstant.LaneAction.LANE_ACTION_NULL) {
+                    lanes.add(i);
+                }
+                types.add(amapLaneToManeuverType(integer));
+            }
+            builder.addAllLanes(lanes);
+            builder.addAllMType(types);
+            mNavlaneguidances.add(builder.build());
         }
 
         //导航信息
@@ -79,7 +220,7 @@ public final class SuperCruiseManager {
                 mRoadInfoBuilder.setControlledAccess(false);
                 return;
             }
-            Logger.i(TAG, "onNaviInfo: " , naviETAInfo.curRoadClass);
+            Logger.i(TAG, "onNaviInfo: ", naviETAInfo.curRoadClass);
             switch (naviETAInfo.curRoadClass) {
                 case 0: // 高速公路
                     mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_HIGHWAY);
@@ -116,9 +257,55 @@ public final class SuperCruiseManager {
                 default:
                     mRoadInfoBuilder.setControlledAccess(false);
             }
+
+            updateSegmentData();
+
+            GeoPoint scGeoPoint = L2Package.getInstance().getScGeoPoint(naviETAInfo.curSegIdx, naviETAInfo.curLinkIdx, naviETAInfo.curPointIdx);
+            if (scGeoPoint != null) {
+                mRouteBuilder.setLat(scGeoPoint.getLat());
+                mRouteBuilder.setLon(scGeoPoint.getLon());
+            }
+            mRouteBuilder.setId(String.valueOf(naviETAInfo.getPathID()));
+            mManeuvers.clear();
+            RouteInfo.Maneuver.Builder maneuverBuilder = RouteInfo.Maneuver.newBuilder();
+            if (naviETAInfo.NaviInfoData != null) {
+                int dist = naviETAInfo.NaviInfoData.get(naviETAInfo.NaviInfoFlag).segmentRemain.dist;
+                maneuverBuilder.setDist(dist);
+            }
+            int curManeuverID = naviETAInfo.getCurManeuverID();
+            maneuverBuilder.setMType(ScTbtIcon.get(curManeuverID));
+            GeoPoint linkLastGeoPoint = L2Package.getInstance().getLinkLastGeoPoint(naviETAInfo.curSegIdx, naviETAInfo.curLinkIdx);
+            if (linkLastGeoPoint != null) {
+                maneuverBuilder.setLat(linkLastGeoPoint.getLat());
+                maneuverBuilder.setLon(linkLastGeoPoint.getLon());
+            }
+            mManeuvers.add(maneuverBuilder.build());
+
+            mDestinations.clear();
+            List<RouteParam> allPoiParamList = RoutePackage.getInstance().getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+            ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = naviETAInfo.getViaRemain();
+            if (allPoiParamList != null && !allPoiParamList.isEmpty()) {
+                for (int i = 1; i < allPoiParamList.size(); i++) {
+                    RouteInfo.Destination.Builder destinationBuilder = RouteInfo.Destination.newBuilder();
+                    RouteParam routeParam = allPoiParamList.get(i);
+                    if (i == allPoiParamList.size() - 1) {
+                        destinationBuilder.setDist(naviETAInfo.getRemainDist());
+                    } else {
+                        NaviEtaInfo.NaviTimeAndDist viaDist = viaRemain.get(i - 1);
+                        destinationBuilder.setDist(viaDist.getDist());
+                    }
+                    GeoPoint naviPos = routeParam.getRealPos();
+                    if (naviPos == null) {
+                        continue;
+                    }
+                    destinationBuilder.setLat(naviPos.getLat());
+                    destinationBuilder.setLon(naviPos.getLon());
+                    destinationBuilder.setDir(RouteInfo.Destination.Direction.AT_DESTINATION);
+                    mDestinations.add(destinationBuilder.build());
+                }
+            }
         }
 
-        //高速限速实
         @Override
         public void onNaviSpeedOverallInfo(final SpeedOverallEntity speedEntity) {
             if (speedEntity == null) {
@@ -127,7 +314,7 @@ public final class SuperCruiseManager {
                 return;
             }
             mZoneSpeedLimit = speedEntity.getSpeedLimit();
-            Logger.i(TAG, "onNaviSpeedOverallInfo: " , mZoneSpeedLimit);
+            Logger.i(TAG, "onNaviSpeedOverallInfo: ", mZoneSpeedLimit);
         }
 
         @Override
@@ -138,13 +325,24 @@ public final class SuperCruiseManager {
                 return;
             }
             mEleEyeSpeedLimit = cameraInfo.getSpeed();
-            Logger.i(TAG, "onNaviCameraInfo: " , mEleEyeSpeedLimit);
+            Logger.i(TAG, "onNaviCameraInfo: ", mEleEyeSpeedLimit);
         }
 
         @Override
         public void onCurrentRoadSpeed(final int speed) {
             mRoadSpeedLimit = speed;
-            Logger.i(TAG, "onCurrentRoadSpeed: " , mRoadSpeedLimit);
+            Logger.i(TAG, "onCurrentRoadSpeed: ", mRoadSpeedLimit);
+        }
+
+        @Override
+        public void onNaviStop() {
+            mDestinations.clear();
+            mSegments.clear();
+            mManeuvers.clear();
+            mNavlaneguidances.clear();
+            mRouteBuilder.setId("");
+            mRouteBuilder.setLat(0);
+            mRouteBuilder.setLon(0);
         }
     };
 
@@ -161,7 +359,7 @@ public final class SuperCruiseManager {
                 mCruiseSpeedLimit = 0;
                 return;
             }
-            Logger.i(TAG, "onShowCruiseCameraExt: " , cruiseInfoEntity.getSpeed());
+            Logger.i(TAG, "onShowCruiseCameraExt: ", cruiseInfoEntity.getSpeed());
             // 取第一个有效值
             for (int i = 0; i < cruiseInfoEntity.getSpeed().size(); i++) {
                 final Short speed = cruiseInfoEntity.getSpeed().get(i);
@@ -170,6 +368,20 @@ public final class SuperCruiseManager {
                     break;
                 }
             }
+        }
+    };
+
+    private final IRouteResultObserver mIRouteResultObserver = new IRouteResultObserver() {
+        @Override
+        public void onRouteResult(RequestRouteResult requestRouteResult) {
+            Logger.d(TAG, "SuperCruise路线变更");
+            mReRouting = false;
+        }
+
+        @Override
+        public void onReroute() {
+            Logger.d(TAG, "SuperCruise重新规划中");
+            mReRouting = true;
         }
     };
 
@@ -207,112 +419,56 @@ public final class SuperCruiseManager {
         }
     };
 
-    private final Runnable mTask = new Runnable() {
+    private final AdasDataStateListener mAdasDataStateListener = new AdasDataStateListener() {
+        @Override
+        public void onAvailable(long routeLength) {
+            Logger.i(TAG, "onAvailable: ", routeLength);
+            mRouteLength = routeLength;
+        }
+
+        @Override
+        public void onAdasStart(long rate) {
+            Logger.i(TAG, "onAdasStart: ", rate);
+            mRate = rate;
+            if (mRouteScheduledFuture != null) {
+                mRouteScheduledFuture.cancel(true);
+            }
+            mRouteScheduledFuture = mScheduler.scheduleWithFixedDelay(mRouteTask, 0, mRate, TimeUnit.SECONDS);
+        }
+
+        @Override
+        public void onChangeRate(long rate) {
+            Logger.i(TAG, "onChangeRate: ", rate);
+            mRate = rate;
+            if (mRouteScheduledFuture != null) {
+                mRouteScheduledFuture.cancel(true);
+            }
+            mRouteScheduledFuture = mScheduler.scheduleWithFixedDelay(mRouteTask, 0, mRate, TimeUnit.SECONDS);
+        }
+
+        @Override
+        public void onAdasStop() {
+            Logger.i(TAG, "onAdasStop: ");
+            if (mRouteScheduledFuture != null) {
+                mRouteScheduledFuture.cancel(true);
+            }
+        }
+    };
+
+
+    //region linkData
+    private final Runnable mLinkTask = new Runnable() {
         @Override
         public void run() {
             try {
-                sendData();
+                sendLinkData();
             } catch (Exception e) {
                 Logger.e(TAG, "sendData: ", e);
             }
         }
     };
 
-    /**
-     * 初始化
-     *
-     * @param adasManager AdasManager
-     */
-    public void init(final AdasManager adasManager) {
-        if (CalibrationPackage.getInstance().adasConfigurationType() != 7) {
-            Logger.i(TAG, "not GB Arch ACP3.1 configuration");
-            return;
-        }
-        if (mInitialized) {
-            Logger.w(TAG, "initialized");
-            return;
-        }
-        Logger.i(TAG, "init");
-        mRoadInfoBuilder = NaviLinkProto.RoadInfo.newBuilder();
-        mSpeedLimitBuilder = NaviLinkProto.SpeedLimit.newBuilder();
-        mAdasManager = adasManager;
-        initData();
-        initObserver();
-        initScheduler();
-        mInitialized = true;
-    }
-
-    /**
-     * 销毁
-     */
-    public void uninit() {
-        if (!mInitialized) {
-            Logger.w(TAG, "not initialized");
-            return;
-        }
-        Logger.i(TAG, "uninit");
-        NaviPackage.getInstance().unregisterObserver(TAG);
-        CruisePackage.getInstance().unregisterObserver(TAG);
-        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
-        mScheduledFuture.cancel(true);
-        mInitialized = false;
-    }
-
-    /**
-     * 初始化数据
-     */
-    private void initData() {
-        // 导航状态
-        mNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-        // 车道数量
-        mRoadInfoBuilder.setLaneCount(0);
-        // 推荐限速
-        mSpeedLimitBuilder.setRecommendedSpeedLimit(0);
-        // 限速值单位
-        mSpeedLimitBuilder.setSpeedLimitUnit(NaviLinkProto.SpeedLimit.SpeedLimitUnitEnum.KM_PER_HOUR);
-        // 国家代号
-        mRoadInfoBuilder.setCountryCode(NaviLinkProto.RoadInfo.CountryCodeEnum.CN);
-        // 条件限速
-        mSpeedLimitBuilder.setConditionalSpeedLimit(0);
-        // 条件限速
-        mSpeedLimitBuilder.setConditionalSpeedCategory(NaviLinkProto.SpeedLimit.ConditionalSpeedCategoryEnum.CATEGORY_UNKNOWN);
-        // 条件限速类型
-        mSpeedLimitBuilder.setConditionalSpeedType(NaviLinkProto.SpeedLimit.ConditionalSpeedTypeEnum.OTHER_UNKNOWN);
-        // China and China Taiwan, navi should send 1
-        // Hongkong and Aomen, navi should send 0
-        mRoadInfoBuilder.setDrivingSideCategory(NaviLinkProto.RoadInfo.DrivingSideCategoryEnum.NAVILINK_DRIVING_SIDE_LEFT);
-        // 地图数据的日期
-        final Boolean networkCapabilities = NetWorkUtils.Companion.getInstance().checkNetwork();
-        Logger.i(TAG, "initData: networkCapabilities = " , networkCapabilities);
-        if (Boolean.TRUE.equals(networkCapabilities)) {
-            setOnlineMapVersion();
-        } else {
-            setOfflineMapVersion();
-        }
-    }
-
-    /**
-     * 初始化观察者
-     */
-    private void initObserver() {
-        NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
-        NaviPackage.getInstance().registerObserver(TAG, mIGuidanceObserver);
-        CruisePackage.getInstance().registerObserver(TAG, mICruiseObserver);
-        NetWorkUtils.Companion.getInstance().registerNetworkObserver(mNetworkObserver);
-    }
-
-    /**
-     * 初始化调度器
-     */
-    private void initScheduler() {
-        mScheduler = Executors.newScheduledThreadPool(1);
-        mScheduledFuture = mScheduler.scheduleWithFixedDelay(mTask, 0, 1, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 发送数据
-     */
-    private void sendData() {
+    private void sendLinkData() {
         boolean mSpeedLimitDataAvailabl;
         switch (mNaviStatus) {
             case NaviStatus.NaviStatusType.NAVING://导航
@@ -365,6 +521,9 @@ public final class SuperCruiseManager {
         final NaviLinkProto.NaviLink naviLink = builder.build();
         mAdasManager.sendNavilink(naviLink);
         // 下面的部分用于log打印
+        if (!Logger.isDebugLevel()) {
+            return;
+        }
         final SuperCruiseJson superCruiseJson = new SuperCruiseJson();
         superCruiseJson.setDataAvailable(String.valueOf(builder.getDataAvailable()));
         superCruiseJson.setLaneCount(String.valueOf(mRoadInfoBuilder.getLaneCount()));
@@ -386,8 +545,8 @@ public final class SuperCruiseManager {
         superCruiseJson.setEffectiveSpeedType(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedType()));
         superCruiseJson.setSpeedCategory(String.valueOf(mSpeedLimitBuilder.getSpeedCategory()));
         final String json = GsonUtils.toJson(superCruiseJson);
-        if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(json, "sc.json");
-        Logger.d(TAG, "sendData: " , json);
+        JsonLog.saveJsonToCache(json, "sc.json", "sendLinkData");
+        Logger.d(TAG, "sendData: ", json);
 //        JsonLog.print(TAG, json);
     }
 
@@ -503,7 +662,7 @@ public final class SuperCruiseManager {
 
     private void setOnlineMapVersion() {
         final LocalDate currentDate = LocalDate.now();
-        Logger.i(TAG, "setOnlineMapVersion: " , currentDate);
+        Logger.i(TAG, "setOnlineMapVersion: ", currentDate);
         setMapVersion(currentDate.getYear(), currentDate.getMonthValue());
     }
 
@@ -512,7 +671,7 @@ public final class SuperCruiseManager {
             final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
             final int adCode = MapDataPackage.getInstance().getAdCodeByLonLat(locInfoBean.getLongitude(), locInfoBean.getLatitude());
             final String mapDataID = MapDataPackage.getInstance().getDataFileVersion(adCode);
-            Logger.i(TAG, "setOfflineMapVersion: " , mapDataID);
+            Logger.i(TAG, "setOfflineMapVersion: ", mapDataID);
             // 例：3_24_12_02_01_111111
             String[] strings = mapDataID.split("_");
             setMapVersion(Integer.parseInt("20" + strings[1]), Integer.parseInt(strings[2]));
@@ -522,9 +681,121 @@ public final class SuperCruiseManager {
     }
 
     private void setMapVersion(int year, int month) {
-        Logger.i(TAG, "setMapVersion: " , year , ", " , month);
+        Logger.i(TAG, "setMapVersion: ", year, ", ", month);
         mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(year));
         final int quarter = (month - 1) / 3;
         mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(quarter));
+    }
+    //endregion
+
+    private final Runnable mRouteTask = () -> {
+        try {
+            sendRouteData();
+        } catch (Exception e) {
+            Logger.e(TAG, "sendData: ", e.getMessage());
+            e.printStackTrace();
+        }
+    };
+
+    private void sendRouteData() {
+        boolean active = Objects.equals(mNaviStatus, NaviStatus.NaviStatusType.NAVING);
+        RouteInfo.RouteProto route = generateRouteProto(active);
+        try {
+            String routeInfo = JsonFormat.printer().printingEnumsAsInts().omittingInsignificantWhitespace().print(route);
+            if (!Logger.isDebugLevel()) {
+                return;
+            }
+//            JsonLog.print("sendRouteData", routeInfo);
+            Logger.d(TAG, "sendRouteData: ", routeInfo);
+            JsonLog.saveJsonToCache(routeInfo, "sc.json", "sendRouteData");
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+        mAdasManager.sendRouteInfo(route);
+    }
+
+    public RouteInfo.RouteProto generateRouteProto(boolean active) {
+        //identifying supplier of Client route data.
+        mRouteBuilder.setSource(RouteInfo.Route.DataSource.AMAP);
+        mRouteBuilder.setActive(active);
+        mRouteBuilder.setRerouting(mReRouting);
+        //the current position of the car
+        mRouteBuilder.clearDestinations();
+        mRouteBuilder.addAllDestinations(mDestinations);
+        //add segments
+        mRouteBuilder.clearSegments();
+        mRouteBuilder.addAllSegments(mSegments);
+
+        mRouteBuilder.clearManeuver();
+        mRouteBuilder.clearNavlaneguidance();
+        if (active) {
+            mRouteBuilder.addAllManeuver(mManeuvers);
+            mRouteBuilder.addAllNavlaneguidance(mNavlaneguidances);
+        }
+
+        mRouteBuilder.setGpstime(System.currentTimeMillis());
+        mRouteProtoBuilder.setRoute(mRouteBuilder.build());
+        return mRouteProtoBuilder.build();
+    }
+
+    public RouteInfo.ManeuverType amapLaneToManeuverType(int value) {
+        switch (value) {
+            case 0:
+                return RouteInfo.ManeuverType.STRAIGHT;
+            case 1:
+                return RouteInfo.ManeuverType.TURN_NORMAL_LEFT;
+            case 3:
+                return RouteInfo.ManeuverType.TURN_NORMAL_RIGHT;
+            case 5:
+                return RouteInfo.ManeuverType.U_TURN_LEFT;
+            case 8:
+                return RouteInfo.ManeuverType.U_TURN_RIGHT;
+            default:
+                return RouteInfo.ManeuverType.UNKNOWN;
+        }
+    }
+
+    private void updateSegmentData() {
+        long pathId = 0;
+        if (mScSegmentInfo != null) {
+            pathId = mScSegmentInfo.getPathId();
+        }
+        ScSegmentInfo scSegmentInfo = L2Package.getInstance().getScSegmentInfo(pathId, mRouteLength);
+        if (scSegmentInfo == null) {
+            Logger.d(TAG, "SuperCruise路线变更: scSegmentInfo null");
+            return;
+        }
+        mScSegmentInfo = scSegmentInfo;
+
+        mSegments.clear();
+        for (ScSegmentInfo.ScSegment scSegment : scSegmentInfo.getScSegments()) {
+            if (scSegment == null) {
+                continue;
+            }
+            RouteInfo.Segment.Builder builder = RouteInfo.Segment.newBuilder();
+            builder.setId(String.valueOf(scSegment.getIndex()));
+            switch (scSegment.getRoadClass()) {
+                case 0, 6:
+                    builder.setRoadclass(RouteInfo.RoadClassType.CONTROLLED_ACCESS_DIVIDED_ROAD);
+                    break;
+                case 10:
+                    builder.setRoadclass(RouteInfo.RoadClassType.ROADCLASS_UNKNOWN);
+                    break;
+                default:
+                    builder.setRoadclass(RouteInfo.RoadClassType.LOCAL_ROAD);
+            }
+            List<RouteInfo.Spdlmt> pointsList = new ArrayList<>();
+            scSegment.getScSpeedLimits().forEach(scPoint -> {
+                RouteInfo.Spdlmt.Builder spdlmtBuilder = RouteInfo.Spdlmt.newBuilder();
+                spdlmtBuilder.setDist(scPoint.getOffset());
+                spdlmtBuilder.setSpeed(scPoint.getSpeed());
+                pointsList.add(spdlmtBuilder.build());
+            });
+            builder.addAllSpdlmt(pointsList);
+
+            builder.setLength(scSegment.getLength());
+            mSegments.add(builder.build());
+        }
+        sendRouteData();
     }
 }
