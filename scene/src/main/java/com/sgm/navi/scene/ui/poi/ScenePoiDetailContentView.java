@@ -2191,14 +2191,21 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     }
 
     public void showDeleteAllTip() {
-        new ChargeStationDeletTipDialog(getContext(), new IBaseDialogClickListener() {
-            @Override
-            public void onCommitClick() {
-                IBaseDialogClickListener.super.onCommitClick();
-                Logger.i(MapDefaultFinalTag.SEARCH_HMI_TAG, "确定删除！");
+        if(!ConvertUtils.isEmpty(mScreenViewModel.getAllViaPoints())){
+            if(mScreenViewModel.getAllViaPoints().size() > 1){
+                new ChargeStationDeletTipDialog(getContext(), new IBaseDialogClickListener() {
+                    @Override
+                    public void onCommitClick() {
+                        IBaseDialogClickListener.super.onCommitClick();
+                        Logger.i(MapDefaultFinalTag.SEARCH_HMI_TAG, "确定删除！");
+                        mScreenViewModel.deleteAutoAddChargeStation();
+                    }
+                }).show();
+            }else{
                 mScreenViewModel.deleteAutoAddChargeStation();
             }
-        }).show();
+        }
+
     }
 
     /**

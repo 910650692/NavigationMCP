@@ -22,6 +22,7 @@ import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
+import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.route.RoutePriorityType;
 import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.route.RouteWayID;
@@ -35,6 +36,7 @@ import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
@@ -62,6 +64,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     private final RoutePackage mRoutePackage;
     private final LayerPackage mLayerPackage;
     private final MapPackage mMapPackage;
+    private final NaviPackage mNaviPackage;
     private int mTaskId;
     private boolean mClearAutoAddVia = false;
     // 动力类型标定
@@ -83,6 +86,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         mRoutePackage = RoutePackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
         mMapPackage = MapPackage.getInstance();
+        mNaviPackage = NaviPackage.getInstance();
         mPowerType.setValue(-1);
         mClearAutoAddVia = false;
     }
@@ -426,5 +430,9 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     public void deleteAutoAddChargeStation(){
         mClearAutoAddVia = true;
         closeFragment();
+    }
+
+    public List<NaviViaEntity> getAllViaPoints(){
+        return mNaviPackage.getAllViaPoints();
     }
 }
