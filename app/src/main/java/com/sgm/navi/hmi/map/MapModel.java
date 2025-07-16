@@ -444,6 +444,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         setPackageAfterSdkInit();
         FloatViewManager.getInstance().showAllCardWidgets();
         ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
+        BroadcastManager.getInstance().init();
+        BroadcastManager.getInstance().sendSpiCollectingBroadcast();
     }
 
     @Override

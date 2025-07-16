@@ -14,9 +14,9 @@
     <string name="net_error_hint">网络连接异常，请稍后再试</string>
 
     <string name="service_terms_url_light">https://cache.amap.com/h5/h5/publish/241/index.html</string>
-    <string name="service_terms_url_dark">https://cache.amap.com/h5/h5/publish/241/index.html?type=auto</string>
+    <string name="service_terms_url_dark">https://cache.amap.com/h5/h5/publish/241/index.html</string>
     <string name="privacy_policy_url_light">https://cache.amap.com/h5/h5/publish/238/index.html</string>
-    <string name="privacy_policy_url_dark">https://cache.amap.com/h5/h5/publish/238/index.html#type=auto</string>
+    <string name="privacy_policy_url_dark">https://cache.amap.com/h5/h5/publish/238/index.html</string>
 
     <string name="reminder_page_service_title">高德服务条款</string>
     <string name="reminder_page_privacy_title">高德隐私权政策</string>

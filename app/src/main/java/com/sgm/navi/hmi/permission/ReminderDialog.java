@@ -187,18 +187,22 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
                     .append("background: transparent !important; ")
                     .append("background-color: transparent !important; ")
                     .append("} ")
+                    .append("* { ")
+                    .append("color: rgba(24, 24, 24, 0.7) !important; ")
+                    .append("font-family: monospace !important; ")
+                    .append("font-size: 28px !important; ")
+                    .append("background: transparent !important; ")
+                    .append("background-color: transparent !important; ")
+                    .append("} ")
                     .append("body, div, p, span, h1, h2, h3, h4, h5, h6, li, td, th, article, section { ")
                     .append("background-color: transparent !important; ")
                     .append("background: transparent !important; ")
-                    .append("color: #333333 !important; ")
                     .append("font-family: monospace !important; ")
-                    .append("font-weight: 400 !important; ")
                     .append("font-size: 28px !important; ")
                     .append("line-height: 1.5 !important; ")
                     .append("} ")
                     .append("a, a:link, a:visited, a:hover, a:active { ")
                     .append("color: #245fea !important; ")
-                    .append("font-weight: 400 !important; ")
                     .append("background: transparent !important; ")
                     .append("} ")
                     .append("';");
@@ -208,18 +212,22 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
                     .append("background: transparent !important; ")
                     .append("background-color: transparent !important; ")
                     .append("} ")
+                    .append("* { ")
+                    .append("color: rgba(255, 255, 255, 0.5) !important; ")
+                    .append("font-family: monospace !important; ")
+                    .append("font-size: 28px !important; ")
+                    .append("background: transparent !important; ")
+                    .append("background-color: transparent !important; ")
+                    .append("} ")
                     .append("body, div, p, span, h1, h2, h3, h4, h5, h6, li, td, th, article, section { ")
                     .append("background-color: transparent !important; ")
                     .append("background: transparent !important; ")
-                    .append("color: #f0f0f0 !important; ")
                     .append("font-family: monospace !important; ")
-                    .append("font-weight: 400 !important; ")
                     .append("font-size: 28px !important; ")
                     .append("line-height: 1.5 !important; ")
                     .append("} ")
                     .append("a, a:link, a:visited, a:hover, a:active { ")
-                    .append("color: #2461ea !important; ")
-                    .append("font-weight: 400 !important; ")
+                    .append("color: rgba(36, 97, 234, 0.8) !important; ")
                     .append("background: transparent !important; ")
                     .append("} ")
                     .append("';");
@@ -231,15 +239,14 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
                 .append("})()");
 
         view.evaluateJavascript(cssBuilder.toString(), null);
-
+        String textColor = isDark ? "rgba(255, 255, 255, 0.5)" : "rgba(24, 24, 24, 0.7)";
         // 额外的样式强制应用
         view.evaluateJavascript(
                 "javascript:" +
                         "document.documentElement.style.background='transparent';" +
                         "document.body.style.background='transparent';" +
                         "document.body.style.fontSize='28px';" +
-                        "document.body.style.fontWeight='400';" +
-                        "document.body.style.color='" + (!ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext()) ? "#333333" : "#f0f0f0") + "';",
+                        "document.body.style.color='" + textColor + "';",
                 null);
     }
 }
