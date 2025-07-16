@@ -62,6 +62,7 @@ import com.sgm.navi.service.define.route.FyRouteOption;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationParam;
+import com.sgm.navi.service.define.route.RouteLineInfo;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
 import com.sgm.navi.service.define.route.RoutePriorityType;
@@ -166,6 +167,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private String mArrivedViaPoiId;
     private String mSuccessMsg = "";
     private boolean mIsAutoReRoute = true;
+    private static final int ONE_ROUTE_LINE_DISTANCE = 150 * 1000; //超过150公里不显示备选路线
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -1516,7 +1518,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.hideProgressUI(true);
         }
-        mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
+        RouteLineInfo routeLineInfo = mRoutePackage.getSelectLineInfo(MapType.MAIN_SCREEN_MAIN_MAP);
+        Logger.i(TAG, "getMDistance = ", (routeLineInfo == null ? "null" : routeLineInfo.getMDistance())
+                , " NaviStatus:", mNaviSatusPackage.getCurrentNaviStatus());
+        if (!ConvertUtils.isEmpty(routeLineInfo) && routeLineInfo.getMDistance() > ONE_ROUTE_LINE_DISTANCE) {
+            mRoutePackage.showOnlyOneRouteLine(routeLineLayerParam.getMMapTypeId());
+        } else {
+            mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
+        }
         if (!mIsAutoReRoute) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             ImmersiveStatusScene.getInstance().setImmersiveStatus(
