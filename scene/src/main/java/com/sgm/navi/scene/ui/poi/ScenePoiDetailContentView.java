@@ -1130,6 +1130,33 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * 刷新洗车视图
      */
     private void refreshCarWashView() {
+        if(mPoiInfoEntity.getAverageCost() == -1){
+            mViewBinding.scenePoiDetailsWashCarView.poiWashCarPrice.setVisibility(View.GONE);
+        }else{
+            mViewBinding.scenePoiDetailsWashCarView.poiWashCarPrice.setVisibility(View.VISIBLE);
+            mViewBinding.scenePoiDetailsWashCarView.poiWashCarPrice.setText(getContext().getString(R.string.catering_price, mPoiInfoEntity.getAverageCost()));
+        }
+        if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
+            mViewBinding.scenePoiDetailsWashCarView.poiWashCarHours.setVisibility(View.GONE);
+        } else {
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");;
+            final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
+
+            initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsWashCarView.poiBusinessIcon,
+                    mViewBinding.scenePoiDetailsWashCarView.poiWashCarHours, businessTimes.length > 1, businessTimes);
+            mViewBinding.scenePoiDetailsWashCarView.poiWashCarHours.setText(text);
+        }
+        if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
+            mViewBinding.scenePoiDetailsWashCarView.poiWashCarPhone.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsBottomView.stlPhone.setVisibility(View.GONE);
+        }else{
+            final String[] phones = mPoiInfoEntity.getPhone().split(";");
+            final String text = getContext().getString(R.string.poi_phone, phones[0]);
+            initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsWashCarView.poiPhoneIcon,
+                    mViewBinding.scenePoiDetailsWashCarView.poiWashCarPhone,
+                    phones.length > 1, phones);
+            mViewBinding.scenePoiDetailsWashCarView.poiWashCarPhone.setText(text);
+        }
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsWashCarView.poiWashCarRoot.setVisibility(VISIBLE);
