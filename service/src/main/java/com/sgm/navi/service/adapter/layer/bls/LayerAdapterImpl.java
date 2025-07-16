@@ -408,6 +408,11 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     @Override
+    public void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index, boolean isSelected) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerSearch().setSelect(type, index, isSelected);
+    }
+
+    @Override
     public void clearFocus(MapType mapTypeId, LayerPointItemType type) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerSearch().clearFocus(type);
     }

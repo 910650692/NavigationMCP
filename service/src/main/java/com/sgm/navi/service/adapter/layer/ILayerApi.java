@@ -188,6 +188,9 @@ public interface ILayerApi {
     /*搜索结果POI获取焦点*/
     void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index);
 
+    /*设置搜索结果POI的选中状态*/
+    void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index, boolean isSelected);
+
     /*清除搜索结果POI获取焦点*/
     void clearFocus(MapType mapTypeId, LayerPointItemType type);
 

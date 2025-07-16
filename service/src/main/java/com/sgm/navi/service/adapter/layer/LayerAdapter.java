@@ -304,6 +304,10 @@ public class LayerAdapter {
         mLayerApi.selectSearchPoi(mapTypeId, type, index);
     }
 
+    public void setSearchSelect(MapType mapTypeId, LayerPointItemType type, int index, boolean isSelected) {
+        mLayerApi.selectSearchPoi(mapTypeId, type, index, isSelected);
+    }
+
     /* 清除选中的扎标焦点 */
     public void clearFocus(MapType mapTypeId, LayerPointItemType type) {
         mLayerApi.clearFocus(mapTypeId, type);

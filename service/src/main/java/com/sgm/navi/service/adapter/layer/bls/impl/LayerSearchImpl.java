@@ -127,6 +127,27 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         }
     }
 
+    public void setSelect(LayerPointItemType type, int index, boolean isSelected) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "setSelect type " + type + " index " + index + " isSelected " + isSelected);
+        }
+        if (getLayerSearchControl() != null) {
+            switch (type) {
+                case SEARCH_POI_ALONG_ROUTE_ADD -> {
+                    LayerItem item = getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiAlongRoute).getItem(String.valueOf(index));
+                    if (item != null) {
+                        int result = getLayerSearchControl().setFocus(
+                                BizSearchType.BizSearchTypePoiAlongRoute, String.valueOf(index), isSelected);
+                        Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_ADD:" + result);
+                    }
+                    getLayerSearchControl().updateStyle(BizSearchType.BizSearchTypePoiAlongRoute);
+                }
+                default -> {
+                }
+            }
+        }
+    }
+
     @Override
     protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
         int index = 0;
@@ -135,7 +156,8 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.d(TAG, "icon_add_click");
             index = Integer.parseInt(item.getID());
             type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD;
-            setSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, index);
+            // 统一从搜索列表走选中/未选中状态，避免调用两次
+//            setSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, index);
         } else {
             switch (item.getBusinessType()) {
                 // 搜索图层内容点击

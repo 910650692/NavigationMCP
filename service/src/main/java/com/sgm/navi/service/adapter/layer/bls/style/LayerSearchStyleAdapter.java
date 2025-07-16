@@ -393,6 +393,8 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     }
                     if (item.getFocus()) {
                         customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_focus.png"));
+                    } else {
+                        customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_add.png"));
                     }
 
                     if (isNightMode) {

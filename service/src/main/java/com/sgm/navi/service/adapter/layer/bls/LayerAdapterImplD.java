@@ -250,6 +250,11 @@ public class LayerAdapterImplD implements ILayerApi {
     }
 
     @Override
+    public void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index, boolean isSelected) {
+
+    }
+
+    @Override
     public void clearFocus(MapType mapTypeId, LayerPointItemType type) {
 
     }

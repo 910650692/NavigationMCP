@@ -1570,6 +1570,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         }
     }
 
+    public void setSelectIndex(final LayerPointItemType type, final int index, boolean isSelected) {
+        mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, type, index, isSelected);
+    }
+
     /**
      * 清除高亮
      */
