@@ -104,6 +104,7 @@ public interface AutoMapConstant {
         String BUNDLE_KEY_CHARGE_PRICE_LIST = "bundle_key_charge_price_list";
         String BUNDLE_KEY_CHARGE_EQUIPMENT_TYPE = "bundle_key_charge_equipment_type";
         String BUNDLE_KEY_MAIN_SEARCH_ICON = "bundle_key_main_search_icon";
+        String BUNDLE_KEY_ROUTE_FRAGMENT_TYPE = "bundle_key_route_fragment";
     }
 
     @interface NetSearchKey {
@@ -328,6 +329,7 @@ public interface AutoMapConstant {
         String FRAGMENT_COMPANY = "scene_fragment_company";
         String FRAGMENT_COMMON = "scene_fragment_common";
         String FRAGMENT_OFFLINE = "scene_fragment_offline";
+        String FRAGMENT_SEARCH_AROUND = "scene_fragment_search_around";
     }
 
     @interface VoiceKeyWord {

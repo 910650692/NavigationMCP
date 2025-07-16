@@ -655,11 +655,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         int type = -1;
         int searchKey = 0;
         String fragment ="";
+        String aroundFragment = "";
+        String routeFragment = "";
 
         if (bundle != null) {
             type = bundle.getInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, -1);
             searchKey = bundle.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAIN_SEARCH_ICON, -1);
             fragment = bundle.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
+            aroundFragment = bundle.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_AROUND);
+            routeFragment = bundle.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_ROUTE_FRAGMENT_TYPE);
         }
         Logger.i(TAG, "setMapCenterInScreen type:" , type);
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
@@ -678,6 +682,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || NaviStatus.NaviStatusType.ROUTING.equals(state)
                 || NaviStatus.NaviStatusType.NAVING.equals(state))
                 || AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT.equals(fragment)
+                || AutoMapConstant.SourceFragment.FRAGMENT_AROUND.equals(fragment)
+                || AutoMapConstant.SourceFragment.FRAGMENT_SEARCH_AROUND.equals(aroundFragment)
+                || AutoMapConstant.SourceFragment.FRAGMENT_ROUTE.equals(routeFragment)
                 && (!ScreenTypeUtils.getInstance().isOneThirdScreen()) && !FloatViewManager.getInstance().judgedWidgetIsVisible());
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);

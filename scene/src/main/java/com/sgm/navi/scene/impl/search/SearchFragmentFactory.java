@@ -152,6 +152,7 @@ public final class SearchFragmentFactory {
         final Bundle args = new Bundle();
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
+        args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_ROUTE_FRAGMENT_TYPE,AutoMapConstant.SourceFragment.FRAGMENT_ROUTE);
         return args;
     }
 

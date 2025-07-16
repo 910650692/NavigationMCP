@@ -2,6 +2,7 @@ package com.sgm.navi.scene.ui.search;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -100,7 +101,9 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
         final Fragment fragment = (Fragment) ARouter.getInstance()
                 .build(RoutePath.Search.AROUND_SEARCH_FRAGMENT)
                 .navigation();
-        addFragment((BaseFragment) fragment, SearchFragmentFactory.createAroundFragment(null));
+        Bundle bundle = new Bundle();
+        bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_AROUND,AutoMapConstant.SourceFragment.FRAGMENT_SEARCH_AROUND);
+        addFragment((BaseFragment) fragment, bundle);
     }
 
     /**
