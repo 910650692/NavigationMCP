@@ -157,7 +157,7 @@ android {
         defaule {
             java.srcDirs = ['src_default/main/java']
             res.srcDirs = ['src_default/main/res']
-            println("打包Default车型资源")
+            println("打包 Default 车型资源")
         }
         buick {
             java.srcDirs = ['src_buick/main/java']
@@ -171,18 +171,18 @@ android {
         }
         clea_8255 {
             java.srcDirs = ['src_clea_557/main/java']
-            res.srcDirs = ['src_clea_557/main/res']
-            println("打包5578255车型资源")
+            res.srcDirs = ['src_clea_ndnc/main/res', 'src_clea_ndnc/main/res-8155']
+            println("打包557 平台的 8255 车型资源")
         }
         clea_local_8155 {
             java.srcDirs = ['src_clea_ndnc/main/java']
-            res.srcDirs = ['src_clea_ndnc/main/res']
-            println("打包NDNC8155车型资源")
+            res.srcDirs = ['src_clea_ndnc/main/res', 'src_clea_ndnc/main/res-8155']
+            println("打包NDNC 8155 车型资源")
         }
         clea_8775 {
             java.srcDirs = ['src_clea_ndnc/main/java']
-            res.srcDirs = ['src_clea_ndnc/main/res']
-            println("打包NDNC8775车型资源")
+            res.srcDirs = ['src_clea_ndnc/main/res', 'src_clea_ndnc/main/res-8775']
+            println("打包NDNC/557 平台的 8775 车型资源")
         }
     }
 

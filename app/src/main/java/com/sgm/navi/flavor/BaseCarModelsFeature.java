@@ -56,17 +56,20 @@ public abstract class BaseCarModelsFeature {
                 DeviceUtils.isCar(AppCache.getInstance().getMApplication()));
     }
 
-    private void createDimens(int dpi) {
-        double density = 1.25;
+    private static void createDimens(final int dpi, final String unit, final int size) {
+        double defaultDensity = 160.0;
+        double density = dpi/defaultDensity;
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < 4000; i++) {
+        for (int i = 0; i < size; i++) {
             BigDecimal bigDecimal = new BigDecimal(i / density);
             BigDecimal rounded = bigDecimal.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros();
-            stringBuilder.append("<dimen name=\"dp_")
+            stringBuilder.append("<dimen name=")
+                    .append(unit)
+                    .append("_")
                     .append(i)
                     .append("\">")
                     .append(rounded)
-                    .append("dp")
+                    .append(unit)
                     .append("</dimen>")
                     .append("\n");
         }
