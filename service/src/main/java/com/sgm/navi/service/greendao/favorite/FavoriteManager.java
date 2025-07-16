@@ -148,6 +148,7 @@ public class FavoriteManager {
     public boolean isFavorite(final String itemId) {
         final Favorite favorite = mFavoriteDao.queryBuilder()
                 .where(FavoriteDao.Properties.MItemId.eq(itemId))
+                .where(FavoriteDao.Properties.MCommonName.eq(0))
                 .unique();
         return favorite != null;
     }
