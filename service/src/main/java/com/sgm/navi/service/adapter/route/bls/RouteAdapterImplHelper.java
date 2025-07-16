@@ -2114,7 +2114,7 @@ public class RouteAdapterImplHelper {
         @Override
         public void onRerouteInfo(BLRerouteRequestInfo info) {
             initRouteResultLock();
-            Logger.i(TAG, "平行路切换onRerouteInfo: ", info.errCode, info.requestId ,info.option.getRouteType(), info.option.getRouteReqId());
+            Logger.i(TAG, "onRerouteInfo: ", info.errCode, info.requestId ,info.option.getRouteType(), info.option.getRouteReqId());
             if (mLastSuccessRequsetId == -1 || info.requestId == 0 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
                 Logger.e(TAG, "have no this data");
                 routeResultLockCountDown();
@@ -2127,6 +2127,15 @@ public class RouteAdapterImplHelper {
                 routeResultLockCountDown();
                 return;
             }
+            RouteLineLayerParam routeLineLayerParam = requestRouteResult.getMLineLayerParam();
+            if (ConvertUtils.isEmpty(routeLineLayerParam)) {
+                Logger.e(TAG, "onRerouteInfo: 请求参数已经被清空");
+                routeResultLockCountDown();
+                return;
+            }
+            Logger.d(TAG, "onRerouteInfo: " + info.option.getPOIForRequest().getPointSize(PointType.PointTypeVia));
+            routeLineLayerParam.setMRouteType(info.option.getRouteType());
+            routeLineLayerParam.setMPoiForRequest(info.option.getPOIForRequest());
             requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
             requestRouteResult.setMFastNavi(true);
             requestRouteResult.setMAutoRouting(true);
