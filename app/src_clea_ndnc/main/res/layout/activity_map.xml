@@ -38,7 +38,7 @@
             android:layout_height="@dimen/dp_95"
             android:layout_marginStart="@dimen/dp_34"
             android:layout_marginTop="@dimen/dp_85"
-            android:background="@drawable/bg_search_main_tab"
+            android:background="@drawable/bg_search_main_tab_sw1225"
             android:visibility="@{ViewModel.mainBTNVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent">

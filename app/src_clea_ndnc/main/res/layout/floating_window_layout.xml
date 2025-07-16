@@ -21,7 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_95"
             android:minWidth="@dimen/dp_366"
-            android:background="@drawable/bg_search_main_tab"
+            android:layout_marginStart="28dp"
+            android:background="@drawable/bg_search_main_tab_sw1225"
             app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
