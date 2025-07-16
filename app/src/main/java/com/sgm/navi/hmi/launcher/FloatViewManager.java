@@ -303,6 +303,10 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             return;
         }
         if (cardWidgetIsOnShowing) {
+            Logger.d(TAG, "cardWidgetIsOnShowing");
+            return;
+        }
+        if (StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) > 0) {
             return;
         }
         ThreadManager.getInstance().execute(() -> {

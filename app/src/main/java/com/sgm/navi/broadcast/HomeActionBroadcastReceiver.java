@@ -37,6 +37,7 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
             final boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
             Logger.d(TAG, "HOME_CLICK_ACTION", isNaviDeskBg, isEmpty, isFullScreen);
             if (isNaviDeskBg && isEmpty && isFullScreen) {
+                FloatViewManager.getInstance().updateWidgetStatus();
                 FloatViewManager.getInstance().showAllCardWidgets();
             }
             if (isEmpty && !StartService.getInstance().checkSdkIsNeedInit()) {

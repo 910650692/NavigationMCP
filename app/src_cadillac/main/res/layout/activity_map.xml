@@ -610,18 +610,9 @@
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_split_info"
-            android:layout_width="@dimen/dp_196"
-            android:layout_height="@dimen/dp_196"
-            android:layout_marginEnd="@dimen/dp_34"
-            android:layout_marginBottom="@dimen/dp_147"
-            app:layout_goneMarginBottom="@dimen/dp_0"
-            android:gravity="center"
-            android:text="分屏测试-功能开发中"
-            android:textSize="@dimen/sp_30"
-            android:textColor="@color/white_always"
-            android:background="@color/common_green"
-            clickCommand="@{ViewModel.switchSr}"
-            android:visibility="@{ViewModel.sRVisible?View.VISIBLE:View.GONE}"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
