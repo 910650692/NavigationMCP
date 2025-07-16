@@ -797,9 +797,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(com.sgm.navi.scene.R.string.open_privacy_permission));
             return;
         }
-        ISceneCallback.super.deleteViaPoint(entity);
         if (entity.getChargeInfo() != null && entity.getChargeInfo().isAutoAdd()) {
-            showDeleteAllTip(entity);
+            if (!ConvertUtils.isEmpty(mNaviPackage.getAllViaPoints()) && mNaviPackage.getAllViaPoints().size() > 1) {
+                showDeleteAllTip(entity);
+            } else {
+                Logger.d(TAG, "只有1个补能点，直接删除！");
+                deleteAutoAddChargeStation();
+                clearAllViaChargeStation();
+            }
         } else {
             final PoiInfoEntity poiInfo = new PoiInfoEntity();
             poiInfo.setPoint(entity.getRealPos());
@@ -1220,7 +1225,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void deleteAutoAddChargeStation() {
         mIsShowAutoAdd = false;
         mViewModel.onUpdateViaList(mIsShowAutoAdd);
-        MapPackage.getInstance().resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP,2);
     }
 
     /**
@@ -1228,6 +1232,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      */
     public void clearAllViaChargeStation() {
         mRoutePackage.clearRouteItemByType(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.ROUTE_POINT_VIA_CHARGE_STATION);
+        MapPackage.getInstance().resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 2);
     }
 
     /**
