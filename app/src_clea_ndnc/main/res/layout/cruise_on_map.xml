@@ -25,6 +25,7 @@
             android:layout_height="@dimen/dp_95"
             android:layout_marginStart="@dimen/dp_34"
             android:minWidth="@dimen/dp_430"
+            android:layout_marginTop="@dimen/dp_112"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/bg_common_with_corner"
