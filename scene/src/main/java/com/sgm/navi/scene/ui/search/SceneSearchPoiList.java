@@ -58,6 +58,7 @@ import com.sgm.navi.service.define.search.FavoriteInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchCategoryLocalInfo;
 import com.sgm.navi.service.define.search.SearchChildCategoryLocalInfo;
+import com.sgm.navi.service.define.search.SearchGrandChildCategoryLocalInfo;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
@@ -618,7 +619,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
 
             @Override
-            public void onChildListExpandCollapse(final List<SearchChildCategoryLocalInfo> childList, final int position) {
+            public void onChildListExpandCollapse(final List<SearchGrandChildCategoryLocalInfo> childList, final int position) {
                 mCurrentSelectedIndex1 = position;
                 refreshLocalInfoListCheckedState(0, mCurrentSelectedIndex1);
                 mFilterOneChildAdapter.setCategoryList(childList);
@@ -647,7 +648,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
 
             @Override
-            public void onChildListExpandCollapse(final List<SearchChildCategoryLocalInfo> childList, final int position) {
+            public void onChildListExpandCollapse(final List<SearchGrandChildCategoryLocalInfo> childList, final int position) {
                 mCurrentSelectedIndex2 = position;
                 refreshLocalInfoListCheckedState(1, mCurrentSelectedIndex2);
                 mFilterTwoChildAdapter.setCategoryList(childList);
@@ -676,7 +677,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
 
             @Override
-            public void onChildListExpandCollapse(final List<SearchChildCategoryLocalInfo> childList, final int position) {
+            public void onChildListExpandCollapse(final List<SearchGrandChildCategoryLocalInfo> childList, final int position) {
                 mCurrentSelectedIndex3 = position;
                 refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
                 mFilterThreeChildAdapter.setCharge(!ConvertUtils.isEmpty(getEditText()) && getEditText().startsWith("充电站"));
@@ -707,7 +708,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
 
             @Override
-            public void onChildListExpandCollapse(final List<SearchChildCategoryLocalInfo> childList, final int position) {
+            public void onChildListExpandCollapse(final List<SearchGrandChildCategoryLocalInfo> childList, final int position) {
                 mCurrentSelectedIndex4 = position;
                 refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex4);
                 mFilterFourChildAdapter.setCategoryList(childList);
@@ -835,7 +836,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     childInfo.setChecked(1);
                 } else {
                     childInfo.setChecked(-1);
-                    for (SearchChildCategoryLocalInfo child : childInfo.getCategoryLocalInfos()) {
+                    for (SearchGrandChildCategoryLocalInfo child : childInfo.getCategoryLocalInfos()) {
                         child.setChecked(-1);
                     }
                 }
@@ -1389,7 +1390,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     stringBuilder.append(searchChildCategoryLocalInfo.getValue());
                     stringBuilder.append(APPEND);
                 }
-                for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
+                for (SearchGrandChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
                     if (searchChildCategoryLocalInfo1.getChecked() == 1
                             && !ConvertUtils.isEmpty(searchChildCategoryLocalInfo1.getValue())) {
                         stringBuilder.append(searchChildCategoryLocalInfo1.getValue());
@@ -1421,7 +1422,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         && !ConvertUtils.isEmpty(searchChildCategoryLocalInfo.getValue()) && !"searchlist_charging_mode_none".equals(searchChildCategoryLocalInfo.getValue())) {
                     labelNameList.add(searchChildCategoryLocalInfo.getName());
                 }
-                for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
+                for (SearchGrandChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
                     if (searchChildCategoryLocalInfo1.getChecked() == 1
                             && !ConvertUtils.isEmpty(searchChildCategoryLocalInfo1.getValue()) && !"searchlist_charging_distance_none".equals(searchChildCategoryLocalInfo1.getValue())) {
                         labelNameList.add(searchChildCategoryLocalInfo1.getName());

@@ -18,7 +18,7 @@ public class ReservationInfo implements Parcelable {
     @SerializedName("preNum")
     private String mPreNum;
     @SerializedName("status")
-    private Integer mStatus;
+    private int mStatus;
     @SerializedName("operatorId")
     private String mOperatorId;
     @SerializedName("stationId")
@@ -43,11 +43,11 @@ public class ReservationInfo implements Parcelable {
         return this;
     }
 
-    public Integer getmStatus() {
+    public int getmStatus() {
         return mStatus;
     }
 
-    public ReservationInfo setmStatus(Integer mStatus) {
+    public ReservationInfo setmStatus(int mStatus) {
         this.mStatus = mStatus;
         return this;
     }

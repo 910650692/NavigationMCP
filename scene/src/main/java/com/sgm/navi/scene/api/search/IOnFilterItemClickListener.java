@@ -1,6 +1,7 @@
 package com.sgm.navi.scene.api.search;
 
 import com.sgm.navi.service.define.search.SearchChildCategoryLocalInfo;
+import com.sgm.navi.service.define.search.SearchGrandChildCategoryLocalInfo;
 
 import java.util.List;
 
@@ -22,5 +23,5 @@ public interface IOnFilterItemClickListener {
      * @param childList 子列表
      * @param position 点击下标
      */
-    void onChildListExpandCollapse(List<SearchChildCategoryLocalInfo> childList, int position);
+    void onChildListExpandCollapse(List<SearchGrandChildCategoryLocalInfo> childList, int position);
 }

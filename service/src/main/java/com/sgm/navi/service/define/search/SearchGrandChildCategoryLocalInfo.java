@@ -14,16 +14,13 @@ import lombok.experimental.Accessors;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class SearchChildCategoryLocalInfo implements Parcelable {
+public class SearchGrandChildCategoryLocalInfo implements Parcelable {
     //选中状态
     private int mChecked;
     //名称
     private String mName;
     //请求参数值
     private String mValue;
-    //子类目信息
-    private List<SearchGrandChildCategoryLocalInfo> mCategoryLocalInfos;
-
     public int getChecked() {
         return mChecked;
     }
@@ -33,7 +30,7 @@ public class SearchChildCategoryLocalInfo implements Parcelable {
      * @param checked 选中状态
      * @return SearchChildCategoryLocalInfo
      */
-    public SearchChildCategoryLocalInfo setChecked(final int checked) {
+    public SearchGrandChildCategoryLocalInfo setChecked(final int checked) {
         this.mChecked = checked;
         return this;
     }
@@ -47,22 +44,8 @@ public class SearchChildCategoryLocalInfo implements Parcelable {
      * @param name 名称
      * @return SearchChildCategoryLocalInfo
      */
-    public SearchChildCategoryLocalInfo setName(final String name) {
+    public SearchGrandChildCategoryLocalInfo setName(final String name) {
         this.mName = name;
-        return this;
-    }
-
-    public List<SearchGrandChildCategoryLocalInfo> getCategoryLocalInfos() {
-        return mCategoryLocalInfos;
-    }
-
-    /**
-     * 设置子类目信息
-     * @param categoryLocalInfos 子类目信息
-     * @return SearchChildCategoryLocalInfo
-     */
-    public SearchChildCategoryLocalInfo setCategoryLocalInfos(final List<SearchGrandChildCategoryLocalInfo> categoryLocalInfos) {
-        this.mCategoryLocalInfos = categoryLocalInfos;
         return this;
     }
 
@@ -75,27 +58,26 @@ public class SearchChildCategoryLocalInfo implements Parcelable {
      * @param value 请求参数值
      * @return SearchChildCategoryLocalInfo
      */
-    public SearchChildCategoryLocalInfo setValue(final String value) {
+    public SearchGrandChildCategoryLocalInfo setValue(final String value) {
         this.mValue = value;
         return this;
     }
 
-    protected SearchChildCategoryLocalInfo(final Parcel in) {
+    protected SearchGrandChildCategoryLocalInfo(final Parcel in) {
         mName = in.readString();
         mValue = in.readString();
         mChecked = in.readInt();
-        mCategoryLocalInfos = in.createTypedArrayList(SearchGrandChildCategoryLocalInfo.CREATOR);
     }
 
-    public static final Creator<SearchChildCategoryLocalInfo> CREATOR = new Creator<SearchChildCategoryLocalInfo>() {
+    public static final Creator<SearchGrandChildCategoryLocalInfo> CREATOR = new Creator<SearchGrandChildCategoryLocalInfo>() {
         @Override
-        public SearchChildCategoryLocalInfo createFromParcel(final Parcel in) {
-            return new SearchChildCategoryLocalInfo(in);
+        public SearchGrandChildCategoryLocalInfo createFromParcel(final Parcel in) {
+            return new SearchGrandChildCategoryLocalInfo(in);
         }
 
         @Override
-        public SearchChildCategoryLocalInfo[] newArray(final int size) {
-            return new SearchChildCategoryLocalInfo[size];
+        public SearchGrandChildCategoryLocalInfo[] newArray(final int size) {
+            return new SearchGrandChildCategoryLocalInfo[size];
         }
     };
 
@@ -109,6 +91,5 @@ public class SearchChildCategoryLocalInfo implements Parcelable {
         parcel.writeString(mName);
         parcel.writeString(mValue);
         parcel.writeInt(mChecked);
-        parcel.writeTypedList(mCategoryLocalInfos);
     }
 }

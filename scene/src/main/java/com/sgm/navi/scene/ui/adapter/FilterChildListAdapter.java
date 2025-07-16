@@ -19,12 +19,13 @@ import com.sgm.navi.scene.api.search.IOnFilterChildItemClickListener;
 import com.sgm.navi.scene.databinding.FilterChildItemBinding;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.search.SearchChildCategoryLocalInfo;
+import com.sgm.navi.service.define.search.SearchGrandChildCategoryLocalInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildListAdapter.Holder> {
-    private final List<SearchChildCategoryLocalInfo> mSearchCategoryLocalInfos;
+    private final List<SearchGrandChildCategoryLocalInfo> mSearchCategoryLocalInfos;
     private IOnFilterChildItemClickListener mFilterItemClickListener;
     private boolean mIsCollapse = true;
     private boolean mIsCharge = false;
@@ -52,7 +53,7 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
      * 设置分类列表
      * @param infos 分类列表
      */
-    public void setCategoryList(final List<SearchChildCategoryLocalInfo> infos) {
+    public void setCategoryList(final List<SearchGrandChildCategoryLocalInfo> infos) {
         if (ConvertUtils.isEmpty(infos)) {
             mSearchCategoryLocalInfos.clear();
             notifyDataSetChanged();
@@ -105,7 +106,7 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
             });
             return;
         }
-        final SearchChildCategoryLocalInfo localInfo = mSearchCategoryLocalInfos.get(position);
+        final SearchGrandChildCategoryLocalInfo localInfo = mSearchCategoryLocalInfos.get(position);
         if (localInfo == null) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder localInfo is null");
             return;

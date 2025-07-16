@@ -56,6 +56,7 @@ import com.sgm.navi.service.define.search.ParkingInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchCategoryLocalInfo;
 import com.sgm.navi.service.define.search.SearchChildCategoryLocalInfo;
+import com.sgm.navi.service.define.search.SearchGrandChildCategoryLocalInfo;
 import com.sgm.navi.service.define.search.SearchParkInOutInfo;
 import com.sgm.navi.service.define.search.SearchRequestParameter;
 import com.sgm.navi.service.define.search.SearchResultEntity;
@@ -232,13 +233,13 @@ public final class SearchResultMapper {
                         categoryLocalInfoList2.get(i).setCategoryLocalInfos(level1Infos);
                         if (!level1Infos.isEmpty()) {
                             for (int j = 0; j < level1Infos.size(); j++) {
-                                final List<SearchChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
+                                final List<SearchGrandChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
                                                 result.classify.classifyItemInfo.level2CategoryInfoList.
                                                         get(i).childCategoryInfo.
                                                         get(j).childCategoryInfoList)
                                         .orElse(new ArrayList<>())
                                         .stream()
-                                        .map(this::mapSearchChildCategoryInfo)
+                                        .map(this::mapSearchGrandChildCategoryInfo)
 //                                        .filter(this::shouldIncludeInResult)//过滤value或者name值不存在的item
                                         .collect(Collectors.toList());
                                 level1Infos.get(j).setCategoryLocalInfos(level1ChildInfos);
@@ -264,13 +265,13 @@ public final class SearchResultMapper {
                                 .collect(Collectors.toList());
                         if (!level1Infos.isEmpty()) {
                             for (int j = 0; j < level1Infos.size(); j++) {
-                                final List<SearchChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
+                                final List<SearchGrandChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
                                         result.classify.classifyItemInfo.categoryInfoList.
                                                 get(i).childCategoryInfo.
                                                 get(j).childCategoryInfoList)
                                         .orElse(new ArrayList<>())
                                         .stream()
-                                        .map(this::mapSearchChildCategoryInfo)
+                                        .map(this::mapSearchGrandChildCategoryInfo)
 //                                        .filter(this::shouldIncludeInResult)//过滤value或者name值不存在的item
                                         .collect(Collectors.toList());
                                 level1Infos.get(j).setCategoryLocalInfos(level1ChildInfos);
@@ -371,6 +372,18 @@ public final class SearchResultMapper {
      */
     private SearchChildCategoryLocalInfo mapSearchChildCategoryInfo(final SearchChildCategoryInfo searchChildCategoryInfo) {
         return new SearchChildCategoryLocalInfo()
+                .setName(searchChildCategoryInfo.baseInfo.name)
+                .setValue(searchChildCategoryInfo.baseInfo.value)
+                .setChecked(searchChildCategoryInfo.baseInfo.checked);
+    }
+
+    /**
+     * 映射 SearchChildCategoryInfo 到 SearchGrandChildCategoryLocalInfo
+     * @param searchChildCategoryInfo SearchChildCategoryInfo
+     * @return SearchGrandChildCategoryLocalInfo
+     */
+    private SearchGrandChildCategoryLocalInfo mapSearchGrandChildCategoryInfo(final SearchChildCategoryInfo searchChildCategoryInfo) {
+        return new SearchGrandChildCategoryLocalInfo()
                 .setName(searchChildCategoryInfo.baseInfo.name)
                 .setValue(searchChildCategoryInfo.baseInfo.value)
                 .setChecked(searchChildCategoryInfo.baseInfo.checked);
@@ -996,18 +1009,16 @@ public final class SearchResultMapper {
                                 .orElse(new ArrayList<>())
                                 .stream()
                                 .map(this::mapSearchChildCategoryInfo)
-//                                .filter(this::shouldIncludeInResult)//过滤value或者name值不存在的item
                                 .collect(Collectors.toList());
                         if (!level1Infos.isEmpty()) {
                             for (int j = 0; j < level1Infos.size(); j++) {
-                                final List<SearchChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
+                                final List<SearchGrandChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
                                                 result.classify.classifyItemInfo.categoryInfoList.
                                                         get(i).childCategoryInfo.
                                                         get(j).childCategoryInfoList)
                                         .orElse(new ArrayList<>())
                                         .stream()
-                                        .map(this::mapSearchChildCategoryInfo)
-//                                        .filter(this::shouldIncludeInResult)//过滤value或者name值不存在的item
+                                        .map(this::mapSearchGrandChildCategoryInfo)
                                         .collect(Collectors.toList());
                                 level1Infos.get(j).setCategoryLocalInfos(level1ChildInfos);
                             }
