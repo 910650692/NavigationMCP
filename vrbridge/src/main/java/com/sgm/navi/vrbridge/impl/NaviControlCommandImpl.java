@@ -362,15 +362,16 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 break;
             case IVrBridgeConstant.NavigationOperateType.CONTINUE:
                 final int sceneState = NaviPackage.getInstance().getCurrentImmersiveStatus();
+                final boolean previewStatus = NaviPackage.getInstance().getPreviewStatus();
                 if (Logger.openLog) {
-                    Logger.d(IVrBridgeConstant.TAG, "Continue navigation sceneState: ", sceneState);
+                    Logger.d(IVrBridgeConstant.TAG, "Continue navigation sceneState: ", sceneState, "previewStatus:", previewStatus);
                 }
-                if (sceneState == 0) {
-                    //触碰态
+                if (sceneState == 0 || previewStatus) {
+                    //触碰态或全览态
                     NaviPackage.getInstance().voiceContinueNavigation(MapType.MAIN_SCREEN_MAIN_MAP);
                     callResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.RESUME_NAVI);
                 } else {
-                    //非触碰态
+                    // 不执行，直接按FeatureList返回提示
                     callResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.OK);
                 }
                 break;
