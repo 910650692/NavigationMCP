@@ -13,6 +13,7 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
 import com.sgm.navi.service.define.route.RouteParam;
@@ -359,6 +360,10 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index, final int searchType) {
         mSearchPackage.setSelectIndex(poiInfoEntity, index, searchType, false);
+    }
+
+    public void setEnrouteSelect(LayerPointItemType layerPointItemType, int index, boolean isSelected) {
+        mSearchPackage.setSelectIndex(layerPointItemType, index, isSelected);
     }
 
     /**

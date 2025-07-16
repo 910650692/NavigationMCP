@@ -873,6 +873,27 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         return "";
     }
 
+    private boolean isSamePoi(final PoiInfoEntity local, final PoiInfoEntity poiInfoEntity) {
+        if (local == null || poiInfoEntity == null || local.getPoint() == null || poiInfoEntity.getPoint() == null) {
+            return false;
+        }
+        return (ConvertUtils.equals(local.getPid(), poiInfoEntity.getPid()))
+                || (local.getPoint().getLat() == poiInfoEntity.getPoint().getLat()
+                && local.getPoint().getLon() == poiInfoEntity.getPoint().getLon());
+    }
+
+    public int getTargetIndex(final PoiInfoEntity poiInfoEntity) {
+        if (ConvertUtils.isEmpty(mPoiEntities)) {
+            return -1;
+        }
+        for (int i = 0; i < mPoiEntities.size(); i++) {
+            if (isSamePoi(mPoiEntities.get(i), poiInfoEntity)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public interface OnItemClickListener {
         /**
          * 点击事件

@@ -47,6 +47,7 @@ import com.sgm.navi.scene.ui.adapter.QuickFilterListAdapter;
 import com.sgm.navi.scene.ui.adapter.SearchResultAdapter;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
 import com.sgm.navi.service.define.mapdata.ProvDataInfo;
@@ -1729,10 +1730,16 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     public void routeClickEvent(final PoiInfoEntity poiInfoEntity) {
+        if (mAdapter == null) {
+            return;
+        }
+        int position = mAdapter.getTargetIndex(poiInfoEntity);
         if (isBelongAlongList(poiInfoEntity)) {
             gasChargeRemoveMode(poiInfoEntity);
+            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, false);
         } else {
             gasChargeAddMode(poiInfoEntity);
+            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, true);
         }
         if (mAdapter != null) {
             mAdapter.poiDetailsUpdate(mGasChargeAlongList);
@@ -1742,8 +1749,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     public void routeClickEvent(final PoiInfoEntity poiInfoEntity, final int position) {
         if (isBelongAlongList(poiInfoEntity)) {
             gasChargeRemoveMode(poiInfoEntity);
+            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, false);
         } else {
             gasChargeAddMode(poiInfoEntity);
+            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, true);
         }
         if (mAdapter != null) {
             mAdapter.updateAlongList(mGasChargeAlongList, position);
