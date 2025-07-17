@@ -811,6 +811,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 OpenApiHelper.enterPreview(mapTypeId);
             }
             mViewModel.showOrHideSelfParkingView(false);
+            getCurrentCityLimit();
         }
     }
 
