@@ -112,10 +112,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
     @Override
     public void onHiddenChanged(final boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden && mCurrentRouteRestrictionParam != null) {
-            Logger.d(TAG, "onHiddenChanged");
-            mViewModel.drawRestrictionForLimit(mCurrentRouteRestrictionParam);
-        }
+        Logger.d(TAG, "onHiddenChanged");
     }
 
     @Override
