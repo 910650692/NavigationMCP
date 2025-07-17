@@ -1122,6 +1122,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
         switch (type) {
             case ROUTE_PATH:
+                closeAllFragmentUpRoute();
                 ThreadManager.getInstance().execute(() -> {
                     if (!ConvertUtils.isEmpty(mRouteLineInfos)) {
                         int index = -1;
@@ -1138,6 +1139,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 });
                 break;
             case ROUTE_GUIDE_LABEL:
+                closeAllFragmentUpRoute();
                 ThreadManager.getInstance().execute(() -> {
                     if (!ConvertUtils.isEmpty(mRouteLineInfos)) {
                         int index = -1;
@@ -1157,6 +1159,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             case ROUTE_POINT_END:
             case ROUTE_POINT_VIA:
             case ROUTE_POINT_VIA_CHARGE:
+                closeAllFragmentUpRoute();
                 final PoiInfoEntity poiInfo = new PoiInfoEntity();
                 poiInfo.setPoint(new GeoPoint(item.getLog(), item.getLat()));
                 final Bundle poiBundle = new Bundle();
@@ -1166,6 +1169,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 addPoiDetailsFragment(poiFragment, poiBundle);
                 break;
             case ROUTE_POINT_WEATHER:
+                closeAllFragmentUpRoute();
                 if (!ConvertUtils.isEmpty(mRouteWeatherInfos) && mRouteWeatherInfos.size() > item.getIndex()) {
                     if (!ConvertUtils.isEmpty(mViewModel)) {
                         mViewModel.showWeatherDetailsUI(mRouteWeatherInfos.get((int) (item.getIndex())));
@@ -1173,6 +1177,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 }
                 break;
             case ROUTE_POINT_REST_AREA:
+                closeAllFragmentUpRoute();
                 if (!ConvertUtils.isEmpty(mRouteRestAreaInfos) && mRouteRestAreaInfos.size() > getCurrentIndex()
                         && getCurrentIndex() != -1
                         && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(getCurrentIndex()))
@@ -1183,6 +1188,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 }
                 break;
             case ROUTE_POINT_VIA_CHARGE_STATION:
+                closeAllFragmentUpRoute();
                 int index = getCurrentIndex();
                 if (mRouteChargeStationParam == null) {
                     return;
@@ -1219,6 +1225,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
                 break;
             case ROUTE_POINT_END_PARK:
+                closeAllFragmentUpRoute();
                 clearEndParkPoint();
                 showParkingFragment();
                 break;
