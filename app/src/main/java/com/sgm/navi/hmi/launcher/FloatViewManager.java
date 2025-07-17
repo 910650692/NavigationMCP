@@ -161,7 +161,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         Logger.d(TAG, "showAllCardWidgetsAfterFragmentSizeChanged", isEmpty, isNoStatus);
         if (!isNaviDeskBg()) return;
         if (isEmpty && isNoStatus) {
-            showAllCardWidgets();
+            hideAllCardWidgets(true);
         } else {
             hideAllCardWidgets(false);
         }
