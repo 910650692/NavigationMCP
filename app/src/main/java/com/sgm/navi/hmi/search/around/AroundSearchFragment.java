@@ -68,26 +68,25 @@ public class AroundSearchFragment extends BaseFragment<FragmentAroundBinding, Ar
             if (poiName.length() > 4) {
                 poiName = poiName.substring(0, 4) + "...";
             }
-            categories = getResources().getStringArray(R.array.around_categories_name);
-            iconArray = getResources().obtainTypedArray(R.array.around_category_icons);
+//            categories = getResources().getStringArray(R.array.around_categories_name);
+//            iconArray = getResources().obtainTypedArray(R.array.around_category_icons);
             title = getString(R.string.around_search_title, poiName);
         } else {
-            // 油车
-            if (powerType == 0) {
-                categories = getResources().getStringArray(R.array.main_search_more_categories_gas_name);
-                iconArray = getResources().obtainTypedArray(R.array.main_search_more_category_gas_icons);
-            } else if (powerType == 1){
-                categories = getResources().getStringArray(R.array.main_search_more_categories_charging_name);
-                iconArray = getResources().obtainTypedArray(R.array.main_search_more_category_charging_icons);
-            } else if (powerType == 2) {
-                categories = getResources().getStringArray(R.array.main_search_more_categories_phev_name);
-                iconArray = getResources().obtainTypedArray(R.array.main_search_more_category_phev_icons);
-            } else {
-                categories = getResources().getStringArray(R.array.main_search_more_categories_gas_name);
-                iconArray = getResources().obtainTypedArray(R.array.main_search_more_category_gas_icons);
-            }
-
             title = getString(R.string.around_search_title, getString(R.string.around_search_title_current_location));
+        }
+        // 油车
+        if (powerType == 0) {
+            categories = getResources().getStringArray(R.array.main_search_more_categories_gas_name);
+            iconArray = getResources().obtainTypedArray(R.array.main_search_more_category_gas_icons);
+        } else if (powerType == 1){
+            categories = getResources().getStringArray(R.array.main_search_more_categories_charging_name);
+            iconArray = getResources().obtainTypedArray(R.array.main_search_more_category_charging_icons);
+        } else if (powerType == 2) {
+            categories = getResources().getStringArray(R.array.main_search_more_categories_phev_name);
+            iconArray = getResources().obtainTypedArray(R.array.main_search_more_category_phev_icons);
+        } else {
+            categories = getResources().getStringArray(R.array.main_search_more_categories_gas_name);
+            iconArray = getResources().obtainTypedArray(R.array.main_search_more_category_gas_icons);
         }
 
         mBinding.sceneQuickSearchView.setQuickSearchListAdapterData(iconArray, categories);
