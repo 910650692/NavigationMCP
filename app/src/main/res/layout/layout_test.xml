@@ -182,7 +182,8 @@
                 android:layout_marginStart="@dimen/dp_20"
                 app:layout_constraintBottom_toBottomOf="@+id/test_gaode_log"
                 app:layout_constraintLeft_toRightOf="@+id/test_gaode_log"
-                app:layout_constraintTop_toTopOf="@+id/test_gaode_log" />
+                app:layout_constraintTop_toTopOf="@+id/test_gaode_log"
+                android:visibility="gone"/>
 
             <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/test_copy_bllog"
@@ -190,9 +191,9 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@color/white"
+                android:background="@drawable/bg_setting_preference_select"
                 android:text="@string/test_copy_bllog"
-                android:textColor="@color/black"
+                android:textColor="@color/white_always"
                 android:textSize="@dimen/sp_20"
                 android:gravity="left"
                 app:layout_constraintStart_toStartOf="parent"
@@ -203,7 +204,7 @@
                 android:id="@+id/test_copy_info"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_16"
+                android:padding="@dimen/dp_10"
                 android:background="@color/white"
                 android:layout_marginTop="@dimen/dp_10"
                 android:textColor="@color/black"
