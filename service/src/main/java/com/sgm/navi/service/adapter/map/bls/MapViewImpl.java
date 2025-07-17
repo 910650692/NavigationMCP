@@ -183,6 +183,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().getOperatorPosture().setZoomLevel(mapType == MapType.HUD_MAP ? AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT_HUD : AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT, true, true);
         // 开启惯性滑动
         getMapview().getOperatorGesture().enableSliding(true);
+        getMapview().getOperatorGesture().hidePoiOn3DMoving(false);
         //判断是否为hud
         if (mapType == MapType.HUD_MAP){
             getMapview().getOperatorBusiness().setMapZoomScaleAdaptive((int) mapViewParams.getScreenWidth(), (int)mapViewParams.getScreenHeight(), mapViewParams.getDensityDpi());
