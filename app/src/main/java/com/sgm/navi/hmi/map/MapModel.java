@@ -6,10 +6,7 @@ import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -43,7 +40,6 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
-import com.sgm.navi.flavor.CarModelsFeature;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.account.AccountQRCodeLoginFragment;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
@@ -408,7 +404,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         clearDialog();
         LayerPackage.getInstance().unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         FloatWindowReceiver.unregisterCallback(TAG);
-        if (!ConvertUtils.isEmpty(authorizationRequestDialog) && authorizationRequestDialog.isShowing()) authorizationRequestDialog.dismiss();
+        if (null != authorizationRequestDialog && authorizationRequestDialog.isShowing()) {
+            authorizationRequestDialog.dismiss();
+        }
         authorizationRequestDialog = null;
     }
 
@@ -561,6 +559,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (StartService.getInstance().checkSdkIsAvailable()) {
             if (null == mapPackage || null == layerPackage) {
                 onSdkInitSuccess();
+            } else if (!mViewModel.isRemindDialogShow()) {
+                checkAuthorizationExpired();
             }
         } else {
             Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");

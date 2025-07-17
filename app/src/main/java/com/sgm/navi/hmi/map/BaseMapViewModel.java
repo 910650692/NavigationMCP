@@ -157,6 +157,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private ScheduledFuture goHomeTimer;
     private final int mTimer = 300;
     public ReminderDialog reminderDialog = null;
+    private boolean mRemindDialogShow = false;
 
     public BaseMapViewModel(@NonNull Application application) {
         super(application);
@@ -212,7 +213,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Override
     public void onResume() {
         super.onResume();
-        if (mInitSdkSuccess) {
+        if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
             mModel.checkAuthorizationExpired();
         }
     }
@@ -222,6 +223,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         super.onDestroy();
         if (reminderDialog != null && reminderDialog.isShowing()) {
             reminderDialog.dismiss();
+            mRemindDialogShow = false;
         }
     }
 
@@ -263,6 +265,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
+                mRemindDialogShow = false;
                 mModel.updateFirstLauncherFlag();
                 mModel.checkPermission();
                 closeProtectView();
@@ -270,6 +273,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
             @Override
             public void onCancelClick() {
+                mRemindDialogShow = false;
                 if (FloatViewManager.getInstance().isNaviDeskBg()) {
                     Logger.d(TAG, "桌面地图情况");
                     mView.protectMap(AutoMapConstant.CANCEL_AUTO_PROTOCOL);
@@ -278,7 +282,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                     ThreadManager.getInstance().asyncDelay(new Runnable() {
                         @Override
                         public void run() {
-                            StackManager.getInstance().exitApp();
+                            mView.finish();
                             FloatViewManager.getInstance().showAllCardWidgets();
                         }
                     }, 800, TimeUnit.MILLISECONDS);
@@ -286,6 +290,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             }
         });
         reminderDialog.show();
+        mRemindDialogShow = true;
         FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 
@@ -300,6 +305,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             popAgreementDialog();
         }
     }
+
+    public boolean isRemindDialogShow() {
+        return mRemindDialogShow;
+    }
+
+
     public void closeProtectView() {
         mView.closeProtectView();
     }
@@ -348,6 +359,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * @param successful true-初始化成功  false-失败
      */
     public void setSdkInitStatus(final boolean successful) {
+        if (mInitSdkSuccess == successful) {
+            return;
+        }
         mInitSdkSuccess = successful;
         if (successful) {
             mView.doAfterInitSdk();
@@ -358,7 +372,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mIsContinueNaviNotified.set(true);
                 mModel.checkContinueNavi();
             }
-            mModel.checkAuthorizationExpired();
+            if (!mRemindDialogShow) {
+                mModel.checkAuthorizationExpired();
+            }
             bottomNaviVisibility.set(judgedBottomNaviVisibility());
             sRVisible.set(judgedSRVisibility());
             mScaleViewVisibility.set(judgedScaleViewVisibility());
@@ -1459,19 +1475,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (closeDelay && !ConvertUtils.isEmpty(restartFlag)) {
             return;
         }
-        if (ConvertUtils.isEmpty(restartFlag) || FloatViewManager.getInstance().isNaviDeskBg()) {
-            final Intent intent = mView.getPackageManager().getLaunchIntentForPackage(mView.getPackageName());
-            Logger.i(TAG, "exitSelf: 重启应用");
-            if (intent != null) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(mView, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-                AlarmManager alarmManager = (AlarmManager)mView.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 700, pendingIntent);
-            }
+
+        final boolean naviDesk = FloatViewManager.getInstance().isNaviDeskBg();
+        if (ConvertUtils.isEmpty(restartFlag) || naviDesk) {
+            ThreadManager.getInstance().asyncDelay(()
+                    -> AppCache.getInstance().openMap(naviDesk), 800, TimeUnit.MILLISECONDS);
         }
         closeAllFragment();
         moveToBack();
-        ThreadManager.getInstance().asyncDelay(() -> StackManager.getInstance().exitApp(), 400, TimeUnit.MILLISECONDS);
+        ThreadManager.getInstance().asyncDelay(() -> mView.finish(), 400, TimeUnit.MILLISECONDS);
     }
 
     public void chargePreTipDialog(String status){
