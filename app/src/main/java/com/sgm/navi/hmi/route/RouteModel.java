@@ -823,7 +823,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
                 mParkSearchId = mSearchPackage.routeTerminalAroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
             }
-        }, 2000);
+        }, 1000);
     }
 
 
