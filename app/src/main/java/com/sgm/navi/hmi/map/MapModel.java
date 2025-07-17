@@ -404,10 +404,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         clearDialog();
         LayerPackage.getInstance().unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         FloatWindowReceiver.unregisterCallback(TAG);
-        if (null != authorizationRequestDialog && authorizationRequestDialog.isShowing()) {
-            authorizationRequestDialog.dismiss();
-        }
-        authorizationRequestDialog = null;
     }
 
     public void clearDialog() {
@@ -419,8 +415,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onPermissionsSuccess() {
-        Logger.d(TAG, "权限都申请成功 开启引擎初始化");
+        Logger.d(TAG, "权限都申请成功 检测网络和数据缓存");
         if (isShowStartupException()) {
+            Logger.d(TAG, "mStartExceptionDialog", "无网络和数据缓存");
             popStartupExceptionDialog();
         } else {
             startInitEngine();
@@ -500,6 +497,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         Logger.i(TAG, "checkPermission");
         if (PermissionUtils.getInstance().checkoutPermission()) {
             if (isShowStartupException()) {
+                Logger.d(TAG, "mStartExceptionDialog", "无网络和数据缓存");
                 popStartupExceptionDialog();
             } else {
                 startInitEngine();
@@ -514,7 +512,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
         boolean isOfflineData = "1".equals(mCommonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
         boolean isCache = false;  //目前默认false
-        Logger.d(TAG, "is net connect: " + isNetConnect + ", is offline data: " + isOfflineData + ", is cached: " + isCache);
+        Logger.d(TAG, "mStartExceptionDialog", "is net connect: " + isNetConnect + ", is offline data: " + isOfflineData + ", is cached: " + isCache);
         return !(isNetConnect || isOfflineData || isCache);
     }
 
@@ -534,6 +532,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 @Override
                 public void onNetWorkConnect() {
                     if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
+                        Logger.d(TAG, "mStartExceptionDialog", "close");
                         mStartExceptionDialog.dismiss();
                     }
                     startInitEngine();
@@ -543,6 +542,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 public void onExit() {
                     FloatViewManager.getInstance().showAllCardWidgets();
                     if (null != mViewModel) {
+                        Logger.d(TAG, "mStartExceptionDialog", "退至后台");
                         mViewModel.moveToBack();
                     }
                     ThreadManager.getInstance().asyncDelay(() -> StackManager.getInstance().exitApp(), 800, TimeUnit.MILLISECONDS);
@@ -550,6 +550,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             });
         }
         if (!mStartExceptionDialog.isShowing()) {
+            Logger.d(TAG, "mStartExceptionDialog", "show");
             mStartExceptionDialog.show();
         }
         FloatViewManager.getInstance().hideAllCardWidgets(false);
@@ -2188,5 +2189,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         } else {
             Logger.e("TagLauncher", "notifyLauncher: mViewModel or getView is null");
         }
+    }
+
+    public void dismissDialog() {
+        dismissAuthorizationRequestDialog();
+        if (null != authorizationRequestDialog && authorizationRequestDialog.isShowing()) {
+            authorizationRequestDialog.dismiss();
+        }
+        authorizationRequestDialog = null;
+        if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) mStartExceptionDialog.dismiss();
+        mStartExceptionDialog = null;
     }
 }

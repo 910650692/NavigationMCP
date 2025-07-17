@@ -275,6 +275,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mFailedDialog = null;
         AppCache.getInstance().setFirstOpenMap(false);
         mViewModel.mainBTNVisibility.removeOnPropertyChangedCallback(propertyChangedCallback);
+        if (null != mViewModel) mViewModel.dismissDialog();
         Logger.i(TAG, "onDestroy");
         super.onDestroy();
     }
@@ -446,6 +447,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.mIsChangingConfigurations.set(true);
         int newUiMode = newConfig.uiMode;
         if (mCurrentUiMode != newUiMode) {
+            Logger.d(TAG, "onConfigurationChanged", "update theme");
             mCurrentUiMode = newUiMode;
             mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                     ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);

@@ -1754,4 +1754,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
         mScaleViewVisibility.set(judgedScaleViewVisibility());
     }
+
+    public void dismissDialog() {
+        if (null != mModel) mModel.dismissDialog();
+    }
 }
