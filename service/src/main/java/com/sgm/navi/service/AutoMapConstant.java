@@ -105,6 +105,7 @@ public interface AutoMapConstant {
         String BUNDLE_KEY_CHARGE_EQUIPMENT_TYPE = "bundle_key_charge_equipment_type";
         String BUNDLE_KEY_MAIN_SEARCH_ICON = "bundle_key_main_search_icon";
         String BUNDLE_KEY_ROUTE_FRAGMENT_TYPE = "bundle_key_route_fragment";
+        String BUNDLE_KEY_HOME_COMPANY_TYPE = "bundle_key_home_company_fragment";
     }
 
     @interface NetSearchKey {

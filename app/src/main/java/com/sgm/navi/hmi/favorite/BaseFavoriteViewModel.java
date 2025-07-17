@@ -117,6 +117,8 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.HOME);
+        bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_HOME_COMPANY_TYPE,
+                AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY);
         addFragment(new HomeCompanyFragment(), bundle);
     }
 
@@ -124,6 +126,8 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
+        bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_HOME_COMPANY_TYPE,
+                AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY);
         addFragment(new HomeCompanyFragment(), bundle);
     }
 

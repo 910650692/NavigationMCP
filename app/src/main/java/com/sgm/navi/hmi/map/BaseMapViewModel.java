@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -618,6 +619,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.HOME);
+        bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_HOME_COMPANY_TYPE,
+                AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY);
         addFragment(new HomeCompanyFragment(), bundle);
         mModel.stopCruise();
     }
@@ -626,6 +629,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
+        bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_HOME_COMPANY_TYPE,
+                AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY);
         addFragment(new HomeCompanyFragment(), bundle);
         mModel.stopCruise();
 
@@ -674,6 +679,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         String fragment ="";
         String aroundFragment = "";
         String routeFragment = "";
+        String homeCompanyFragment = "";
 
         if (bundle != null) {
             type = bundle.getInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, -1);
@@ -681,6 +687,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             fragment = bundle.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
             aroundFragment = bundle.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_AROUND);
             routeFragment = bundle.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_ROUTE_FRAGMENT_TYPE);
+            homeCompanyFragment = bundle.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_HOME_COMPANY_TYPE);
         }
         Logger.i(TAG, "setMapCenterInScreen type:" , type);
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
@@ -704,6 +711,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || AutoMapConstant.SourceFragment.FRAGMENT_AROUND.equals(fragment)
                 || AutoMapConstant.SourceFragment.FRAGMENT_SEARCH_AROUND.equals(aroundFragment)
                 || AutoMapConstant.SourceFragment.FRAGMENT_ROUTE.equals(routeFragment)
+                || AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY.equals(homeCompanyFragment)
                 && (!ScreenTypeUtils.getInstance().isOneThirdScreen()) && !FloatViewManager.getInstance().judgedWidgetIsVisible());
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
