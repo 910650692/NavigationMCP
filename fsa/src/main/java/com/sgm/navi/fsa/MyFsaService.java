@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.hardware.display.DisplayManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.Display;
 
 import androidx.annotation.WorkerThread;
 
@@ -433,7 +435,31 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         //buick clea hud4
         if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && CalibrationPackage.getInstance().brand() == IS_BUICK && CalibrationPackage.getInstance().architecture() == IS_CLEA){//buick
             Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: yes IS_BUICK IS_CLEA");
-            secondeDid = 4;
+            int displayId = -1;
+            final DisplayManager displayManager = AppCache.getInstance().getMContext().getSystemService(DisplayManager.class);
+            if (displayManager != null) {
+                Display[] displays = displayManager.getDisplays();
+                if (displays != null) {
+                    for (Display display : displays) {
+                        if (display == null) {
+                            continue;
+                        }
+                        int width = display.getWidth();
+                        int height = display.getHeight();
+                        if (width == 1280 || height == 640) {
+                            displayId = display.getDisplayId();
+                            Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: for displayId", displayId);
+                            break;
+                        }
+                    }
+                    if (displayId == 4 || displayId == 6) {
+                        secondeDid = displayId;
+                    } else {
+                        Logger.e(FsaConstant.FSA_TAG, "switchHudActivity: unknown displayId", displayId);
+                        return;
+                    }
+                }
+            }
         }else if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && CalibrationPackage.getInstance().brand() == IS_CADILLAC && CalibrationPackage.getInstance().architecture() == IS_GB){//Cadillac
             Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: yes IS_CADILLAC IS_GB");
             secondeDid = 3;
