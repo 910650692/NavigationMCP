@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AppCache;
@@ -38,9 +39,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 
 public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListener {
+    private final int cardHeight = 330;
+    private int maxDistance = 0;
     private boolean cardWidgetIsOnShowing = false;
-    private final int MOVE_DISTANCE = 30;
-    private int startX;
     private int startY;
     private static final String TAG = "FloatViewManager";
     private boolean isServiceConnect = false;
@@ -150,6 +151,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         mContentResolver.registerContentObserver(uri, true, observer);
         getDesktopMode();
         ScreenTypeUtils.getInstance().addSplitScreenChangeListener(TAG, this);
+        maxDistance = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppCache.getInstance().getMApplication()) - cardHeight;
     }
 
     /**
@@ -173,27 +175,11 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
     public void hideWidgetsOnMapTouch(MotionEvent touchEvent) {
         if (!isNaviDeskBg()) return;
         if (!ScreenTypeUtils.getInstance().isFullScreen()) return;
-        switch (touchEvent.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                startX = (int) touchEvent.getX();
-                startY = (int) touchEvent.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (Math.abs(touchEvent.getX() - startX) >= MOVE_DISTANCE || Math.abs(touchEvent.getY() - startY) >= MOVE_DISTANCE) {
-                    hideAllCardWidgets(false);
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (Math.abs(touchEvent.getX() - startX) >= MOVE_DISTANCE || Math.abs(touchEvent.getY() - startY) >= MOVE_DISTANCE) {
-                    final boolean isEmpty = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0;
-                    final boolean isNoStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS);
-                    Logger.d(TAG, "ACTION_UP", isEmpty, isNoStatus);
-                    hideAllCardWidgets(isEmpty && isNoStatus);
-                }
-                break;
-            default:
-                break;
-
+        if (touchEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            startY = (int) touchEvent.getY();
+            if (startY <= maxDistance) {
+                hideAllCardWidgets(true);
+            }
         }
     }
 
