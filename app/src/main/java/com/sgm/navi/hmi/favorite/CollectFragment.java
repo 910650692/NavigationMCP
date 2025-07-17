@@ -51,9 +51,11 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
      * 获取收藏列表
      */
     private void initFavoriteList() {
-        final List<PoiInfoEntity> poiInfoEntityList = mViewModel.getFavoriteListAsync();
-        ThreadManager.getInstance().postUi(() -> {
-            mBinding.collectView.setAdapterData(poiInfoEntityList,false);
+        ThreadManager.getInstance().runAsync(() -> {
+            final List<PoiInfoEntity> poiInfoEntityList = mViewModel.getFavoriteListAsync();
+            ThreadManager.getInstance().postUi(() -> {
+                mBinding.collectView.setAdapterData(poiInfoEntityList,false);
+            });
         });
     }
 
