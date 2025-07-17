@@ -1198,9 +1198,17 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 cityDataInfo = mScreenViewModel.getCityInfo(mScreenViewModel.getAcCode());
             }
             if (cityDataInfo != null) {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "城市数据信息: " + cityDataInfo.getName() + "，城市编码: " + mScreenViewModel.getAcCode());
+                int currentAdCode = mScreenViewModel.getAcCode();
+                int searchAdCode = cityDataInfo.getUpperAdcode();
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "城市数据信息: " + cityDataInfo.getName() + "，搜索的城市编码: " + searchAdCode + " ,当前城市编码："+currentAdCode);
                 mViewBinding.searchOfflineHint.setVisibility(VISIBLE);
-                mViewBinding.searchOfflineHint.setText(getContext().getString(R.string.search_offline_hint, cityDataInfo.getName()));
+                final CityDataInfo searchCityInfo = mScreenViewModel.getCityInfo(searchAdCode);
+                if(currentAdCode == searchAdCode){
+                    mViewBinding.searchOfflineHint.setText(getContext().getString(R.string.search_offline_hint, searchCityInfo.getName()));
+                }else{
+                    final CityDataInfo queryCityInfo = mScreenViewModel.getCityInfo(currentAdCode);
+                    mViewBinding.searchOfflineHint.setText(getContext().getString(R.string.search_offline_hint_extend, queryCityInfo.getName(), searchCityInfo.getName()));
+                }
             }
         } else {
             mViewBinding.searchOfflineHint.setVisibility(GONE);
