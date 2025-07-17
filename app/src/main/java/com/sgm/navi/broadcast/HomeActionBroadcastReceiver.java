@@ -37,7 +37,7 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
             final boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
             Logger.d(TAG, "HOME_CLICK_ACTION", isNaviDeskBg, isEmpty, isFullScreen);
             if (isNaviDeskBg && isEmpty && isFullScreen) {
-                FloatViewManager.getInstance().updateWidgetStatus();
+                FloatViewManager.getInstance().setCardWidgetStatus(false);
                 FloatViewManager.getInstance().showAllCardWidgets();
             }
             if (isEmpty && !StartService.getInstance().checkSdkIsNeedInit()) {
@@ -50,9 +50,13 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
     }
 
     public static void registerHomeActionReceiver() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(HOME_CLICK_ACTION);
-        AppCache.getInstance().getMContext().registerReceiver(new HomeActionBroadcastReceiver(), intentFilter);
-        Logger.d(TAG, "registerHomeActionReceiver-success!");
+        try {
+            final IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(HOME_CLICK_ACTION);
+            AppCache.getInstance().getMContext().registerReceiver(new HomeActionBroadcastReceiver(), intentFilter, Context.RECEIVER_EXPORTED);
+            Logger.d(TAG, "registerHomeActionReceiver-success!");
+        } catch (Exception e) {
+            Logger.e(TAG, "registerHomeActionReceiver-failed", e.getMessage());
+        }
     }
 }

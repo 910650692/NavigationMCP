@@ -448,6 +448,10 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         return cardWidgetIsOnShowing;
     }
 
+    public void setCardWidgetStatus(boolean isVisible) {
+        this.cardWidgetIsOnShowing = isVisible;
+    }
+
     public void onNaviStop() {
         showAllCardWidgetsAfterFragmentSizeChanged();
     }
