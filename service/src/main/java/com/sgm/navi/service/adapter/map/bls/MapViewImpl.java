@@ -216,7 +216,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         // 显示开放图层
         getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, MapType.HUD_MAP != mapType);
         //设置地形阴影图开
-        getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_STATE_IS_TOPOGRAPHY_SHOW, true);//开启地形阴影图
+        getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_STATE_IS_TOPOGRAPHY_SHOW, false);//关闭地形阴影图
     }
 
 
