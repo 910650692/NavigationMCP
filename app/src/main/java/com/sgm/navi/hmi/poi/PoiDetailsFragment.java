@@ -64,7 +64,11 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         super.onReStoreFragment();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment " );
         mViewModel.onReStoreFragment();
-        getBundleData();
+        try {
+            getBundleData();
+        }catch (Exception e){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getBundleData error: "+e.getMessage());
+        }
     }
 
     @Override
