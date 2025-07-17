@@ -1,11 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.NaviApp" parent="Base.Theme.NaviApp" >
-        <item name="android:font">@font/buick</item>
+
+    <style name="Theme.NaviApp" parent="Base.Theme.NaviApp">
+        <item name="android:fontFamily">@font/buick</item>
     </style>
-    <style name="ClusterTheme" parent="BaseClusterTheme" >
-        <item name="android:font">@font/buick</item>
+
+    <style name="ClusterTheme" parent="BaseClusterTheme">
+        <item name="android:fontFamily">@font/buick</item>
     </style>
-    <style name="HUDTheme" parent="BaseHUDTheme" >
-        <item name="android:font">@font/buick</item>
+
+    <style name="HUDTheme" parent="BaseHUDTheme">
+        <item name="android:fontFamily">@font/buick</item>
     </style>
 </resources>

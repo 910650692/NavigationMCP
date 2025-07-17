@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="ClusterTheme" parent="BaseClusterTheme" >
-        <item name="android:font">@font/buick</item>
+        <item name="android:fontFamily">@font/buick</item>
     </style>
 
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
@@ -11,6 +11,6 @@
         <item name="tabPaddingBottom">0dp</item>
     </style>
     <style name="HUDTheme" parent="BaseHUDTheme" >
-        <item name="android:font">@font/buick</item>
+        <item name="android:fontFamily">@font/buick</item>
     </style>
 </resources>
