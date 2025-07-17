@@ -1109,7 +1109,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
         });
         final String imageUrl = mPoiInfoEntity.getImageUrl();
-        if(ConvertUtils.isNull(imageUrl)){
+        if(ConvertUtils.isEmpty(imageUrl)){
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeImgLayout.setVisibility(GONE);
         }else{
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeImgLayout.setVisibility(VISIBLE);
