@@ -602,7 +602,7 @@ public class PatacL2ppManager {
             return;
         }
         mTtsStr = tts;
-        sendTTS(tts, highPriority);
+        L2NopTts.sendTTS(tts, highPriority);
         if (mScheduledFuture != null) {
             mScheduledFuture.cancel(true);
         }
