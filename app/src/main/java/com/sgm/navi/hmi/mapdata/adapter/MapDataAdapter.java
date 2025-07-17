@@ -194,8 +194,10 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (downloadItem == null) {
                 return;
             }
-            // 非已下载状态，禁止侧滑删除
-            if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
+            // 是否是全省下载
+            boolean isProvinceDownload = child.getName().equals("全省下载");
+            // 非已下载状态，禁止侧滑删除 且不是全省下载
+            if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS || (isProvinceDownload && checkProvinceDownload(parent))) {
                 swipeMenuLayout.setSwipeEnabled(true);
             } else {
                 swipeMenuLayout.setSwipeEnabled(false);
@@ -214,7 +216,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_20);
             }
 
-            if (child.getName().equals("全省下载")) {
+            if (isProvinceDownload) {
                 mDownloadBtnView.setVisibility(View.GONE);
                 allDownload.setVisibility(View.VISIBLE);
                 allPause.setVisibility(View.VISIBLE);
@@ -237,6 +239,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 allDownload.setEnabled(isAllDownloadEnable);
                 allPause.setEnabled(isAllPauseEnable);
+                swipeMenuLayout.smoothClose();
             } else {
                 mDownloadBtnView.setVisibility(View.VISIBLE);
                 allDownload.setVisibility(View.GONE);
@@ -292,7 +295,22 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             deleteCity.setOnClickListener(view -> {
                 Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
-                cityAdCodes.add(downloadItem.getAdcode());
+                if (isProvinceDownload) {
+                    final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
+                    if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
+                        for (CityDataInfo info : cityDataInfos) {
+                            if (info != null && info.getDownLoadInfo() != null) {
+                                if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
+                                    cityAdCodes.add(info.getAdcode());
+                                }
+                            } else {
+                                Logger.d("info == null: " + GsonUtils.toJson(info));
+                            }
+                        }
+                    }
+                } else {
+                    cityAdCodes.add(downloadItem.getAdcode());
+                }
                 if (onChildClickListener != null) {
                     onChildClickListener.deleteAllTask(cityAdCodes);
                 }
@@ -444,6 +462,22 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         }
         return RecyclerView.NO_POSITION; // 未找到
+    }
+
+    private boolean checkProvinceDownload(final ProvDataInfo parent) {
+        final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
+        if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
+            for (CityDataInfo info : cityDataInfos) {
+                if (info != null && info.getDownLoadInfo() != null) {
+                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
+                        return true;
+                    }
+                } else {
+                    Logger.d("info == null: " + GsonUtils.toJson(info));
+                }
+            }
+        }
+        return false;
     }
 
     public interface OnChildClickListener {
