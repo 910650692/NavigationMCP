@@ -440,8 +440,8 @@ public final class SearchResultMapper {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "free1 is: " + searchPoiInfo.parkingInfo.space
                 + " ,total1: " + searchPoiInfo.parkingInfo.spaceFree);
         final ParkingInfo parkingInfo = new ParkingInfo()
-                .setSpaceTotal(searchPoiInfo.parkingInfo.dynamicParking.spaceTotal)
-                .setSpaceFree(searchPoiInfo.parkingInfo.dynamicParking.spaceFree)
+                .setSpaceTotal(searchPoiInfo.parkingInfo.space)
+                .setSpaceFree(searchPoiInfo.parkingInfo.spaceFree)
                 .setBusyStatus(searchPoiInfo.parkingInfo.dynamicParking.busyStatus)
                 .setSrcType(searchPoiInfo.parkingInfo.dynamicParking.srcType)
                 .setSpace(searchPoiInfo.parkingInfo.space)
