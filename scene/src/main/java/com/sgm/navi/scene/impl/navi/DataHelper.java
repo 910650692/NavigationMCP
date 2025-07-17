@@ -31,7 +31,7 @@ public final class DataHelper {
     @SuppressLint("DefaultLocale")
     public static String convertMetersToKilometers(final int meters) {
         final double kilometers = meters / 1000.0;
-        if (meters < 100) {
+        if (meters < 1000) {
             //米
             return String.format("%d" + METER, meters);
         } else if (kilometers < 100) {
