@@ -307,7 +307,7 @@ public final class SearchResultMapper {
 //                                + searchChildCategoryLocalInfo.getName()
 //                                + " checked: " + searchChildCategoryLocalInfo.getChecked()
 //                                + " value: " + searchChildCategoryLocalInfo.getValue());
-//                        for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
+//                        for (SearchGrandChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
 //                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 level child name: "
 //                                    + searchChildCategoryLocalInfo1.getName()
 //                                    + " checked: " + searchChildCategoryLocalInfo1.getChecked()
