@@ -648,7 +648,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (info == null) {
             return;
         }
-        Logger.i(TAG, "onPlayTTS: ", info.getText(), " soundType:", info.getSoundType());
+        final int nop = SignalPackage.getInstance().getNavigationOnAdasTextToSpeachStatus();
+        Logger.i(TAG, "onPlayTTS: ", info.getText(), " rangeType:", info.getRangeType(), " isHighPriority:", info.isHighPriority(),
+                " isRingType:", info.isRingType(), " NOP:", nop);
         ThreadManager.getInstance().postUi(() -> {
             try {
                 if (NaviAdapter.getInstance().getMCountDownLatch() != null) {
@@ -661,9 +663,10 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                     return;
                 }
                 if (mIsMute) return; // 静音开关
-                //如果NOP打开并且是不播报的类型则不播报
-                if (SignalPackage.getInstance().getNavigationOnAdasTextToSpeachStatus() == 1 && !TTSPlayHelper.allowToPlayWithNopOpen(info.getSoundType()))
+                //如果NOP打开并且是不播报的类型则不播报  soundType废弃 换成rangeType
+                if (nop == 1 && !TTSPlayHelper.allowToPlayWithNopOpen(info.getRangeType())) {
                     return;
+                }
                 mSpeechAdapter.synthesize(!info.isHighPriority(), info.getText());
             } catch (Exception e) {
                 Logger.e(TAG, "playTTs exception:" + e.getMessage());

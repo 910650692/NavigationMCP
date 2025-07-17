@@ -7,7 +7,7 @@ public class SoundInfoEntity {
 
     private boolean highPriority = false;
 
-    private int soundType; // 播报类型
+    private int rangeType;// 播报类型
 
     public String getText() {
         return mText;
@@ -33,12 +33,12 @@ public class SoundInfoEntity {
         mIsRingType = ringType;
     }
 
-    public int getSoundType() {
-        return soundType;
+    public int getRangeType() {
+        return rangeType;
     }
 
-    public void setSoundType(@PlayModule.PlayModule1 int soundType) {
-        this.soundType = soundType;
+    public void setRangeType(int rangeType) {
+        this.rangeType = rangeType;
     }
 
     public boolean isHighPriority() {
@@ -56,7 +56,7 @@ public class SoundInfoEntity {
                 ", mRingType=" + mRingType +
                 ", mIsRingType=" + mIsRingType +
                 ", highPriority=" + highPriority +
-                ", soundType=" + soundType +
+                ", rangeType=" + rangeType +
                 '}';
     }
 }

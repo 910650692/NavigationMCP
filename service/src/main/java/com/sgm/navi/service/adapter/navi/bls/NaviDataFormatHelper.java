@@ -138,7 +138,7 @@ public final class NaviDataFormatHelper {
         final SoundInfoEntity soundInfoEntity = new SoundInfoEntity();
         if (null != info) {
             soundInfoEntity.setText(info.text);
-            soundInfoEntity.setSoundType(info.soundType);
+            soundInfoEntity.setRangeType(info.rangeType);
         }
         return soundInfoEntity;
     }

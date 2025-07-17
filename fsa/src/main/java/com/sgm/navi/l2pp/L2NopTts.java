@@ -1,9 +1,9 @@
 package com.sgm.navi.l2pp;
 
 import com.android.utils.log.Logger;
-import com.sgm.navi.service.define.navi.PlayModule;
 import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.tts.TTSPlayHelper;
 
 public class L2NopTts {
     private static final String TAG = L2NopTts.class.getSimpleName();
@@ -27,7 +27,7 @@ public class L2NopTts {
         Logger.i(TAG, "sendTTS: tts = " , tts , ", highPriority = " , highPriority);
         final SoundInfoEntity info = new SoundInfoEntity();
         info.setText(tts);
-        info.setSoundType(PlayModule.PlayModuleLaneNavi);
+        info.setRangeType(TTSPlayHelper.RANGETYPE_NAVIGATION_START());
         info.setHighPriority(highPriority);
         NaviPackage.getInstance().onPlayTTS(info);
     }
