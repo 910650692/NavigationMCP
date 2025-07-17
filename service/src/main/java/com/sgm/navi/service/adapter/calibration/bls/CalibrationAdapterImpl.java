@@ -119,15 +119,15 @@ public class CalibrationAdapterImpl implements CalibrationApi {
                     if (hudSettingInfo == null) {
                         return;
                     }
-//                    boolean snowMode = hudSettingInfo.getSnowMode();
-//                    if (mSnowMode == snowMode) {
-//                        return;
-//                    }
-//                    Logger.d(TAG, "onAllHudSettingInfoRequest: ", mSnowMode);
-//                    mSnowMode = snowMode;
-//                    for (CalibrationAdapterCallback callback : mCallback.values()) {
-//                        callback.onHudSnowModeChanged(mSnowMode);
-//                    }
+                    boolean snowMode = hudSettingInfo.getSnowMode();
+                    if (mSnowMode == snowMode) {
+                        return;
+                    }
+                    Logger.d(TAG, "onAllHudSettingInfoRequest: ", mSnowMode);
+                    mSnowMode = snowMode;
+                    for (CalibrationAdapterCallback callback : mCallback.values()) {
+                        callback.onHudSnowModeChanged(mSnowMode);
+                    }
                 }
             });
         } catch (PatacServiceNotConnectedException e) {
@@ -364,9 +364,9 @@ public class CalibrationAdapterImpl implements CalibrationApi {
                 Logger.e(TAG, "getAllHudSettingInfo error: null");
                 return false;
             }
-//            mSnowMode = allHudSettingInfo.getSnowMode();
+            mSnowMode = allHudSettingInfo.getSnowMode();
             return mSnowMode;
-        } catch (PatacServiceNotConnectedException e) {
+        } catch (Exception e) {
             Logger.e(TAG, "getHudSnowMode error: ", e.getMessage());
             e.printStackTrace();
         }
