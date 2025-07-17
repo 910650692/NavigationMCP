@@ -25,7 +25,7 @@ public class ThreadPool extends Pool {
     private static final int CPU_NAM = Runtime.getRuntime().availableProcessors();
 
     /*** 核心线程 **/
-    private static int THREAD_POOL_CENTER_SIZE = 4;
+    private static int THREAD_POOL_CENTER_SIZE = 8;
 
     /*** 队列最大值 **/
     private static final int QUEUE_NUM = 20;
