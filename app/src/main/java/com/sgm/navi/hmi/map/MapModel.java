@@ -2112,8 +2112,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onSplitScreenChanged() {
-        if (mViewModel == null) {
-            Logger.e(TAG, "mViewModel is null");
+        if (mViewModel == null || mapPackage == null) {
+            Logger.e(TAG, "mViewModel/mapPackage is null");
             return;
         }
         mapPackage.changeMapViewParams(mViewModel.getMapView());
@@ -2149,8 +2149,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             routePackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
             return;
         }
-        searchPackage.clearPoiLabelMark();
-        searchPackage.clearLabelMark();
+        if (searchPackage != null) {
+            searchPackage.clearPoiLabelMark();
+            searchPackage.clearLabelMark();
+        } else {
+            Logger.e(TAG, "searchPackage is null");
+        }
     }
 
     @Override
