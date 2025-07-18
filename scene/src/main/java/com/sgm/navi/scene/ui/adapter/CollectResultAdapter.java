@@ -143,6 +143,10 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             }
             if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
                 holder.mResultItemBinding.llActionContainer.setVisibility(View.GONE); //隐藏左滑按钮
+                if (mPoiEntities.get(position).getAddress().isEmpty()) {
+                    holder.mResultItemBinding.crlPoiDes.setVisibility(View.GONE);
+                    holder.mResultItemBinding.crlPoiName.setVisibility(View.VISIBLE);
+                }
             }
         } else {
             if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
