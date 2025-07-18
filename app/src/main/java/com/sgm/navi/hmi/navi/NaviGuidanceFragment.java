@@ -733,6 +733,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     public void showNaviContent() {
+        if (mBinding == null) {
+            Logger.i(TAG, "showNaviContent mBinding is null");
+            return;
+        }
         Logger.i(TAG, "showNaviContent");
         if (!ConvertUtils.isNull(mViewModel)) {
             mViewModel.mNaviLeftContentVisibility.set(true);

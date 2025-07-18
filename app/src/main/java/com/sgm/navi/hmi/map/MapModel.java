@@ -7,7 +7,6 @@ import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcelable;
@@ -1047,6 +1046,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onVoiceOpenPage(MapType mapTypeId, Bundle bundle) {
         if (MapType.MAIN_SCREEN_MAIN_MAP == mapTypeId && null != bundle && null != mViewModel) {
             final int voicePage = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE);
+            Logger.i(TAG, "voicePage: ", voicePage);
             switch (voicePage) {
                 case IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH:
                     //关键字搜索
@@ -2049,10 +2049,17 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 Logger.i(TAG, " add NaviGuidanceFragment");
                 addFragment(new NaviGuidanceFragment(), null);
             } else {
-                Logger.i(TAG, "openGuideFragment StackNull:", mViewModel.isFragmentStackNull());
+                if (mViewModel.getTopFragment(SplitFragment.class)) {
+                    Logger.i(TAG, " Top SplitFragment");
+                } else if (mViewModel.getTopFragment(NaviGuidanceFragment.class)) {
+                    Logger.i(TAG, " Top NaviGuidanceFragment");
+                } else {
+                    Logger.i(TAG, " Stack Not Null, Not SplitFragment");
+                    addFragment(new NaviGuidanceFragment(), null);
+                }
             }
         } else {
-            Logger.e(TAG, "openGuideFragment NaviStatus is not NAVING");
+            Logger.i(TAG, " NaviStatus is not NAVING");
         }
     }
 

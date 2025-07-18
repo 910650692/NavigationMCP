@@ -1,11 +1,10 @@
 package com.sgm.navi.hmi.splitscreen;
 
+import android.app.Activity;
 import android.graphics.Rect;
-import android.util.TypedValue;
 
 import androidx.databinding.library.baseAdapters.BR;
 
-import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentSplitBinding;
@@ -105,5 +104,14 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
 
     public static SplitFragment getInstance() {
         return SplitFragment.InstanceHolder.instance;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Activity activity = getActivity();
+        if (activity != null && activity instanceof MapActivity) {
+            ((MapActivity) activity).openGuideFragment();
+        }
     }
 }

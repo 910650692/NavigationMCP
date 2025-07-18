@@ -47,10 +47,12 @@ import com.sgm.navi.service.define.map.MainScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.FragmentIntent;
@@ -62,6 +64,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * @Description TODO
@@ -574,6 +577,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         } else {
             Logger.d("screen_change_used", "不包含1/3屏幕布局");
         }
+    }
+
+    public void openGuideFragment(){
+        Logger.i(TAG, "closeSplitFragment openGuideFragment");
+        mViewModel.openGuideFragment();
     }
 
     public void updateUiOnHomeKeyClick() {
