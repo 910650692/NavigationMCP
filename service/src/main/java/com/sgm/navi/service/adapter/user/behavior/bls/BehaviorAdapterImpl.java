@@ -6,6 +6,9 @@ import android.text.TextUtils;
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.model.Coord2DDouble;
+import com.autonavi.gbl.map.impl.IOperatorPostureImpl;
+import com.autonavi.gbl.map.model.PointD;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.user.behavior.BehaviorService;
 import com.autonavi.gbl.user.behavior.model.FavoriteBaseItem;
@@ -160,12 +163,13 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                     .setClassification(item.classification)
                     .setTop_time(item.top_time);
 
+            Coord2DDouble coord2DDouble = IOperatorPostureImpl.mapToLonLat(item.point_x, item.point_y);
             final PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
 //                    .setPid(String.valueOf(item.id))
                     .setAdCode(ConvertUtils.str2Int(item.city_code))
                     .setAddress(item.address)
                     .setPhone(item.phone_numbers)
-                    .setPoint(new GeoPoint(item.point_x / BASE_POINT, item.point_y / BASE_POINT))
+                    .setPoint(new GeoPoint(coord2DDouble.lon, coord2DDouble.lat))
                     .setName(item.name)
                     .setFavoriteInfo(info);
 
@@ -198,12 +202,13 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                         .setClassification(item.classification)
                         .setTop_time(item.top_time);
 
+                Coord2DDouble coord2DDouble = IOperatorPostureImpl.mapToLonLat(item.point_x, item.point_y);
                 PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
 //                        .setPid(String.valueOf(item.id))
                         .setAdCode(ConvertUtils.str2Int(item.city_code))
                         .setAddress(item.address)
                         .setPhone(item.phone_numbers)
-                        .setPoint(new GeoPoint(item.point_x / BASE_POINT, item.point_y / BASE_POINT))
+                        .setPoint(new GeoPoint(coord2DDouble.lon, coord2DDouble.lat))
                         .setName(item.name)
                         .setFavoriteInfo(info);
                 simpleFavoriteInfo = getFavorite(simpleFavoriteInfo);
@@ -238,8 +243,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         final FavoriteBaseItem baseItem = new FavoriteBaseItem();
         baseItem.item_id = baseInfo.getFavoriteInfo().getItemId();
         baseItem.poiid = baseInfo.getPid();
-        baseItem.point_x = (int) (baseInfo.getPoint().getLon() * BASE_POINT);
-        baseItem.point_y = (int) (baseInfo.getPoint().getLat() * BASE_POINT);
+        PointD pointD = IOperatorPostureImpl.lonLatToMap(baseInfo.getPoint().getLon(),baseInfo.getPoint().getLat());
+        baseItem.point_x = (int) pointD.x;
+        baseItem.point_y = (int) pointD.y;
         baseItem.name = baseInfo.getName();
 
         final FavoriteItem favoriteItem = mBehaviorService.getFavorite(baseItem);
@@ -303,8 +309,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         item.address = poiInfo.getAddress();
         item.common_name = poiInfo.getFavoriteInfo().getCommonName();
         item.name = poiInfo.getName();
-        item.point_x = (int) (poiInfo.getPoint().getLon() * BASE_POINT);
-        item.point_y = (int) (poiInfo.getPoint().getLat() * BASE_POINT);
+        PointD pointD = IOperatorPostureImpl.lonLatToMap(poiInfo.getPoint().getLon(),poiInfo.getPoint().getLat());
+        item.point_x = (int) pointD.x;
+        item.point_y = (int) pointD.y;
         // 添加成功返回 FavoriteItem 对应的存档ID
         final String result = mBehaviorService.addFavorite(item, SyncMode.SyncModeNow);
         Logger.d(TAG, "addFavorite result = ", result , " " , item.point_x);
@@ -323,8 +330,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         final FavoriteBaseItem delItem = new FavoriteBaseItem();
         delItem.item_id = poiInfo.getFavoriteInfo().getItemId();
         delItem.poiid = poiInfo.getPid();
-        delItem.point_x = (int) (poiInfo.getPoint().getLon() * BASE_POINT);
-        delItem.point_y = (int) (poiInfo.getPoint().getLat() * BASE_POINT);
+        PointD pointD = IOperatorPostureImpl.lonLatToMap(poiInfo.getPoint().getLon(),poiInfo.getPoint().getLat());
+        delItem.point_x = (int) pointD.x;
+        delItem.point_y = (int) pointD.y;
         delItem.name = poiInfo.getName();
         Logger.d(TAG, "delFavorite", GsonUtils.toJson(delItem));
         // 删除成功返回 FavoriteBaseItem对应的存档ID
@@ -348,8 +356,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         if (!TextUtils.isEmpty(poiInfo.getPid()) && !poiInfo.getPid().contains(".")) {
             favoriteInfo.poiid = poiInfo.getPid();
         }
-        favoriteInfo.point_x = (int) (poiInfo.getPoint().getLon() * BASE_POINT);
-        favoriteInfo.point_y = (int) (poiInfo.getPoint().getLat() * BASE_POINT);
+        PointD pointD = IOperatorPostureImpl.lonLatToMap(poiInfo.getPoint().getLon(),poiInfo.getPoint().getLat());
+        favoriteInfo.point_x = (int) pointD.x;
+        favoriteInfo.point_y = (int) pointD.y;
         favoriteInfo.name = poiInfo.getName();
         // 返回 收藏点存档ID 表示已收藏
         final String result = mBehaviorService.isFavorited(favoriteInfo);
@@ -372,8 +381,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         final FavoriteBaseItem baseItem = new FavoriteBaseItem();
         baseItem.item_id = info.getFavoriteInfo().getItemId();
         baseItem.poiid = info.getPid();
-        baseItem.point_x = (int) (info.getPoint().getLon() * BASE_POINT);
-        baseItem.point_y = (int) (info.getPoint().getLat() * BASE_POINT);
+        PointD pointD = IOperatorPostureImpl.lonLatToMap(info.getPoint().getLon(),info.getPoint().getLat());
+        baseItem.point_x = (int) pointD.x;
+        baseItem.point_y = (int) pointD.y;
         baseItem.name = info.getName();
         final String ret = mBehaviorService.topFavorite(baseItem, isSetTop, SyncMode.SyncModeNow);
         Logger.d(TAG, "topFavorite ret = ", ret);
@@ -393,8 +403,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         final FavoriteBaseItem baseItem = new FavoriteBaseItem();
         baseItem.item_id = detailInfo.getFavoriteInfo().getItemId();
         baseItem.poiid = detailInfo.getPid();
-        baseItem.point_x = (int) (detailInfo.getPoint().getLon() * BASE_POINT);
-        baseItem.point_y = (int) (detailInfo.getPoint().getLat() * BASE_POINT);
+        PointD pointD = IOperatorPostureImpl.lonLatToMap(detailInfo.getPoint().getLon(),detailInfo.getPoint().getLat());
+        baseItem.point_x = (int) pointD.x;
+        baseItem.point_y = (int) pointD.y;
         baseItem.name = detailInfo.getName();
         final FavoriteItem detailItem = mBehaviorService.getFavorite(baseItem);
         // 2 重命名
