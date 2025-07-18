@@ -49,8 +49,9 @@
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/recycler_no_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_412"
+                android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_40"
                 android:text="@string/shv_record_null"
                 android:textColor="@color/search_color_ffffff_70"
@@ -59,7 +60,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.sgm.navi.ui.view.SkinLinearLayout>
 

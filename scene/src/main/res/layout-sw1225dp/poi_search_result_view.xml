@@ -18,7 +18,7 @@
             android:id="@+id/layout_route_charge_progress"
             android:layout_width="@dimen/dp_824"
             android:layout_height="@dimen/dp_186"
-            android:layout_marginStart="@dimen/dp_562"
+            android:layout_marginStart="@dimen/dp_528"
             android:layout_marginTop="@dimen/dp_m_34"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:clickable="true"
@@ -73,8 +73,8 @@
                 android:src="@drawable/img_route_charge_exhaustion_point"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/route_charge_progress"
-                app:layout_constraintStart_toStartOf="@+id/route_charge_progress"
                 app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@+id/route_charge_progress"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinTextView
