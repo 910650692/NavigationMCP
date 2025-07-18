@@ -84,9 +84,6 @@ public class NaviMediaPlayer {
      * @param type
      */
     public void playNaviWarningSound(int type) {
-        if (!getAudioFocus()) {
-            return;
-        }
         int resId = 0;
         switch (type) {
             /*case PlayRingType.PlayRingTypeDing:         // 导航通过音
@@ -109,6 +106,9 @@ public class NaviMediaPlayer {
             return;
         }
         try {
+            if (!getAudioFocus()) {
+                return;
+            }
             if (mMediaPlayer != null) {
                 if (mMediaPlayer.isPlaying()) {
                     mMediaPlayer.stop();
