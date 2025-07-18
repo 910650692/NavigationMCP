@@ -19,6 +19,8 @@ import com.autonavi.gbl.user.usertrack.observer.IGpsInfoGetter;
 import com.autonavi.gbl.user.usertrack.observer.IUserTrackObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.autonavi.gbl.util.model.SingleServiceID;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.user.usertrack.UserTrackAdapterCallBack;
@@ -33,12 +35,11 @@ import com.sgm.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.sgm.navi.service.greendao.history.History;
 import com.sgm.navi.service.greendao.history.HistoryManager;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Objects;
 
 
 public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
@@ -270,9 +271,54 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             return -1;
         }
         final HistoryRouteItem item = getHistoryPoiItem(bean);
+        deleteSameHistory(item);
         final int code = mUserTrackService.addHistoryRoute(item, SyncMode.SyncModeNow);
         Logger.d(TAG, "addHistoryRoute ret = " + code + " bean = " + GsonUtils.toJson(bean));
         return code;
+    }
+
+    private void deleteSameHistory(HistoryRouteItem item) {
+        if (item != null) {
+            ArrayList<HistoryRouteItem> routeItems = mUserTrackService.getHistoryRoute();
+            if (!ConvertUtils.isEmpty(routeItems)) {
+                for (HistoryRouteItem routeItem : routeItems) {
+                    if (routeItem != null) {
+                        if (item.id != null && routeItem.id != null && Objects.equals(item.id, routeItem.id)) {
+                            // 比较ID
+                            final int code = mUserTrackService.delHistoryRoute(item, SyncMode.SyncModeNow);
+                            Logger.d(TAG, "已存在相同的历史记录 比较ID，id = " + item.id + ", 删除历史记录，ret = " + code);
+                        }
+                        if (item.endLoc != null && routeItem.endLoc != null) {
+                            // 比较终点坐标
+                            if (item.endLoc.lon == routeItem.endLoc.lon && item.endLoc.lat == routeItem.endLoc.lat) {
+                                final int code = mUserTrackService.delHistoryRoute(item, SyncMode.SyncModeNow);
+                                Logger.d(TAG, "已存在相同的历史记录 比较坐标: lon = " + item.endLoc.lon + ", lat = " + item.endLoc.lat + ", 删除历史记录，ret = " + code);
+                            }
+                        }
+                        if (item.toPoi != null && routeItem.toPoi != null) {
+                            // 比较终点POI
+                            if (item.toPoi.poiId != null && routeItem.toPoi.poiId != null &&
+                                    item.toPoi.poiId.equals(routeItem.toPoi.poiId)) {
+                                final int code = mUserTrackService.delHistoryRoute(item, SyncMode.SyncModeNow);
+                                Logger.d(TAG, "已存在相同的历史记录 比较终点POI poiId = " + item.toPoi.poiId + ", 删除历史记录，ret = " + code);
+                            }
+                            if (item.toPoi.name != null && routeItem.toPoi.name != null &&
+                                    item.toPoi.name.equals(routeItem.toPoi.name)) {
+                                if (item.toPoi.address == null && routeItem.toPoi.address == null) {
+                                    final int code = mUserTrackService.delHistoryRoute(item, SyncMode.SyncModeNow);
+                                    Logger.d(TAG, "已存在相同的历史记录 比较终点POI address == null name = " + item.toPoi.name + ", 删除历史记录，ret = " + code);
+                                }
+                                if (item.toPoi.address != null && routeItem.toPoi.address != null &&
+                                        item.toPoi.address.equals(routeItem.toPoi.address)) {
+                                    final int code = mUserTrackService.delHistoryRoute(item, SyncMode.SyncModeNow);
+                                    Logger.d(TAG, "已存在相同的历史记录 比较终点POI address != null name = " + item.toPoi.name + ", 删除历史记录，ret = " + code);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
