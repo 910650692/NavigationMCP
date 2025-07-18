@@ -203,7 +203,7 @@ public final class SignalPackage implements SignalAdapterCallback {
     }
 
     /**
-     * 电池剩余电量百分比
+     * 电池系统当前剩余电量百分比
      *
      * @return 单位%
      */
@@ -212,7 +212,7 @@ public final class SignalPackage implements SignalAdapterCallback {
     }
 
     /**
-     * 电池最大电量
+     * 电池系统总的电池容量
      *
      * @return 单位kwh
      */
@@ -264,7 +264,7 @@ public final class SignalPackage implements SignalAdapterCallback {
     }
 
     /**
-     * 续航里程
+     * 油量续航里程信息
      *
      * @return 单位km
      */

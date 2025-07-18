@@ -48,6 +48,7 @@ public class SignalAdapterImpl implements SignalApi {
     private float mOutsideTemperature = -1;
     private float mHighVoltageBatteryPropulsionRange = -1;
     private float mRangeRemaining = -1;
+    private int mBatteryEnergyPercent = -1;
 
 
     public SignalAdapterImpl() {
@@ -108,19 +109,19 @@ public class SignalAdapterImpl implements SignalApi {
             }
             return 0;
         });
+        PowertainController.getInstance().registerHighVoltageBatteryRemainingUsableEnergyListener(new PowertainController.HighVoltageBatteryRemainingUsableEnergyListener() {
+            @Override
+            public void onHighVoltageBatteryRemainingUsableEnergySignalChanged(Float value) {
+                Logger.d(TAG, "onHighVoltageBatteryRemainingUsableEnergySignalChanged: ", value);
+                mBatteryEnergy = value;
+            }
+        });
         if (VehicleController.isGBArch()) {
             PowertainController.getInstance().registerInfoEvBatteryCapacityListener(new PowertainController.InfoEvBatteryCapacityListener() {
                 @Override
                 public void onInfoEvBatteryCapacityChanged(Float value) {
                     Logger.d(TAG, "onInfoEvBatteryCapacityChanged: ", value);
                     maxBatteryEnergy = value;
-                }
-            });
-            PowertainController.getInstance().registerHighVoltageBatteryRemainingUsableEnergyListener(new PowertainController.HighVoltageBatteryRemainingUsableEnergyListener() {
-                @Override
-                public void onHighVoltageBatteryRemainingUsableEnergySignalChanged(Float value) {
-                    Logger.d(TAG, "onHighVoltageBatteryRemainingUsableEnergySignalChanged: ", value);
-                    mBatteryEnergy = value;
                 }
             });
             PowertainController.getInstance().registerRangeRemainingListener(new PowertainController.RangeRemainingListener() {
@@ -282,6 +283,9 @@ public class SignalAdapterImpl implements SignalApi {
     }
 
     private void initMaxBatteryEnergy() {
+        if (VehicleController.isCleaArch()) {
+            return;
+        }
         final VehicleController.Result<Float> result;
         try {
             result = PowertainController.getInstance().getInfoEvBatteryCapacity();
@@ -337,6 +341,9 @@ public class SignalAdapterImpl implements SignalApi {
     }
 
     private void initRangeRemaining() {
+        if (VehicleController.isCleaArch()) {
+            return;
+        }
         final VehicleController.Result<Float> result;
         try {
             result = PowertainController.getInstance().getRangeRemaining();
@@ -365,7 +372,21 @@ public class SignalAdapterImpl implements SignalApi {
             initHighVoltageBatteryPropulsionRange();
             initRangeRemaining();
             try {
-                registerDYN(190, 1);
+                registerDYN(190, 1, value -> { // 仪表车速
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onSpeedChanged((float) value / 1024);
+                    }
+                });
+                if (VehicleController.isCleaArch()) {
+                    registerDYN(21, 3, value -> { // 燃油续航里程
+                        Logger.d(TAG, "fuel range: ", value);
+                        mRangeRemaining = value;
+                    });
+                    registerDYN(21, 55, value -> { // 电池剩余电量百分比
+                        Logger.d(TAG, "percentage of battery remaining: ", value);
+                        mBatteryEnergyPercent = value;
+                    });
+                }
             } catch (Exception e) {
                 Logger.e(TAG, "registerDYN: ", e);
             }
@@ -498,7 +519,7 @@ public class SignalAdapterImpl implements SignalApi {
         }, patacProperty, 0);
     }
 
-    private void registerDYN(int var1, int var2) {
+    private void registerDYN(int var1, int var2, DynCallback callback) {
         Logger.i(TAG, "registerDYN: ", var1, var2);
         mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
             @Override
@@ -513,10 +534,7 @@ public class SignalAdapterImpl implements SignalApi {
                 }
                 Integer[] value = (Integer[]) carPropertyValue.getValue();
                 if (value.length >= 3 && value[0] == var1 && value[1] == var2) {
-                    Logger.i(TAG, "meterSpeed: " + value[2]);
-                    for (SignalAdapterCallback callback : mCallbacks) {
-                        callback.onSpeedChanged((float) value[2] / 1024);
-                    }
+                    callback.onDynChanged(value[2]);
                 }
             }
 
@@ -526,6 +544,10 @@ public class SignalAdapterImpl implements SignalApi {
             }
         }, VendorProperty.ODI_DYNDATA, 0);
         mPropertyManager.setProperty(Integer[].class, VendorProperty.ODI_SUBSCRIBE, VehicleArea.GLOBAL, new Integer[]{var1, var2});
+    }
+
+    interface DynCallback {
+        void onDynChanged(Integer value);
     }
 
     /**
@@ -564,18 +586,18 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public float getMaxBatteryEnergy() {
-        if (!VehicleController.isGBArch()) {
-            return -1;
+        if (VehicleController.isCleaArch()) {
+            float value = mBatteryEnergy / mBatteryEnergyPercent;
+            Logger.d(TAG, "getMaxBatteryEnergy: ", value);
+            return value;
+        } else {
+            Logger.d(TAG, "getMaxBatteryEnergy: ", maxBatteryEnergy);
+            return maxBatteryEnergy;
         }
-        Logger.d(TAG, "getMaxBatteryEnergy: ", maxBatteryEnergy);
-        return maxBatteryEnergy;
     }
 
     @Override
     public float getBatteryEnergy() {
-        if (!VehicleController.isGBArch()) {
-            return -1;
-        }
         if (Logger.isDebugLevel()) Logger.d(TAG, "getBatteryEnergy: " + mBatteryEnergy);
         return mBatteryEnergy;
     }
