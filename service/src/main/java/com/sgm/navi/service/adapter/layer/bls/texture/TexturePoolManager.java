@@ -22,6 +22,9 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 纹理管理类
@@ -55,6 +58,23 @@ public final class TexturePoolManager {
     private static final int MARK_ID_ARROW = 0x10000;
     private static final int MARK_ID_3D_CAR = 0x10001;
 
+    //用于存储MarkerId key:layer.getName() + item.getBusinessType() + item.getID()
+    private HashMap<String, Integer> textureMap = new HashMap<>();
+
+    public void add(String key, Integer value) {
+        textureMap.put(key, value);
+    }
+
+    public List<String> getKeys() {
+        return new ArrayList<>(textureMap.keySet());
+    }
+
+    public boolean containsKey(String key) {
+        return textureMap.containsKey(key);
+    }
+    public int getValueAsInt(String key) {
+        return textureMap.remove(key);
+    }
 
     /**
      * 是否无效纹理

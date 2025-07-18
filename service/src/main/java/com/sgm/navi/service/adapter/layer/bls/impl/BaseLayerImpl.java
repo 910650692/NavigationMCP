@@ -239,6 +239,8 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                 texture = TexturePoolManager.get().createLayerTexture(context, getMapType(), layer, item, styleInfo, getStyleAdapter());
                 if (layer.getMapView().addLayerTexture(texture)) {
                     markerId = texture.resID;
+                    String key = layer.getName() + item.getBusinessType() + item.getID();
+                    TexturePoolManager.get().add(key, markerId);
                 }
                 Logger.d(TAG, getClass().getSimpleName(), " ", mapType, " 自定义 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                         "\n", "纹理信息 :{ markerRes = ", styleInfo.markerId, " ; resID = ", texture.resID, " ; markerId = ", markerId, " }");
@@ -301,10 +303,23 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     @Override
     public void clearLayerItem(BaseLayer layer, LayerItem item) {
         Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(), " 删除纹理 ");
+        String key = layer.getName() + item.getBusinessType() + item.getID();
+        if (TexturePoolManager.get().containsKey(key)) {
+            int markerId = TexturePoolManager.get().getValueAsInt(key);
+            layer.getMapView().destroyTexture(markerId);
+            Logger.e(TAG, getClass().getSimpleName(), " clearLayerItem key:", key, " markerId:", markerId);
+        }
     }
 
     @Override
     public void clearLayerItems(BaseLayer layer) {
         Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " 删除纹理 ");
+        for (String key : TexturePoolManager.get().getKeys()) {
+            if (key.contains(layer.getName())) {
+                int markerId = TexturePoolManager.get().getValueAsInt(key);
+                layer.getMapView().destroyTexture(markerId);
+                Logger.e(TAG, getClass().getSimpleName(), " clearLayerItems key:", key, " markerId:", markerId);
+            }
+        }
     }
 }
