@@ -123,8 +123,11 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
     }
 
     private void updatePic(String picUrl) {
-        Logger.i(TAG, "picUrl:" + (TextUtils.isEmpty(picUrl)));
-        if (TextUtils.isEmpty(picUrl)) return;
+        Logger.i(TAG, "picUrl:" + picUrl);
+        if (TextUtils.isEmpty(picUrl)) {
+            mBinding.ivPic.setImageDrawable(null);
+            return;
+        }
         ViewAdapterKt.loadImageUrl(mBinding.ivPic, picUrl, com.sgm.navi.scene.R.drawable.test_pic, com.sgm.navi.scene.R.drawable.test_pic);
     }
 
