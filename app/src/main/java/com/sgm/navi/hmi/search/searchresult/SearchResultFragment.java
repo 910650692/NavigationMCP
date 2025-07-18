@@ -230,4 +230,21 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
     public void onSearchItemClick(int index) {
         mBinding.scenePoiList.onSearchItemClick(index);
     }
+
+    /**
+     * 搜索结果页翻页.
+     *
+     * @param target 页面下标，从1开始.
+     */
+    public void turnPage(int target) {
+        if (null == mSearchResultEntity || mSearchResultEntity.getMPageNum() == target || target < 1) {
+            return;
+        }
+        if (null == mBinding) {
+            return;
+        }
+
+        mBinding.scenePoiList.performSearch(target, mSearchResultEntity.getKeyword(), false);
+    }
+
 }

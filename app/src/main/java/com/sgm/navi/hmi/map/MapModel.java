@@ -1143,6 +1143,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     }
                     mViewModel.toFavoriteFragment(0, favoritePoi);
                     break;
+                case IVrBridgeConstant.VoiceIntentPage.TURN_TARGET:
+                    //搜索结果翻页
+                    final int page = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.TARGET_PAGE, 0);
+                    if (page > 0) {
+                        mViewModel.turnSearchPage(page);
+                    }
                 default:
                     break;
             }

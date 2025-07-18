@@ -1030,6 +1030,24 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         addFragment(new SearchResultFragment(), args);
     }
 
+    /**
+     * 搜索结果页上一页、下一页、某一页.
+     *
+     * @param targetPage 直到页面.
+     */
+    public void turnSearchPage(final int targetPage) {
+        if (targetPage < 1) {
+            return;
+        }
+
+        BaseFragment currentFragment = StackManager.getInstance()
+                .getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if (currentFragment instanceof SearchResultFragment) {
+            SearchResultFragment searchResultFragment = (SearchResultFragment) currentFragment;
+            searchResultFragment.turnPage(targetPage);
+        }
+    }
+
     public void updateUiStyle(MapType mapTypeId, ThemeType isNight) {
         if (!StartService.getInstance().checkSdkIsNeedInit()) {
             mModel.updateUiStyle(mapTypeId, isNight);

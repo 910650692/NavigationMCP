@@ -2054,24 +2054,16 @@ public final class VoiceSearchManager {
                     //下一页
                     if (mCurrentPage == mMaxPage) {
                         //当前已是最后一页
-                        return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ALREADY_LAST_PAGE);
+                        callResponse = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ALREADY_LAST_PAGE);
                     } else {
-                        callResponse = CallResponse.createSuccessResponse();
-                        mTurnCallback = respCallback;
-                        mInTurnRound = true;
-                        mSessionId = sessionId;
-                        SearchPackage.getInstance().keywordSearch(mCurrentPage + 1, mKeyword, false);
+                        callResponse = toTargetPage(sessionId, mCurrentPage + 1, respCallback);
                     }
                 } else {
                     //上一页
                     if (mCurrentPage == 1) {
-                        return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ALREADY_FIRST_PAGE);
+                        callResponse = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ALREADY_FIRST_PAGE);
                     } else {
-                        callResponse = CallResponse.createSuccessResponse();
-                        mTurnCallback = respCallback;
-                        mInTurnRound = true;
-                        mSessionId = sessionId;
-                        SearchPackage.getInstance().keywordSearch(mCurrentPage - 1, mKeyword, false);
+                        callResponse = toTargetPage(sessionId, mCurrentPage - 1, respCallback);
                     }
                 }
                 break;
@@ -2102,12 +2094,20 @@ public final class VoiceSearchManager {
         } else if (mCurrentPage == target) {
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ALREADY_CURRENT_PAGE);
         } else {
-            mTurnCallback = respCallback;
-            mInTurnRound = true;
-            mSessionId = sessionId;
-            SearchPackage.getInstance().keywordSearch(target, mKeyword, false);
-            return CallResponse.createSuccessResponse();
+            return toTargetPage(sessionId, target, respCallback);
         }
+    }
+
+    private CallResponse toTargetPage(final String sessionId, final int target, final RespCallback respCallback) {
+        mTurnCallback = respCallback;
+        mInTurnRound = true;
+        mSessionId = sessionId;
+        final Bundle bundle = new Bundle();
+        bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE,
+                IVrBridgeConstant.VoiceIntentPage.TURN_TARGET);
+        bundle.putInt(IVrBridgeConstant.VoiceIntentParams.TARGET_PAGE, target);
+        MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+        return CallResponse.createSuccessResponse();
     }
 
     //处理翻页后的搜索结果

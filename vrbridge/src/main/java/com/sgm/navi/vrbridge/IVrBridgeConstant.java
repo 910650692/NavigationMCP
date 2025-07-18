@@ -106,6 +106,7 @@ public interface IVrBridgeConstant {
         int CLOSE_CURRENT_PAGE = 11; //关闭当前界面
         int MOVE_TO_BACK = 12; //应用退到后台
         int COLLECT_COMMON = 13; //收藏普通点
+        int TURN_TARGET = 14; //搜索结果翻页目标页面
     }
 
     interface VoiceIntentParams {
@@ -118,6 +119,7 @@ public interface IVrBridgeConstant {
         String ROUTE_INDEX = "route_index"; //选择路线时的index，从0开始
         String AROUND_RADIUS = "radius"; //周边搜索半径，单位米
         String IS_END = "IS_END"; //关键字搜是否作为途径点
+        String TARGET_PAGE = "target_page"; //翻页目标页面
     }
 
 
