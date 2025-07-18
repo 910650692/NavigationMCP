@@ -495,6 +495,12 @@ public final class SuperCruiseManager {
                     mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(minSpeedLimit));
                 } else {
                     mSpeedLimitDataAvailabl = false;
+                    mSpeedLimitBuilder.setSpeedLimitAssured(false);
+                    mSpeedLimitBuilder.setEffectSpeedLimit(0);
+                    mSpeedLimitBuilder.setEffectiveSpeedCategory(NaviLinkProto.SpeedLimit.EffectiveSpeedCategoryEnum.EFFECTIVE_CATEGORY_UNKNOWN);
+                    mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.BY_TRAFFIC_SIGN);
+                    mSpeedLimitBuilder.setPostedSpeedLimit(0);
+                    mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(0));
                 }
                 break;
             case NaviStatus.NaviStatusType.CRUISE://巡航
