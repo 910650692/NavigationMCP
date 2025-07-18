@@ -135,6 +135,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle) {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.addFragment(fragment, bundle);
@@ -143,6 +144,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment) {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.addFragment(fragment, bundle, isHideCurFragment);
@@ -151,6 +153,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.addPoiDetailsFragment(fragment, bundle);
@@ -159,6 +162,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void closeFragment(final boolean nextShow) {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.closeFragment(nextShow);
@@ -167,6 +171,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void closeFragment(Bundle bundle) {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.closeFragment(bundle);
@@ -175,6 +180,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void closeFragmentFromDetail(final boolean nextShow) {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.closeFragmentFromDetail(nextShow);
@@ -183,6 +189,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void closeAllFragment() {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.closeAllFragment();
@@ -191,6 +198,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void closeAllFragmentUpRoute() {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.closeAllFragmentUpRoute();
@@ -199,6 +207,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void closeAllFragmentUpNavi() {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.closeAllFragmentUpNavi();
@@ -207,6 +216,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void closeAllFragmentsUntilTargetFragment(final String targetFragmentClassName) {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.closeAllFragmentsUntilTargetFragment(targetFragmentClassName);
@@ -219,6 +229,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void showCurrentFragment() {
         if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
             return;
         }
         mActivity.showCurrentFragment();

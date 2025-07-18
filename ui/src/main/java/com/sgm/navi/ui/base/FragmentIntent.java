@@ -73,8 +73,15 @@ public class FragmentIntent {
             STACKMANAGER.removeBaseView(screenId, toFragment);
             STACKMANAGER.push(screenId, toFragment);
             if (isHideCurFragment) {
-                if (currentFragment.isAdded() && currentFragment.getParentFragmentManager() == fragmentManager) {
-                    transaction.hide(currentFragment);
+                if (currentFragment.isAdded()) {
+                    if(currentFragment.getParentFragmentManager() == fragmentManager){
+                        transaction.hide(currentFragment);
+                    }else{
+                        Logger.d(TAG,"fragmentManager is error");
+                        if(!ConvertUtils.isNull(currentFragment.getParentFragmentManager())){
+                            currentFragment.getParentFragmentManager().beginTransaction().hide(currentFragment);
+                        }
+                    }
                 }
             }
             transaction.show(toFragment);
@@ -83,8 +90,15 @@ public class FragmentIntent {
             Logger.i(TAG, "fragment stack no contain target fragment");
             toFragment.setArguments(bundle);
             if (isHideCurFragment) {
-                if (currentFragment.isAdded() && currentFragment.getParentFragmentManager() == fragmentManager) {
-                    transaction.hide(currentFragment);
+                if (currentFragment.isAdded()) {
+                    if(currentFragment.getParentFragmentManager() == fragmentManager){
+                        transaction.hide(currentFragment);
+                    }else{
+                        Logger.d(TAG,"fragmentManager is error");
+                        if(!ConvertUtils.isNull(currentFragment.getParentFragmentManager())){
+                            currentFragment.getParentFragmentManager().beginTransaction().hide(currentFragment);
+                        }
+                    }
                 }
             }
             transaction.add(containerId, toFragment);
@@ -132,10 +146,15 @@ public class FragmentIntent {
                 }
                 //如果查找是否存在栈顶的其他Fragment，如果有则隐藏
                 final BaseFragment currentFragment = STACKMANAGER.getCurrentFragment(screenId);
-                if (currentFragment.isAdded() &&
-                        currentFragment.getParentFragmentManager() == fragmentManager &&
-                        isHide == 0) {
-                    transaction.hide(currentFragment);
+                if (currentFragment.isAdded() && isHide == 0){
+                    if(currentFragment.getParentFragmentManager() == fragmentManager){
+                        transaction.hide(currentFragment);
+                    }else{
+                        Logger.d(TAG,"fragmentManager is error");
+                        if(!ConvertUtils.isNull(currentFragment.getParentFragmentManager())){
+                            currentFragment.getParentFragmentManager().beginTransaction().hide(currentFragment);
+                        }
+                    }
                 }
             }
 
@@ -188,6 +207,11 @@ public class FragmentIntent {
                     currentFragment = toFragment;
                     if (currentFragment.getParentFragmentManager() == fragmentManager) {
                         transaction.show(toFragment);
+                    }else{
+                        Logger.d(TAG,"fragmentManager is error");
+                        if(!ConvertUtils.isNull(currentFragment.getParentFragmentManager())){
+                            currentFragment.getParentFragmentManager().beginTransaction().show(toFragment);
+                        }
                     }
                 } else {
                     Logger.i(TAG, "回退栈为空，已经没有可显示的Fragment");
@@ -222,6 +246,11 @@ public class FragmentIntent {
             toFragment.onNewIntent(bundle);
             if (currentFragment.getParentFragmentManager() == fragmentManager) {
                 transaction.show(toFragment);
+            }else{
+                Logger.d(TAG,"fragmentManager is error");
+                if(!ConvertUtils.isNull(currentFragment.getParentFragmentManager())){
+                    currentFragment.getParentFragmentManager().beginTransaction().show(toFragment);
+                }
             }
         } else {
             Logger.i(TAG, "回退栈为空，已经没有可显示的Fragment");
@@ -249,6 +278,11 @@ public class FragmentIntent {
 
             if (toFragment.getParentFragmentManager() == fragmentManager) {
                 transaction.show(toFragment);
+            }else{
+                Logger.d(TAG,"fragmentManager is error");
+                if(!ConvertUtils.isNull(toFragment.getParentFragmentManager())){
+                    toFragment.getParentFragmentManager().beginTransaction().show(toFragment);
+                }
             }
         }
         final List<Fragment> fragments = fragmentManager.getFragments();
