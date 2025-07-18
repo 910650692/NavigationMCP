@@ -244,12 +244,16 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
             return;
         }
         mFavoriteListChecked.setValue(false);
+        refreshCollectStation();
+    };
+
+    public void refreshCollectStation() {
         mChargingVisibility.setValue(!mModel.isSGMLogin());
         mTipVisibility.setValue(false);
         mDataVisibility.setValue(false);
         mAddVisibility.setValue(false);
         mModel.queryCollectStation(mView.getActivity());
-    };
+    }
 
     /**
      * 获取收藏点列表(普通POI点)

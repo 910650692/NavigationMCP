@@ -112,8 +112,10 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     BroadcastReceiver mAccountReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Logger.d("onReceive: ","mAccountReceiver onReceive");
-            mViewModel.mChargingInfoClick.call();
+            Logger.d(TAG, "onReceive: mAccountReceiver");
+            ThreadManager.getInstance().postUi(() -> {
+                mViewModel.refreshCollectStation();
+            });
         }
     };
 

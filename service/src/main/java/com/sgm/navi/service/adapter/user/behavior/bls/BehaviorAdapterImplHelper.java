@@ -116,7 +116,7 @@ public class BehaviorAdapterImplHelper implements IBehaviorServiceObserver, ISyn
         value.intValue = isOpen ? 1 : 0;
         // SyncModeNow同步到后台； SyncModeLater保存到本地
         final int userRes = mBehaviorService.setConfig(ConfigKey.ConfigKeyOftenArrived, value, SyncMode.SyncModeNow);
-        Logger.i(TAG, "setConfig: userRes = " + userRes);
+        Logger.i(TAG, "setConfig: ConfigKeyOftenArrived ", isOpen, " userRes = " + userRes);
     }
 
     @Override
