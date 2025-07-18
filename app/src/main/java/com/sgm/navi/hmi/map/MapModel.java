@@ -1473,6 +1473,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onForecastArrivedData(ForecastArrivedDataInfo data) {
         if(Logger.openLog) Logger.d(TAG, "onForecastArrivedData: " + GsonUtils.toJson(data) + ", mCompanyOrHomeType: " + mCompanyOrHomeType);
+        if (StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), SettingFragment.class.getSimpleName())) {
+            return;
+        }
         //判断是否有家或者公司的数据
         switch (mCompanyOrHomeType){
             case AutoMapConstant.GuessPositionType.OTHER:

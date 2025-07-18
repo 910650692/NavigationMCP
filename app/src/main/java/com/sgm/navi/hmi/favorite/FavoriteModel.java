@@ -83,6 +83,14 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         mBehaviorPackage.unRegisterCallBack(this);
         SettingUpdateObservable.getInstance().removeObserver("FavoriteModel", this);
         mforCastPackage.unregisterCallBack(this);
+        clearDialog();
+    }
+
+    public void clearDialog() {
+        if (null != forecastAddressDialog && forecastAddressDialog.isShowing()) {
+            forecastAddressDialog.dismiss();
+        }
+        forecastAddressDialog = null;
     }
 
     /**
