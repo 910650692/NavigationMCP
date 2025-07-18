@@ -1409,17 +1409,20 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
     @Override
     public String getCurrentLocation(final String clientPkg) {
         Logger.i(TAG, clientPkg + " getCurrentLocation");
-        final String locationInfo;
-        if (null != mLocationInfo) {
-            locationInfo = GsonUtils.toJson(mLocationInfo);
-        } else {
-            final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
-            locationInfo = GsonUtils.toJson(locInfoBean);
-            mLocationInfo = GsonUtils.fromJson(locationInfo, BaseLocationInfo.class);
-            final GeoPoint geoPoint = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude());
-            initDistrict(geoPoint);
+        String locationInfo = "";
+        try {
+            if (null != mLocationInfo) {
+                locationInfo = GsonUtils.toJson(mLocationInfo);
+            } else {
+                final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
+                locationInfo = GsonUtils.toJson(locInfoBean);
+                mLocationInfo = GsonUtils.fromJson(locationInfo, BaseLocationInfo.class);
+                final GeoPoint geoPoint = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude());
+                initDistrict(geoPoint);
+            }
+        } catch (NullPointerException | ClassCastException e) {
+            Logger.e(TAG, "getCurrentLocation error: " + e.getMessage());
         }
-
         return locationInfo;
     }
 

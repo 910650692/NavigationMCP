@@ -15,6 +15,7 @@ import com.sgm.navi.service.define.position.DrBean;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.position.LocMMInfo;
 import com.sgm.navi.service.define.position.LocParallelInfoEntity;
+import com.sgm.navi.service.define.setting.SettingConstant;
 import com.sgm.navi.service.define.user.usertrack.GpsTrackPointBean;
 import com.sgm.navi.service.greendao.CommonManager;
 
@@ -74,6 +75,14 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     }
 
     public LocInfoBean getLastCarLocation() {
+        if (mPositionAdapter == null) {
+            Logger.e(TAG, "PositionAdapter is null, cannot get last car location.");
+            LocInfoBean locInfoBean = new LocInfoBean();
+            locInfoBean.setLongitude(SettingConstant.DEFAULT_LON_BJ);
+            locInfoBean.setLatitude(SettingConstant.DEFAULT_LAT_BJ);
+            locInfoBean.setAltitude(SettingConstant.DEFAULT_ALT_BJ);
+            return locInfoBean;
+        }
         return mPositionAdapter.getLastCarLocation();
     }
 
