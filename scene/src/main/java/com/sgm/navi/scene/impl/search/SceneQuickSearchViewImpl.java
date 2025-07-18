@@ -10,8 +10,10 @@ import com.sgm.navi.scene.ui.search.SceneQuickSearchView;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.ui.base.StackManager;
 
@@ -40,10 +42,16 @@ public class SceneQuickSearchViewImpl extends BaseSceneModel<SceneQuickSearchVie
 
     @Override
     public void closeSearch(final int type) {
-        if (type == AutoMapConstant.SearchType.AROUND_SEARCH) {
-            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeAllFragmentsUntilTargetFragment("AroundSearchFragment");
-        } else {
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        boolean isAlongWay = (currentNaviStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE)
+                || currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)
+                || currentNaviStatus.equals(NaviStatus.NaviStatusType.LIGHT_NAVING)
+                && type == AutoMapConstant.SearchType.ALONG_WAY_SEARCH);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, isAlongWay);
+        if (isAlongWay) {
             StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        } else {
+            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeAllFragmentsUntilTargetFragment("AroundSearchFragment");
         }
         mSearchPackage.clearLabelMark();
     }
