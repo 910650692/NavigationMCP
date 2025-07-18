@@ -19,6 +19,7 @@ import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.limit.LimitCitySelectionFragment;
 import com.sgm.navi.hmi.limit.LimitDriveFragment;
+import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
 import com.sgm.navi.hmi.search.parking.TerminalParkingFragment;
 import com.sgm.navi.scene.RoutePath;
@@ -74,6 +75,7 @@ import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
+import com.sgm.navi.ui.base.StackManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -148,10 +150,23 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRoutePackage.unRegisterRouteObserver(TAG);
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.unRegisterCallBack(TAG);
+
+        //routeFragment 异常销毁兜底处理
+        //是否点击开启导航按钮
+        boolean isStart = true;
+        if (mViewModel != null) {
+            isStart = !mViewModel.getStartNavi();
+        }
+        //当前界面是否是导航界面
+        BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if (mRoutePackage.isRouteState() && !isStart && !(currentFragment instanceof NaviGuidanceFragment)) {
+            Logger.d(TAG, "routeFragment abnormality destroyed ");
+            mRoutePackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
     }
 
     /**
-     * 请求算路
+     * 请求算路`
      * @param param 请求参数
      * */
     public void requestRouteMode(final RouteRequestParam param) {

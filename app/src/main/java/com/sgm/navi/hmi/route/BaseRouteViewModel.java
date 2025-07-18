@@ -1102,6 +1102,13 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
     /***
+     * 获取开启导航按钮是否可以点击
+     */
+    public boolean getStartNavi() {
+        return mStartNavi;
+    }
+
+    /***
      * 请求算路
      * @param param 请求参数
      */

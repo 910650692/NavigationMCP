@@ -212,28 +212,6 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
     }
 
     @Override
-    public void onRouteItemClick(final MapType mapTypeId, final LayerPointItemType type, final LayerItemRoutePointClickResult result) {
-        Logger.d(TAG, "onRouteItemClick");
-        if (ConvertUtils.isEmpty(result) || ConvertUtils.isEmpty(type)) {
-            return;
-        }
-        if (!NaviStatus.NaviStatusType.SELECT_ROUTE.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
-            Logger.i(TAG, "is not on route page");
-            return;
-        }
-        switch (type) {
-            case ROUTE_POINT_VIA_REPLACE_CHARGE:
-                break;
-            case ROUTE_POINT_WEATHER:
-            case ROUTE_POINT_REST_AREA:
-                mViewModel.getClosePage().call();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
     public void onRouteSlected(final MapType mapTypeId, final int routeIndex, final boolean isFirst) {
         mViewModel.getClosePage().call();
     }
