@@ -500,16 +500,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         if (mPoiInfoEntity == null || mPoiInfoEntity.getParkingInfoList() == null || mPoiInfoEntity.getParkingInfoList().isEmpty()) {
             return;
         }
-        View parkView = resultHolder.itemView.findViewById(R.id.scene_poi_item_parking_service_view);
-        ScenePoiItemParkingViewBinding binding = null;
-        if (parkView == null) {
-            ViewStub stub = resultHolder.itemView.findViewById(R.id.scene_poi_item_parking_service_view_stub);
-            if (stub != null) {
-                parkView = stub.inflate(); // 加载 GasStationView
-                binding = DataBindingUtil.bind(parkView);
-            }
-        }
-        if (binding != null) {
+        ScenePoiItemParkingViewBinding binding = resultHolder.getParkLotBinding();
+        if(binding != null){
             binding.poiParkingFreeTotal.setText("");
             binding.getRoot().setVisibility(VISIBLE);
             final ParkingInfo parkingInfo = mPoiInfoEntity.getParkingInfoList().get(0);
@@ -696,6 +688,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         private ScenePoiItemChargeViewBinding chargeViewBinding;
         private ScenePoiItemCateringViewBinding cateringViewBinding;
         private ScenePoiItemGasViewBinding gasViewBinding;
+        private ScenePoiItemParkingViewBinding parkingViewBinding;
 
         /**
          * 获取 scenicSpotViewBinding，如果未初始化则 inflate 并绑定
@@ -737,6 +730,20 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 }
             }
             return chargeViewBinding;
+        }
+
+        /**
+         * 获取 ScenePoiItemParkingViewBinding，如果未初始化则 inflate 并绑定
+         */
+        public ScenePoiItemParkingViewBinding getParkLotBinding() {
+            if (parkingViewBinding == null) {
+                ViewStub stub = itemView.findViewById(R.id.scene_poi_item_parking_service_view_stub);
+                if (stub != null) {
+                    View view = stub.inflate(); // 加载 ViewStub
+                    parkingViewBinding = DataBindingUtil.bind(view); // 绑定
+                }
+            }
+            return parkingViewBinding;
         }
 
         /**
