@@ -496,6 +496,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             if (isOpen) {
                 handler.sendEmptyMessageDelayed(0,500);
             }else {
+                MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, "{\"isMapDisplaying\":false}");
                 handler.sendEmptyMessageDelayed(1,500);
             }
         } catch (Exception e) {

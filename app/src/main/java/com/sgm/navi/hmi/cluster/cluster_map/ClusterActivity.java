@@ -78,6 +78,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         super.onResume();
         Logger.d(TAG, "----onResume");
         mViewModel.remainingMileageConstraintLayoutVisibility.set(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING));
+        mBinding.clusterMapview.postDelayed(() -> MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE),800);
     }
 
     @Override
@@ -104,8 +105,8 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         super.onDestroy();
         Logger.d(TAG, "----onDestroy");
         ActivityCloseManager.getInstance().removeOnCloseListener(this);
-        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_FALSE);
-        ThreadManager.getInstance().removeHandleTask(mRunnable);
+//        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_FALSE);
+//        ThreadManager.getInstance().removeHandleTask(mRunnable);
     }
 
     @Override
@@ -159,14 +160,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     public void bindMapView() {
         Logger.d(TAG, "bindMapView");
         MapPackage.getInstance().bindMapView(mBinding.clusterMapview);
-        ThreadManager.getInstance().postDelay(mRunnable,800L);
     }
 
-    private final Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Logger.d(TAG, "mRunnable run");
-            MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE);
-        }
-    };
+
 }
