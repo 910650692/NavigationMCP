@@ -5,8 +5,12 @@ import com.android.utils.log.Logger;
 import com.sgm.navi.scene.BaseSceneModel;
 import com.sgm.navi.scene.api.search.ISceneSearchPoiList;
 import com.sgm.navi.scene.ui.search.SceneSugSearchPoiList;
+import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.greendao.history.History;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.ui.base.StackManager;
 
@@ -20,6 +24,7 @@ import java.util.List;
  */
 public class SceneSugSearchPoiListImpl extends BaseSceneModel<SceneSugSearchPoiList> implements ISceneSearchPoiList {
     private final SearchPackage mSearchPackage;
+    private final RoutePackage mRoutePackage;
     private int mTaskId;
 
     public int getMTaskId() {
@@ -29,6 +34,7 @@ public class SceneSugSearchPoiListImpl extends BaseSceneModel<SceneSugSearchPoiL
     public SceneSugSearchPoiListImpl(final SceneSugSearchPoiList scrollView) {
         super(scrollView);
         mSearchPackage = SearchPackage.getInstance();
+        mRoutePackage = RoutePackage.getInstance();
     }
 
     @Override
@@ -64,6 +70,14 @@ public class SceneSugSearchPoiListImpl extends BaseSceneModel<SceneSugSearchPoiL
     public List<History> getSearchKeywordRecord(){
         List<History> historyList = mSearchPackage.getSearchKeywordRecord();
         return historyList;
+    }
+
+    public void addRemoveClick(final PoiInfoEntity poiInfoEntity) {
+        if (mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+            mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+        } else {
+            mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+        }
     }
 
     @Override

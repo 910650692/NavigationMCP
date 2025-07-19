@@ -243,7 +243,11 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                 geoPoint.setLat(historyPoint.getLat());
                 poiInfoEntity.setPoint(geoPoint);
                 if (SearchPackage.getInstance().isAlongWaySearch()) {
-                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                    if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                        ToastUtils.Companion.getInstance().showCustomToastView("起点终点不能删除");
+                    }else{
+                        mScreenViewModel.addRemoveClick(poiInfoEntity);
+                    }
                 } else {
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Route.ROUTE_FRAGMENT)

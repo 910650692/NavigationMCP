@@ -133,7 +133,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
                 .getDrawable(R.drawable.img_basic_ic_navi));
         if (mSearchPackage.isAlongWaySearch()) {
             if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
-                holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                holder.mResultItemBinding.textNavi.setText(R.string.route_service_details_remove_via_charge);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
                         .getDrawable(R.drawable.img_route_search_added));
             } else {

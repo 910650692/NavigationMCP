@@ -198,6 +198,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_40"
                 android:focusable="true"
+                android:minWidth="@dimen/dp_90"
                 app:layout_constraintBottom_toBottomOf="@+id/crl_poi_item"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/crl_poi_item">
@@ -208,8 +209,8 @@
                     android:layout_height="@dimen/dp_74"
                     android:focusable="false"
                     android:src="@drawable/img_basic_ic_navi"
-                    app:layout_constraintEnd_toEndOf="@id/text_navi"
-                    app:layout_constraintStart_toStartOf="@+id/text_navi"
+                    app:layout_constraintEnd_toEndOf="@id/poi_to_navi"
+                    app:layout_constraintStart_toStartOf="@+id/poi_to_navi"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.5" />
 
@@ -222,7 +223,8 @@
                     android:focusable="false"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_38"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/poi_to_navi"
+                    app:layout_constraintStart_toStartOf="@+id/poi_to_navi"
                     app:layout_constraintTop_toBottomOf="@+id/iv_navi_icon" />
             </com.sgm.navi.ui.view.SkinConstraintLayout>
         </com.sgm.navi.ui.view.SkinConstraintLayout>

@@ -185,7 +185,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     poiInfoEntity.setPoint(parseGeoPoint(mPoiEntities.get(position).getMEndPoint()));
                 }
                 if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
-                    resultHolder.resultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                    resultHolder.resultItemBinding.textNavi.setText(R.string.route_service_details_remove_via_charge);
                     resultHolder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
                             .getDrawable(R.drawable.img_route_search_added));
                 } else {
