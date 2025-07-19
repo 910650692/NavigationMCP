@@ -428,62 +428,64 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     }
 
     //开启HUDMapviewActivity方法
-    private void switchHudActivity(boolean isHud) {
-        int secondeDid = 4; // HUD的DisplayId为4
+    private void switchHudActivity(boolean openHud) {
+        if (!openHud) {
+            //关闭HUD
+            Logger.d(FsaConstant.FSA_TAG, "close HudActivity");
+            ActivityCloseManager.getInstance().triggerClose(false);
+            return;
+        }
+        int displayId = -1;
         //if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && De)
         //cadi gb hud3  1057563bug  7. 夏陶悦,Xia Taoyue 2025年7月3日 下午2:05//L233 的 HUD 安卓displayid为3
         //buick clea hud4
         if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && CalibrationPackage.getInstance().brand() == IS_BUICK && CalibrationPackage.getInstance().architecture() == IS_CLEA){//buick
             Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: yes IS_BUICK IS_CLEA");
-            int displayId = -1;
             final DisplayManager displayManager = AppCache.getInstance().getMContext().getSystemService(DisplayManager.class);
-            if (displayManager != null) {
-                Display[] displays = displayManager.getDisplays();
-                if (displays != null) {
-                    for (Display display : displays) {
-                        if (display == null) {
-                            continue;
-                        }
-                        int width = display.getWidth();
-                        int height = display.getHeight();
-                        if (width == 1280 || height == 640) {
-                            displayId = display.getDisplayId();
-                            Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: for displayId", displayId);
-                            break;
-                        }
-                    }
-                    if (displayId == 4 || displayId == 6) {
-                        secondeDid = displayId;
-                    } else {
-                        Logger.e(FsaConstant.FSA_TAG, "switchHudActivity: unknown displayId", displayId);
-                        return;
+            if (displayManager == null) {
+                Logger.e(FsaConstant.FSA_TAG, "switchHudActivity: displayManager == null");
+                return;
+            }
+            Display[] displays = displayManager.getDisplays();
+            if (displays == null) {
+                Logger.e(FsaConstant.FSA_TAG, "switchHudActivity: displays == null");
+                return;
+            }
+            for (Display display : displays) {
+                if (display == null) {
+                    continue;
+                }
+                int width = display.getWidth();
+                int height = display.getHeight();
+                if (width == 1280 && height == 640) {
+                    Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: for hud displayId", display.getDisplayId());
+                    if (display.getDisplayId() == 4 || display.getDisplayId() == 6) {
+                        displayId = display.getDisplayId();
                     }
                 }
             }
-        }else if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && CalibrationPackage.getInstance().brand() == IS_CADILLAC && CalibrationPackage.getInstance().architecture() == IS_GB){//Cadillac
+            if (displayId == -1) {
+                Logger.e(FsaConstant.FSA_TAG, "switchHudActivity: unknown displayId");
+                return;
+            }
+        } else if (DeviceUtils.isCar(AppCache.getInstance().getMContext()) && CalibrationPackage.getInstance().brand() == IS_CADILLAC && CalibrationPackage.getInstance().architecture() == IS_GB){//Cadillac
             Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: yes IS_CADILLAC IS_GB");
-            secondeDid = 3;
-        }else {
+            displayId = 3;
+        } else {
             Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: NONONO");
             return;
         }
-        Logger.d(FsaConstant.FSA_TAG, "switchHudActivity: ",isHud,secondeDid);
-        if (isHud) {
-            Logger.d(FsaConstant.FSA_TAG, "open HudActivity");
-            final ActivityOptions options = ActivityOptions.makeBasic();
-            options.setLaunchDisplayId(secondeDid);
-            final Intent intent = new Intent();
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setAction("com.sgm.navi.hmi.hud.HudActivity");
-            intent.putExtra("isHud", isHud);
-            try{
-                AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
-            } catch (Exception e) {
-                Logger.e(FsaConstant.FSA_TAG, "startActivity error", e);
-            }
-        } else {
-            //关闭HUD
-            ActivityCloseManager.getInstance().triggerClose(false);
+        Logger.d(FsaConstant.FSA_TAG, "open HudActivity", displayId);
+        final ActivityOptions options = ActivityOptions.makeBasic();
+        options.setLaunchDisplayId(displayId);
+        final Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction("com.sgm.navi.hmi.hud.HudActivity");
+        intent.putExtra("isHud", openHud);
+        try{
+            AppCache.getInstance().getMContext().startActivity(intent, options.toBundle());
+        } catch (Exception e) {
+            Logger.e(FsaConstant.FSA_TAG, "startActivity error", e);
         }
     }
 
