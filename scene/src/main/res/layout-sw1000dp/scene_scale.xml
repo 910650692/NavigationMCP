@@ -19,8 +19,8 @@
             clickCommand="@{Scene.amplifyLevel}"
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_68"
-            android:background="@drawable/bg_scene_scale_tab"
-            android:src="@drawable/img_basic_ic_add"
+            android:background="@drawable/bg_scene_scale_tab_sw1225"
+            android:src="@drawable/img_basic_ic_add_sw1225"
             android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,8 +31,8 @@
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_68"
             android:layout_marginTop="@dimen/dp_17"
-            android:background="@drawable/bg_scene_scale_tab"
-            android:src="@drawable/img_basic_ic_reduce"
+            android:background="@drawable/bg_scene_scale_tab_sw1225"
+            android:src="@drawable/img_basic_ic_reduce_sw1225"
             android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="@id/screen_scale_add"
             app:layout_constraintTop_toBottomOf="@id/screen_scale_add" />

@@ -91,11 +91,12 @@
                     clickCommand="@{naviControl.switchOverview}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_26"
+                    android:layout_marginStart="@dimen/dp_60"
                     android:layout_marginTop="@dimen/dp_14"
                     android:contentDescription="@string/navi_overview_switch"
                     app:click_color_change="true"
                     app:layout_constraintEnd_toStartOf="@id/sv_variation"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -126,13 +127,15 @@
                     clickCommand="@{naviControl.onVariation}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="38dp"
+                    android:layout_marginEnd="38dp"
                     android:contentDescription="@string/navi_mute"
                     app:click_color_change="true"
                     app:layout_constraintBottom_toBottomOf="@+id/sv_overview_switch"
                     app:layout_constraintEnd_toStartOf="@id/sv_more_setup"
                     app:layout_constraintStart_toEndOf="@id/sv_overview_switch"
                     app:layout_constraintTop_toTopOf="@+id/sv_overview_switch"
-                    app:layout_goneMarginEnd="@dimen/dp_26">
+                    app:layout_goneMarginEnd="@dimen/dp_60">
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_variation"
@@ -162,14 +165,14 @@
                     android:layout_height="wrap_content"
                     android:visibility="@{naviControl.getGroupMoreSetupField()?View.VISIBLE:View.GONE}"
                     app:constraint_referenced_ids="sv_more_setup,siv_more_setup,stv_more_setup"
-                    tools:visibility="visible" />
+                    tools:visibility="gone" />
                 <!--更多-->
                 <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/sv_more_setup"
                     clickCommand="@{naviControl.moreSetup}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_26"
+                    android:layout_marginEnd="@dimen/dp_60"
                     android:contentDescription="@string/navi_more_setup"
                     app:click_color_change="true"
                     app:layout_constraintBottom_toBottomOf="@id/sv_variation"

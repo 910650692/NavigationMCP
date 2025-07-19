@@ -6,17 +6,17 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/search_filter_root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible">
 
         <com.sgm.navi.ui.view.SkinScrollView
             android:id="@+id/search_filter_scrollview"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_550"
+            android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_34"
             android:layout_marginBottom="@dimen/dp_134"
-            android:paddingHorizontal="@dimen/dp_34"
+            android:paddingHorizontal="@dimen/dp_24"
             android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,7 @@
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_filter_title1"
@@ -33,26 +33,32 @@
                     android:maxLines="1"
                     android:textColor="@color/search_color_ffffff"
                     android:textSize="@dimen/sp_29"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="位置距离" />
+                    tools:text="位置距离"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_title1"
-                    app:layout_goneMarginTop="@dimen/dp_40" />
+                    app:layout_goneMarginTop="@dimen/dp_40"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list1_child"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list1" />
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list1"
+                    tools:visibility="visible" />
 
 
                 <com.sgm.navi.ui.view.SkinTextView
@@ -63,26 +69,32 @@
                     android:maxLines="1"
                     android:textColor="@color/search_color_ffffff"
                     android:textSize="@dimen/sp_29"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list1_child"
-                    tools:text="全部分类" />
+                    tools:text="全部分类"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_title2"
-                    app:layout_goneMarginTop="@dimen/dp_40" />
+                    app:layout_goneMarginTop="@dimen/dp_40"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list2_child"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list2" />
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list2"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_filter_title3"
@@ -92,26 +104,32 @@
                     android:maxLines="1"
                     android:textColor="@color/search_color_ffffff"
                     android:textSize="@dimen/sp_29"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list2_child"
-                    tools:text="推荐排序" />
+                    tools:text="推荐排序"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_title3"
-                    app:layout_goneMarginTop="@dimen/dp_40" />
+                    app:layout_goneMarginTop="@dimen/dp_40"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list3_child"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list3" />
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list3"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/search_filter_title4"
@@ -121,26 +139,32 @@
                     android:maxLines="1"
                     android:textColor="@color/search_color_ffffff"
                     android:textSize="@dimen/sp_29"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list3_child"
-                    tools:text="更多" />
+                    tools:text="更多"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_title4"
-                    app:layout_goneMarginTop="@dimen/dp_40" />
+                    app:layout_goneMarginTop="@dimen/dp_40"
+                    tools:visibility="visible" />
 
                 <com.sgm.navi.ui.view.SkinRecyclerView
                     android:id="@+id/search_filter_list4_child"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list4" />
+                    app:layout_constraintTop_toBottomOf="@+id/search_filter_list4"
+                    tools:visibility="visible" />
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         </com.sgm.navi.ui.view.SkinScrollView>

@@ -272,6 +272,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_goneMarginTop="@dimen/dp_52"
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_park_price">
 
             <com.sgm.navi.ui.view.SkinTextView
@@ -301,6 +302,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_26"
+            app:layout_goneMarginTop="@dimen/dp_52"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_business_layout"
             tools:text="电        话: 021-888888" />
@@ -319,6 +321,7 @@
             android:layout_width="@dimen/dp_477"
             android:layout_height="@dimen/dp_246"
             android:layout_marginTop="@dimen/dp_26"
+            app:layout_goneMarginTop="@dimen/dp_52"
             android:background="@drawable/bg_charge_imageview"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_charge_area_phone">

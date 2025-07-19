@@ -22,7 +22,6 @@
             tools:text="地上"
             android:paddingEnd="@dimen/dp_8"
             android:textSize="@dimen/sp_24"
-            android:visibility="gone"
             tools:visibility="visible"
             android:textColor="@color/traffic_sub_title_color"
             android:gravity="center"

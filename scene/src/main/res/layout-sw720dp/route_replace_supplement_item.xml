@@ -77,7 +77,7 @@
             android:id="@+id/tv_replace_point_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="@dimen/dp_211"
+            android:maxWidth="@dimen/dp_200"
             android:gravity="center"
             android:singleLine="true"
             android:ellipsize="end"
