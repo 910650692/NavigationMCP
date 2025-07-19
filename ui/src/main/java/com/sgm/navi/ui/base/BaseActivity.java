@@ -16,6 +16,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 
 import java.lang.reflect.ParameterizedType;
@@ -97,6 +98,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         super.onDestroy();
         Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "onDestroy");
         mStackManager.removeBaseView(mScreenId, this);
+        ToastUtils.Companion.getInstance().cancelView();
     }
 
     @Override

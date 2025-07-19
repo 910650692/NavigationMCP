@@ -462,6 +462,7 @@ public class RouteAdapterImplHelper {
             Logger.d(TAG, "RouteParam.getRealPos() == null");
             info.realPos = new Coord2DDouble();
         } else {
+            Logger.d(TAG, "RouteParam " + routeParam.getPoiID() + " lon:" + routeParam.getRealPos().getLon() + " lat:" + routeParam.getRealPos().getLat());
             info.realPos = new Coord2DDouble(routeParam.getRealPos().getLon(), routeParam.getRealPos().getLat());
         }
         info.naviPos = new Coord2DDouble();

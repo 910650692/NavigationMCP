@@ -36,7 +36,6 @@ public abstract class BaseModel<VM extends IBaseViewModel> implements IBaseModel
     @Override
     public void onDestroy() {
         Logger.i(getClass().getSimpleName(), "onDestroy");
-        ToastUtils.Companion.getInstance().cancelView();
     }
 
     /**
