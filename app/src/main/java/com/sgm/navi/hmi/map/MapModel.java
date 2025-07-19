@@ -309,6 +309,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         NavistatusAdapter.getInstance().registerCallback(this);
         SettingUpdateObservable.getInstance().addObserver(TAG, this);
         mapPackage.addTimeHelper(timeHelper);
+        speedMonitor.registerSpeedCallBack();
         speedMonitor.registerCallBack(this);
         mViewModel.initVisibleAreaPoint();
         forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView(), this);
@@ -806,7 +807,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
             mViewModel.initTimer();
             addFavoriteToMap();
-            speedMonitor.registerSpeedCallBack();
+            if (speedMonitor != null) {
+                speedMonitor.registerSpeedCallBack();
+                speedMonitor.registerCallBack(this);
+            } else {
+                Logger.e(TAG, "speedMonitor is null");
+            }
             processExportCommand();
             //如果处于导航状态，并且是全览或者是固定全览，从后台切到前台，进入全览
             if(mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() || naviPackage.getPreviewStatus())){
