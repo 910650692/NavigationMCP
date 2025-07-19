@@ -83,6 +83,10 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
      * @param naviInfoBean TBT数据
      */
     public void onNaviInfo(final NaviEtaInfo naviInfoBean) {
+        if(naviInfoBean == null) {
+            Logger.i(TAG, " naviInfoBean is null");
+            return;
+        }
         mCurNaviInfo = naviInfoBean;
         mRoundNum = mCurNaviInfo.getRingOutCnt();
         // 显示近接动作信息

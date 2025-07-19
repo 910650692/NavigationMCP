@@ -22,6 +22,7 @@ import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 
 /**
  * eta信息scene(途经点面板)
@@ -175,6 +176,14 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
     public void refreshArriveTime() {
         if (null != mScreenViewModel) {
             mScreenViewModel.refreshArriveTime();
+        }
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        if (mScreenViewModel != null) {
+            mScreenViewModel.onNaviInfo(NaviPackage.getInstance().getCurrentNaviEtaInfo());
         }
     }
 }
