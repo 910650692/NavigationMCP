@@ -4,13 +4,10 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.DeviceUtils;
-import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.broadcast.PoiPushReceiver;
 import com.sgm.navi.broadcast.SteeringWheelButtonReceiver;
 import com.sgm.navi.burypoint.BuryManager;
-import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.service.AppCache;
 
 import java.math.BigDecimal;
@@ -32,20 +29,8 @@ public abstract class BaseCarModelsFeature {
     }
 
     private void initPublicComponent() {
-        initARouter();
         initDataTrack();
         initBroadcast();
-    }
-
-    /**
-     * 初始化路由
-     */
-    private void initARouter() {
-        if (BuildConfig.DEBUG) {
-            ARouter.openLog();
-            ARouter.openDebug();
-        }
-        ARouter.init(AppCache.getInstance().getMApplication());
     }
 
     /**

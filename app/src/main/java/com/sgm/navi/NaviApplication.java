@@ -7,12 +7,14 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.flavor.CarModelsFeature;
+import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.patacnetlib.PatacNetClient;
 import com.sgm.navi.service.AppCache;
@@ -37,6 +39,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
             Logger.e("NaviApp_Start", "isExternalStorageAvailable is false = killSelf");
             killSelf();
         }
+        initARouter();
         initComponent();
     }
 
@@ -59,6 +62,17 @@ public class NaviApplication extends BaseApplication implements Application.Acti
                         ProcessManager.updateIsAppInForeground(false);
             }
         }
+    }
+
+    /**
+     * 初始化路由
+     */
+    private void initARouter() {
+        if (BuildConfig.DEBUG) {
+            ARouter.openLog();
+            ARouter.openDebug();
+        }
+        ARouter.init(this);
     }
 
 
