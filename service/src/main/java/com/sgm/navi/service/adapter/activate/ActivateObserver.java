@@ -12,12 +12,6 @@ public interface ActivateObserver {
     void onActivating();
 
     /**
-     * 网络激活失败
-     * @param failedCount 网络激活失败次数
-     */
-    void onNetActivateFailed(int failedCount);
-
-    /**
      * 激活成功
      */
     void onActivated();
@@ -30,12 +24,32 @@ public interface ActivateObserver {
      */
     void onActivatedError(int errCode, String msg);
 
+    /**
+     * 开始激活流程
+     *
+     * @return AppKey
+     */
     String getAppKeyFromDB();
 
+    /**
+     * 从网络获取AppKey
+     *
+     * @param callBack 回调
+     */
     void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack);
 
+    /**
+     * 从数据库获取UUID
+     *
+     * @return UUID
+     */
     String getUuidFromDB();
 
+    /**
+     * 从网络获取UUID
+     *
+     * @param callBack 回调
+     */
     void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack);
 
 }

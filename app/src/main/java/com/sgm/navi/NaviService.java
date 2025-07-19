@@ -19,11 +19,13 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.android.utils.SpUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.adas.AdasClient;
 import com.sgm.navi.flavor.BaseCarModelsFeature;
 import com.sgm.navi.flavor.CarModelsFeature;
+import com.sgm.navi.hmi.activate.ActivateUiStateManager;
 import com.sgm.navi.l2pp.PatacL2ppManager;
 import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.navisender.NaviSender;
@@ -51,6 +53,7 @@ public class NaviService extends Service {
     private static OneTimeWorkRequest vrBridgeWorkRequest;
     private static OneTimeWorkRequest carModelsFeatureWorkRequest;
     private static final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+    private static boolean initSdkLogSwitch = false;
 
     public NaviService() {
         StartService.getInstance().registerSdkCallback(TAG, sdkInitCallback);
@@ -63,6 +66,7 @@ public class NaviService extends Service {
         carModelsFeatureWorkRequest = new OneTimeWorkRequest.Builder(CarModelsFeatureWork.class)
                 .addTag("VrBridge init")
                 .build();
+        initSdkLogSwitch = SpUtils.getInstance().getBoolean(SpUtils.SP_KEY_LOG_SWITCH, false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -177,11 +181,21 @@ public class NaviService extends Service {
         }
 
         @Override
+        public void onSdkBaseLibInitSuccess() {
+            Logger.i(TAG, "onSdkBaseLibInitSuccess");
+            ActivateUiStateManager.getInstance().init();
+        }
+
+        @Override
         public void onSdkInitFail(int initSdkResult, String msg) {
             if (!atomicBoolean.get()) {
                 Logger.i(TAG, "Engine init fail and the retry in progress......");
                 StartService.getInstance().retryEngineInit();
+                // 在log没有打开的情况下，如果引擎初始化失败，则强制打开log开关，方便排查问题
                 atomicBoolean.set(true);
+                if (initSdkLogSwitch) return;
+                initSdkLogSwitch = true;
+                Logger.switchLog(true);
             } else {
                 Logger.i(TAG, "Engine init fail and the number of retries exceeded");
             }

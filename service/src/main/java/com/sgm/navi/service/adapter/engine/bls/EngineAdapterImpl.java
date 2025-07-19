@@ -88,6 +88,8 @@ public class EngineAdapterImpl implements IEngineApi {
             Logger.i(TAG, "引擎已经初始化过，无需重复初始化 ", mIsEngineInit);
             return;
         }
+        final int overDue = isOverdue();
+        if (!ConvertUtils.equals(0, overDue)) return;
         final int initBaseLibsResult = initEngineParam();
         if (!ConvertUtils.equals(0, initBaseLibsResult)) {
             onEngineObserver(10004);
@@ -105,8 +107,6 @@ public class EngineAdapterImpl implements IEngineApi {
             }
             return;
         }
-        final int overDue = isOverdue();
-        if (!ConvertUtils.equals(0, overDue)) return;
         final int sdkResultCode = initSDKParam();
         if (!ConvertUtils.equals(0, sdkResultCode)) {
             onEngineObserver(10006);
@@ -191,13 +191,15 @@ public class EngineAdapterImpl implements IEngineApi {
         //单位微秒
         final long limitTime = ServiceMgr.getServiceMgrInstance().getSdkLimitTimeUTC();
         if (limitTime == 0) {
-            return onEngineObserver(10003);
-        }
-        final long limitTimeMillis = limitTime / 1000;
-        final long currentTime = System.currentTimeMillis();
-        Logger.d(TAG, "====limitTimeMillis = {?}， currentTime = {?}", limitTimeMillis, currentTime);
-        if (limitTimeMillis < currentTime) {
-            return onEngineObserver(10002);
+            Logger.d(TAG, "limitTime == 0 代表没有配置有效时间 不做拦截");
+//            return onEngineObserver(10003);
+        } else {
+            final long limitTimeMillis = limitTime / 1000;
+            final long currentTime = System.currentTimeMillis();
+            Logger.d(TAG, "limitTimeMillis", limitTimeMillis, "currentTime", currentTime);
+            if (limitTimeMillis < currentTime) {
+                return onEngineObserver(10002);
+            }
         }
         return 0;
     }

@@ -40,7 +40,12 @@ public final class ActivateHQ {
     private static String ORDER_ID;
     private final static String HQ = "HQ";
     private static int QUERY_ORDER_NUM = 0;
-    private static final int NET_FAILED_RETRY_DELAY = 8;
+    private final long[] mDelays = {
+            AutoMapConstant.DELAY_MINUTE * 2,
+            AutoMapConstant.DELAY_MINUTE * 5,
+            AutoMapConstant.DELAY_MINUTE * 5
+    };
+    private int mIndex = 0;
     private AtomicInteger mNetFailedRetryCount = new AtomicInteger(0);
 
     private AdasManager mAdasManager;
@@ -50,6 +55,7 @@ public final class ActivateHQ {
         DEVICES_ID = CalibrationPackage.getInstance().getDeviceId();
         SYS_VERSION = "1.0";
         API_VERSION = "1.0";
+        mIndex = 0;
         QUERY_ORDER_NUM = 0;
         mNetFailedRetryCount.set(0);
         mNetRetryExecutor = Executors.newScheduledThreadPool(1);
@@ -107,12 +113,16 @@ public final class ActivateHQ {
                 Logger.d(TAG, "获取AppKey失败");
                 if (mNetFailedRetryCount.incrementAndGet() < 3) {
                     Logger.d(TAG, "网络失败计数: ", mNetFailedRetryCount.get());
+                    int retryIndex = mNetFailedRetryCount.get() - 1;
+                    if (retryIndex >= mDelays.length) {
+                        retryIndex = mDelays.length - 1;
+                    }
                     mNetRetryExecutor.schedule(new Runnable() {
                         @Override
                         public void run() {
                             testAppKey();
                         }
-                    }, NET_FAILED_RETRY_DELAY, TimeUnit.SECONDS);
+                    }, mDelays[retryIndex], TimeUnit.MINUTES);
                 } else {
                     Logger.d(TAG, "请求网络失败重试次数用完，等待下次点火");
                     if (!mNetRetryExecutor.isShutdown()) {
@@ -158,13 +168,17 @@ public final class ActivateHQ {
             public void onFailed() {
                 Logger.d(TAG, "Uuid网络请求失败");
                 if (mNetFailedRetryCount.incrementAndGet() < 3) {
+                    int retryIndex = mNetFailedRetryCount.get() - 1;
+                    if (retryIndex >= mDelays.length) {
+                        retryIndex = mDelays.length - 1;
+                    }
                     Logger.d(TAG, "网络失败计数: ", mNetFailedRetryCount.get());
                     mNetRetryExecutor.schedule(new Runnable() {
                         @Override
                         public void run() {
                             postUUID();
                         }
-                    }, NET_FAILED_RETRY_DELAY, TimeUnit.SECONDS);
+                    }, mDelays[retryIndex], TimeUnit.MINUTES);
                 } else {
                     Logger.d(TAG, "uuid请求网络失败重试次数用完，等待下次点火");
                     if (!mNetRetryExecutor.isShutdown()) {
@@ -201,13 +215,17 @@ public final class ActivateHQ {
                 public void onFailed() {
                     Logger.d(TAG, "firstCheckOrderStatus failed");
                     if (mNetFailedRetryCount.incrementAndGet() < 3) {
+                        int retryIndex = mNetFailedRetryCount.get() - 1;
+                        if (retryIndex >= mDelays.length) {
+                            retryIndex = mDelays.length - 1;
+                        }
                         Logger.d(TAG, "网络失败计数 : ", mNetFailedRetryCount.get());
                         mNetRetryExecutor.schedule(new Runnable() {
                             @Override
                             public void run() {
                                 readyCreateOrder();
                             }
-                        }, NET_FAILED_RETRY_DELAY, TimeUnit.SECONDS);
+                        }, mDelays[retryIndex], TimeUnit.MINUTES);
                     } else {
                         Logger.d(TAG, "网络失败重试次数用完，等待下次点火");
                         if (!mNetRetryExecutor.isShutdown()) {
@@ -254,12 +272,16 @@ public final class ActivateHQ {
             public void onFailed() {
                 if (mNetFailedRetryCount.incrementAndGet() < 3) {
                     Logger.d(TAG, "网络失败计数 : ", mNetFailedRetryCount.get());
+                    int retryIndex = mNetFailedRetryCount.get() - 1;
+                    if (retryIndex >= mDelays.length) {
+                        retryIndex = mDelays.length - 1;
+                    }
                     mNetRetryExecutor.schedule(new Runnable() {
                         @Override
                         public void run() {
                             createCloudOrder();
                         }
-                    }, NET_FAILED_RETRY_DELAY, TimeUnit.SECONDS);
+                    }, mDelays[retryIndex], TimeUnit.MINUTES);
                 } else {
                     Logger.d(TAG, "下单网络失败重试次数用完，等待下次点火");
                     if (!mNetRetryExecutor.isShutdown()) {
@@ -314,7 +336,7 @@ public final class ActivateHQ {
                                     future.complete(false);
                                     executor.shutdownNow();
                                 } else {
-                                    executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.MINUTES);
+                                    executor.schedule(taskRef.get(), delays[currentCount - 1], TimeUnit.MINUTES);
                                 }
                             } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
                                 ++QUERY_ORDER_NUM;
@@ -340,7 +362,7 @@ public final class ActivateHQ {
                                 executor.shutdownNow();
                                 Logger.d(TAG, "最后一次查询网络请求失败，等待下次汽车启动重新激活HQ");
                             } else {
-                                executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.MINUTES);
+                                executor.schedule(taskRef.get(), delays[currentCount - 1], TimeUnit.MINUTES);
                             }
                         }
                     };

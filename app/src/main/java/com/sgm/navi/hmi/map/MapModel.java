@@ -41,6 +41,7 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.account.AccountQRCodeLoginFragment;
+import com.sgm.navi.hmi.activate.ActivateUiStateManager;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.IDeskBackgroundChangeListener;
 import com.sgm.navi.hmi.launcher.OnDeskCardVisibleStateChangeListener;
@@ -111,8 +112,6 @@ import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.greendao.history.History;
 import com.sgm.navi.service.greendao.history.HistoryManager;
 import com.sgm.navi.service.greendao.setting.SettingManager;
-import com.sgm.navi.service.logicpaket.activate.ActivatePackage;
-import com.sgm.navi.service.logicpaket.activate.IActivateObserver;
 import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
 import com.sgm.navi.service.logicpaket.aos.AosRestrictedPackage;
 import com.sgm.navi.service.logicpaket.aos.IAosRestrictedObserver;
@@ -185,7 +184,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private static final String TAG = "MapModel";
     private CommonManager mCommonManager;
-    private final IActivateObserver mActObserver;
     private StartupExceptionDialog mStartExceptionDialog = null;
 
     private FloatWindowReceiver floatWindowReceiver;
@@ -236,39 +234,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private PhoneAddressDialog phoneAddressDialog;
 
+    private final ActivateUiStateManager.LoadingViewCallBack mActivateViewCallBack =
+            isShow -> ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(isShow));
+
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
         mCommonManager = CommonManager.getInstance();
         mCommonManager.init();
-        mActObserver = new IActivateObserver() {
-            @Override
-            public void onActivating() {
-                Logger.d(TAG, "onActivating...");
-                ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(true));
-            }
-
-            @Override
-            public void onNetActivateFailed(int failedCount) {
-
-            }
-
-            @Override
-            public void onActivated() {
-                ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(false));
-            }
-
-            @Override
-            public void onActivatedError(int errCode, String msg) {
-                Logger.e(TAG, "激活出现错误");
-                ThreadManager.getInstance().postUi(new Runnable() {
-                    @Override
-                    public void run() {
-                        mViewModel.showActivatingView(false);
-                        mViewModel.showActivateFailedDialog(msg);
-                    }
-                });
-            }
-        };
     }
 
     private void setPackageAfterSdkInit() {
@@ -362,6 +334,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
         // 注册媒体悬浮窗广播
         FloatWindowReceiver.registerCallback(TAG, this);
+
+        if (ActivateUiStateManager.getInstance().ismIsInited()) {
+            ActivateUiStateManager.getInstance().setLoadingViewCallBack(mActivateViewCallBack);
+        }
     }
 
     @Override
@@ -404,6 +380,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         clearDialog();
         LayerPackage.getInstance().unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         FloatWindowReceiver.unregisterCallback(TAG);
+        ActivateUiStateManager.getInstance().removeLoadingViewCallBack();
     }
 
     public void clearDialog() {
@@ -437,7 +414,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onSdkInitSuccess() {
         Logger.i(TAG, "onSdkInitSuccess");
-        ActivatePackage.getInstance().addActObserver(mActObserver);
         StartService.getInstance().unregisterSdkCallback(this);
         setPackageAfterSdkInit();
         FloatViewManager.getInstance().showAllCardWidgets();

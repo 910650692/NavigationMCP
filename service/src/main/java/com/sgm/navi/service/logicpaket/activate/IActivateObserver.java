@@ -8,12 +8,6 @@ public interface IActivateObserver {
     void onActivating();
 
     /**
-     * 网络激活失败
-     * @param failedCount 网络激活失败次数
-     */
-    void onNetActivateFailed(int failedCount);
-
-    /**
      * 激活成功
      */
     void onActivated();

@@ -473,7 +473,12 @@
                 android:src="@drawable/logo_startup"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
+            <com.sgm.navi.ui.view.SkinView
+                android:id="@+id/activate_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#80000000"
+                android:visibility="gone"/>
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/activating_img"
                 android:layout_width="@dimen/dp_225"

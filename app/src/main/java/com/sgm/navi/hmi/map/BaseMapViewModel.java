@@ -323,15 +323,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     /**
-     * 展示激活失败信息.
-     *
-     * @param msg 错误信息
-     */
-    public void showActivateFailedDialog(final String msg) {
-        mView.showActivateFailedDialog(msg);
-    }
-
-    /**
      * 显示激活加载图片
      *
      * @param show 是否显示

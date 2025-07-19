@@ -30,17 +30,16 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
+import com.sgm.navi.hmi.activate.ActivateUiStateManager;
 import com.sgm.navi.hmi.databinding.ActivityMapBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
-import com.sgm.navi.hmi.startup.ActivateFailedDialog;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
-import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
@@ -75,7 +74,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
 
     private Animation mRotateAnim;
-    private ActivateFailedDialog mFailedDialog;
 
     private MainScreenMapView mapView;
     private MsgTopDialog mMsgTopDialog;
@@ -244,6 +242,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 Logger.d(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(this));
             }
         }
+        showActivatingView(ActivateUiStateManager.getInstance().ismIsActivating());
         //check Home键广播
         if (!HomeActionBroadcastReceiver.isRegister) {
             Logger.d(TAG, "registerHomeActionReceiver");
@@ -274,11 +273,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mMsgTopDialog.dismiss();
         }
         mMsgTopDialog = null;
-
-        if (mFailedDialog != null && mFailedDialog.isShowing()) {
-            mFailedDialog.dismiss();
-        }
-        mFailedDialog = null;
         AppCache.getInstance().setFirstOpenMap(false);
         mViewModel.mainBTNVisibility.removeOnPropertyChangedCallback(propertyChangedCallback);
         if (null != mViewModel) mViewModel.dismissDialog();
@@ -350,12 +344,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
      */
     public void showActivatingView(final boolean show) {
         if (show) {
-            mBinding.mainImg.setVisibility(View.GONE);
+            mBinding.activateBg.setVisibility(View.VISIBLE);
             mBinding.activatingImg.setVisibility(View.VISIBLE);
             mBinding.activatingTv.setVisibility(View.VISIBLE);
             mBinding.activatingImg.startAnimation(mRotateAnim);
         } else {
-            mBinding.mainImg.setVisibility(View.VISIBLE);
+            mBinding.activateBg.setVisibility(View.GONE);
             mBinding.activatingImg.setVisibility(View.GONE);
             mBinding.activatingTv.setVisibility(View.GONE);
             if (mRotateAnim != null) {
@@ -365,30 +359,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
     }
 
-    /**
-     * 显示激活失败弹窗
-     *
-     * @param msg 错误信息
-     */
-    public void showActivateFailedDialog(final String msg) {
-        if (mFailedDialog != null && mFailedDialog.isShowing()) {
-            Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "dialog showing");
-            return;
-        }
-        mFailedDialog = new ActivateFailedDialog(this);
-        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
-            @Override
-            public void onCommitClick() {
-                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "重试激活");
-            }
 
-            @Override
-            public void onCancelClick() {
-                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
-            }
-        });
-        mFailedDialog.show();
-    }
 
     @Override
     protected void onMoveMapCenter() {

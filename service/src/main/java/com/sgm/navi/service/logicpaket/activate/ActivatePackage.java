@@ -43,6 +43,9 @@ public final class ActivatePackage implements ActivateObserver {
      * @param actObserver actObserver
      */
     public void addActObserver(final IActivateObserver actObserver) {
+        if (actObserver == null || mActObserverList.contains(actObserver)) {
+            return;
+        }
         mActObserverList.add(actObserver);
     }
 
@@ -58,6 +61,9 @@ public final class ActivatePackage implements ActivateObserver {
      * @param actObserver actObserver
      */
     public void removeActObserver(final IActivateObserver actObserver) {
+        if (actObserver == null || !mActObserverList.contains(actObserver)) {
+            return;
+        }
         mActObserverList.remove(actObserver);
     }
 
@@ -66,15 +72,6 @@ public final class ActivatePackage implements ActivateObserver {
         for (IActivateObserver actObserver : mActObserverList) {
             if (actObserver != null) {
                 actObserver.onActivating();
-            }
-        }
-    }
-
-    @Override
-    public void onNetActivateFailed(final int failedCount) {
-        for (IActivateObserver actObserver : mActObserverList) {
-            if (actObserver != null) {
-                actObserver.onNetActivateFailed(failedCount);
             }
         }
     }
@@ -115,13 +112,6 @@ public final class ActivatePackage implements ActivateObserver {
     @Override
     public void getUuidFromNet(NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
         mActivateAdapter.getUuidFromNet(callBack);
-    }
-
-    /**
-     * 重试网络激活（无需调用）
-     */
-    public void netActivateRetry() {
-        mActivateAdapter.netActivateRetry();
     }
 
     /**

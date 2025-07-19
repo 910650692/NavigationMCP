@@ -16,12 +16,11 @@ import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.process.ProcessManager;
-import com.android.utils.process.ProcessStatus;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
+import com.sgm.navi.hmi.activate.ActivateFailedDialog;
 import com.sgm.navi.hmi.databinding.ActivityStartupBinding;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -37,7 +36,6 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
  */
 public class StartupActivityRemove extends BaseActivity<ActivityStartupBinding, StartupViewModel> {
     private Animation mRotateAnim;
-    private ActivateFailedDialog mFailedDialog;
 
     @Override
     public void onCreateBefore() {
@@ -79,19 +77,6 @@ public class StartupActivityRemove extends BaseActivity<ActivityStartupBinding, 
         mRotateAnim.setRepeatCount(Animation.INFINITE);
         mRotateAnim.setInterpolator(new LinearInterpolator());
         mBinding.mainImg.setVisibility(View.VISIBLE);
-
-        mFailedDialog = new ActivateFailedDialog(this);
-        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
-            @Override
-            public void onCommitClick() {
-                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "重试激活");
-            }
-
-            @Override
-            public void onCancelClick() {
-                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败,手动退出应用");
-            }
-        });
     }
 
     @Override
@@ -122,10 +107,6 @@ public class StartupActivityRemove extends BaseActivity<ActivityStartupBinding, 
             Logger.i("startup onDestroy");
             mRotateAnim.cancel();
             mRotateAnim = null;
-        }
-        if (null != mFailedDialog) {
-            mFailedDialog.cancel();
-            mFailedDialog = null;
         }
         PermissionUtils.getInstance().remove();
         super.onDestroy();
@@ -178,19 +159,6 @@ public class StartupActivityRemove extends BaseActivity<ActivityStartupBinding, 
                 mRotateAnim.reset();
             }
         }
-    }
-
-    /**
-     * 显示激活失败弹窗
-     *
-     * @param msg 错误信息
-     */
-    public void showActivateFailedDialog(final String msg) {
-        if (ConvertUtils.isEmpty(mFailedDialog) || mFailedDialog.isShowing()) {
-            Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "dialog null or showing");
-            return;
-        }
-        mFailedDialog.show();
     }
 
     @Override

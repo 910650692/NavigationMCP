@@ -14,7 +14,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
             <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/dialog_title"
+                android:id="@+id/activate_dialog_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_70"
@@ -27,7 +27,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
             <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/dialog_content"
+                android:id="@+id/activate_dialog_content"
                 android:layout_width="@dimen/dp_1100"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_50"
@@ -38,18 +38,18 @@
                 android:textSize="@dimen/sp_36"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dialog_title" />
+                app:layout_constraintTop_toBottomOf="@id/activate_dialog_title" />
             <com.sgm.navi.ui.view.SkinLinearLayout
-                android:id="@+id/dialog_location"
+                android:id="@+id/activate_dialog_location"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_54"
                 android:layout_marginTop="@dimen/dp_20"
                 android:focusable="false"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dialog_content"/>
+                app:layout_constraintTop_toBottomOf="@id/activate_dialog_content"/>
             <View
-                android:id="@+id/line"
+                android:id="@+id/activate_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:layout_marginStart="@dimen/dp_48"
@@ -59,7 +59,7 @@
                 android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dialog_location" />
+                app:layout_constraintTop_toBottomOf="@id/activate_dialog_location" />
             <com.sgm.navi.ui.view.SkinLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_128"
@@ -67,37 +67,33 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/line">
-                <com.android.car.ui.FocusArea
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <com.sgm.navi.ui.view.SkinTextView
-                        android:id="@+id/dialog_confirm"
-                        android:layout_width="@dimen/dp_0"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:focusable="true"
-                        android:focusedByDefault="true"
-                        android:gravity="center"
-                        android:text="@string/activation_failed_retry"
-                        android:textColor="#3377FF"
-                        android:textSize="@dimen/sp_36" />
-                    <View
-                        android:layout_width="@dimen/dp_2"
-                        android:layout_height="match_parent"
-                        android:background="#4D818199"
-                        android:focusable="false" />
-                    <com.sgm.navi.ui.view.SkinTextView
-                        android:id="@+id/dialog_cancel"
-                        android:layout_width="@dimen/dp_0"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:text="@string/activation_finish"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_36" />
-                </com.android.car.ui.FocusArea>
+                app:layout_constraintTop_toTopOf="@id/activate_line">
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/activate_dialog_confirm"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:focusable="true"
+                    android:focusedByDefault="true"
+                    android:gravity="center"
+                    android:text="@string/activation_failed_retry"
+                    android:textColor="#3377FF"
+                    android:textSize="@dimen/sp_36" />
+                <View
+                    android:layout_width="@dimen/dp_2"
+                    android:layout_height="match_parent"
+                    android:background="#4D818199"
+                    android:focusable="false" />
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/activate_dialog_cancel"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="@string/activation_finish"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_36" />
             </com.sgm.navi.ui.view.SkinLinearLayout>
         </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.sgm.navi.ui.view.SkinConstraintLayout>

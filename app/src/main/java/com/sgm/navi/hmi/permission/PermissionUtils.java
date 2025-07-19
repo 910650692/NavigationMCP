@@ -42,6 +42,8 @@ public class PermissionUtils {
     private PermissionsObserver permissionsObserver;
     private final List<String> permissionList = new ArrayList<>();
     private final List<String> deniedPermission = new ArrayList<>();
+    private PermissionDialog permissionExternalDialog;
+    private PermissionDialog permissionOverlayDialog;
     private final String[] permissionArray = new String[]{Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.MANAGE_EXTERNAL_STORAGE,
@@ -59,10 +61,10 @@ public class PermissionUtils {
         for (String permission : permissionArray) {
             if (!checkoutPermission(permission)) permissionList.add(permission);
         }
-        if(DeviceUtils.isCar(AppCache.getInstance().getMApplication())){
+        if (DeviceUtils.isCar(AppCache.getInstance().getMApplication())) {
             Logger.i(TAG, "current device type is car");
             if (!checkoutPermission(SPEED_PERMISSION)) permissionList.add(SPEED_PERMISSION);
-        }else {
+        } else {
             Logger.i(TAG, "current device type is pad");
         }
         Logger.i(TAG, "permissionList size-> " + permissionList.size());
@@ -96,11 +98,11 @@ public class PermissionUtils {
 
     public void requestDeniedPermission() {
         if (ConvertUtils.isEmpty(deniedPermission)) {
-            if(!ConvertUtils.isEmpty(permissionsObserver))permissionsObserver.onPermissionsSuccess();
+            if (!ConvertUtils.isEmpty(permissionsObserver)) permissionsObserver.onPermissionsSuccess();
             return;
         }
         if (deniedPermissionRequestNum >= DENIED_PERMISSION_REQUEST_NUM) {
-            if(!ConvertUtils.isEmpty(permissionsObserver)) permissionsObserver.onPermissionsFail();
+            if (!ConvertUtils.isEmpty(permissionsObserver)) permissionsObserver.onPermissionsFail();
             return;
         }
         if (Logger.openLog) {
@@ -129,9 +131,10 @@ public class PermissionUtils {
         }
     }
 
-    public void requestManageExternal(){
+    public void requestManageExternal() {
         Logger.i(TAG, "requestManageExternal");
-        PermissionDialog permissionDialog = new PermissionDialog.Build(context)
+
+        permissionExternalDialog = new PermissionDialog.Build(context)
                 .setTitle("申请文件读写权限")
                 .setContent("地图导航中所需权限，如果没有该权限将可能会造成地图的无法使用，点击确定跳转到权限申请界面，点击取消可能会造成地图无法使用")
                 .setDialogObserver(new IBaseDialogClickListener() {
@@ -149,11 +152,11 @@ public class PermissionUtils {
                     }
                 })
                 .build();
-        permissionDialog.show();
+        permissionExternalDialog.show();
     }
 
-    public void requestManageOverlay(){
-        PermissionDialog permissionDialog = new PermissionDialog.Build(context)
+    public void requestManageOverlay() {
+        permissionOverlayDialog = new PermissionDialog.Build(context)
                 .setTitle("申请悬浮窗权限")
                 .setContent("地图导航中所需权限，如果没有该权限将可能会造成地图的无法使用，点击确定跳转到权限申请界面，点击取消可能会造成地图无法使用")
                 .setDialogObserver(new IBaseDialogClickListener() {
@@ -172,10 +175,10 @@ public class PermissionUtils {
                     }
                 })
                 .build();
-        permissionDialog.show();
+        permissionOverlayDialog.show();
     }
 
-    public void onRequestPermissionsResult(@NonNull String permissions, int grantResults){
+    public void onRequestPermissionsResult(@NonNull String permissions, int grantResults) {
         onRequestPermissionsResult(0, new String[]{permissions}, new int[]{grantResults});
     }
 
@@ -194,12 +197,16 @@ public class PermissionUtils {
     }
 
     public void remove() {
+        if (null != permissionExternalDialog && permissionExternalDialog.isShowing()) permissionExternalDialog.dismiss();
+        permissionExternalDialog = null;
+        if (null != permissionOverlayDialog && permissionOverlayDialog.isShowing()) permissionOverlayDialog.isShowing();
+        permissionOverlayDialog = null;
         context = null;
         permissionsObserver = null;
     }
 
     private PermissionUtils() {
-
+        context = StackManager.getInstance().getMainCurrentActivity();
     }
 
     public static PermissionUtils getInstance() {

@@ -11,25 +11,23 @@ public interface IActivateApi {
 
     /**
      * 检测激活状态
+     *
      * @return 是否激活
      */
     boolean checkActivation();
 
     /**
      * 添加激活观察者
+     *
      * @param observer ActivateObserver
      */
     void addActivateObserver(ActivateObserver observer);
 
     /**
-     * 重试网络激活
-     */
-    void netActivateRetry();
-
-    /**
      * 手动激活
+     *
      * @param loginCode 激活码
-     * @param userCode 序列号
+     * @param userCode  序列号
      */
     void manualActivate(String userCode, String loginCode);
 
@@ -43,11 +41,29 @@ public interface IActivateApi {
      */
     void unInit();
 
+    /**
+     * 开始激活流程
+     */
     String getAppKeyFromDB();
 
+    /**
+     * 从网络获取AppKey
+     *
+     * @param callBack 回调
+     */
     void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack);
 
+    /**
+     * 从数据库获取UUID
+     *
+     * @return UUID
+     */
     String getUuidFromDB();
 
+    /**
+     * 从网络获取UUID
+     *
+     * @param callBack 回调
+     */
     void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack);
 }

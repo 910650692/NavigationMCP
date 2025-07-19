@@ -85,18 +85,6 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivityRemove, S
             mView.finishThisActivity();
         }
     }
-
-
-
-    /**
-     * 展示弹窗失败
-     *
-     * @param msg 错误信息
-     */
-    public void showActivateFailedDialog(final String msg) {
-        mView.showActivateFailedDialog(msg);
-    }
-
     /**
      * 显示激活加载图片
      *

@@ -43,13 +43,6 @@ public final class ActivateAdapter {
     }
 
     /**
-     * 重试网络激活
-     */
-    public void netActivateRetry() {
-        mActivateApi.netActivateRetry();
-    }
-
-    /**
      * 手动激活
      *
      * @param loginCode 激活码
@@ -68,18 +61,38 @@ public final class ActivateAdapter {
         mActivateApi.addActivateObserver(observer);
     }
 
+    /**
+     * 从数据库获取AppKey
+     *
+     * @return AppKey
+     */
     public String getAppKeyFromDB() {
         return mActivateApi.getAppKeyFromDB();
     }
 
+    /**
+     * 从网络获取AppKey
+     *
+     * @param callBack 回调
+     */
     public void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack) {
         mActivateApi.getAppKeyFromNet(callBack);
     }
 
+    /**
+     * 从数据库获取UUID
+     *
+     * @return UUID
+     */
     public String getUuidFromDB() {
         return mActivateApi.getUuidFromDB();
     }
 
+    /**
+     * 从网络获取UUID
+     *
+     * @param callBack 回调
+     */
     public void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
         mActivateApi.getUuidFromNet(callBack);
     }

@@ -55,8 +55,6 @@ public final class ActivationManager {
     private ActivationModule mActivationService;
     private boolean mIsInit = false;
 
-    public boolean testFlag = false;
-
     private ActivationManager() {
         resetVar();
         mActivationService = ActivationModule.getInstance();
@@ -80,7 +78,6 @@ public final class ActivationManager {
         APP_KEY = "";
         UUID = "";
         ORDER_ID = "";
-        testFlag = false;
     }
 
     /**
@@ -126,23 +123,13 @@ public final class ActivationManager {
      */
     private void genAppKey() {
         Logger.d(TAG, "genAppKey: ");
-
-        if (!ConvertUtils.isEmpty(APP_KEY)) {
-            Logger.d(TAG, "APP_KEY静态变量不为空 = " + APP_KEY);
-            NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
-            //mActivateListener.onNetActivated(true);
-            postUUID();
-            return;
-        }
-        CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.APP_KEY, "");
-        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY))) {
-            APP_KEY = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY);
-            Logger.d(TAG, "APP_KEY静态变量为空，数据库存有APP_KEY = " + APP_KEY);
-            NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
-            //mActivateListener.onNetActivated(true);
-            postUUID();
-            return;
-        }
+//        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY))) {
+//            APP_KEY = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY);
+//            Logger.d(TAG, "数据库存有APP_KEY = " + APP_KEY);
+//            NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
+//            postUUID();
+//            return;
+//        }
 
         getAppKeyFromNet(new NetQueryManager.INetResultCallBack<AppKeyResponse>() {
             @Override
@@ -162,30 +149,18 @@ public final class ActivationManager {
             }
         });
     }
-
-    public void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack) {
-        final AppKeyRequest req = new AppKeyRequest(API_VERSION);
-        NetQueryManager.getInstance().queryAppKey(req, callBack);
-    }
-
     /**
      * 网络请求uuid
      */
     private void postUUID() {
         Logger.d(TAG, "postUUID: ");
 
-        if (!ConvertUtils.isEmpty(UUID)) {
-            Logger.d(TAG, "UUID静态变量不为空 = " + UUID);
-            mActivateListener.onUUIDGet(UUID);
-            return;
-        }
-        CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, "");
-        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
-            UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
-            Logger.d(TAG, "UUID静态变量为空，数据库存有UUID = " + UUID);
-            mActivateListener.onUUIDGet(UUID);
-            return;
-        }
+//        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
+//            UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
+//            Logger.d(TAG, "数据库存有UUID = " + UUID);
+//            mActivateListener.onUUIDGet(UUID);
+//            return;
+//        }
 
         getUuidFromNet(new NetQueryManager.INetResultCallBack<UuidResponse>() {
             @Override
@@ -202,12 +177,6 @@ public final class ActivationManager {
                 mActivateListener.onNetFailed();
             }
         });
-    }
-
-    public void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
-        final UuidRequest uuidRequest = new UuidRequest(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
-        Logger.d(TAG, "uuid req : " + uuidRequest);
-        NetQueryManager.getInstance().queryUuid(uuidRequest, callBack);
     }
 
     /**
@@ -258,21 +227,10 @@ public final class ActivationManager {
             Logger.d(TAG, "mActivationService 未初始化");
             return false;
         }
-//        final long limitTime = ServiceMgr.getServiceMgrInstance().getSdkLimitTimeUTC();
-//        if (limitTime == 0) {
-//            Logger.e(TAG, "无效的SDK");
-//        }
-//        final long limitTimeMillis = limitTime / 1000;
-//        final long currentTime = System.currentTimeMillis();
-//        Logger.d(TAG, "limitTimeMillis = {" + limitTimeMillis + "}， currentTime = {" + currentTime + "}");
-//        if (limitTimeMillis < currentTime) {
-//            Logger.e(TAG, "SDK过期需要激活");
-//        }
 
         final int activateStatus = mActivationService.getActivateStatus();
         Logger.d(TAG, "激活状态码 = " + activateStatus);
-        return testFlag;
-        //return ConvertUtils.equals(0, activateStatus);
+        return ConvertUtils.equals(0, activateStatus);
     }
 
     /**
@@ -281,17 +239,15 @@ public final class ActivationManager {
     public void createCloudOrder() {
         Logger.d(TAG, "createCloudOrder");
         final String uuid = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
-        if (ConvertUtils.isEmpty(UUID) && ConvertUtils.isEmpty(uuid)) {
+        if (ConvertUtils.isEmpty(uuid)) {
             Logger.e(TAG, "uuid信息缺失");
             postUUID();
             return;
-        }
-
-        if (!ConvertUtils.equals(UUID, uuid) && !ConvertUtils.isEmpty(uuid)) {
-            Logger.d(TAG, "UUID constant = " + UUID + " ; UUID in database = " + uuid);
+        } else {
+            Logger.d(TAG, "UUID in database = " + uuid);
             UUID = uuid;
         }
-        Logger.i(TAG, "UUID = " + UUID);
+
         final CreateOrderRequest createOrderReq = new CreateOrderRequest(API_VERSION, TEST_APP_ID, UUID, SD);
         Logger.d(TAG, "createOrderReq  : " + createOrderReq);
         NetQueryManager.getInstance().createOrder(createOrderReq, new NetQueryManager.INetResultCallBack<CreateOrderResponse>() {
@@ -374,7 +330,7 @@ public final class ActivationManager {
                                 executor.shutdownNow();
                                 mActivateListener.onNetFailed();
                             } else {
-                                executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.MINUTES);
+                                executor.schedule(taskRef.get(), delays[currentCount - 1], TimeUnit.MINUTES);
                             }
                         }
                     };
@@ -387,7 +343,7 @@ public final class ActivationManager {
             }
         };
         taskRef.set(task);
-        executor.schedule(task, delays[0], TimeUnit.MINUTES);
+        executor.schedule(task, 5, TimeUnit.SECONDS);
 
         try {
             // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
@@ -437,28 +393,6 @@ public final class ActivationManager {
         NetQueryManager.getInstance().queryOrder(queryOrderRequest, callBack);
 
     }
-
-    /**
-     * 网络激活
-     */
-    public void netActivate() {
-        //++NET_FAILED_COUNT;
-        //final String hardWareCode = "0000000000"; // 默认10个0
-        //final int netActivateResult = mActivationService.netActivate(hardWareCode);
-        //Logger.i(TAG, "netActivateResult = " + netActivateResult + "; failed count : " + NET_FAILED_COUNT);
-        mActivateListener.onNetActivated(false);
-    }
-/*
-这是激活需要的参数信息
-设备号：22A5E69D7783D0A06C62BB7BE9A73ADA(001042)
-
-序列号：PETAW9KTKQS79GZQBCXA984B
-
-激活码：UR32YH4SP4S9SQ57SJZ9ZUK9
-
-渠道号:C13953968867
- */
-
     /**
      * 手动激活
      *
@@ -475,16 +409,41 @@ public final class ActivationManager {
             Logger.d(TAG, "mActivationService 未初始化");
             return;
         }
-        final ActivateReturnParam activateReturnParam = mActivationService.manualActivate("PETAW9KTKQS79GZQBCXA984B", "UR32YH4SP4S9SQ57SJZ9ZUK9");
-        //final ActivateReturnParam activateReturnParam = mActivationService.manualActivate(userCode, loginCode);
+        final ActivateReturnParam activateReturnParam = mActivationService.manualActivate(userCode, loginCode);
         if (activateReturnParam == null) {
             Logger.d(TAG, "activateReturnParam == null");
-            return;
+            //return;
         }
-        Logger.d(TAG, "activateReturnParam.iErrorCode = " + activateReturnParam.iErrorCode);
-        //mActivateListener.onManualActivated(ConvertUtils.equals(0, activateReturnParam.iErrorCode));
-        testFlag = true;
-        mActivateListener.onManualActivated(testFlag);
+
+        //todo为了链路完整先走网络激活***************
+        String hardWareCode = "0000000000"; // 默认10个0
+        int ret = mActivationService.netActivate(hardWareCode);
+        Logger.d(TAG, "netActivate 结果 = ", ret);
+        mActivateListener.onManualActivated(ConvertUtils.equals(0, ret));
+
+//        Logger.d(TAG, "activateReturnParam.iErrorCode = " + activateReturnParam.iErrorCode);
+//        mActivateListener.onManualActivated(ConvertUtils.equals(0, activateReturnParam.iErrorCode));
+    }
+
+    /**
+     * 从网络获取AppKey
+     *
+     * @param callBack 网络结果回调
+     */
+    public void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack) {
+        final AppKeyRequest req = new AppKeyRequest(API_VERSION);
+        NetQueryManager.getInstance().queryAppKey(req, callBack);
+    }
+
+    /**
+     * 从网络获取Uuid
+     *
+     * @param callBack 网络结果回调
+     */
+    public void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
+        final UuidRequest uuidRequest = new UuidRequest(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
+        Logger.d(TAG, "uuid req : " + uuidRequest);
+        NetQueryManager.getInstance().queryUuid(uuidRequest, callBack);
     }
 
     public static int getCreateOrderNum() {
@@ -511,13 +470,6 @@ public final class ActivationManager {
          * @param isSuccess 是否成功
          */
         void onManualActivated(final boolean isSuccess);
-
-        /**
-         * 网络激活回调impl
-         *
-         * @param isSuccess 是否成功
-         */
-        void onNetActivated(final boolean isSuccess);
 
         /**
          * 开始下单回调给impl

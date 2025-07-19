@@ -8,6 +8,7 @@ import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
 import com.sgm.navi.patacnetlib.response.activate.QueryOrderResponse;
 import com.sgm.navi.patacnetlib.response.activate.UuidResponse;
 import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.activate.ActivateObserver;
 import com.sgm.navi.service.adapter.activate.IActivateApi;
@@ -29,6 +30,7 @@ public class ActivateAdapterImpl implements IActivateApi {
     public ActivateAdapterImpl() {
         mActObserverList = new ArrayList<>();
         codeManager = CodeManager.getInstance();
+
         manualActivateListener = new ActivationManager.IActivateHelper() {
             @Override
             public void onUUIDGet(final String uuid) {
@@ -50,11 +52,6 @@ public class ActivateAdapterImpl implements IActivateApi {
                 }
                 Logger.d(TAG, "手动激活成功，开始BL初始化");
                 onActivated();
-            }
-
-            @Override
-            public void onNetActivated(final boolean isSuccess) {
-                //onActivated();
             }
 
             @Override
@@ -93,9 +90,9 @@ public class ActivateAdapterImpl implements IActivateApi {
 
     @Override
     public boolean checkActivation() {
-        return true;
-        //return ActivationManager.getInstance().testFlag;
-        //return ActivationManager.getInstance().checkActivationStatus();
+        Logger.d(TAG, "checkActivation need to activate: " + BuildConfig.SDK_ACTIVATE);
+        if(!BuildConfig.SDK_ACTIVATE) return true;
+        return ActivationManager.getInstance().checkActivationStatus();
     }
 
     @Override
@@ -114,16 +111,7 @@ public class ActivateAdapterImpl implements IActivateApi {
         Logger.d(TAG, "startActivate : ");
         onActivating();
         ActivationManager.getInstance().getThirdPartyUUID();
-        //beginInitActivateService("123");
     }
-
-    /**
-     * 重试网络激活
-     */
-    @Override
-    public void netActivateRetry() {
-    }
-
 
     /**
      * 获取完uuid后开始后续流程
@@ -143,7 +131,6 @@ public class ActivateAdapterImpl implements IActivateApi {
         if (!ActivationManager.getInstance().checkActivationStatus()) {
             Logger.d(TAG, "无激活文件，或uuid不正确");
             //先查询订单
-            CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID, "");
             if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID))) {
                 Logger.d(TAG, "有订单号记录，直接查询订单");
                 ActivationManager.getInstance().queryOrderStatus(new NetQueryManager.INetResultCallBack<QueryOrderResponse>() {
@@ -220,14 +207,17 @@ public class ActivateAdapterImpl implements IActivateApi {
     public String getAppKeyFromDB() {
         return CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY);
     }
+
     @Override
     public void getAppKeyFromNet(final NetQueryManager.INetResultCallBack<AppKeyResponse> callBack) {
         ActivationManager.getInstance().getAppKeyFromNet(callBack);
     }
+
     @Override
     public String getUuidFromDB() {
         return CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
     }
+
     @Override
     public void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
         ActivationManager.getInstance().getUuidFromNet(callBack);

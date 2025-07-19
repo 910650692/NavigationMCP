@@ -183,7 +183,6 @@ public class StartService {
      * 激活校验
      */
     private void checkActivation() {
-        ActivatePackage.getInstance().addActObserver(activateObserver);
         if (ActivatePackage.getInstance().checkActivation()) {
             Logger.i(TAG, "Sdk already activation");
             EnginePackage.getInstance().initBL();
@@ -271,9 +270,19 @@ public class StartService {
     /**
      * 开启激活流程
      */
-    private void startActivation() {
+    public void startActivation() {
         Logger.i(TAG, "Sdk no activation, Start activation in progress.....");
         ActivatePackage.getInstance().startActivate();
+    }
+
+    /**
+     * 通知BaseLib初始化完成，为了注册激活回调
+     */
+    private void conformBaseLibSuccessCallback() {
+        Logger.i(TAG, "Sdk baselib init success", "sdkInitCallbacks : ", sdkInitCallbacks.size());
+        for (ISdkInitCallback callback : sdkInitCallbacks) {
+            callback.onSdkBaseLibInitSuccess();
+        }
     }
 
     /**
@@ -424,10 +433,6 @@ public class StartService {
         }
 
         @Override
-        public void onNetActivateFailed(final int failedCount) {
-        }
-
-        @Override
         public void onActivated() {
             Logger.i(TAG, "onActivated in startService...");
             EnginePackage.getInstance().initBL();
@@ -435,6 +440,7 @@ public class StartService {
 
         @Override
         public void onActivatedError(final int errCode, final String msg) {
+            Logger.e(TAG, "onActivatedError in startService...", "errCode: ", errCode, "msg: ", msg);
         }
     };
 
@@ -459,6 +465,8 @@ public class StartService {
         @Override
         public void onInitBaseLibSuccess() {
             Logger.i(TAG, "Engine baseLib init success");
+            ActivatePackage.getInstance().addActObserver(activateObserver);
+            getInstance().conformBaseLibSuccessCallback();
             getInstance().checkActivation();
         }
 
@@ -480,6 +488,10 @@ public class StartService {
 
     public interface ISdkInitCallback {
         default void onSdkInitializing() {
+
+        }
+
+        default void onSdkBaseLibInitSuccess() {
 
         }
 

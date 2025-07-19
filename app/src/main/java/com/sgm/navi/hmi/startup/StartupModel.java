@@ -43,34 +43,6 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
     private static final String TAG = MapDefaultFinalTag.ENGINE_HMI_TAG;
     private final CommonManager commonManager;
-    private final IActivateObserver mActObserver = new IActivateObserver() {
-        @Override
-        public void onActivating() {
-            Logger.d(TAG, "onActivating...");
-            ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(true));
-        }
-
-        @Override
-        public void onNetActivateFailed(final int failedCount) {
-        }
-
-        @Override
-        public void onActivated() {
-            ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(false));
-        }
-
-        @Override
-        public void onActivatedError(final int errCode, final String msg) {
-            Logger.e(TAG, "激活出现错误");
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    mViewModel.showActivatingView(false);
-                    mViewModel.showActivateFailedDialog(msg);
-                }
-            });
-        }
-    };
 
     public StartupModel() {
         Logger.d(TAG, "初始化获取缓存地图的数据库");
@@ -89,7 +61,6 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     public void onDestroy() {
         super.onDestroy();
         StartService.getInstance().unregisterSdkCallback(this);
-        //ActivatePackage.getInstance().removeActObserver(mActObserver);
     }
 
     @Override

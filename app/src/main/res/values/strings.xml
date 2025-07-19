@@ -659,6 +659,7 @@
     <string name="activation_finish">稍后激活</string>
     <string name="activation_manual">手动激活</string>
     <string name="activation_hint">请联系4S店或者通用官方</string>
+    <string name="activation_net_error_hint">网络异常，请稍后再试</string>
 
     <!--周边搜索标签 -->
     <string-array name="around_categories_name">

@@ -17,7 +17,9 @@ android {
     defaultConfig {
         minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         consumerProguardFiles "consumer-rules.pro"
+
         buildConfigField("String", "MAP_SDK", "$MAP_SDK")
+        buildConfigField("boolean", "SDK_ACTIVATE", "$SDK_ACTIVATE")
         ndk {
             //noinspection ChromeOsAbiSupport
             abiFilters 'arm64-v8a'
@@ -89,11 +91,11 @@ dependencies {
     implementation libs.greendao
     implementation libs.lombok
     annotationProcessor libs.lombok
-    implementation project(":engine:bls")
-    implementation project(":utils")
-    implementation project(":patacnetlib")
-    implementation project(":burypoint")
-
+    implementation libs.adapter.rxjava
+    implementation libs.converter.gson
+    implementation libs.converter.scalars
+    implementation libs.logging.interceptor
+    implementation libs.rxandroid
     implementation libs.androidcar
 
     defauleCompileOnly libs.gm.gb.framework
@@ -110,18 +112,24 @@ dependencies {
     clea_8775CompileOnly libs.gm.clea.info3
     clea_local_8155CompileOnly libs.bosch.info3
 
-    implementation libs.adapter.rxjava
-    implementation libs.converter.gson
-    implementation libs.converter.scalars
-    implementation libs.logging.interceptor
-    implementation libs.rxandroid
-
     defauleImplementation libs.gb.privacy
     buickImplementation libs.gb.privacy
-    clea_local_8155Implementation(libs.ndnc.privacy){
+    clea_local_8155Implementation(libs.ndnc.privacy) {
         exclude group: "com.patac.hmi.library", module: "net_basic_vcupro"
     }
     clea_8255Implementation libs.ndnc.privacy
     cadiImplementation libs.cadi.privacy
     clea_8775Implementation libs.ndnc.privacy
+
+    implementation project(":utils")
+    implementation project(":patacnetlib")
+    implementation project(":burypoint")
+
+    if (SDK_ACTIVATE.toBoolean() == true) {
+        implementation project(":engine:bls:activate")
+        println("打包激活版本的 MAP SDK")
+    } else {
+        implementation project(":engine:bls:default")
+        println("打包免激活版本的 MAP SDK")
+    }
 }
