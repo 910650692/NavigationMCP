@@ -92,7 +92,7 @@ public class DownloadBtnView extends ConstraintLayout {
         mLinearLayout.setGravity(Gravity.CENTER);
         switch (data.getTaskState()) {
             case UserDataCode.TASK_STATUS_CODE_READY:
-                if (data.isIsDataUsed()) {
+                if (data.isUpdate()) {
                     setDownloadViewText("更新");
                     setDownloadViewIcon(R.drawable.img_refresh_bwhite_42);
                 } else {
