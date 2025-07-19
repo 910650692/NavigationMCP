@@ -793,14 +793,16 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             cruisePackage.registerObserver(mViewModel.mScreenId, this);
             // 恢复偏好设置
             mapModelHelp.restoreSetting();
+
+            // TODO: 2025/7/19 这句话会导致地图白屏暂时注释掉了 RTC-ID：1089066 @陈佳鑫
             //恢复列表搜全览
-            ArrayList<PoiInfoEntity> resultPoints = searchPackage.getLastSearchResult().getSearchResultPoints();
-            if(!ConvertUtils.isEmpty(resultPoints)) {
-                if (Logger.openLog) {
-                    Logger.i(TAG, "恢复列表搜全览");
-                }
-                searchPackage.showPreview(resultPoints);
-            }
+//            ArrayList<PoiInfoEntity> resultPoints = searchPackage.getLastSearchResult().getSearchResultPoints();
+//            if(!ConvertUtils.isEmpty(resultPoints)) {
+//                if (Logger.openLog) {
+//                    Logger.i(TAG, "恢复列表搜全览");
+//                }
+//                searchPackage.showPreview(resultPoints);
+//            }
 
             mViewModel.initTimer();
             addFavoriteToMap();
