@@ -180,7 +180,9 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
                 int finalIndex = index;
                 // 延迟1s在去选中下标，等待图层渲染完毕
                 ThreadManager.getInstance().postDelay(() -> {
-                    mScreenViewModel.setSelectIndex(finalMinPoi, finalIndex);
+                    if (mScreenViewModel != null) {
+                        mScreenViewModel.setSelectIndex(finalMinPoi, finalIndex);
+                    }
                 },1000);
             }
         });
