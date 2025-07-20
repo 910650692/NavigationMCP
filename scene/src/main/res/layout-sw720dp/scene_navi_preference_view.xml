@@ -15,14 +15,32 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_shadow_navi_buick"
-        android:paddingHorizontal="@dimen/dp_34">
+        android:background="@drawable/bg_shadow_navi_buick">
+
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/sv_bar"
+            android:layout_width="@dimen/dp_146"
+            android:layout_height="@dimen/dp_8"
+            android:background="@drawable/bg_navi_control_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.sgm.navi.scene.ui.navi.view.SwipeView
+            android:id="@+id/sv_bar_area"
+            android:layout_width="@dimen/dp_166"
+            android:layout_height="@dimen/dp_30"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.sgm.navi.ui.view.SkinScrollView
+            android:id="@+id/skinScrollView2"
             android:layout_width="@dimen/dp_545"
             android:layout_height="@dimen/dp_436"
             android:scrollbars="none"
-            tools:layout_editor_absoluteX="29dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteY="29dp">
             <!--算路偏好-->
             <com.sgm.navi.ui.view.SkinConstraintLayout
@@ -42,13 +60,13 @@
                     tools:text="不走高速+躲避拥堵" />
 
                 <com.sgm.navi.ui.view.SkinImageView
-                    android:visibility="gone"
                     android:id="@+id/siv_preference_close"
                     clickCommand="@{() -> Scene.closeScene()}"
                     android:layout_width="@dimen/dp_48"
                     android:layout_height="@dimen/dp_48"
                     android:layout_marginStart="@dimen/dp_10"
                     android:background="@drawable/img_up_42"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@+id/stv_route_preference_selected"
                     app:layout_constraintStart_toEndOf="@+id/stv_route_preference_selected"
                     app:layout_constraintTop_toTopOf="@+id/stv_route_preference_selected" />
@@ -91,9 +109,9 @@
                     clickCommand="@{() -> Scene.preferenceLessCharge(1)}"
                     android:layout_width="@dimen/dp_228"
                     android:layout_height="@dimen/dp_77"
+                    android:layout_marginStart="@dimen/dp_24"
                     android:background="@drawable/navi_selector_preference_nol"
                     android:gravity="center"
-                    android:layout_marginStart="@dimen/dp_24"
                     android:text="@string/route_preference_less_charge"
                     android:textColor="@color/navi_color_000000_70"
                     android:textSize="@dimen/sp_28"
