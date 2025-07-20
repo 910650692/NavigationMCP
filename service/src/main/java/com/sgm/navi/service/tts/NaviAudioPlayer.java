@@ -211,14 +211,22 @@ public class NaviAudioPlayer {
     }
 
     private void volumePLAY() {
-        if (null != mVolumeShaper) {
-            mVolumeShaper.apply(VolumeShaper.Operation.PLAY);
+        try {
+            if (null != mVolumeShaper) {
+                mVolumeShaper.apply(VolumeShaper.Operation.PLAY);
+            }
+        } catch (Exception e) {
+            Logger.w(TAG, "Exception:", e.getMessage());
         }
     }
 
     private void volumeREVERSE() {
-        if (null != mVolumeShaper) {
-            mVolumeShaper.apply(VolumeShaper.Operation.REVERSE);
+        try {
+            if (null != mVolumeShaper) {
+                mVolumeShaper.apply(VolumeShaper.Operation.REVERSE);
+            }
+        } catch (Exception e) {
+            Logger.w(TAG, "Exception:", e.getMessage());
         }
     }
 
