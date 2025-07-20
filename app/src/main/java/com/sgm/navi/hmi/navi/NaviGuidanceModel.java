@@ -438,9 +438,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             endPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS);
             List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
             ChargeInfo chargeInfo = chargeInfoList == null ? null : chargeInfoList.get(0);
-            String businessTime = poiInfoEntity.getBusinessTime();
-            Logger.i(TAG, "businessTime = ", businessTime);
             int carType = OpenApiHelper.powerType();
+            Logger.i(TAG, " carType = ", carType);
             if (!ConvertUtils.isEmpty(chargeInfo) && carType == 1) {
                 int slowTotal = chargeInfo.getMSlowTotal();
                 int slowFree = chargeInfo.getMSlowFree();
@@ -449,15 +448,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 Logger.i(TAG, "slowTotal = ", slowTotal, " slowFree = ",
                         slowFree, " fastTotal = ", fastTotal, " fastFree = ", fastFree);
                 String chargeInfoStr = getChargeInfo(fastFree, fastTotal, slowFree, slowTotal);
-                if (TextUtils.isEmpty(chargeInfoStr) && !TextUtils.isEmpty(businessTime)) {
-                    endPoint.setBusinessHours(businessTime);
-                    mNaviPackage.setEndPoint(endPoint);
-                    return;
+                if (!TextUtils.isEmpty(chargeInfoStr)) {
+                    endPoint.setBusinessHours(chargeInfoStr);
                 }
-                endPoint.setBusinessHours(chargeInfoStr);
                 mNaviPackage.setEndPoint(endPoint);
-            } else if (!TextUtils.isEmpty(businessTime)) {
-                endPoint.setBusinessHours(businessTime);
+            } else {
                 mNaviPackage.setEndPoint(endPoint);
             }
         }

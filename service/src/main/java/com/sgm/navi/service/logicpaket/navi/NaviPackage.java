@@ -66,6 +66,7 @@ import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.greendao.history.History;
 import com.sgm.navi.service.greendao.history.HistoryManager;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.signal.SignalPackage;
@@ -650,7 +651,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         }
         final int nop = SignalPackage.getInstance().getNavigationOnAdasTextToSpeachStatus();
         Logger.i(TAG, "onPlayTTS: ", info.getText(), " rangeType:", info.getRangeType(), " isHighPriority:", info.isHighPriority(),
-                " isRingType:", info.isRingType(), " NOP:", nop);
+                " isRingType:", info.isRingType(), " NOP:", nop, " 导航状态:", NaviStatusPackage.getInstance().getCurrentNaviStatus(),
+                " 巡航开关:", mCruiseVoiceIsOpen, " 静音:", mIsMute);
         ThreadManager.getInstance().postUi(() -> {
             try {
                 if (NaviAdapter.getInstance().getMCountDownLatch() != null) {
@@ -662,7 +664,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                     Logger.d(TAG, "当前处于巡航态且播报关闭，故不播放声音！");
                     return;
                 }
-                if (mIsMute) return; // 静音开关
+                if (mIsMute) {
+                    return; // 静音开关
+                }
                 //如果NOP打开并且是不播报的类型则不播报  soundType废弃 换成rangeType
                 if (nop == 1 && !TTSPlayHelper.allowToPlayWithNopOpen(info.getRangeType())) {
                     return;
