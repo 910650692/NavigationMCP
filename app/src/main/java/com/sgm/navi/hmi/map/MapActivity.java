@@ -25,6 +25,7 @@ import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.broadcast.FloatWindowReceiver;
+import com.sgm.navi.broadcast.HomeActionBroadcastReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.BR;
@@ -47,12 +48,10 @@ import com.sgm.navi.service.define.map.MainScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
-import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
-import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.FragmentIntent;
@@ -64,7 +63,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * @Description TODO
@@ -245,6 +243,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             if (Logger.openLog) {
                 Logger.d(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(this));
             }
+        }
+        //check Home键广播
+        if (!HomeActionBroadcastReceiver.isRegister) {
+            Logger.d(TAG, "registerHomeActionReceiver");
+            HomeActionBroadcastReceiver.registerHomeActionReceiver();
         }
     }
 

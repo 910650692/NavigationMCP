@@ -25,6 +25,7 @@ import com.sgm.navi.ui.base.StackManager;
  */
 public class HomeActionBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "HomeActionBroadcastReceiver";
+    public static boolean isRegister = false;
     public static final String HOME_CLICK_ACTION = "com.patac.launcher.action.NOTIFY_LAUNCHER_RESUME";
 
     @Override
@@ -54,8 +55,10 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
             final IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(HOME_CLICK_ACTION);
             AppCache.getInstance().getMContext().registerReceiver(new HomeActionBroadcastReceiver(), intentFilter, Context.RECEIVER_EXPORTED);
+            isRegister = true;
             Logger.d(TAG, "registerHomeActionReceiver-success!");
         } catch (Exception e) {
+            isRegister = false;
             Logger.e(TAG, "registerHomeActionReceiver-failed", e.getMessage());
         }
     }
