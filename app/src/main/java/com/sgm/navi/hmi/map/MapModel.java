@@ -560,7 +560,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (StartService.getInstance().checkSdkIsAvailable()) {
             if (null == mapPackage || null == layerPackage) {
                 onSdkInitSuccess();
-            } else if (!mViewModel.isRemindDialogShow()) {
+            } else if (isAllowSGMAgreement() && !isFirstLauncher()) {
                 checkAuthorizationExpired();
             }
         } else {

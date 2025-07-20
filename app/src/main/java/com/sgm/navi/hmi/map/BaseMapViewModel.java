@@ -367,7 +367,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mIsContinueNaviNotified.set(true);
                 mModel.checkContinueNavi();
             }
-            if (!mRemindDialogShow) {
+            if (mModel.isAllowSGMAgreement() && !mFirstLaunch) {
                 mModel.checkAuthorizationExpired();
             }
             bottomNaviVisibility.set(judgedBottomNaviVisibility());
