@@ -134,6 +134,8 @@
                 android:id="@+id/search_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="true"
+                android:clickable="true"
                 android:layout_marginTop="@dimen/dp_17"
                 android:background="@drawable/bg_route_result"
                 app:layout_constraintVertical_chainStyle="spread_inside"
