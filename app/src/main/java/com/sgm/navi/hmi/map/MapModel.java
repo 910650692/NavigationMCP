@@ -504,7 +504,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN_FAIL)
     public void popStartupExceptionDialog() {
-        if (null == mStartExceptionDialog) {
+        if (null == mStartExceptionDialog || !mStartExceptionDialog.isShowing()) {
+            mViewModel.showProtectView();
             mStartExceptionDialog = new StartupExceptionDialog(mViewModel.getView(), new IBaseDialogClickListener() {
                 @Override
                 public void onNetWorkConnect() {
@@ -512,17 +513,27 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                         Logger.d(TAG, "mStartExceptionDialog", "close");
                         mStartExceptionDialog.dismiss();
                     }
+                    mViewModel.closeProtectView();
                     startInitEngine();
                 }
 
                 @Override
                 public void onExit() {
                     FloatViewManager.getInstance().showAllCardWidgets();
-                    if (null != mViewModel) {
-                        Logger.d(TAG, "mStartExceptionDialog", "退至后台");
-                        mViewModel.moveToBack();
+                    if (FloatViewManager.getInstance().isNaviDeskBg()) {
+                        if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
+                            Logger.d(TAG, "桌面地图隐藏弹窗");
+                            mStartExceptionDialog.cancel();
+                            mViewModel.showProtectView();
+                            mViewModel.protectMap(AutoMapConstant.CANCEL_NET_EXCEPTION_DIALOG);
+                        }
+                    } else {
+                        if (null != mViewModel) {
+                            Logger.d(TAG, "非桌面地图finish应用");
+                            mViewModel.moveToBack();
+                            ThreadManager.getInstance().asyncDelay(() -> mViewModel.getView().finish(), 400, TimeUnit.MILLISECONDS);
+                        }
                     }
-                    ThreadManager.getInstance().asyncDelay(() -> StackManager.getInstance().exitApp(), 800, TimeUnit.MILLISECONDS);
                 }
             });
         }
@@ -1902,6 +1913,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             public void onCancelClick() {
                 if (FloatViewManager.getInstance().isNaviDeskBg()) {
                     Logger.d(TAG, "桌面地图情况");
+                    mViewModel.showProtectView();
                     mViewModel.protectMap(AutoMapConstant.CANCEL_LOCATION_PROTOCOL);
                 } else {
                     mViewModel.moveToBack();

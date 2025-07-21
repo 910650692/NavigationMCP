@@ -257,6 +257,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * 打开隐私权限弹窗
      */
     public void popAgreementDialog() {
+        showProtectView();
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
@@ -271,6 +272,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mRemindDialogShow = false;
                 if (FloatViewManager.getInstance().isNaviDeskBg()) {
                     Logger.d(TAG, "桌面地图情况");
+                    showProtectView();
                     mView.protectMap(AutoMapConstant.CANCEL_AUTO_PROTOCOL);
                 } else {
                     moveToBack();
@@ -314,12 +316,27 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mView.showProtectView();
     }
 
+    /**
+     * 展示保护view
+     *
+     * @param situation 不同情况
+     */
     public void protectMap(final int situation) {
         mView.protectMap(situation);
     }
 
+    /**
+     * 用于保护桌面地图的定位隐私弹窗检测
+     */
     public void checkAuthorizationExpired() {
         mModel.checkAuthorizationExpired();
+    }
+
+    /**
+     * 用于保护桌面地图的无网络弹窗检测
+     */
+    public void checkPermission() {
+        mModel.checkPermission();
     }
 
     /**
@@ -1486,7 +1503,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (closeDelay && !ConvertUtils.isEmpty(restartFlag)) {
             return;
         }
-
         final boolean naviDesk = FloatViewManager.getInstance().isNaviDeskBg();
         if (ConvertUtils.isEmpty(restartFlag) || naviDesk) {
             ThreadManager.getInstance().asyncDelay(()

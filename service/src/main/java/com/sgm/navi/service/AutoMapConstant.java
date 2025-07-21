@@ -25,6 +25,7 @@ public interface AutoMapConstant {
 
     int CANCEL_AUTO_PROTOCOL = 1;
     int CANCEL_LOCATION_PROTOCOL = 2;
+    int CANCEL_NET_EXCEPTION_DIALOG = 3;
 
 
     /*** ！！！搜索相关,搜索类型,只能添加不能删除！！！*/

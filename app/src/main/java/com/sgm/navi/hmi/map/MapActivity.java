@@ -115,16 +115,23 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void protectMap(final int situation) {
         switch (situation) {
             case AutoMapConstant.CANCEL_AUTO_PROTOCOL:
-                Logger.d(TAG, "protectMap: 高德协议");
                 mBinding.protectView.setOnClickListener(v -> {
+                    Logger.d(TAG, "protectMap: 高德协议");
                     mViewModel.checkPrivacyRights();
                     mBinding.protectView.setOnClickListener(null);
                 });
                 break;
             case AutoMapConstant.CANCEL_LOCATION_PROTOCOL:
-                Logger.d(TAG, "protectMap: 定位协议");
                 mBinding.protectView.setOnClickListener(v -> {
+                    Logger.d(TAG, "protectMap: 定位协议");
                     mViewModel.checkAuthorizationExpired();
+                    mBinding.protectView.setOnClickListener(null);
+                });
+                break;
+            case AutoMapConstant.CANCEL_NET_EXCEPTION_DIALOG:
+                mBinding.protectView.setOnClickListener(v -> {
+                    Logger.d(TAG, "protectMap: 网络异常");
+                    mViewModel.checkPermission();
                     mBinding.protectView.setOnClickListener(null);
                 });
                 break;
@@ -135,11 +142,21 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     public void closeProtectView() {
-        mBinding.protectView.setVisibility(View.GONE);
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                mBinding.protectView.setVisibility(View.GONE);
+            }
+        });
     }
 
     public void showProtectView() {
-        mBinding.protectView.setVisibility(View.VISIBLE);
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                mBinding.protectView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void updateTimeText() {
