@@ -87,19 +87,11 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
         if (mFavoriteInfoList.get(position).getFavoriteInfo().getTop_time() != 0) {
             holder.mFavoriteBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.setting_bg_top));
             holder.mFavoriteBinding.itemFavoriteTopText.setText("取消");
-            holder.mFavoriteBinding.itemFavoriteDistance.setText(
-                    SearchPackage.getInstance().calcStraightDistance(mFavoriteInfoList.get(position).getPoint()));
-            Logger.d(MapDefaultFinalTag.FAVORITE_SERVICE_TAG, "mPoiInfoEntity.getDistance() is: "
-                    + holder.mFavoriteBinding.itemFavoriteDistance.getText() + mFavoriteInfoList.get(position).getAddress());
-            holder.mFavoriteBinding.itemFavoriteDistance.setVisibility(View.VISIBLE);
-            holder.mFavoriteBinding.itemFavoriteLine.setVisibility(View.VISIBLE);
             holder.mFavoriteBinding.itemFavoriteTopTag.setVisibility(View.GONE);
             holder.mFavoriteBinding.itemFavoriteTopIcon.setImageResource(R.drawable.img_favorite_untop);
         } else {
             holder.mFavoriteBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
             holder.mFavoriteBinding.itemFavoriteTopText.setText("置顶");
-            holder.mFavoriteBinding.itemFavoriteDistance.setVisibility(View.GONE);
-            holder.mFavoriteBinding.itemFavoriteLine.setVisibility(View.GONE);
             holder.mFavoriteBinding.itemFavoriteTopTag.setVisibility(View.GONE);
             holder.mFavoriteBinding.itemFavoriteTopIcon.setImageResource(R.drawable.img_favorite_top);
         }

@@ -93,6 +93,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_26"
                     android:textColor="@color/color_black_70"
+                    android:visibility="gone"
                     tools:text="198km"/>
 
                 <com.sgm.navi.ui.view.SkinView
@@ -102,6 +103,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_8"
                     android:layout_gravity="center"
+                    android:visibility="gone"
                     android:background="@color/color_black_70" />
 
                 <com.sgm.navi.ui.view.SkinTextView

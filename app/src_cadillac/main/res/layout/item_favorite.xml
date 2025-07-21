@@ -105,6 +105,7 @@
                     android:focusable="false"
                     android:textColor="@color/setting_text_preference"
                     android:textSize="@dimen/sp_38"
+                    android:visibility="gone"
                     tools:text="198km" />
 
                 <com.sgm.navi.ui.view.SkinView
@@ -115,6 +116,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_8"
                     android:background="@color/color_black_70"
+                    android:visibility="gone"
                     android:focusable="false" />
 
                 <com.sgm.navi.ui.view.SkinTextView
