@@ -17,6 +17,7 @@ import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.position.LocalParallelRoadEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.position.IPositionPackageCallback;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
@@ -241,7 +242,9 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
          */
         @Override
         public void onParallelRoadUpdate(final LocParallelInfoEntity entity) {
-            if (ConvertUtils.isNull(entity)) {
+            // 如果是模拟导航的话不显示平行路切换按钮
+            if (ConvertUtils.isNull(entity) ||
+                    NaviPackage.getInstance().getCurrentNaviType() == NumberUtils.NUM_1) {
                 return;
             }
             if (Logger.openLog) {
