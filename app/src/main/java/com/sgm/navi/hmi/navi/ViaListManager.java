@@ -24,6 +24,7 @@ public class ViaListManager {
     private int mViaUpdateCount;
     private int mChargeStationTaskId;
     private List<String> viaIdList;
+    private List<NaviViaEntity> naviViaList;
 
     public ViaListManager(final NaviGuidanceModel naviGuidanceModel) {
         mGuidanceModel = naviGuidanceModel;
@@ -33,7 +34,8 @@ public class ViaListManager {
 
     public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
         if (mViaUpdateCount == 0) {
-            viaIdList = getViaIdList(mGuidanceModel.getViaList());
+            naviViaList = mGuidanceModel.getViaList();
+            viaIdList = getViaIdList(naviViaList);
             if (!ConvertUtils.isEmpty(viaIdList)) {
                 mChargeStationTaskId = mSearchPackage.poiListSearch(viaIdList, 4, true);
             }
@@ -65,7 +67,7 @@ public class ViaListManager {
             Logger.i(TAG, "errorCode:", errorCode, "message:", message, " 搜索结果:isEmpty(poiInfos)");
             return;
         }
-        List<PoiInfoEntity> tempPoiInfos = sortPoiInfosByIds(poiInfos, viaIdList);
+        List<PoiInfoEntity> tempPoiInfos = sortPoiInfosByIds(poiInfos, viaIdList, naviViaList);
         mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, tempPoiInfos);
     }
 
@@ -79,6 +81,7 @@ public class ViaListManager {
         if (ConvertUtils.isEmpty(viaList)) {
             return;
         }
+        naviViaList = viaList;
         viaIdList = getViaIdList(viaList);
         if (!ConvertUtils.isEmpty(viaIdList)) {
             mChargeStationTaskId = mSearchPackage.poiListSearch(viaIdList, 4, true);
@@ -108,24 +111,42 @@ public class ViaListManager {
     }
 
     /**
-     * 根据poi id数组顺序对PoiInfoEntity列表进行排序
+     * 根据poi id数组顺序对PoiInfoEntityList和naviViaList进行排序整理
      * @param poiInfoEntityList poiInfoEntityList
      * @param poiIdList poi id列表
-     * @return 排序后的poiInfoEntityList
+     * @param naviViaList 导航途径点列表
+     * @return 排序后的PoiInfoEntity列表
      */
-    private List<PoiInfoEntity> sortPoiInfosByIds(List<PoiInfoEntity> poiInfoEntityList, List<String> poiIdList) {
+    private List<PoiInfoEntity> sortPoiInfosByIds(List<PoiInfoEntity> poiInfoEntityList, List<String> poiIdList,
+                                                  List<NaviViaEntity> naviViaList) {
         if (ConvertUtils.isEmpty(poiInfoEntityList) || ConvertUtils.isEmpty(poiIdList)
-                || poiInfoEntityList.size() != poiIdList.size()) {
-            Logger.d(TAG, "id数组和PoiInfoEntity长度不一致");
+                || ConvertUtils.isEmpty(naviViaList)) {
+            Logger.d(TAG, "poiInfoEntityList poiIdList naviViaList长度都不能为空");
             return new ArrayList<>(poiInfoEntityList);
         }
         Map<String, PoiInfoEntity> idToObject = new HashMap<>();
         for(PoiInfoEntity poiInfoEntity: poiInfoEntityList) {
             idToObject.put(poiInfoEntity.getPid(), poiInfoEntity);
         }
+        Map<String, NaviViaEntity> idToNaviViaEntity= new HashMap<>();
+        for(NaviViaEntity naviViaEntity: naviViaList) {
+            idToNaviViaEntity.put(naviViaEntity.getPid(), naviViaEntity);
+        }
         List<PoiInfoEntity> resultList = new ArrayList<>();
         for(int i = 0; i < poiIdList.size(); i++) {
-            resultList.add(idToObject.get(poiIdList.get(i)));
+            if(idToObject.containsKey(poiIdList.get(i))) {
+                resultList.add(idToObject.get(poiIdList.get(i)));
+            } else {// 解决poi id不正确的途径点
+                NaviViaEntity naviViaEntity = idToNaviViaEntity.get(poiIdList.get(i));
+                PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+                if (!ConvertUtils.isEmpty(naviViaEntity)) {
+                    poiInfoEntity.setPid(naviViaEntity.getPid());
+                    poiInfoEntity.setMName(naviViaEntity.getName());
+                    poiInfoEntity.setAddress(naviViaEntity.getAddress());
+                    poiInfoEntity.setMPoint(naviViaEntity.getRealPos());
+                }
+                resultList.add(poiInfoEntity);
+            }
         }
         return resultList;
     }
