@@ -56,6 +56,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
         switch (item.getBusinessType()) {
             case BizSearchType.BizSearchTypePoiParentPoint -> {
                 int index = getIndexOfLayerItem(item);
+                //需要搜索添加属性是否是列表搜索 然后进行判断显示扎标
                 if (index <= 11 && (mPoiInfoList.get().size() > (index -1))) {
                     PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index - 1);
                     if ((!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) || focus) {
@@ -441,9 +442,9 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 } else if (isSlowShow && isFastShow){
                     break;
                 } else if (isSlowShow){
-                    customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:120px;"));
+                    customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:130px;"));
                 } else {
-                    customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:140px;"));
+                    customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:120px;"));
                 }
                 break;
             }

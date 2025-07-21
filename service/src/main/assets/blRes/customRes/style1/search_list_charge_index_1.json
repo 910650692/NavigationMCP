@@ -1,9 +1,9 @@
 {
   "point_layer_item_style": {
     "normal_style": {
-      "poi_marker_id": "layer_icon_search_poi_index_1",
+      "poi_marker_id": "layer_icon_search_poi_normal_index_1",
       "poi_marker_info": "{\"anchor\":9,\"x_ratio\":0.5,\"y_ratio\":0.900}",
-      "bg_marker_info": "marker_info_point_center_up",
+      "bg_marker_info": "marker_info_point_center_up_4",
       "bg_marker_id": "search_list_charge_index_label.xml",
       "bg_show_rect": {
         "y1": 0,
@@ -16,7 +16,7 @@
       "poi_marker_id": "layer_icon_search_poi_index_1",
       "poi_marker_info": "{\"anchor\":9,\"x_ratio\":0.5,\"y_ratio\":0.900}",
       "bg_marker_info": "marker_info_point_center_up",
-      "bg_marker_id": "search_list_charge_index_label.xml",
+      "bg_marker_id": "search_list_charge_index_label_fouce.xml",
       "bg_show_rect": {
         "y1": 0,
         "x1": 0,

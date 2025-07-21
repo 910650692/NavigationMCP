@@ -1138,6 +1138,11 @@
       "y_ratio": 0.928,
       "x_ratio": 0.5
     },
+    "marker_info_point_center_up_4": {
+      "anchor": 9,
+      "y_ratio": 0.750,
+      "x_ratio": 0.50
+    },
     "marker_info_search_child_exist": {
       "anchor": 12,
       "day_style": {
