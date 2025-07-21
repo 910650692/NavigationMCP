@@ -20,32 +20,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.android.car.ui.FocusArea
-            android:id="@+id/focus_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:nudgeDown="@+id/focus_tab"
-            app:nudgeUp="@+id/focus_tab">
-
-            <com.sgm.navi.ui.view.SkinView
-                clickCommand="@{ViewModel.mFinishSetting}"
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:layout_marginStart="@dimen/dp_32"
-                android:layout_marginTop="@dimen/dp_48"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-        </com.android.car.ui.FocusArea>
-
             <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
+                clickCommand="@{ViewModel.mFinishSetting}"
                 android:id="@+id/setting_close"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
-                android:focusable="false"
                 android:src="@drawable/img_setting_close"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

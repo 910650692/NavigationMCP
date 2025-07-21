@@ -34,6 +34,26 @@ public class SkinConstraintLayout extends ConstraintLayout {
         initAttributes(context, attrs);
     }
 
+//    @SuppressLint("ClickableViewAccessibility")
+//    @Override
+//    public boolean onTouchEvent(final MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_DOWN && mIsClickChangeColor) {
+//            setAlpha(0.6f);
+//            return true;
+//        } else if (event.getAction() == MotionEvent.ACTION_UP && mIsClickChangeColor) {
+//            // 手指松开反馈点击事件并恢复控件原有的透明度
+//            setAlpha(1.0f);
+//            this.playSoundEffect(SoundEffectConstants.CLICK);
+//            callOnClick();
+//            return true;
+//        } else if (event.getAction() == MotionEvent.ACTION_CANCEL && mIsClickChangeColor) {
+//            // 手指划出点击区域恢复控件原有的透明度
+//            setAlpha(1.0f);
+//            return true;
+//        }
+//        return super.onTouchEvent(event);
+//    }
+
     /**
      * 初始化属性
      *
@@ -42,30 +62,30 @@ public class SkinConstraintLayout extends ConstraintLayout {
      */
     private void initAttributes(final Context context, final AttributeSet attrs) {
         final TypedArray typedArray = context.obtainStyledAttributes(attrs,
-                R.styleable.SkinConstraintLayout);
+                R.styleable.SkinClickChangeColor);
         mIsClickChangeColor = typedArray.getBoolean(
-                R.styleable.SkinConstraintLayout_click_color_change, false);
+                R.styleable.SkinClickChangeColor_click_color_change, false);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+
     @Override
-    public boolean onTouchEvent(final MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN && mIsClickChangeColor) {
+    protected void drawableStateChanged() {
+        super.drawableStateChanged();
+        boolean isPressed = isPressed();
+        boolean isFocused = isFocused();
+        if (isFocused && isPressed) {
+            //MFC 获取焦点并且按压态 使用XML 配置MFC Background
+        } else if (isFocused) {
+            //MFC 获取焦点并且按压态  使用XML 配置MFC Background
+        } else if (isPressed && mIsClickChangeColor) {
+            // 触屏按压态
             setAlpha(0.6f);
-            return true;
-        } else if (event.getAction() == MotionEvent.ACTION_UP && mIsClickChangeColor) {
-            // 手指松开反馈点击事件并恢复控件原有的透明度
+        } else {
+            // 恢复默认透明度
             setAlpha(1.0f);
-            this.playSoundEffect(SoundEffectConstants.CLICK);
-            callOnClick();
-            return true;
-        } else if (event.getAction() == MotionEvent.ACTION_CANCEL && mIsClickChangeColor) {
-            // 手指划出点击区域恢复控件原有的透明度
-            setAlpha(1.0f);
-            return true;
         }
-        return super.onTouchEvent(event);
     }
+
 
     /**
      * 设置是否点击改变颜色

@@ -29,27 +29,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
-            <com.android.car.ui.FocusArea
-                android:id="@+id/focus_close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:nudgeDown="@+id/focus_tab"
-                app:nudgeUp="@+id/focus_tab">
-
-                <com.sgm.navi.ui.view.SkinView
-                    clickCommand="@{ViewModel.mCarConnectBack}"
-                    android:layout_width="@dimen/dp_74"
-                    android:layout_height="@dimen/dp_74"
-                    android:layout_marginStart="@dimen/dp_32"
-                    android:layout_marginTop="@dimen/dp_48"
-                    android:focusable="true"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
-            </com.android.car.ui.FocusArea>
+<!--            <com.android.car.ui.FocusArea-->
+<!--                android:id="@+id/focus_close"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:nudgeDown="@+id/focus_tab"-->
+<!--                app:nudgeUp="@+id/focus_tab">-->
+<!--                <com.sgm.navi.ui.view.SkinView-->
+<!--                    android:layout_width="@dimen/dp_74"-->
+<!--                    android:layout_height="@dimen/dp_74"-->
+<!--                    android:layout_marginStart="@dimen/dp_32"-->
+<!--                    android:layout_marginTop="@dimen/dp_48"-->
+<!--                    />-->
+<!--            </com.android.car.ui.FocusArea>-->
 
             <com.sgm.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.mCarConnectBack}"
+                style="@style/style_mfc_config"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
-                android:focusable="false"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
                 android:src="@drawable/img_basic_ic_back"
@@ -149,6 +147,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:focusable="true"
+                    android:focusableInTouchMode="false"
+                    app:click_color_change="true"
                     android:focusedByDefault="true"
                     android:background="@drawable/bg_car_connect_function_selector">
 
@@ -195,6 +195,8 @@
                     android:layout_weight="1"
                     android:layout_marginStart="@dimen/dp_25"
                     android:focusable="true"
+                    android:focusableInTouchMode="false"
+                    app:click_color_change="true"
                     android:background="@drawable/bg_car_connect_function_selector">
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -239,6 +241,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:focusable="true"
+                    android:focusableInTouchMode="false"
+                    app:click_color_change="true"
                     android:layout_marginStart="@dimen/dp_25"
                     android:background="@drawable/bg_car_connect_function_selector">
 
@@ -284,6 +288,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:focusable="true"
+                    android:focusableInTouchMode="false"
+                    app:click_color_change="true"
                     android:layout_marginStart="@dimen/dp_25"
                     android:background="@drawable/bg_car_connect_function_selector">
 
@@ -331,8 +337,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_80"
                 android:gravity="center"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector">
+                style="@style/style_mfc_config">
 
                 <com.sgm.navi.ui.view.SkinCheckBox
                     android:id="@+id/cb_car_connect_login_function"

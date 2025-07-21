@@ -109,6 +109,8 @@
                         <com.sgm.navi.ui.view.SkinImageView
                             android:layout_width="@dimen/dp_74"
                             android:layout_height="@dimen/dp_74"
+                            clickCommand="@{ViewModel.mGoSettingHome}"
+                            app:click_color_change="true"
                             android:focusable="false"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="@dimen/dp_24"
@@ -171,8 +173,10 @@
                         <com.sgm.navi.ui.view.SkinImageView
                             android:layout_width="@dimen/dp_74"
                             android:layout_height="@dimen/dp_74"
+                            clickCommand="@{ViewModel.mGoSettingCompany}"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="@dimen/dp_24"
+                            app:click_color_change="true"
                             android:focusable="false"
                             android:src="@drawable/img_favorite_company" />
 
@@ -291,7 +295,7 @@
                         clickCommand="@{ViewModel.mAddFavorite}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:focusable="true"
+                        style="@style/style_mfc_config"
                         android:visibility="@{ViewModel.mAddVisibility ? View.VISIBLE : View.GONE}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/tv_favorite_title">

@@ -26,36 +26,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <com.android.car.ui.FocusArea
-                android:id="@+id/focus_close"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.sgm.navi.ui.view.SkinView
-                    clickCommand="@{ViewModel.mDrivingRecordDetailsBack}"
-                    android:layout_width="@dimen/dp_74"
-                    android:layout_height="@dimen/dp_74"
-                    android:focusable="true"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:layout_marginTop="@dimen/dp_39"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
-
-                <com.sgm.navi.ui.view.SkinView
-                    clickCommand="@{ViewModel.mDeleteRecord}"
-                    android:layout_width="@dimen/dp_74"
-                    android:layout_height="@dimen/dp_74"
-                    android:focusable="true"
-                    android:layout_marginStart="@dimen/dp_631"
-                    android:layout_marginTop="@dimen/dp_39"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
-
-            </com.android.car.ui.FocusArea>
             <!--标题-->
             <com.sgm.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.mDrivingRecordDetailsBack}"
+                style="@style/style_mfc_config"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:src="@drawable/img_setting_back"
-                android:focusable="false"
                 android:layout_marginStart="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_39"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,12 +52,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.mDeleteRecord}"
+                style="@style/style_mfc_config"
                 android:id="@+id/delete_driving_record"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_39"
-                android:focusable="false"
                 android:src="@drawable/img_driving_record_delete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

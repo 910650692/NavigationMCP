@@ -193,12 +193,11 @@
                 </com.sgm.navi.ui.view.SkinRadioGroup>
 
                 <com.sgm.navi.ui.view.SkinLinearLayout
+                    style="@style/style_mfc_config"
                     clickCommand="@{viewModel.mSwitchCruiseBroadcastClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:focusable="true"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                     android:layout_marginTop="@dimen/dp_86">
 
                     <com.sgm.navi.ui.view.SkinTextView

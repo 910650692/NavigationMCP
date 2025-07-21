@@ -41,14 +41,12 @@
                 app:nudgeUp="@+id/focus_tab">
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    style="@style/style_mfc_config"
                     clickCommand="@{ViewModel.mAccountBack}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_gravity="center"
-                    android:focusable="true"
-                    android:focusedByDefault="true"
                     android:layout_marginStart="@dimen/dp_32"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                     android:src="@drawable/img_setting_back" />
             </com.android.car.ui.FocusArea>
 

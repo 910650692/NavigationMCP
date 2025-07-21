@@ -25,40 +25,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.android.car.ui.FocusArea
-                android:id="@+id/focus_close"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:nudgeDown="@+id/focus_tab"
-                app:nudgeUp="@+id/focus_tab">
-
-                <com.sgm.navi.ui.view.SkinView
-                    clickCommand="@{ViewModel.mDrivingRecordBack}"
-                    android:focusable="true"
-                    android:layout_width="@dimen/dp_74"
-                    android:layout_height="@dimen/dp_74"
-                    android:layout_marginStart="@dimen/dp_32"
-                    android:layout_marginTop="@dimen/dp_48"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <com.sgm.navi.ui.view.SkinView
-                    clickCommand="@{ViewModel.mToRecordSetting}"
-                    android:layout_width="@dimen/dp_74"
-                    android:layout_height="@dimen/dp_74"
-                    android:layout_marginStart="@dimen/dp_1366"
-                    android:layout_marginTop="@dimen/dp_48"
-                    android:focusable="true"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-            </com.android.car.ui.FocusArea>
-
             <com.sgm.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.mDrivingRecordBack}"
+                style="@style/style_mfc_config"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
-                android:focusable="false"
                 android:src="@drawable/img_setting_back"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
@@ -79,12 +50,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.mToRecordSetting}"
+                style="@style/style_mfc_config"
                 android:id="@+id/driving_record_more"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginEnd="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
-                android:focusable="false"
                 android:src="@drawable/img_setting_others_selected"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -134,6 +106,8 @@
 
                 <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dr_content_btn"
+                    app:click_color_change="true"
+                    clickCommand="@{ViewModel.mToLogin}"
                     android:layout_width="@dimen/dp_160"
                     android:layout_height="@dimen/dp_68"
                     app:layout_constraintLeft_toRightOf="@+id/driving_record_login_tip"

@@ -6,7 +6,8 @@
         <attr name="enable_foreground" format="boolean"/>
         <attr name="marquee" format="boolean"/>
     </declare-styleable>
-    <declare-styleable name="SkinConstraintLayout">
+    <declare-styleable name="SkinClickChangeColor">
         <attr name="click_color_change" format="boolean" />
     </declare-styleable>
+
 </resources>

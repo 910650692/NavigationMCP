@@ -41,13 +41,12 @@
                     android:orientation="horizontal">
 
                     <com.sgm.navi.ui.view.SkinImageView
+                        style="@style/style_mfc_config"
                         clickCommand="@{viewModel.mClosePlateNumber}"
                         android:layout_width="@dimen/dp_74"
                         android:layout_height="@dimen/dp_74"
                         android:layout_marginStart="@dimen/dp_32"
                         android:layout_gravity="center"
-                        android:focusable="true"
-                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                         android:src="@drawable/img_setting_back" />
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -130,14 +129,13 @@
                     app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province"/>
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    style="@style/style_mfc_config"
                     android:id="@+id/setting_plate_number_clear"
                     clickCommand="@{viewModel.mClearPlateNumber}"
                     android:layout_width="@dimen/dp_54"
                     android:layout_height="@dimen/dp_54"
                     android:layout_marginTop="@dimen/dp_32"
                     android:layout_marginEnd="@dimen/dp_32"
-                    android:focusable="true"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                     android:src="@drawable/img_plate_number_clear"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"

@@ -42,17 +42,12 @@
                 android:layout_height="@dimen/dp_152"
                 android:clickable="false">
 
-                <com.sgm.navi.ui.view.SkinView
-                    clickCommand="@{viewModel.mProtocolCenterBack}"
-                    android:layout_width="@dimen/dp_138"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    android:clickable="true" />
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    clickCommand="@{viewModel.mProtocolCenterBack}"
+                    style="@style/style_mfc_config"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
-                    android:focusable="false"
                     android:src="@drawable/img_setting_back"
                     android:layout_marginStart="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_48"

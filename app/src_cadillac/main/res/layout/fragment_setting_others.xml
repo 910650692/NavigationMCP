@@ -40,13 +40,11 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.sgm.navi.scene.ui.setting.SceneCircleImageView
+                        style="@style/style_mfc_config"
                         clickCommand="@{viewModel.mOpenAccount}"
                         android:id="@+id/account_img"
                         android:layout_width="@dimen/dp_124"
                         android:layout_height="@dimen/dp_124"
-                        android:focusable="true"
-                        android:focusedByDefault="true"
-                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                         android:src="@drawable/img_account_default" />
 
                     <com.sgm.navi.ui.view.SkinLinearLayout
@@ -81,25 +79,16 @@
 
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
-                <com.sgm.navi.ui.view.SkinView
-                    clickCommand="@{viewModel.mOpenWeChat}"
-                    android:layout_width="@dimen/dp_168"
-                    android:layout_height="@dimen/dp_168"
-                    android:layout_marginEnd="@dimen/dp_32"
-                    android:focusable="true"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/setting_others_car_connect"/>
-
                 <com.sgm.navi.ui.view.SkinLinearLayout
+                    clickCommand="@{viewModel.mOpenWeChat}"
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/setting_others_wechat"
                     android:layout_width="@dimen/dp_168"
                     android:layout_height="@dimen/dp_168"
                     android:layout_marginEnd="@dimen/dp_32"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:focusable="false"
-                    android:background="@drawable/bg_setting_tab_select"
+                    android:background="@drawable/bg_setting_tab_select_mfc_selector"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/setting_others_car_connect">
 
@@ -108,6 +97,7 @@
                         android:layout_width="@dimen/dp_74"
                         android:layout_height="@dimen/dp_74"
                         android:focusable="false"
+                        android:background="@drawable/img_wechat_unbind"
                         android:src="@drawable/img_wechat_unbind"/>
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -122,7 +112,6 @@
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                 <com.sgm.navi.ui.view.SkinView
-                    clickCommand="@{viewModel.mOpenCarConnect}"
                     android:layout_width="@dimen/dp_168"
                     android:layout_height="@dimen/dp_168"
                     android:focusable="true"
@@ -131,13 +120,14 @@
                     app:layout_constraintEnd_toEndOf="parent"/>
 
                 <com.sgm.navi.ui.view.SkinLinearLayout
+                    clickCommand="@{viewModel.mOpenCarConnect}"
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/setting_others_car_connect"
                     android:layout_width="@dimen/dp_168"
                     android:layout_height="@dimen/dp_168"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:focusable="false"
-                    android:background="@drawable/bg_setting_tab_select"
+                    android:background="@drawable/bg_setting_tab_select_mfc_selector"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 

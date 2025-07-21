@@ -23,18 +23,29 @@ public class SkinTextView extends AppCompatTextView {
     private boolean mForeground = false;
     private boolean mStartMarquee = false;
 
+    private boolean mIsClickChangeColor = false;
+
     public SkinTextView(final Context context) {
         this(context, null);
     }
 
     public SkinTextView(final Context context, @Nullable final AttributeSet attrs) {
         this(context, attrs, 0);
+        initAttributes(context, attrs);
     }
 
     public SkinTextView(final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.mContext = context;
         loadTextAttrs(context, attrs);
+        initAttributes(context, attrs);
+    }
+
+    private void initAttributes(final Context context, final AttributeSet attrs) {
+        final TypedArray typedArray = context.obtainStyledAttributes(attrs,
+                R.styleable.SkinClickChangeColor);
+        mIsClickChangeColor = typedArray.getBoolean(
+                R.styleable.SkinClickChangeColor_click_color_change, false);
     }
 
     /**
@@ -116,4 +127,23 @@ public class SkinTextView extends AppCompatTextView {
         setFocusableInTouchMode(true);
         requestFocus();
     }
+
+    @Override
+    protected void drawableStateChanged() {
+        super.drawableStateChanged();
+        boolean isPressed = isPressed();
+        boolean isFocused = isFocused();
+        if (isFocused && isPressed) {
+            //MFC 获取焦点并且按压态 使用XML 配置MFC Background
+        } else if (isFocused) {
+            //MFC 获取焦点并且按压态  使用XML 配置MFC Background
+        } else if (isPressed && mIsClickChangeColor) {
+            // 触屏按压态
+            setAlpha(0.6f);
+        } else {
+            // 恢复默认透明度
+            setAlpha(1.0f);
+        }
+    }
+
 }
