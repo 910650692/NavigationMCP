@@ -53,6 +53,7 @@ import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.navi.PhoneAddressDialog;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
+import com.sgm.navi.hmi.route.RouteFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.startup.StartupExceptionDialog;
@@ -1114,6 +1115,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.CLOSE_CURRENT_PAGE:
                     //关闭当前页面
+                    final BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
+                    Logger.d(IVrBridgeConstant.TAG, "currentFragment = ", currentFragment.getClass().getName());
+                    if (!ConvertUtils.isNull(currentFragment)
+                            && ConvertUtils.equals(currentFragment.getClass().getName(), RouteFragment.class.getName())
+                            && mRoutePackage != null) {
+                        mRoutePackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+                        mRoutePackage.clearRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP);
+                    }
                     closeFragment(true);
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.MOVE_TO_BACK:
