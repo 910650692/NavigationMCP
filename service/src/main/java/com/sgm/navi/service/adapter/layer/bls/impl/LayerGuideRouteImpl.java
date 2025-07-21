@@ -422,6 +422,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             routePoint.mType = 2;
             routePoint.mIsDraw = true;
             routePoint.mPathId = isChargeStation(poiInfoEntity) ? LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal() : 0;
+            if (ConvertUtils.isEmpty(poiInfoEntity) || ConvertUtils.isEmpty(poiInfoEntity.getPoint())) {
+                Logger.e(TAG, getMapType(), "via point is null");
+                continue;
+            }
             routePoint.mPos = new Coord3DDouble(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat(), 0);
             mPathPoints.mViaPoints.add(routePoint);
         }
