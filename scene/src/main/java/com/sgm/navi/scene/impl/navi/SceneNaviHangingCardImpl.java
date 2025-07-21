@@ -9,7 +9,7 @@ import com.sgm.navi.scene.ui.navi.hangingcard.CardManager;
 import com.sgm.navi.scene.ui.navi.hangingcard.CardStatus;
 import com.sgm.navi.scene.ui.navi.hangingcard.NaviSceneHangingCard;
 import com.sgm.navi.scene.ui.navi.hangingcard.OnCardChangeListener;
-import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.scene.util.PowerMonitorService;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;

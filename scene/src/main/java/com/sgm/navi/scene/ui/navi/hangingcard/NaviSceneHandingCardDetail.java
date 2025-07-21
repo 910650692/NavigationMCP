@@ -22,7 +22,7 @@ import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.List;

@@ -28,6 +28,7 @@ import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
@@ -38,6 +39,7 @@ import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
@@ -812,6 +814,13 @@ public class BaseNaviGuidanceViewModel extends
         if (!ConvertUtils.isNull(mView)) {
             mView.updateViewRadius();
         }
+        if (Boolean.TRUE.equals(mHandingCardDetailVisibility.get())) {
+            if (!ConvertUtils.isNull(mView)) {
+                mView.restoreHandingCardView(
+                        mModelSaveEntity.getHangingCardPoiList(),
+                        mModelSaveEntity.getHandCardType());
+            }
+        }
     }
 
     public void onCurrentRoadSpeed(int speed) {
@@ -949,6 +958,13 @@ public class BaseNaviGuidanceViewModel extends
     public void deleteAutoAddChargeStation() {
         if (mModel != null) {
             mModel.deleteAutoAddChargeStation();
+        }
+    }
+
+    public void saveHandingCardDetail(List<PoiInfoEntity> infoEntities, HandCardType type) {
+        if (mModelSaveEntity != null) {
+            mModelSaveEntity.setHandCardType(type);
+            mModelSaveEntity.setHangingCardPoiList(infoEntities);
         }
     }
 }

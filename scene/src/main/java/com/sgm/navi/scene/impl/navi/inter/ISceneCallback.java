@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
-import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.navi.NaviParkingEntity;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
@@ -258,4 +258,6 @@ public interface ISceneCallback {
     default boolean getIsViaArrived() {
         return false;
     }
+
+    default void saveHandingCardDetail(List<PoiInfoEntity> infoEntities, HandCardType type) {}
 }

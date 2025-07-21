@@ -18,7 +18,7 @@ import com.sgm.navi.scene.databinding.HangingCardLayoutBinding;
 import com.sgm.navi.scene.impl.navi.SceneNaviHangingCardImpl;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
-import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.navi.HandCardType;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -277,6 +277,9 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
 
     private void addChild(HandCardType type, ViewGroup parent, boolean isExpand) {
         final CardView newCardView = CardManager.getInstance().createCardViewByType(this, type);
+        if (mISceneCallback != null) {
+            mISceneCallback.saveHandingCardDetail(getImpl().getData(type), type);
+        }
         if (parent.getChildCount() > 0) {
             CardView cardView = (CardView) parent.getChildAt(0);
             if (!ConvertUtils.isNull(cardView) && cardView.mType != type) {

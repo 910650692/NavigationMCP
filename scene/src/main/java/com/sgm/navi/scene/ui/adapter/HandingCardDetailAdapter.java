@@ -1,6 +1,6 @@
 package com.sgm.navi.scene.ui.adapter;
 
-import static com.sgm.navi.scene.util.HandCardType.PARK;
+import static com.sgm.navi.service.define.navi.HandCardType.PARK;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -23,7 +23,7 @@ import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.databinding.ItemHandingCardDetailBinding;
 import com.sgm.navi.scene.ui.navi.hangingcard.CardManager;
 import com.sgm.navi.scene.ui.navi.hangingcard.OnHandingCardItemClickListener;
-import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.GasStationInfo;

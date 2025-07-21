@@ -1,5 +1,7 @@
 package com.sgm.navi.service.define.navi;
 
+import com.sgm.navi.service.define.search.PoiInfoEntity;
+
 import java.util.List;
 
 public class NaviModelSaveEntity {
@@ -15,6 +17,8 @@ public class NaviModelSaveEntity {
     private boolean mIsViaDetailShow;
     private NaviViaEntity mNaviViaEntity;
     private int mSapaDetailType;
+    private List<PoiInfoEntity> mHangingCardPoiList;
+    private HandCardType mHandCardType;
 
     public SpeedOverallEntity getSpeedOverallEntity() {
         return mSpeedOverallEntity;
@@ -110,5 +114,21 @@ public class NaviModelSaveEntity {
 
     public void setSapaDetailType(int mSapaDetailType) {
         this.mSapaDetailType = mSapaDetailType;
+    }
+
+    public List<PoiInfoEntity> getHangingCardPoiList() {
+        return mHangingCardPoiList;
+    }
+
+    public void setHangingCardPoiList(final List<PoiInfoEntity> mHangingCardPoiList) {
+        this.mHangingCardPoiList = mHangingCardPoiList;
+    }
+
+    public HandCardType getHandCardType() {
+        return mHandCardType;
+    }
+
+    public void setHandCardType(final HandCardType mHandCardType) {
+        this.mHandCardType = mHandCardType;
     }
 }

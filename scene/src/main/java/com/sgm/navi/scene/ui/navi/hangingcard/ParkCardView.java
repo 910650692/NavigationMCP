@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.scene.databinding.NaviSceneNearProvideStationParkBinding;
-import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.search.ParkingInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.ui.view.SwipeDeleteLayout;

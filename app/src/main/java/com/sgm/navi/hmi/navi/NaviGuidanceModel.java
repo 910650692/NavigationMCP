@@ -29,6 +29,7 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -1571,6 +1572,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (!ConvertUtils.isEmpty(mViewModel)) {
             Logger.i(TAG, "静默算路失败");
             mViewModel.hideProgressUI(false);
+        }
+    }
+
+    @Override
+    public void saveHandingCardDetail(List<PoiInfoEntity> infoEntities, HandCardType type) {
+        if (mViewModel != null) {
+            mViewModel.saveHandingCardDetail(infoEntities, type);
         }
     }
 

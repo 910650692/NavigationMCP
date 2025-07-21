@@ -12,7 +12,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;

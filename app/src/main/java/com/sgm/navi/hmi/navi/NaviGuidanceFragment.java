@@ -53,6 +53,7 @@ import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
@@ -61,6 +62,7 @@ import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
@@ -1072,6 +1074,13 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void showOfflineProgressUI() {
         if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog) && mRouteRequestLoadingDialog.isShowing()) {
             mRouteRequestLoadingDialog.showOfflineRouting();
+        }
+    }
+
+    public void restoreHandingCardView(List<PoiInfoEntity> hangingCardPoiList,
+                                       HandCardType handCardType) {
+        if (mBinding != null && mBinding.sceneNaviCardDetail != null) {
+            mBinding.sceneNaviCardDetail.updateUi(hangingCardPoiList, handCardType);
         }
     }
 }

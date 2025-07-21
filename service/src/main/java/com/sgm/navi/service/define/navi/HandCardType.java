@@ -1,4 +1,4 @@
-package com.sgm.navi.scene.util;
+package com.sgm.navi.service.define.navi;
 
 /**
  * @author: QiuYaWei

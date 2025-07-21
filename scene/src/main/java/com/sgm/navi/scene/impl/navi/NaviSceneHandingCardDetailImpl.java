@@ -15,7 +15,7 @@ import com.sgm.navi.scene.ui.navi.hangingcard.OnHandingCardItemClickListener;
 import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.bean.PreviewParams;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;

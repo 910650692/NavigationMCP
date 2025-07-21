@@ -1,6 +1,6 @@
 package com.sgm.navi.scene.ui.navi.hangingcard;
 
-import com.sgm.navi.scene.util.HandCardType;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.List;
