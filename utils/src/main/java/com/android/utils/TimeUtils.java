@@ -1003,7 +1003,7 @@ public class TimeUtils {
                 return false;
             }
             // 创建时间格式化器
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
             // 解析开始和结束时间
             LocalTime startTime = LocalTime.parse(times[0], formatter);
             LocalTime endTime = LocalTime.parse(times[1], formatter);
@@ -1030,6 +1030,7 @@ public class TimeUtils {
             if (i > 0) result.append("~");
             result.append(parts[i].substring(0, 5));
         }
+        Logger.d("huangli","result: "+result.toString());
         return result.toString();
     }
 
@@ -1038,9 +1039,9 @@ public class TimeUtils {
      */
     public static boolean isCurrentTimeInSpecialRange(boolean workHours) {
         if(workHours){
-            return isCurrentTimeInRange("06:00:00~10:00:00");
+            return isCurrentTimeInRange("06:00~10:00");
         }else {
-            return isCurrentTimeInRange("17:00:00~24:00:00");
+            return isCurrentTimeInRange("17:00~24:00");
         }
     }
 

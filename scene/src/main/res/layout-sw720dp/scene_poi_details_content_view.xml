@@ -131,17 +131,21 @@
                 tools:visibility="gone" />
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_type_text"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="@dimen/dp_75"
                 android:layout_height="@dimen/dp_46"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/custom_info_bg_selector_day"
                 android:gravity="center"
+                android:maxLines="1"
                 android:textColor="@color/navi_color_2461EA_100"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintStart_toStartOf="@+id/start_guideline"
                 app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
+                app:layout_constraintTop_toTopOf="@+id/sk_poi_name"
+                app:layout_constraintEnd_toStartOf="@+id/sk_poi_name"
+                android:layout_marginRight="@dimen/dp_10"
                 android:text="@string/search_charge_self"
                 android:visibility="gone"
                 />

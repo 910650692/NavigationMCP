@@ -1040,6 +1040,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             R.string.charge_park_price, chargeInfo.getCurrentServicePrice()));
             if(mSearchResultEntity.getIsNetData()){
                 mViewBinding.poiTypeText.setVisibility(VISIBLE);
+                mViewBinding.poiTypeText.setText(getContext().getString(R.string.search_charge));
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setVisibility(VISIBLE);
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setVisibility(VISIBLE);
             }else{
@@ -1050,7 +1051,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getLatestChargeTimestamp: ",chargeInfo.getMLatestChargeTimestamp());
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getMSearchTimestamp: ",chargeInfo.getMSearchTimestamp());
-            if(!ConvertUtils.isEmpty(chargeInfo.getMSearchTimestamp()) && !ConvertUtils.isEmpty(chargeInfo.getMSearchTimestamp())) {
+            if(chargeInfo.getMSearchTimestamp() > 0 && chargeInfo.getMSearchTimestamp() > 0) {
                 String timeStr = TimeUtils.getInstance().getTimeStr(chargeInfo.getMSearchTimestamp() - chargeInfo.getMLatestChargeTimestamp());
                 mViewBinding.scenePoiDetailsChargingStationView.latestCharge.setVisibility(VISIBLE);
                 mViewBinding.scenePoiDetailsChargingStationView.latestCharge.setText(getContext().getString(R.string.latest_charge,timeStr));

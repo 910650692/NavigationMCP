@@ -134,7 +134,7 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
                         point.setLat(ConvertUtils.str2Double(object.getString("stationLat")));
                         point.setLon(ConvertUtils.str2Double(object.getString("stationLng")));
                         entity.setPoint(point);
-                        if(!ConvertUtils.isEmpty(object.getDouble("distance"))){
+                        if(object.has("distance") && !ConvertUtils.isEmpty(object.getDouble("distance"))){
                             int distance = ConvertUtils.double2int(object.getDouble("distance") * 1000);
                             final String[] distanceArray = ConvertUtils.formatDistanceArray(getApplication().getBaseContext(),distance);
                             entity.setDistance(distanceArray[0]+distanceArray[1]);

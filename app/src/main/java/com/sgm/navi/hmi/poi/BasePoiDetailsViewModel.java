@@ -136,7 +136,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                         .setCurrentServicePrice(chargeInfo.getParkFee());
                 CostTime currentTime = getCurrentElePrice(chargeInfo.getCostItem());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"currentTime: ",currentTime.getTime());
-                chargeInfo.setCurrentElePrice(currentTime.getmElectricityFee());
+                chargeInfo.setCurrentElePrice(currentTime.getPrice());
                 chargeList.add(chargeInfo);
                 PoiInfoEntity poiInfoEntity = GsonUtils.fromJson(GsonUtils.toJson(result.getDataSet()),PoiInfoEntity.class);
                 poiInfoEntity.setChargeInfoList(chargeList)
@@ -161,6 +161,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                     mView.onNetSearchResult();
                 }else{
                     mView.onSearchResult(taskId,searchResultEntity);
+                    mModel.createPoiLabel(searchResultEntity);
                 }
             } catch (JSONException e) {
                 notifyNetSearchResultError(taskId,e.getMessage());
@@ -235,6 +236,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                 final ThreadManager threadManager = ThreadManager.getInstance();
                 threadManager.postUi(() -> {
                     mView.onSearchResult(mTaskId,mSearchResultEntity);
+                    mModel.createPoiLabel(mSearchResultEntity);
                 });
             } catch (JSONException e) {
                 notifyReservationListError(result.getMessage());

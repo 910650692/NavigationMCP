@@ -1059,7 +1059,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
             if(!ConvertUtils.isNull(mAdapter)){
                 ArrayList<String> labelNameList = new ArrayList<>();
-                if(mCurrentSelectedQuick > -1){
+                if(mCurrentSelectedQuick > -1 && mCurrentSelectedQuick < mChildQuickList.size()){
                     labelNameList.add(mChildQuickList.get(mCurrentSelectedQuick).getName());
                     mAdapter.setQuickLabel(labelNameList);
                 }else {
@@ -1092,6 +1092,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }else if(searchResultEntity != null && searchResultEntity.getIsNetData()){
             mViewBinding.searchLabelFilter.setVisibility(VISIBLE);
             mChildQuickList = mapCustomLabel(new ArrayList<>(),searchResultEntity);
+            if(mCurrentSelectedQuick > mChildQuickList.size()){
+                mCurrentSelectedQuick = mChildQuickList.size() - 1;
+            }
             for (int i = 0; i < mChildQuickList.size(); i++) {
                 mChildQuickList.get(i).setChecked(i == mCurrentSelectedQuick ? 1 : 0);
             }
@@ -1575,14 +1578,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"brand: "+brand);
         boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
         boolean isOffline = searchResultEntity.getPoiType() == 0;
-        // 添加自营快筛
-        if (isPowerType && !isOffline) {
-            SearchChildCategoryLocalInfo chargeItem = new SearchChildCategoryLocalInfo()
-                    .setName(ResourceUtils.Companion.getInstance().getString(R.string.search_charge_self))
-                    .setValue("charge");
-            childListByHigh.add(chargeItem);
-            childListByLow.add(chargeItem);
-        }
         List<SearchChildCategoryLocalInfo> childList = ConvertUtils.isEmpty(list) ? new ArrayList<>() : list.get(0).getCategoryLocalInfos();
         if (isPowerType) {
             // 添加免费停车快筛
@@ -1603,6 +1598,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         // 别克：性价比车型1，凯迪：高品质车型2
         childListByHigh.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : childList);
         childListByLow.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : childList);
+        // 添加自营快筛
+        if (isPowerType && !isOffline) {
+            SearchChildCategoryLocalInfo chargeItem = new SearchChildCategoryLocalInfo()
+                    .setName(ResourceUtils.Companion.getInstance().getString(R.string.search_charge_self))
+                    .setValue("charge");
+            childListByHigh.add(chargeItem);
+            childListByLow.add(chargeItem);
+        }
         return brand == 2 ? childListByHigh : childListByLow;
     }
 

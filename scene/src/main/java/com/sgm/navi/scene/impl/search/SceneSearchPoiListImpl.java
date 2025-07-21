@@ -4,9 +4,11 @@ package com.sgm.navi.scene.impl.search;
 import android.os.Bundle;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.BaseSceneModel;
+import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.api.search.ISceneSearchPoiList;
 import com.sgm.navi.scene.ui.search.SceneSearchPoiList;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -422,7 +424,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             return;
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"keyword: "+searchResultEntity.getKeyword());
-        mTaskId = mSearchPackage.queryStationNewResult(searchResultEntity.getKeyword());
+        mTaskId = mSearchPackage.queryStationNewResult(ResourceUtils.Companion.getInstance().getString(R.string.search_charge_self));
     }
 
     public int getBrand(){

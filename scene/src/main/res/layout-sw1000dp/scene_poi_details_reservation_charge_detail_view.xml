@@ -16,7 +16,8 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_640"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_poi_main_tab"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:padding="@dimen/dp_34"
         android:maxHeight="@dimen/dp_714">
 
         <androidx.constraintlayout.widget.Guideline
@@ -46,9 +47,10 @@
                 android:layout_width="@dimen/dp_88"
                 android:layout_height="@dimen/dp_46"
                 android:gravity="center"
-                android:text="@string/cooperate"
+                android:text="@string/search_charge"
                 android:textColor="@color/navi_color_2461EA_100"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/sp_22"
+                android:background="@color/bg_route_detail_color"
                 app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/sk_poi_name" />
@@ -62,7 +64,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/poi_details_bottom_ff_00"
-                android:textSize="@dimen/sp_42"
+                android:textSize="@dimen/sp_32"
                 app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
                 app:layout_constraintStart_toEndOf="@+id/poi_type_text"
                 app:layout_constraintTop_toTopOf="parent"
@@ -72,8 +74,8 @@
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_type_icon"
                 clickCommand="@{ScenePoiChargingStationReservationListView.closeFragment}"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="@dimen/dp_68"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
                 android:src="@drawable/icon_poi_details_close"
                 app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -84,6 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_52"
                 android:layout_marginTop="@dimen/dp_26"
+                android:textSize="@dimen/sp_26"
                 clickCommand="@{() -> EventHandle.filterEquipment(1)}"
                 android:background="@{ScenePoiChargingStationReservationListView.searchType == 1 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
                 android:gravity="center"
@@ -102,6 +105,7 @@
                 android:layout_height="@dimen/dp_52"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_26"
+                android:textSize="@dimen/sp_26"
                 clickCommand="@{() -> EventHandle.filterEquipment(0)}"
                 android:background="@{ScenePoiChargingStationReservationListView.searchType == 0 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
                 android:gravity="center"
@@ -120,6 +124,7 @@
                 android:layout_height="@dimen/dp_52"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_26"
+                android:textSize="@dimen/sp_26"
                 clickCommand="@{() -> EventHandle.filterEquipment(2)}"
                 android:background="@{ScenePoiChargingStationReservationListView.searchType == 2 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
                 android:gravity="center"

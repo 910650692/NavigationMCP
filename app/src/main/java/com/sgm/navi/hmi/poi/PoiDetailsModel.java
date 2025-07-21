@@ -235,4 +235,9 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
             mTaskId = mSearchPackage.queryReservation(brandId,status,idpUserId,accessToken);
         });
     }
+
+    public void createPoiLabel(SearchResultEntity searchResultEntity){
+        mSearchPackage.createLabelMarker(searchResultEntity);
+        mSearchPackage.showPreview(searchResultEntity.getPoiList());
+    }
 }
