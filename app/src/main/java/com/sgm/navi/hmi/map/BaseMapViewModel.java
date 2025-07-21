@@ -1623,6 +1623,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.openGuideFragment();
     }
 
+    public void openRouteFragment(){
+        if(mModel == null) {
+            Logger.e(TAG, "openRouteFragment mModel is null");
+            return;
+        }
+        mModel.openRouteFragment();
+    }
+
     /**
      * 桌面背景模式切换后如果是导航桌面需要隐藏“分屏按钮”
      *

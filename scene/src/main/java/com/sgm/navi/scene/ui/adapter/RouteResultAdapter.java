@@ -122,14 +122,13 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
      * @param index 索引
      * */
     public void setSelectIndex(final int index) {
-        if (mCurrentIndex == index) {
-            return;
-        }
-
-        int oldIndex = mCurrentIndex;
-        mCurrentIndex = index;
-
         ThreadManager.getInstance().postUi(() -> {
+            if (mCurrentIndex == index) {
+                return;
+            }
+            int oldIndex = mCurrentIndex;
+            mCurrentIndex = index;
+
             if (oldIndex >= 0 && oldIndex < mRouteBeanList.size()) {
                 notifyItemChanged(oldIndex, new Object());
             }

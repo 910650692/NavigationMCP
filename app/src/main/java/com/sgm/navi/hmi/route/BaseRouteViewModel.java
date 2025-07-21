@@ -1652,6 +1652,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param routeRestrictionType 限行类型
      */
     public void updateRestrictionTextUI(final int routeRestrictionType) {
+        Logger.d(TAG, "updateRestrictionTextUI: " + routeRestrictionType);
         mRestrictionVisibility.set(true);
         mRestrictionRightBackVisibility.set(false);
         mRestrictionStatus = routeRestrictionType;
@@ -2081,9 +2082,19 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void onReStoreFragment() {
         showNormalRouteUI(false);
         mModel.onReStoreFragment();
-        if (mSecondaryPoiInfo != null) {
-            mView.setRouteSecondaryPoiUI(mSecondaryPoiInfo.getMChildType(), mSecondaryPoiInfo);
+    }
+
+    /***
+     * 渲染子poi显示界面
+     * @param type type
+     * @param poiInfoEntity 数据
+     */
+    public void setRouteSecondaryPoiUI(final int type, final PoiInfoEntity poiInfoEntity) {
+        if (mView == null) {
+            Logger.d(TAG, "mView = null");
+            return;
         }
+        mView.setRouteSecondaryPoiUI(type, poiInfoEntity);
     }
 
     public void showRouteDetails(List<RouteLineSegmentInfo> routeLineDetail) {

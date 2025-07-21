@@ -150,19 +150,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRoutePackage.unRegisterRouteObserver(TAG);
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.unRegisterCallBack(TAG);
-
-        //routeFragment 异常销毁兜底处理
-        //是否点击开启导航按钮
-        boolean isStart = true;
-        if (mViewModel != null) {
-            isStart = !mViewModel.getStartNavi();
-        }
-        //当前界面是否是导航界面
-        BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        if (mRoutePackage.isRouteState() && !isStart && !(currentFragment instanceof NaviGuidanceFragment)) {
-            Logger.d(TAG, "routeFragment abnormality destroyed ");
-            mRoutePackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
-        }
     }
 
     /**
@@ -881,22 +868,24 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteRestrictionInfo(final RouteRestrictionParam routeRestrictionParam) {
-        mRouteRestrictionParams = null;
-        mRestirctionTaskId = mRoutePackage.requestRestirction(routeRestrictionParam.getMMapTypeId());
-        mRouteRestrictionInfo = routeRestrictionParam.getMRouteRestrictionInfo();
-        int currentIndex = getCurrentIndex();
-        if (ConvertUtils.isEmpty(mRouteRestrictionInfo)
-                || currentIndex == -1
-                || currentIndex >= mRouteRestrictionInfo.size()
-                || ConvertUtils.isEmpty(mRouteRestrictionInfo.get(currentIndex))) {
-            if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.updateRestrictionTextUI(RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEINVALID);
+        ThreadManager.getInstance().postUi(() -> {
+            mRouteRestrictionParams = null;
+            mRestirctionTaskId = mRoutePackage.requestRestirction(routeRestrictionParam.getMMapTypeId());
+            mRouteRestrictionInfo = routeRestrictionParam.getMRouteRestrictionInfo();
+            int currentIndex = getCurrentIndex();
+            if (ConvertUtils.isEmpty(mRouteRestrictionInfo)
+                    || currentIndex == -1
+                    || currentIndex >= mRouteRestrictionInfo.size()
+                    || ConvertUtils.isEmpty(mRouteRestrictionInfo.get(currentIndex))) {
+                if (!ConvertUtils.isEmpty(mViewModel)) {
+                    mViewModel.updateRestrictionTextUI(RouteRestirctionID.REATIRCTION_LIMITTIPSTYPEINVALID);
+                }
+                return;
             }
-            return;
-        }
-        if (!ConvertUtils.isEmpty(mViewModel)) {
-            mViewModel.updateRestrictionTextUI((int) mRouteRestrictionInfo.get(currentIndex).getMTitleType());
-        }
+            if (!ConvertUtils.isEmpty(mViewModel)) {
+                mViewModel.updateRestrictionTextUI((int) mRouteRestrictionInfo.get(currentIndex).getMTitleType());
+            }
+        });
     }
 
     @Override
@@ -938,11 +927,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             Logger.e(TAG, "routeParams is null");
             return;
         }
-        mViewModel.getEndName().set(mRouteParams.get(mRouteParams.size() - NumberUtils.NUM_1).getName());
-        if (mRouteParams.size() >= NumberUtils.NUM_2) {
-            mRouteParams.remove(mRouteParams.size() - NumberUtils.NUM_1);
-            mRouteParams.remove(NumberUtils.NUM_0);
-        }
+        mViewModel.getEndName().set(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getName());
         if (!ConvertUtils.isEmpty(mViewModel)) {
             ThreadManager.getInstance().postUi(() -> mViewModel.setViaListUI(mRouteParams, requestRouteResult.getMRouteWay()));
         }
@@ -1441,26 +1426,42 @@ public void setPoint() {
 }
 
     public void onReStoreFragment() {
-        if (!ConvertUtils.isEmpty(mRequestRouteResults)) {
-            onRouteResult(mRequestRouteResults);
+        ThreadManager.getInstance().postUi(() -> {
+            if (mRoutePackage.getRequestRouteResult(MapType.MAIN_SCREEN_MAIN_MAP) == null || getCurrentIndex() == -1) {
+                Logger.d(TAG, "mRequestRouteResults is null");
+                cancelRoute();
+                mViewModel.getCloseRouteClick().call();
+                return;
+            }
+            mIsFirstRequest = false;
+            mRequestRouteResults = mRoutePackage.getRequestRouteResult(MapType.MAIN_SCREEN_MAIN_MAP);
+            mRouteLineInfos = mRequestRouteResults.getMRouteLineInfos();
+            mRouteWeatherInfos = null;
+            mRoutePackage.clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
+            mRoutePackage.clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+            mRouteParams = mRequestRouteResults.getMRouteParams();
 
-            if (mRouteChargeStationParam != null) {
-                int routeIndex = getCurrentIndex();
-                ArrayList<RouteSupplementParams> routeSupplementParams = mRouteChargeStationParam.getMRouteSupplementParams();
-                if (routeIndex != -1 && routeIndex < routeSupplementParams.size()) {
-                    final RouteSupplementParams routeSupplementParam = routeSupplementParams.get(routeIndex);
-                    mViewModel.updateSupplementPointsView(routeSupplementParam.getMRouteSupplementInfos()
-                            , routeSupplementParam.getMTotalDistance());
+            if (!ConvertUtils.isEmpty(mRequestRouteResults)) {
+                onRouteResult(mRequestRouteResults);
+                onRouteSlected(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex(), false);
+                onRouteRestrictionInfo(mRequestRouteResults.getMRouteRestrictionParam());
+                onRouteChargeStationInfo(mRequestRouteResults.getMRouteChargeStationParam());
+
+                if (mRouteParams != null) {
+                    mViewModel.getEndName().set(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getName());
+                    mViewModel.setViaListUI(mRouteParams, mRequestRouteResults.getMRouteWay());
+                }
+
+                PoiInfoEntity endPoiEntity = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getMPoiInfoEntity();
+                if (endPoiEntity.getMChildType() != AutoMapConstant.ChildType.DEFAULT
+                        && endPoiEntity.getMChildType() != AutoMapConstant.ChildType.CHILD_NO_GRAND) {
+                    mViewModel.setSecondaryPoiInfo(endPoiEntity);
+                    mViewModel.setRouteSecondaryPoiUI(endPoiEntity.getMChildType() , endPoiEntity);
+                    mViewModel.setSecondaryPoi(true);
+                    mViewModel.showSecondaryPoi();
                 }
             }
-            if (mRouteRestrictionParams != null) {
-                showRestrictionView(mRouteRestrictionParams);
-            }
-            if (mRouteParams != null) {
-                mViewModel.setViaListUI(mRouteParams, mRequestRouteResults.getMRouteWay());
-            }
-
-        }
+        });
     }
 
     public void requestRouteDetails(int index) {

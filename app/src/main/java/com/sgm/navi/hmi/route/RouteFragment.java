@@ -1319,6 +1319,15 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             }
             return;
         }
+
+        final boolean isMapOpen = bundle.getBoolean(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAP_OPEN_ROUTE_TYPE, false);
+        if (isMapOpen) {
+            Logger.d(TAG, "map reopen routefragment");
+            onReStoreFragment();
+            return;
+        }
+
+
         closeFragment(true);
         ToastUtils.Companion.getInstance().showCustomToastView(
                 ResourceUtils.Companion.getInstance().getString(R.string.route_error_no_request_data));

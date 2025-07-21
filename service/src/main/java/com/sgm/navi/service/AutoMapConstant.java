@@ -94,6 +94,7 @@ public interface AutoMapConstant {
         String BUNDLE_KEY_SEARCH_OPEN_ROUTE = "bundle_key_search_open_route";
         String BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE = "bundle_key_search_open_route_type";
         String BUNDLE_KEY_MSG_PUSH_OPEN_ROUTE_TYPE = "bundle_key_msg_push_open_route_type";
+        String BUNDLE_KEY_MAP_OPEN_ROUTE_TYPE = "bundle_key_map_open_route_type";
         String BUNDLE_KEY_SEARCH_OPEN_DETAIL = "bundle_key_search_open_detail";
         String BUNDLE_KEY_SEARCH_OPEN_AROUND = "bundle_key_search_open_around";
         String BUNDLE_KEY_SEARCH_OPEN_ALONG_WAY = "bundle_key_search_open_along_way";

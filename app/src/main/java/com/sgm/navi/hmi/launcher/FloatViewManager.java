@@ -113,20 +113,20 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             MapStateManager.getInstance().setLauncherDeskMode(currentDeskMode);
             notifyDeskModeChanged();
 
-            if (StartService.getInstance().checkSdkIsNeedInit()) return;
-            if (launcherDeskMode == DesktopMode.NAVIGATION_MODE.value || currentDeskMode == DesktopMode.NAVIGATION_MODE.value) {
-                String mapStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-                if (mapStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
-                    RoutePackage.getInstance().abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
-                    return;
-                }
-                if (mapStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
-                    RoutePackage.getInstance().clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
-                    RoutePackage.getInstance().clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
-                    RoutePackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
-                    LayerPackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
-                }
-            }
+//            if (StartService.getInstance().checkSdkIsNeedInit()) return;
+//            if (launcherDeskMode == DesktopMode.NAVIGATION_MODE.value || currentDeskMode == DesktopMode.NAVIGATION_MODE.value) {
+//                String mapStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+//                if (mapStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
+//                    RoutePackage.getInstance().abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
+//                    return;
+//                }
+//                if (mapStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE)) {
+//                    RoutePackage.getInstance().clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
+//                    RoutePackage.getInstance().clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+//                    RoutePackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+//                    LayerPackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+//                }
+//            }
         }
     };
 

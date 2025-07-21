@@ -546,6 +546,13 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return;
         }
         mRequestRouteResults.get(mapTypeId).setMRouteParams(routeParams);
+        if (routeParams.size() >= NumberUtils.NUM_2) {
+            routeParams.remove(routeParams.size() - NumberUtils.NUM_1);
+            routeParams.remove(NumberUtils.NUM_0);
+        } else {
+            Logger.d(TAG, "routeParams is error");
+            return;
+        }
         if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             return;
         }
@@ -1382,7 +1389,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     public void clearRouteLine(final MapType mapTypeId) {
         Logger.d(TAG, "clearRouteLine: " + mapTypeId);
-        mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
+        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
+        }
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.clearRouteLine(mapTypeId);
             mLayerAdapter.clearLabelItem(mapTypeId);
@@ -1705,6 +1714,16 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return new ArrayList<>();
         }
         return mRouteAdapter.getAllPoiParamList(mapTypeId);
+    }
+
+    /**
+     * 获取算路结果信息
+     *
+     * @param mapTypeId 屏幕Id
+     * @return 返回算路结果数据
+     */
+    public RequestRouteResult getRequestRouteResult(final MapType mapTypeId) {
+        return mRequestRouteResults.get(mapTypeId);
     }
 
     /**
