@@ -1133,6 +1133,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         routeParam.setPoiType(poiType);
         routeParam.setPoiID(poiInfoEntity.getPid());
         routeParam.setAdCode(poiInfoEntity.getAdCode());
+        if (poiType == RoutePoiType.ROUTE_POI_TYPE_WAY && poiInfoEntity.getPid() != null
+                && poiInfoEntity.getPid().startsWith("B")) {
+            routeParam.setType(2);
+        } else if (poiType == RoutePoiType.ROUTE_POI_TYPE_WAY){
+            routeParam.setType(1);
+        }
         if (!ConvertUtils.isEmpty(poiInfoEntity.getCityInfo())) {
             routeParam.setAdCode(poiInfoEntity.getCityInfo().getCityCode());
         }
