@@ -232,6 +232,45 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             final TextView textView = rootView.findViewById(R.id.route_end_business);
                             safetySetText(textView, data.getBusinessHours());
                         }
+
+                        @Override
+                        public void onFocusProcess(LayerItem layerItem, View rootView, LayerItemRouteEndPoint data) {
+                            if (ConvertUtils.isEmpty(rootView) || ConvertUtils.isEmpty(data)) {
+                                Logger.e(TAG, "onFocusProcess 更新终点扎标样式 data == null");
+                                return;
+                            }
+                            if (ConvertUtils.isEmpty(data)) {
+                                Logger.e(TAG, "onFocusProcess 更新终点扎标信息 getEndPointInfo is null");
+                                return;
+                            }
+                            Logger.d(TAG, "onFocusProcess 更新终点扎标信息 data " + data);
+                            final TextView text = rootView.findViewById(R.id.route_end_detail);
+                            int restNum = data.getRestNum();
+                            if (restNum > 0) {
+                                final LayerPointItemType pointType = data.getEndPointType();
+                                String string = "";
+                                switch (pointType) {
+                                    case ROUTE_POINT_END_BATTERY -> {
+                                        string = rootView.getContext().getString(R.string.layer_route_end_pop_detail, rootView.getContext().getString(R.string.layer_route_end_pop_type_battery), restNum);
+                                    }
+                                    case ROUTE_POINT_END_OIL -> {
+                                        string = rootView.getContext().getString(R.string.layer_route_end_pop_detail, rootView.getContext().getString(R.string.layer_route_end_pop_type_oil), restNum);
+                                    }
+                                }
+                                SpannableString spannableString = new SpannableString(string);
+                                // 找到需要加粗的部分的起始和结束位置
+                                int startIndex = string.indexOf(rootView.getContext().getString(R.string.layer_route_end_pop_default)) + 2;
+                                int endIndex = string.length() - 1;
+                                // 设置加粗样式
+                                spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                safetySetText(text, string);
+                            } else {
+                                safetySetText(text, "");
+                            }
+                            Logger.d(TAG, "onFocusProcess 终点扎标-营业时间 data " + data.toString());
+                            final TextView textView = rootView.findViewById(R.id.route_end_business);
+                            safetySetText(textView, data.getBusinessHours());
+                        }
                     };
             // 补能规划扎标
             case BizRouteType.BizRouteTypeViaChargeStationPoint ->
