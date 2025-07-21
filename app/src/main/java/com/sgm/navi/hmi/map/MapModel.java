@@ -908,7 +908,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     private boolean parkingViewExist() {
-        return getBottomNaviVisibility() || getTopFragment(PoiDetailsFragment.class) &&
+        return getBottomNaviVisibility() || (getTopFragment(PoiDetailsFragment.class)
+                && mapPackage.isSearchPoiDetailsFragment()) &&
                 NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)
                 || getTopFragment(TrafficEventFragment.class);
     }

@@ -45,6 +45,8 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     private LayerPackage mLayerPackage;
     private final ConcurrentHashMap<MapType, List<IMapPackageCallback>> callbacks = new ConcurrentHashMap<>();
 
+    private Boolean isSearchPoiDetailsFragment = false;
+
     public interface TimeHelper {
         void startTime();
 
@@ -587,6 +589,14 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
 
     public void setPitchAngle(MapType mapTypeId, float pitchAngle) {
         mMapAdapter.setPitchAngle(mapTypeId, pitchAngle);
+    }
+
+    public void setIsSearchPoiDetailsFragment(boolean isSearchPoiDetailsFragment) {
+        this.isSearchPoiDetailsFragment = isSearchPoiDetailsFragment;
+    }
+
+    public boolean isSearchPoiDetailsFragment() {
+        return isSearchPoiDetailsFragment;
     }
 
 }

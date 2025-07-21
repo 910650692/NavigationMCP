@@ -21,6 +21,7 @@ import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.ReservationInfo;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.user.account.AccountPackage;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
@@ -294,5 +295,9 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
 
     public void searchReservation(AccessTokenParam param){
         mModel.queryReservation(param);
+    }
+
+    public void setIsSearchPoiDetailsFragment(boolean isSearchPoiDetailsFragment) {
+        MapPackage.getInstance().setIsSearchPoiDetailsFragment(isSearchPoiDetailsFragment);
     }
 }

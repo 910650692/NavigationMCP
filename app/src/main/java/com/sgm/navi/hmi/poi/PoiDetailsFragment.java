@@ -99,6 +99,8 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             if (isOpenFromNavi == 1) {
                 mBinding.scenePoiDetailContentView.setNaviControl(true);
             }
+            mViewModel.setIsSearchPoiDetailsFragment(poiType == AutoMapConstant.PoiType.POI_MAP_CLICK
+                    || poiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK);
         }
     }
 
