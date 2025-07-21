@@ -29,7 +29,9 @@ import com.autonavi.gbl.aosclient.observer.ICallBackTrafficEventComment;
 import com.autonavi.gbl.aosclient.observer.ICallBackTrafficEventDetail;
 import com.autonavi.gbl.aosclient.observer.ICallBackTrafficRestrict;
 import com.autonavi.gbl.aosclient.observer.ICallBackWsDynamicInfoEventPraiseStampStatusQuery;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.BlToolPoiID;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.adapter.aos.BlAosHelper;
 import com.sgm.navi.service.adapter.aos.IBlAosApi;
 import com.sgm.navi.service.adapter.aos.QueryRestrictedObserver;
@@ -71,7 +73,7 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
 
     @Override
     public boolean initBlAosService() {
-        mBLAosService = new BLAosService();
+        mBLAosService = (BLAosService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.AosClientSingleServiceID);
         return isInit();
     }
 

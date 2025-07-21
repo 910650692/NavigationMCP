@@ -15,6 +15,8 @@ import com.autonavi.gbl.aosclient.model.GWsPpAutoWeixinStatusResponseParam;
 import com.autonavi.gbl.aosclient.observer.ICallBackQRCodeConfirm;
 import com.autonavi.gbl.aosclient.observer.ICallBackWsPpAutoWeixinQrcode;
 import com.autonavi.gbl.aosclient.observer.ICallBackWsPpAutoWeixinStatus;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.user.wechat.WeChatAdapterCallBack;
 import com.sgm.navi.service.define.user.msgpush.PropertyValueInfo;
@@ -39,7 +41,7 @@ public class WeChatImplHelper implements ICallBackWsPpAutoWeixinStatus,
      * 初始化服务
      */
     public void initBLAosService() {
-        mBLAosService = new BLAosService();
+        mBLAosService = (BLAosService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.AosClientSingleServiceID);
     }
 
     /**

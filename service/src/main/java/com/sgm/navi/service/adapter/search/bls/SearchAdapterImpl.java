@@ -37,7 +37,9 @@ import com.autonavi.gbl.search.model.SearchResult;
 import com.autonavi.gbl.search.model.SearchSuggestionParam;
 import com.autonavi.gbl.search.model.SuggestionSearchResult;
 import com.autonavi.gbl.search.observer.IKeyWordSearchObserverV2;
+import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.errorcode.common.Service;
+import com.autonavi.gbl.util.model.SingleServiceID;
 import com.autonavi.gbl.util.model.TaskResult;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -106,7 +108,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     @Override
     public void init() {
-        mBLAosService = new BLAosService();
+        mBLAosService = (BLAosService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.AosClientSingleServiceID);
         initService();
         mSearchObserversHelper = SearchObserversHelper.getInstance();
         mSearchNotificationHelper = new SearchResultCallbackHelper(mSearchResponseCallbackList);

@@ -88,7 +88,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
         final MsgPushInitParam msgPushParam = new MsgPushInitParam();
         msgPushParam.dataPath = GBLCacheFilePath.MSG_FROM_PHONE_PATH; // 消息存储数据库路径，设置目录要有文件创建、读写权限
         msgPushService.init(msgPushParam);
-        mBLAosService  = new BLAosService();
+        mBLAosService  = (BLAosService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.AosClientSingleServiceID);
         Logger.d(TAG,"MsgPush initSetting success.");
     }
 

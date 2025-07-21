@@ -164,6 +164,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                     .setTop_time(item.top_time);
 
             Coord2DDouble coord2DDouble = IOperatorPostureImpl.mapToLonLat(item.point_x, item.point_y);
+            Logger.d(TAG, "getPoiInfoEntity: mapToLonLat ", item.point_x, item.point_y,
+                    coord2DDouble.lon, coord2DDouble.lat);
             final PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
 //                    .setPid(String.valueOf(item.id))
                     .setAdCode(ConvertUtils.str2Int(item.city_code))
@@ -203,6 +205,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                         .setTop_time(item.top_time);
 
                 Coord2DDouble coord2DDouble = IOperatorPostureImpl.mapToLonLat(item.point_x, item.point_y);
+                Logger.d(TAG, "getSimpleFavoriteList: mapToLonLat ", item.point_x, item.point_y,
+                        coord2DDouble.lon, coord2DDouble.lat);
                 PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
 //                        .setPid(String.valueOf(item.id))
                         .setAdCode(ConvertUtils.str2Int(item.city_code))
@@ -244,6 +248,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         baseItem.item_id = baseInfo.getFavoriteInfo().getItemId();
         baseItem.poiid = baseInfo.getPid();
         PointD pointD = IOperatorPostureImpl.lonLatToMap(baseInfo.getPoint().getLon(),baseInfo.getPoint().getLat());
+        Logger.d(TAG, "getFavorite: lonLatToMap ", baseInfo.getPoint().getLon(), baseInfo.getPoint().getLat(),
+                pointD.x, pointD.y);
         baseItem.point_x = (int) pointD.x;
         baseItem.point_y = (int) pointD.y;
         baseItem.name = baseInfo.getName();
@@ -310,6 +316,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         item.common_name = poiInfo.getFavoriteInfo().getCommonName();
         item.name = poiInfo.getName();
         PointD pointD = IOperatorPostureImpl.lonLatToMap(poiInfo.getPoint().getLon(),poiInfo.getPoint().getLat());
+        Logger.d(TAG, "addFavorite: lonLatToMap ", poiInfo.getPoint().getLon(), poiInfo.getPoint().getLat(),
+                pointD.x, pointD.y);
         item.point_x = (int) pointD.x;
         item.point_y = (int) pointD.y;
         // 添加成功返回 FavoriteItem 对应的存档ID
@@ -331,6 +339,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         delItem.item_id = poiInfo.getFavoriteInfo().getItemId();
         delItem.poiid = poiInfo.getPid();
         PointD pointD = IOperatorPostureImpl.lonLatToMap(poiInfo.getPoint().getLon(),poiInfo.getPoint().getLat());
+        Logger.d(TAG, "removeFavorite: lonLatToMap ", poiInfo.getPoint().getLon(), poiInfo.getPoint().getLat(),
+                pointD.x, pointD.y);
         delItem.point_x = (int) pointD.x;
         delItem.point_y = (int) pointD.y;
         delItem.name = poiInfo.getName();
@@ -357,6 +367,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
             favoriteInfo.poiid = poiInfo.getPid();
         }
         PointD pointD = IOperatorPostureImpl.lonLatToMap(poiInfo.getPoint().getLon(),poiInfo.getPoint().getLat());
+        Logger.d(TAG, "isFavorite: lonLatToMap ", poiInfo.getPoint().getLon(), poiInfo.getPoint().getLat(),
+                pointD.x, pointD.y);
         favoriteInfo.point_x = (int) pointD.x;
         favoriteInfo.point_y = (int) pointD.y;
         favoriteInfo.name = poiInfo.getName();
@@ -382,6 +394,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         baseItem.item_id = info.getFavoriteInfo().getItemId();
         baseItem.poiid = info.getPid();
         PointD pointD = IOperatorPostureImpl.lonLatToMap(info.getPoint().getLon(),info.getPoint().getLat());
+        Logger.d(TAG, "topFavorite: lonLatToMap ", info.getPoint().getLon(), info.getPoint().getLat(),
+                pointD.x, pointD.y);
         baseItem.point_x = (int) pointD.x;
         baseItem.point_y = (int) pointD.y;
         baseItem.name = info.getName();
@@ -404,6 +418,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         baseItem.item_id = detailInfo.getFavoriteInfo().getItemId();
         baseItem.poiid = detailInfo.getPid();
         PointD pointD = IOperatorPostureImpl.lonLatToMap(detailInfo.getPoint().getLon(),detailInfo.getPoint().getLat());
+        Logger.d(TAG, "modifyFavorite: lonLatToMap ", detailInfo.getPoint().getLon(), detailInfo.getPoint().getLat(),
+                pointD.x, pointD.y);
         baseItem.point_x = (int) pointD.x;
         baseItem.point_y = (int) pointD.y;
         baseItem.name = detailInfo.getName();

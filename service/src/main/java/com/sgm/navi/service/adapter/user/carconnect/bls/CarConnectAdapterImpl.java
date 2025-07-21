@@ -54,7 +54,7 @@ public class CarConnectAdapterImpl implements ICarConnectApi, IMobileLinkObserve
     @Override
     public void initService() {
         mMsgPushService = (MsgPushService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.MsgPushSingleServiceID);
-        mBLAosService  = new BLAosService();
+        mBLAosService  = (BLAosService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.AosClientSingleServiceID);
     }
 
     /**

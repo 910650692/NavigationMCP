@@ -96,7 +96,8 @@ public class RouteAdapterImpl implements IRouteApi {
 
         if(null == mRouteService) mRouteService = (RouteService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.RouteSingleServiceID);
-        mAdapterImplHelper = new RouteAdapterImplHelper(new BLAosService());
+        mAdapterImplHelper = new RouteAdapterImplHelper((BLAosService) ServiceMgr.getServiceMgrInstance()
+                .getBLService(SingleServiceID.AosClientSingleServiceID));
         mAdapterImplHelper.initRouteService();
     }
 
