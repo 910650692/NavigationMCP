@@ -9,7 +9,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Parcel;
 import android.os.RemoteException;
+import android.os.UserHandle;
 
 import com.sgm.navi.mapservice.IBinderPool;
 import com.sgm.navi.mapservice.util.Logger;
@@ -29,6 +31,8 @@ public final class MapSdk {
     private String mClientPkg;
     private IBinder mIBinder;
     private boolean mConnected;
+
+    private final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private final static class SingletonHolder {
         private static final MapSdk INSTANCE = new MapSdk();
@@ -50,7 +54,17 @@ public final class MapSdk {
             try {
                 final Context context = mContextReference.get();
                 if (null != context) {
-                    context.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+                    if (SYSTEMUI_PACKAGE.equals(mClientPkg)) {
+                        Parcel parcel = Parcel.obtain();
+                        parcel.writeInt(-2);
+                        parcel.setDataPosition(0);
+                        Logger.d(TAG, "bindAsUser");
+                        context.bindServiceAsUser(intent, mServiceConnection, Context.BIND_AUTO_CREATE, UserHandle.readFromParcel(parcel));
+                        parcel.recycle();
+                    } else {
+                        Logger.d(TAG, "normalBind");
+                        context.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+                    }
                 }
             } catch (SecurityException e) {
                 Logger.e(TAG, "The caller does not have permission to access the service or the service cannot be found.");
@@ -75,9 +89,9 @@ public final class MapSdk {
         if (mConnected) {
             Logger.d(TAG, "MapSdk already connected");
         } else {
-            Logger.d(TAG, "MapSdk startConnect");
-            mContextReference = new WeakReference<>(context);
             mClientPkg = context.getPackageName();
+            Logger.d(TAG, "MapSdk startConnect: " + mClientPkg);
+            mContextReference = new WeakReference<>(context);
             tryConnectService(0);
         }
     }
@@ -99,7 +113,7 @@ public final class MapSdk {
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(final ComponentName name, final IBinder binder) {
-            Logger.d(TAG, "onServiceConnected");
+            Logger.d(TAG, "onServiceConnected :", mClientPkg);
             try {
                 mConnected = true;
                 mIBinder = binder;
@@ -114,7 +128,7 @@ public final class MapSdk {
 
         @Override
         public void onServiceDisconnected(final ComponentName name) {
-            Logger.d(TAG, "onServiceDisconnected");
+            Logger.d(TAG, "onServiceDisconnected : ", mClientPkg);
             mConnected = false;
             tryConnectService(500);
         }
@@ -124,7 +138,7 @@ public final class MapSdk {
      * 绑定的service死亡时回调
      */
     private final IBinder.DeathRecipient mDeathRecipient = () -> {
-        Logger.w(TAG, "binderDied callback");
+        Logger.w(TAG, "binderDied callback :", mClientPkg);
         tryConnectService(500);
     };
 
@@ -153,7 +167,7 @@ public final class MapSdk {
         } catch (NullPointerException e) {
             Logger.e(TAG, "unlinkToDeath NullPointer - " + e);
         }
-        Logger.d(TAG, "tryConnectService");
+        Logger.d(TAG, "tryConnectService : ", mClientPkg);
         mKeepHandle.removeMessages(mConnectMsg);
         final Message message = Message.obtain();
         message.what = mConnectMsg;
