@@ -1265,7 +1265,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                     stringParam += routeParams.get(t).getName();
                     continue;
                 }
-                stringParam += routeParams.get(t).getName() + "，";
+                stringParam += routeParams.get(t).getName() + "、";
             }
             mParamDes.set(stringParam);
             mView.setViaList(routeParams);
