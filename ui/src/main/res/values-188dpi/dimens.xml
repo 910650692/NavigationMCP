@@ -4014,12 +4014,4 @@
     <dimen name="navi_nd_cluster_navi_margin_left_child">32px</dimen>
     <dimen name="navi_nd_cluster_navi_padding_horizontal">32px</dimen>
     <dimen name="navi_nd_cluster_navi_padding_vertical">14px</dimen>
-
-    <dimen name="navi_main_tap_margin_start">5dp</dimen>
-    <dimen name="navi_main_tap_margin_top">51dp</dimen>
-    <dimen name="navi_main_tap_margin_bottom">130dp</dimen>
-    <dimen name="navi_main_tap_height">95dp</dimen>
-
-    <dimen name="navi_main_fragment_margin_start">5dp</dimen>
-    <dimen name="navi_main_fragment_margin_top">51dp</dimen>
 </resources>
