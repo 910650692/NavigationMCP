@@ -494,10 +494,10 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             Logger.d(TAG, "----switchClusterActivity();"+isOpen);
             handler.removeCallbacksAndMessages(null);
             if (isOpen) {
-                handler.sendEmptyMessageDelayed(0,500);
+                handler.sendEmptyMessage(0);
             }else {
                 MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, "{\"isMapDisplaying\":false}");
-                handler.sendEmptyMessageDelayed(1,500);
+                handler.sendEmptyMessage(1);
             }
         } catch (Exception e) {
             Logger.e(TAG, "Failed to switch ClusterActivity state", e);

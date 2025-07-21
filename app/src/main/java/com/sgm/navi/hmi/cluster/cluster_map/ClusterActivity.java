@@ -96,7 +96,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         super.onResume();
         Logger.d(TAG, "----onResume");
         mViewModel.remainingMileageConstraintLayoutVisibility.set(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING));
-        mBinding.clusterMapview.postDelayed(() -> MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE),800);
+       // mBinding.clusterMapview.postDelayed(() -> MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE),500);
     }
 
     @Override
@@ -179,7 +179,9 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     public void bindMapView() {
         Logger.d(TAG, "bindMapView");
         MapPackage.getInstance().bindMapView(mBinding.clusterMapview);
+        mBinding.clusterMapview.postDelayed(()->{
+            Logger.d(TAG, "bindMapView:post");
+            MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE);
+        },600);
     }
-
-
 }
