@@ -44,6 +44,7 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
     //车标距离底部边距
     private static final int HUD_MAP_CAR_BOTTOM = 64;
     private HashMap<String, IHudCallback> hudCallbackMap = new HashMap<>();
+    private boolean hudSnowMode;
 
     private static final class Helper {
         private static final HudPackage hudPackage = new HudPackage();
@@ -57,13 +58,14 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         NaviPackage.getInstance().registerObserver(TAG, this);
         RoutePackage.getInstance().registerRouteObserver(TAG, this);
         CalibrationAdapter.getInstance().registerCallback(TAG, mCalibrationAdapterCallback);
-        boolean hudSnowMode = CalibrationAdapter.getInstance().getHudSnowMode();
+        hudSnowMode = CalibrationAdapter.getInstance().getHudSnowMode();
     }
 
     private final CalibrationAdapterCallback mCalibrationAdapterCallback = new CalibrationAdapterCallback() {
         @Override
         public void onHudSnowModeChanged(boolean snowMode) {
-
+            Logger.i(TAG, "雪地模式 onHudSnowModeChanged" , snowMode);
+            updateMapThemeType(snowMode);
         }
     };
 
@@ -151,6 +153,8 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
                 RoutePackage.getInstance().clearRouteLine(MapType.HUD_MAP);
             }
             Logger.d(TAG, "HUDMapView地图加载完成",MapPackage.getInstance().getZoomLevel(MapType.HUD_MAP));
+            Logger.i(TAG, "雪地模式" , hudSnowMode);
+            updateMapThemeType(hudSnowMode);
         }
     }
 
