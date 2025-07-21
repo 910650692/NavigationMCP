@@ -342,7 +342,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         touchHelper.attachToRecyclerView(routeLineViaPoiRecycle);
 
         //途径点滑动
-        mRouteListPageView.routeLineInfoTitle.setOnTouchListener((v, event) -> {
+        mRouteListPageView.routeLineViaOpenClose.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     mStartY = event.getY();
@@ -351,13 +351,21 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                     mEndY = event.getY();
                     final float diffY = mEndY - mStartY;
                     if (Math.abs(diffY) > SWIPE_THRESHOLD) {
-                        mViewModel.getOpenCloseViaClick().call();
+                        if (diffY > 0) {
+                            if (Boolean.FALSE.equals(mViewModel.getViaPoiListAllVisibility().get())) {
+                                mViewModel.getOpenCloseViaClick().call();
+                            }
+                        } else {
+                            if (Boolean.TRUE.equals(mViewModel.getViaPoiListAllVisibility().get())) {
+                                mViewModel.getOpenCloseViaClick().call();
+                            }
+                        }
                     }
                     break;
                 default:
                     break;
             }
-            return true;
+            return false;
         });
 
         //路线列表
