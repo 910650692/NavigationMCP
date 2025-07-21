@@ -309,6 +309,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
             layer.getMapView().destroyTexture(markerId);
             Logger.e(TAG, getClass().getSimpleName(), " clearLayerItem key:", key, " markerId:", markerId);
         }
+        super.clearLayerItem(layer, item);
     }
 
     @Override
@@ -321,5 +322,6 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                 Logger.e(TAG, getClass().getSimpleName(), " clearLayerItems key:", key, " markerId:", markerId);
             }
         }
+        super.clearLayerItems(layer);
     }
 }
