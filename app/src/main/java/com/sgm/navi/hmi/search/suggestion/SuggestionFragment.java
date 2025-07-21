@@ -104,7 +104,8 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No valid arguments found.");
             return;
         }
-//        int searchType = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE);
+        int searchType = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+        mBinding.sceneSugPoiList.setSearchType(searchType);
 //        String sourceFragmentTag = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
     }
 }

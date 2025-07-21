@@ -69,7 +69,7 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
                     .build(RoutePath.Search.SUGGESTION_FRAGMENT)
                     .navigation();
             addFragment((BaseFragment) fragment, SearchFragmentFactory.createSugFragment(
-                    AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, AutoMapConstant.SearchType.SEARCH_SUGGESTION));
+                    AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, AutoMapConstant.SearchType.SEARCH_KEYWORD));
         });
     }
 

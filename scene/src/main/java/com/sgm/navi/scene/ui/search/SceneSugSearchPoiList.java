@@ -63,6 +63,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
     private SearchResultAdapter mAdapter;
     private IClearEditTextListener mClearEditTextListener;
     private SearchHistoryAdapter mSearchHistoryAdapter;
+    private int mSearchType = AutoMapConstant.SearchType.SEARCH_KEYWORD;
 
     public SceneSugSearchPoiList(@NonNull final Context context) {
         super(context);
@@ -99,6 +100,10 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         setupHistoryRecycleView();
         setupSearchActions();
 //        requestFocusAndShowKeyboard();
+    }
+
+    public void setSearchType(int searchType) {
+        this.mSearchType = searchType;
     }
 
     /**
@@ -209,7 +214,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                     addFragment((BaseFragment) fragment,
                             SearchFragmentFactory.createKeywordFragment(
                                     AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
-                                    AutoMapConstant.SearchType.SEARCH_KEYWORD,
+                                    mSearchType,
                                     history.getMKeyWord(),
                                     null));
 
@@ -353,7 +358,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                     .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
                     .navigation();
             addFragment((BaseFragment) fragment, SearchFragmentFactory.createKeywordFragment(
-                    AutoMapConstant.SourceFragment.SUG_SEARCH_FRAGMENT, AutoMapConstant.SearchType.SEARCH_KEYWORD, getEditText(), null));
+                    AutoMapConstant.SourceFragment.SUG_SEARCH_FRAGMENT, mSearchType, getEditText(), null));
             hideInput();
             return true;
         });
