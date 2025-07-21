@@ -2,6 +2,7 @@ package com.sgm.navi.scene.ui.adapter;
 
 import static com.sgm.navi.scene.util.HandCardType.PARK;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -221,6 +222,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void setParkUi(MyViewHolder holder, int position) {
         final ItemHandingCardDetailBinding binding = holder.binding;
         if (binding == null){
@@ -254,16 +256,20 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
                 mItemClickListener.onNaviNow(position);
             }
         });
-
-        binding.clPark.tvSpace.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
-        binding.clPark.tvTotal.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
-        binding.clPark.tvDesc.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
-        binding.clPark.tvSpace.setText(String.valueOf(parkingInfo.getSpaceFree()));
-        binding.clPark.tvTotal.setText("/" + parkingInfo.getSpaceTotal());
-
-        final String desc = CardManager.getInstance().parkIsCrowed(poiInfo) ? binding.clPark.tvDesc.getContext().getString(R.string.tense)
-                : binding.clPark.tvDesc.getContext().getString(R.string.chong_zu);
-        binding.clPark.tvDesc.setText(desc);
+        if (parkingInfo != null) {
+            binding.clPark.tvSpace.setVisibility(parkingInfo.getSpaceFree() > 0 ? View.VISIBLE : View.GONE);
+            binding.clPark.tvTotal.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
+            binding.clPark.tvDesc.setVisibility((parkingInfo.getSpaceTotal() > 0 && parkingInfo.getSpaceFree() > 0) ? View.VISIBLE : View.GONE);
+            binding.clPark.tvSpace.setText(String.valueOf(parkingInfo.getSpaceFree()));
+            binding.clPark.tvTotal.setText((parkingInfo.getSpaceFree() > 0 ? "/" : "") + parkingInfo.getSpaceTotal());
+            final String desc = CardManager.getInstance().parkIsCrowed(poiInfo) ? binding.clPark.tvDesc.getContext().getString(R.string.tense)
+                    : binding.clPark.tvDesc.getContext().getString(R.string.chong_zu);
+            binding.clPark.tvDesc.setText(desc);
+        } else {
+            binding.clPark.tvSpace.setVisibility(View.GONE);
+            binding.clPark.tvTotal.setVisibility(View.GONE);
+            binding.clPark.tvDesc.setVisibility(View.GONE);
+        }
         binding.clPark.tvEnd.setVisibility(poiInfo.getIsEndPoint() ? View.VISIBLE : View.GONE);
         binding.clPark.sclListItem.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
     }

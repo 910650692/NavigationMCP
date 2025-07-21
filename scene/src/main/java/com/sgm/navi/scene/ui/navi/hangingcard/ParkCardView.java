@@ -1,5 +1,6 @@
 package com.sgm.navi.scene.ui.navi.hangingcard;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,7 @@ public class ParkCardView extends CardView<NaviSceneNearProvideStationParkBindin
         });
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void updateUi(List<PoiInfoEntity> dataList) {
         if (ConvertUtils.isEmpty(dataList)) {
@@ -65,10 +67,15 @@ public class ParkCardView extends CardView<NaviSceneNearProvideStationParkBindin
         List<ParkingInfo> parkingInfos = poiInfo.getParkingInfoList();
         if (!ConvertUtils.isEmpty(parkingInfos)) {
             final ParkingInfo parkingInfo = parkingInfos.get(0);
-            mBinding.tvFreeSize.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
-            mBinding.tvTotalSize.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
-            mBinding.tvFreeSize.setText(String.valueOf(parkingInfo.getSpaceFree()));
-            mBinding.tvTotalSize.setText("/" + parkingInfo.getSpaceTotal());
+            if (parkingInfo != null) {
+                mBinding.tvFreeSize.setVisibility(parkingInfo.getSpaceFree() > 0 ? View.VISIBLE : View.GONE);
+                mBinding.tvTotalSize.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
+                mBinding.tvFreeSize.setText(String.valueOf(parkingInfo.getSpaceFree()));
+                mBinding.tvTotalSize.setText((parkingInfo.getSpaceFree() > 0 ? "/" : "") + parkingInfo.getSpaceTotal());
+            } else {
+                mBinding.tvFreeSize.setVisibility(View.GONE);
+                mBinding.tvTotalSize.setVisibility(View.GONE);
+            }
         }
         if(CardManager.getInstance().endIsService(poiInfo)){
             mBinding.tvSubTitle.setVisibility(VISIBLE);

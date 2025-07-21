@@ -259,7 +259,9 @@ public class CardManager {
         final ParkingInfo parkingInfo = poiInfo.getParkingInfoList().get(0);
         final int totalSize = parkingInfo.getSpaceTotal();
         final int spaceSize = parkingInfo.getSpaceFree();
-        if (totalSize <= 0) return false;
+        if (totalSize <= 0 || spaceSize < 0) {
+            return false;
+        }
         return (totalSize <= 30 && spaceSize * 1f / totalSize < 0.3) || (totalSize > 30 && (spaceSize * 1f / totalSize < 0.1 || spaceSize < 10));
     }
 
