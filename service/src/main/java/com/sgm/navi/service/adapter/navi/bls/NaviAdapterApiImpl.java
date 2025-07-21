@@ -60,6 +60,10 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     @Override
     public boolean startNavigation(final NaviStartType naviStartType) {
         final NaviPath naviPath = mNaviApiImplHelper.getNaviPathParam();
+        if (naviPath == null) {
+            Logger.e(TAG, "NaviAdapterApiImpl startNavi: naviPath is null");
+            return false;
+        }
         final ArrayList<PathInfo> vecPaths = naviPath.vecPaths;
         boolean startNaviSuccess = false;
         if (!vecPaths.isEmpty()) {
