@@ -117,6 +117,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private RoutePackage mRoutePackage = RoutePackage.getInstance();
 
     private Integer mViaType = -1;
+    private Boolean mViaUserAdd = true;
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -2161,7 +2162,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     }
                     break;
                 case AutoMapConstant.PoiType.POI_DELETE_AROUND:
-                    if(mViaType > -1){
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mViaUserAdd: "+mViaUserAdd);
+                    if(!mViaUserAdd){
                         showDeleteAllTip();
                     }else{
                         mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -2288,6 +2290,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"setViaIndexSelect: ",index,"isSelect: ", isSelect);
             mScreenViewModel.setRouteViaPointSelect(isSelect,index);
         }
+    }
+
+    public void setViaUserAdd(boolean autoAdd){
+        mViaUserAdd = autoAdd;
     }
 
     public void setJumpPoiInfo(PoiInfoEntity poiInfo) {

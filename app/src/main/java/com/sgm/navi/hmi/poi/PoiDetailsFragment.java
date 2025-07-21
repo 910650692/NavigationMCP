@@ -30,6 +30,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     private SearchResultEntity mSearchResultEntity;
     private AccessTokenParam mParams;
     private int mViaIndex = -1;
+    private boolean mViaUserAdd = true;
     @Override
     public int onLayoutId() {
         return R.layout.fragment_poi_details;
@@ -88,6 +89,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
             final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
             mViaIndex = parsedArgs.getInt(NaviConstant.VIA_POSITION, -1);
+            mViaUserAdd = parsedArgs.getBoolean(NaviConstant.VIA_IS_USER_ADD, true);
             mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType " , poiType);
             mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity,true);
@@ -95,6 +97,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
             mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
             mBinding.scenePoiDetailContentView.setViaIndexSelect(true,mViaIndex);
+            mBinding.scenePoiDetailContentView.setViaUserAdd(mViaUserAdd);
             mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
             if (isOpenFromNavi == 1) {
                 mBinding.scenePoiDetailContentView.setNaviControl(true);
