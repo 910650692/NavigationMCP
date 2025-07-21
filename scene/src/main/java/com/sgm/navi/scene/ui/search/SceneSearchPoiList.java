@@ -530,7 +530,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                             R.string.filter_result, mSearchText, mResultEntity.getTotal()));
                 }
             }
-            if (!mLocalInfoList.isEmpty()) {
+            if (!ConvertUtils.isEmpty(mLocalInfoList)) {
                 for (int i = 0; i < mLocalInfoList.size(); i++) {
                     final SearchCategoryLocalInfo searchCategoryLocalInfo = mLocalInfoList.get(i);
                     if (i == 0) {

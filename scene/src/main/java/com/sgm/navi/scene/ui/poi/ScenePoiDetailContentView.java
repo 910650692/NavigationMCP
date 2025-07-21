@@ -248,6 +248,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_NEARBY)
     private void handleAroundSearchClick() {
+        if (mPoiInfoEntity == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mPoiInfoEntity is null");
+            return;
+        }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "点击周边搜索");
         final Fragment fragment = (Fragment) ARouter.getInstance().build(
                 RoutePath.Search.AROUND_SEARCH_FRAGMENT).navigation();
