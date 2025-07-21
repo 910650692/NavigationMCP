@@ -20,8 +20,8 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -32,9 +32,9 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
 
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
 
-    private final HashMap<MapType, MapViewImpl> mapViewPools = new HashMap<>();
+    private final ConcurrentHashMap<MapType, MapViewImpl> mapViewPools = new ConcurrentHashMap<>();
 
-    private final HashMap<MapType, List<IMapAdapterCallback>> callbacks = new HashMap<>();
+    private final ConcurrentHashMap<MapType, List<IMapAdapterCallback>> callbacks = new ConcurrentHashMap<>();
 
     private AtomicReference<MapService> mapService = new AtomicReference<>();
 
