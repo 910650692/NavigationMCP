@@ -165,7 +165,13 @@ public abstract class CardView<T extends ViewDataBinding> extends SkinConstraint
      * @param poiInfo 目的地信息
      */
     public void changeDestination(final PoiInfoEntity poiInfo) {
-        ThreadManager.getInstance().execute(() -> mChangeDestinationId = mRoutePackage.requestChangeEnd(mapType, poiInfo));
+        ThreadManager.getInstance().execute(() -> {
+            if(Logger.openLog) {
+                Logger.d(TAG, "changeDestination poiInfo:", poiInfo == null ? "null" : poiInfo.getName(),
+                        " mapType:", mapType);
+            }
+            mChangeDestinationId = mRoutePackage.requestChangeEndWithoutVia(mapType, poiInfo);
+        });
     }
 
     /***

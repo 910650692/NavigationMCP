@@ -757,6 +757,24 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     /**
+     * 修改终点算路请求,并去除所有途径点
+     *
+     * @param mapTypeId     屏幕ID
+     * @param poiInfoEntity 终点数据
+     * @return 返回请求taskId
+     */
+    public long requestChangeEndWithoutVia(final MapType mapTypeId, final PoiInfoEntity poiInfoEntity) {
+        mEndRouteParams.put(mapTypeId, getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_END));
+        mViaRouteParams.put(mapTypeId, new ArrayList<>());
+        final RouteRequestParam routeRequestParam = new RouteRequestParam();
+        routeRequestParam.setMMapTypeId(mapTypeId);
+        routeRequestParam.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_END);
+        routeRequestParam.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
+        routeRequestParam.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_VOICE_CHANGE_DEST);
+        return requestRoute(routeRequestParam);
+    }
+
+    /**
      * 单个添加途经点算路请求
      *
      * @param mapTypeId     屏幕ID
