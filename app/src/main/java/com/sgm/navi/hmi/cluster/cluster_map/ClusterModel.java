@@ -43,7 +43,7 @@ import com.sgm.navi.ui.base.BaseModel;
 import com.sgm.navi.hmi.BuildConfig;
 
 public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPackageCallback,
-        IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback ,SettingPackage.SettingChangeCallback{
+        IRouteResultObserver, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback ,SettingPackage.SettingChangeCallback{
     private static final String TAG = "ClusterModel";
     private static final float MAP_ZOOM_LEVEL_DEFAULT = 17F;
     private boolean isInItMapView= false;
@@ -71,7 +71,6 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         MapPackage.getInstance().unRegisterCallback(getMapId(), this);
         RoutePackage.getInstance().unRegisterRouteObserver(mViewModel.mScreenId);
         CruisePackage.getInstance().unregisterObserver(mViewModel.mScreenId);
-        NavistatusAdapter.getInstance().unRegisterCallback(this);
         StartService.getInstance().unregisterSdkCallback(this);
         NaviPackage.getInstance().unregisterObserver(mViewModel.mScreenId);
         SettingPackage.getInstance().unRegisterSettingChangeCallback(getMapId().name());
@@ -159,23 +158,11 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         mViewModel.updateEta(naviETAInfo);
     }
 
-    @Override
-    public void onNaviStatusChange(final String naviStatus) {
-        Logger.d(TAG, "onNaviStatusChange:" + naviStatus);
-        switch (naviStatus) {
-            case NaviStatus.NaviStatusType.CRUISE -> //巡航状态
-                //主图模式与巡航模式下，默认⽐例尺为50ｍ（TBD根据实车联调）；
-                    MapPackage.getInstance().setZoomLevel(MapType.CLUSTER_MAP, 50);
-            //case NaviStatus.NaviStatusType.NAVING -> //导航状态
-                //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
-                //NaviPackage.getInstance().onMeterAction();
-            default -> {
-//                LayerPackage.getInstance().openDynamicLevel(MapType.CLUSTER_MAP, false);
-                //主图模式与巡航模式下，默认⽐例尺为50ｍ（TBD根据实车联调）；
-                MapPackage.getInstance().setZoomLevel(MapType.CLUSTER_MAP, 50);
-            }
-        }
-    }
+//    @Override
+//    public void onNaviStatusChange(final String naviStatus) {
+//        Logger.d(TAG, "onNaviStatusChange:" + naviStatus);
+//        MapPackage.getInstance().setZoomLevel(MapType.CLUSTER_MAP, MAP_ZOOM_LEVEL_DEFAULT);
+//    }
 
     @Override
     public void onNaviStop() {
@@ -252,7 +239,6 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         RoutePackage.getInstance().registerRouteObserver(mViewModel.mScreenId, this);
         NaviPackage.getInstance().registerObserver(mViewModel.mScreenId, this);
         CruisePackage.getInstance().registerObserver(mViewModel.mScreenId, this);
-        NavistatusAdapter.getInstance().registerCallback(this);
         // 监听设置包变化
         SettingPackage.getInstance().setSettingChangeCallback(getMapId().name(), this);
         ThreadManager.getInstance().postUi(() -> {

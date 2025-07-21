@@ -82,7 +82,7 @@
 
         <activity
             android:name=".cluster.cluster_map.ClusterActivity"
-            android:configChanges="uiMode|locale|layoutDirection"
+            android:configChanges="uiMode|locale|layoutDirection|navigation|keyboardHidden"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleInstance"
@@ -97,7 +97,7 @@
 
         <activity
             android:name=".hud.HudActivity"
-            android:configChanges="uiMode|locale|layoutDirection"
+            android:configChanges="uiMode|locale|layoutDirection|navigation|keyboardHidden"
             android:excludeFromRecents="true"
             android:exported="true"
             android:taskAffinity="com.sgm.navi.hmi.hud"
