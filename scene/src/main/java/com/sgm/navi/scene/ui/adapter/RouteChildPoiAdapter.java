@@ -47,6 +47,9 @@ public class RouteChildPoiAdapter extends RecyclerView.Adapter<RouteChildPoiAdap
         if (mItemClickListener == null) {
             return;
         }
+        if (mChildInfoList == null || mChildInfoList.isEmpty() || selected == -1 || selected >= mChildInfoList.size()) {
+            return;
+        }
         mItemClickListener.onItemClick(mChildInfoList.get(selected), mPoiInfoEntity);
     }
 
