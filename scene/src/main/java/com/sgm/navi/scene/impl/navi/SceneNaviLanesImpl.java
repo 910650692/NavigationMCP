@@ -25,6 +25,7 @@ import java.util.List;
 public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
     private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_LANES_IMPL;
     private LaneInfoEntity mLaneInfo;
+    private boolean mGateLaneNeedRestore = false;
 
     public SceneNaviLanesImpl(final SceneNaviLanesView screenView) {
         super(screenView);
@@ -39,25 +40,16 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
      * @param laneInfo   车道信息
      */
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
-        this.mLaneInfo = laneInfo;
-        Logger.i(TAG, "isShowLane:", isShowLane);
-        updateSceneVisible(isShowLane);
-        if (laneInfo == null) {
-            Logger.w(TAG, "laneInfo == null");
-        } else {
-            Logger.w(TAG, "laneInfo.getBackLaneType() != null:",
-                    (laneInfo.getBackLaneType() != null));
-            if (laneInfo.getBackLaneType() != null) {
-                Logger.w(TAG, "laneInfo.getBackLaneType()- size:",
-                        (laneInfo.getBackLaneType().size()));
-            }
-        }
-        if (ConvertUtils.isEmpty(mScreenView)) {
-            return;
-        }
-        if (!isShowLane) {
+        Logger.i(TAG, "isShowLane:", isShowLane, " laneInfo.size:", laneInfo == null ? "Info-null" :
+                (laneInfo.getBackLaneType() == null ? "BackLaneType-null" : laneInfo.getBackLaneType().size()));
+        updateSceneVisible(isShowLane && laneInfo != null);
+        if (!isShowLane || ConvertUtils.isEmpty(laneInfo)) {
             mLaneInfo = null;
         } else {
+            mLaneInfo = laneInfo;
+            if (ConvertUtils.isEmpty(mScreenView)) {
+                return;
+            }
             if (isOnCruising()) {
                 showLaneWhenCarOnCruising(laneInfo);
             } else {
@@ -171,14 +163,21 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
             return;
         }
         if (tollGateInfo == null || tollGateInfo.getLaneTypes() == null || tollGateInfo.getLaneTypes().isEmpty()) {
-            Logger.i(TAG, "onShowTollGateLane null");
+            if (!mGateLaneNeedRestore) {
+                //Logger.d(TAG, "onShowTollGateLane null, mGateLaneNeedRestore == false");
+                return;
+            }
+            mGateLaneNeedRestore = false;
             if (mLaneInfo == null) {
+                Logger.i(TAG, "onShowTollGateLane null, onLaneInfo, mLaneInfo == null");
                 updateSceneVisible(false);
             } else {
+                Logger.i(TAG, "onShowTollGateLane null, onLaneInfo, mLaneInfo != null mScreenView:", mScreenView.isVisible());
                 onLaneInfo(true, mLaneInfo);
             }
         } else {
-            Logger.i(TAG, "onShowTollGateLane ", tollGateInfo.getLaneTypes());
+            Logger.i(TAG, "onShowTollGateLane onLaneInfo:", tollGateInfo.getLaneTypes());
+            mGateLaneNeedRestore = true;
             updateSceneVisible(true);
             final ArrayList<SceneCommonStruct.LaneAction> list = new ArrayList<>();
             for (int i = 0; i < tollGateInfo.getLaneTypes().size(); i++) {
@@ -258,8 +257,11 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
      * @param isVisible 是否可见
      */
     public void updateSceneVisible(final boolean isVisible) {
-        Logger.i(TAG, "updateSceneVisible ", isVisible, " mScreenView.isVisible():",
-                mScreenView.isVisible());
+        if (ConvertUtils.isEmpty(mScreenView)) {
+            Logger.i(TAG, "updateSceneVisible mScreenView is null!");
+            return;
+        }
+        Logger.i(TAG, "updateSceneVisible ", isVisible, " mScreenView.isVisible():", mScreenView.isVisible());
         //if (mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :

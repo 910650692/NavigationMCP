@@ -29,7 +29,6 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -49,6 +48,7 @@ import com.sgm.navi.service.define.message.MessageCenterInfo;
 import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
@@ -646,10 +646,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
-        if (ConvertUtils.isEmpty(laneInfo)) {
+        /*if (ConvertUtils.isEmpty(laneInfo)) {
             Logger.i(TAG, "onLaneInfo laneInfo is null");
-            return;
-        }
+            return;//影响车道线隐藏，在后续判断是否为null
+        }*/
         mViewModel.onLaneInfo(isShowLane, laneInfo);
     }
 
