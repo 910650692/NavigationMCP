@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.account.AccountQRCodeLoginFragment;
 import com.sgm.navi.hmi.carconnect.CarConnectFragment;
@@ -190,6 +191,13 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
     public void setSdkVersion(final String sdkVersion) {
         final String defaultString = ResourceUtils.Companion.getInstance().getString(R.string.setting_others_about_version);
         this.mSdkVersion.setValue(defaultString + sdkVersion);
+    }
+
+    /**
+     * 获取VersionName
+     */
+    public String getVersionName() {
+        return BuildConfig.VERSION_NAME;
     }
 
     /**

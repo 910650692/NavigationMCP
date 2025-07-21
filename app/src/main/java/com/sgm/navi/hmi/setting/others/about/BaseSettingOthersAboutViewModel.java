@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.setting.others.about.help.SettingHelpFragment;
 import com.sgm.navi.hmi.setting.others.licenses.SettingOthersLicensesFragment;
 import com.sgm.navi.hmi.setting.others.protocol.SettingOthersProtocolCenterFragment;
@@ -86,6 +87,13 @@ public class BaseSettingOthersAboutViewModel extends BaseViewModel<SettingOthers
      */
     public void setSdkVersion(final String sdkVersion) {
         this.mSdkVersion.setValue(sdkVersion);
+    }
+
+    /**
+     * 获取VersionName
+     */
+    public String getVersionName() {
+        return BuildConfig.VERSION_NAME;
     }
 
     /**
