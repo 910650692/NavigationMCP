@@ -944,7 +944,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             mRouteParams.remove(NumberUtils.NUM_0);
         }
         if (!ConvertUtils.isEmpty(mViewModel)) {
-            ThreadManager.getInstance().postUi(() -> mViewModel.setViaListUI(mRouteParams));
+            ThreadManager.getInstance().postUi(() -> mViewModel.setViaListUI(mRouteParams, requestRouteResult.getMRouteWay()));
         }
     }
 
@@ -1457,7 +1457,7 @@ public void setPoint() {
                 showRestrictionView(mRouteRestrictionParams);
             }
             if (mRouteParams != null) {
-                mViewModel.setViaListUI(mRouteParams);
+                mViewModel.setViaListUI(mRouteParams, mRequestRouteResults.getMRouteWay());
             }
 
         }

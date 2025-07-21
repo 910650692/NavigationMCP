@@ -113,6 +113,7 @@ public class RouteDetailsResultsAdapter extends RecyclerView.Adapter<RouteDetail
         if (mIsAvoid) {
             holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemImg.setVisibility(View.GONE);
             holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemCbx.setVisibility(View.VISIBLE);
+            holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemImgUpdown.setVisibility(View.GONE);
             holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemCbx.setChecked(Boolean.TRUE.equals(mHashtable.get(groupPosition)));
 
             holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemCbx.setOnClickListener(view -> {
@@ -124,6 +125,7 @@ public class RouteDetailsResultsAdapter extends RecyclerView.Adapter<RouteDetail
         } else {
             holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemCbx.setVisibility(View.GONE);
             holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemImg.setVisibility(View.VISIBLE);
+            holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemImgUpdown.setVisibility(View.VISIBLE);
             holder.mRouteDetailsInfoResultParentItemBinding.routeDetailInfoItemImg.setImageResource(SceneRouteDetailEnumRes.getDrawableEnumName(
                     SceneRouteCommonStruct.RouteDetailsMainAction.get(mRouteLineSegmentInfos.get(groupPosition).getMIconType())).getDayDrawableId());
         }

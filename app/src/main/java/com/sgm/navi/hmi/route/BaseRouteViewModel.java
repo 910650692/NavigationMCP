@@ -1248,8 +1248,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     /***
      * 展示途经点列表
      * @param routeParams 列表数据
+     * @param routeWayID 算路类别
      */
-    public void setViaListUI(final List<RouteParam> routeParams) {
+    public void setViaListUI(final List<RouteParam> routeParams,final RouteWayID routeWayID) {
         if (routeParams.isEmpty()) {
             mViaPoiListVisibility.set(false);
             mViaPoiListAllVisibility.set(false);
@@ -1268,6 +1269,15 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             }
             mParamDes.set(stringParam);
             mView.setViaList(routeParams);
+            if (routeWayID == RouteWayID.ROUTE_WAY_ADD_VIA && routeParams.size() > 1) {
+                mViaPoiListAllVisibility.set(true);
+            } else if (routeWayID == RouteWayID.ROUTE_WAY_ADD_VIA && routeParams.size() == 1) {
+                mViaPoiListAllVisibility.set(false);
+            } else if (routeWayID == RouteWayID.ROUTE_WAY_DELETE_VIA) {
+                mViaPoiListAllVisibility.set(false);
+            } else if (routeWayID == RouteWayID.ROUTE_WAY_SORT_VIA) {
+                mViaPoiListAllVisibility.set(true);
+            }
         }
     }
 
