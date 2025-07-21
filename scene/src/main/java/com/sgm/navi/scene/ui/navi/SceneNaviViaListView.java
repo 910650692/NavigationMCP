@@ -179,6 +179,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                                     AutoMapConstant.PoiType.POI_DELETE_AROUND, poiInfo);
                     bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
                     bundle.putInt(NaviConstant.VIA_POSITION, position);
+                    bundle.putBoolean(NaviConstant.VIA_IS_USER_ADD, entity.isUserAdd());
                     addFragment((BaseFragment) fragment, bundle, false);
                     mISceneCallback.hideNaviContent();
                 }
