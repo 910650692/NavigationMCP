@@ -174,13 +174,12 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
      */
     public void hideWidgetsOnMapTouch(MotionEvent touchEvent) {
         if (!isNaviDeskBg()) return;
+
         if (!ScreenTypeUtils.getInstance().isFullScreen()) return;
-        if (touchEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            startY = (int) touchEvent.getY();
-            if (startY <= maxDistance) {
-                hideAllCardWidgets(true);
-            }
+        if (touchEvent.getAction() == MotionEvent.ACTION_DOWN || touchEvent.getAction() == MotionEvent.ACTION_CANCEL) {
+            return;
         }
+        hideAllCardWidgets(true);
     }
 
     @Override
