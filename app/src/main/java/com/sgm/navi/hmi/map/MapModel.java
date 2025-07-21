@@ -67,7 +67,7 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
-import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.aos.RestrictedEndNumberParam;
 import com.sgm.navi.service.define.aos.RestrictedParam;
@@ -177,7 +177,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ImmersiveStatusScene.IImmersiveStatusCallBack, IAosRestrictedObserver, IPositionPackageCallback,
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
         MsgPushCallBack, IGuidanceObserver, MessageCenterCallBack, IRouteResultObserver, ILayerPackageCallBack,
-        ForecastCallBack, SearchResultCallback, INaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
+        ForecastCallBack, SearchResultCallback, NaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
         IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback,
         OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack,
         ScreenTypeUtils.SplitScreenChangeListener, FloatWindowReceiver.FloatWindowCallback  {
@@ -278,7 +278,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         stackManager = StackManager.getInstance();
         mapVisibleAreaDataManager = MapVisibleAreaDataManager.getInstance();
         addGestureListening();//添加收拾监听
-        NavistatusAdapter.getInstance().registerCallback(this);
+        NaviStatusPackage.getInstance().registerObserver(TAG, this);
         SettingUpdateObservable.getInstance().addObserver(TAG, this);
         mapPackage.addTimeHelper(timeHelper);
         speedMonitor.registerSpeedCallBack();
@@ -369,7 +369,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         naviPackage.unregisterObserver(mViewModel.mScreenId);
         mapPackage.unRegisterCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         layerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
-        NavistatusAdapter.getInstance().unRegisterCallback(this);
+        NaviStatusPackage.getInstance().unregisterObserver(TAG);
         SettingUpdateObservable.getInstance().removeObserver(TAG, this);
         cancelSelfParkingTimer();
         cancelCloseTmcTimerWithoutNetwork();
