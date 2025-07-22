@@ -135,7 +135,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_details_remove_via_charge);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
-                        .getDrawable(R.drawable.img_route_search_added));
+                        .getDrawable(R.drawable.img_adds));
             } else {
                 holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()

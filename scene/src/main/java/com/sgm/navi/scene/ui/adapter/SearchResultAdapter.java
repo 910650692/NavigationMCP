@@ -216,7 +216,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             if (isBelongSamePoi(mGasChargeAlongList, mPoiEntities.get(position))) {
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_details_remove_via_charge);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
-                        ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_added));
+                        ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_adds));
             } else {
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_add);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
