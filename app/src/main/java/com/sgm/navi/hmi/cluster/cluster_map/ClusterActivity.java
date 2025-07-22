@@ -26,12 +26,15 @@ import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.sgm.navi.service.logicpaket.signal.SignalCallback;
+import com.sgm.navi.service.logicpaket.signal.SignalPackage;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.utils.ActivityCloseManager;
 import com.sgm.navi.utils.OnCloseActivityListener;
 
-public class ClusterActivity extends BaseActivity<ActivityClusterBinding, ClusterViewModel> implements OnCloseActivityListener{
+public class ClusterActivity extends BaseActivity<ActivityClusterBinding, ClusterViewModel> implements OnCloseActivityListener, SignalCallback {
     private static final String TAG = "ClusterActivityTAG";
+    private static final int SYSTEM_STATE = 6;
     //挖洞
     private static final String MAP_DISPLAYING_TRUE = "{\"isMapDisplaying\":true}";
     //填洞
@@ -59,6 +62,21 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         ActivityCloseManager.getInstance().addOnCloseListener(this);
         mViewModel.registerClusterMap();
         initViewTheme();
+        SignalPackage.getInstance().registerObserver(TAG, this);
+        if (SignalPackage.getInstance().getSystemState() == SYSTEM_STATE){//熄火状态
+            Logger.d(TAG, "state：" , SignalPackage.getInstance().getSystemState());
+            mBinding.cluster.setVisibility(GONE);
+            finishAndRemoveTask();
+        }
+    }
+
+    @Override
+    public void onSystemStateChanged(int state) {
+        if (state == SYSTEM_STATE){//熄火状态
+            Logger.d(TAG, "state：" , state);
+            mBinding.cluster.setVisibility(GONE);
+            finishAndRemoveTask();
+        }
     }
 
     @Override
@@ -107,6 +125,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         ActivityCloseManager.getInstance().removeOnCloseListener(this);
 //        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_FALSE);
 //        ThreadManager.getInstance().removeHandleTask(mRunnable);
+        SignalPackage.getInstance().unregisterObserver(TAG);
     }
 
     @Override
