@@ -368,6 +368,7 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
                 }
             });
         }
+        mLayerPackage.updateMapLevel(mapTypeId, mapLevel);
     }
 
     @Override

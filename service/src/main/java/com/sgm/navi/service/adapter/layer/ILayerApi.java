@@ -185,6 +185,8 @@ public interface ILayerApi {
 
     /*========================================= 搜索图层接口定义=========================================*/
 
+    void updateMapLevel(MapType mapTypeId, float mapLevel);
+
     /*搜索结果POI获取焦点*/
     void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index);
 

@@ -259,6 +259,10 @@ public class LayerAdapterImplD implements ILayerApi {
 
     }
 
+    public void updateMapLevel(MapType mapTypeId, float mapLevel) {
+
+    }
+
     @Override
     public boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
         return true;

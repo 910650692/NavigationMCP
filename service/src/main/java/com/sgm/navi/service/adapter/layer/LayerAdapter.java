@@ -300,6 +300,10 @@ public class LayerAdapter {
 
     /*========================================= 搜索图层接口定义=========================================*/
 
+    public void updateMapLevel(MapType mapTypeId, float mapLevel) {
+        mLayerApi.updateMapLevel(mapTypeId, mapLevel);
+    }
+
     public void setSearchSelect(MapType mapTypeId, LayerPointItemType type, int index) {
         mLayerApi.selectSearchPoi(mapTypeId, type, index);
     }

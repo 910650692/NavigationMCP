@@ -90,6 +90,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
         }
     }
 
+    public void updateMapLevel(MapType mapTypeId, float mapLevel) {
+        mLayerAdapter.updateMapLevel(mapTypeId, mapLevel);
+    }
+
     public void setDefaultCarMode(MapType mapTypeId) {
         mLayerAdapter.setDefaultCarMode(mapTypeId);
     }

@@ -422,6 +422,10 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.getLayersPool(mapTypeId).getLayerUser().clearFavoriteMain();
     }
 
+    public void updateMapLevel(MapType mapTypeId, float mapLevel) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerSearch().updateMapLevel(mapLevel);
+    }
+
     /* 搜索图层扎标接口 */
     public boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
         if (clearOtherLayerItem) {

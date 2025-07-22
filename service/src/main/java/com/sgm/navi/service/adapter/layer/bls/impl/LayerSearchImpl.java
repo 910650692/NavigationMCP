@@ -43,6 +43,11 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     private static final String LINE_TYPE_ROAD = "Road";
     private static final String LINE_TYPE_PARK = "Park";
     private static final int MAX_NUM = 20; // 沿途搜最大扎标数量
+    private boolean isShowParkPoint = false;
+
+    private static final int MARKER_STYLE_DEFAULT = 0;  // 比例尺 <=12 时的样式
+    private static final int MARKER_STYLE_DETAIL = 1; // 比例尺 >12 时的样式
+    private float mLastMarkerStyle  = MARKER_STYLE_DEFAULT;
 
     public LayerSearchImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
@@ -53,6 +58,25 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     @Override
     protected LayerSearchStyleAdapter createStyleAdapter() {
         return new LayerSearchStyleAdapter(getEngineId(), getLayerSearchControl());
+    }
+
+    /* 更新比例尺 */
+    public void updateMapLevel(float mapLevel) {
+        //大于12是2公里以下
+        if (Logger.openLog) {
+            Logger.d(TAG, "mapLevel ", mapLevel, " isShowParkPoint ", isShowParkPoint);
+        }
+        int targetStyle;
+        if (mapLevel <= 12) {
+            targetStyle = MARKER_STYLE_DEFAULT;
+        } else {
+            targetStyle = MARKER_STYLE_DETAIL;
+        }
+        if (isShowParkPoint && targetStyle != mLastMarkerStyle) {
+            getStyleAdapter().updateMapLevel(mapLevel);
+            getLayerSearchControl().updateStyle(BizSearchType.BizSearchTypePoiParkRoute);
+            mLastMarkerStyle = targetStyle;
+        }
     }
 
     /**
@@ -238,6 +262,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             }
             case SEARCH_PARENT_PARK -> {
                 result = updateSearchParkPoi(searchResult);
+                isShowParkPoint = true;
             }
             case SEARCH_POI_LABEL -> {
                 result = updateSearchPoiLabel(searchResult);
@@ -700,6 +725,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             return result;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiParkRoute, true);
+        getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiParkRoute).enableCollision(true);
 
         //画停车场
         ArrayList<BizPointBusinessInfo> parkPoints = new ArrayList<>();
@@ -805,6 +831,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         Logger.d(TAG, "LayerSearch -> clearAllItems");
         getLayerSearchControl().clearAllItems();
         getLayerSearchControl().setVisible(false);
+        isShowParkPoint = false;
     }
 
     /**
@@ -830,6 +857,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             case SEARCH_PARENT_PARK -> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypePoiParkRoute);
                 getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiParkRoute, false);
+                isShowParkPoint = false;
             }
             case SEARCH_PARENT_CHARGE_STATION -> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypeChargeStation);

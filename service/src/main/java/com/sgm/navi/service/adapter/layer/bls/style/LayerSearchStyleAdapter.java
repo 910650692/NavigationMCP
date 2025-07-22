@@ -37,6 +37,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     private static final String KEY_SEARCH_POINT_ALONG_WAY_CHARGE = "search_point_along_way_charge";
     private static final String KEY_SEARCH_ALONG_WAY_CHARGE = "search_along_way_charge";
     //终点可停车-自定义停车场扎标
+    private static final String KEY_SEARCH_PARK_ROUTE = "search_park_route";
     private static final String KEY_SEARCH_PARK_POINT = "search_park_point";
     //搜索列表可见数字扎标
     private static final String KEY_SEARCH_LIST_INDEX = "search_list_index";
@@ -44,6 +45,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     private static final String KEY_SEARCH_LIST_CHARGE_VISIBLE_INDEX = "search_list_charge_index";
 
     private final AtomicReference<List<PoiInfoEntity>> mPoiInfoList = new AtomicReference(new ArrayList<>());
+    private float mMapLevel;
 
     public LayerSearchStyleAdapter(int engineID, BizSearchControl bizSearchControl) {
         super(engineID);
@@ -78,9 +80,31 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 }
             }
             case BizSearchType.BizSearchTypePoiParkRoute -> {
-                // 暂无动态停车场数据 无需做比例尺适配
-                Logger.d(TAG, "默认停车场扎标");
-                return KEY_SEARCH_PARK_POINT;
+                if (mMapLevel > 12) {
+                    List<PoiInfoEntity> poiInfoEntityList = mPoiInfoList.get();
+                    int index = getLayerItemIndex(item);
+                    if (!ConvertUtils.isEmpty(poiInfoEntityList)) {
+                        if (index < poiInfoEntityList.size()) {
+                            List<ParkingInfo> parkingInfoList = poiInfoEntityList.get(index).getParkingInfoList();
+                            if (!ConvertUtils.isEmpty(parkingInfoList)) {
+                                ParkingInfo parkingInfo = parkingInfoList.get(0);
+                                if (!ConvertUtils.isEmpty(parkingInfo)) {
+                                    int mSpaceTotal = parkingInfo.getMSpaceTotal();
+                                    if (mSpaceTotal > 0) {
+                                        Logger.d(TAG, "自定义停车场扎标");
+                                        return KEY_SEARCH_PARK_ROUTE;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        Logger.d(TAG, "默认停车场扎标");
+                        return KEY_SEARCH_PARK_POINT;
+                    }
+                } else {
+                    Logger.d(TAG, "默认停车场扎标");
+                    return KEY_SEARCH_PARK_POINT;
+                }
             }
             case BizSearchType.BizSearchTypeChargeStation -> {
                 int index = getIndexOfLayerItem(item);
@@ -188,42 +212,16 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                         return;
                     }
                     TextView titleTextView = rootView.findViewById(R.id.search_park_route_title_text);
-                    TextView detailPercentageTextView = rootView.findViewById(R.id.search_park_route_detail_percentage_text);
                     TextView detailTotalTextView = rootView.findViewById(R.id.search_park_route_detail_total_text);
 
                     Context context = rootView.getContext();
                     int spaceTotal = parkingInfo.getSpaceTotal();
-                    int spaceFree = parkingInfo.getSpaceFree();
-                    Logger.d(TAG, "自定义终点停车场扎标 spaceFree " + spaceFree + " spaceTotal " + spaceTotal);
-                    String spaceResult = judgeParkingSpace(context, spaceFree, spaceTotal);
-                    safetySetText(titleTextView, context.getString(R.string.layer_search_park_route_title, spaceResult));
-
-                    if (spaceFree == NumberUtils.NUM_0 || spaceTotal == NumberUtils.NUM_0) {
-                        if (!ConvertUtils.isEmpty(detailPercentageTextView)) {
-                            detailPercentageTextView.setVisibility(GONE);
-                        }
-                    } else {
-                        int ratio = spaceFree / spaceTotal * 100;
-                        safetySetText(detailPercentageTextView, context.getString(R.string.layer_search_park_route_detail_percentage, ratio));
-                    }
+                    //暂无动态数据  仅显示总车位数
+                    Logger.d(TAG, "自定义终点停车场扎标 spaceTotal " + spaceTotal);
+                    String result = context.getResources().getString(R.string.layer_search_park_route_resource_enough);
+                    safetySetText(titleTextView, context.getString(R.string.layer_search_park_route_title, result));
                     String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
-                    try {
-                        int detailTotalCount = Integer.parseInt(detailTotalString);
-                        if (detailTotalCount == -1) {
-                            if (!ConvertUtils.isEmpty(detailTotalTextView)) {
-                                detailTotalTextView.setVisibility(GONE);
-                            }
-                        } else {
-                            if (!ConvertUtils.isEmpty(detailTotalTextView)) {
-                                detailTotalTextView.setText(detailTotalString);
-                            }
-                        }
-                    } catch (Exception e) {
-                        Logger.e(TAG, "类型转换错误");
-                        if (!ConvertUtils.isEmpty(detailTotalTextView)) {
-                            detailTotalTextView.setVisibility(GONE);
-                        }
-                    }
+                    safetySetText(detailTotalTextView, detailTotalString);
                 }
 
                 @Override
@@ -240,40 +238,17 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                         return;
                     }
                     TextView titleTextView = rootView.findViewById(R.id.search_park_route_title_text);
-                    TextView detailPercentageTextView = rootView.findViewById(R.id.search_park_route_detail_percentage_text);
                     TextView detailTotalTextView = rootView.findViewById(R.id.search_park_route_detail_total_text);
 
                     Context context = rootView.getContext();
                     int spaceTotal = parkingInfo.getSpaceTotal();
-                    int spaceFree = parkingInfo.getSpaceFree();
-                    Logger.d(TAG, "自定义终点停车场扎标 spaceFree " + spaceFree + " spaceTotal " + spaceTotal);
-                    String spaceResult = judgeParkingSpace(context, spaceFree, spaceTotal);
-                    safetySetText(titleTextView, context.getString(R.string.layer_search_park_route_title, spaceResult));
-
-                    if (spaceFree == NumberUtils.NUM_0 || spaceTotal == NumberUtils.NUM_0) {
-                        detailPercentageTextView.setVisibility(GONE);
-                    } else {
-                        int ratio = spaceFree / spaceTotal * 100;
-                        safetySetText(detailPercentageTextView, context.getString(R.string.layer_search_park_route_detail_percentage, ratio));
-                    }
+                    //暂无动态数据  仅显示总车位数
+                    Logger.d(TAG, "自定义终点停车场扎标 spaceTotal " + spaceTotal);
+                    String result = context.getResources().getString(R.string.layer_search_park_route_resource_enough);
+                    safetySetText(titleTextView, context.getString(R.string.layer_search_park_route_title, result));
                     String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
-                    try {
-                        int detailTotalCount = Integer.parseInt(detailTotalString);
-                        if (detailTotalCount == -1) {
-                            if (!ConvertUtils.isEmpty(detailTotalTextView)) {
-                                detailTotalTextView.setVisibility(GONE);
-                            }
-                        } else {
-                            if (!ConvertUtils.isEmpty(detailTotalTextView)) {
-                                detailTotalTextView.setText(detailTotalString);
-                            }
-                        }
-                    } catch (Exception e) {
-                        Logger.e(TAG, "类型转换错误");
-                        if (!ConvertUtils.isEmpty(detailTotalTextView)) {
-                            detailTotalTextView.setVisibility(GONE);
-                        }
-                    }
+                    safetySetText(detailTotalTextView, detailTotalString);
+
                 }
             };
         }
@@ -290,6 +265,12 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             textView.setVisibility(GONE);
         }
         textView.setText(string);
+    }
+
+    /* 更新比例尺 */
+    public void updateMapLevel(float mapLevel) {
+        //大于12是2公里以下
+        mMapLevel = mapLevel;
     }
 
     /* 更新搜索结果数据 */
