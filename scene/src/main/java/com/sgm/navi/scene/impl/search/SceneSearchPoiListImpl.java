@@ -233,7 +233,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             return;
         }
         final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
-        mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), geoPoint, false);
+        mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), geoPoint, false, false);
     }
 
     /**
@@ -380,7 +380,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         } else if (tabIndex == 1) {
             final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
             if (endPoint != null && !ConvertUtils.isEmpty(endPoint.getRealPos())) {
-                mTaskId = mSearchPackage.aroundSearch(1, isChargingGeneralSearchText(keyword), new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
+                mTaskId = mSearchPackage.aroundSearch(1, isChargingGeneralSearchText(keyword), new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false, false);
             }
         } else {
             mTaskId = mSearchPackage.aroundSearch(1, isChargingGeneralSearchText(keyword));

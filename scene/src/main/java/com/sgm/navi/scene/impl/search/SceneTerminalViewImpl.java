@@ -42,7 +42,7 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
         if (baseFragment != null) {
             StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
         }
-        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_PARK);
+//        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_PARK);
     }
 
     /**
@@ -59,7 +59,7 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
      */
     public void aroundSearch(final String keyword, final GeoPoint geoPoint) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, " aroundSearch: aroundSearch");
-        mTaskId = mSearchPackage.aroundSearch(1, keyword, geoPoint, true);
+        mTaskId = mSearchPackage.aroundSearch(1, keyword, geoPoint, true,true);
     }
 
     /**

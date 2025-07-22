@@ -41,6 +41,7 @@ import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.route.EvRangeOnRouteInfo;
@@ -1099,6 +1100,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         closeAllFragment();
         addFragment(new NaviGuidanceFragment(), bundle);
         mModel.setPoint();
+        mModel.clearTypeMark(LayerPointItemType.SEARCH_PARENT_PARK);
     }
 
     /***

@@ -284,7 +284,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             mLocalTaskId = mSearchPackage.enRouteKeywordSearch(keyWord);
         } else if (searchType == 1) {
             final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-            mLocalTaskId = mSearchPackage.aroundSearch(1, keyWord, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
+            mLocalTaskId = mSearchPackage.aroundSearch(1, keyWord, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false, false);
         } else {
             mLocalTaskId = mSearchPackage.aroundSearch(1, keyWord);
         }
@@ -823,7 +823,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         ThreadManager.getInstance().postDelay( () -> {
             if (RoutePackage.getInstance().isRouteState()) {
                 final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
-                mParkSearchId = mSearchPackage.routeTerminalAroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
+                mParkSearchId = mSearchPackage.routeTerminalAroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", false);
             }
         }, 1000);
     }
@@ -1298,6 +1298,29 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
 
     @Override
     public void onSilentSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+//        if (!RoutePackage.getInstance().isRouteState()) {
+//            mParkSearchId = -1;
+//            return;
+//        }
+//        if (mParkSearchId == taskId) {
+//            if (searchResultEntity != null && searchResultEntity.getMTotal() > 0
+//                    && mRoutePackage.isRouteState()) {
+//                if (mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP) == null) {
+//                    Logger.d(TAG, "The endpoint is null");
+//                    return;
+//                }
+//                PoiInfoEntity endPoiEntity = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getMPoiInfoEntity();
+//                if (endPoiEntity != null && endPoiEntity.getPointTypeCode() != null && endPoiEntity.getPointTypeCode().startsWith("1509")) {
+//                    Logger.d(TAG, "The endpoint is the parking");
+//                    return;
+//                }
+//                showRoutePark(MapType.MAIN_SCREEN_MAIN_MAP);
+//            }
+//        }
+    }
+
+    @Override
+public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
         if (!RoutePackage.getInstance().isRouteState()) {
             mParkSearchId = -1;
             return;
@@ -1317,87 +1340,87 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
                 showRoutePark(MapType.MAIN_SCREEN_MAIN_MAP);
             }
         }
-    }
-
-    @Override
-public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
-    if (mSearchLoadingType != AutoMapConstant.RouteSearchType.SearchRestAreaDetail) {
-        Logger.d(TAG, "Search Rest Area detail is cancel");
-        return;
-    }
-    if (!ConvertUtils.isEmpty(mViewModel)) {
-        mSearchLoadingType = AutoMapConstant.RouteSearchType.NULL;
-        mViewModel.hideSearchProgressUI();
-    }
-    if (ConvertUtils.isEmpty(searchResultEntity)) {
-        return;
-    }
-    if (mLocalTaskId != taskId) {
-        return;
-    }
-    List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
-    if (poiList == null || poiList.isEmpty()) {
-        Logger.d(TAG, "poiList is empty");
-        ThreadManager.getInstance().postUi(() -> ToastUtils.Companion.getInstance().showCustomToastView(
-                ResourceUtils.Companion.getInstance().getString(R.string.route_error_rest_area_detail)));
-        return;
-    }
-    if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.DEEP_INFO_SEARCH) {
-        final PoiInfoEntity poiInfoEntity = poiList.get(0);
-        if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(mTaskMap.get(taskId))) {
-            if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.setDetailsAddress(poiInfoEntity.getAddress());
-            }
+        if (mSearchLoadingType != AutoMapConstant.RouteSearchType.SearchRestAreaDetail) {
+            Logger.d(TAG, "Search Rest Area detail is cancel");
+            return;
         }
-    }
-    if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD
-            || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
-            || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.AROUND_SEARCH
-            || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
-        if (searchResultEntity.getKeyword().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge))) {
-            mGasChargeAlongList.clear();
-            mRouteGasChargeAlongList.clear();
-            final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
-            if (allPoiParamList.size() >= 2) {
-                allPoiParamList.remove(0);
-                allPoiParamList.remove(allPoiParamList.size() - 1);
-            }
-            mGasChargeAlongList.addAll(allPoiParamList);
-            mRouteGasChargeAlongList.addAll(allPoiParamList);
-            if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.showRouteSearchChargeListUI(searchResultEntity, mGasChargeAlongList, mListSearchType, 0);
-            }
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mSearchLoadingType = AutoMapConstant.RouteSearchType.NULL;
+            mViewModel.hideSearchProgressUI();
         }
-        if (searchResultEntity.getKeyword().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_gas))) {
-            mGasChargeAlongList.clear();
-            mRouteGasChargeAlongList.clear();
-            final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
-            if (allPoiParamList.size() >= 2) {
-                allPoiParamList.remove(0);
-                allPoiParamList.remove(allPoiParamList.size() - 1);
-            }
-            mGasChargeAlongList.addAll(allPoiParamList);
-            mRouteGasChargeAlongList.addAll(allPoiParamList);
-            if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.showRouteSearchChargeListUI(searchResultEntity, mGasChargeAlongList, mListSearchType, 1);
-            }
+        if (ConvertUtils.isEmpty(searchResultEntity)) {
+            return;
         }
-    } else if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH
-            || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
-        final PoiInfoEntity poiInfoEntity = poiList.get(0);
-        if (ConvertUtils.isEmpty(poiInfoEntity)) {
+        if (mLocalTaskId != taskId) {
+            return;
+        }
+        List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+        if (poiList == null || poiList.isEmpty()) {
+            Logger.d(TAG, "poiList is empty");
             ThreadManager.getInstance().postUi(() -> ToastUtils.Companion.getInstance().showCustomToastView(
                     ResourceUtils.Companion.getInstance().getString(R.string.route_error_rest_area_detail)));
             return;
         }
-        if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(mTaskMap.get(taskId))) {
-            if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.showRouteSearchDetailsUI(mTaskMap.get(taskId), poiInfoEntity, mGasChargeAlongList, mListSearchType);
+        if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.DEEP_INFO_SEARCH) {
+            final PoiInfoEntity poiInfoEntity = poiList.get(0);
+            if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(mTaskMap.get(taskId))) {
+                if (!ConvertUtils.isEmpty(mViewModel)) {
+                    mViewModel.setDetailsAddress(poiInfoEntity.getAddress());
+                }
             }
-            getAddress(mTaskMap.get(taskId));
+        }
+        if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD
+                || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
+                || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.AROUND_SEARCH
+                || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
+            if (searchResultEntity.getKeyword().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge))) {
+                mGasChargeAlongList.clear();
+                mRouteGasChargeAlongList.clear();
+                final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+                if (allPoiParamList.size() >= 2) {
+                    allPoiParamList.remove(0);
+                    allPoiParamList.remove(allPoiParamList.size() - 1);
+                }
+                mGasChargeAlongList.addAll(allPoiParamList);
+                mRouteGasChargeAlongList.addAll(allPoiParamList);
+                if (!ConvertUtils.isEmpty(mViewModel)) {
+                    mViewModel.showRouteSearchChargeListUI(searchResultEntity, mGasChargeAlongList, mListSearchType, 0);
+                }
+            }
+            if (searchResultEntity.getKeyword().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_gas))) {
+                mGasChargeAlongList.clear();
+                mRouteGasChargeAlongList.clear();
+                final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+                if (allPoiParamList.size() >= 2) {
+                    allPoiParamList.remove(0);
+                    allPoiParamList.remove(allPoiParamList.size() - 1);
+                }
+                mGasChargeAlongList.addAll(allPoiParamList);
+                mRouteGasChargeAlongList.addAll(allPoiParamList);
+                if (!ConvertUtils.isEmpty(mViewModel)) {
+                    mViewModel.showRouteSearchChargeListUI(searchResultEntity, mGasChargeAlongList, mListSearchType, 1);
+                }
+            }
+        } else if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH
+                || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
+            final PoiInfoEntity poiInfoEntity = poiList.get(0);
+            if (ConvertUtils.isEmpty(poiInfoEntity)) {
+                ThreadManager.getInstance().postUi(() -> ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.route_error_rest_area_detail)));
+                return;
+            }
+            if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(mTaskMap.get(taskId))) {
+                if (!ConvertUtils.isEmpty(mViewModel)) {
+                    mViewModel.showRouteSearchDetailsUI(mTaskMap.get(taskId), poiInfoEntity, mGasChargeAlongList, mListSearchType);
+                }
+                getAddress(mTaskMap.get(taskId));
+            }
         }
     }
-}
+
+    public void clearTypeMark(final LayerPointItemType type) {
+        mSearchPackage.clearTypeMark(type);
+    }
 
 /**
  * 开始导航时埋点

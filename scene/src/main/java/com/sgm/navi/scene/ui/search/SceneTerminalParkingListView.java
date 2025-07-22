@@ -36,6 +36,11 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
     private TerminalParkingResultAdapter mAdapter;
     private LinearLayoutManager layoutManager;
     private SearchLoadingDialog mSearchLoadingDialog;
+    private int mIndex;
+
+    public void setIndex(final int index) {
+        mIndex = index;
+    }
 
     public SceneTerminalParkingListView(@NonNull final Context context) {
         super(context);
@@ -156,7 +161,18 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
         }
         if (mAdapter != null) {
             mAdapter.notifyList(searchResultEntity);
-            setMinDistancePark(searchResultEntity.getPoiList());
+            if (mIndex != -1 && mIndex < searchResultEntity.getPoiList().size()) {
+                mAdapter.updateSelectedPosition(mIndex);
+                layoutManager.scrollToPositionWithOffset(mIndex, 0);
+                PoiInfoEntity poiInfo = searchResultEntity.getPoiList().get(mIndex);
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mScreenViewModel != null) {
+                        mScreenViewModel.setSelectIndex(poiInfo, mIndex);
+                    }
+                },1000);
+            } else {
+                setMinDistancePark(searchResultEntity.getPoiList());
+            }
         }
     }
 

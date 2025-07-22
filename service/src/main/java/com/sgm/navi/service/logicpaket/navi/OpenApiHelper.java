@@ -161,7 +161,7 @@ public final class OpenApiHelper {
         } else if (searchType == 1) {
             final RouteParam endPoint = ROUTE_PACKAGE.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
             taskId = SEARCH_PACKAGE.aroundSearch(1, keyWord,
-                    new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
+                    new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false, false);
         } else {
             taskId = SEARCH_PACKAGE.aroundSearch(1, keyWord);
         }

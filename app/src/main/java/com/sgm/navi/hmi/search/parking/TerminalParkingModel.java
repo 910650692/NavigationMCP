@@ -55,6 +55,26 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
         }
     }
 
+    @Override
+    public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH
+                    || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
+                return;
+            }
+            final ThreadManager threadManager = ThreadManager.getInstance();
+            threadManager.postUi(() -> {
+                mTaskId = taskId;
+                mSearchResultEntity = searchResultEntity;
+                mViewModel.notifySearchResult(taskId, searchResultEntity);
+
+            });
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onSilentSearchResult mCallbackId: "
+                    + mCallbackId + " ,currentId: " + mSearchPackage.getCurrentCallbackId());
+        }
+    }
+
     /**
      * 恢复fragment状态
      */

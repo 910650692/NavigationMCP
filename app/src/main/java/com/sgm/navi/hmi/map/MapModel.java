@@ -54,6 +54,7 @@ import com.sgm.navi.hmi.navi.PhoneAddressDialog;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
 import com.sgm.navi.hmi.route.RouteFragment;
+import com.sgm.navi.hmi.search.parking.TerminalParkingFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.hmi.startup.StartupExceptionDialog;
@@ -2241,6 +2242,20 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 mViewModel.openTrafficDetailFragment(poiInfo, false);
             }
         }
+    }
+
+    @Override
+    public void onMarkTerminalParkClickCallBack(final int index) {
+        if (mViewModel.getTopFragment(TerminalParkingFragment.class)) {
+            return;
+        }
+        final Bundle bundle = new Bundle();
+        final GeoPoint point = new GeoPoint(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getRealPos().getLon()
+                , mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getRealPos().getLat());
+        bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, point);
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SELECT_INDEX, index);
+        addPoiDetailsFragment(new TerminalParkingFragment(), bundle);
+        mRoutePackage.clearEndParkPoint(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     @Override

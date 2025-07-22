@@ -57,6 +57,7 @@ public class SearchResultCallbackHelper {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
             case AutoMapConstant.SearchType.AROUND_SEARCH:
             case AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH:
+            case AutoMapConstant.SearchType.ROUTE_TERMINAL_PARK_SEARCH:
                 resultList = handleKeywordSearch(requestParameterBuilder, result);
                 break;
             case AutoMapConstant.SearchType.SEARCH_SUGGESTION:
@@ -90,9 +91,9 @@ public class SearchResultCallbackHelper {
             case AutoMapConstant.SearchType.PID_LIST_SEARCH:
                 resultList = handlePoiListSearch(requestParameterBuilder, result);
                 break;
-            case AutoMapConstant.SearchType.ROUTE_TERMINAL_PARK_SEARCH:
-                resultList = handleRouteTerminalParkSearch(requestParameterBuilder, result);
-                break;
+//            case AutoMapConstant.SearchType.ROUTE_TERMINAL_PARK_SEARCH:
+//                resultList = handleRouteTerminalParkSearch(requestParameterBuilder, result);
+//                break;
             default:
                 Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Unknown search type: " + requestParameterBuilder.getSearchType());
                 return;

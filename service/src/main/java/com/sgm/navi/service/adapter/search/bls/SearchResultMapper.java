@@ -190,7 +190,8 @@ public final class SearchResultMapper {
                 .stream()
                 .map(this::mapSearchPoiInfo)
                 .collect(Collectors.toList());
-        if (requestParameterBuilder.getSearchType() == AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH) {
+        if (requestParameterBuilder.getSearchType() == AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH
+                || requestParameterBuilder.getSearchType() == AutoMapConstant.SearchType.ROUTE_TERMINAL_PARK_SEARCH) {
             //终点停车场列表最多提供8个
             limitListToSize(poiList, 8);
         }

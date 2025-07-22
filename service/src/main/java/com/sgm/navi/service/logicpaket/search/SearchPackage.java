@@ -724,9 +724,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param keyword 搜索关键词
      * @param geoPoint 经纬度
      * @param isTerminal 是否是终点停车场搜索
+     * @param isSilentSearch 是否静默搜
      * @return taskId
      */
-    public int aroundSearch(final int page, final String keyword, final GeoPoint geoPoint, final boolean isTerminal) {
+    public int aroundSearch(final int page, final String keyword, final GeoPoint geoPoint, final boolean isTerminal, final boolean isSilentSearch) {
         if (keyword == null) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute nearby search: searchRequestParameterBuilder is null.");
             return -1;
@@ -736,7 +737,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
 
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
-                .isSilentSearch(false)
+                .isSilentSearch(isSilentSearch)
                 .keyword(keyword)
                 .page(page)
                 .queryType(AutoMapConstant.SearchQueryType.AROUND)
@@ -1340,6 +1341,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 createCenterPoiMarker(requestParameter);
                 break;
             case AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH:
+            case AutoMapConstant.SearchType.ROUTE_TERMINAL_PARK_SEARCH:
                 createTerminalParkPoiMarker(searchResultEntity.getPoiList(), 0);
 //                createCenterPoiMarker(requestParameter);
                 break;
@@ -1489,7 +1491,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param index 当前选中下标
      */
     public void createTerminalParkPoiMarker(final List<PoiInfoEntity> poiList, final int index) {
-        if (ConvertUtils.isEmpty(poiList)) {
+        if (ConvertUtils.isEmpty(poiList) || isNaviStatus()) {
             return;
         }
         final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();

@@ -1396,6 +1396,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             mLayerAdapter.clearRouteLine(mapTypeId);
             mLayerAdapter.clearLabelItem(mapTypeId);
             mLayerAdapter.setCarLogoVisible(mapTypeId, true);
+            mLayerAdapter.clearSearchPOILayerItems(mapTypeId, LayerPointItemType.SEARCH_PARENT_PARK);
         });
         removeAllRouteInfo(mapTypeId);
     }

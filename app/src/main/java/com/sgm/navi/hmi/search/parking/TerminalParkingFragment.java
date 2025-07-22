@@ -67,7 +67,9 @@ public class TerminalParkingFragment extends BaseFragment<FragmentTerminalParkin
             return;
         }
         final GeoPoint geoPoint = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE);
+        final int index = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SELECT_INDEX, -1);
         mBinding.sceneTerminalParkingListView.aroundSearch(geoPoint);
+        mBinding.sceneTerminalParkingListView.setIndex(index);
     }
 
     /**
