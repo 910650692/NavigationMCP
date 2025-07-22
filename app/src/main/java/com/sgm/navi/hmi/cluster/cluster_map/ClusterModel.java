@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import androidx.core.app.ActivityCompat;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -41,6 +42,8 @@ import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.base.BaseModel;
 
 import com.sgm.navi.hmi.BuildConfig;
+
+import java.util.ArrayList;
 
 public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPackageCallback,
         IRouteResultObserver, ISceneCallback, IGuidanceObserver, ICruiseObserver, StartService.ISdkInitCallback ,SettingPackage.SettingChangeCallback{
@@ -281,14 +284,14 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         }
     }
 
-    //    @Override
-    //    public void onDeletePath(ArrayList<Long> pathIDList) {
-    //        if (!ConvertUtils.isEmpty(pathIDList)) {
-    //            for (long pathId : pathIDList) {
-    //                Logger.i(TAG, "onDeletePath pathId = ", pathId);
-    //                RoutePackage.getInstance().removeRouteLineInfo(MapType.CLUSTER_MAP, pathId);
-    //            }
-    //            ClusterRouteHelper.refreshPathList();
-    //        }
-    //    }
+    @Override
+    public void onDeletePath(ArrayList<Long> pathIDList) {
+        if (!ConvertUtils.isEmpty(pathIDList)) {
+            for (long pathId : pathIDList) {
+                Logger.i(TAG, "onDeletePath pathId = ", pathId);
+                RoutePackage.getInstance().removeRouteLineInfo(MapType.CLUSTER_MAP, pathId);
+            }
+            ClusterRouteHelper.refreshPathList();
+        }
+    }
 }
