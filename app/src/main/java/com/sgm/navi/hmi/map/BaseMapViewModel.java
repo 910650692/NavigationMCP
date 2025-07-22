@@ -960,7 +960,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, endPoint);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_RANGE, radius);
-        addFragment(new SearchResultFragment(), args);
+        addPoiDetailsFragment(new SearchResultFragment(), args);
     }
 
     public void toRouteFragment(RouteSpeechRequestParam param) {
