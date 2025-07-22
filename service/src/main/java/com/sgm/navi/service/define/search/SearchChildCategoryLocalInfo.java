@@ -9,6 +9,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Data
@@ -22,6 +23,7 @@ public class SearchChildCategoryLocalInfo implements Parcelable {
     //请求参数值
     private String mValue;
     //子类目信息
+    @ToString.Exclude
     private List<SearchGrandChildCategoryLocalInfo> mCategoryLocalInfos;
 
     public int getChecked() {

@@ -56,8 +56,12 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     public void onGetFragmentData() {
         super.onGetFragmentData();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onGetFragmentData " );
-        getSearchPoiInfo();
-        getBundleData();
+        try {
+            getSearchPoiInfo();
+            getBundleData();
+        } catch (Exception e) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getBundleData error: " + e.getMessage());
+        }
     }
 
     @Override
@@ -67,8 +71,8 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mViewModel.onReStoreFragment();
         try {
             getBundleData();
-        }catch (Exception e){
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getBundleData error: "+e.getMessage());
+        } catch (Exception e) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getBundleData error: " + e.getMessage());
         }
     }
 
@@ -134,24 +138,28 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        Logger.d("onHiddenChanged",hidden);
+        Logger.d("onHiddenChanged", hidden);
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
-                mBinding.scenePoiDetailContentView.reloadLastPoiMarker(mSearchResultEntity.getPoiList());
-            }
-            final Bundle parsedArgs = getArguments();
-            if (parsedArgs != null) {
-                final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
-                final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
-                final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
-                mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
-                mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity, true);
-                mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
-            }
-            mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
-            if(mViewModel.calcDistanceBetweenPoints()){
-                mBinding.scenePoiDetailContentView.showSelfParkingView();
+            try {
+                if (!ConvertUtils.isEmpty(mSearchResultEntity) && !ConvertUtils.isEmpty(mBinding)) {
+                    mBinding.scenePoiDetailContentView.reloadLastPoiMarker(mSearchResultEntity.getPoiList());
+                }
+                final Bundle parsedArgs = getArguments();
+                if (parsedArgs != null) {
+                    final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
+                    final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
+                    final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
+                    mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
+                    mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity, true);
+                    mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
+                }
+                mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
+                if (mViewModel.calcDistanceBetweenPoints()) {
+                    mBinding.scenePoiDetailContentView.showSelfParkingView();
+                }
+            } catch (Exception e) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getBundleData error: " + e.getMessage());
             }
         }
     }

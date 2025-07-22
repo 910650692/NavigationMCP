@@ -12,6 +12,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 
@@ -46,7 +47,9 @@ public class SearchResultEntity implements Parcelable {
     private List<PoiInfoEntity> mPoiList;
     private float mZoomLeve;
     private String mRetain;
+    @ToString.Exclude
     private List<SearchCategoryLocalInfo> mLocalInfoList;
+    @ToString.Exclude
     private List<SearchCategoryLocalInfo> mLevel2LocalInfoList;
     //返回的总item数
     private int mTotal;

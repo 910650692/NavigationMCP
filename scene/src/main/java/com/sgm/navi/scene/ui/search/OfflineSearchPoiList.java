@@ -314,7 +314,9 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
     public void requestFocusAndShowKeyboard() {
         // 确保视图已经附加到窗口
         mViewBinding.offlineSearchTopView.searchBarEditView.post(() -> {
-            mViewBinding.offlineSearchTopView.searchBarEditView.requestFocus();
+            if (mViewBinding != null) {
+                mViewBinding.offlineSearchTopView.searchBarEditView.requestFocus();
+            }
             showKeyboard();
         });
     }

@@ -10,6 +10,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Data
@@ -21,6 +22,7 @@ public class SearchCategoryLocalInfo implements Parcelable {
     //名称
     private String mName;
     //子类目信息
+    @ToString.Exclude
     private List<SearchChildCategoryLocalInfo> mCategoryLocalInfos;
 
     public int getChecked() {
@@ -90,8 +92,8 @@ public class SearchCategoryLocalInfo implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull final Parcel parcel, final int i) {
-        mChecked = parcel.readInt();
-        mName = parcel.readString();
-        mCategoryLocalInfos = parcel.createTypedArrayList(SearchChildCategoryLocalInfo.CREATOR);
+        parcel.writeInt(mChecked);
+        parcel.writeString(mName);
+        parcel.writeTypedList(mCategoryLocalInfos);
     }
 }

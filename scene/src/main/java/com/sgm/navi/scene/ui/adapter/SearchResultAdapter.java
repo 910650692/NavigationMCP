@@ -218,7 +218,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
                         ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_adds));
             } else {
-                holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_add);
+                holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
                         ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_add));
             }
