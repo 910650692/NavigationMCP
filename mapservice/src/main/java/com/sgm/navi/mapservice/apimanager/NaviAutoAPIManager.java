@@ -1,6 +1,8 @@
 package com.sgm.navi.mapservice.apimanager;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 
@@ -46,6 +48,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     private String mPkgName = "default";
     private String mVersionInfo = "";
     private boolean mInitStatus = false;
+    private Context mContext;
 
     private final List<OnInitStateChangeListener> mInitStateListenerList = new ArrayList<>();
     private final List<OnLocationChangeListener> mLocationListenerList = new ArrayList<>();
@@ -555,6 +558,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void init(final Context context, final String pkgName, final String params) {
         synchronized (NaviAutoAPIManager.class) {
             mPkgName = pkgName;
+            mContext = context;
             mVersionInfo = "MapService Version[" + BuildConfig.LIB_VERSION + "] " + pkgName;
             Logger.d(TAG, "initClient: ", mVersionInfo, ", params: ", params);
             BinderManager.getInstance().addEngineInitCallback(mEngineStatusCallback);
@@ -1204,6 +1208,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
             } catch (RemoteException exception) {
                 Logger.w(TAG, mPkgName + "backHome error:" + exception.getMessage());
             }
+        } else {
+            startMapActivityFallback();
         }
     }
 
@@ -1218,6 +1224,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
             } catch (RemoteException exception) {
                 Logger.w(TAG, mPkgName + "goCompany error:" + exception.getMessage());
             }
+        } else {
+            startMapActivityFallback();
         }
     }
 
@@ -1232,6 +1240,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
             } catch (RemoteException exception) {
                 Logger.w(TAG, mPkgName + "openBasicSearch error:" + exception.getMessage());
             }
+        } else {
+            startMapActivityFallback();
         }
     }
 
@@ -1281,6 +1291,28 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
             } catch (RemoteException exception) {
                 Logger.w(TAG, mPkgName + "clickPassBySearch error:" + exception.getMessage());
             }
+        }
+    }
+
+    /**
+     * 备用方案：直接启动MapActivity
+     * 用于导航服务未准备好时的降级处理
+     */
+    private void startMapActivityFallback() {
+        try {
+            if (mContext == null) {
+                Logger.e(TAG, "Context is null, cannot start MapActivity");
+                return;
+            }
+            Intent intent = new Intent();
+            intent.setClassName("com.sgm.navi.hmi", "com.sgm.navi.hmi.map.MapActivity");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            Logger.d(TAG, mVersionInfo, "-->  Fallback: MapActivity started successfully");
+        } catch (ActivityNotFoundException e) {
+            Logger.e(TAG, "MapActivity not found: " + e.getMessage());
+        } catch (Exception e) {
+            Logger.e(TAG, "Failed to start MapActivity: " + e.getMessage());
         }
     }
 
