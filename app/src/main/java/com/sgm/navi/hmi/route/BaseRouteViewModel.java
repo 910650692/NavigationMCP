@@ -1012,6 +1012,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             return 0;
         }
         final int index = Integer.parseInt(mCurrentPageHistory.get(mCurrentPageHistory.size() - 1));
+        if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)) {
+            return index;
+        }
         if (index == 0) {
             //回到算路结果页需要全览路线
             ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);

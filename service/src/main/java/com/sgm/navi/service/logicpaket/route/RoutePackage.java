@@ -665,6 +665,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(param)) {
             return NumberUtils.NUM_ERROR;
         }
+        //无网发起算路请求
+        if (param.isMIsOnline() && Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            param.setMIsOnline(false);
+        }
         final RouteParam routeParam = getRouteParamFromPoiInfoEntity(param.getMPoiInfoEntity(), param.getMRoutePoiType());
         final List<RouteParam> paramList = getParamList(param.getMMapTypeId(), routeParam);
         if (ConvertUtils.isEmpty(paramList) || paramList.size() < 2) {

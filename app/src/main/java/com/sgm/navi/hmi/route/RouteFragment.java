@@ -1387,7 +1387,12 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 mRouteRequestLoadingDialog.setDialogClickListener(mViewModel);
             }
             if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog)) {
-                mRouteRequestLoadingDialog.show();
+                try {
+                    mRouteRequestLoadingDialog.show();
+                } catch (Exception e) {
+                    Logger.e(TAG, "showProgressUI error:" + e.getMessage());
+                }
+
                 ThreadManager.getInstance().removeHandleTask(mRouteLoadingTask);
                 ThreadManager.getInstance().postDelay(mRouteLoadingTask, 15000);
             }
@@ -1447,7 +1452,11 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 mSearchLoadingDialog.setOnCloseClickListener(mViewModel);
             }
             if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
-                mSearchLoadingDialog.show();
+                try {
+                    mSearchLoadingDialog.show();
+                } catch (Exception exception) {
+                    Logger.e(TAG, "showSearchProgressUI error:" + exception.getMessage());
+                }
             }
         }
         ThreadManager.getInstance().removeHandleTask(mSearchTimeoutTask);
