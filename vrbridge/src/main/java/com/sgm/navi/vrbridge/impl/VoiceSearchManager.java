@@ -576,9 +576,11 @@ public final class VoiceSearchManager {
         }
 
         final CallResponse routeResponse = CallResponse.createSuccessResponse();
+        routeResponse.setSubCallResult(NaviSubCallResult.RESP_MULTI_POI_SEARCH_SUCCESS);
         switch (mPlanRouteResult) {
             case 0:
-                //使用PoiCallback回调
+            case 2:
+                //使用PoiCallback回调或多目的地
                 if (null != mPoiCallback) {
                     mPoiCallback.onResponse(routeResponse);
                 }
@@ -589,12 +591,7 @@ public final class VoiceSearchManager {
                     mRespCallback.onResponse(routeResponse);
                 }
                 break;
-            case 2:
-                //多目的地回调
-                routeResponse.setSubCallResult(NaviSubCallResult.RESP_MULTI_POI_SEARCH_SUCCESS);
-                if (null != mPoiCallback) {
-                    mPoiCallback.onResponse(routeResponse);
-                }
+            default:
                 break;
         }
         mPlanRouteResult = -1;
