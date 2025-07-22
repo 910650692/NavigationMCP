@@ -338,4 +338,29 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
         }
     }
 
+    @Override
+    public void onScaleRotateBegin(MapType mapTypeId) {
+        if (callbacks.containsKey(mapTypeId)) {
+            Logger.d(TAG, mapTypeId, "==onScaleRotateBegin");
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapAdapterCallback>() {
+                @Override
+                public void accept(IMapAdapterCallback callback) {
+                    callback.onScaleRotateBegin(mapTypeId);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onScaleRotateEnd(MapType mapTypeId) {
+        if (callbacks.containsKey(mapTypeId)) {
+            Logger.d(TAG, mapTypeId, "==onScaleRotateEnd");
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapAdapterCallback>() {
+                @Override
+                public void accept(IMapAdapterCallback callback) {
+                    callback.onScaleRotateEnd(mapTypeId);
+                }
+            });
+        }
+    }
 }

@@ -63,4 +63,12 @@ public interface IMapAdapterCallback {
 
     default void onEGLScreenshot(MapType mapTypeId, byte[] bytes, MapScreenShotDataInfo info) {
     }
+
+    default void onScaleRotateBegin(MapType mapTypeId) {
+    }
+
+    default void onScaleRotateEnd(MapType mapTypeId) {
+
+    }
+
 }

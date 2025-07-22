@@ -514,6 +514,30 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         }
     }
 
+    @Override
+    public void onScaleRotateBegin(MapType mapTypeId) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onScaleRotateBegin(mapTypeId);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onScaleRotateEnd(MapType mapTypeId) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onScaleRotateEnd(mapTypeId);
+                }
+            });
+        }
+    }
+
     public void onNotifyMap(MapType mapTypeId, MapNotifyType eventType) {
         if (callbacks.containsKey(mapTypeId)) {
             callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {

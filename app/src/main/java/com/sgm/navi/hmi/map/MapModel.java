@@ -821,6 +821,20 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         FloatViewManager.getInstance().hideWidgetsOnMapTouch(touchEvent);
     }
 
+    @Override
+    public void onScaleRotateBegin(MapType mapTypeId) {
+        if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && mSettingPackage.getAutoScale()) {
+            layerPackage.setDynamicLevelLock(MapType.MAIN_SCREEN_MAIN_MAP,DynamicLevelMode.DYNAMIC_LEVEL_GUIDE,true);
+        }
+    }
+
+    @Override
+    public void onScaleRotateEnd(MapType mapTypeId) {
+        if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && mSettingPackage.getAutoScale()) {
+            layerPackage.setDynamicLevelLock(MapType.MAIN_SCREEN_MAIN_MAP,DynamicLevelMode.DYNAMIC_LEVEL_GUIDE,false);
+        }
+    }
+
     private void openThreeFingerFlyingScreen(MotionEvent touchEvent) {
         //多指左滑打开仪表地图   多指右滑关闭仪表地图
         ThreadManager.getInstance().postUi(new Runnable() {

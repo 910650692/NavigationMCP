@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -804,6 +805,14 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         if (NaviStatusPackage.getInstance().isGuidanceActive() && isZoomIn != -1) {
             sendBuryPointForZoomWithTwoFingers(false);
         }
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onScaleRotateEnd(mapType);
+                }
+            });
+        }
     }
 
     @Override
@@ -869,6 +878,18 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
                 @Override
                 public void run() {
                     callback.onMapCenterChanged(mapType, lon, lat);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onScaleRotateBegin(long engineId, long focusX, long focusY) {
+        if (callback != null) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onScaleRotateBegin(mapType);
                 }
             });
         }

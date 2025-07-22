@@ -54,4 +54,8 @@ public interface IMapPackageCallback {
     default void onEGLScreenshot(MapType mapTypeId, byte[] bytes, MapScreenShotDataInfo info) {}
 
     default void onNotifyMap(MapType mapTypeId, MapNotifyType eventType) {}
+
+    default void onScaleRotateBegin(MapType mapTypeId) {}
+
+    default void onScaleRotateEnd(MapType mapTypeId) {}
 }
