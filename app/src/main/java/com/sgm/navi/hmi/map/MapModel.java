@@ -1921,7 +1921,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 }
             }
         });
-        mViewModel.showAuthorizationRequestDialog(authorizationRequestDialog);
+        Logger.d(TAG, "isForeground : ", ProcessManager.isAppInForeground());
+        if (ProcessManager.isAppInForeground()) {
+            mViewModel.showAuthorizationRequestDialog(authorizationRequestDialog);
+        }
     }
 
     public void dismissAuthorizationRequestDialog() {
