@@ -2253,7 +2253,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     public void setPowerType(final int powerType){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: "+powerType);
-        mScreenViewModel.mPowerType.setValue(1);
+        mScreenViewModel.mPowerType.setValue(powerType);
         ThreadManager.getInstance().postUi(new Runnable() {
             @Override
             public void run() {

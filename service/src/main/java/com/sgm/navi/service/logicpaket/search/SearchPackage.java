@@ -1458,6 +1458,32 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * 获取当前扎标列表，并将visible属性均设置为false
+     * @param poiList 选中的扎标
+     * @param searchType 搜索类型
+     */
+    public void getCurPoiListAndSetInvisible(final List<PoiInfoEntity> poiList, final int searchType) {
+        final PoiInfoEntity poiInfoEntity = poiList.get(0);
+        final int type = getPointTypeCode(poiInfoEntity.getPointTypeCode());
+        final LayerPointItemType layerPointItemType = type == AutoMapConstant.PointTypeCode.CHARGING_STATION ?
+                LayerPointItemType.SEARCH_PARENT_CHARGE_STATION :
+                LayerPointItemType.SEARCH_PARENT_POINT;
+        LayerItemSearchResult layerItemSearchResult = sMarkerInfoMap.get(layerPointItemType);
+        int index = -1;
+        if (layerItemSearchResult != null && !ConvertUtils.isEmpty(layerItemSearchResult.getSearchResultPoints())) {
+            for (int i = 0; i < layerItemSearchResult.getSearchResultPoints().size() ; i++) {
+                PoiInfoEntity poiInfo = layerItemSearchResult.getSearchResultPoints().get(i);
+                poiInfo.setMIsVisible(false);
+                if (ConvertUtils.equals(poiInfoEntity.getPid(), poiInfo.getPid())) {
+                    index = i;
+                }
+            }
+            setSelectIndex(poiInfoEntity, index, searchType, false);
+            updatePoiMarker(layerItemSearchResult.getSearchResultPoints(), 0, false);
+        }
+    }
+
+    /**
      * 搜索结果列表扎标
      * @param poiList 搜索结果列表
      * @param index 当前选中下标

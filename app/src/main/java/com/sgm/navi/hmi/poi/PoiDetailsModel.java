@@ -64,6 +64,9 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
             final ThreadManager threadManager = ThreadManager.getInstance();
             threadManager.postUi(() -> {
                 mViewModel.onSearchResult(mTaskId, mSearchResultEntity);
+                if (!ConvertUtils.isEmpty(mSearchResultEntity.getPoiList())) {
+                    mSearchPackage.getCurPoiListAndSetInvisible(mSearchResultEntity.getPoiList(), mSearchResultEntity.getSearchType());
+                }
             });
         }
     }

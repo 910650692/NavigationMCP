@@ -265,9 +265,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         // 遍历所有可见的item
                         for (int i = 0; i < poiInfoEntities.size(); i++) {
                             if (!ConvertUtils.isEmpty(poiInfoEntities)) {
-                                if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntity.getPid())) {
-                                    poiInfoEntities.get(i).setMIsVisible(false);
-                                }
+//                                if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntity.getPid())) {
+                                poiInfoEntities.get(i).setMIsVisible(false);
+//                                }
                             }
                         }
                         mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, true);
@@ -373,20 +373,20 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         return;
                     }
                     final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
-                    if (firstVisiblePosition < 0 || firstVisiblePosition >= mAdapter.getItemCount()
-                            || lastVisiblePosition < 0 || lastVisiblePosition >= mAdapter.getItemCount()
-                            || firstVisiblePosition >= lastVisiblePosition) {
-                        if (!ConvertUtils.isEmpty(poiInfoEntities)) {
-                            //首次进入可见位置均是-1，默认选中下标0-2的item
-                            final int size = Math.min(3, poiInfoEntities.size());
-                            for (int i = 0; i < poiInfoEntities.size(); i++) {
-                                final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
-                                poiInfoEntity.setMIsVisible(i <= size - 1);
-                            }
-                            mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, true);
-                        }
-                        return;
-                    }
+//                    if (firstVisiblePosition < 0 || firstVisiblePosition >= mAdapter.getItemCount()
+//                            || lastVisiblePosition < 0 || lastVisiblePosition >= mAdapter.getItemCount()
+//                            || firstVisiblePosition >= lastVisiblePosition) {
+//                        if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+//                            //首次进入可见位置均是-1，默认选中下标0-2的item
+//                            final int size = Math.min(3, poiInfoEntities.size());
+//                            for (int i = 0; i < poiInfoEntities.size(); i++) {
+//                                final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
+//                                poiInfoEntity.setMIsVisible(i <= size - 1);
+//                            }
+//                            mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, true);
+//                        }
+//                        return;
+//                    }
                     if (!ConvertUtils.isEmpty(poiInfoEntities)) {
                         // 遍历所有可见的item
                         for (int i = 0; i < poiInfoEntities.size(); i++) {
@@ -1326,9 +1326,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 for (int i = 0; i < poiInfoEntities.size(); i++) {
                     if (!ConvertUtils.isEmpty(poiInfoEntities)) {
                         if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntity.getPid())) {
-                            poiInfoEntities.get(i).setMIsVisible(false);
                             index = i;
                         }
+                        poiInfoEntities.get(i).setMIsVisible(false);
                     }
                 }
                 mScreenViewModel.setSelectIndex(poiInfoEntity, index, mSearchType);
@@ -1346,9 +1346,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 // 遍历所有可见的item
                 for (int i = 0; i < poiInfoEntities.size(); i++) {
                     if (!ConvertUtils.isEmpty(poiInfoEntities)) {
-                        if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntities.get(i).getPid())) {
-                            poiInfoEntities.get(i).setMIsVisible(false);
-                        }
+//                        if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntities.get(i).getPid())) {
+                        poiInfoEntities.get(i).setMIsVisible(false);
+//                        }
                     }
                 }
                 mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, false);

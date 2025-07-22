@@ -90,7 +90,12 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     public void onReStoreFragment() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment: " + mViewModel + " ,taskId: " + mTaskId);
         final ThreadManager threadManager = ThreadManager.getInstance();
-        threadManager.postUi(() -> mViewModel.notifySearchResult(mTaskId, mSearchResultEntity));
+        threadManager.postUi(() -> {
+            if (mSearchResultEntity != null) {
+                mSearchPackage.createPoiMarker(mSearchResultEntity.getPoiList(), 0);
+            }
+            mViewModel.notifySearchResult(mTaskId, mSearchResultEntity);
+        });
     }
 
     /**
