@@ -69,14 +69,20 @@ public class SceneScaleView extends BaseSceneView<SceneScaleBinding, SceneScaleI
             mViewBinding.screenScaleSize.setText(scale);
 
             if (scale.equals("1000公里")) {
-                mViewBinding.screenScaleReduce.setAlpha(0.5f);
-                mViewBinding.screenScaleAdd.setAlpha(1.0f);
+                mViewBinding.screenScaleReduceImg.setAlpha(0.5f);
+                mViewBinding.screenScaleReduce.setEnabled(false);
+                mViewBinding.screenScaleAddImg.setAlpha(1.0f);
+                mViewBinding.screenScaleAdd.setEnabled(true);
             } else if (scale.equals("5米")) {
-                mViewBinding.screenScaleAdd.setAlpha(0.5f);
-                mViewBinding.screenScaleReduce.setAlpha(1.0f);
+                mViewBinding.screenScaleAddImg.setAlpha(0.5f);
+                mViewBinding.screenScaleAdd.setEnabled(false);
+                mViewBinding.screenScaleReduceImg.setAlpha(1.0f);
+                mViewBinding.screenScaleReduce.setEnabled(true);
             } else {
-                mViewBinding.screenScaleAdd.setAlpha(1.0f);
-                mViewBinding.screenScaleReduce.setAlpha(1.0f);
+                mViewBinding.screenScaleAddImg.setAlpha(1.0f);
+                mViewBinding.screenScaleAdd.setEnabled(true);
+                mViewBinding.screenScaleReduceImg.setAlpha(1.0f);
+                mViewBinding.screenScaleReduce.setEnabled(true);
             }
         });
     }

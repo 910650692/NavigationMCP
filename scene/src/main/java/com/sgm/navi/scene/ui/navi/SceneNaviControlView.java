@@ -130,10 +130,12 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     public void updateOverview(@NaviConstant.OverviewType final int overviewType) {
         switch (overviewType) {
             case NaviConstant.OverviewType.OVERVIEW_DEFAULT:
+                mViewBinding.sivOverviewSwitch.setBackgroundResource(R.drawable.img_look_through_black_58);
                 mViewBinding.stvOverviewSwitch.setText(R.string.navi_overview_switch);
                 break;
             case NaviConstant.OverviewType.OVERVIEW_SELECT:
             case NaviConstant.OverviewType.OVERVIEW_FIXED:
+                mViewBinding.sivOverviewSwitch.setBackgroundResource(R.drawable.img_look_through_black);
                 mViewBinding.stvOverviewSwitch.setText(R.string.navi_overview_out);
                 break;
             default:
