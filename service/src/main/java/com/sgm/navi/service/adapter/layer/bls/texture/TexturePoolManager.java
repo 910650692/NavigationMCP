@@ -23,8 +23,8 @@ import com.sgm.navi.service.define.navi.CrossImageEntity;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 纹理管理类
@@ -59,7 +59,7 @@ public final class TexturePoolManager {
     private static final int MARK_ID_3D_CAR = 0x10001;
 
     //用于存储MarkerId key:layer.getName() + item.getBusinessType() + item.getID()
-    private HashMap<String, Integer> textureMap = new HashMap<>();
+    private ConcurrentHashMap<String, Integer> textureMap = new ConcurrentHashMap<>();
 
     public void add(String key, Integer value) {
         textureMap.put(key, value);

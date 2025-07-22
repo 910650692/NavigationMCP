@@ -316,7 +316,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     public void clearLayerItems(BaseLayer layer) {
         Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " 删除纹理 ");
         for (String key : TexturePoolManager.get().getKeys()) {
-            if (key.contains(layer.getName())) {
+            if (!ConvertUtils.isEmpty(key) && key.contains(layer.getName())) {
                 int markerId = TexturePoolManager.get().getValueAsInt(key);
                 layer.getMapView().destroyTexture(markerId);
                 Logger.e(TAG, getClass().getSimpleName(), " clearLayerItems key:", key, " markerId:", markerId);
