@@ -170,7 +170,6 @@ public class PatacL2ppManager {
                 Logger.w(TAG, "onSdTbtDataChange: l2NaviBean null");
                 return;
             }
-            Logger.d(TAG, "send tbt data: " , l2NaviBean);
             String json = GsonUtils.toJson(l2NaviBean);
             if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
             MpilotNavigationInformation.Builder mpilotNavigationInformation = MpilotNavigationInformation.newBuilder();
@@ -272,6 +271,7 @@ public class PatacL2ppManager {
             mpilotNavigationInformation.setMpilotNavigationTollStationDistance(l2NaviBean.getTollStationDist());
 
             publish(TBT_URI, Any.pack(mpilotNavigationInformation.build()));
+            Logger.d(TAG, "send tbt data: end");
         }
     };
 
@@ -289,189 +289,194 @@ public class PatacL2ppManager {
                 Logger.w(TAG, "onL2DataCallBack: routeL2Data null");
                 return;
             }
-            Logger.d(TAG, "send route data: ");
 //            JsonLogger.print("send route data", json);
-            String json = GsonUtils.toJson(routeL2Data);
-            if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
-            MpilotSDRouteList.Builder mpilotSDRouteList = MpilotSDRouteList.newBuilder();
-            MpilotSDRoute.Builder mpilotSdRoute = MpilotSDRoute.newBuilder();
-            mpilotSdRoute.setSdkVersion(routeL2Data.getMSdkVersion());
-            mpilotSdRoute.setEngineVersion(routeL2Data.getMEngineVersion());
-            mpilotSdRoute.setLinkCount(routeL2Data.getMLinkCnt());
-            mpilotSdRoute.setPathId(routeL2Data.getMPathID());
-            mpilotSdRoute.setPointCount(routeL2Data.getMPntCnt());
+            try {
+                String json = GsonUtils.toJson(routeL2Data);
+                if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
+                MpilotSDRouteList.Builder mpilotSDRouteList = MpilotSDRouteList.newBuilder();
+                MpilotSDRoute.Builder mpilotSdRoute = MpilotSDRoute.newBuilder();
+                mpilotSdRoute.setSdkVersion(routeL2Data.getMSdkVersion());
+                mpilotSdRoute.setEngineVersion(routeL2Data.getMEngineVersion());
+                mpilotSdRoute.setLinkCount(routeL2Data.getMLinkCnt());
+                mpilotSdRoute.setPathId(routeL2Data.getMPathID());
+                mpilotSdRoute.setPointCount(routeL2Data.getMPntCnt());
 
-            MpilotSDRouteEndPoi.Builder mpilotSdRouteEndPoi = MpilotSDRouteEndPoi.newBuilder();
-            String endpoiid = routeL2Data.getMEndPoi().getMId();
-            if (endpoiid != null) {
-                mpilotSdRouteEndPoi.setEndPoiId(endpoiid);
-            }
-            String mName = routeL2Data.getMEndPoi().getMName();
-            if (mName != null) {
-                mpilotSdRouteEndPoi.setEndPoiName(mName);
-            }
-            mpilotSdRouteEndPoi.setEndPoiType(routeL2Data.getMEndPoi().getMType());
-            List<RouteL2Data.EndPoiDTO.EntranceListDTO> entranceList = routeL2Data.getMEndPoi().getMEntranceList();
-            if (entranceList != null) {
-                for (int i = 0; i < entranceList.size(); i++) {
-                    RouteL2Data.EndPoiDTO.EntranceListDTO entranceListDTO = entranceList.get(i);
-                    GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
-                    geoPointCoordinates.setLongitudeX(entranceListDTO.getMX());
-                    geoPointCoordinates.setLatitudeY(entranceListDTO.getMY());
-                    mpilotSdRouteEndPoi.addParkingLotEntranceList(geoPointCoordinates);
+                MpilotSDRouteEndPoi.Builder mpilotSdRouteEndPoi = MpilotSDRouteEndPoi.newBuilder();
+                String endpoiid = routeL2Data.getMEndPoi().getMId();
+                if (endpoiid != null) {
+                    mpilotSdRouteEndPoi.setEndPoiId(endpoiid);
                 }
-            }
-            List<RouteL2Data.EndPoiDTO.ExitListDTO> exitList = routeL2Data.getMEndPoi().getMExitList();
-            if (exitList != null) {
-                for (int i = 0; i < exitList.size(); i++) {
-                    RouteL2Data.EndPoiDTO.ExitListDTO exitListDTO = exitList.get(i);
-                    GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
-                    geoPointCoordinates.setLongitudeX(exitListDTO.getMX());
-                    geoPointCoordinates.setLatitudeY(exitListDTO.getMY());
-                    mpilotSdRouteEndPoi.addParkingLotExitList(geoPointCoordinates);
+                String mName = routeL2Data.getMEndPoi().getMName();
+                if (mName != null) {
+                    mpilotSdRouteEndPoi.setEndPoiName(mName);
                 }
-            }
-            List<RouteL2Data.EndPoiDTO.ParkingInfoListDTO> parkingInfoList = routeL2Data.getMEndPoi().getMParkingInfoList();
-            if (parkingInfoList != null) {
-                for (int i = 0; i < parkingInfoList.size(); i++) {
-                    RouteL2Data.EndPoiDTO.ParkingInfoListDTO parkingInfoListDTO = parkingInfoList.get(i);
-                    ParkingLotInfoList.Builder parkingLotInfoList = ParkingLotInfoList.newBuilder();
-                    parkingLotInfoList.setParkingLotId(parkingInfoListDTO.getMId());
-                    parkingLotInfoList.setParkingLotName(parkingInfoListDTO.getMId());
-                    parkingLotInfoList.setParkingLotType(parkingInfoListDTO.getMType());
-                    List<RouteL2Data.EndPoiDTO.ParkingInfoListDTO.EntranceListDTO> mEntranceList = parkingInfoListDTO.getMEntranceList();
-                    if (mEntranceList != null) {
-                        mEntranceList.forEach(
-                                entranceListDTO -> {
-                                    GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
-                                    geoPointCoordinates.setLongitudeX(entranceListDTO.getMX());
-                                    geoPointCoordinates.setLatitudeY(entranceListDTO.getMY());
-                                    parkingLotInfoList.addParkingLotEntrancePositionList(geoPointCoordinates);
-                                }
-                        );
+                mpilotSdRouteEndPoi.setEndPoiType(routeL2Data.getMEndPoi().getMType());
+                List<RouteL2Data.EndPoiDTO.EntranceListDTO> entranceList = routeL2Data.getMEndPoi().getMEntranceList();
+                if (entranceList != null) {
+                    for (int i = 0; i < entranceList.size(); i++) {
+                        RouteL2Data.EndPoiDTO.EntranceListDTO entranceListDTO = entranceList.get(i);
+                        GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
+                        geoPointCoordinates.setLongitudeX(entranceListDTO.getMX());
+                        geoPointCoordinates.setLatitudeY(entranceListDTO.getMY());
+                        mpilotSdRouteEndPoi.addParkingLotEntranceList(geoPointCoordinates);
                     }
-                    List<RouteL2Data.EndPoiDTO.ParkingInfoListDTO.ExitListDTO> mExitList = parkingInfoListDTO.getMExitList();
-                    if (mExitList != null) {
-                        mExitList.forEach(
-                                entranceListDTO -> {
-                                    GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
-                                    geoPointCoordinates.setLongitudeX(entranceListDTO.getMX());
-                                    geoPointCoordinates.setLatitudeY(entranceListDTO.getMY());
-                                    parkingLotInfoList.addParkingLotExitPositionList(geoPointCoordinates);
-                                }
-                        );
+                }
+                List<RouteL2Data.EndPoiDTO.ExitListDTO> exitList = routeL2Data.getMEndPoi().getMExitList();
+                if (exitList != null) {
+                    for (int i = 0; i < exitList.size(); i++) {
+                        RouteL2Data.EndPoiDTO.ExitListDTO exitListDTO = exitList.get(i);
+                        GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
+                        geoPointCoordinates.setLongitudeX(exitListDTO.getMX());
+                        geoPointCoordinates.setLatitudeY(exitListDTO.getMY());
+                        mpilotSdRouteEndPoi.addParkingLotExitList(geoPointCoordinates);
                     }
-                    mpilotSdRouteEndPoi.addParkingLotInfoList(parkingLotInfoList);
                 }
+                List<RouteL2Data.EndPoiDTO.ParkingInfoListDTO> parkingInfoList = routeL2Data.getMEndPoi().getMParkingInfoList();
+                if (parkingInfoList != null) {
+                    for (int i = 0; i < parkingInfoList.size(); i++) {
+                        RouteL2Data.EndPoiDTO.ParkingInfoListDTO parkingInfoListDTO = parkingInfoList.get(i);
+                        ParkingLotInfoList.Builder parkingLotInfoList = ParkingLotInfoList.newBuilder();
+                        parkingLotInfoList.setParkingLotId(parkingInfoListDTO.getMId());
+                        parkingLotInfoList.setParkingLotName(parkingInfoListDTO.getMId());
+                        parkingLotInfoList.setParkingLotType(parkingInfoListDTO.getMType());
+                        List<RouteL2Data.EndPoiDTO.ParkingInfoListDTO.EntranceListDTO> mEntranceList = parkingInfoListDTO.getMEntranceList();
+                        if (mEntranceList != null) {
+                            mEntranceList.forEach(
+                                    entranceListDTO -> {
+                                        GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
+                                        geoPointCoordinates.setLongitudeX(entranceListDTO.getMX());
+                                        geoPointCoordinates.setLatitudeY(entranceListDTO.getMY());
+                                        parkingLotInfoList.addParkingLotEntrancePositionList(geoPointCoordinates);
+                                    }
+                            );
+                        }
+                        List<RouteL2Data.EndPoiDTO.ParkingInfoListDTO.ExitListDTO> mExitList = parkingInfoListDTO.getMExitList();
+                        if (mExitList != null) {
+                            mExitList.forEach(
+                                    entranceListDTO -> {
+                                        GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
+                                        geoPointCoordinates.setLongitudeX(entranceListDTO.getMX());
+                                        geoPointCoordinates.setLatitudeY(entranceListDTO.getMY());
+                                        parkingLotInfoList.addParkingLotExitPositionList(geoPointCoordinates);
+                                    }
+                            );
+                        }
+                        mpilotSdRouteEndPoi.addParkingLotInfoList(parkingLotInfoList);
+                    }
+                }
+                mpilotSdRoute.setMpilotSdRouteEndPoi(mpilotSdRouteEndPoi);
+
+                routeL2Data.getMGuideGroups().forEach(guideGroup -> {
+                    MpilotSDRouteGuideGroups.Builder mpilotSdRouteGuideGroups = MpilotSDRouteGuideGroups.newBuilder();
+                    mpilotSdRouteGuideGroups.setGroupIconType(guideGroup.getMGroupIconType());
+                    mpilotSdRouteGuideGroups.setGroupLength(guideGroup.getMGroupLen());
+                    mpilotSdRouteGuideGroups.setGroupName(guideGroup.getMGroupName());
+                    mpilotSdRouteGuideGroups.setGroupTime(guideGroup.getMGroupTime());
+                    mpilotSdRouteGuideGroups.setGroupTrafficLightsCount(guideGroup.getMGroupTrafficLightsCount());
+
+                    GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
+                    geoPointCoordinates.setLongitudeX(guideGroup.getMGroupEnterCoord().getMMap().getMX());
+                    geoPointCoordinates.setLatitudeY(guideGroup.getMGroupEnterCoord().getMMap().getMY());
+                    mpilotSdRouteGuideGroups.setGroupEnterCoordinates(geoPointCoordinates);
+                    List<RouteL2Data.GuideGroupsDTO.SegmentsDTO> mSegments = guideGroup.getMSegments();
+                    if (mSegments != null) {
+                        mSegments.forEach(segment -> {
+                            MpilotSDRouteSegments.Builder mpilotSdRouteSegments = MpilotSDRouteSegments.newBuilder();
+                            mpilotSdRouteSegments.setCurrentSegmentLinkCount(segment.getMCrntSegmLinkCnt());
+                            mpilotSdRouteSegments.setDescription(segment.getMDescription());
+                            mpilotSdRouteSegments.setIsArriveWayPoint(segment.getMIsArriveWayPoint());
+                            mpilotSdRouteSegments.setLinkBegIndex(segment.getMLinkBegIdx());
+                            mpilotSdRouteSegments.setNavigationAssistAction(segment.getMNavigationAssistAction());
+                            mpilotSdRouteSegments.setNavigationLength(segment.getMNavigationLen());
+                            mpilotSdRouteSegments.setNavigationMainAction(segment.getMNavigationMainAction());
+                            mpilotSdRouteSegments.setNavigationNextRoadName(segment.getMNavigationNextRoadName());
+                            mpilotSdRouteSegments.setTrafficLightNumber(segment.getMTrafficLightNum());
+                            mpilotSdRouteSegments.setTravelTime(segment.getMTravelTime());
+                            mpilotSdRouteGuideGroups.addMpilotSdRouteSegments(mpilotSdRouteSegments);
+                        });
+                    }
+
+                    mpilotSdRoute.addMpilotSdRouteGuideGroups(mpilotSdRouteGuideGroups);
+                });
+
+                routeL2Data.getMLinks().forEach(link -> {
+                    MpilotSDRouteLinks.Builder mpilotSdRouteLinks = MpilotSDRouteLinks.newBuilder();
+                    mpilotSdRouteLinks.setFormway(link.getMFormway());
+                    mpilotSdRouteLinks.setIsToll(link.getMIsToll());
+                    mpilotSdRouteLinks.setLength(link.getMLen());
+                    mpilotSdRouteLinks.setLinkId(link.getMLinkID());
+                    mpilotSdRouteLinks.setLinkType(link.getMLinktype());
+                    mpilotSdRouteLinks.setPointBegIndex(link.getMPntBegIdx());
+                    mpilotSdRouteLinks.setPointCount(link.getMPntCnt());
+                    mpilotSdRouteLinks.setRoadClass(link.getMRoadclass());
+                    mpilotSdRouteLinks.setRoadName(link.getMRoadname());
+                    Integer mUrid = link.getMUrid();
+                    if (mUrid != null) {
+                        mpilotSdRouteLinks.setUrid(mUrid);
+                    }
+                    mpilotSdRouteLinks.setAdminCode(String.valueOf(link.getMAdminCode()));//
+                    mpilotSdRouteLinks.setHasMixFork(link.getMHasMixFork());
+                    mpilotSdRouteLinks.setHasTrafficLight(link.getMHasTrafficLight());
+                    mpilotSdRouteLinks.setHasMultiOut(link.getMHasMultiOut());
+                    mpilotSdRouteLinks.setMainAction(link.getMMainAction());
+                    mpilotSdRouteLinks.setHasParallel(link.getMHasParallel());
+                    mpilotSdRouteLinks.setDirection(link.getMDirection());
+                    mpilotSdRouteLinks.setLaneNum(link.getMLaneNum());
+                    mpilotSdRouteLinks.setSpeedLimit(0);
+                    mpilotSdRouteLinks.setRoadOwnership(link.getMRoadOwnerShip());
+                    mpilotSdRoute.addMpilotSdRouteLinks(mpilotSdRouteLinks);
+                });
+
+                routeL2Data.getMPnts().forEach(pnt -> {
+                    GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
+                    geoPointCoordinates.setLongitudeX(pnt.getMX());
+                    geoPointCoordinates.setLatitudeY(pnt.getMY());
+                    mpilotSdRoute.addRoutePointsCoordinates(geoPointCoordinates);
+                });
+
+                routeL2Data.getMRestTollGateInfos().forEach(restTollGateInfo -> {
+                    // TODO json中是list
+                    MpilotSDRouteRestTollGateInfos.Builder mpilotSdRouteRestTollGateInfos = MpilotSDRouteRestTollGateInfos.newBuilder();
+                    GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
+                    geoPointCoordinates.setLongitudeX(restTollGateInfo.getMPos().getMX());
+                    geoPointCoordinates.setLatitudeY(restTollGateInfo.getMPos().getMY());
+                    mpilotSdRouteRestTollGateInfos.setTollGatePosition(geoPointCoordinates);
+                    mpilotSdRouteRestTollGateInfos.setRemainDistance(restTollGateInfo.getMRemainDist());
+                    mpilotSdRouteRestTollGateInfos.setRemainTime(restTollGateInfo.getMRemainTime());
+                    mpilotSdRouteRestTollGateInfos.setTollGateName(restTollGateInfo.getMTollGateName());
+                    mpilotSdRoute.setMpilotSdRouteRestTollGateInfos(mpilotSdRouteRestTollGateInfos);
+                });
+
+                routeL2Data.getMTrafficLights().forEach(trafficLight -> {
+                    GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
+                    geoPointCoordinates.setLongitudeX(trafficLight.getMX());
+                    geoPointCoordinates.setLatitudeY(trafficLight.getMY());
+                    mpilotSdRoute.addTrafficLightsCoordinates(geoPointCoordinates);
+                });
+
+                routeL2Data.getMViaRoads().forEach(viaRoad -> {
+                    MpilotSDRouteViaRoad.Builder mpilotSdRouteViaRoad = MpilotSDRouteViaRoad.newBuilder();
+                    mpilotSdRouteViaRoad.setRoadName(viaRoad.getMRoadName());
+                    mpilotSdRouteViaRoad.setMinLaneNumber(viaRoad.getMMinLaneNum());
+                    mpilotSdRouteViaRoad.setMaxLaneNumber(viaRoad.getMMaxLaneNum());
+                    mpilotSdRouteViaRoad.setMinSpeedLimit(0);
+                    mpilotSdRouteViaRoad.setMaxSpeedLimit(0);
+                    mpilotSdRouteViaRoad.setLength(viaRoad.getMLength());
+                    mpilotSdRouteViaRoad.setRoadClass(viaRoad.getMRoadClass());
+                    GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
+                    geoPointCoordinates.setLongitudeX(viaRoad.getMCoordinate().getMX());
+                    geoPointCoordinates.setLatitudeY(viaRoad.getMCoordinate().getMY());
+                    mpilotSdRouteViaRoad.setViaRoadCoordinates(geoPointCoordinates);
+                    mpilotSdRoute.addMpilotSdRouteViaRoad(mpilotSdRouteViaRoad);
+                });
+
+                mpilotSDRouteList.addMpilotSdRoute(mpilotSdRoute);
+                publish(ROUTE_URI, Any.pack(mpilotSDRouteList.build()));
+                Logger.d(TAG, "send route data: end");
+            } catch (Exception e) {
+                Logger.d(TAG, "onL2DataCallBack error", e.getMessage());
+                e.printStackTrace();
             }
-            mpilotSdRoute.setMpilotSdRouteEndPoi(mpilotSdRouteEndPoi);
-
-            routeL2Data.getMGuideGroups().forEach(guideGroup -> {
-                MpilotSDRouteGuideGroups.Builder mpilotSdRouteGuideGroups = MpilotSDRouteGuideGroups.newBuilder();
-                mpilotSdRouteGuideGroups.setGroupIconType(guideGroup.getMGroupIconType());
-                mpilotSdRouteGuideGroups.setGroupLength(guideGroup.getMGroupLen());
-                mpilotSdRouteGuideGroups.setGroupName(guideGroup.getMGroupName());
-                mpilotSdRouteGuideGroups.setGroupTime(guideGroup.getMGroupTime());
-                mpilotSdRouteGuideGroups.setGroupTrafficLightsCount(guideGroup.getMGroupTrafficLightsCount());
-
-                GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
-                geoPointCoordinates.setLongitudeX(guideGroup.getMGroupEnterCoord().getMMap().getMX());
-                geoPointCoordinates.setLatitudeY(guideGroup.getMGroupEnterCoord().getMMap().getMY());
-                mpilotSdRouteGuideGroups.setGroupEnterCoordinates(geoPointCoordinates);
-                List<RouteL2Data.GuideGroupsDTO.SegmentsDTO> mSegments = guideGroup.getMSegments();
-                if (mSegments != null) {
-                    mSegments.forEach(segment -> {
-                        MpilotSDRouteSegments.Builder mpilotSdRouteSegments = MpilotSDRouteSegments.newBuilder();
-                        mpilotSdRouteSegments.setCurrentSegmentLinkCount(segment.getMCrntSegmLinkCnt());
-                        mpilotSdRouteSegments.setDescription(segment.getMDescription());
-                        mpilotSdRouteSegments.setIsArriveWayPoint(segment.getMIsArriveWayPoint());
-                        mpilotSdRouteSegments.setLinkBegIndex(segment.getMLinkBegIdx());
-                        mpilotSdRouteSegments.setNavigationAssistAction(segment.getMNavigationAssistAction());
-                        mpilotSdRouteSegments.setNavigationLength(segment.getMNavigationLen());
-                        mpilotSdRouteSegments.setNavigationMainAction(segment.getMNavigationMainAction());
-                        mpilotSdRouteSegments.setNavigationNextRoadName(segment.getMNavigationNextRoadName());
-                        mpilotSdRouteSegments.setTrafficLightNumber(segment.getMTrafficLightNum());
-                        mpilotSdRouteSegments.setTravelTime(segment.getMTravelTime());
-                        mpilotSdRouteGuideGroups.addMpilotSdRouteSegments(mpilotSdRouteSegments);
-                    });
-                }
-
-                mpilotSdRoute.addMpilotSdRouteGuideGroups(mpilotSdRouteGuideGroups);
-            });
-
-            routeL2Data.getMLinks().forEach(link -> {
-                MpilotSDRouteLinks.Builder mpilotSdRouteLinks = MpilotSDRouteLinks.newBuilder();
-                mpilotSdRouteLinks.setFormway(link.getMFormway());
-                mpilotSdRouteLinks.setIsToll(link.getMIsToll());
-                mpilotSdRouteLinks.setLength(link.getMLen());
-                mpilotSdRouteLinks.setLinkId(link.getMLinkID());
-                mpilotSdRouteLinks.setLinkType(link.getMLinktype());
-                mpilotSdRouteLinks.setPointBegIndex(link.getMPntBegIdx());
-                mpilotSdRouteLinks.setPointCount(link.getMPntCnt());
-                mpilotSdRouteLinks.setRoadClass(link.getMRoadclass());
-                mpilotSdRouteLinks.setRoadName(link.getMRoadname());
-                Integer mUrid = link.getMUrid();
-                if (mUrid != null) {
-                    mpilotSdRouteLinks.setUrid(mUrid);
-                }
-                mpilotSdRouteLinks.setAdminCode(String.valueOf(link.getMAdminCode()));//
-                mpilotSdRouteLinks.setHasMixFork(link.getMHasMixFork());
-                mpilotSdRouteLinks.setHasTrafficLight(link.getMHasTrafficLight());
-                mpilotSdRouteLinks.setHasMultiOut(link.getMHasMultiOut());
-                mpilotSdRouteLinks.setMainAction(link.getMMainAction());
-                mpilotSdRouteLinks.setHasParallel(link.getMHasParallel());
-                mpilotSdRouteLinks.setDirection(link.getMDirection());
-                mpilotSdRouteLinks.setLaneNum(link.getMLaneNum());
-                mpilotSdRouteLinks.setSpeedLimit(link.getMSpeedLimit());
-                mpilotSdRouteLinks.setRoadOwnership(link.getMRoadOwnerShip());
-                mpilotSdRoute.addMpilotSdRouteLinks(mpilotSdRouteLinks);
-            });
-
-            routeL2Data.getMPnts().forEach(pnt -> {
-                GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
-                geoPointCoordinates.setLongitudeX(pnt.getMX());
-                geoPointCoordinates.setLatitudeY(pnt.getMY());
-                mpilotSdRoute.addRoutePointsCoordinates(geoPointCoordinates);
-            });
-
-            routeL2Data.getMRestTollGateInfos().forEach(restTollGateInfo -> {
-                // TODO json中是list
-                MpilotSDRouteRestTollGateInfos.Builder mpilotSdRouteRestTollGateInfos = MpilotSDRouteRestTollGateInfos.newBuilder();
-                GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
-                geoPointCoordinates.setLongitudeX(restTollGateInfo.getMPos().getMX());
-                geoPointCoordinates.setLatitudeY(restTollGateInfo.getMPos().getMY());
-                mpilotSdRouteRestTollGateInfos.setTollGatePosition(geoPointCoordinates);
-                mpilotSdRouteRestTollGateInfos.setRemainDistance(restTollGateInfo.getMRemainDist());
-                mpilotSdRouteRestTollGateInfos.setRemainTime(restTollGateInfo.getMRemainTime());
-                mpilotSdRouteRestTollGateInfos.setTollGateName(restTollGateInfo.getMTollGateName());
-                mpilotSdRoute.setMpilotSdRouteRestTollGateInfos(mpilotSdRouteRestTollGateInfos);
-            });
-
-            routeL2Data.getMTrafficLights().forEach(trafficLight -> {
-                GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
-                geoPointCoordinates.setLongitudeX(trafficLight.getMX());
-                geoPointCoordinates.setLatitudeY(trafficLight.getMY());
-                mpilotSdRoute.addTrafficLightsCoordinates(geoPointCoordinates);
-            });
-
-            routeL2Data.getMViaRoads().forEach(viaRoad -> {
-                MpilotSDRouteViaRoad.Builder mpilotSdRouteViaRoad = MpilotSDRouteViaRoad.newBuilder();
-                mpilotSdRouteViaRoad.setRoadName(viaRoad.getMRoadName());
-                mpilotSdRouteViaRoad.setMinLaneNumber(viaRoad.getMMinLaneNum());
-                mpilotSdRouteViaRoad.setMaxLaneNumber(viaRoad.getMMaxLaneNum());
-                mpilotSdRouteViaRoad.setMinSpeedLimit(viaRoad.getMMinSpeedLimit());
-                mpilotSdRouteViaRoad.setMaxSpeedLimit(viaRoad.getMMaxSpeedLimit());
-                mpilotSdRouteViaRoad.setLength(viaRoad.getMLength());
-                mpilotSdRouteViaRoad.setRoadClass(viaRoad.getMRoadClass());
-                GeoPointCoordinates.Builder geoPointCoordinates = GeoPointCoordinates.newBuilder();
-                geoPointCoordinates.setLongitudeX(viaRoad.getMCoordinate().getMX());
-                geoPointCoordinates.setLatitudeY(viaRoad.getMCoordinate().getMY());
-                mpilotSdRouteViaRoad.setViaRoadCoordinates(geoPointCoordinates);
-                mpilotSdRoute.addMpilotSdRouteViaRoad(mpilotSdRouteViaRoad);
-            });
-
-            mpilotSDRouteList.addMpilotSdRoute(mpilotSdRoute);
-            publish(ROUTE_URI, Any.pack(mpilotSDRouteList.build()));
         }
     };
 
