@@ -575,11 +575,14 @@ public class RouteAdapterImplHelper {
                 String label = "默认";
                 if (info.getLabelInfoCount() > NumberUtils.NUM_0 && !ConvertUtils.isEmpty(info.getLabelInfo((short) NumberUtils.NUM_0).content)) {
                     label = info.getLabelInfo((short) NumberUtils.NUM_0).content;
-                } else if (info.getReverseLabelInfoCount() > NumberUtils.NUM_0
-                        && !ConvertUtils.isEmpty(info.getReverseLabelInfo((short) NumberUtils.NUM_0).content)) {
-                    label = info.getReverseLabelInfo((short) NumberUtils.NUM_0).content;
                 }
                 routeResult.setMLabel(label);
+                String reverseLabel = "";
+                if (info.getReverseLabelInfoCount() > NumberUtils.NUM_0
+                        && !ConvertUtils.isEmpty(info.getReverseLabelInfo((short) NumberUtils.NUM_0).content)) {
+                    reverseLabel = info.getReverseLabelInfo((short) NumberUtils.NUM_0).content;
+                }
+                routeResult.setMReverseLabel(reverseLabel);
 //                routeResult.setMRouteLineSegmentInfos(getRouteLineDetail(info));
                 routeResults.add(routeResult);
             }

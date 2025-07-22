@@ -11,7 +11,8 @@ public class RouteLineInfo {
     private long mPathID;//路线ID
     private int mType;//类型
     private String mLength;//路线长度
-    private String mLabel;//路线长度
+    private String mLabel;//正向标签
+    private String mReverseLabel;//负向标签
     private String mTravelTime;//到达时间
     private String mStaticTravelTime;//静态到达时间
     private String mTollCost;//路线总收费金额

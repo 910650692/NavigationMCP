@@ -53,6 +53,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:background="@drawable/bg_route_details_defult_label"
+            android:ellipsize="end"
+            android:maxEms="4"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/dp_10"
+            android:paddingVertical="@dimen/dp_5"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_22"
+            app:layout_goneMarginEnd="@dimen/dp_0"
+            app:layout_constraintEnd_toStartOf="@+id/route_item_reverse_tag"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="少收费" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/route_item_reverse_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_route_details_defult_label"
             android:ellipsize="end"
             android:maxEms="4"
@@ -63,7 +82,7 @@
             android:textSize="@dimen/sp_22"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="少收费" />
+            tools:text="多收费" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_distance"

@@ -89,6 +89,12 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
 
         holder.mRouteLineInfoResultItemBinding.routeItemTime.setText(routeLineInfo.getMTravelTime());
         holder.mRouteLineInfoResultItemBinding.routeItemTag.setText(routeLineInfo.getMLabel());
+        if (position != 0 && routeLineInfo.getMReverseLabel() != null && !routeLineInfo.getMReverseLabel().isEmpty()) {
+            holder.mRouteLineInfoResultItemBinding.routeItemReverseTag.setVisibility(View.VISIBLE);
+            holder.mRouteLineInfoResultItemBinding.routeItemReverseTag.setText(routeLineInfo.getMReverseLabel());
+        }else {
+            holder.mRouteLineInfoResultItemBinding.routeItemReverseTag.setVisibility(View.GONE);
+        }
         holder.mRouteLineInfoResultItemBinding.routeItemDistance.setText(routeLineInfo.getMLength());
         holder.mRouteLineInfoResultItemBinding.routeItemTrafficLightValue.setText(routeLineInfo.getMTollCost());
         holder.mRouteLineInfoResultItemBinding.routeItemPrice.setText(routeLineInfo.getMTrafficLightCount());
@@ -149,12 +155,16 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
             contextColor = R.color.bg_route_item_select;
             holder.mRouteLineInfoResultItemBinding.routeItemTag.setTextColor(
                     AppCache.getInstance().getMContext().getResources().getColor(R.color.bg_route_big_window_select));
+            holder.mRouteLineInfoResultItemBinding.routeItemReverseTag.setTextColor(
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.bg_route_big_window_select));
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficLight.setImageResource(R.drawable.img_route_money);
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficPrice.setImageResource(R.drawable.img_route_lingt);
             holder.mRouteLineInfoResultItemBinding.routeItemElectricityImg.setImageResource(R.drawable.img_route_electricity);
         } else {
             contextColor = R.color.bg_route_item_unselect;
             holder.mRouteLineInfoResultItemBinding.routeItemTag.setTextColor(
+                    AppCache.getInstance().getMContext().getResources().getColor(R.color.text_route_defult));
+            holder.mRouteLineInfoResultItemBinding.routeItemReverseTag.setTextColor(
                     AppCache.getInstance().getMContext().getResources().getColor(R.color.text_route_defult));
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficLight.setImageResource(R.drawable.img_route_money_unselect);
             holder.mRouteLineInfoResultItemBinding.routeItemTrafficPrice.setImageResource(R.drawable.img_route_lingt_unselect);
