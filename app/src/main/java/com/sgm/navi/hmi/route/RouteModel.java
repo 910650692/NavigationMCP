@@ -1159,7 +1159,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             case ROUTE_POINT_END:
             case ROUTE_POINT_VIA:
             case ROUTE_POINT_VIA_CHARGE:
-                closeAllFragmentUpRoute();
                 final PoiInfoEntity poiInfo = new PoiInfoEntity();
                 poiInfo.setPoint(new GeoPoint(item.getLog(), item.getLat()));
                 final Bundle poiBundle = new Bundle();
@@ -1178,17 +1177,15 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 break;
             case ROUTE_POINT_REST_AREA:
                 closeAllFragmentUpRoute();
-                if (!ConvertUtils.isEmpty(mRouteRestAreaInfos) && mRouteRestAreaInfos.size() > getCurrentIndex()
-                        && getCurrentIndex() != -1
-                        && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(getCurrentIndex()))
-                        && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(getCurrentIndex()).getMRouteRestAreaDetailsInfos())) {
+                if (!ConvertUtils.isEmpty(mRouteRestAreaInfos)
+                        && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(0))
+                        && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(0).getMRouteRestAreaDetailsInfos())) {
                     final PoiInfoEntity poiEntryFromService = getPoiEntryFromService(
-                            mRouteRestAreaInfos.get(getCurrentIndex()).getMRouteRestAreaDetailsInfos().get((int) (item.getIndex())));
+                            mRouteRestAreaInfos.get(0).getMRouteRestAreaDetailsInfos().get((int) (item.getIndex())));
                     mViewModel.enterToDetails(poiEntryFromService);
                 }
                 break;
             case ROUTE_POINT_VIA_CHARGE_STATION:
-                closeAllFragmentUpRoute();
                 int index = getCurrentIndex();
                 if (mRouteChargeStationParam == null) {
                     return;
@@ -1225,7 +1222,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
                 break;
             case ROUTE_POINT_END_PARK:
-                closeAllFragmentUpRoute();
                 clearEndParkPoint();
                 showParkingFragment();
                 break;
