@@ -495,35 +495,60 @@ public final class NaviAdapter {
                     Logger.i(TAG, "getPointTmcStatus naviLightBarItems is null");
                     return -1;
                 }
-                Logger.i(TAG, "getPointTmcStatus startSegmentIdx = " + startSegmentIdx +
-                        " endSegmentIdx = " + endSegmentIdx + "naviLightBarItems:" +
-                        naviLightBarItems.toString());
-                // a点路况解析
+                if (Logger.openLog) {
+                    Logger.i(TAG, "getPointTmcStatus startSegmentIdx = " + startSegmentIdx +
+                            " endSegmentIdx = " + endSegmentIdx + "naviLightBarItems:" +
+                            naviLightBarItems.toString());
+                }
+                int trafficStatus = TrafficStatus.TrafficStatusOpen;
                 for (NaviTmcInfo.NaviLightBarItem naviLightBarItem : naviLightBarItems) {
-                    if (endSegmentIdx != -2) {
-                        if ((startSegmentIdx < naviLightBarItem.getEndSegmentIdx() &&
-                                startSegmentIdx >= naviLightBarItem.getStartSegmentIdx()) ||
-                                (endSegmentIdx < naviLightBarItem.getEndSegmentIdx() &&
-                                        endSegmentIdx >= naviLightBarItem.getStartSegmentIdx())) {
-                            if (naviLightBarItem.getStatusFlag() == 0x00) {
-                                return naviLightBarItem.getStatus();
-                            } else {
-                                return getFineStatus(naviLightBarItem.getFineStatus());
-                            }
+                    if (ConvertUtils.isNull(naviLightBarItem)) {
+                        continue;
+                    }
+                    if (endSegmentIdx == -2) {
+                        if (naviLightBarItem.getEndSegmentIdx() >= startSegmentIdx) {
+                            trafficStatus = getTrafficStatus(naviLightBarItem, trafficStatus);
+                        }
+                    } else {
+                        if (naviLightBarItem.getEndSegmentIdx() >= startSegmentIdx &&
+                                naviLightBarItem.getEndSegmentIdx() <= endSegmentIdx) {
+                            trafficStatus = getTrafficStatus(naviLightBarItem, trafficStatus);
                         }
                     }
-                    // b点目的地的情况
-                    final NaviTmcInfo.NaviLightBarItem endNaviLightBarItem =
-                            naviLightBarItems.get(naviLightBarItems.size() - 1);
-                    if (endNaviLightBarItem.getStatusFlag() == 0x00) {
-                        return endNaviLightBarItem.getStatus();
-                    } else {
-                        return getFineStatus(endNaviLightBarItem.getFineStatus());
-                    }
+                    return trafficStatus;
                 }
             }
         }
-        return -1;
+        return NumberUtils.NUM_ERROR;
+    }
+
+    public int getTrafficStatus(final NaviTmcInfo.NaviLightBarItem naviLightBarItem, int trafficStatus) {
+        int status;
+        if (naviLightBarItem.getStatusFlag() == 0x00) {
+            status = naviLightBarItem.getStatus();
+        } else {
+            status = getFineStatus(naviLightBarItem.getFineStatus());
+        }
+        switch (status) {
+            case TrafficStatus.TrafficStatusSlow:
+                if (trafficStatus < TrafficStatus.TrafficStatusSlow) {
+                    trafficStatus = TrafficStatus.TrafficStatusSlow;
+                }
+                break;
+            case TrafficStatus.TrafficStatusJam:
+                if (trafficStatus < TrafficStatus.TrafficStatusJam) {
+                    trafficStatus = TrafficStatus.TrafficStatusJam;
+                }
+                break;
+            case TrafficStatus.TrafficStatusCongested:
+                if (trafficStatus < TrafficStatus.TrafficStatusCongested) {
+                    trafficStatus = TrafficStatus.TrafficStatusCongested;
+                }
+                break;
+            default:
+                break;
+        }
+        return trafficStatus;
     }
 
     /**

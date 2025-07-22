@@ -6,6 +6,7 @@ import com.autonavi.gbl.common.path.model.TrafficStatus;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.SegmentInfo;
+import com.sgm.navi.service.adapter.navi.NaviAdapter;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.RoadName;
@@ -63,16 +64,22 @@ public class RoadNameAndTmcHelper {
         final ArrayList<NaviTmcInfo.NaviLightBarItem> naviLightBarItems = currentLightBarInfo.
                 getItemList();
         if (!ConvertUtils.isEmpty(naviLightBarItems)) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "getTmcByRoadLinkIndex linkIndex:" + linkIndex +
+                        " naviLightBarItems:" + naviLightBarItems);
+            }
+            int trafficStatus = TrafficStatus.TrafficStatusOpen;
             for (NaviTmcInfo.NaviLightBarItem naviLightBarItem : naviLightBarItems) {
+                if (ConvertUtils.isNull(naviLightBarItem)) {
+                    continue;
+                }
                 if (linkIndex >= naviLightBarItem.getStartSegmentIdx() &&
                         linkIndex <= naviLightBarItem.getEndSegmentIdx()) {
-                    if (naviLightBarItem.getStatusFlag() == 0x00) {
-                        return naviLightBarItem.getStatus();
-                    } else {
-                        return getFineStatus(naviLightBarItem.getFineStatus());
-                    }
+                   trafficStatus = NaviAdapter.getInstance().
+                           getTrafficStatus(naviLightBarItem, trafficStatus);
                 }
             }
+            return trafficStatus;
         }
         return NumberUtils.NUM_ERROR;
     }
