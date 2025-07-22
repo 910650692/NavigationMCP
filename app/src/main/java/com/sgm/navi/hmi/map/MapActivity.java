@@ -261,6 +261,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             if (Logger.openLog) {
                 Logger.d(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(this));
             }
+            setChargeGasImage();
         }
         showActivatingView(ActivateUiStateManager.getInstance().ismIsActivating());
         //check Home键广播
@@ -306,13 +307,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         // 给限行设置点击事件
         mBinding.includeLimit.setViewModel(mViewModel);
         mBinding.cruiseLayout.setViewModel(mViewModel);
-        final int powerType = mViewModel.powerType();
-        // 油车
-        if (powerType == 0) {
-            mBinding.skIvBasicRouting.setImageResource(R.drawable.img_home_gas_station);
-        } else {
-            mBinding.skIvBasicRouting.setImageResource(R.drawable.img_basic_ic_gas_charging);
-        }
+        setChargeGasImage();
         mBinding.includeMessageCenter.setViewModel(mViewModel);
 
         //initObserver
@@ -326,6 +321,20 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mViewModel.checkPopGuideLogin();
         }
         if(Boolean.FALSE.equals(mViewModel.mIsChangingConfigurations.get())) mViewModel.getOnlineForecastArrivedData();
+    }
+
+    public void setChargeGasImage(){
+        if(!ConvertUtils.isNull(mViewModel) && !ConvertUtils.isNull(mBinding)){
+            final int powerType = mViewModel.powerType();
+            // 油车
+            if (powerType == 0) {
+                mBinding.skIvBasicRouting.setImageResource(R.drawable.img_home_gas_station);
+            } else {
+                mBinding.skIvBasicRouting.setImageResource(R.drawable.img_basic_ic_gas_charging);
+            }
+        }else{
+            Logger.d(TAG,"mViewModel or mBinding is null");
+        }
     }
 
     @Override
