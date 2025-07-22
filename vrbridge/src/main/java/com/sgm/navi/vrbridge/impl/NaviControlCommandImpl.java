@@ -1660,11 +1660,29 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         if (NaviStatus.NaviStatusType.NAVING.equals(curStatus)
                 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
-            final List<RouteParam> allPoint = RoutePackage.getInstance().getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
-            if (allPoint.size() - 2 < idx) {
+            final List<RouteParam> allPoints = RoutePackage.getInstance().getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+
+            if (idx == Integer.MAX_VALUE) {
+                if (allPoints.size() <= 2) {
+                    viaResponse = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_SUITABLE_VIA);
+                } else {
+                    for (int i = allPoints.size() - 2; i >= 1; i--) {
+                        RouteParam viaParam = allPoints.get(i);
+                        if (viaParam != null && !TextUtils.isEmpty(viaParam.getMPoiID())) {
+                            PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+                            poiInfoEntity.setPid(viaParam.getPoiID());
+                            poiInfoEntity.setPoint(viaParam.getRealPos());
+                            boolean isLastDelete = (i == 1);
+                            RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, isLastDelete);
+                        }
+                    }
+                    viaResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.VIA_DELETE_HINT);
+                }
+            }
+            else if (allPoints.size() - 2 < idx) {
                 viaResponse = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_SUITABLE_VIA);
             } else {
-                RouteParam viaParam = allPoint.get(idx);
+                RouteParam viaParam = allPoints.get(idx);
                 if (null == viaParam || TextUtils.isEmpty(viaParam.getMPoiID())) {
                     viaResponse = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_SUITABLE_VIA);
                 } else {
