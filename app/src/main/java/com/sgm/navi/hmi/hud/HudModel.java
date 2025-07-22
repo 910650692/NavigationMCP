@@ -37,6 +37,7 @@ public class HudModel extends BaseModel<BaseHudViewModel> implements StartServic
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Logger.d(TAG, "onDestroy called");
         HudPackage.getInstance().unInitHudService();
     }
 }

@@ -155,7 +155,7 @@ public class TestWindow {
     private void removeViewFromWindow() {
         mWindowManager.removeView(mBinding.getRoot());
         isShowing = false;
-        HudPackage.getInstance().unInitHudService();
+        //HudPackage.getInstance().unInitHudService();
         mIsCopying = false;
         mFileListener = null;
     }
