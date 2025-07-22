@@ -10,10 +10,10 @@
                 android:angle="270"
                 />
             <corners
-                android:bottomLeftRadius="@dimen/dp_12"
-                android:bottomRightRadius="@dimen/dp_12"
-                android:topLeftRadius="@dimen/dp_12"
-                android:topRightRadius="@dimen/dp_12" />
+                android:bottomLeftRadius="@dimen/bg_charge_number_item_corner"
+                android:bottomRightRadius="@dimen/bg_charge_number_item_corner"
+                android:topLeftRadius="@dimen/bg_charge_number_item_corner"
+                android:topRightRadius="@dimen/bg_charge_number_item_corner" />
         </shape>
     </item>
 </layer-list>

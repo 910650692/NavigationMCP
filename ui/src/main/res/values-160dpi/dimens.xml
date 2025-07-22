@@ -4337,4 +4337,6 @@
     <dimen name="navi_nd_cluster_navi_margin_left_child">32px</dimen>
     <dimen name="navi_nd_cluster_navi_padding_horizontal">32px</dimen>
     <dimen name="navi_nd_cluster_navi_padding_vertical">14px</dimen>
+
+    <dimen name="bg_charge_number_item_corner">@dimen/dp_12</dimen>
 </resources>
