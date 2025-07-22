@@ -37,6 +37,7 @@ import com.sgm.navi.vrbridge.MapStateManager;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListener {
     private final int cardHeight = 330;
@@ -96,7 +97,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
     };
 
     private ScheduledFuture scheduledFuture;
-    private long DELAY_TIME = 15;
+    private long DELAY_TIME = 15100;
     private static final String DESKTOP_MODE_KEY = "desktop_mode";
     private int currentDeskMode;
     private final Uri uri = Settings.Global.getUriFor(DESKTOP_MODE_KEY);
@@ -337,7 +338,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         try {
             scheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
                 showAllCardWidgets();
-            }, DELAY_TIME);
+            }, DELAY_TIME, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             Logger.i(TAG, "starTimer failed", e.getMessage());
         }

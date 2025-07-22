@@ -162,6 +162,10 @@ public class ThreadManager {
         return mThreadScheduled.schedule(run, start);
     }
 
+    public ScheduledFuture asyncDelayWithResult(Runnable run, long start, TimeUnit unit) {
+        return mThreadScheduled.schedule(run, start, unit);
+    }
+
     public void asyncDelay(Runnable run, long start) {
         mThreadScheduled.schedule(run, start);
     }
