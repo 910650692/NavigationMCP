@@ -97,7 +97,6 @@
                 android:id="@+id/route_item_via_delete_img"
                 android:layout_width="@dimen/dp_68"
                 android:layout_height="@dimen/dp_44"
-                android:layout_marginEnd="@dimen/dp_24"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <com.sgm.navi.ui.view.SkinImageView
