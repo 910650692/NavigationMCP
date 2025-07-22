@@ -1346,6 +1346,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 "bottomNaviVisibility: " , judgedBottomNaviVisibility());
         cruiseVisibility.set(isShow);
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
+        if (backToParkingVisibility.get()) {
+            backToParkingVisibility.set(false);
+        }
     }
 
     /***
