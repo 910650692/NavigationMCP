@@ -18,6 +18,7 @@ import com.sgm.navi.service.define.route.RouteL2Data;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.l2.L2InfoCallback;
 import com.sgm.navi.service.logicpaket.l2.L2Package;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
@@ -82,7 +83,7 @@ public final class GmcL2ppManager {
         L2Package.getInstance().registerCallback(TAG, mL2InfoCallback);
         // 注册ODD回调
         mAdasManager.setDataCallback(mDataCallback);
-        NavistatusAdapter.getInstance().registerCallback(mINaviStatusCallback);
+        NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
         mAdasManager.updateADUObserverList(mProperties);
         // 注册TTS回调
         mAdasManager.registerADUPropertyCallback(mPropertyCallback);
@@ -103,7 +104,7 @@ public final class GmcL2ppManager {
         RoutePackage.getInstance().unRegisterRouteObserver(TAG);
         L2Package.getInstance().unregisterCallback(TAG);
         mAdasManager.removeDataCallback();
-        NavistatusAdapter.getInstance().unRegisterCallback(mINaviStatusCallback);
+        NaviStatusPackage.getInstance().unregisterObserver(TAG);
         mAdasManager.unregisterADUPropertyCallback();
         SignalPackage.getInstance().unregisterObserver(TAG);
         // 标注未初始化
@@ -204,7 +205,7 @@ public final class GmcL2ppManager {
         }
     };
 
-    private final INaviStatusCallback mINaviStatusCallback = new INaviStatusCallback() {
+    private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
         @Override
         public void onNaviStatusChange(String naviStatus) {
             Logger.d(TAG, "navi status change: " , naviStatus);
