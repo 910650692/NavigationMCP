@@ -99,7 +99,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private LayerAdapter mLayerAdapter;
     private MapPackage mapPackage;
     private SpeechAdapter mSpeechAdapter;
-    private SettingAdapter mSettingAdapter;
     private final ConcurrentHashMap<String, IGuidanceObserver> mGuidanceObservers;
     private NavistatusAdapter mNavistatusAdapter;
     private final HistoryManager mManager;
@@ -141,9 +140,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     @Override
     public void onSdkInitSuccess() {
-        int muteStatus = mSettingAdapter.getConfigKeyMute();
+        int muteStatus = SettingAdapter.getInstance().getConfigKeyMute();
         if (muteStatus == NumberUtils.NUM_1) {
-            mSettingAdapter.setConfigKeyMute(NumberUtils.NUM_0);
+            SettingAdapter.getInstance().setConfigKeyMute(NumberUtils.NUM_0);
         }
         StartService.getInstance().unregisterSdkCallback(this);
         if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
@@ -169,7 +168,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         mLayerAdapter = LayerAdapter.getInstance();
         mapPackage = MapPackage.getInstance();
         mRouteAdapter = RouteAdapter.getInstance();
-        mSettingAdapter = SettingAdapter.getInstance();
         mUserTrackAdapter = UserTrackAdapter.getInstance();
         mSignalAdapter = SignalAdapter.getInstance();
         mNaviAdapter.initNaviService();
@@ -508,7 +506,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     /*设置静音*/
     public void setMute(final boolean isMute) {
-        mSettingAdapter.setConfigKeyMute(isMute ? 1 : 0);
+        SettingAdapter.getInstance().setConfigKeyMute(isMute ? 1 : 0);
         mIsMute = isMute;
         if (isMute) {
             mSignalAdapter.setNaviVolume(NumberUtils.NUM_0);
@@ -522,7 +520,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     public void setMuteByHmi(final boolean isMute) {
-        mSettingAdapter.setConfigKeyMute(isMute ? 1 : 0);
+        SettingAdapter.getInstance().setConfigKeyMute(isMute ? 1 : 0);
         mIsMute = isMute;
     }
 
@@ -1467,9 +1465,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void closeNavi() {
         Logger.i(TAG, "closeNavi");
         String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();
-        int muteStatus = mSettingAdapter.getConfigKeyMute();
+        int muteStatus = SettingAdapter.getInstance().getConfigKeyMute();
         if (muteStatus == NumberUtils.NUM_1) {
-            mSettingAdapter.setConfigKeyMute(NumberUtils.NUM_0);
+            SettingAdapter.getInstance().setConfigKeyMute(NumberUtils.NUM_0);
             if (mLastSystemNaviVolume > NumberUtils.NUM_0) {
                 mSignalAdapter.setNaviVolume(mLastSystemNaviVolume);
             } else {
