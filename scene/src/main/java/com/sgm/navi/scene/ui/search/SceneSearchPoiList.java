@@ -513,6 +513,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         });
         mViewBinding.searchTextBarView.csFilter.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click filter: ");
+            if (mAnimator != null && mAnimator.isRunning()) {
+                return;
+            }
             if(mIsChargeSelf){
                 ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter));
                 return;
