@@ -21,6 +21,7 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
+import com.sgm.navi.service.adapter.cruise.CruiseAdapter;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.navi.GuidanceObserver;
 import com.sgm.navi.service.adapter.navi.NaviAdapter;
@@ -196,6 +197,12 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (mNaviAdapter == null) {
             Logger.e(TAG, "startNavigation", "mNaviAdapter == null");
             return false;
+        }
+        // bug: 1093377 如果未退出巡航态的情况下开启导航会开启导航失败，所以在开启导航前先判断下是否处于巡航状态，如果处于巡航态需要先退出
+        String currentNaviStatus = NavistatusAdapter.getInstance().getCurrentNaviStatus();
+        Logger.i(TAG, "startNavigation: currentNaviStatus = " + currentNaviStatus);
+        if (NaviStatus.NaviStatusType.CRUISE.equals(currentNaviStatus)) {
+            CruiseAdapter.getInstance().stopCruise();
         }
         final boolean result = mNaviAdapter.startNavigation(isSimulate ?
                 NaviStartType.NAVI_TYPE_SIMULATION : NaviStartType.NAVI_TYPE_GPS);
