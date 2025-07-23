@@ -359,6 +359,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     final int slowTotal = chargeStation.slowTotal;
                     final int slowFree = chargeStation.slowFree;
                     final int index = getLayerItemIndex(item);
+                    boolean isVisible = false;
                     customUpdatePairs.add(createUpdateValuePair("id_position", String.valueOf(index + 1)));
                     if (fastTotal == 0) {
                         customUpdatePairs.add(createUpdateStylePair("div_fast", "display:none;"));
@@ -373,16 +374,22 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     if (fastTotal == 0 && slowTotal == 0) {
                         customUpdatePairs.add(createUpdateStylePair("search_charge_label", "display:none;"));
                     }
-                    if (item.getFocus()) {
-                        customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_focus.png"));
-                    } else {
-                        customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_add.png"));
+                    List<PoiInfoEntity> poiInfoEntityList = mPoiInfoList.get();
+                    if (!ConvertUtils.isEmpty(poiInfoEntityList) && index < poiInfoEntityList.size()) {
+                        PoiInfoEntity poiInfo = poiInfoEntityList.get(index);
+                        if (!ConvertUtils.isEmpty(poiInfo)) {
+                            isVisible = poiInfo.isMIsVisible();
+                            if (isVisible) {
+                                customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_focus.png"));
+                            } else {
+                                customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_add.png"));
+                            }
+                        }
                     }
-
                     if (isNightMode) {
                         customUpdatePairs.add(createUpdateStylePair("search_charge_label", "background-image:layer_image_search_along_way_charge_bg_night.9.png;"));
                         customUpdatePairs.add(createUpdateStylePair("div_position", "background-image:layer_image_charge_index_bg_night.png;"));
-                        if (item.getFocus()) {
+                        if (isVisible) {
                             customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_focus_night.png"));
                         } else {
                             customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_add_night.png"));

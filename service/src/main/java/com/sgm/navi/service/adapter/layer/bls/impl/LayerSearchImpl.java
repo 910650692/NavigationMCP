@@ -151,20 +151,18 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         }
     }
 
-    public void setSelect(LayerPointItemType type, int index, boolean isSelected) {
+    public void setSelect(LayerPointItemType type, int index, List<PoiInfoEntity> poiInfoEntities) {
         if (Logger.openLog) {
-            Logger.d(TAG, "setSelect type " + type + " index " + index + " isSelected " + isSelected);
+            Logger.d(TAG, "setSelect type ", type, " index ", index, " poiInfoEntities is null -> ", ConvertUtils.isEmpty(poiInfoEntities));
         }
         if (getLayerSearchControl() != null) {
             switch (type) {
                 case SEARCH_POI_ALONG_ROUTE_ADD -> {
                     LayerItem item = getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiAlongRoute).getItem(String.valueOf(index));
                     if (item != null) {
-                        int result = getLayerSearchControl().setFocus(
-                                BizSearchType.BizSearchTypePoiAlongRoute, String.valueOf(index), isSelected);
-                        Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_ADD:" + result);
+                        Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_ADD index ", index);
+                        item.updateStyle();
                     }
-                    getLayerSearchControl().updateStyle(BizSearchType.BizSearchTypePoiAlongRoute);
                 }
                 default -> {
                 }

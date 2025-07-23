@@ -364,8 +364,8 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         mSearchPackage.setSelectIndex(poiInfoEntity, index, searchType, false);
     }
 
-    public void setEnrouteSelect(LayerPointItemType layerPointItemType, int index, boolean isSelected) {
-        mSearchPackage.setSelectIndex(layerPointItemType, index, isSelected);
+    public void setEnrouteSelect(LayerPointItemType layerPointItemType, int index, List<PoiInfoEntity> poiInfoEntities) {
+        mSearchPackage.setSelectIndex(layerPointItemType, index, poiInfoEntities);
     }
 
     /**

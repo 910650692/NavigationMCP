@@ -1763,10 +1763,20 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         int position = mAdapter.getTargetIndex(poiInfoEntity);
         if (isBelongAlongList(poiInfoEntity)) {
             gasChargeRemoveMode(poiInfoEntity);
-            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, false);
+            for (PoiInfoEntity poiInfoEntity1 : mResultEntity.getPoiList()) {
+                if (ConvertUtils.equals(poiInfoEntity1.getPid(), poiInfoEntity.getPid())) {
+                    poiInfoEntity1.setMIsVisible(false);
+                }
+            }
+            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         } else {
             gasChargeAddMode(poiInfoEntity);
-            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, true);
+            for (PoiInfoEntity poiInfoEntity1 : mResultEntity.getPoiList()) {
+                if (ConvertUtils.equals(poiInfoEntity1.getPid(), poiInfoEntity.getPid())) {
+                    poiInfoEntity1.setMIsVisible(true);
+                }
+            }
+            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         }
         if (mAdapter != null) {
             mAdapter.poiDetailsUpdate(mGasChargeAlongList);
@@ -1776,10 +1786,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     public void routeClickEvent(final PoiInfoEntity poiInfoEntity, final int position) {
         if (isBelongAlongList(poiInfoEntity)) {
             gasChargeRemoveMode(poiInfoEntity);
-            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, false);
+            poiInfoEntity.setMIsVisible(false);
+            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         } else {
             gasChargeAddMode(poiInfoEntity);
-            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, true);
+            poiInfoEntity.setMIsVisible(true);
+            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         }
         if (mAdapter != null) {
             mAdapter.updateAlongList(mGasChargeAlongList, position);

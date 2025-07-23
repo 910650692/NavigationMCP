@@ -308,8 +308,8 @@ public class LayerAdapter {
         mLayerApi.selectSearchPoi(mapTypeId, type, index);
     }
 
-    public void setSearchSelect(MapType mapTypeId, LayerPointItemType type, int index, boolean isSelected) {
-        mLayerApi.selectSearchPoi(mapTypeId, type, index, isSelected);
+    public void setSearchSelect(MapType mapTypeId, LayerPointItemType type, int index, List<PoiInfoEntity> poiInfoEntities) {
+        mLayerApi.selectSearchPoi(mapTypeId, type, index, poiInfoEntities);
     }
 
     /* 清除选中的扎标焦点 */
