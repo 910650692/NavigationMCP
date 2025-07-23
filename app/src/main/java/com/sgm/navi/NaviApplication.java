@@ -4,6 +4,8 @@ import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Handler;
+import android.os.HandlerThread;
 
 import androidx.annotation.NonNull;
 
@@ -35,10 +37,12 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         super.onCreate();
         Logger.setDefaultTag(MapDefaultFinalTag.DEFAULT_TAG);
         Logger.e("NaviApp_Start", "isExternalStorageAvailable start");
-        if (!FileUtils.getInstance().checkExternalStorageAvailable()) {
-            Logger.e("NaviApp_Start", "isExternalStorageAvailable is false = killSelf");
-            killSelf();
-        }
+        ThreadManager.getInstance().execute(() -> {
+            if (!FileUtils.getInstance().checkExternalStorageAvailable()) {
+                Logger.e("NaviApp_Start", "isExternalStorageAvailable is false = killSelf");
+                killSelf();
+            }
+        });
         initARouter();
         initComponent();
     }
