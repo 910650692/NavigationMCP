@@ -625,13 +625,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     /**
-     * 开始导航
-     */
-    public void startNavigation() {
-        mBinding.sceneNaviViaInfo.startNavigation();
-    }
-
-    /**
      * 删除途经点结果回调
      *
      * @param result result

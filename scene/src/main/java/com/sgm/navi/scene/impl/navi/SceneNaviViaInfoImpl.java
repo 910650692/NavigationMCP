@@ -3,8 +3,8 @@ package com.sgm.navi.scene.impl.navi;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.BaseSceneModel;
-import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.scene.ui.navi.SceneNaviViaInfoView;
 import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
@@ -18,18 +18,15 @@ import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
     public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_INFO_IMPL;
     private final RoutePackage mRoutePackage;
-
-    // 记录当前的途经点
-    private long mViaIndex = -1;
-
     private NaviEtaInfo mNaviEtaInfo;
-
-    // 记录最近的途经点来屏蔽重复操作
-    private String mViaName;
+    private ScheduledFuture mScheduledFuture;
+    private int mTimes = NumberUtils.NUM_5;
+    private boolean mIsCanUpdateViaInfo = true;
 
     public SceneNaviViaInfoImpl(final SceneNaviViaInfoView screenView) {
         super(screenView);
@@ -40,6 +37,7 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        cancelTimer();
     }
 
     /**
@@ -57,16 +55,13 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
     }
 
     /**
-     * @param sceneCallback sceneCallback
-     */
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-    }
-
-    /**
      * 途径点info
      * @param naviEtaInfo naviEtaInfo
      **/
     private void checkWaypointInfo(final NaviEtaInfo naviEtaInfo) {
+        if (!mIsCanUpdateViaInfo) {
+            return;
+        }
         // 没有途经点的情况
         if (ConvertUtils.isEmpty(naviEtaInfo.viaRemain)) {
             updateSceneVisible(false);
@@ -83,45 +78,9 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
         // 因为要去除掉出发点和终点，所以大于2
         if (allPoiParamList.size() > 2) {
             // 当前的途经点
-            viaName = getViaName();
-            final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = naviEtaInfo.viaRemain;
-            Logger.i(TAG, "checkWaypointInfo ", "viaRemain.size() = ", viaRemain.size(),
-                    " viaName = ", viaName);
-            if (ConvertUtils.isEmpty(viaName)) {
-                return;
-            }
-            if (!ConvertUtils.isEmpty(viaRemain)) {
-                final NaviEtaInfo.NaviTimeAndDist naviTimeAndDist = viaRemain.get(0);
-                final int dist = naviTimeAndDist.dist;
-                Logger.i(TAG, "checkWaypointInfo ", "dist = ", dist);
-                // 因为viaPass是先更新，途经点名称更新后距离又比较小会导致重复调用，这边距离加上上限
-                if (dist <= 500 && dist > 200) {
-                    onViaWaypoint(viaName);
-                    updateViaInfo();
-                }
-            } else {
-                updateSceneVisible(false);
-            }
-            if (!viaName.equals(mViaName)) {
-                updateViaInfo();
-            }
+            updateViaInfo();
             updateSceneVisible(true);
         }
-    }
-
-    /**
-     * 经过途径点，距离途径点500米时触发
-     * @param viaName
-     **/
-    public void onViaWaypoint(final String viaName) {
-        if (viaName.equals(mViaName)) {
-            return;
-        }
-        mViaName = viaName;
-        Logger.i(TAG, "SceneNaviViaInfoImpl", true);
-        NaviSceneManager.getInstance().notifySceneStateChange(
-                INaviSceneEvent.SceneStateChangeType.SceneShowState,
-                NaviSceneId.NAVI_VIA_ARRIVED_POP);
     }
 
     /**
@@ -150,10 +109,10 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
      */
     public void onUpdateViaPass(final long viaIndex) {
         Logger.i(TAG, "onUpdateViaPass viaIndex = ", viaIndex);
-        hideViaArrivedPop();
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
         if (!ConvertUtils.isEmpty(allPoiParamList) && allPoiParamList.size() >= 3) {
             mScreenView.onArriveVia(allPoiParamList.get(1).getName());
+            initTimer();
         }
     }
 
@@ -163,9 +122,12 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
     private void updateViaInfo() {
         Logger.i(TAG, "updateViaInfo ");
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
-        if (!ConvertUtils.isEmpty(allPoiParamList)) {
+        if (!ConvertUtils.isEmpty(allPoiParamList) && allPoiParamList.size() > 2) {
             mScreenView.updateViaInfo(getViaName(),
                     allPoiParamList.size() - NumberUtils.NUM_2);
+        } else {
+            Logger.i(TAG, "updateViaInfo allPoiParamList is empty or size <= 2");
+            updateSceneVisible(false);
         }
     }
 
@@ -193,15 +155,6 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_VIA_ARRIVED_POP);
     }
 
-    /**
-     * 开始导航
-     */
-    public void startNavigation() {
-        Logger.i(TAG, "startNavigation");
-        mViaIndex = -1;
-        mViaName = "";
-    }
-
     public void refreshViaInfo() {
         if (ConvertUtils.isEmpty(mNaviEtaInfo)) {
             Logger.i(TAG, " mNaviEtaInfo is null");
@@ -216,6 +169,43 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
             } else {
                 updateSceneVisible(false);
             }
+        }
+    }
+
+    /**
+     * 开始倒计时
+     */
+    public void initTimer() {
+        Logger.i(TAG, "initTimer");
+        mIsCanUpdateViaInfo = false;
+        cancelTimer();
+        mTimes = NumberUtils.NUM_5;
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            if (mTimes == NumberUtils.NUM_0) {
+                ThreadManager.getInstance().postUi(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mIsCanUpdateViaInfo = true;
+                            updateViaInfo();
+                        } catch (Exception e) {
+                            Logger.e(TAG, "initTimer error", e.getMessage());
+                        }
+                    }
+                });
+            }
+            mTimes--;
+        }, NumberUtils.NUM_0, NumberUtils.NUM_1);
+    }
+
+    /**
+     * 取消倒计时
+     */
+    public void cancelTimer() {
+        Logger.i(TAG, "cancelTimer");
+        if (!ConvertUtils.isEmpty(mScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
         }
     }
 }

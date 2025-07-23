@@ -296,7 +296,6 @@ public class BaseNaviGuidanceViewModel extends
      */
     public void startNavigation(final Bundle bundle) {
         mModel.startNavigation(bundle);
-        mView.startNavigation();
     }
 
     /**

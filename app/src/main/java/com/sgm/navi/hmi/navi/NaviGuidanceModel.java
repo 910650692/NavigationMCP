@@ -614,6 +614,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onUpdateViaPass(final long viaIndex) {
         Logger.i(TAG, "onUpdate viaIndex = " + viaIndex);
+        if (!ConvertUtils.isNull(mViewModel)) {
+            mViewModel.onUpdateViaPass(viaIndex);
+        }
         mCurrentViaIndex = viaIndex + 1;
         List<RouteParam> allPoiParamList = OpenApiHelper.getAllPoiParamList(
                 MapType.MAIN_SCREEN_MAIN_MAP);
@@ -629,9 +632,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 mViewModel.updateViaListImm();
             }
             Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = ", isDeleteSuccess);
-        }
-        if (!ConvertUtils.isNull(mViewModel)) {
-            mViewModel.onUpdateViaPass(viaIndex);
         }
     }
 

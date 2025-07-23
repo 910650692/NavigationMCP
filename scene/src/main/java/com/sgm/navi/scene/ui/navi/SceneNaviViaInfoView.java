@@ -102,19 +102,10 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
      */
     public void updateViaInfo(final String viaName, final int totalSize) {
         Logger.i(TAG, "updateViaInfo: ", viaName);
-
-        boolean isViaArrived = mISceneCallback != null && mISceneCallback.getIsViaArrived();
         boolean showViaCount = totalSize > 1;
-
         mViewBinding.stvWay.setText(viaName);
-
-        if (isViaArrived) {
-            mViewBinding.stvWayArrive.setVisibility(VISIBLE);
-            mViewBinding.stvViaCount.setVisibility(GONE);
-        } else {
-            mViewBinding.stvWayArrive.setVisibility(GONE);
-            mViewBinding.stvViaCount.setVisibility(showViaCount ? VISIBLE : GONE);
-        }
+        mViewBinding.stvWayArrive.setVisibility(GONE);
+        mViewBinding.stvViaCount.setVisibility(showViaCount ? VISIBLE : GONE);
         if (showViaCount) {
             mViewBinding.stvViaCount.setText(
                     getResources().getString(R.string.navi_via_count, totalSize)
@@ -130,13 +121,6 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
         if (mScreenViewModel != null) {
             mScreenViewModel.onUpdateViaPass(viaIndex);
         }
-    }
-
-    /**
-     * 开始导航
-     */
-    public void startNavigation() {
-        mScreenViewModel.startNavigation();
     }
 
     public void refreshViaInfo() {
