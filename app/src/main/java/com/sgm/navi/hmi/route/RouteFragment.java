@@ -133,6 +133,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private RouteSearchChargeGasPageBinding mRouteChargeGasListPageView;
     private RouteWeatherDetailsPageBinding mRouteWeatherPageView;
     private RoutePoiDetailsPageBinding mRoutePoiDetailsPageView;
+    //是否显示路线详情，也表示是否直接开启导航
+    private boolean mShow = true;
 
     private final Runnable mSearchTimeoutTask = new Runnable() {
         @Override
@@ -410,6 +412,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     @HookMethod(eventName = BuryConstant.EventName.AMAP_ROUTE_LIST)
     public void setRouteResultListUI(final List<RouteLineInfo> routeLineInfos, final boolean show) {
         Logger.d(TAG, "setRouteResultListUI " + show);
+        mShow = show;
         if (!ConvertUtils.isEmpty(mRouteListPageView) && !ConvertUtils.isEmpty(mRouteListPageView.routeLineInfoSceneRouteResult)) {
             mRouteListPageView.routeLineInfoSceneRouteResult.notifyResultList(routeLineInfos);
         } else {
@@ -1419,7 +1422,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mRouteRequestLoadingDialog.dismiss();
             mRouteRequestLoadingDialog = null;
         }
-        if (mBinding.fragmentRoute.getVisibility() == View.INVISIBLE) {
+        if (mBinding.fragmentRoute.getVisibility() == View.INVISIBLE && mShow) {
             mBinding.fragmentRoute.setVisibility(View.VISIBLE);
         }
     }
@@ -1428,7 +1431,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * 算路请求弹框关闭按钮点击
      */
     public void progressUIClose() {
-        if (mBinding.fragmentRoute.getVisibility() == View.INVISIBLE) {
+        if (mBinding.fragmentRoute.getVisibility() == View.INVISIBLE && mShow) {
             Logger.d(TAG, "progress UI Close in error");
             mViewModel.getCloseRouteClick().call();
         }

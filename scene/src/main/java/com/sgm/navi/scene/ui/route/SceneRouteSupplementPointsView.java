@@ -74,6 +74,9 @@ public class SceneRouteSupplementPointsView extends BaseSceneView<SceneRouteSupp
     public void updateSupplementPointsView(final ArrayList<RouteSupplementInfo> routeSupplementInfos, final float total) {
         if (routeSupplementInfos != null && !routeSupplementInfos.isEmpty()) {
             ThreadManager.getInstance().postUi(() -> {
+                if (mViewBinding == null) {
+                    return;
+                }
                 final SkinConstraintLayout routeChargeProgressLayout = mViewBinding.routeChargeProgressIcons;
                 if (mAddView != null && !mAddView.isEmpty()) {
                     for (int i = 0; i < mAddView.size(); i++) {

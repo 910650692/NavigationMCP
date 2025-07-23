@@ -693,7 +693,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 return;
             }
             cancelTimer();
-            if (mModel == null || mView == null) {
+            if (mModel == null || mView == null || !mViewSurvival) {
                 Logger.e(TAG, "mModel or mView is null");
                 return;
             }
@@ -1096,6 +1096,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         }
         mStartNavi = false;
         ThreadManager.getInstance().postDelay(mStartNaviTimer, START_NAVI_TIME);
+        mView.hideProgressUI();
         final Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, isSimNavi
                 ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
