@@ -1824,7 +1824,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.noResultHint.setText(getContext().getString(R.string.address_loading));
             mViewBinding.noResultButton.setVisibility(View.GONE);
             if (mAnimator != null) {
-                if (isShow) {
+                if (isShow && !mAnimator.isRunning()) {
                     mAnimator.start();
                 } else {
                     mAnimator.cancel();
