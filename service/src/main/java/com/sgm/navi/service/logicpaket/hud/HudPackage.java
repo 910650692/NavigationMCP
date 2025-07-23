@@ -20,11 +20,13 @@ import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapScreenShotDataInfo;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
+import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
@@ -38,13 +40,68 @@ import java.util.HashMap;
  * @Author lww
  * @date 2025/6/2
  */
-public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCallback, IRouteResultObserver, IGuidanceObserver {
+public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCallback, IRouteResultObserver, IGuidanceObserver , NaviStatusCallback {
     private static final String TAG = MapDefaultFinalTag.HUD_SERVICE_TAG;
+    private static final MapType HUD = MapType.HUD_MAP;
     private IBaseScreenMapView mMapSurfaceView = null;
     //车标距离底部边距
     private static final int HUD_MAP_CAR_BOTTOM = 64;
     private HashMap<String, IHudCallback> hudCallbackMap = new HashMap<>();
     private boolean hudSnowMode;
+
+    private static final int FIVE_HUNDRED_METERS = 500;
+    private static final int TWO_HUNDRED_METERS = 200;
+    private static final float FOURTEEN = 14F;
+    private static final float FIFTEEN = 15F;
+    private static final float SIXTEEN = 16F;
+    private static final int FREEWAY = 0;
+    private static final int MAIN_ROAD = 7;
+    private static final int CITY_SPEEDWAY = 6;
+
+    /**
+     * 导航状态
+     * @param naviStatus the status of the navigation
+     */
+    @Override
+    public void onNaviStatusChange(String naviStatus) {
+        setHudZoomLevel();
+    }
+    /**
+     * TBT面板
+     */
+    @Override
+    public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
+        setHudZoomLevel();
+    }
+
+    public void setHudZoomLevel() {
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        if (NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)) {
+            NaviEtaInfo currentNaviEtaInfo = NaviPackage.getInstance().getCurrentNaviEtaInfo();
+            if (currentNaviEtaInfo == null) return;
+            int nextDist = currentNaviEtaInfo.getNextDist();
+            int curRoadClass = currentNaviEtaInfo.getCurRoadClass();
+            Logger.d(TAG, "当前导航信息 下个路口距离:" ,nextDist, " 当前道路等级:" , curRoadClass);
+            float zoomLevel;
+            if (curRoadClass == CITY_SPEEDWAY || curRoadClass == MAIN_ROAD || curRoadClass == FREEWAY) {
+                zoomLevel = nextDist < FIVE_HUNDRED_METERS ? FIFTEEN : FOURTEEN;
+            } else {
+                zoomLevel = nextDist < TWO_HUNDRED_METERS ? SIXTEEN : FIFTEEN;
+            }
+            updateZoomLevel(zoomLevel);
+        } else {
+            updateZoomLevel(FIFTEEN);
+        }
+    }
+
+    private void updateZoomLevel(float targetZoomLevel) {
+        float currentZoomLevel = MapPackage.getInstance().getZoomLevel(HUD);
+        Logger.d(TAG, "当前比例尺级别：" , currentZoomLevel , " 目标比例尺级别：" , targetZoomLevel);
+        if (targetZoomLevel != currentZoomLevel) {
+            MapPackage.getInstance().setZoomLevel(HUD, targetZoomLevel);
+        }
+    }
+
 
     private static final class Helper {
         private static final HudPackage hudPackage = new HudPackage();
@@ -58,6 +115,7 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         NaviPackage.getInstance().registerObserver(TAG, this);
         RoutePackage.getInstance().registerRouteObserver(TAG, this);
         CalibrationAdapter.getInstance().registerCallback(TAG, mCalibrationAdapterCallback);
+        NaviStatusPackage.getInstance().registerObserver(TAG,this);
         hudSnowMode = CalibrationAdapter.getInstance().getHudSnowMode();
     }
 
@@ -102,6 +160,7 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         if (ConvertUtils.isEmpty(mMapSurfaceView)) return;
         RoutePackage.getInstance().unRegisterRouteObserver(TAG);
         NaviPackage.getInstance().unregisterObserver(TAG);
+        NaviStatusPackage.getInstance().unregisterObserver(TAG);
         LayerPackage.getInstance().unInitLayer(MapType.HUD_MAP);
         MapAdapter.getInstance().unregisterCallback(MapType.HUD_MAP, this);
         MapAdapter.getInstance().unBindMapView(mMapSurfaceView);
@@ -155,6 +214,10 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
             Logger.d(TAG, "HUDMapView地图加载完成",MapPackage.getInstance().getZoomLevel(MapType.HUD_MAP));
             Logger.i(TAG, "雪地模式" , hudSnowMode);
             updateMapThemeType(hudSnowMode);
+
+            if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
+                setHudZoomLevel();
+            }
         }
     }
 
@@ -162,11 +225,6 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
     public void onMapScaleChanged(MapType mapTypeId, int currentScale) {
         //mViewModel.updateOnMapScaleChanged(currentScale);
         Logger.d(TAG, "onMapScaleChanged " , mapTypeId.name() , " " , currentScale);
-    }
-
-    @Override
-    public void onDeletePath(ArrayList<Long> pathIDList) {//
-
     }
 
     @Override
