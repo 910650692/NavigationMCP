@@ -261,7 +261,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
-                mRemindDialogShow = false;
+                FloatViewManager.getInstance().mRemindDialogShow = false;
                 mModel.updateFirstLauncherFlag();
                 mModel.checkPermission();
                 closeProtectView();
@@ -269,7 +269,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
             @Override
             public void onCancelClick() {
-                mRemindDialogShow = false;
+                FloatViewManager.getInstance().mRemindDialogShow = false;
                 if (FloatViewManager.getInstance().isNaviDeskBg()) {
                     Logger.d(TAG, "桌面地图情况");
                     showProtectView();
@@ -287,7 +287,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             }
         });
         reminderDialog.show();
-        mRemindDialogShow = true;
+        FloatViewManager.getInstance().mRemindDialogShow = true;
         FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 

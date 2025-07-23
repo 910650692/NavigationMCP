@@ -43,6 +43,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
     private final int cardHeight = 330;
     private int maxDistance = 0;
     private boolean cardWidgetIsOnShowing = false;
+    public boolean mRemindDialogShow = false;
     private int startY;
     private static final String TAG = "FloatViewManager";
     private boolean isServiceConnect = false;
@@ -290,6 +291,10 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         }
         if (cardWidgetIsOnShowing) {
             Logger.d(TAG, "cardWidgetIsOnShowing");
+            return;
+        }
+        if (mRemindDialogShow) {
+            Logger.d(TAG, "mRemindDialogShow");
             return;
         }
         if (StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) > 0) {
