@@ -249,7 +249,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     protected void onResume() {
         super.onResume();
-        FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+        syncFragment();
         if (mViewModel.isSupportSplitScreen()) {
             ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
         }
@@ -606,4 +606,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mBinding.includeMessageCenter.getRoot().setLayoutParams(layoutParams);
         }
     };
+
+    public void syncFragment() {
+        FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+    }
 }

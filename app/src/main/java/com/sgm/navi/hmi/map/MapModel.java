@@ -152,8 +152,10 @@ import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.BuildConfig;
+import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
+import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
@@ -2188,6 +2190,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
             Logger.d("screen_change_used", "打开1/3屏幕布局");
             checkStatusCloseAllFragmentAndClearAllLabel();
+            mViewModel.syncFragment();
             addFragment(SplitFragment.getInstance(), null);
         } else {
             Logger.d("screen_change_used", "关闭1/3屏幕布局");

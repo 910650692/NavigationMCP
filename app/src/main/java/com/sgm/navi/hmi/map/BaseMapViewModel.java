@@ -1797,4 +1797,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void dismissDialog() {
         if (null != mModel) mModel.dismissDialog();
     }
+
+    public void syncFragment() {
+        if (null != mView) {
+            mView.syncFragment();
+        } else {
+            Logger.e(TAG, "syncFragment mView is null");
+        }
+    }
 }
