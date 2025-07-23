@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="hanging_card_second_unexpand">@dimen/dp_70</dimen>
+    <dimen name="hanging_card_second_expand">@dimen/dp_118</dimen>
+    <dimen name="hanging_card_third_unexpand">@dimen/dp_140</dimen>
+    <dimen name="hanging_card_third_expand">@dimen/dp_236</dimen>
+</resources>

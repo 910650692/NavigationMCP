@@ -448,7 +448,7 @@ public class StartService {
 
         @Override
         public void onLoadLibraryFail(int code, String msg) {
-            Logger.i(TAG, "分区尚未加载成功，导致so文件无法被正常加载");
+            Logger.i(TAG, "so文件无法被正常加载");
             ThreadManager.getInstance().asyncDelay(StartService::checkExternalStorageAvailable, 2);
         }
 

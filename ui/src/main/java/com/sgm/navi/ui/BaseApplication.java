@@ -23,9 +23,7 @@ public class BaseApplication extends Application implements Application.Activity
         Logger.i(TAG, "应用进程创建");
         UtilsManager.init(this);
         if (DeviceUtils.isCar(this) && getSystemService(UserManager.class).isSystemUser()) {
-            if(Logger.openLog) {
-                Logger.d(TAG, "NaviApp_Exit CurrentisSystemuser,killprocess");
-            }
+            Logger.d(TAG, "NaviApp_Exit CurrentisSystemuser,killprocess");
             System.exit(0);
         }
     }
@@ -41,48 +39,32 @@ public class BaseApplication extends Application implements Application.Activity
         switch (level) {
             case TRIM_MEMORY_COMPLETE:
                 // 尽可能释放所有不必要的资源
-                if(Logger.openLog) {
-                    Logger.i(getClass().getSimpleName(), "统处于低内存状态，正在运行的进程将被清理。应该尽可能释放所有不必要的资源");
-                }
+                Logger.i(TAG, "统处于低内存状态，正在运行的进程将被清理。应该尽可能释放所有不必要的资源");
                 break;
             case TRIM_MEMORY_MODERATE:
                 // 释放中等优先级的资源
-                if(Logger.openLog) {
-                    Logger.i(getClass().getSimpleName(), "系统内存不足，后台进程可能会被杀死。释放中等优先级的资源");
-                }
+                Logger.i(TAG, "系统内存不足，后台进程可能会被杀死。释放中等优先级的资源");
                 break;
             case TRIM_MEMORY_BACKGROUND:
                 // 释放容易恢复的资源
-                if(Logger.openLog) {
-                    Logger.i(getClass().getSimpleName(), "应用不在前台运行，应该释放容易恢复的资源");
-                }
+                Logger.i(TAG, "应用不在前台运行，应该释放容易恢复的资源");
                 break;
             case TRIM_MEMORY_UI_HIDDEN:
                 // 进行资源释放操作
-                if(Logger.openLog) {
-                    Logger.i(getClass().getSimpleName(), "应用的所有UI都不可见。释放与UI相关的资源");
-                }
+                Logger.i(TAG, "应用的所有UI都不可见。释放与UI相关的资源");
                 break;
             case TRIM_MEMORY_RUNNING_CRITICAL:
-                if(Logger.openLog) {
-                    Logger.i(getClass().getSimpleName(), "系统内存极低，正在运行的进程面临被杀死的风险。释放所有不必要的资源");
-                }
+                Logger.i(TAG, "系统内存极低，正在运行的进程面临被杀死的风险。释放所有不必要的资源");
                 break;
             case TRIM_MEMORY_RUNNING_LOW:
                 // 释放一些非必要资源
-                if(Logger.openLog) {
-                    Logger.i(getClass().getSimpleName(), "系统内存较低，释放一些非必要资源");
-                }
+                Logger.i(TAG, "系统内存较低，释放一些非必要资源");
                 break;
             case TRIM_MEMORY_RUNNING_MODERATE:
-                if(Logger.openLog) {
-                    Logger.i(getClass().getSimpleName(), "系统内存充足但不多。可以考虑释放一些资源");
-                }
+                Logger.i(TAG, "系统内存充足但不多。可以考虑释放一些资源");
                 break;
             default:
-                if(Logger.openLog) {
-                    Logger.i(getClass().getSimpleName(), "未知的level = ", level);
-                }
+                Logger.i(TAG, "未知的level = ", level);
                 break;
         }
     }

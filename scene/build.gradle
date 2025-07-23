@@ -60,11 +60,23 @@ android {
     }
 
     sourceSets {
-        clea_8775{
-            res.srcDirs = ['src/main/res/sw1225dp']
+        defaule {
+            res.srcDirs = ['src/main/res_defaule']
         }
-        clea_local_8155{
-            res.srcDirs = ['src/main/res/sw1225dp']
+        buick {
+            res.srcDirs = ['src/main/res_buick']
+        }
+        cadi {
+            res.srcDirs = ['src/main/res_cadi']
+        }
+        clea_8255 {
+            res.srcDirs = ['src/main/res_ndnc']
+        }
+        clea_local_8155 {
+            res.srcDirs = ['src/main/res_ndnc']
+        }
+        clea_8775 {
+            res.srcDirs = ['src/main/res_ndnc']
         }
     }
 }

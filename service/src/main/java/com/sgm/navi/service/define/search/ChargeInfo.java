@@ -106,6 +106,8 @@ public class ChargeInfo implements Parcelable {
         return mSlowTotal;
     }
 
+
+
     /**
      * 设置慢充桩总数量
      * @param slowTotal 慢充桩总数量
@@ -594,6 +596,15 @@ public class ChargeInfo implements Parcelable {
     public void setLowPrice(String lowPrice) {
         this.mLowPrice = lowPrice;
     }
+
+    public String getPoiFastInfo() {
+        return mFastFree + "/" + mFastTotal;
+    }
+
+    public String getPoiSlowInfo() {
+        return mSlowFree + "/" + mSlowTotal;
+    }
+
     protected ChargeInfo(final Parcel in) {
         mChildType = in.readInt();
         mSlowFree = in.readInt();

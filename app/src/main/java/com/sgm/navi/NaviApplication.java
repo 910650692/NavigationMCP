@@ -1,16 +1,11 @@
 package com.sgm.navi;
 
-import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
-
 import android.app.Activity;
 import android.app.Application;
-import android.os.Handler;
-import android.os.HandlerThread;
 
 import androidx.annotation.NonNull;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
@@ -30,19 +25,10 @@ import com.sgm.navi.ui.BaseApplication;
  * @date 2024/11/24
  */
 public class NaviApplication extends BaseApplication implements Application.ActivityLifecycleCallbacks {
-    private static final String TAG = MapDefaultFinalTag.INIT_HMI_TAG;
-
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.setDefaultTag(MapDefaultFinalTag.DEFAULT_TAG);
-        Logger.e("NaviApp_Start", "isExternalStorageAvailable start");
-        ThreadManager.getInstance().execute(() -> {
-            if (!FileUtils.getInstance().checkExternalStorageAvailable()) {
-                Logger.e("NaviApp_Start", "isExternalStorageAvailable is false = killSelf");
-                killSelf();
-            }
-        });
         initARouter();
         initComponent();
     }
@@ -50,7 +36,6 @@ public class NaviApplication extends BaseApplication implements Application.Acti
     @Override
     public void onTerminate() {
         super.onTerminate();
-        Logger.i(TAG, "onTerminate");
         CarModelsFeature.getInstance().unRegisterBroadcast();
         StartService.getInstance().unSdkInit();
     }
@@ -79,19 +64,6 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         ARouter.init(this);
     }
 
-
-    private void killSelf() {
-        ThreadManager.getInstance().execute(() -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Logger.w(TAG, "killSelf exception", e.getMessage());
-            }
-            Logger.e(NAVI_EXIT, "isExternalStorageAvailable is false");
-            System.exit(1);
-        });
-    }
-
     private void initComponent() {
         AppCache.getInstance().setMApplication(this);
         AppCache.getInstance().setMContext(getApplicationContext());
@@ -101,7 +73,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
                 PatacNetClient.getInstance().init(this); // 初始化网络适配器
             } catch (Exception e) {
                 //临时Catch方案，ND8775台架 install的包会crash
-                Logger.e(TAG, "PatacNetClient init failed: " + e.getMessage());
+                Logger.e(MapDefaultFinalTag.DEFAULT_TAG, "PatacNetClient init failed: " + e.getMessage());
             }
         });
     }

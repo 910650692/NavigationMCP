@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ViewImpl"
+            type="com.sgm.navi.scene.impl.poi.ScenePoiChargingStationReservationListViewImpl" />
+        <variable
+            name="EventHandle"
+            type="com.sgm.navi.scene.ui.poi.ScenePoiChargingStationReservationListView.MyEventHandle" />
+        <import type="android.view.View" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dp_180"
+        android:background="@drawable/bg_poi_main_tab">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/dp_52" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_end="@dimen/dp_52" />
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_type_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/dp_16"
+                android:background="@drawable/common_item_block_bg"
+                android:paddingVertical="@dimen/dp_7"
+                android:text="@string/cooperate"
+                android:textColor="@color/navi_color_2461EA_100"
+                android:textSize="@dimen/sp_32"
+                app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sk_poi_name" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/sk_poi_name"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_36"
+                android:layout_marginTop="@dimen/dp_52"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{ViewImpl.mPoiInfo.getName}"
+                android:textColor="@color/poi_details_bottom_ff_00"
+                android:textSize="@dimen/sp_42"
+                app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
+                app:layout_constraintStart_toEndOf="@+id/poi_type_text"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/poi_type_icon"
+                clickCommand="@{ViewImpl.closeFragment}"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:src="@drawable/icon_poi_details_close"
+                app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/sk_poi_name" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_fast_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                clickCommand="@{() -> EventHandle.filterEquipment(1)}"
+                android:background="@{ViewImpl.searchType == 1 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/dp_28"
+                android:paddingVertical="@dimen/dp_9"
+                android:paddingStart="@dimen/dp_20"
+                android:paddingEnd="@dimen/dp_20"
+                android:text="@{@string/charge_title_fast + ViewImpl.mChargeInfo.getPoiFastInfo}"
+                android:visibility="@{`0`.equals(String.valueOf(ViewImpl.mChargeInfo.getFast_total)) ? View.GONE : View.VISIBLE}"
+                android:textColor="@color/navi_color_2461EA_100"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/poi_type_icon"
+                tools:background="@drawable/bg_info_select"
+                tools:text="快2/6" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_slow_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                clickCommand="@{() -> EventHandle.filterEquipment(0)}"
+                android:background="@{ViewImpl.searchType == 0 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/dp_28"
+                android:paddingVertical="@dimen/dp_9"
+                android:paddingStart="@dimen/dp_20"
+                android:paddingEnd="@dimen/dp_20"
+                android:text="@{@string/charge_title_slow + ViewImpl.mChargeInfo.getPoiSlowInfo}"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintStart_toEndOf="@+id/poi_fast_info"
+                app:layout_constraintTop_toTopOf="@+id/poi_fast_info"
+                tools:background="@drawable/bg_info_normal"
+                android:visibility="@{`0`.equals(String.valueOf(ViewImpl.mChargeInfo.getSlow_total)) ? View.GONE : View.VISIBLE}"
+                tools:text="慢2/6" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_reservation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                clickCommand="@{() -> EventHandle.filterEquipment(2)}"
+                android:background="@{ViewImpl.searchType == 2 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/dp_28"
+                android:paddingVertical="@dimen/dp_9"
+                android:paddingStart="@dimen/dp_20"
+                android:paddingEnd="@dimen/dp_20"
+                android:text="@string/only_check_reservation"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintStart_toEndOf="@+id/poi_slow_info"
+                app:layout_constraintTop_toTopOf="@+id/poi_fast_info"
+                tools:background="@drawable/bg_info_normal"
+                android:visibility="@{ViewImpl.isHideCanReversion() ? View.INVISIBLE : View.VISIBLE}"
+                tools:text="@string/only_check_reservation" />
+
+            <com.sgm.navi.ui.view.SkinRecyclerView
+                android:id="@+id/poi_charge_station_list"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/dp_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/poi_reservation"
+                app:spanCount="2"
+                tools:itemCount="10"
+                tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                tools:listitem="@layout/charge_equipment_item" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+</layout>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.sgm.navi.scene.ui.navi.SceneNaviViaDetailView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scene_navi_via_detail"
-    android:layout_width="@dimen/dp_698"
-    android:layout_height="@dimen/dp_162"
-    android:visibility="gone"
-    android:layout_marginTop="@dimen/dp_m_48"
-    tools:ignore="MissingId"/>

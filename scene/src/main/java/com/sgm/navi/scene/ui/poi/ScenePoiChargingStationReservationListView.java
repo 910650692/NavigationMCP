@@ -75,7 +75,7 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
 
     @Override
     protected void setInitVariableId() {
-        mViewBinding.setScenePoiChargingStationReservationListView(mScreenViewModel);
+        mViewBinding.setViewImpl(mScreenViewModel);
         mViewBinding.setEventHandle(new MyEventHandle());
     }
 
