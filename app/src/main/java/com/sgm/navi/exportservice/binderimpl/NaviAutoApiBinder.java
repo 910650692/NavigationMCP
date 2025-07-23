@@ -3,6 +3,7 @@ package com.sgm.navi.exportservice.binderimpl;
 import android.os.Bundle;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.TimeUtils;
@@ -75,6 +76,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -93,6 +95,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
     private static final String GALLERY_CLIENT = "com.patac.hmi.gallery";
     private static final int LOCATION_INTERVAL = 5000;
     private static final int REVERSE_INTERVAL = 30 * 1000;
+    private static final String DIST_ZERO = "0m";
 
 
     private final RemoteCallbackList<INaviAutoApiCallback> mNaviAutoCallbackList = new RemoteCallbackList<>();
@@ -501,10 +504,10 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
     private void dispatchSearchSuccess(final boolean silent, final SearchResultEntity searchResultEntity) {
         try {
             Logger.d(TAG, "onSearchSuccess inCallback, silent: " + silent);
+            sortSearchResult(searchResultEntity);
             final int count = mSearchCallbackList.beginBroadcast();
             final BaseSearchResult baseSearchResult = GsonUtils.convertToT(searchResultEntity, BaseSearchResult.class);
             final String searchResultStr = GsonUtils.toJson(baseSearchResult);
-
             for (int i = 0; i < count; i++) {
                 final INaviAutoSearchCallback searchCallback = mSearchCallbackList.getRegisteredCallbackItem(i);
                 if (null != searchCallback) {
@@ -520,6 +523,37 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         } finally {
             closeSearchCallback();
         }
+    }
+
+    /**
+     * 按照距离对搜索结果进行排序.
+     *
+     * @param searchResultEntity 搜索结果.
+     */
+    private void sortSearchResult(final SearchResultEntity searchResultEntity) {
+        if (null == searchResultEntity || null == searchResultEntity.getPoiList()
+                || searchResultEntity.getPoiList().isEmpty() || searchResultEntity.getPoiList().size() < 2) {
+            return;
+        }
+
+        final List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+        final int size = poiList.size();
+        for (int index = 0; index < size; index++) {
+            final PoiInfoEntity searchPoi = poiList.get(index);
+            if (null == searchPoi || null == searchPoi.getPoint()) {
+                continue;
+            }
+
+            if (TextUtils.isEmpty(searchPoi.getDistance()) || DIST_ZERO.equals(searchPoi.getDistance())
+                    || searchPoi.getSort_distance() <= 0) {
+                final int distance = SearchPackage.getInstance().calcStraightDistanceWithInt(searchPoi.getPoint());
+                searchPoi.setSort_distance(distance);
+                final String[] distanceArray = ConvertUtils.formatEnDistanceArray(AppCache.getInstance().getMContext(), distance);
+                searchPoi.setDistance(distanceArray[0] + distanceArray[1]);
+            }
+        }
+
+        poiList.sort(Comparator.comparingInt(PoiInfoEntity::getSort_distance));
     }
 
     /**
