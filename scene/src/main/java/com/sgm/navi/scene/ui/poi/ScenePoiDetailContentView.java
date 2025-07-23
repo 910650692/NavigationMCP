@@ -428,7 +428,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mScreenViewModel.NotifyMapTimer();
         }
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty() || ConvertUtils.isEmpty(mScreenViewModel)) {
-            //ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
+            if (searchResultEntity != null && searchResultEntity.getPoiType() == 0) {
+                ToastUtils.Companion.getInstance().showCustomToastView("网络异常，请检查网络后重试");
+            }
             return;
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , taskId

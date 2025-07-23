@@ -1114,7 +1114,15 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.searchLabelFilter.setVisibility(GONE);
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
-            ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
+            if (searchResultEntity != null
+                    && searchResultEntity.getPoiType() == 0
+                    && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) {
+                //无网无结果存在离线城市但无推荐结果
+                ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
+            } else {
+                //当任何需要网络相应才能完成的操作，但网络异常时，统一给予以下提示
+                ToastUtils.Companion.getInstance().showCustomToastView("网络异常，请检查网络后重试");
+            }
             showLoading(false);
             if (null != mAdapter) {
                 mAdapter.clearList();
