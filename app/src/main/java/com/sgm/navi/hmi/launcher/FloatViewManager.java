@@ -63,10 +63,11 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             Logger.i(TAG, "onLauncherStateChanged i = " + i);
         }
     };
+    private Handler recipientHandler = new Handler(Looper.getMainLooper());
     private IBinder.DeathRecipient mDeathRecipient = () -> {
         Log.i(TAG, "binderDied()");
         isServiceConnect = false;
-        bindLauncherService();
+        recipientHandler.postDelayed(() -> bindLauncherService(), LAUNCHER_RECONNECT_DELAY_MS);
     };
     private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -99,6 +100,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
 
     private ScheduledFuture scheduledFuture;
     private long DELAY_TIME = 15100;
+    private static final long LAUNCHER_RECONNECT_DELAY_MS = 5000; // 单位：毫秒
     private static final String DESKTOP_MODE_KEY = "desktop_mode";
     private int currentDeskMode;
     private final Uri uri = Settings.Global.getUriFor(DESKTOP_MODE_KEY);
