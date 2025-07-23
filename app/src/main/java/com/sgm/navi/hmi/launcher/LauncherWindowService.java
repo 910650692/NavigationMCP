@@ -290,6 +290,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     }
 
     private void updateTbT(NaviEtaInfo etaInfo) {
+        Logger.i(TAG, "updateTbT");
         ThreadManager.getInstance().postUi(() -> {
             this.mNaviEtaInfo = etaInfo;
             if (!ConvertUtils.isNull(etaInfo) && !ConvertUtils.isNull(mBinding)) {
