@@ -538,6 +538,7 @@
                         android:paddingStart="@dimen/dp_37"
                         app:drawableWidth="80"
                         app:drawableHeight="80"
+                        android:visibility="gone"
                         android:background="@drawable/bg_car_logo_selector"
                         android:gravity="center_vertical"
                         android:textSize="@dimen/sp_38"

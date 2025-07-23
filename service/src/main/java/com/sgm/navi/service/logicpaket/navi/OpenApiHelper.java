@@ -1,6 +1,8 @@
 package com.sgm.navi.service.logicpaket.navi;
 
 
+import android.text.TextUtils;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
@@ -12,11 +14,13 @@ import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.ETAInfo;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
@@ -49,6 +53,7 @@ public final class OpenApiHelper {
 
     private static final SearchPackage SEARCH_PACKAGE = SearchPackage.getInstance();
     private static final NaviPackage NAVI_PACKAGE = NaviPackage.getInstance();
+    private static final NaviStatusPackage NAVI_STATUS_PACKAGE = NaviStatusPackage.getInstance();
     private static final MapPackage MAP_PACKAGE = MapPackage.getInstance();
     private static final LayerPackage LAYER_PACKAGE = LayerPackage.getInstance();
 
@@ -203,10 +208,11 @@ public final class OpenApiHelper {
     public static void switchMapMode(MapType mapTypeId, MapMode mapMode) {
         mMapType = mapTypeId;
         mMapMode = mapMode;
-        if (!NAVI_PACKAGE.getPreviewStatus()) {
-            MAP_PACKAGE.switchMapMode(mapTypeId, mapMode, true);
+        if (TextUtils.equals(NAVI_STATUS_PACKAGE.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)
+                && NAVI_PACKAGE.getPreviewStatus()) {
+            Logger.i(TAG, "switchMapMode: NaviStatus is NAVING; getPreviewStatus true");
         } else {
-            Logger.i(TAG, "switchMapMode: getPreviewStatus true");
+            MAP_PACKAGE.switchMapMode(mapTypeId, mapMode, true);
         }
     }
 
