@@ -1114,4 +1114,69 @@ public class L2Adapter {
         }
         return null;
     }
+
+    public List<RoadGroupData> getRoadGroupData() {
+        PathInfo pathInfo = getPathInfo();
+        if (pathInfo == null) {
+            return null;
+        }
+        List<RoadGroupData> roadGroupDatas = new ArrayList<>();
+        LinkInfo previousLinkInfo = null;
+        long travelTime = 0;
+        int roadLength = 0;
+        long segmentCount = pathInfo.getSegmentCount();
+        for (int i = 0; i < segmentCount; i++) {
+            SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
+            if (segmentInfo == null) {
+                continue;
+            }
+            long linkCount = segmentInfo.getLinkCount();
+            for (int j = 0; j < linkCount; j++) {
+                LinkInfo linkInfo = segmentInfo.getLinkInfo(j);
+                if (linkInfo == null) {
+                    continue;
+                }
+                if (previousLinkInfo != null && previousLinkInfo.getStatus() != linkInfo.getStatus()) {
+                    if (roadLength > 65535) {
+                        int lengthNum = roadLength / 65535;
+                        int lengthMod = roadLength % 65535;
+                        for (int k = 0; k < lengthNum; k++) {
+                            RoadGroupData roadGroupData = new RoadGroupData();
+                            roadGroupData.setStatus(previousLinkInfo.getStatus());
+                            roadGroupData.setRoadTime((int) (travelTime * ((float) 65535 / roadLength)));
+                            roadGroupData.setRoadLength(65535);
+                            roadGroupDatas.add(roadGroupData);
+                        }
+                        if (lengthMod != 0) {
+                            RoadGroupData roadGroupData = new RoadGroupData();
+                            roadGroupData.setStatus(previousLinkInfo.getStatus());
+                            roadGroupData.setRoadTime((int) (travelTime * ((float) lengthMod / roadLength)));
+                            roadGroupData.setRoadLength(lengthMod);
+                            roadGroupDatas.add(roadGroupData);
+                        }
+                    } else {
+                        RoadGroupData roadGroupData = new RoadGroupData();
+                        roadGroupData.setRoadTime((int) travelTime);
+                        roadGroupData.setStatus(previousLinkInfo.getStatus());
+                        roadGroupData.setRoadLength(roadLength);
+                        roadGroupDatas.add(roadGroupData);
+                    }
+                    travelTime = 0;
+                    roadLength = 0;
+                }
+                previousLinkInfo = linkInfo;
+                travelTime += linkInfo.getTravelTime();
+                roadLength += linkInfo.getLength();
+            }
+        }
+        if (previousLinkInfo == null) {
+            return null;
+        }
+        RoadGroupData roadGroupData = new RoadGroupData();
+        roadGroupData.setRoadTime((int) travelTime);
+        roadGroupData.setStatus(previousLinkInfo.getStatus());
+        roadGroupData.setRoadLength(roadLength);
+        roadGroupDatas.add(roadGroupData);
+        return roadGroupDatas;
+    }
 }

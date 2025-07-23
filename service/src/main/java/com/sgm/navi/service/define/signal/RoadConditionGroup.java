@@ -30,6 +30,9 @@ public class RoadConditionGroup {
     }
 
     public void setRoadSegmentCount(Integer roadSegmentCount) {
+        if (roadSegmentCount > 65535) {
+            roadSegmentCount = 65535;
+        }
         this.roadSegmentCount = roadSegmentCount;
     }
 
@@ -38,6 +41,9 @@ public class RoadConditionGroup {
     }
 
     public void setRoadSegmentIndex(Integer roadSegmentIndex) {
+        if (roadSegmentIndex > 65535) {
+            roadSegmentIndex = 65535;
+        }
         this.roadSegmentIndex = roadSegmentIndex;
     }
 
@@ -46,6 +52,9 @@ public class RoadConditionGroup {
     }
 
     public void setSegmentLength(Integer segmentLength) {
+        if (segmentLength > 65535) {
+            segmentLength = 65535;
+        }
         this.segmentLength = segmentLength;
     }
 
@@ -54,6 +63,9 @@ public class RoadConditionGroup {
     }
 
     public void setSegmentTime(Integer segmentTime) {
+        if (segmentTime > 65535) {
+            segmentTime = 65535;
+        }
         this.segmentTime = segmentTime;
     }
 
@@ -70,6 +82,9 @@ public class RoadConditionGroup {
     }
 
     public void setRemainDistance(Integer remainDistance) {
+        if (remainDistance > 65535) {
+            remainDistance = 65535;
+        }
         this.remainDistance = remainDistance;
     }
 
@@ -78,6 +93,9 @@ public class RoadConditionGroup {
     }
 
     public void setRemainTime(Integer remainTime) {
+        if (remainTime > 65535) {
+            remainTime = 65535;
+        }
         this.remainTime = remainTime;
     }
 

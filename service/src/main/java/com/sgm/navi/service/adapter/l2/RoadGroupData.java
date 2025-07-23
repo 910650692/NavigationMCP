@@ -1,4 +1,4 @@
-package com.sgm.navi.navisender;
+package com.sgm.navi.service.adapter.l2;
 
 public class RoadGroupData {
     private int roadLength;

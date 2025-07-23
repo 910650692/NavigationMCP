@@ -3,6 +3,7 @@ package com.sgm.navi.service.logicpaket.l2;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.adapter.l2.L2Adapter;
 import com.sgm.navi.service.adapter.l2.L2DriveObserver;
+import com.sgm.navi.service.adapter.l2.RoadGroupData;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteOdd;
@@ -12,6 +13,7 @@ import com.sgm.navi.service.define.route.ScSegmentInfo;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -98,5 +100,9 @@ public class L2Package {
 
     public GeoPoint getScGeoPoint(int curSegIdx, int curLinkIdx, int curPointIdx) {
         return mL2Adapter.getScGeoPoint(curSegIdx, curLinkIdx, curPointIdx);
+    }
+
+    public List<RoadGroupData> getRoadGroupData() {
+        return mL2Adapter.getRoadGroupData();
     }
 }

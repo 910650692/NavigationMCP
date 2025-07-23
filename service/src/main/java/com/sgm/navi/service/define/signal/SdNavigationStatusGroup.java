@@ -67,6 +67,9 @@ public class SdNavigationStatusGroup {
     }
 
     public void setNaviStatDistToHDStrt(Integer naviStatDistToHDStrt) {
+        if (naviStatDistToHDStrt > 1023) {
+            naviStatDistToHDStrt = 1023;
+        }
         this.naviStatDistToHDStrt = naviStatDistToHDStrt;
     }
 
@@ -83,6 +86,9 @@ public class SdNavigationStatusGroup {
     }
 
     public void setNaviStatDistToViaPoint(Integer naviStatDistToViaPoint) {
+        if (naviStatDistToViaPoint > 1023) {
+            naviStatDistToViaPoint = 1023;
+        }
         this.naviStatDistToViaPoint = naviStatDistToViaPoint;
     }
 
@@ -99,6 +105,9 @@ public class SdNavigationStatusGroup {
     }
 
     public void setNaviStatRmnDist(Integer naviStatRmnDist) {
+        if (naviStatRmnDist > 1023) {
+            naviStatRmnDist = 1023;
+        }
         this.naviStatRmnDist = naviStatRmnDist;
     }
 

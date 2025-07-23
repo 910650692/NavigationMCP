@@ -370,6 +370,9 @@ public final class SignalPackage implements SignalAdapterCallback {
      * @param value
      */
     public void setTrafficJamRoadAverageSpeed(int value) {
+        if (value > 255) {
+            value = 255;
+        }
         mSignalAdapter.setTrafficJamRoadAverageSpeed(value);
     }
 
@@ -394,6 +397,9 @@ public final class SignalPackage implements SignalAdapterCallback {
      * @param value
      */
     public void setTotalDistanceFromStartToDestinationOnNavigation(int value) {
+        if (value > 65535) {
+            value = 65535;
+        }
         mSignalAdapter.setTotalDistanceFromStartToDestinationOnNavigation(value);
     }
 
@@ -402,6 +408,9 @@ public final class SignalPackage implements SignalAdapterCallback {
      * @param value
      */
     public void setTotalPredictedTimeFromStartToDestinationOnNavigation(int value) {
+        if (value > 65535) {
+            value = 65535;
+        }
         mSignalAdapter.setTotalPredictedTimeFromStartToDestinationOnNavigation(value);
     }
 
@@ -410,6 +419,9 @@ public final class SignalPackage implements SignalAdapterCallback {
      * @param value
      */
     public void setRemainDistanceToChargingStation(int value) {
+        if (value > 65535) {
+            value = 65535;
+        }
         mSignalAdapter.setRemainDistanceToChargingStation(value);
     }
 
@@ -418,6 +430,9 @@ public final class SignalPackage implements SignalAdapterCallback {
      * @param value
      */
     public void setRemainTimeToChargingStationy(int value) {
+        if (value > 65535) {
+            value = 65535;
+        }
         mSignalAdapter.setRemainTimeToChargingStationy(value);
     }
 
