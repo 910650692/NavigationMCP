@@ -5,19 +5,19 @@
     tools:ignore="MissingDefaultResource">
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_411"
+        android:layout_width="@dimen/dp_600"
         android:clickable="true"
-        android:layout_height="@dimen/dp_157"
+        android:layout_height="@dimen/dp_189"
         android:background="@drawable/bg_search_main_tab"
-        android:paddingStart="@dimen/dp_26"
-        android:paddingTop="@dimen/dp_26"
-        android:paddingEnd="@dimen/dp_22">
+        android:paddingStart="@dimen/dp_52"
+        android:paddingTop="@dimen/dp_32"
+        android:paddingEnd="@dimen/dp_52">
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/textViewTimeRemaining"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_32"
+            android:textSize="@dimen/sp_38"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -26,32 +26,31 @@
             android:id="@+id/textViewEstimatedArrival"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_14"
-            android:textSize="@dimen/sp_26"
+            android:layout_marginTop="@dimen/dp_16"
+            android:textSize="@dimen/sp_30"
             android:textColor="@color/search_color_ffffff_70"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewTimeRemaining" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/buttonGoHome"
-            android:layout_width="@dimen/dp_111"
-            android:layout_height="@dimen/dp_65"
+            android:layout_width="@dimen/dp_130"
+            android:layout_height="@dimen/dp_76"
             android:gravity="center"
-            android:layout_marginTop="@dimen/dp_13"
+            android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_navi_to_home_bg"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_30"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-           />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.sgm.navi.scene.ui.map.component.MultiStageProgressBar
             android:id="@+id/sk_iv_basic_home_progress"
-            android:layout_width="@dimen/dp_361"
-            android:layout_height="@dimen/dp_3"
-            android:layout_marginBottom="@dimen/dp_28"
+            android:layout_width="@dimen/dp_496"
+            android:layout_height="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_32"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/dp_13"
+            android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@+id/textViewEstimatedArrival" />
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>

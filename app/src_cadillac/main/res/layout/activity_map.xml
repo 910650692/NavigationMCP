@@ -83,8 +83,8 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.sgm.navi.ui.view.SkinConstraintLayout
-                        android:layout_width="@dimen/dp_702"
-                        android:layout_height="@dimen/dp_254"
+                        android:layout_width="@dimen/dp_600"
+                        android:layout_height="@dimen/dp_152"
                         android:background="@drawable/bg_shadow_navi_cadillac"
                         android:paddingHorizontal="@dimen/dp_51"
                         android:paddingVertical="@dimen/dp_51"
@@ -133,11 +133,9 @@
                     </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                     <com.sgm.navi.ui.view.SkinConstraintLayout
-                        android:layout_width="@dimen/dp_866"
-                        android:layout_height="@dimen/dp_254"
-                        android:background="@drawable/bg_shadow_navi_cadillac"
-                        android:paddingHorizontal="@dimen/dp_51"
-                        android:paddingVertical="@dimen/dp_51"
+                        android:layout_width="@dimen/dp_600"
+                        android:layout_height="@dimen/dp_152"
+                        android:background="@drawable/bg_search_main_tab"
                         android:visibility="@{ViewModel.tmcModeVisibility ? View.VISIBLE : View.GONE}"
                         android:clickable="false"
                         app:layout_constraintStart_toStartOf="parent"
@@ -180,6 +178,7 @@
                             android:textSize="@dimen/sp_32"
                             app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
                             app:layout_constraintTop_toTopOf="parent"
+                            android:visibility="gone"
                             tools:text="在附近" />
 
                         <com.sgm.navi.scene.ui.map.component.MultiStageProgressBar
@@ -191,6 +190,7 @@
                             android:focusable="false"
                             app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
                             app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_home_text"
+                            android:visibility="gone"
                             tools:background="@color/auto_color_ca6d" />
 
                         <com.sgm.navi.ui.view.SkinView
@@ -208,7 +208,7 @@
                             android:id="@+id/sk_iv_basic_bus_tq"
                             android:layout_width="@dimen/dp_106"
                             android:layout_height="@dimen/dp_106"
-                            android:layout_marginStart="@dimen/dp_40"
+                            android:layout_marginStart="@dimen/dp_81"
                             android:focusable="false"
                             android:src="@drawable/img_basic_ic_bus"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -229,6 +229,7 @@
                             android:textSize="@dimen/sp_32"
                             app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
                             app:layout_constraintTop_toTopOf="parent"
+                            android:visibility="gone"
                             tools:text="32分" />
 
                         <com.sgm.navi.scene.ui.map.component.MultiStageProgressBar
@@ -238,6 +239,7 @@
                             android:layout_marginTop="@dimen/dp_6"
                             android:layout_marginBottom="@dimen/dp_30"
                             android:focusable="false"
+                            android:visibility="gone"
                             app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
                             app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_bus_text"
                             tools:background="@color/auto_color_ca6d" />
@@ -251,6 +253,7 @@
                             android:focusable="false"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@id/sk_iv_basic_bus_progress"
+                            android:visibility="gone"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <com.sgm.navi.ui.view.SkinView
@@ -268,7 +271,7 @@
                             android:id="@+id/sk_iv_basic_search_tq"
                             android:layout_width="@dimen/dp_106"
                             android:layout_height="@dimen/dp_106"
-                            android:layout_marginStart="@dimen/dp_20"
+                            android:layout_marginStart="@dimen/dp_81"
                             android:layout_marginEnd="@dimen/dp_60"
                             android:focusable="false"
                             android:src="@drawable/img_basic_ic_search"
@@ -298,7 +301,7 @@
                     android:id="@+id/scene_go_home"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_17"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:visibility="@{ViewModel.mGoHomeVisible ? View.VISIBLE : View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/search_main_tab"
                     app:layout_constraintTop_toBottomOf="@id/search_main_tab"

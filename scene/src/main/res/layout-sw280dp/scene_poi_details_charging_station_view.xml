@@ -88,7 +88,7 @@
                     android:textColor="@color/route_charge_param_total_color"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_goneMarginStart="@dimen/dp_12"
+                    app:layout_goneMarginStart="@dimen/dp_22"
                     app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_occupied"
                     tools:text="/36" />
 
@@ -156,7 +156,7 @@
                     android:textColor="@color/route_charge_param_total_color"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_goneMarginStart="@dimen/dp_12"
+                    app:layout_goneMarginStart="@dimen/dp_22"
                     app:layout_constraintStart_toEndOf="@+id/poi_charge_slow_occupied"
                     tools:text="/36" />
 

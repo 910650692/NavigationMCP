@@ -4338,4 +4338,5 @@
     <dimen name="navi_nd_cluster_navi_padding_vertical">14px</dimen>
 
     <dimen name="bg_charge_number_item_corner">@dimen/dp_14</dimen>
+    <dimen name="bg_search_main_tab_corner">@dimen/dp_18</dimen>
 </resources>

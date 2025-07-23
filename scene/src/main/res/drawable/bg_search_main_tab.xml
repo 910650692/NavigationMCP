@@ -4,7 +4,7 @@
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/search_main_tab_img_shape_bg" />
-            <corners android:radius="@dimen/dp_20" />
+            <corners android:radius="@dimen/bg_search_main_tab_corner" />
             <padding
                 android:bottom="@dimen/dp_1"
                 android:left="@dimen/dp_1"
@@ -16,7 +16,7 @@
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/search_tab_bg" />
-            <corners android:radius="@dimen/dp_20" />
+            <corners android:radius="@dimen/bg_search_main_tab_corner" />
         </shape>
     </item>
 </layer-list>
