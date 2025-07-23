@@ -7,6 +7,7 @@ import android.car.hardware.CarPropertyValue;
 import android.car.hardware.property.CarPropertyManager;
 import android.car.hardware.property.CarPropertyManager.CarPropertyEventCallback;
 import android.content.Context;
+import android.os.SystemClock;
 
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -20,6 +21,9 @@ public class VehicleSpeedController {
     private ISpeedCallback mISpeedCallback;
     // 定义米每秒到千米每小时的转换因子
     public static final double MPS_TO_KPH_FACTOR = 3.6;
+
+    private long lastTime = 0;
+    private static final long TIME = 1000;
 
     public VehicleSpeedController(Context context, ISpeedCallback callback) {
         try {
@@ -74,7 +78,11 @@ public class VehicleSpeedController {
      */
     private void onSpeedChanged(float speed) {
         // 更新 UI 或处理车速数据
-        Logger.d(TAG, "Current speed: %f m/s", speed);
+        long currentTime = SystemClock.elapsedRealtime();
+        if (currentTime - lastTime >= TIME) {
+            Logger.d(TAG, "Current speed: %f m/s", speed);
+            lastTime = currentTime;
+        }
         if (mISpeedCallback != null) {
             mISpeedCallback.onPulseSpeedChanged((float) (speed * MPS_TO_KPH_FACTOR));
         }
