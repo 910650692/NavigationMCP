@@ -20,7 +20,9 @@ import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentSettingOthersBinding;
 import com.sgm.navi.hmi.setting.SettingCheckDialog;
 import com.sgm.navi.service.define.code.UserDataCode;
+import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.greendao.CommonManager;
+import com.sgm.navi.service.greendao.setting.SettingManager;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
@@ -137,6 +139,11 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
             mBinding.settingOthersCarConnect.setBackground(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_broadcast_select));
             mBinding.settingOthersCarConnect.setAlpha(1f);
+            String isSendDestinationLastMile = SettingManager.getInstance().getValueByKey(
+                    SettingController.KEY_SETTING_IS_SEND_DESTINATION_LAST_MILE);
+            if (TextUtils.isEmpty(isSendDestinationLastMile)) {
+                SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_IS_SEND_DESTINATION_LAST_MILE, "1");
+            }
         } else if (mViewModel.getIsLogin() && !status){
             mBinding.settingOthersCarConnectText.setTextColor(
                     ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
