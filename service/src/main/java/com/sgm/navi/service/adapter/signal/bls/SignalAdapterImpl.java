@@ -700,8 +700,8 @@ public class SignalAdapterImpl implements SignalApi {
             @Override
             public void onGroupVolumeChanged(int zoneId, int groupId, int flags) {
                 Logger.d(TAG,  zoneId, groupId, flags);
-                if (zoneId == CarAudioManager.PRIMARY_AUDIO_ZONE && groupId == 1) {
-                    int volume = mCarAudioManager.getGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1);
+                if (zoneId == CarAudioManager.PRIMARY_AUDIO_ZONE && groupId == getNaviGroupId()) {
+                    int volume = mCarAudioManager.getGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, getNaviGroupId());
                     Logger.d(TAG, volume);
                     for (SignalAdapterCallback callback : mCallbacks) {
                         callback.onNaviVolumeChanged(volume);
@@ -724,7 +724,7 @@ public class SignalAdapterImpl implements SignalApi {
         if (mCarAudioManager == null) {
             return;
         }
-        mCarAudioManager.setGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1, volume, 0);
+        mCarAudioManager.setGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, getNaviGroupId(), volume, 0);
     }
 
     @Override
@@ -732,9 +732,17 @@ public class SignalAdapterImpl implements SignalApi {
         if (mCarAudioManager == null) {
             return -1;
         }
-        int groupVolume = mCarAudioManager.getGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1);
+        int groupVolume = mCarAudioManager.getGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, getNaviGroupId());
         Logger.d(TAG, groupVolume);
         return groupVolume;
+    }
+
+    private int getNaviGroupId() {
+        if (VehicleController.isCleaArch()) {
+            return 2;
+        } else {
+            return 1;
+        }
     }
     //endregion
 
