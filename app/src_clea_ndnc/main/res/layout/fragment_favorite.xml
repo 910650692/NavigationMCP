@@ -481,13 +481,13 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_top"
-            android:layout_width="@dimen/dp_284"
-            android:layout_height="@dimen/dp_77"
+            android:layout_width="@dimen/dp_102"
+            android:layout_height="@dimen/dp_102"
             android:orientation="horizontal"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:layout_marginEnd="@dimen/dp_26"
-            android:background="@drawable/bg_setting_top"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@drawable/bg_setting_top_oval"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -495,21 +495,21 @@
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
                 android:src="@drawable/img_favorite_top"
-                android:layout_marginStart="@dimen/dp_53"
+                android:layout_marginTop="@dimen/dp_8"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_top"
-                android:layout_marginStart="@dimen/dp_116"
                 android:textColor="@color/color_black_70"
                 android:textSize="@dimen/sp_29"
+                android:layout_marginBottom="@dimen/dp_14"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>

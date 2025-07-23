@@ -556,11 +556,11 @@
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/layout_top"
-                android:layout_width="@dimen/dp_432"
-                android:layout_height="@dimen/dp_120"
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="@dimen/dp_160"
                 android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/dp_40"
-                android:background="@drawable/bg_setting_top"
+                android:layout_marginEnd="@dimen/dp_32"
+                android:background="@drawable/bg_setting_top_oval"
                 android:orientation="horizontal"
                 android:visibility="gone"
                 android:focusable="true">
@@ -568,24 +568,24 @@
                 <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
-                    android:layout_marginStart="@dimen/dp_80"
+                    android:layout_marginTop="@dimen/dp_11"
                     android:focusable="false"
                     android:src="@drawable/img_favorite_top"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_168"
                     android:text="@string/favorite_top"
                     android:focusable="false"
                     android:textColor="@color/setting_text_preference"
-                    android:textSize="@dimen/sp_46"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="@dimen/sp_38"
+                    android:layout_marginBottom="@dimen/dp_25"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
             </com.sgm.navi.ui.view.SkinConstraintLayout>
         </com.android.car.ui.FocusArea>
     </com.sgm.navi.ui.view.SkinConstraintLayout>

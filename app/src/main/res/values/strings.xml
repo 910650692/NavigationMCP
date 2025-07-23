@@ -276,7 +276,7 @@
     <string name="unlock_error">地锁下降失败，请重试</string>
     <string name="unlock_success">地锁已成功下降</string>
     <string name="query_error">请求失败</string>
-    <string name="favorite_top">返回顶部</string>
+    <string name="favorite_top">顶部</string>
     <string name="timeout_charge_pre">我知道了</string>
     <string name="timeout_charge_pre_content">您预约充电站已超时取消</string>
     <string name="quick_charge_pre">去查看</string>
