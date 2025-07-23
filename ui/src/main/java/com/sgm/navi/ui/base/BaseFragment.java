@@ -106,6 +106,12 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Logger.i(TAG, getClass().getSimpleName(), "onHiddenChanged:" + hidden);
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         if (mActivity != null) {
