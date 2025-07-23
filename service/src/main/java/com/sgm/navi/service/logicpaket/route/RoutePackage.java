@@ -22,6 +22,7 @@ import com.sgm.navi.service.adapter.aos.QueryRestrictedObserver;
 import com.sgm.navi.service.adapter.calibration.CalibrationAdapter;
 import com.sgm.navi.service.adapter.engine.EngineAdapter;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
+import com.sgm.navi.service.adapter.mapdata.MapDataAdapter;
 import com.sgm.navi.service.adapter.navi.NaviAdapter;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.adapter.position.PositionAdapter;
@@ -665,8 +666,13 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(param)) {
             return NumberUtils.NUM_ERROR;
         }
-        //无网发起算路请求
         if (param.isMIsOnline() && Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            //无网络无离线数据，直接提示不算路
+            if (MapDataAdapter.getInstance().getAllDownLoadedList() == null || MapDataAdapter.getInstance().getAllDownLoadedList().isEmpty()) {
+                callBackFailMsg(param.getMMapTypeId(), "无网络连接，请检查网络后重试");
+                return NumberUtils.NUM_ERROR;
+            }
+            //无网直接算路请求
             param.setMIsOnline(false);
         }
         final RouteParam routeParam = getRouteParamFromPoiInfoEntity(param.getMPoiInfoEntity(), param.getMRoutePoiType());
