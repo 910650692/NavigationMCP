@@ -115,18 +115,15 @@ public class CalibrationAdapterImpl implements CalibrationApi {
         try {
             getPatacRemoteSettingsManager().registerCallback(TAG, new IPatacRemoteSettingsListener() {
                 @Override
-                public void onAllHudSettingInfoRequest(PatacRemoteSettingsManager.HudSettingInfo hudSettingInfo) {
-                    if (hudSettingInfo == null) {
+                public void onHudSettingChangedRequest(PatacRemoteSettingsManager.EHudSettingType eHudSettingType, int i) {
+                    if (eHudSettingType == null) {
                         return;
                     }
-                    boolean snowMode = hudSettingInfo.getSnowMode();
-                    if (mSnowMode == snowMode) {
-                        return;
-                    }
-                    Logger.d(TAG, "onAllHudSettingInfoRequest: ", mSnowMode);
-                    mSnowMode = snowMode;
-                    for (CalibrationAdapterCallback callback : mCallback.values()) {
-                        callback.onHudSnowModeChanged(mSnowMode);
+                    if (eHudSettingType == PatacRemoteSettingsManager.EHudSettingType.HUD_SNOWMODE_SWITCH){
+                        Logger.d(TAG, "eHudSettingType: ", eHudSettingType);
+                        for (CalibrationAdapterCallback callback : mCallback.values()) {
+                            callback.onHudSnowModeChanged(i == 1);
+                        }
                     }
                 }
             });

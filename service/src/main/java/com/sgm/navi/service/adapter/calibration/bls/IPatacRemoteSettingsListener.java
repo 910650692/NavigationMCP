@@ -2,93 +2,116 @@ package com.sgm.navi.service.adapter.calibration.bls;
 
 import patac.manager.setting.PatacRemoteSettingsManager;
 
-public interface IPatacRemoteSettingsListener extends PatacRemoteSettingsManager.PatacRemoteSettingsListener {
+public class IPatacRemoteSettingsListener implements PatacRemoteSettingsManager.PatacRemoteSettingsListener {
 
-    default void clientSubscriberConnected() {
 
-    }
-
-    default void onAllHudSettingInfoRequest(PatacRemoteSettingsManager.HudSettingInfo hudSettingInfo) {
+    @Override
+    public void clientSubscriberConnected() {
 
     }
 
-    default void onHudSettingChangedRequest(PatacRemoteSettingsManager.EHudSettingType eHudSettingType, int i) {
+    @Override
+    public void onAllHudSettingInfoRequest(PatacRemoteSettingsManager.HudSettingInfo hudSettingInfo) {
 
     }
 
-    default void onChangeHudAdjustmentResultRequest(PatacRemoteSettingsManager.EHudAdjustmentType eHudAdjustmentType) {
+    @Override
+    public void onHudSettingChangedRequest(PatacRemoteSettingsManager.EHudSettingType eHudSettingType, int i) {
 
     }
 
-    default void onChangeHudAdjustmentInfoRequest(PatacRemoteSettingsManager.EHudAdjustmentType eHudAdjustmentType, float v) {
+    @Override
+    public void onChangeHudAdjustmentResultRequest(PatacRemoteSettingsManager.EHudAdjustmentType eHudAdjustmentType) {
 
     }
 
-    default void onHudCustomInfoRequest(PatacRemoteSettingsManager.EHudAdjustmentType eHudAdjustmentType, boolean b) {
+    @Override
+    public void onChangeHudAdjustmentInfoRequest(PatacRemoteSettingsManager.EHudAdjustmentType eHudAdjustmentType, float v) {
 
     }
 
-    default void onSettingClusterViewChangedRequest(PatacRemoteSettingsManager.ECurrentView eCurrentView) {
+    @Override
+    public void onHudCustomInfoRequest(PatacRemoteSettingsManager.EHudAdjustmentType eHudAdjustmentType, boolean b) {
 
     }
 
-    default void onSettingClusterZone2CurrentPageRequest(PatacRemoteSettingsManager.ECurrentPage eCurrentPage) {
+    @Override
+    public void onSettingClusterViewChangedRequest(PatacRemoteSettingsManager.ECurrentView eCurrentView) {
 
     }
 
-    default void onAllClusterSettingInfoRequest(PatacRemoteSettingsManager.ClusterSettingInfo clusterSettingInfo) {
+    @Override
+    public void onSettingClusterZone2CurrentPageRequest(PatacRemoteSettingsManager.ECurrentPage eCurrentPage) {
 
     }
 
-    default void onEasterEggRequest() {
+    @Override
+    public void onAllClusterSettingInfoRequest(PatacRemoteSettingsManager.ClusterSettingInfo clusterSettingInfo) {
 
     }
 
-    default void onSettingChangeNaviVisibilityInZone3Request(boolean b) {
+    @Override
+    public void onEasterEggRequest() {
 
     }
 
-    default void onSettingUpdateSpeedDisplayOptionRequest(boolean b) {
+    @Override
+    public void onSettingChangeNaviVisibilityInZone3Request(boolean b) {
 
     }
 
-    default void onSettingUpdateSpeedLimitSourceRequest(PatacRemoteSettingsManager.ESpeedLimit eSpeedLimit) {
+    @Override
+    public void onSettingUpdateSpeedDisplayOptionRequest(boolean b) {
 
     }
 
-    default void onSettingUpdateSpeedLimitWarningVisibilityRequest(boolean b) {
+    @Override
+    public void onSettingUpdateSpeedLimitSourceRequest(PatacRemoteSettingsManager.ESpeedLimit eSpeedLimit) {
 
     }
 
-    default void onSettingUpdateSpeedLimitVisibilityRequest(boolean b) {
+    @Override
+    public void onSettingUpdateSpeedLimitWarningVisibilityRequest(boolean b) {
 
     }
 
-    default void onZone2PageStatusRequest(boolean b, PatacRemoteSettingsManager.ECurrentPage eCurrentPage) {
+    @Override
+    public void onSettingUpdateSpeedLimitVisibilityRequest(boolean b) {
 
     }
 
-    default void onLampIconClickedRequest() {
+    @Override
+    public void onZone2PageStatusRequest(boolean b, PatacRemoteSettingsManager.ECurrentPage eCurrentPage) {
 
     }
 
-    default void onSmartControllerOnRequest(PatacRemoteSettingsManager.EFunctionType eFunctionType) {
+    @Override
+    public void onLampIconClickedRequest() {
 
     }
 
-    default void onSettingChangeClusterSmartControlRequest(int i) {
+    @Override
+    public void onSmartControllerOnRequest(PatacRemoteSettingsManager.EFunctionType eFunctionType) {
 
     }
 
-    default void onSettingChangeVehicleModelColorRequest(int i) {
+    @Override
+    public void onSettingChangeClusterSmartControlRequest(int i) {
 
     }
 
-    default void onButtonBrightnessRequest(int i) {
+    @Override
+    public void onSettingChangeVehicleModelColorRequest(int i) {
 
     }
 
-    default void onDispalyBrightnessRequest(int i) {
+    @Override
+    public void onButtonBrightnessRequest(int i) {
+
+    }
+
+    @Override
+    public void onDispalyBrightnessRequest(int i) {
 
     }
 }
