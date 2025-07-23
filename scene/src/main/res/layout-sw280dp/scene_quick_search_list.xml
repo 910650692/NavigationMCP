@@ -26,9 +26,9 @@
         <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/sk_rcv_quick"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_930"
+            android:layout_height="@dimen/dp_600"
             android:layout_marginTop="@dimen/dp_m_81"
-            android:padding="@dimen/dp_51"
+            android:padding="@dimen/dp_52"
             android:background="@drawable/bg_shadow_navi_cadillac"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -85,9 +85,7 @@
                     <com.sgm.navi.ui.view.SkinConstraintLayout
                         android:layout_width="@dimen/dp_600"
                         android:layout_height="@dimen/dp_152"
-                        android:background="@drawable/bg_shadow_navi_cadillac"
-                        android:paddingHorizontal="@dimen/dp_51"
-                        android:paddingVertical="@dimen/dp_51"
+                        android:background="@drawable/bg_search_main_tab"
                         android:focusable="false"
                         android:visibility="@{ViewModel.tmcModeVisibility ? View.GONE : View.VISIBLE}"
                         app:layout_constraintStart_toStartOf="parent"
