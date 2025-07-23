@@ -23,6 +23,7 @@ import com.sgm.navi.service.logicpaket.signal.SignalPackage;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
+import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -65,6 +66,7 @@ public class MapModelHelp {
      * 恢复设置偏好
      */
     public void restoreSetting() {
+        restoreIsChargeStation();
         final boolean iShowTmc = mSettingPackage.getConfigKeyRoadEvent();
         // 路况开启恢复
         final int intentPage = ExportIntentParam.getIntentPage();
@@ -117,6 +119,16 @@ public class MapModelHelp {
                 restoreCarMode();
                 break;
         }
+    }
+
+    /**
+     * 恢复底图充电桩显示隐藏
+     */
+    private void restoreIsChargeStation() {
+        final boolean isShowChargingStation = mSettingPackage.getChargingStation();
+        final ArrayList<Integer> typeList = new ArrayList<>();
+        typeList.add(25);
+        MapPackage.getInstance().setCustomLabelTypeVisible(MapType.MAIN_SCREEN_MAIN_MAP, typeList, isShowChargingStation);
     }
 
     /***
