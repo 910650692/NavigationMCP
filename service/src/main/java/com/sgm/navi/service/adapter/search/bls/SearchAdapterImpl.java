@@ -337,6 +337,9 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         final SearchNearestParam nearestParam = new SearchNearestParam();
         nearestParam.poi_loc.lon = searchRequestParameterBuilder.getPoiLoc().getLon();
         nearestParam.poi_loc.lat = searchRequestParameterBuilder.getPoiLoc().getLat();
+        if(ConvertUtils.isNull(getSearchServiceV1())){
+            return mTaskId.get();
+        }
         getSearchServiceV1().nearestSearch(nearestParam, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
         final SearchCallbackWrapper<SearchNearestResult> callbackWrapper = createCallbackWrapper(
                 SearchNearestResult.class,

@@ -1166,13 +1166,17 @@ public final class SearchResultMapper {
                 .setMBrand(poiInfo.chargingStationInfo.brand_desc)
                 .setCurrentElePrice( price > 0 ? String.valueOf(price) : "")
                 .setCurrentServicePrice(poiInfo.chargingStationInfo.parkPrice);
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "slow free: " + poiInfo.chargingStationInfo.slow_free
-                + " slow total: " + poiInfo.chargingStationInfo.slow_total
-                + " fast free: " + poiInfo.chargingStationInfo.fast_free
-                + " fast total: " + poiInfo.chargingStationInfo.fast_total
-                + " current_ele_price: " + poiInfo.chargingStationInfo.currentPrice.charging
-                + " current_service_price: " + poiInfo.chargingStationInfo.currentPrice.service
-                + " parkPrice: " + poiInfo.chargingStationInfo.parkPrice);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG
+                , "slow free: " , poiInfo.chargingStationInfo.slow_free
+                , " slow total: " , poiInfo.chargingStationInfo.slow_total
+                , " fast free: " , poiInfo.chargingStationInfo.fast_free
+                , " fast total: " , poiInfo.chargingStationInfo.fast_total
+                , " current_ele_price: " , poiInfo.chargingStationInfo.currentPrice.charging
+                , " current_service_price: " , poiInfo.chargingStationInfo.currentPrice.service
+                , " parkPrice: " , poiInfo.chargingStationInfo.parkPrice
+                , " name is: ", poiInfo.basicInfo.name
+                , " searchPoiInfo.basicInfo.distance: ", poiInfo.basicInfo.distance
+                , " searchPoiInfo.basicInfo.tag: ", poiInfo.basicInfo.tag);
         for (ChargingPlugInfo chargingPlugInfo : poiInfo.chargingStationInfo.plugsInfo) {
             if (chargingPlugInfo.plugType == AutoMapConstant.PLUG_TYPE_SLOW) {
                 chargeInfo.setSlowVolt(chargingPlugInfo.slowVoltage)
@@ -1191,15 +1195,9 @@ public final class SearchResultMapper {
                 .setSpaceTotal(0)
                 .setSpaceFree(0);
         parkingInfoList.add(parkingInfo);
-        Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, " ;name is: " + poiInfo.basicInfo.name
-                + "  ;searchPoiInfo.basicInfo.distance:" + poiInfo.basicInfo.distance
-                + " ;searchPoiInfo.basicInfo.tag:" + poiInfo.basicInfo.tag);
         //标签信息
         final List<LabelInfo> labelInfos = new ArrayList<>();
         for (SearchLabelInfo searchLabelInfo : poiInfo.labelInfo) {
-            if(BuildConfig.DEBUG){
-                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, " name is: " + poiInfo.basicInfo.name + " label info type: " + searchLabelInfo.type + " ,subType: " + searchLabelInfo.subType + " ,content: " + searchLabelInfo.content);
-            }
             final LabelInfo labelInfo = new LabelInfo()
                     .setMContent(searchLabelInfo.content)
                     .setMType(searchLabelInfo.type)

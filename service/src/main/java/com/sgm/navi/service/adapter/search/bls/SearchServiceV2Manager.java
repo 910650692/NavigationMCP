@@ -7,6 +7,8 @@ import com.autonavi.gbl.search.SearchServiceV2;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.engine.EngineAdapter;
+import com.sgm.navi.service.logicpaket.engine.EnginePackage;
 
 /**
  * @author baipeng0904
@@ -21,15 +23,25 @@ public class SearchServiceV2Manager {
      */
     public void initService() {
         if (mSearchService == null) {
-            mSearchService = (SearchService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.SearchSingleServiceID);
-            mSearchService.init();
-            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Initialized SearchServiceV1");
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "v1 engineIsInit: ",EnginePackage.getInstance().engineIsInit());
+            if(EnginePackage.getInstance().engineIsInit()){
+                mSearchService = (SearchService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.SearchSingleServiceID);
+                mSearchService.init();
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Initialized SearchServiceV1");
+            }else{
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Init Fail SearchServiceV1");
+            }
         }
 
         if (mSearchServiceV2 == null) {
-            mSearchServiceV2 = (SearchServiceV2) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.SearchV2SingleServiceID);
-            mSearchServiceV2.init();
-            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Initialized SearchServiceV2");
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "v2 engineIsInit: ",EnginePackage.getInstance().engineIsInit());
+            if(EnginePackage.getInstance().engineIsInit()){
+                mSearchServiceV2 = (SearchServiceV2) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.SearchV2SingleServiceID);
+                mSearchServiceV2.init();
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Initialized SearchServiceV2");
+            }else{
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Init Fail SearchServiceV2");
+            }
         }
 
     }
