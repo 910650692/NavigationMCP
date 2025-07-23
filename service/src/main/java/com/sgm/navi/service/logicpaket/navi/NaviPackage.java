@@ -1420,6 +1420,43 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         });
     }
 
+    /**
+     * 播放补能提示语音
+     *
+     * @param tts  语音内容
+     * @param type 语音类型
+     */
+    public void playChargeTips(String tts, int type) {
+        Logger.i(TAG, "playChargeTips tts:" + tts + " type:" + type);
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onPlayChargeTips(tts, type);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 补能提示语音回调
+     *
+     * @param type 语音类型
+     */
+    public void chargeTipsCallBack(int type) {
+        Logger.i(TAG, "chargeTipsCallBack type = " + type);
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onChargeTipsCallBack(type);
+                    }
+                }
+            }
+        });
+    }
+
     public void closeNavi() {
         Logger.i(TAG, "closeNavi");
         String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();

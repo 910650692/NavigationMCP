@@ -243,4 +243,21 @@ public interface IGuidanceObserver {
     default void onPassByClick(MapType mapType) {
 
     }
+
+    /**
+     * 充电提示语音
+     * @param tts 提示语
+     * @param type 提示类型
+     */
+    default void onPlayChargeTips(String tts, int type) {
+
+    }
+
+    /**
+     * 充电提示回调
+     * @param type 提示类型
+     */
+    default void onChargeTipsCallBack(int type) {
+
+    }
 }

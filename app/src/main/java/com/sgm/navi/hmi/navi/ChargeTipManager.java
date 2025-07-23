@@ -35,6 +35,7 @@ import com.sgm.navi.service.define.user.account.AccessTokenParam;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
@@ -61,6 +62,7 @@ public class ChargeTipManager {
     private final RoutePackage mRoutePackage;
     private final SettingPackage mSettingPackage;
     private final CalibrationPackage mCalibrationPackage;
+    private final NaviPackage mNaviPackage;
     //所有途经点集合
     private List<NaviViaEntity> mNaviViaEntityList;
     //补能规划是否已打开
@@ -95,6 +97,7 @@ public class ChargeTipManager {
     private int mIntervalCount;
     //剩余电量低打开补能规划是否已提醒
     private boolean mIsPowerLowOpenSupplyChecked;
+    private RouteAlterChargeStationInfo mRouteAlterChargeStationInfo;
 
     private boolean mTestIsMocking = false;
 
@@ -105,6 +108,7 @@ public class ChargeTipManager {
         mRoutePackage = RoutePackage.getInstance();
         mSettingPackage = SettingPackage.getInstance();
         mCalibrationPackage = CalibrationPackage.getInstance();
+        mNaviPackage = NaviPackage.getInstance();
     }
 
     /***
@@ -166,10 +170,15 @@ public class ChargeTipManager {
             checkChargeStationNum();
         }
         if (!mIsChargingPlanOpen && !isCurClose) {
-            //TODO 路径规划页是否已提醒
-            if (!mIsPowerLowOpenSupplyChecked && isUnreachableOrLow()) {
-                mIsPowerLowOpenSupplyChecked = true;
-                notifyPowerLowOpenSupply();
+            if (mRoutePackage.isRouteTips()) {
+                if (Logger.openLog) {
+                    Logger.i(TAG, "isRouteTips is true");
+                }
+            } else {
+                if (!mIsPowerLowOpenSupplyChecked && isUnreachableOrLow()) {
+                    mIsPowerLowOpenSupplyChecked = true;
+                    notifyPowerLowOpenSupply();
+                }
             }
         }
 
@@ -327,7 +336,7 @@ public class ChargeTipManager {
         if (mIsChargingPlanOpen) {
             //补能规划打开：检测能否合理规划替补充电站
             if (mTipType != TipType.Unreachable) {
-                if (!isChargeStationOpen(poiInfo.getBusinessTime())) {
+                if (!isCurrentTimeInRange(poiInfo.getBusinessTime())) {
                     mTipType = TipType.Closed;
                 } else if (curViaFree < 2) {
                     mTipType = TipType.Congestion;
@@ -335,7 +344,7 @@ public class ChargeTipManager {
             }
             mAlternativeChargeStationId = mRoutePackage.requestRouteAlternativeChargeStation(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo.getPid());
         } else {
-            if (!isChargeStationOpen(poiInfo.getBusinessTime())) {
+            if (!isCurrentTimeInRange(poiInfo.getBusinessTime())) {
                 chargeStationCloseSearchNew(poiInfo);
             } else if (curViaFree < 2) {
                 chargeStationCongestionSearchNew(poiInfo);
@@ -632,11 +641,13 @@ public class ChargeTipManager {
             return;
         }
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_2), poiInfo.getName()) + curViaFree + "/" + curViaTotal);
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_search_new));
+        entity.setTitle(String.format(getStringRes(R.string.tip_msg_2), poiInfo.getName()) + curViaFree + "/" + curViaTotal);
+        entity.setAction(getStringRes(R.string.msg_action_search_new));
         entity.setType(SceneNaviChargeBtnType.SEARCH_NEW_STATION);
-        entity.setTtsContent(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_2_tts));
-        notifyUi(entity);
+        String tts = String.format(getStringRes(R.string.tip_msg_2_tts), poiInfo.getName());
+        entity.setTtsContent(tts);
+        notifyUi(entity,false);
+        mNaviPackage.playChargeTips(tts, SceneNaviChargeBtnType.SEARCH_NEW_STATION);
     }
 
     /**
@@ -648,11 +659,13 @@ public class ChargeTipManager {
             return;
         }
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_10), poiInfo.getName()));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_search_new));
+        entity.setTitle(String.format(getStringRes(R.string.tip_msg_10), poiInfo.getName()));
+        entity.setAction(getStringRes(R.string.msg_action_search_new));
         entity.setType(SceneNaviChargeBtnType.SEARCH_NEW_STATION);
-        entity.setTtsContent(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_10_tts));
-        notifyUi(entity);
+        String tts = String.format(getStringRes(R.string.tip_msg_10_tts), poiInfo.getName());
+        entity.setTtsContent(tts);
+        notifyUi(entity,false);
+        mNaviPackage.playChargeTips(tts, SceneNaviChargeBtnType.SEARCH_NEW_STATION);
     }
 
     /**
@@ -664,11 +677,13 @@ public class ChargeTipManager {
             return;
         }
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_5), poiInfo.getName()));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_search_new));
+        entity.setTitle(String.format(getStringRes(R.string.tip_msg_5), poiInfo.getName()));
+        entity.setAction(getStringRes(R.string.msg_action_search_new));
         entity.setType(SceneNaviChargeBtnType.SEARCH_NEW_STATION);
-        entity.setTtsContent(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_5_tts));
-        notifyUi(entity);
+        String tts = String.format(getStringRes(R.string.tip_msg_5_tts), poiInfo.getName());
+        entity.setTtsContent(tts);
+        notifyUi(entity,false);
+        mNaviPackage.playChargeTips(tts, SceneNaviChargeBtnType.SEARCH_NEW_STATION);
     }
 
     /**
@@ -680,11 +695,13 @@ public class ChargeTipManager {
             return;
         }
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_11), poiInfo.getName()));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_search_new));
+        entity.setTitle(String.format(getStringRes(R.string.tip_msg_11), poiInfo.getName()));
+        entity.setAction(getStringRes(R.string.msg_action_search_new));
         entity.setType(SceneNaviChargeBtnType.SEARCH_NEW_STATION);
-        entity.setTtsContent(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_11_tts), poiInfo.getName()));
-        notifyUi(entity);
+        String tts = String.format(getStringRes(R.string.tip_msg_11_tts), poiInfo.getName());
+        entity.setTtsContent(tts);
+        notifyUi(entity,false);
+        mNaviPackage.playChargeTips(tts, SceneNaviChargeBtnType.SEARCH_NEW_STATION);
     }
 
     /**
@@ -696,12 +713,12 @@ public class ChargeTipManager {
             return;
         }
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_3));
-        entity.setSubTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_11), poiInfo.getName()));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_know));
+        entity.setTitle(getStringRes(R.string.tip_msg_3));
+        entity.setSubTitle(String.format(getStringRes(R.string.tip_msg_11), poiInfo.getName()));
+        entity.setAction(getStringRes(R.string.msg_action_know));
         entity.setType(SceneNaviChargeBtnType.I_KNOW);
-        entity.setTtsContent(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_11_tts2), poiInfo.getName()));
-        notifyUi(entity);
+        entity.setTtsContent(String.format(getStringRes(R.string.tip_msg_11_tts2), poiInfo.getName()));
+        notifyUi(entity, true);
     }
 
     /**
@@ -713,12 +730,12 @@ public class ChargeTipManager {
             return;
         }
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_3));
-        entity.setSubTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_10), poiInfo.getName()));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_know));
+        entity.setTitle(getStringRes(R.string.tip_msg_3));
+        entity.setSubTitle(String.format(getStringRes(R.string.tip_msg_10), poiInfo.getName()));
+        entity.setAction(getStringRes(R.string.msg_action_know));
         entity.setType(SceneNaviChargeBtnType.I_KNOW);
-        entity.setTtsContent(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_10_tts2), poiInfo.getName()));
-        notifyUi(entity);
+        entity.setTtsContent(String.format(getStringRes(R.string.tip_msg_10_tts2), poiInfo.getName()));
+        notifyUi(entity, true);
     }
 
     /**
@@ -730,12 +747,12 @@ public class ChargeTipManager {
             return;
         }
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_3));
-        entity.setSubTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_5), poiInfo.getName()));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_know));
+        entity.setTitle(getStringRes(R.string.tip_msg_3));
+        entity.setSubTitle(String.format(getStringRes(R.string.tip_msg_5), poiInfo.getName()));
+        entity.setAction(getStringRes(R.string.msg_action_know));
         entity.setType(SceneNaviChargeBtnType.I_KNOW);
-        entity.setTtsContent(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_5_tts2), poiInfo.getName()));
-        notifyUi(entity);
+        entity.setTtsContent(String.format(getStringRes(R.string.tip_msg_5_tts2), poiInfo.getName()));
+        notifyUi(entity, true);
     }
 
     /**
@@ -747,12 +764,19 @@ public class ChargeTipManager {
             return;
         }
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_2), info.getMName()) + curViaFree + "/" + curViaTotal);
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_update));
+        entity.setTitle(String.format(getStringRes(R.string.tip_msg_2), info.getMName()) + curViaFree + "/" + curViaTotal);
+        entity.setAction(getStringRes(R.string.msg_action_update));
         entity.setType(SceneNaviChargeBtnType.UPDATE_SUPPLY);
-        entity.setTtsContent(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_2_tts2));
+        String tts = String.format(getStringRes(R.string.tip_msg_2_tts2), info.getMName());
+        entity.setTtsContent(tts);
         entity.setRouteAlterChargeStationInfo(info);
-        notifyUi(entity);
+        notifyUi(entity,false);
+        mRouteAlterChargeStationInfo = info;
+        mNaviPackage.playChargeTips(tts, SceneNaviChargeBtnType.UPDATE_SUPPLY);
+    }
+
+    public RouteAlterChargeStationInfo getRouteAlterChargeStationInfo() {
+        return mRouteAlterChargeStationInfo;
     }
 
     /**
@@ -760,10 +784,10 @@ public class ChargeTipManager {
      */
     private void chargeStationFewGoCharge() {
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_6));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_go_charging));
+        entity.setTitle(getStringRes(R.string.tip_msg_6));
+        entity.setAction(getStringRes(R.string.msg_action_go_charging));
         entity.setType(SceneNaviChargeBtnType.GO_CHARGING);
-        notifyUi(entity);
+        notifyUi(entity, true);
     }
 
     /**
@@ -771,12 +795,12 @@ public class ChargeTipManager {
      */
     private void notifyPowerLowOpenSupply() {
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_12));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_open));
+        entity.setTitle(getStringRes(R.string.tip_msg_12));
+        entity.setAction(getStringRes(R.string.msg_action_open));
         entity.setType(SceneNaviChargeBtnType.OPEN_SUPPLY);
-        entity.setSubTitle(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_12_sub_title));
-        //entity.setTtsContent(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_2_tts));
-        notifyUi(entity);
+        entity.setSubTitle(getStringRes(R.string.tip_msg_12_sub_title));
+        //entity.setTtsContent(getStringRes(R.string.tip_msg_2_tts));
+        notifyUi(entity, true);
     }
 
     /**
@@ -784,10 +808,10 @@ public class ChargeTipManager {
      */
     private void lowPowerGoCharge() {
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_1));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_go_charging));
+        entity.setTitle(getStringRes(R.string.tip_msg_1));
+        entity.setAction(getStringRes(R.string.msg_action_go_charging));
         entity.setType(SceneNaviChargeBtnType.GO_CHARGING);
-        notifyUi(entity);
+        notifyUi(entity, true);
     }
 
     /**
@@ -795,10 +819,10 @@ public class ChargeTipManager {
      */
     public void chargeStationTimeOver(int timeOver) {
         final ChargeTipEntity entity = new ChargeTipEntity();
-        entity.setTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(R.string.tip_msg_7), timeOver));
-        entity.setAction(AppCache.getInstance().getMContext().getResources().getString(R.string.msg_action_know));
+        entity.setTitle(String.format(getStringRes(R.string.tip_msg_7), timeOver));
+        entity.setAction(getStringRes(R.string.msg_action_know));
         entity.setType(SceneNaviChargeBtnType.I_KNOW);
-        notifyUi(entity);
+        notifyUi(entity, true);
     }
 
     /**
@@ -821,12 +845,6 @@ public class ChargeTipManager {
         mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
     }
 
-    /**
-     * 判断充电站是否正在营业
-     */
-    private boolean isChargeStationOpen(String time) {
-        return isCurrentTimeInRange(time);
-    }
 
     /**
      * 判断当前时间是否在指定的非跨天时间段内（开始时间 <= 结束时间）
@@ -914,11 +932,11 @@ public class ChargeTipManager {
      *
      * @param entity
      */
-    private void notifyUi(final ChargeTipEntity entity) {
+    private void notifyUi(final ChargeTipEntity entity, boolean isPlayTts) {
         Logger.i(TAG, "notifyUi", "viewModel:" , (mViewModel == null));
         if (mViewModel != null && entity != null) {
             mViewModel.notifyBatteryWarning(entity);
-            if (!TextUtils.isEmpty(entity.getTtsContent())) {
+            if (isPlayTts && !TextUtils.isEmpty(entity.getTtsContent())) {
                 playTts(entity.getTtsContent());
             }
         }
@@ -928,11 +946,20 @@ public class ChargeTipManager {
      * tts 播放提示
      * @param msg
      */
-    private void playTts(final String msg) {
+    public void playTts(final String msg) {
         Logger.i(TAG, "playTts:" , msg);
         if (mSpeechPackage != null && !ConvertUtils.isEmpty(msg)) {
             mSpeechPackage.synthesize(msg);
         }
+    }
+
+    /***
+     * 获取字符串资源
+     * @param resId
+     * @return
+     */
+    private String getStringRes(int resId) {
+        return AppCache.getInstance().getMContext().getResources().getString(resId);
     }
 
     /***
@@ -942,11 +969,11 @@ public class ChargeTipManager {
         if (!mTestIsMocking) {
             ChargeTipEntity entity = null;
             entity = new ChargeTipEntity();
-            entity.setTitle(String.format(AppCache.getInstance().getMContext().getResources().getString(com.sgm.navi.scene.R.string.tip_msg_5), "测试充电桩"));
-            entity.setAction(AppCache.getInstance().getMContext().getResources().getString(com.sgm.navi.scene.R.string.msg_action_search_new));
+            entity.setTitle(String.format(getStringRes(com.sgm.navi.scene.R.string.tip_msg_5), "测试充电桩"));
+            entity.setAction(getStringRes(com.sgm.navi.scene.R.string.msg_action_search_new));
             entity.setType(SceneNaviChargeBtnType.SEARCH_NEW_STATION);
-            entity.setTtsContent(String.format(AppCache.getInstance().getMContext().getResources().getString(com.sgm.navi.scene.R.string.tip_msg_5_tts), "测试充电桩"));
-            notifyUi(entity);
+            entity.setTtsContent(String.format(getStringRes(com.sgm.navi.scene.R.string.tip_msg_5_tts), "测试充电桩"));
+            notifyUi(entity, true);
             mTestIsMocking = true;
         } else {
             Logger.i(TAG, "mock 完成！");

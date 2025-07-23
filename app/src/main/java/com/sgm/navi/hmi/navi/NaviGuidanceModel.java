@@ -27,6 +27,7 @@ import com.sgm.navi.hmi.splitscreen.SRFloatWindowService;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
+import com.sgm.navi.scene.ui.navi.SceneNaviChargeBtnType;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.sgm.navi.service.AppCache;
@@ -1598,5 +1599,25 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      */
     public void cancelRoute() {
         mRoutePackage.abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
+    }
+
+    @Override
+    public void onChargeTipsCallBack(int type) {
+        Logger.i(TAG, " type:", type);
+        if (mTipManager != null) {
+            switch (type) {
+                case SceneNaviChargeBtnType.SEARCH_NEW_STATION:
+                    searchNewChargeStation();
+                    break;
+                case SceneNaviChargeBtnType.UPDATE_SUPPLY:
+                    if (mTipManager.getRouteAlterChargeStationInfo() != null) {
+                        Logger.i(TAG, "addViaList");
+                        addViaList(mTipManager.getRouteAlterChargeStationInfo());
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
