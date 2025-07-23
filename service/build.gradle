@@ -54,21 +54,33 @@ android {
     productFlavors {
         defaule {
             dimension flavorType
+            buildConfigField "float", "MOUNT_ANGLE_YAW", "0.0f"
+            buildConfigField "float", "MOUNT_ANGLE_PITCH", "0.0f"
         }
         buick {
             dimension flavorType
+            buildConfigField "float", "MOUNT_ANGLE_YAW", "0.0f"
+            buildConfigField "float", "MOUNT_ANGLE_PITCH", "0.0f"
         }
         cadi {
             dimension flavorType
+            buildConfigField "float", "MOUNT_ANGLE_YAW", "0.0f"
+            buildConfigField "float", "MOUNT_ANGLE_PITCH", "0.0f"
         }
         clea_8255 {
             dimension flavorType
+            buildConfigField "float", "MOUNT_ANGLE_YAW", "0.0f"
+            buildConfigField "float", "MOUNT_ANGLE_PITCH", "0.0f"
         }
         clea_local_8155 {
             dimension flavorType
+            buildConfigField "float", "MOUNT_ANGLE_YAW", "0.0f"
+            buildConfigField "float", "MOUNT_ANGLE_PITCH", "180.0f"
         }
         clea_8775 {
             dimension flavorType
+            buildConfigField "float", "MOUNT_ANGLE_YAW", "-90.0f"
+            buildConfigField "float", "MOUNT_ANGLE_PITCH", "0.0f"
         }
     }
 
