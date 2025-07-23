@@ -2,6 +2,7 @@ package com.sgm.navi.hmi.wechat;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
@@ -67,6 +68,18 @@ public class WeChatModel extends BaseModel<WeChatViewModel> implements WeChatCal
             mViewModel.updateQRCode(bitmap);
             mViewModel.updateLoadingVisible(false, false, true);
         } else {
+            if (result != null) {
+                switch (result.getCode()) {
+                    case 2:
+                        ToastUtils.Companion.getInstance().showCustomToastView("访问失败");
+                        break;
+                    case 14:
+                        ToastUtils.Companion.getInstance().showCustomToastView("登录状态失效，请重新登录");
+                        break;
+                    default:
+                        break;
+                }
+            }
             mViewModel.updateLoadingVisible(false, true, false);
         }
     }

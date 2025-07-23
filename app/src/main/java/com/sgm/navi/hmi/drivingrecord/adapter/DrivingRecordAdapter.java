@@ -1,6 +1,7 @@
 package com.sgm.navi.hmi.drivingrecord.adapter;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,9 +69,11 @@ public class DrivingRecordAdapter extends RecyclerView.Adapter<DrivingRecordAdap
         }
 
         // 设置起点
-        holder.mDrivingRecordBinding.itemDrivingStartName.setText(mDataList.get(position).getStartPoiName());
+        holder.mDrivingRecordBinding.itemDrivingStartName.setText(TextUtils.isEmpty(mDataList.get(position).getStartPoiName())
+                ? "--" : mDataList.get(position).getStartPoiName());
         // 设置终点
-        holder.mDrivingRecordBinding.itemDrivingEndName.setText(mDataList.get(position).getEndPoiName());
+        holder.mDrivingRecordBinding.itemDrivingEndName.setText(TextUtils.isEmpty(mDataList.get(position).getEndPoiName())
+                ? "--" : mDataList.get(position).getEndPoiName());
         // 该行程行驶距离
         holder.mDrivingRecordBinding.itemDrivingDistance.setText(TimeUtils.getInstance().getDistanceString(mDataList.get(position).getRunDistance()));
         // 该行程完成时间
