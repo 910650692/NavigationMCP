@@ -207,4 +207,19 @@ public class FavoriteManager {
     }
 
 
+    /**
+     * 根据经纬度判断此点是否已经被收藏.
+     *
+     * @param lon 目标经度.
+     * @param lat 目标纬度.
+     */
+    public boolean isFavorite(final double lon, final double lat) {
+        final List<Favorite> favoriteList = mFavoriteDao.queryBuilder()
+                .where(FavoriteDao.Properties.MPointX.between(lon - 0.0001, lon + 0.0001),
+                        FavoriteDao.Properties.MPointY.between(lat - 0.0001, lat + 0.0001))
+                .list();
+        return !(null == favoriteList || favoriteList.isEmpty());
+    }
+
+
 }

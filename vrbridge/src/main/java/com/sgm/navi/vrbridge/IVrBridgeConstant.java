@@ -449,6 +449,7 @@ public interface IVrBridgeConstant {
         String AROUND = "附近";
         String ADD_FAVORITE = "已为你收藏";
         String CANT_ADD_EMPTY_POI = "空的poi名称，无法收藏";
+        String ALREADY_SAVED = "此点已经被收藏";
         String NO_SUCH_INFO = "暂未查询到相应信息，请稍后再试";
         String NOT_SUPPORT_CURRENT_SORT = "不支持该排序，请继续选择";
         String NOT_SUPPORT_SORT_TYPE = "不支持的排序类型";

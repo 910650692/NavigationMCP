@@ -743,4 +743,26 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
     public void setFavoriteDataUpdatedStatus(final boolean isSet) {
         this.mIsFavoriteDataUpdated = isSet;
     }
+
+    /**
+     * 根据Poi的经纬度判断是否已经收藏，逆地理搜索poiId可能为空.
+     *
+     * @param poiInfo 对应的poi信息.
+     *
+     * @return true:已收藏此点  false:未被收藏.
+     */
+    public boolean alreadySavedPoi(final PoiInfoEntity poiInfo) {
+        if (null == poiInfo || null == poiInfo.getPoint()) {
+            return true;
+        }
+
+        if (isLogin()) {
+            //已登录从云端判断
+            final String itemId = mBehaviorAdapter.isFavorite(poiInfo);
+            return !TextUtils.isEmpty(itemId);
+        } else {
+            return mManager.isFavorite(poiInfo.getMPoint().getLon(), poiInfo.getMPoint().getLat());
+        }
+    }
+
 }

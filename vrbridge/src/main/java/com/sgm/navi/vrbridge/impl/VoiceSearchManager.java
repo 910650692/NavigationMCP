@@ -1644,27 +1644,34 @@ public final class VoiceSearchManager {
      *                  false:关键字搜索，收藏指定poi
      */
     private void addCommonFavorite(final PoiInfoEntity poiInfo, final boolean geoSearch) {
-        if (null != poiInfo) {
+        final CallResponse favoriteResponse;
+        if (null != poiInfo && null != poiInfo.getPoint()) {
             if(Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "current name: ", poiInfo.getName()
                         + ", address: " + poiInfo.getAddress()
                         + ",lon: " + poiInfo.getPoint().getLon()
                         + ", lat: " + poiInfo.getPoint().getLat());
             }
-
-            final CallResponse favoriteResponse = CallResponse.createSuccessResponse(
-                    IVrBridgeConstant.ResponseString.ADD_FAVORITE + poiInfo.getName());
-            favoriteResponse.setNeedPlayMessage(true);
-            if (geoSearch && null != mRespCallback) {
-                mRespCallback.onResponse(favoriteResponse);
-            } else if (null != mPoiCallback) {
-                mPoiCallback.onResponse(favoriteResponse);
+            final boolean alreadySaved = BehaviorPackage.getInstance().alreadySavedPoi(poiInfo);
+            if (alreadySaved) {
+                favoriteResponse = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_SAVED);
+            } else {
+                favoriteResponse = CallResponse.createSuccessResponse(
+                        IVrBridgeConstant.ResponseString.ADD_FAVORITE + poiInfo.getName());
+                final FavoriteInfo favoriteInfo = new FavoriteInfo();
+                favoriteInfo.setCommonName(0);
+                poiInfo.setFavoriteInfo(favoriteInfo);
+                BehaviorPackage.getInstance().addFavorite(poiInfo, 0);
             }
+        } else {
+            favoriteResponse = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NO_SUCH_INFO);
+        }
 
-            final FavoriteInfo favoriteInfo = new FavoriteInfo();
-            favoriteInfo.setCommonName(0);
-            poiInfo.setFavoriteInfo(favoriteInfo);
-            BehaviorPackage.getInstance().addFavorite(poiInfo, 0);
+        favoriteResponse.setNeedPlayMessage(true);
+        if (geoSearch && null != mRespCallback) {
+            mRespCallback.onResponse(favoriteResponse);
+        } else if (null != mPoiCallback) {
+            mPoiCallback.onResponse(favoriteResponse);
         }
     }
 
