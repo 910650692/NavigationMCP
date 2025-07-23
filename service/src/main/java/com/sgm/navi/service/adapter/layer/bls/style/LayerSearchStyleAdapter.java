@@ -46,6 +46,8 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
 
     private final AtomicReference<List<PoiInfoEntity>> mPoiInfoList = new AtomicReference(new ArrayList<>());
     private float mMapLevel;
+    //是否悬挂卡沿途搜充电站类型
+    private boolean isHangingCardChargeStationType = false;
 
     public LayerSearchStyleAdapter(int engineID, BizSearchControl bizSearchControl) {
         super(engineID);
@@ -73,8 +75,13 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     Logger.d(TAG, "沿途搜类型 typeCode " + typeCode);
                     switch (typeCode) {
                         case LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE -> {
-                            Logger.d(TAG, "沿途搜-自定义充电站扎标");
-                            return KEY_SEARCH_POINT_ALONG_WAY_CHARGE;
+                            if (isHangingCardChargeStationType) {
+                                Logger.d(TAG, "沿途搜-悬挂卡充电站默认闪电扎标");
+                                return super.provideLayerItemStyleJson(layer, item);
+                            } else {
+                                Logger.d(TAG, "沿途搜-自定义充电站扎标");
+                                return KEY_SEARCH_POINT_ALONG_WAY_CHARGE;
+                            }
                         }
                     }
                 }
@@ -273,6 +280,13 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
         mMapLevel = mapLevel;
     }
 
+    public void setHangingCardType(boolean b) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "setHangingCardType ", b);
+        }
+        isHangingCardChargeStationType = b;
+    }
+
     /* 更新搜索结果数据 */
     public void updateSearchResult(List<PoiInfoEntity> poiInfoEntityList) {
         if (ConvertUtils.isEmpty(poiInfoEntityList)) {
@@ -445,7 +459,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             if (item instanceof SearchAlongWayLayerItem alongWayLayerItem) {
                final int typeCode = alongWayLayerItem.getMTypeCode();
                 Logger.d(TAG, "沿途搜类型 typeCode " + typeCode);
-                return typeCode == LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE;
+                return typeCode == LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE && !isHangingCardChargeStationType;
             }
         }
         return false;

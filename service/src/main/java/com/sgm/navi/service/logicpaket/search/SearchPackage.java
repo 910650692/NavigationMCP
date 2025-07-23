@@ -1427,7 +1427,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         }
         final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
         layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
-        final LayerPointItemType layerPointItemType = LayerPointItemType.SEARCH_POI_ALONG_ROUTE;
+        final LayerPointItemType layerPointItemType = LayerPointItemType.SEARCH_POI_HANGING_CARD_CHARGE_STATION;
         sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
         mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
                 layerItemSearchResult, true);

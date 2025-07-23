@@ -256,6 +256,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 result = updateSearchBeginEndPoi(searchResult);
             }
             case SEARCH_POI_ALONG_ROUTE -> {
+                getStyleAdapter().setHangingCardType(false);
                 result = updateSearchAlongRoutePoi(searchResult);
             }
             case SEARCH_PARENT_PARK -> {
@@ -270,6 +271,10 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             }
             case SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT -> {
                 result = updateSearchAlongRouteListSinglePoint(searchResult);
+            }
+            case SEARCH_POI_HANGING_CARD_CHARGE_STATION -> {
+                getStyleAdapter().setHangingCardType(true);
+                result = updateSearchAlongRoutePoi(searchResult);
             }
         }
         return result;

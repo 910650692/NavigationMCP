@@ -18,6 +18,7 @@ public enum LayerPointItemType {
     SEARCH_POI_ALONG_ROUTE, //沿途搜
     SEARCH_POI_ALONG_ROUTE_ADD, //沿途搜添加按钮
     SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT, //沿途搜列表单独扎标
+    SEARCH_POI_HANGING_CARD_CHARGE_STATION,   //沿途搜悬挂卡充电站扎标
     SEARCH_POI_LABEL,       //POI扎标图层业务
 
     ROUTE_PATH,             //路线
