@@ -176,7 +176,9 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
 
     @Override
     public void onMergedStatusInfo(final MergedStatusBean mergedStatusInfo) {
-        Logger.d(TAG, "onMergedStatusInfo: " + GsonUtils.toJson(mergedStatusInfo));
+        if (Logger.openLog) {
+            Logger.d(TAG, "onMergedStatusInfo: ", mergedStatusInfo);
+        }
     }
 
     @Override

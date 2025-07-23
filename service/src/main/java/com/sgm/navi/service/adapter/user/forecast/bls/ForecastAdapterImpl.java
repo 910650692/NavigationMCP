@@ -65,7 +65,9 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      */
     @Override
     public int addLocalArrivedData(final OftenArrivedItemInfo info) {
-        Logger.d(TAG,"addLocalArrivedData info = " , GsonUtils.toJson(info));
+        if (Logger.openLog) {
+            Logger.d(TAG, "addLocalArrivedData info = ", info);
+        }
         final OftenArrivedItem oftenArrivedItem = new OftenArrivedItem();
         GsonUtils.copyBean(info, oftenArrivedItem);
         oftenArrivedItem.dateTime.date = info.getDate();
@@ -107,7 +109,9 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
                 final OftenArrivedItemInfo itemInfo = getOftenArrivedItemInfo(oftenArrivedItem);
                 infos.add(itemInfo);
             }
-            Logger.d(TAG,"getArrivedDataList  infos = " , GsonUtils.toJson(infos));
+            if (Logger.openLog) {
+                Logger.d(TAG, "getArrivedDataList  infos = ", infos);
+            }
             return infos;
         }
         return null;

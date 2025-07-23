@@ -24,6 +24,7 @@ import com.sgm.navi.service.define.mapdata.ProvDataInfo;
 import com.sgm.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,19 +75,25 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
 
             @Override
             public void startAllTask(final ArrayList<Integer> cityAdCodes) {
-                Logger.d( "startAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
+                if (Logger.openLog) {
+                    Logger.d("startAllTask cityAdCodes = " + cityAdCodes);
+                }
                 showDialog(false, cityAdCodes);
             }
 
             @Override
             public void pauseAllTask(final ArrayList<Integer> cityAdCodes) {
-                Logger.d( "pauseAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
+                if (Logger.openLog) {
+                    Logger.d("pauseAllTask cityAdCodes = ", cityAdCodes);
+                }
                 showDialog(true, cityAdCodes);
             }
 
             @Override
             public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
-                Logger.d( "deleteAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
+                if (Logger.openLog) {
+                    Logger.d("deleteAllTask cityAdCodes = ", cityAdCodes);
+                }
                 if (mViewModel != null) {
                     mViewModel.deleteAllTask(cityAdCodes);
                 }
@@ -103,17 +110,23 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
 
             @Override
             public void startAllTask(final ArrayList<Integer> cityAdCodes) {
-                Logger.d( "startAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
+                if (Logger.openLog) {
+                    Logger.d("startAllTask cityAdCodes = ", cityAdCodes);
+                }
             }
 
             @Override
             public void pauseAllTask(final ArrayList<Integer> cityAdCodes) {
-                Logger.d( "pauseAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
+                if (Logger.openLog) {
+                    Logger.d("pauseAllTask cityAdCodes = ", cityAdCodes);
+                }
             }
 
             @Override
             public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
-                Logger.d( "deleteAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
+                if (Logger.openLog) {
+                    Logger.d("deleteAllTask cityAdCodes = ", cityAdCodes);
+                }
                 mIsDelete = true;
                 mViewModel.deleteAllTask(cityAdCodes);
             }

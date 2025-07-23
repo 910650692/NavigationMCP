@@ -378,7 +378,9 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             parent.mPos3D.lat = poiInfoEntity.getPoint().getLat();
             parent.mPos3D.lon = poiInfoEntity.getPoint().getLon();
             parentPoints.add(parent);
-            Logger.d(TAG, "添加搜索结果点 的详情 =" + GsonUtils.toJson(parent));
+            if (Logger.openLog) {
+                Logger.d(TAG, "添加搜索结果点 的详情 =", parent);
+            }
         }
         getStyleAdapter().updateSearchResult(searchResult.getSearchResultPoints());
         if (parentPoints.size() > 20) {

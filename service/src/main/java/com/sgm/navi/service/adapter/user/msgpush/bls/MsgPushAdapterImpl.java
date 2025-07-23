@@ -493,7 +493,9 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
             Logger.e(TAG,"msg is null");
             return;
         }
-        Logger.d(TAG,"notifyMessage: " + GsonUtils.toJson(msg.content));
+        if (Logger.openLog) {
+            Logger.d(TAG, "notifyMessage: ", msg.content);
+        }
 
         final RouteMsgPushInfo routeMsgPushInfo = new RouteMsgPushInfo();
         routeMsgPushInfo.setMMsgPushInfo(msg);

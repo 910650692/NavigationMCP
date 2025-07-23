@@ -2101,7 +2101,9 @@ public class RouteAdapterImplHelper {
     };
 
     private final IRouteAlternativeChargeStationObserver mRouteAlternativeChargeStationObserver = routeAlternativeChargeStationResult -> {
-        Logger.i(TAG, " requestId -> " + GsonUtils.toJson(routeAlternativeChargeStationResult));
+        if (Logger.openLog) {
+            Logger.i(TAG, " requestId -> ", routeAlternativeChargeStationResult);
+        }
         handlerAlternativeChargingStation(routeAlternativeChargeStationResult);
     };
 

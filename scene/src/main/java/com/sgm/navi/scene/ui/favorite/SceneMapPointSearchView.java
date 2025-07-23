@@ -318,7 +318,9 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
         if (mCommonName == HomeCompanyType.ALONG_WAY) {
             if (SearchPackage.getInstance().isAlongWaySearch()) {
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, mPoiInfoEntity);
-                Logger.d("mapMsgPushInfoToPoiInfoEntity1: " + GsonUtils.toJson(mPoiInfoEntity));
+                if (Logger.openLog) {
+                    Logger.d("mapMsgPushInfoToPoiInfoEntity1: ", mPoiInfoEntity);
+                }
             }
             closeAllFragmentsUntilTargetFragment("MainAlongWaySearchFragment");
             showCurrentFragment();

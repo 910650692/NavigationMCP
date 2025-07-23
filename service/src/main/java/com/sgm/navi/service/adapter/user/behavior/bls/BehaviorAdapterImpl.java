@@ -344,7 +344,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         delItem.point_x = (int) pointD.x;
         delItem.point_y = (int) pointD.y;
         delItem.name = poiInfo.getName();
-        Logger.d(TAG, "delFavorite", GsonUtils.toJson(delItem));
+        if (Logger.openLog) {
+            Logger.d(TAG, "delFavorite", delItem);
+        }
         // 删除成功返回 FavoriteBaseItem对应的存档ID
         final String result = mBehaviorService.delFavorite(delItem, SyncMode.SyncModeNow);
         Logger.d(TAG, "removeFavorite ret = ", result);
@@ -427,7 +429,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         // 2 重命名
         detailItem.custom_name = customName; // "重命名";
         final int mode = SyncMode.SyncModeNow; // SyncModeLater 稍后同步
-        Logger.d(TAG, "updateFavorite", GsonUtils.toJson(detailInfo));
+        if (Logger.openLog) {
+            Logger.d(TAG, "updateFavorite", detailInfo);
+        }
         final String ret = mBehaviorService.updateFavorite(detailItem, mode);
         Logger.d(TAG, "updateFavorite ret = ", ret);
         return ret;

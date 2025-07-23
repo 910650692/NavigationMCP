@@ -285,7 +285,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                                 Logger.e(TAG, "更新补能规划扎标信息 getMRouteChargeStationInfos is null");
                                 return;
                             }
-                            Logger.d(TAG, "更新补能规划扎标信息 ", GsonUtils.toJson(data.getMRouteChargeStationInfo()));
+                            if (Logger.openLog) {
+                                Logger.d(TAG, "更新补能规划扎标信息 ", data.getMRouteChargeStationInfo());
+                            }
                             safetySetText(position, String.valueOf(data.getIndex() + 1));
                             RouteChargeStationDetailInfo chargeStationInfo = data.getMRouteChargeStationInfo();
 

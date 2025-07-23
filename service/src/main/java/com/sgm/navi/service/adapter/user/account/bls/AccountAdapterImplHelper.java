@@ -228,7 +228,9 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     @Override
     public void notify(final int errCode, final int taskId, final QRCodeLoginConfirmResult result) {
         if (result != null) {
-            Logger.i(TAG, "QRCodeLoginConfirmResult notify: res=" + GsonUtils.toJson(result));
+            if (Logger.openLog) {
+                Logger.i(TAG, "QRCodeLoginConfirmResult notify: res=", result);
+            }
         }
         notifyAccountRequestSuccess(errCode,taskId,result);
     }

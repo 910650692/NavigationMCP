@@ -37,6 +37,7 @@ import com.sgm.navi.service.greendao.history.HistoryManager;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
@@ -132,7 +133,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             bean.setName(item.name);
             bean.setUpdateTime(item.update_time);
             bean.setAddress(item.address);
-            Logger.d(TAG, "getSearchHistoryItem: " + GsonUtils.toJson(bean));
+            if (Logger.openLog) {
+                Logger.d(TAG, "getSearchHistoryItem: ", bean);
+            }
         }
         return bean;
     }
@@ -227,7 +230,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 }
                 bean.setMidPoi(midPois);
             }
-            Logger.d(TAG, "getHistoryRouteItemBean: " + GsonUtils.toJson(bean));
+            if (Logger.openLog) {
+                Logger.d(TAG, "getHistoryRouteItemBean: ", bean);
+            }
         }
         return bean;
     }
@@ -273,7 +278,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
         final HistoryRouteItem item = getHistoryPoiItem(bean);
         deleteSameHistory(item);
         final int code = mUserTrackService.addHistoryRoute(item, SyncMode.SyncModeNow);
-        Logger.d(TAG, "addHistoryRoute ret = " + code + " bean = " + GsonUtils.toJson(bean));
+        if (Logger.openLog) {
+            Logger.d(TAG, "addHistoryRoute ret = ", code, " bean = ", bean);
+        }
         return code;
     }
 
@@ -333,7 +340,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
         }
         final HistoryRouteItem item = getHistoryPoiItem(bean);
         final int code = mUserTrackService.delHistoryRoute(item, SyncMode.SyncModeNow);
-        Logger.d(TAG, "delHistoryRoute ret = " + code + " bean = " + GsonUtils.toJson(bean));
+        if (Logger.openLog) {
+            Logger.d(TAG, "delHistoryRoute ret = ", code, " bean = ", bean);
+        }
         return code;
     }
 
@@ -395,7 +404,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 }
                 targetPoi.setEntranceList(entrances);
             }
-            Logger.d(TAG, "getHistoryRouteItemBean1: " + GsonUtils.toJson(targetPoi));
+            if (Logger.openLog) {
+                Logger.d(TAG, "getHistoryRouteItemBean1: ", targetPoi);
+            }
         }
         return targetPoi;
     }
@@ -415,7 +426,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             Logger.i(TAG, "behaviorDataIds is null");
             return;
         }
-        Logger.i(TAG, "behaviorDataIds -> " + GsonUtils.toJson(behaviorDataIds));
+        if (Logger.openLog) {
+            Logger.i(TAG, "behaviorDataIds -> " + behaviorDataIds);
+        }
 
         // 通过id获取行为数据
         for (int num : behaviorDataIds) {
@@ -496,7 +509,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             Logger.i(TAG, "behaviorDataIds is null");
             return null;
         }
-        Logger.i(TAG, "behaviorDataIds -> " + GsonUtils.toJson(behaviorDataIds));
+        if (Logger.openLog) {
+            Logger.i(TAG, "behaviorDataIds -> ", behaviorDataIds);
+        }
         final ArrayList<DrivingRecordDataBean> drivingRecordDataBeans = new ArrayList<>();
         // 通过id获取行为数据
         for (int num : behaviorDataIds) {
@@ -537,7 +552,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                     mGuideDataBeans.add(dataBean);
                 }
             }
-            Logger.i(TAG, "guideDataBeans -> " + GsonUtils.toJson(mGuideDataBeans));
+            if (Logger.openLog) {
+                Logger.i(TAG, "guideDataBeans -> ", mGuideDataBeans);
+            }
         }
         return mGuideDataBeans;
     }
@@ -568,7 +585,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                     mCruiseDataBeans.add(dataBean);
                 }
             }
-            Logger.i(TAG, "cruiseDataBeans -> " + GsonUtils.toJson(mCruiseDataBeans));
+            if (Logger.openLog) {
+                Logger.i(TAG, "cruiseDataBeans -> ", mCruiseDataBeans);
+            }
         }
         return mCruiseDataBeans;
     }

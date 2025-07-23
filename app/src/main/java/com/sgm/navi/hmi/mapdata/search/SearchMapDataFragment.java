@@ -216,7 +216,9 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
                 Logger.e(TAG, "info is null");
                 return;
             }
-            Logger.d(TAG,"notifySearchMapDataChangeView  info = " + GsonUtils.toJson(info));
+            if (Logger.openLog) {
+                Logger.d(TAG, "notifySearchMapDataChangeView  info = ", info);
+            }
             // 刷新二级列表的下载状态
             mSearchMapDataAdapter.updateChild(info.getUpperAdcode(), info.getAdcode(), info.getDownLoadInfo());
             //刷新省份城市下载状态

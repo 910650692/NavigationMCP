@@ -44,7 +44,9 @@ public class AccountQRCodeLoginModel extends BaseModel<AccountQRCodeLoginViewMod
     @Override
     public void notifyQRCodeLogin(final int errCode, final int taskId, final AccountUserInfo result) {
         if (result != null && result.getCode() == 1) {
-            Logger.i(TAG,"notifyQRCodeLogin AccountUserInfo = " + GsonUtils.toJson(result));
+            if (Logger.openLog) {
+                Logger.i(TAG, "notifyQRCodeLogin AccountUserInfo = ", result);
+            }
             final Bitmap bitmap = BitmapFactory.decodeByteArray(result.getBuffer(), 0, result.getBuffer().length);
             mViewModel.updateLoadingVisible(false, false, true);
             mViewModel.updateQRCode(bitmap);

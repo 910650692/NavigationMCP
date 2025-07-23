@@ -30,7 +30,9 @@ public class HotUpdateAdapterImpl implements HotUpdateApi, IMapNumObserver {
         mapNum.strKey = mapNumInfo.getStrKey();
         mapNum.strVersion = mapNumInfo.getStrVersion();
         mapNum.strContent = mapNumInfo.getStrContent();
-        Logger.d("requestMapNum: " + GsonUtils.toJson(mapNum));
+        if (Logger.openLog) {
+            Logger.d("requestMapNum: ", mapNum);
+        }
         return mHotUpdateService.requestMapNum(mapNum, this);
     }
 
@@ -47,7 +49,9 @@ public class HotUpdateAdapterImpl implements HotUpdateApi, IMapNumObserver {
 
     @Override
     public void onRequestMapNum(final int i, final MapNum mapNum) {
-        Logger.d("onRequestMapNum: " + GsonUtils.toJson(mapNum));
+        if (Logger.openLog) {
+            Logger.d("onRequestMapNum: ", mapNum);
+        }
         for (HotUpdateAdapterCallback hotUpdateAdapterCallback : mHotUpdateHashtable.values()) {
             hotUpdateAdapterCallback.onRequestMapNum(i, getMapNumInfo(mapNum));
         }

@@ -119,7 +119,9 @@ public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> impl
 
     @Override
     public void onMergedStatusInfo(final MergedStatusBean mergedStatusInfo) {
-        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onMergedStatusInfo: " + GsonUtils.toJson(mergedStatusInfo));
+        if (Logger.openLog) {
+            Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onMergedStatusInfo: ", mergedStatusInfo);
+        }
     }
 
     @Override

@@ -153,7 +153,9 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
 
     @Override
     public void onGpsTrackPoint(GpsTrackPointBean gpsTrackPointBean) {
-        Logger.i(TAG, "onGpsTrackPoint: " + GsonUtils.toJson(gpsTrackPointBean));
+        if (Logger.openLog) {
+            Logger.i(TAG, "onGpsTrackPoint: ", gpsTrackPointBean);
+        }
         mGpsTrackPointBean = gpsTrackPointBean;
     }
 

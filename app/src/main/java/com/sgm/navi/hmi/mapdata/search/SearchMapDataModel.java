@@ -75,14 +75,18 @@ public class SearchMapDataModel extends BaseModel<SearchMapDataViewModel> implem
     @Override
     public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
         if (cityDataInfo != null){
-            Logger.d(TAG, "onDownLoadStatus: cityDataInfo = "  + GsonUtils.toJson(cityDataInfo));
+            if (Logger.openLog) {
+                Logger.d(TAG, "onDownLoadStatus: cityDataInfo = " + cityDataInfo);
+            }
             mViewModel.onDownLoadStatus(cityDataInfo);
         }
     }
 
     @Override
     public void onMergedStatusInfo(final MergedStatusBean mergedStatusInfo) {
-        Logger.d(TAG, "onMergedStatusInfo: " + GsonUtils.toJson(mergedStatusInfo));
+        if (Logger.openLog) {
+            Logger.d(TAG, "onMergedStatusInfo: ", mergedStatusInfo);
+        }
     }
 
     @Override

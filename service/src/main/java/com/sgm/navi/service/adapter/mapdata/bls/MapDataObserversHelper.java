@@ -473,10 +473,14 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         }
         // 1，获取下载中、更新中状态下的所有城市adCode列表
         final ArrayList<Integer> downLoadAdcodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
-        Logger.d(TAG, "getWorkingList: downLoadingAdcodeList = " + GsonUtils.toJson(downLoadAdcodeList));
+        if (Logger.openLog) {
+            Logger.d(TAG, "getWorkingList: downLoadingAdcodeList = ", downLoadAdcodeList);
+        }
         // 2，根据adCode获取整理后的省份+城市列表
         final ArrayList<ProvDataInfo> provinceBeanList = getWorkDataList(downLoadAdcodeList);
-        Logger.d(TAG, "getWorkingList: downLoadingList = " + GsonUtils.toJson(provinceBeanList));
+        if (Logger.openLog) {
+            Logger.d(TAG, "getWorkingList: downLoadingList = ", provinceBeanList);
+        }
         return provinceBeanList;
     }
 
@@ -490,10 +494,14 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         }
         // 1，获取本地已存在数据的adcode列表信息
         final ArrayList<Integer> downLoadAdcodeList = mMapDataService.getDownLoadAdcodeList();
-        Logger.d(TAG, "getWorkedList: downLoadedAdcodeList = " + GsonUtils.toJson(downLoadAdcodeList));
+        if (Logger.openLog) {
+            Logger.d(TAG, "getWorkedList: downLoadedAdcodeList = ", downLoadAdcodeList);
+        }
         // 2，根据adCode获取整理后的省份+城市列表
         final ArrayList<ProvDataInfo> provinceBeanList = getWorkDataList(downLoadAdcodeList);
-        Logger.d(TAG, "getWorkedList: downloadedList = " + GsonUtils.toJson(provinceBeanList));
+        if (Logger.openLog) {
+            Logger.d(TAG, "getWorkedList: downloadedList = ", provinceBeanList);
+        }
         return provinceBeanList;
     }
 
@@ -888,7 +896,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                     }
                 }
             }
-            Logger.d(TAG, "getNearAdCodeList: nearAdCodeList = " + GsonUtils.toJson(nearAdCodeList));
+            if (Logger.openLog) {
+                Logger.d(TAG, "getNearAdCodeList: nearAdCodeList = ", nearAdCodeList);
+            }
             return nearAdCodeList;
         }
         Logger.d(TAG, "getNearAdCodeList: null");
@@ -1026,7 +1036,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
             Logger.e(TAG, "area is null");
             return;
         }
-        Logger.d(TAG, "onDownLoadStatus: area = " + GsonUtils.toJson(area));
+        if (Logger.openLog) {
+            Logger.d(TAG, "onDownLoadStatus: area = ", area);
+        }
 
         CityDataInfo cityDataInfo = getCityInfo(area.adcode);
 
@@ -1037,8 +1049,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         } else if (area.areaType == 4) { // 特别行政区
             cityDataInfo.setUpperAdcode(4);
         }
-
-        Logger.d(TAG, "onDownLoadStatus: cityDataInfo = " + GsonUtils.toJson(cityDataInfo));
+        if (Logger.openLog) {
+            Logger.d(TAG, "onDownLoadStatus: cityDataInfo = ", cityDataInfo);
+        }
         if (ConvertUtils.isEmpty(mapDataResultObserverHashtable)) {
             return;
         }
@@ -1090,7 +1103,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
      * @param adCodeDiyLst
      */
     public void operate(final int opType, final ArrayList<Integer> adCodeDiyLst) {
-        Logger.d(TAG, "operate: opType = " + opType + ", adCodeDiyLst = " + GsonUtils.toJson(adCodeDiyLst));
+        if (Logger.openLog) {
+            Logger.d(TAG, "operate: opType = ", opType, ", adCodeDiyLst = ", adCodeDiyLst);
+        }
         boolean isNetConnected = NetWorkUtils.Companion.getInstance().checkNetwork();
         if (!isNetConnected) {
             // 提示无网络链接toast
@@ -1112,7 +1127,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
      */
     @Override
     public void onMergedStatusInfo(final MergedStatusInfo mergedStatusInfo) {
-        Logger.d(TAG, "onMergedStatusInfo: mergedStatusInfo = " + GsonUtils.toJson(mergedStatusInfo));
+        if (Logger.openLog) {
+            Logger.d(TAG, "onMergedStatusInfo: mergedStatusInfo = ", mergedStatusInfo);
+        }
         if (ConvertUtils.isEmpty(mapDataResultObserverHashtable)) {
             return;
         }

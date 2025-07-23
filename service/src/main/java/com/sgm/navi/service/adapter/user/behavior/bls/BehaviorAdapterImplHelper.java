@@ -154,7 +154,9 @@ public class BehaviorAdapterImplHelper implements IBehaviorServiceObserver, ISyn
      */
     @Override
     public void notify(final int type, final ArrayList<SimpleFavoriteItem> data, final boolean sorted) {
-        Logger.i(TAG, "notify: type = " + type + " sorted = " + sorted + " data = " + GsonUtils.toJson(data));
+        if (Logger.openLog) {
+            Logger.i(TAG, "notify: type = ", type, " sorted = ", sorted, " data = ", data);
+        }
         // 显示 精简收藏夹列表 逻辑
         if (ConvertUtils.isEmpty(mAccountResultHashtable)) {
             return;

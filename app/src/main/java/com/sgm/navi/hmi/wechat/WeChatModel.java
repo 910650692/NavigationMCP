@@ -52,7 +52,9 @@ public class WeChatModel extends BaseModel<WeChatViewModel> implements WeChatCal
     @Override
     public void notifyGQRCodeConfirm(final BLResponseBean result) {
         if (result != null && result.getCode() == 1) {
-            Logger.d(TAG, "notifyGQRCodeConfirm = " + GsonUtils.toJson(result));
+            if (Logger.openLog) {
+                Logger.d(TAG, "notifyGQRCodeConfirm = " + result);
+            }
             mViewModel.setIsBind(true);
             mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
         }
@@ -62,7 +64,9 @@ public class WeChatModel extends BaseModel<WeChatViewModel> implements WeChatCal
     public void notifyWeixinQrcode(final BLResponseBean result) {
         mViewModel.stopAnimation();
         if (result != null && result.getCode() == 1) {
-            Logger.d(TAG, "notifyWeixinQrcode = " + GsonUtils.toJson(result));
+            if (Logger.openLog) {
+                Logger.d(TAG, "notifyWeixinQrcode = " + result);
+            }
             final byte[] imageBytes = Base64.getDecoder().decode(result.getImgStr());
             final Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             mViewModel.updateQRCode(bitmap);
@@ -88,7 +92,9 @@ public class WeChatModel extends BaseModel<WeChatViewModel> implements WeChatCal
     @Override
     public void notifyWeixinStatus(final BLResponseBean result) {
         if (result != null) {
-            Logger.d(TAG, "notifyWeixinStatus = " + GsonUtils.toJson(result));
+            if (Logger.openLog) {
+                Logger.d(TAG, "notifyWeixinStatus = ", result);
+            }
             if (resultCode == result.getCode()) {
                 return;
             }

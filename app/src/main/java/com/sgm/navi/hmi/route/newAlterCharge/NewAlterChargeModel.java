@@ -173,7 +173,9 @@ public class NewAlterChargeModel extends BaseModel<NewAlterChargeViewModel> impl
             return;
         }
         if (mCurrentTaskId == taskId) {
-            Logger.i(TAG, GsonUtils.toJson(searchResultEntity.getPoiList()));
+            if (Logger.openLog) {
+                Logger.i(TAG, searchResultEntity.getPoiList());
+            }
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH ||
                     searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
                 final ArrayList<PoiInfoEntity> poiInfoEntities = (ArrayList<PoiInfoEntity>) searchResultEntity.getPoiList();

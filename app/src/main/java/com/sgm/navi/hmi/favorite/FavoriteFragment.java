@@ -148,7 +148,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             @Override
             public void onItemNaviClick(final int index) {
                 final PoiInfoEntity poiInfoEntity = mFavoriteList.get(index);
-                Logger.d(TAG, "navi click " + GsonUtils.toJson(poiInfoEntity));
+                if (Logger.openLog) {
+                    Logger.d(TAG, "navi click ", poiInfoEntity);
+                }
                 if (mViewModel != null) {
                     mViewModel.startRoute(poiInfoEntity);
                 }
@@ -463,7 +465,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * @param list 常去地址
      */
     public void updateFavoritePoiData(final ArrayList<PoiInfoEntity> list) {
-        Logger.i(TAG, "updateFavoritePoiData -> " + GsonUtils.toJson(list));
+        if (Logger.openLog) {
+            Logger.i(TAG, "updateFavoritePoiData -> ", list);
+        }
         mFrequentAddressList = list;
         ThreadManager.getInstance().postUi(() -> {
             mFrequentAddressAdapter.setData(mFrequentAddressList);
@@ -477,7 +481,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      */
     public void updateFavoriteView(final ArrayList<PoiInfoEntity> list, final int type) {
         mFavoriteList = list;
-        Logger.i(TAG, "setFavoriteData -> " + GsonUtils.toJson(mFavoriteList));
+        if (Logger.openLog) {
+            Logger.i(TAG, "setFavoriteData -> ", mFavoriteList);
+        }
         mFavoriteDataAdapter.setData(mFavoriteList, type);
     }
 

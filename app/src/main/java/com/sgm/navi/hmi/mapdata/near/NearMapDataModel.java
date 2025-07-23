@@ -84,7 +84,9 @@ public class NearMapDataModel extends BaseModel<NearMapDataViewModel> implements
 
     @Override
     public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
-        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: cityDataInfo = " + GsonUtils.toJson(cityDataInfo));
+        if (Logger.openLog) {
+            Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: cityDataInfo = " + cityDataInfo);
+        }
         if (cityDataInfo != null && mViewModel != null) {
             mViewModel.onDownLoadStatus(cityDataInfo);
         }
@@ -92,7 +94,9 @@ public class NearMapDataModel extends BaseModel<NearMapDataViewModel> implements
 
     @Override
     public void onMergedStatusInfo(final MergedStatusBean mergedStatusInfo) {
-        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onMergedStatusInfo: " + GsonUtils.toJson(mergedStatusInfo));
+        if (Logger.openLog) {
+            Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onMergedStatusInfo: ", mergedStatusInfo);
+        }
     }
 
     @Override

@@ -100,7 +100,9 @@ public class WeChatImplHelper implements ICallBackWsPpAutoWeixinStatus,
         final GWsPpAutoWeixinStatusRequestParam pAosRequest = new GWsPpAutoWeixinStatusRequestParam();
         pAosRequest.product = 1; // 固定值 1  硬件类型（1: 高德车机）
         mBLAosService.sendReqWsPpAutoWeixinStatus(pAosRequest, this);
-        Logger.d(TAG,"sendReqWsPpAutoWeixinStatus = " , GsonUtils.toJson(pAosRequest));
+        if (Logger.openLog) {
+            Logger.d(TAG,"sendReqWsPpAutoWeixinStatus = " , pAosRequest);
+        }
     }
 
     /**
@@ -143,7 +145,10 @@ public class WeChatImplHelper implements ICallBackWsPpAutoWeixinStatus,
             }
             final BLResponseBean responseBean = getResponseBean(param);
             callBack.notifyGQRCodeConfirm(responseBean);
-            Logger.d(TAG,"GQRCodeConfirmResponseParam = " , GsonUtils.toJson(responseBean));
+            if (Logger.openLog) {
+                Logger.d(TAG,"GQRCodeConfirmResponseParam = " , responseBean);
+            }
+
         }
     }
 
@@ -163,7 +168,9 @@ public class WeChatImplHelper implements ICallBackWsPpAutoWeixinStatus,
             responseBean.setImgStr(param.imgStr);
             responseBean.setQrcodeId(param.qrcodeId);
             callBack.notifyWeixinQrcode(responseBean);
-            Logger.d(TAG,"GWsPpAutoWeixinQrcodeResponseParam = " , GsonUtils.toJson(param));
+            if (Logger.openLog) {
+                Logger.d(TAG,"GWsPpAutoWeixinQrcodeResponseParam = " , param);
+            }
             sendReqQRCodeConfirm(param.qrcodeId);
         }
     }
@@ -184,7 +191,9 @@ public class WeChatImplHelper implements ICallBackWsPpAutoWeixinStatus,
             responseBean.setAvatar(param.avatar);
             responseBean.setNickname(param.nickname);
             callBack.notifyWeixinStatus(responseBean);
-            Logger.d(TAG, "GWsPpAutoWeixinStatusResponseParam: " , GsonUtils.toJson(responseBean));
+            if (Logger.openLog) {
+                Logger.d(TAG, "GWsPpAutoWeixinStatusResponseParam: ", responseBean);
+            }
         }
     }
 

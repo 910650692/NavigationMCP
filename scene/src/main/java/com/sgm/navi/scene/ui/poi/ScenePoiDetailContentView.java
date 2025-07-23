@@ -1413,7 +1413,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                 mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
                             }
                             childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
+                            if (Logger.openLog) {
+                                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + childInfo);
+                            }
                         })
                         .exceptionally(error -> {
                             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setGrandChildInfoList error:" + error);
@@ -1644,7 +1646,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                 mPoiInfoEntity.setMChildType(AutoMapConstant.ChildType.HAS_CHILD_HAS_GRAND);
                             }
                             childInfo.setMGrandChildInfoList(childInfoNew.getMGrandChildInfoList());
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList " + GsonUtils.toJson(childInfo));
+                            if (Logger.openLog) {
+                                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChildList ", childInfo);
+                            }
                         })
                         .exceptionally(error -> {
                             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setGrandChildInfoList error:" + error);

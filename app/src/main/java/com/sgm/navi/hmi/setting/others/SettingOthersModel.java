@@ -162,7 +162,9 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
 
     @Override
     public void notifyWeixinStatus(final BLResponseBean result) {
-        Logger.d("notifyWeixinStatus = " + GsonUtils.toJson(result));
+        if (Logger.openLog) {
+            Logger.d("notifyWeixinStatus = ", result);
+        }
         ThreadManager.getInstance().postUi(() -> {
             if (result != null) {
                 if (result.getCode() == 1) {

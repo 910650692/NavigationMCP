@@ -567,8 +567,9 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
             Logger.i(TAG, "onCloseGpsTrack: 轨迹信息为空，不保存轨迹信息");
             return;
         }
-
-        Logger.i(TAG, "onCloseGpsTrack: 轨迹信息：" + GsonUtils.toJson(depInfo));
+        if (Logger.openLog) {
+            Logger.i(TAG, "onCloseGpsTrack: 轨迹信息：", depInfo);
+        }
 
         this.mDepInfo = depInfo;
         this.mPsFileName = psFileName;

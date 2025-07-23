@@ -172,8 +172,9 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
                 return Long.compare(poiInfoEntity2.getFavoriteInfo().getUpdateTime(), poiInfoEntity1.getFavoriteInfo().getUpdateTime());
             });
         }
-
-        Logger.d(TAG, "favorite list is " + GsonUtils.toJson(dataList));
+        if (Logger.openLog) {
+            Logger.d(TAG, "favorite list is ", dataList);
+        }
         return dataList;
     }
 
@@ -256,7 +257,9 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
             Logger.e(TAG, "the poi info is null");
             return itemId;
         }
-        Logger.d(TAG, "add favorite " + GsonUtils.toJson(poiInfo));
+        if (Logger.openLog) {
+            Logger.d(TAG, "add favorite ", poiInfo);
+        }
         PoiInfoEntity savedPoiInfo = null;
         if (type == 1) {
             savedPoiInfo = getHomeFavoriteInfo();

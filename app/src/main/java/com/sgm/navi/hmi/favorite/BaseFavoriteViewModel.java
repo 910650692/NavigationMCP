@@ -440,7 +440,9 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
      */
     public void notifyConnectStationResult(BaseRep result) {
         parseStationListResult(result);
-        Logger.d(TAG, "station list is " + GsonUtils.toJson(mStationList));
+        if (Logger.openLog) {
+            Logger.d(TAG, "station list is ", mStationList);
+        }
         updateFavoriteView(mStationList, 1);
     }
 

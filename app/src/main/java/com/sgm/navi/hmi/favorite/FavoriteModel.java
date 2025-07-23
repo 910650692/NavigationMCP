@@ -323,7 +323,9 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
     @Override
     public void onNetSearchResult(int taskId, String searchKey, BaseRep result) {
         if(AutoMapConstant.NetSearchKey.QUERY_STATION_LIST.equals(searchKey)){
-            Logger.d(TAG, "station list result is  " + GsonUtils.toJson(result));
+            if (Logger.openLog) {
+                Logger.d(TAG, "station list result is  ", result);
+            }
             if (AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
                 mViewModel.notifyConnectStationResult(result);
             }else {

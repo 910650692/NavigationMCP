@@ -1429,7 +1429,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
         ThreadManager.getInstance().postUi(() -> {
             if (Logger.openLog) {
-                Logger.i(TAG, "notifyAimPoiPushMessage ", GsonUtils.toJson(msg));
+                Logger.i(TAG, "notifyAimPoiPushMessage ", msg);
             }
             if (phoneAddressDialog != null && phoneAddressDialog.isShowing()) {
                 phoneAddressDialog.dismiss();
@@ -1497,7 +1497,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     @Override
     public void onForecastArrivedData(ForecastArrivedDataInfo data) {
-        if(Logger.openLog) Logger.d(TAG, "onForecastArrivedData: " + GsonUtils.toJson(data) + ", mCompanyOrHomeType: " + mCompanyOrHomeType);
+        if(Logger.openLog) Logger.d(TAG, "onForecastArrivedData: ", data, ", mCompanyOrHomeType: ", mCompanyOrHomeType);
         if (StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), SettingFragment.class.getSimpleName())) {
             return;
         }

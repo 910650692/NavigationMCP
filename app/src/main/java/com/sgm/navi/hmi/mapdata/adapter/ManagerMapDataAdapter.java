@@ -214,7 +214,9 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             // 下载 or 暂停下载
             mDownloadBtnView.setOnClickListener(v -> {
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+                if (Logger.openLog) {
+                    Logger.d("parent: " + parent + " child: " + child);
+                }
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 cityAdCodes.add(downloadItem.getAdcode());
                 if (onChildClickListener != null) {
@@ -238,7 +240,9 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             // 删除已下载数据
             deleteCity.setOnClickListener(view -> {
                 swipeMenuLayout.quickClose();
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+                if (Logger.openLog) {
+                    Logger.d("parent: " , parent, " child: ", child);
+                }
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 cityAdCodes.add(downloadItem.getAdcode());
                 if (onChildClickListener != null) {

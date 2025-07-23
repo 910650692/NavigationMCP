@@ -253,8 +253,10 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
                             || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
                 } else {
-                    Logger.d("child.getDownLoadInfo() == null: " + GsonUtils.toJson(parent));
-                    Logger.d("child.getDownLoadInfo() == null: " + GsonUtils.toJson(child));
+                    if (Logger.openLog) {
+                        Logger.d("child.getDownLoadInfo() == null: ", parent);
+                        Logger.d("child.getDownLoadInfo() == null: ", child);
+                    }
                 }
                 if (isShowDownloadProgress) {
                     downloadProgress.setProgress((int) Math.floor(child.getDownLoadInfo().getPercent()));
@@ -266,7 +268,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             // 下载 or 暂停下载
             mDownloadBtnView.setOnClickListener(v -> {
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+                if (Logger.openLog) {
+                    Logger.d("parent: ", parent, " child: ", child);
+                }
                 if (downloadItem == null) {
                     Logger.i("downloadItem is null");
                     return;
@@ -293,7 +297,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
             // 删除已下载数据
             deleteCity.setOnClickListener(view -> {
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+                if (Logger.openLog) {
+                    Logger.d("parent: ",parent, " child: ",child);
+                }
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 if (isProvinceDownload) {
                     final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
@@ -304,7 +310,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     cityAdCodes.add(info.getAdcode());
                                 }
                             } else {
-                                Logger.d("info == null: " + GsonUtils.toJson(info));
+                                if (Logger.openLog) {
+                                    Logger.d("info == null: ", info);
+                                }
                             }
                         }
                     }
@@ -321,7 +329,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Logger.d("parent: parent is null");
                     return;
                 }
-                Logger.d("parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+                if (Logger.openLog) {
+                    Logger.d("parent: ", parent, " child: ", child);
+                }
                 final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
@@ -334,7 +344,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 cityAdCodes.add(info.getAdcode());
                             }
                         } else {
-                            Logger.d("info == null: " + GsonUtils.toJson(info));
+                            if (Logger.openLog) {
+                                Logger.d("info == null: ", info);
+                            }
                         }
                     }
                 }
@@ -348,7 +360,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Logger.d("parent is null");
                     return;
                 }
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+                if (Logger.openLog) {
+                    Logger.d("parent: ",parent, " child: ",child);
+                }
                 final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
@@ -360,7 +374,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 cityAdCodes.add(info.getAdcode());
                             }
                         } else {
-                            Logger.d("info == null: " + GsonUtils.toJson(info));
+                            if (Logger.openLog) {
+                                Logger.d("info == null: ", info);
+                            }
                         }
                     }
                 }
@@ -473,7 +489,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         return true;
                     }
                 } else {
-                    Logger.d("info == null: " + GsonUtils.toJson(info));
+                    if (Logger.openLog) {
+                        Logger.d("info == null: ", info);
+                    }
                 }
             }
         }

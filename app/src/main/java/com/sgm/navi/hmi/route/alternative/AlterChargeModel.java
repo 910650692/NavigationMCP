@@ -158,7 +158,9 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
             return;
         }
         if (mSearchTaskId == taskId) {
-            Logger.i(TAG, GsonUtils.toJson(searchResultEntity.getPoiList()));
+            if (Logger.openLog) {
+                Logger.i(TAG, searchResultEntity.getPoiList());
+            }
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH ||
                     searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
                 final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
