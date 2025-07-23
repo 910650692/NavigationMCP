@@ -8,11 +8,11 @@ import android.view.KeyEvent;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.sgm.navi.service.utils.ExportIntentParam;
+import com.android.utils.process.ProcessManager;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.mapservice.bean.INaviConstant;
-import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.utils.ExportIntentParam;
 
 import java.util.Objects;
 
@@ -35,16 +35,16 @@ public class NaviMfcHardKeyReceiver extends BroadcastReceiver {
             }
             if (event.getAction() == KeyEvent.ACTION_UP) {
                 Logger.i(TAG, "打开地图");
-                openSelf(INaviConstant.OpenIntentPage.NONE);
+                openSelf(context, INaviConstant.OpenIntentPage.NONE);
             } else {
                 Logger.i(TAG, "不响应");
             }
         }
     }
 
-    public void openSelf(int pageCode) {
+    public void openSelf(Context context, int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
         ExportIntentParam.setIntentPage(pageCode);
-        AppCache.getInstance().openMap(FloatViewManager.getInstance().isNaviDeskBg());
+        ProcessManager.restartProcess(context.getApplicationContext(),FloatViewManager.getInstance().isNaviDeskBg());
     }
 }

@@ -9,6 +9,7 @@ import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.patac.sgmsystemextendservicelib.PatacSESConstants;
 import com.sgm.navi.service.utils.ExportIntentParam;
@@ -220,7 +221,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
         ExportIntentParam.setIntentPage(pageCode);
-        AppCache.getInstance().openMap(FloatViewManager.getInstance().isNaviDeskBg());
+        ProcessManager.restartProcess(mApplication, FloatViewManager.getInstance().isNaviDeskBg());
     }
 
     private void startImmersiveSchedule() {

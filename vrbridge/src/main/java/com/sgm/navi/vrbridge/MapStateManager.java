@@ -746,8 +746,7 @@ public final class MapStateManager {
         if (Logger.openLog) {
             Logger.i(IVrBridgeConstant.TAG, "openMap current appStatus", appStatus, "launcherMode", mLauncherDeskMode);
         }
-
-        AppCache.getInstance().openMap(mLauncherDeskMode == 1);
+        ProcessManager.restartProcess(AppCache.getInstance().getMContext(), mLauncherDeskMode == 1);
     }
 
     /**

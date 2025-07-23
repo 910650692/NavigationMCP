@@ -2129,17 +2129,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onUpdateSetting(String key, boolean value) {
+        Logger.i(NAVI_EXIT,"key", key, "value", value);
         if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
             if (!value) {
-                if (Logger.openLog) {
-                    Logger.printStackTrace(NAVI_EXIT,true);
-                }
-                ThreadManager.getInstance().postDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        mViewModel.exitSelf();
-                    }
-                }, 200);
+                ThreadManager.getInstance().postDelay(() -> mViewModel.exitSelf(), 200);
             }
         }
     }

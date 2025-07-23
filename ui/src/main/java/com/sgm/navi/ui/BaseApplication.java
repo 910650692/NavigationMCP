@@ -15,11 +15,12 @@ import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessStatus;
 
 public class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks {
-    public static final String TAG = "BaseApplication";
+    public static final String TAG = "NaviBaseApplication";
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Logger.i(TAG, "应用进程创建");
         UtilsManager.init(this);
         if (DeviceUtils.isCar(this) && getSystemService(UserManager.class).isSystemUser()) {
             if(Logger.openLog) {
@@ -89,9 +90,7 @@ public class BaseApplication extends Application implements Application.Activity
     @Override
     public void onTerminate() {
         super.onTerminate();
-        if(Logger.openLog) {
-            Logger.i(TAG, "应用进程退出");
-        }
+        Logger.i(TAG, "应用进程退出");
         UtilsManager.clearCache();
         ProcessManager.removeAllCallback();
     }

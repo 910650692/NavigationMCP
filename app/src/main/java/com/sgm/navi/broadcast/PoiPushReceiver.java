@@ -8,12 +8,11 @@ import android.text.TextUtils;
 
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
-import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.mapservice.bean.INaviConstant;
-import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
+import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
 import org.json.JSONException;
@@ -65,7 +64,7 @@ public class PoiPushReceiver extends BroadcastReceiver {
                         //App未打开状态，打开地图并通过ExportIntentParam保存数据
                         ExportIntentParam.setIntentPage(INaviConstant.OpenIntentPage.SEARCH_PAGE);
                         ExportIntentParam.setKeyword(address);
-                        AppCache.getInstance().openMap(FloatViewManager.getInstance().isNaviDeskBg());
+                        ProcessManager.restartProcess(context.getApplicationContext(), FloatViewManager.getInstance().isNaviDeskBg());
                     }
                 }
             } catch (JSONException exception) {

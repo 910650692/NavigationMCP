@@ -1402,7 +1402,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         if (Logger.openLog) {
             Logger.i(TAG, clientPkg, " openMap, isNaviDesk", isNaviDesk);
         }
-        AppCache.getInstance().openMap(isNaviDesk);
+        ProcessManager.restartProcess(AppCache.getInstance().getMContext(), isNaviDesk);
     }
 
     //直接获取当前位置信息

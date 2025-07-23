@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -281,7 +282,7 @@ public class SRFloatWindowService implements IGuidanceObserver, IMapPackageCallb
     public void openSelf(final int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
         ExportIntentParam.setIntentPage(pageCode);
-        AppCache.getInstance().openMap(FloatViewManager.getInstance().isNaviDeskBg());
+        ProcessManager.restartProcess(AppCache.getInstance().getMContext(), FloatViewManager.getInstance().isNaviDeskBg());
     }
 
     /***

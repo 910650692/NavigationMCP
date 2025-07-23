@@ -1,23 +1,19 @@
 package com.sgm.navi.hmi.splitscreen;
 
-import android.app.ActivityOptions;
 import android.app.Application;
-import android.content.Intent;
 import android.graphics.Rect;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
-import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
-import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
-import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.define.calibration.PowerType;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
@@ -26,7 +22,7 @@ import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
-import com.sgm.navi.service.define.calibration.PowerType;
+import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 
@@ -251,7 +247,7 @@ public class BaseOneThirdScreenViewModel extends BaseViewModel<OneThirdScreenMap
         if (null != poiInfo) {
             ExportIntentParam.setPoiInfo(poiInfo);
         }
-        AppCache.getInstance().openMap(FloatViewManager.getInstance().isNaviDeskBg());
+        ProcessManager.restartProcess(mApplication, FloatViewManager.getInstance().isNaviDeskBg());
     }
 
     public void onImmersiveStatusChange(ImersiveStatus lastImersiveStatus) {

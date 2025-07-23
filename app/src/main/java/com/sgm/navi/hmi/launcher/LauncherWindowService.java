@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -318,7 +319,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             }
         }
         ExportIntentParam.setIntentPage(pageCode);
-        AppCache.getInstance().openMap(mFloatManager.isNaviDeskBg());
+        ProcessManager.restartProcess(AppCache.getInstance().getMContext(), mFloatManager.isNaviDeskBg());
     }
 
     public static void startService() {

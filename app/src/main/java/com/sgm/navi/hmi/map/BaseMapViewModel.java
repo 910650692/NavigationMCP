@@ -25,6 +25,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
@@ -53,6 +54,7 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.AutoMapConstant.PoiType;
+import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.aos.RestrictedArea;
@@ -1504,18 +1506,23 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void exitSelf() {
         final String restartFlag = CommonManager.getInstance().getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH);
         final boolean closeDelay = NaviStatusPackage.getInstance().isGuidanceActive();
-        Logger.d(TAG, "onUpdateSetting: restartFlag = ", restartFlag, " closeDelay = ", closeDelay);
+        final boolean naviDesk = FloatViewManager.getInstance().isNaviDeskBg();
+        Logger.d(MapDefaultFinalTag.NAVI_EXIT, "onUpdateSetting: restartFlag = ", restartFlag, " closeDelay = ", closeDelay, "naviDesk", naviDesk);
         if (closeDelay && !ConvertUtils.isEmpty(restartFlag)) {
             return;
         }
-        final boolean naviDesk = FloatViewManager.getInstance().isNaviDeskBg();
         if (ConvertUtils.isEmpty(restartFlag) || naviDesk) {
-            ThreadManager.getInstance().asyncDelay(()
-                    -> AppCache.getInstance().openMap(naviDesk), 800, TimeUnit.MILLISECONDS);
+            ThreadManager.getInstance().asyncDelay(() -> {
+                Logger.d(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 open navi");
+                ProcessManager.restartProcess(mApplication);
+            }, 800, TimeUnit.MILLISECONDS);
         }
         closeAllFragment();
         moveToBack();
-        ThreadManager.getInstance().asyncDelay(() -> mView.finish(), 400, TimeUnit.MILLISECONDS);
+        ThreadManager.getInstance().asyncDelay(() -> {
+            Logger.d(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 finish mapActivity");
+            mView.finish();
+        }, 400, TimeUnit.MILLISECONDS);
     }
 
     public void chargePreTipDialog(String status){

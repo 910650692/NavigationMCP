@@ -7,11 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
-import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.mapservice.bean.INaviConstant;
-import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
@@ -19,6 +18,7 @@ import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 
@@ -133,7 +133,7 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
             ExportIntentParam.setPoiInfo(poiInfo);
         }
         final boolean isNaviDesk = FloatViewManager.getInstance().isNaviDeskBg();
-        AppCache.getInstance().openMap(isNaviDesk);
+        ProcessManager.restartProcess(mApplication, isNaviDesk);
     }
 
     /***
