@@ -84,6 +84,7 @@ import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
+import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.action.Action;
@@ -212,6 +213,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         super.onResume();
         if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
             mModel.checkAuthorizationExpired();
+        }
+        if (mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher() && SettingPackage.getInstance().getPrivacyStatus()) {
+            Logger.d(TAG, "三协议全通，关闭protectView");
+            closeProtectView();
         }
     }
 
