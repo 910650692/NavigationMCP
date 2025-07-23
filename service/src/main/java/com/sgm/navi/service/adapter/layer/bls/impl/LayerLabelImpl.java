@@ -34,6 +34,10 @@ public class LayerLabelImpl extends BaseLayerImpl<LayerLabelStyleAdapter> {
 
     @Override
     protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
+        if (ConvertUtils.isEmpty(item)) {
+            Logger.e(TAG, "dispatchItemClickEvent item is null");
+            return;
+        }
         switch (item.getBusinessType()) {
             case BizLabelType.BizLabelTypeRoutePopSearchPoint: {
                 dispatchRoutePointEndPark();
