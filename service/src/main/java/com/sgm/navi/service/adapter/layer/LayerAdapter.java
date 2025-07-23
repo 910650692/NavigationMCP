@@ -308,6 +308,10 @@ public class LayerAdapter {
         mLayerApi.selectSearchPoi(mapTypeId, type, index);
     }
 
+    public void setSearchSelect(MapType mapTypeId, LayerPointItemType type, int index, boolean select) {
+        mLayerApi.selectSearchPoi(mapTypeId, type, index, select);
+    }
+
     public void setSearchSelect(MapType mapTypeId, LayerPointItemType type, int index, List<PoiInfoEntity> poiInfoEntities) {
         mLayerApi.selectSearchPoi(mapTypeId, type, index, poiInfoEntities);
     }

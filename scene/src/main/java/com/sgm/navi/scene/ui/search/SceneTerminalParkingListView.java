@@ -37,6 +37,7 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
     private LinearLayoutManager layoutManager;
     private SearchLoadingDialog mSearchLoadingDialog;
     private int mIndex;
+    private PoiInfoEntity mPoiInfoEntity;
 
     public void setIndex(final int index) {
         mIndex = index;
@@ -118,6 +119,8 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
         mAdapter.setOnItemClickListener(new TerminalParkingResultAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
+                mIndex = position;
+                mPoiInfoEntity = poiInfoEntity;
                 mScreenViewModel.setSelectIndex(poiInfoEntity, position);
             }
 
@@ -135,6 +138,7 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
         mViewBinding.skIvTerminalClose.setOnClickListener(v -> {
             mScreenViewModel.showRoutePark();
             mScreenViewModel.closeSearch();
+            mScreenViewModel.setSelectIndex(mPoiInfoEntity, mIndex, false);
         });
     }
 
@@ -167,6 +171,7 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
                 PoiInfoEntity poiInfo = searchResultEntity.getPoiList().get(mIndex);
                 ThreadManager.getInstance().postDelay(() -> {
                     if (mScreenViewModel != null) {
+                        mPoiInfoEntity = poiInfo;
                         mScreenViewModel.setSelectIndex(poiInfo, mIndex);
                     }
                 },1000);
@@ -197,6 +202,8 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
                 // 延迟1s在去选中下标，等待图层渲染完毕
                 ThreadManager.getInstance().postDelay(() -> {
                     if (mScreenViewModel != null) {
+                        mPoiInfoEntity = finalMinPoi;
+                        mIndex = finalIndex;
                         mScreenViewModel.setSelectIndex(finalMinPoi, finalIndex);
                     }
                 },1000);

@@ -250,6 +250,11 @@ public class LayerAdapterImplD implements ILayerApi {
     }
 
     @Override
+    public void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index, boolean select) {
+
+    }
+
+    @Override
     public void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index, List<PoiInfoEntity> poiInfoEntities) {
 
     }

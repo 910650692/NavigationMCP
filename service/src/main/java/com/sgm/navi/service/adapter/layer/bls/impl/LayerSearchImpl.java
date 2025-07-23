@@ -151,6 +151,23 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         }
     }
 
+    public void setSelect(LayerPointItemType type, int index, boolean select) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "setSelect type ", type, " index ", index, " select ", select);
+        }
+        if (getLayerSearchControl() != null) {
+            switch (type) {
+                case SEARCH_PARENT_PARK -> {
+                    int result = getLayerSearchControl().setFocus(
+                            BizSearchType.BizSearchTypePoiParkRoute, String.valueOf(index), select);
+                    Logger.d(TAG, "setSelect-BizSearchTypePoiParkRoute:" + result);
+                }
+                default -> {
+                }
+            }
+        }
+    }
+
     public void setSelect(LayerPointItemType type, int index, List<PoiInfoEntity> poiInfoEntities) {
         if (Logger.openLog) {
             Logger.d(TAG, "setSelect type ", type, " index ", index, " poiInfoEntities is null -> ", ConvertUtils.isEmpty(poiInfoEntities));

@@ -1226,6 +1226,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             case ROUTE_POINT_END_PARK:
                 clearEndParkPoint();
                 showParkingFragment();
+                mSearchPackage.showTerminalParkPreview();
                 break;
             default:
                 break;

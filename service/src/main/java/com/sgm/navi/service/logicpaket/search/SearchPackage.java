@@ -747,6 +747,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .geoobj(mMapPackage.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .build();
+        if (isTerminal) {
+            requestParameterBuilder.setMRange("2000");
+        }
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing around search.");
         return mSearchAdapter.aroundSearch(requestParameterBuilder);
     }
@@ -1341,8 +1344,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 createCenterPoiMarker(requestParameter);
                 break;
             case AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH:
+                createTerminalParkPoiMarker(searchResultEntity.getPoiList(), 0, true);
+                break;
             case AutoMapConstant.SearchType.ROUTE_TERMINAL_PARK_SEARCH:
-                createTerminalParkPoiMarker(searchResultEntity.getPoiList(), 0);
+                createTerminalParkPoiMarker(searchResultEntity.getPoiList(), 0, false);
 //                createCenterPoiMarker(requestParameter);
                 break;
             case AutoMapConstant.SearchType.GEO_SEARCH:
@@ -1490,7 +1495,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param poiList 搜索结果列表
      * @param index 当前选中下标
      */
-    public void createTerminalParkPoiMarker(final List<PoiInfoEntity> poiList, final int index) {
+    public void createTerminalParkPoiMarker(final List<PoiInfoEntity> poiList, final int index, final boolean isNeedPreview) {
         if (ConvertUtils.isEmpty(poiList) || isNaviStatus()) {
             return;
         }
@@ -1500,7 +1505,17 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
         mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
                 layerItemSearchResult, false);
-        showPreview(poiList);
+        if (isNeedPreview) {
+            showPreview(poiList);
+        }
+    }
+
+    public void showTerminalParkPreview() {
+        LayerItemSearchResult layerItemSearchResult = sMarkerInfoMap.get(LayerPointItemType.SEARCH_PARENT_PARK);
+        if (layerItemSearchResult != null && !ConvertUtils.isEmpty(layerItemSearchResult.getSearchResultPoints())) {
+            List<PoiInfoEntity> poiInfoEntities = layerItemSearchResult.getSearchResultPoints();
+            showPreview(poiInfoEntities);
+        }
     }
 
     public LayerItemSearchResult getLastSearchResult() {
@@ -1545,6 +1560,52 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
             mMapPackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, false, 1350, 210, 600, 140, points, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+        }
+    }
+
+    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index, final int searchType,
+                               final boolean isNeedShow, final boolean select) {
+        if (ConvertUtils.isEmpty(poiInfoEntity)) {
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "setSelectIndex type: " + searchType + " ,index: " + index);
+
+        if (searchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
+            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE
+                    , index, select);
+        } else if (searchType == AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH) {
+            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_PARK
+                    , index, select);
+            mMapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 2);
+        } else {
+            if (getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
+                mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_CHARGE_STATION
+                        , index, select);
+            } else {
+                mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_POINT
+                        , index, select);
+            }
+        }
+        final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
+        final ArrayList<PoiInfoEntity> poiList = new ArrayList<>();
+        poiList.add(poiInfoEntity);
+        layerItemSearchResult.setSearchResultPoints(poiList);
+        //被选中的poi对象需要添加子点，区域，道路的扎标
+        if (!ConvertUtils.isEmpty(poiInfoEntity.getMRoadPolygonBounds())) {
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_Line_Road,
+                    layerItemSearchResult, false);
+        }
+        if (!ConvertUtils.isEmpty(poiInfoEntity.getMPoiAoiBounds())) {
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_AREA,
+                    layerItemSearchResult, false);
+        }
+        if (!ConvertUtils.isEmpty(poiInfoEntity.getChildInfoList())) {
+            sMarkerInfoMap.put(LayerPointItemType.SEARCH_CHILD_POINT, layerItemSearchResult);
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT,
+                    layerItemSearchResult, false);
+        }
+        if (isNeedShow) {
+            showPreview(poiList);
         }
     }
 
