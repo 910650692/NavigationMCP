@@ -1,12 +1,15 @@
 package com.sgm.navi.scene.ui.search;
 
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
@@ -64,6 +67,8 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
     private IClearEditTextListener mClearEditTextListener;
     private SearchHistoryAdapter mSearchHistoryAdapter;
     private int mSearchType = AutoMapConstant.SearchType.SEARCH_KEYWORD;
+    private ValueAnimator mAnimator;
+    private float mAngelTemp = 0;
 
     public SceneSugSearchPoiList(@NonNull final Context context) {
         super(context);
@@ -99,6 +104,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         setupRecyclerView();
         setupHistoryRecycleView();
         setupSearchActions();
+        initLoadAnim(mViewBinding.ivSugLoading);
 //        requestFocusAndShowKeyboard();
     }
 
@@ -164,6 +170,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
     }
 
     public void setupHistoryRecycleView(){
+        showLoading(false);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mViewBinding.recyclerSearchHistory.setLayoutManager(layoutManager);
@@ -303,9 +310,11 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         mViewBinding.sclSearchTopView.ivClose.setOnClickListener(v -> mScreenViewModel.closeSearch());
         mViewBinding.sclSearchTopView.searchBarEditView.setHint(ResourceUtils.Companion.getInstance().getString(R.string.main_search_hint));
         mViewBinding.sclSearchTopView.searchBarEditView.addTextChangedListener(new TextWatcher() {
+            private boolean wasEmpty = true;
+
             @Override
             public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
-
+                wasEmpty = s.length() == 0;
             }
 
             @Override
@@ -314,6 +323,9 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
 
             @Override
             public void afterTextChanged(final Editable editable) {
+                if (wasEmpty && editable.length() > 0) {
+                    showLoading(true);
+                }
                 if (mClearEditTextListener != null) {
                     mClearEditTextListener.onEditTextChanged(editable.toString().trim());
                 }
@@ -382,6 +394,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
      * @param isRestore 是否是切换日夜模式导致的更新回调
      */
     public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity, final boolean isRestore) {
+        showLoading(false);
         if ((searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) && !getEditText().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             mViewBinding.recyclerSearchResult.setVisibility(GONE);
@@ -436,6 +449,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         if (null != mAdapter) {
             mAdapter.clearList();
         }
+        showLoading(false);
     }
 
     /**
@@ -494,5 +508,78 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
 
     public void setEditTextChangedListener(final IClearEditTextListener clickListener) {
         this.mClearEditTextListener = clickListener;
+    }
+
+    public void showLoading(final boolean isShow){
+        if(ConvertUtils.isNull(mViewBinding)){
+            return;
+        }
+        int visibility = isShow ? View.VISIBLE : View.GONE;
+        mViewBinding.ivSugLoading.setVisibility(visibility);
+        mViewBinding.ilSugLoading.setVisibility(visibility);
+        if (!ConvertUtils.isNull(mAnimator)) {
+            if (isShow) {
+                if (!mAnimator.isRunning()) {
+                    mAnimator.start();
+                } else {
+                    Logger.w(MapDefaultFinalTag.SEARCH_HMI_TAG, "SceneSugSearchLoadingDialog is showing");
+                }
+            } else {
+                if (mAnimator.isRunning()) {
+                    mAnimator.cancel();
+                }
+            }
+        }
+    }
+
+    /**
+     * 初始化加载动画
+     * @param sivLoading 加载动画视图
+     */
+    private void initLoadAnim(final View sivLoading) {
+        // 如果动画已存在并正在运行，则取消并清理
+        if (mAnimator != null) {
+            if (mAnimator.isRunning()) {
+                mAnimator.cancel();
+            }
+            mAnimator = null;
+        }
+
+        // 创建属性动画，从 0 到 360 度循环旋转
+        mAnimator = ValueAnimator.ofFloat(0f, 360f);
+        mAnimator.setDuration(2000); // 动画持续时间
+        mAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
+        mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
+        // 添加动画更新监听器
+        mAnimator.addUpdateListener(animation -> {
+            final float angle = (float) animation.getAnimatedValue();
+            if (shouldSkipUpdate(angle)) {
+                return;
+            }
+            sivLoading.setRotation(angle);
+        });
+    }
+
+    /**
+     *用于控制角度变化频率的辅助方法
+     *@param angle 当前角度
+     *@return 是否跳过更新
+     */
+    private boolean shouldSkipUpdate(final float angle) {
+        final float changeAngle = angle - mAngelTemp;
+        final float angleStep = 10;
+        if (changeAngle > 0f && changeAngle <= angleStep) {
+            return true; // 跳过更新，避免高频调用浪费资源
+        }
+        mAngelTemp = angle; // 更新临时角度值
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (!ConvertUtils.isNull(mAnimator)) {
+            mAnimator.cancel();
+        }
     }
 }

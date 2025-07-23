@@ -27,6 +27,23 @@
             android:layout_marginTop="@dimen/dp_m_82"
             android:background="@drawable/bg_shadow_navi_cadillac">
 
+            <com.sgm.navi.ui.view.SkinView
+                android:id="@+id/il_sug_loading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_sug_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:src="@drawable/icon_limit_loading"
+                app:layout_constraintBottom_toBottomOf="@+id/il_sug_loading"
+                app:layout_constraintEnd_toEndOf="@+id/il_sug_loading"
+                app:layout_constraintStart_toStartOf="@+id/il_sug_loading"
+                app:layout_constraintTop_toTopOf="@+id/il_sug_loading" />
+
             <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/recycler_search_result"
                 android:scrollbars="vertical"
