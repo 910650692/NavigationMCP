@@ -176,7 +176,6 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
                 mView.showCountryMapDataDialog();
             }
             mModel.startAllTask(adCodeList);
-            updateManagerDownloadView();
         }
     }
 
@@ -215,6 +214,7 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
             mView.notifyCurrentCityView(cityDataInfo);
             notifyNearDataView();
             mAllDownloadingDataSize.setValue(String.valueOf(mModel.getWorkingQueueSize()));
+            updateManagerDownloadView();
         });
     }
 

@@ -107,7 +107,7 @@
                 app:layout_constraintStart_toEndOf="@+id/poi_name"/>
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_distance"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@{poiBean.distance}"

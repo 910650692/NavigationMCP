@@ -210,6 +210,9 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
                 if (UserDataCode.TASK_STATUS_CODE_SUCCESS == info.getDownLoadInfo().getTaskState()) {
                     ((ConstraintLayout.LayoutParams) mBinding.countryDataCount.getLayoutParams()).rightMargin
                             = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_m_60);
+                } else {
+                    ((ConstraintLayout.LayoutParams) mBinding.countryDataCount.getLayoutParams()).rightMargin
+                            = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_20);
                 }
                 // 下载按钮状态
                 mBinding.countryDownloadView.parseDownloadStatusInfo(info.getDownLoadInfo());

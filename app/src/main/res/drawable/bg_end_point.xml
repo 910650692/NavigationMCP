@@ -3,5 +3,5 @@
     android:shape="rectangle">
 
     <solid android:color="@color/route_cricle_dot_red_color"/>
-    <corners android:radius="@dimen/dp_8"/>
+    <corners android:radius="@dimen/bg_downloading_city_corner"/>
 </shape>

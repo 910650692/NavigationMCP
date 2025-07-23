@@ -106,7 +106,7 @@
                 tools:text="最快" />
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_distance"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{poiBean.distance}"
                 android:textColor="@color/search_quick_tab_view_color"

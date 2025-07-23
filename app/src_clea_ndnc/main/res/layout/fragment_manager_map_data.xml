@@ -83,7 +83,7 @@
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp_35"
+                        android:layout_height="@dimen/dp_36"
                         android:text="@{String.valueOf(ViewModel.mAllDownloadingDataSize)}"
                         android:layout_gravity="center"
                         android:gravity="center"
@@ -91,7 +91,8 @@
                         android:visibility="@{ViewModel.mAllDownloadingDataSize > 0 ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/setting_white"
                         android:textSize="@dimen/sp_22"
-                        android:padding="@dimen/dp_5"
+                        android:paddingHorizontal="@dimen/dp_7"
+                        android:paddingVertical="@dimen/dp_3"
                         android:background="@drawable/bg_end_point" />
 
                 </com.sgm.navi.ui.view.SkinLinearLayout>
