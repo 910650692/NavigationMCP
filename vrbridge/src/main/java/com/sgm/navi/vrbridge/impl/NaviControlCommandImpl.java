@@ -2582,14 +2582,18 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             Logger.d(IVrBridgeConstant.TAG, "POI PASSBY -> " + strPoi);
         }
 
-        if (ConvertUtils.equals(strStart, "我的位置") && ConvertUtils.equals(strArrival, IVrBridgeConstant.PoiType.DESTINATION)) {
+
+        if (ConvertUtils.equals(strStart, "我的位置")) {
+            strStart = null;
+            Logger.d(IVrBridgeConstant.TAG, "我的位置 -> null");
+        }
+        if (ConvertUtils.equals(strArrival, IVrBridgeConstant.PoiType.DESTINATION)) {
             strArrival = mNameMap.get(mAllPoiParamList.get(mAllPoiParamList.size() - 1));
-            strStart = null;
-            Logger.d(IVrBridgeConstant.TAG, "我的位置 -> null; ARRIVAL DESTINATION -> " + strArrival);
-        } else if (ConvertUtils.equals(strStart, "我的位置") && ConvertUtils.equals(strArrival, IVrBridgeConstant.PoiType.PASS_BY)) {
+
+            Logger.d(IVrBridgeConstant.TAG, " ARRIVAL DESTINATION -> " + strArrival);
+        } else if (ConvertUtils.equals(strArrival, IVrBridgeConstant.PoiType.PASS_BY)) {
             strArrival = mNameMap.get(mAllPoiParamList.get(0));
-            strStart = null;
-            Logger.d(IVrBridgeConstant.TAG, "我的位置 -> null; ARRIVAL PASSBY -> " + strArrival);
+            Logger.d(IVrBridgeConstant.TAG, " ARRIVAL PASSBY -> " + strArrival);
         }
 
         handlePOI(strPoi, strStart, strArrival);

@@ -418,9 +418,9 @@ public interface IVrBridgeConstant {
         String CURRENT_POS = "当前位置到";
 
         String SMOOTH = "畅通";
-        String LITTLE_SMOOTH = "缓行";
-        String BLOCK = "拥堵";
-        String SEVER_BLOCK = "严重拥堵";
+        String LITTLE_SMOOTH = "部分缓行";
+        String BLOCK = "部分拥堵";
+        String SEVER_BLOCK = "部分拥堵";
         String SEVER_SMOOTH = "极度通畅";
         String NO_ROAD_CONDITION = "暂未查询到相应路况信息，请稍后再试";
         String UNKNOWN_ROAD_CONDITION = "未知状态，请稍后再试";
