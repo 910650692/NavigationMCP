@@ -905,6 +905,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             if (currentImersiveStatus == ImersiveStatus.TOUCH) {
                 mViewModel.showOrHideSelfParkingView(true);
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
+                FloatViewManager.getInstance().hideAllCardWidgets(true);
+                startSelfParkingTimer();
             } else if (currentImersiveStatus == ImersiveStatus.IMERSIVE) {
                 mViewModel.showOrHideSelfParkingView(false);
                 if (getTopFragment(PoiDetailsFragment.class)) {

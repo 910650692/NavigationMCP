@@ -2,6 +2,8 @@ package com.sgm.navi.scene.impl.map;
 
 import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 
+import android.view.MotionEvent;
+
 import com.android.utils.log.Logger;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -30,10 +32,8 @@ public class SceneScaleImpl extends BaseSceneModel<SceneScaleView> implements IS
     }
 
     private void naviScaleClick(){
-        if (NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
-            Logger.d("SceneScaleImpl" ,MAP_TOUCH);
-            ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
-        }
+        Logger.d("SceneScaleImpl" ,MAP_TOUCH);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
     }
 
     @Override
