@@ -1288,6 +1288,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                         AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfo);
                 poiBundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE,
                         AutoMapConstant.PoiType.POI_MAP_CLICK);
+                poiBundle.putInt(NaviConstant.VIA_POSITION, (int) result.getIndex());
                 boolean isNavi = StackManager.getInstance().
                         getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()) instanceof
                         NaviGuidanceFragment;

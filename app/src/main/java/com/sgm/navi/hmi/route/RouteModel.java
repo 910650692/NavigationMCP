@@ -26,6 +26,7 @@ import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
 import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
@@ -1164,6 +1165,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 final Bundle poiBundle = new Bundle();
                 poiBundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfo);
                 poiBundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_MAP_CLICK);
+                poiBundle.putInt(NaviConstant.VIA_POSITION, (int) item.getIndex());
                 final PoiDetailsFragment poiFragment = new PoiDetailsFragment();
                 addPoiDetailsFragment(poiFragment, poiBundle);
                 break;
