@@ -179,7 +179,7 @@ public final class VoiceSearchManager {
 
             //关键字和taskId是否匹配
             final boolean taskEqual = mSearchTaskId == taskId;
-            final boolean keywordEqual = Objects.equals(mKeyword, keyword);
+            final boolean keywordEqual = Objects.equals(mKeyword, keyword) || keyword.contains(mKeyword);
             if(Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "taskEqual: ", taskEqual, ", keywordEqual: ", keywordEqual);
             }
