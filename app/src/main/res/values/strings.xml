@@ -263,7 +263,7 @@
     <string name="favorite_item_rename_confirm">确认</string>
     <string name="favorite_item_rename_hint">建议不要超过4个汉字</string>
     <string name="favorite_item_edit">编辑</string>
-    <string name="favorite_add">添加</string>
+    <string name="favorite_add">添加地址</string>
     <string name="favorite_top_back">返回顶部</string>
     <string name="favorite_favorite_switch">开启后，在地图上显示通勤地址位置及行程信息</string>
     <string name="favorite_switch_common">常用收藏夹</string>

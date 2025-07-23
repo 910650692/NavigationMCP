@@ -661,7 +661,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         boolean exist = StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),MainSearchFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),LimitDriveFragment.class.getSimpleName())
-                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),LimitCitySelectionFragment.class.getSimpleName()) ;
+                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),LimitCitySelectionFragment.class.getSimpleName())
+                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),SettingFragment.class.getSimpleName());
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set((NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
@@ -709,6 +710,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || NaviStatus.NaviStatusType.NAVING.equals(state))
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),LimitDriveFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),LimitCitySelectionFragment.class.getSimpleName())
+                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),SettingFragment.class.getSimpleName())
                 || AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT.equals(fragment)
                 || AutoMapConstant.SourceFragment.FRAGMENT_AROUND.equals(fragment)
                 || AutoMapConstant.SourceFragment.FRAGMENT_SEARCH_AROUND.equals(aroundFragment)
