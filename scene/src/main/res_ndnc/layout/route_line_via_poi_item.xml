@@ -28,13 +28,13 @@
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/line_bg"
-                android:layout_width="@dimen/dp_16"
+                android:layout_width="@dimen/dp_9"
                 android:layout_height="@dimen/dp_48" />
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_item_via_img"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
+                android:layout_width="@dimen/dp_9"
+                android:layout_height="@dimen/dp_9"
                 android:src="@drawable/circle_dot_orange"
                 app:layout_constraintBottom_toBottomOf="@+id/line_bg"
                 app:layout_constraintStart_toStartOf="@+id/line_bg"
@@ -43,7 +43,7 @@
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/skinTextView"
                 android:layout_width="0.5dp"
-                android:layout_height="@dimen/dp_16"
+                android:layout_height="@dimen/dp_20"
                 android:background="@color/route_line_color"
                 app:layout_constraintBottom_toTopOf="@+id/route_item_via_img"
                 app:layout_constraintEnd_toEndOf="@+id/route_item_via_img"
@@ -51,7 +51,7 @@
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="0.5dp"
-                android:layout_height="@dimen/dp_16"
+                android:layout_height="@dimen/dp_20"
                 android:background="@color/route_line_color"
                 app:layout_constraintStart_toStartOf="@id/route_item_via_img"
                 app:layout_constraintEnd_toEndOf="@id/route_item_via_img"
@@ -72,6 +72,7 @@
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:src="@drawable/img_route_via_long_press_sw1225"
+                android:layout_marginStart="@dimen/dp_6"
                 app:layout_constraintStart_toEndOf="@+id/line_bg"
                 app:layout_constraintTop_toTopOf="@id/route_item_via_img"
                 app:layout_constraintBottom_toBottomOf="@id/route_item_via_img"/>
@@ -80,7 +81,7 @@
                 android:id="@+id/route_via_item_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="14dp"
                 android:ellipsize="end"
                 android:maxWidth="@dimen/dp_350"
                 android:maxLines="1"
@@ -111,7 +112,7 @@
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_item_via_empty"
-            android:layout_width="@dimen/dp_16"
+            android:layout_width="@dimen/dp_9"
             android:layout_height="@dimen/dp_24"
             app:layout_constraintTop_toBottomOf="@+id/content"
             app:layout_constraintStart_toStartOf="parent"/>

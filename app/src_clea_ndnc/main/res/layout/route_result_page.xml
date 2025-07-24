@@ -70,7 +70,7 @@
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_line_cicle_start_bg"
-                android:layout_width="@dimen/dp_16"
+                android:layout_width="@dimen/dp_9"
                 android:layout_height="@dimen/dp_80"
                 android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toEndOf="@id/route_line_info_img_close"
@@ -78,8 +78,8 @@
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_item_via_start_img"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
+                android:layout_width="@dimen/dp_9"
+                android:layout_height="@dimen/dp_9"
                 android:src="@drawable/circle_dot_green"
                 android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/route_line_info_img_close"
@@ -100,7 +100,7 @@
                 android:id="@+id/route_line_tv_title"
                 android:layout_width="@dimen/dp_336"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_3"
+                android:layout_marginStart="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_29"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
@@ -133,14 +133,14 @@
 
                 <com.sgm.navi.ui.view.SkinView
                     android:id="@+id/line_bg"
-                    android:layout_width="@dimen/dp_16"
+                    android:layout_width="@dimen/dp_9"
                     android:layout_height="@dimen/dp_48"
                     android:visibility="@{ViewModel.getViaPoiListAllVisibility() ? View.GONE : View.VISIBLE}" />
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/route_item_via_img"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="@dimen/dp_9"
+                    android:layout_height="@dimen/dp_9"
                     android:src="@drawable/circle_dot_orange"
                     android:visibility="@{ViewModel.getViaPoiListAllVisibility() ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="@+id/line_bg"
@@ -185,7 +185,7 @@
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_line_cicle_end_bg"
-                android:layout_width="@dimen/dp_16"
+                android:layout_width="@dimen/dp_9"
                 android:layout_height="@dimen/dp_60"
                 android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/route_line_cicle_start_bg"
@@ -193,8 +193,8 @@
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_item_via_endimg"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
+                android:layout_width="@dimen/dp_9"
+                android:layout_height="@dimen/dp_9"
                 android:src="@drawable/circle_dot_red"
                 android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/route_line_cicle_end_bg"

@@ -23,8 +23,8 @@
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_details_list_img_header"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
             android:src="@drawable/circle_dot_green"
             android:layout_marginStart="@dimen/dp_26"
             android:layout_marginTop="@dimen/dp_42"
@@ -64,8 +64,8 @@
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_details_list_img_footer"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
             android:src="@drawable/circle_dot_red"
             android:layout_marginStart="@dimen/dp_26"
             app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_footer"
