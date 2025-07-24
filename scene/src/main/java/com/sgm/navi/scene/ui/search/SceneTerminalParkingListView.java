@@ -1,9 +1,12 @@
 package com.sgm.navi.scene.ui.search;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +17,7 @@ import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.BaseSceneView;
+import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.databinding.TerminalParkingResultViewBinding;
 import com.sgm.navi.scene.impl.search.SceneTerminalViewImpl;
 import com.sgm.navi.scene.ui.adapter.TerminalParkingResultAdapter;
@@ -21,10 +25,8 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
-import com.sgm.navi.service.logicpaket.search.SearchPackage;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author baipeng0904
@@ -35,9 +37,11 @@ import java.util.Optional;
 public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingResultViewBinding, SceneTerminalViewImpl> {
     private TerminalParkingResultAdapter mAdapter;
     private LinearLayoutManager layoutManager;
-    private SearchLoadingDialog mSearchLoadingDialog;
     private int mIndex;
     private PoiInfoEntity mPoiInfoEntity;
+    private ValueAnimator mAnimator;
+    private float mAngelTemp = 0;
+    private GeoPoint mPoint;
 
     public void setIndex(final int index) {
         mIndex = index;
@@ -74,25 +78,104 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
     protected void initObserver() {
         setupRecyclerView();
         setupSearchActions();
-        mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+        initLoadAnim(mViewBinding.ivLoading);
 
     }
+
+    /**
+     * 初始化加载动画
+     * @param sivLoading 加载动画视图
+     */
+    private void initLoadAnim(final View sivLoading) {
+        // 如果动画已存在并正在运行，则取消并清理
+        if (mAnimator != null) {
+            if (mAnimator.isRunning()) {
+                mAnimator.cancel();
+            }
+            mAnimator = null;
+        }
+
+        // 创建属性动画，从 0 到 360 度循环旋转
+        mAnimator = ValueAnimator.ofFloat(0f, 360f);
+        mAnimator.setDuration(2000); // 动画持续时间
+        mAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
+        mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
+        // 添加动画更新监听器
+        mAnimator.addUpdateListener(animation -> {
+            final float angle = (float) animation.getAnimatedValue();
+            if (shouldSkipUpdate(angle)) {
+                return;
+            }
+            sivLoading.setRotation(angle);
+        });
+    }
+
+    /**
+     *用于控制角度变化频率的辅助方法
+     *@param angle 当前角度
+     *@return 是否跳过更新
+     */
+    private boolean shouldSkipUpdate(final float angle) {
+        final float changeAngle = angle - mAngelTemp;
+        final float angleStep = 10;
+        if (changeAngle > 0f && changeAngle <= angleStep) {
+            return true; // 跳过更新，避免高频调用浪费资源
+        }
+        mAngelTemp = angle; // 更新临时角度值
+        return false;
+    }
+
+    public void showLoading(final boolean isShow){
+        if(ConvertUtils.isNull(mViewBinding)){
+            return;
+        }
+        mViewBinding.ivLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mViewBinding.noResultHint.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mViewBinding.noResultHint.setText(getContext().getString(R.string.st_search_loading));
+        mViewBinding.noResultButton.setVisibility(View.GONE);
+        mViewBinding.recyclerSearchResult.setVisibility(isShow ? GONE : View.VISIBLE);
+        if (!ConvertUtils.isNull(mAnimator)) {
+            if (isShow && !mAnimator.isRunning()) {
+                mAnimator.start();
+            } else {
+                mAnimator.cancel();
+            }
+        }
+    }
+
+    private final Runnable mTimeoutTask = new Runnable() {
+        @Override
+        public void run() {
+            if (!ConvertUtils.isEmpty(mViewBinding)) {
+                mViewBinding.noResultButton.setVisibility(View.VISIBLE);
+                mViewBinding.noResultHint.setText(getContext().getString(R.string.load_failed));
+                mViewBinding.ivLoading.setVisibility(View.GONE);
+                mViewBinding.recyclerSearchResult.setVisibility(View.GONE);
+                if (mAnimator != null) {
+                    mAnimator.cancel();
+                }
+                mViewBinding.noResultButton.setOnClickListener((view) -> {
+                    if (mPoint != null) {
+                        aroundSearch(mPoint);
+                    }
+                });
+            }
+        }
+    };
 
     /**
      * 周边搜索
      * @param geoPoint 目标POI坐标点 经纬度
      */
     public void aroundSearch(final GeoPoint geoPoint) {
+        mPoint = geoPoint;
         mScreenViewModel.aroundSearch("停车场", geoPoint);
         if(!ConvertUtils.isNull(mAdapter)){
             mAdapter.setEndPoint(geoPoint);
         }
-        if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
-            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
-        } else {
-            mSearchLoadingDialog = new SearchLoadingDialog(getContext());
-            mSearchLoadingDialog.show();
-        }
+        showLoading(true);
+        ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+        ThreadManager.getInstance().postDelay(mTimeoutTask, 6000);
     }
 
     /**
@@ -148,13 +231,13 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
      * @param searchResultEntity 搜索结果实体类
      */
     public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
+            ThreadManager.getInstance().postDelay(mTimeoutTask, 0);
             return;
         }
-        if (mSearchLoadingDialog != null && mSearchLoadingDialog.isShowing()) {
-            mSearchLoadingDialog.dismiss();
-        }
+        showLoading(false);
         if (ConvertUtils.isEmpty(mScreenViewModel)) {
             return;
         }
@@ -187,14 +270,6 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
             public void run() {
                 PoiInfoEntity minPoi = poiList.get(0);
                 int index = 0;
-//                for (int i = 1; i < poiList.size(); i++) {
-//                    int curParkDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(poiList.get(i).getMPoint());
-//                    int minParkDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(minPoi.getMPoint());
-//                    if(curParkDistance < minParkDistance){
-//                        minPoi = poiList.get(i);
-//                        index = i;
-//                    }
-//                }
                 mAdapter.updateSelectedPosition(index);
                 layoutManager.scrollToPositionWithOffset(index, 0);
                 PoiInfoEntity finalMinPoi = minPoi;
@@ -214,8 +289,9 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mSearchLoadingDialog != null && mSearchLoadingDialog.isShowing()) {
-            mSearchLoadingDialog.dismiss();
+        ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+        if (!ConvertUtils.isNull(mAnimator)) {
+            mAnimator.cancel();
         }
     }
 }
