@@ -49,7 +49,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     private final UserTrackPackage mUserTrackPackage;
     private final CalibrationPackage mCalibrationPackage;
     private int mTaskId;
-    private int mListSearchType;
+    private int mListSearchType = -1;
     public int getMTaskId() {
         return mTaskId;
     }
@@ -213,11 +213,45 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             final GeoPoint userLoc = new GeoPoint();
             userLoc.setLon(PositionPackage.getInstance().getLastCarLocation().getLongitude());
             userLoc.setLat(PositionPackage.getInstance().getLastCarLocation().getLatitude());
-            mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch, userLoc);
+            final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+            if(mListSearchType == 1 && endPoint != null && !ConvertUtils.isEmpty(endPoint.getRealPos())){
+                mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()));
+            }else{
+                mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch, userLoc);
+            }
             return;
         }
         final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
         mTaskId = mSearchPackage.aroundSearch(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch, geoPoint);
+
+    }
+
+    /**
+     * 周边筛选搜索2.0
+     *
+     * @param keyword      关键字
+     * @param pageNum      搜索页数
+     * @param retain       筛选回传参数，使用搜索结果中的SearchClassifyInfo.retainState值原样回传
+     * @param classifyData 二筛参数
+     * @param isSilentSearch 是否静默搜索
+     */
+    public void aroundSearchByQuickFilter(final int pageNum, final String keyword, final String retain,
+                             final String classifyData, final boolean isSilentSearch, final PoiInfoEntity poiInfoEntity) {
+        logSearch("keywordSearch classifyData: ", classifyData);
+        if (poiInfoEntity == null || poiInfoEntity.getPoint() == null) {
+            final GeoPoint userLoc = new GeoPoint();
+            userLoc.setLon(PositionPackage.getInstance().getLastCarLocation().getLongitude());
+            userLoc.setLat(PositionPackage.getInstance().getLastCarLocation().getLatitude());
+            final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+            if(mListSearchType == 1 && endPoint != null && !ConvertUtils.isEmpty(endPoint.getRealPos())){
+                mTaskId = mSearchPackage.aroundSearchByQuickFilter(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()));
+            }else{
+                mTaskId = mSearchPackage.aroundSearchByQuickFilter(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch, userLoc);
+            }
+            return;
+        }
+        final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
+        mTaskId = mSearchPackage.aroundSearchByQuickFilter(pageNum, isChargingGeneralSearchText(keyword), retain, classifyData, isSilentSearch, geoPoint);
 
     }
 

@@ -763,9 +763,17 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         if("searchlist_charging_mode_fast".equals(info.getValue())){
                             refreshLocalInfoListCheckedState(1, 2);
                         }
-                        mScreenViewModel.keywordSearch(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                        if(mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH){
+                            mScreenViewModel.aroundSearch(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false,mPoiInfoEntity);
+                        }else{
+                            mScreenViewModel.keywordSearch(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                        }
                     }else{
-                        mScreenViewModel.keywordSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                        if(mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH){
+                            mScreenViewModel.aroundSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false,mPoiInfoEntity);
+                        }else{
+                            mScreenViewModel.keywordSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                        }
                     }
                 }
             }
