@@ -1180,22 +1180,14 @@ public class ConvertUtils {
             //100公里级
             distance = (distance / 1000) * 1000;
         }
-
         if (distance >= 1000) {
-            int kiloMeter = distance / 1000;
-            int leftMeter = distance % 1000;
-            leftMeter = leftMeter / 100;
-
-            StringBuffer sb = new StringBuffer();
-
-            if (leftMeter > 0) {
-                sb.append(kiloMeter);
-                sb.append(".");
-                sb.append(leftMeter);
-            } else {
-                sb.append(kiloMeter);
+            double km = distance / 1000.0;
+            DecimalFormat df = new DecimalFormat("0.0");
+            String result = df.format(km);
+            if (result.endsWith(".0")) {
+                result = result.substring(0, result.length() - 2);
             }
-            distancs[0] = sb.toString();
+            distancs[0] = result;
             distancs[1] = context.getString(R.string.km);
         } else {
             distancs[0] = String.valueOf(distance);
