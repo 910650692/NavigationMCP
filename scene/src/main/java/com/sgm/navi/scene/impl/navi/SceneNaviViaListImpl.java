@@ -8,6 +8,8 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.BaseSceneModel;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.api.navi.ISceneNaviViaList;
+import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
+import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.ui.navi.SceneNaviViaListView;
 import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
@@ -30,6 +32,9 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
     @Override
     public void skipAlongWayFragment() {
         int viaCount = RoutePackage.getInstance().getViaPointsCount(MapType.MAIN_SCREEN_MAIN_MAP);
+        initTimer();
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(
+                MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         if (viaCount == 5) {
             ToastUtils.Companion.getInstance().showCustomToastView(
                     ResourceUtils.Companion.getInstance().getString(R.string.add_via_failure));
