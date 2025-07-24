@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.layer.bls;
 
 import android.graphics.Rect;
 
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.autonavi.gbl.guide.model.CrossType;
@@ -434,10 +435,12 @@ public class LayerAdapterImpl implements ILayerApi {
     /* 搜索图层扎标接口 */
     public boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
         if (clearOtherLayerItem) {
+            if (Logger.openLog) {
+                Logger.d(TAG, "updateSearchMarker clearOtherLayerItem ", clearOtherLayerItem);
+            }
             layersPoolManager.getLayersPool(mapTypeId).getLayerSearch().clearAllItems();
         }
-        boolean searchMarker = layersPoolManager.getLayersPool(mapTypeId).getLayerSearch().updateSearchMarker(type, searchResult);
-        return searchMarker;
+        return layersPoolManager.getLayersPool(mapTypeId).getLayerSearch().updateSearchMarker(type, searchResult);
     }
 
     /* 更新列表可视扎标数据 */

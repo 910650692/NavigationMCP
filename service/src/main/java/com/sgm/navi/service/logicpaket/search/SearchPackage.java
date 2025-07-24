@@ -1418,7 +1418,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final LayerPointItemType layerPointItemType = LayerPointItemType.SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT;
         sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
         mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
-                layerItemSearchResult, true);
+                layerItemSearchResult, false);
         showPreview(poiList);
     }
 
@@ -1713,7 +1713,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         }
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "createPoiMarker searchType " + searchType);
         sMarkerInfoMap.put(searchType, layerItemSearchResult);
-        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, searchType, layerItemSearchResult, true);
+        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, searchType, layerItemSearchResult, false);
         showPreview(poiList);
     }
 
