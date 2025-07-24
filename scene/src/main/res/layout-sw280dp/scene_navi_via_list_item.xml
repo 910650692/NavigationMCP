@@ -46,7 +46,6 @@
                 android:background="@drawable/img_navi_via_item_btn_pass"
                 android:gravity="center"
                 android:focusable="false"
-                android:text="@string/navi_via_item_pass"
                 android:textColor="@color/navi_color_FFFFFF_100"
                 android:textSize="@dimen/sp_32"
                 app:layout_constraintBottom_toBottomOf="parent"

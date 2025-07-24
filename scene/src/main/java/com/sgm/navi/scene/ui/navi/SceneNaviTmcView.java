@@ -500,9 +500,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 || BuildConfig.FLAVOR.equals("clea_local_8155")
                 || BuildConfig.FLAVOR.equals("clea_8775"))) {
             if (view instanceof SkinTextView stv) {
-                if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaPointType) {//todo flavor temp
-                    stv.setText(getContext().getText(R.string.navi_via_item_pass));
-                } else if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaChargeType) {
+                if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaChargeType) {
                     stv.setText(getContext().getText(R.string.navi_via_item_charge));
                 }
             }
