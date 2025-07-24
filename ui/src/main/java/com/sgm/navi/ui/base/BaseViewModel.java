@@ -127,5 +127,10 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
         mView.closeAllFragmentsUntilTargetFragment(className);
     }
 
+    @Override
+    public void closeTrafficEventFragment(boolean nextShow) {
+        mView.closeTrafficEventFragment(nextShow);
+    }
+
     protected abstract M initModel();
 }

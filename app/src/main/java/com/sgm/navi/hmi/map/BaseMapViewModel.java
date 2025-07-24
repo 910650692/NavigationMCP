@@ -929,7 +929,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         try {
             BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
             if (!ConvertUtils.isNull(baseFragment) && baseFragment instanceof TrafficEventFragment) {
-                closeFragment(true);
+                closeTrafficEventFragment(true);
                 Logger.i(TAG, "removeTrafficEventFragment-Success!");
             }
         } catch (Exception e) {

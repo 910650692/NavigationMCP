@@ -83,7 +83,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
     };// 防止点击穿透
 
     public Action closeSelf = () -> {
-        closeFragment(true);
+        closeTrafficEventFragment(true);
     };
 
     // 首次进入，数据加载失败重试

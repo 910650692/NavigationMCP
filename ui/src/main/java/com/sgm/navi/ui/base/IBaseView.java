@@ -152,4 +152,6 @@ public interface IBaseView {
     }
 
     default void refreshFragment(Bundle bundle){}
+
+    void closeTrafficEventFragment(boolean nextShow);
 }

@@ -2,6 +2,7 @@ package com.sgm.navi.ui.base;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -193,6 +194,15 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void closeFragmentFromDetail(final boolean nextShow) {
+        FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(), nextShow);
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapTabFromDetail();
+        }
+        onFragmentSizeChanged();
+    }
+
+    @Override
+    public void closeTrafficEventFragment(boolean nextShow) {
         FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(), nextShow);
         if (mStackManager.isFragmentStackNull(mScreenId)) {
             onResetMapTabFromDetail();

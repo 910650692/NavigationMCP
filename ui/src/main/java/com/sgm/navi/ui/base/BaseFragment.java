@@ -193,6 +193,15 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
+    public void closeTrafficEventFragment(boolean nextShow) {
+        if (mActivity == null) {
+            Logger.d(TAG,"mActivity is null");
+            return;
+        }
+        mActivity.closeTrafficEventFragment(nextShow);
+    }
+
+    @Override
     public void closeAllFragment() {
         if (mActivity == null) {
             Logger.d(TAG,"mActivity is null");
