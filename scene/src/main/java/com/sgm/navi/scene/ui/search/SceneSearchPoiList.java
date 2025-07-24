@@ -1118,11 +1118,17 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.searchLabelFilter.setVisibility(GONE);
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mSearchType: ",mSearchType,"code: ",searchResultEntity.getCode());
             if (searchResultEntity != null
                     && searchResultEntity.getPoiType() == 0
                     && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) {
-                //无网无结果存在离线城市但无推荐结果
-                ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
+                // 顺路搜不支持离线搜索，当顺路搜无网络时提醒网络异常
+                if(mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH && searchResultEntity.getCode() == 33554433){
+                    ToastUtils.Companion.getInstance().showCustomToastView("网络异常，请检查网络后重试");
+                }else{
+                    //无网无结果存在离线城市但无推荐结果
+                    ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
+                }
             } else {
                 //当任何需要网络相应才能完成的操作，但网络异常时，统一给予以下提示
                 ToastUtils.Companion.getInstance().showCustomToastView("网络异常，请检查网络后重试");
@@ -1138,7 +1144,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         //需要等toast消失候再跳转离线城市页面
                         if (searchResultEntity != null
                                 && searchResultEntity.getPoiType() == 0
-                                && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) {
+                                && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())
+                                && mSearchType != AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
                             //离线搜索无数据时，跳转城市列表搜索界面
                             final Fragment fragment = (Fragment) ARouter.getInstance()
                                     .build(RoutePath.Search.OFFLINE_SEARCH_FRAGMENT)
@@ -1150,7 +1157,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 }, 3500);
                 //搜索无数据时，展示无结果页面
                 mViewBinding.searchResultNoData.setVisibility(VISIBLE);
-                if (searchResultEntity != null && searchResultEntity.getPoiType() == 0 && ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) {
+                if ((searchResultEntity != null && searchResultEntity.getPoiType() == 0 && ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) || mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
                     mViewBinding.searchResultNoData.setText(R.string.search_offline_no_city_hint);
                 } else {
                     mViewBinding.searchResultNoData.setText(R.string.sug_search_result_no_data);

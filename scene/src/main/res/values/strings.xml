@@ -326,7 +326,7 @@
     <string name="sug_search_result_no_data">很抱歉，未找到结果您可以换个词试试</string>
     <string name="search_offline_hint">网络异常，已切换至离线，当前搜索城市：%s</string>
     <string name="search_offline_hint_extend">离线搜索%s无结果，已优先推荐至: %s</string>
-    <string name="search_offline_no_city_hint">无网络连接，请检查网络后重试</string>
+    <string name="search_offline_no_city_hint">无网络连接，请检查网\n络后重试</string>
     <string name="search_offline_no_result_hint">没有找到”%s“相关城市</string>
     <string name="st_parking_item_recommended">推荐</string>
     <string name="st_distance_to_finish">距离终点%1$s</string>
