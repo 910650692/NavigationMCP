@@ -1552,6 +1552,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 param.setAdCode(String.valueOf(adCode)); // 所在城市对应 adcode
             }
             AccountProfileInfo accountProfileInfo = AccountPackage.getInstance().getUserInfo();
+            if (!TextUtils.isEmpty(accountProfileInfo.getNickname())
+                    || !TextUtils.isEmpty(accountProfileInfo.getAvatar())) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.car_connect_is_success));
+            }
             if (!ConvertUtils.isEmpty(accountProfileInfo)) {
                 param.setUserId(accountProfileInfo.getUid()); // 登录用户UID
             }

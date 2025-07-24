@@ -43,12 +43,17 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
     public void onInitView() {
         initSearchMapDataView();
         setupSearchActions();
-        requestFocusAndShowKeyboard();
     }
 
     @Override
     public void onInitData() {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        requestFocusAndShowKeyboard();
     }
 
     /**
@@ -168,6 +173,8 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
     public void requestFocusAndShowKeyboard() {
         // 确保视图已经附加到窗口
         mBinding.searchOfflineEditView.post(() -> {
+            Logger.d(TAG, "requestFocusAndShowKeyboard: ", mBinding.searchOfflineEditView.isAttachedToWindow(),
+                    mBinding.searchOfflineEditView.isShown(), mBinding.searchOfflineEditView.hasFocus());
             mBinding.searchOfflineEditView.requestFocus();
             final InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {

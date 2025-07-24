@@ -91,6 +91,9 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     public Action mAvoidLimitClick = () -> {
         if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())
                 && Boolean.FALSE.equals(mIsAvoidLimit.getValue())) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(
+                            com.sgm.navi.scene.R.string.navi_setting_offline_toast));
             mIsAvoidLimit.setValue(false);
             return;
         }

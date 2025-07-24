@@ -78,7 +78,7 @@
     <string name="map_go_setting">去设置</string>
     <string name="map_in_around">在附近</string>
     <string name="map_mfc_text">短按旋钮以进行地图移动或缩放</string>
-
+    <string name="car_connect_is_success">手车互联成功</string>
 
     <!-- 搜索相关 -->
     <string name="main_search_hint">搜索目的地</string>
