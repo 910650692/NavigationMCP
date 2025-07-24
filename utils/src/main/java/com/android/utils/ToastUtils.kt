@@ -84,7 +84,7 @@ class ToastUtils private constructor() {
         val toastText = view.findViewById<TextView>(R.id.toast_text)
         if (mToast == null) mToast = Toast.makeText(mContext, msg, time)
         mToast?.view = view
-        mToast!!.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, ResourceUtils.getInstance().getDimensionPixelSize(R.dimen.dp_20))
+        mToast!!.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, ResourceUtils.getInstance().getDimensionPixelSize(R.dimen.navi_toast_base_offset_y))
         mToast?.setDuration(time)
         toastText.text = msg
         mToast?.show()

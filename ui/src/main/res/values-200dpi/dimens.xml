@@ -4025,6 +4025,9 @@
 
     <dimen name="navi_main_fragment_margin_start">29.5dp</dimen>
     <dimen name="navi_main_fragment_margin_top">46.5dp</dimen>
+    <dimen name="navi_setting_fragment_height">@dimen/dp_893</dimen>
+
+    <dimen name="navi_main_float_window_width">@dimen/dp_624</dimen>
 
     <dimen name="bg_downloading_city_corner">@dimen/dp_8</dimen>
 </resources>

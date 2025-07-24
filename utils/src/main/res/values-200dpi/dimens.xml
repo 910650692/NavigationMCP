@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dp_toast_margin_start">0dp</dimen>
+    <dimen name="navi_toast_base_height">96dp</dimen>
+    <dimen name="navi_toast_base_padding_vertical">0dp</dimen>
+    <dimen name="navi_toast_base_offset_y">34dp</dimen>
+</resources>

@@ -4102,4 +4102,7 @@
     <dimen name="dp_3999">3999dp</dimen>
 
     <dimen name="dp_toast_margin_start">0dp</dimen>
+    <dimen name="navi_toast_base_height">@dimen/dp_120</dimen>
+    <dimen name="navi_toast_base_padding_vertical">@dimen/dp_36</dimen>
+    <dimen name="navi_toast_base_offset_y">@dimen/dp_20</dimen>
 </resources>
