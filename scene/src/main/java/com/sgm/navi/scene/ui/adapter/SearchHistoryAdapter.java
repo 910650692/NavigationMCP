@@ -176,6 +176,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (mPoiEntities.get(position) != null && ConvertUtils.isEmpty(mPoiEntities.get(position).getMEndPoiName())) {
                 resultHolder.resultItemBinding.subLineView.setVisibility(View.GONE);
             }
+            resultHolder.resultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.search_quick_tab_view_color));
             if (mSearchPackage.isAlongWaySearch()) {
                 PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                         .setPid(mHistory.getMPoiId())
@@ -186,8 +187,9 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
                 if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
                     resultHolder.resultItemBinding.textNavi.setText(R.string.route_service_details_remove_via_charge);
+                    resultHolder.resultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_005CFF));
                     resultHolder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
-                            .getDrawable(R.drawable.img_adds));
+                            .getDrawable(R.drawable.img_adds_light));
                 } else {
                     resultHolder.resultItemBinding.textNavi.setText(R.string.st_along_way_point);
                     resultHolder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_addq_58));

@@ -208,6 +208,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     getMContext().getResources().getColor(R.color.navi_color_006CFF_100),
                     mPoiEntities.get(position).getName(), mSearchResultEntity.getKeyword()));
         }
+        holder.mResultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.search_quick_tab_view_color));
         if (mSearchPackage.isAlongWaySearch() && !mIsEnd) {
             holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
             holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
@@ -215,8 +216,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
             if (isBelongSamePoi(mGasChargeAlongList, mPoiEntities.get(position))) {
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_details_remove_via_charge);
+                holder.mResultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_005CFF));
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
-                        ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_adds));
+                        ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_adds_light));
             } else {
                 holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
