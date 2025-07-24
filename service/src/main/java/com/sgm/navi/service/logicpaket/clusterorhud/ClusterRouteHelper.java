@@ -1,5 +1,6 @@
 package com.sgm.navi.service.logicpaket.clusterorhud;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.sgm.navi.service.adapter.navi.NaviAdapter;
@@ -53,5 +54,17 @@ public class ClusterRouteHelper {
         ArrayList<PathInfo> pathInfoList = new ArrayList<>();
         pathInfoList.add(pathInfo);
         NaviAdapter.getInstance().updatePathInfo(mapType, pathInfoList, 0);
+    }
+
+    public static void showSelectPatch(final long newPathId) {
+        Logger.i(TAG, "showSelectPatch");
+        PathInfo selectPathInfo = OpenApiHelper.getPathInfo(
+                MapType.MAIN_SCREEN_MAIN_MAP, newPathId);
+        ArrayList<PathInfo> pathInfos = new ArrayList<>();
+        pathInfos.add(selectPathInfo);
+        if (!ConvertUtils.isEmpty(pathInfos) && null != selectPathInfo) {
+            NaviAdapter.getInstance().updatePathInfo(MapType.CLUSTER_MAP, pathInfos,
+                    0);
+        }
     }
 }

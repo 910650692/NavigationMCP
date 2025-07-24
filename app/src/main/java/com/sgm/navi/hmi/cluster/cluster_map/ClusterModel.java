@@ -294,4 +294,9 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
             ClusterRouteHelper.refreshPathList();
         }
     }
+    @Override
+    public void onChangeNaviPath(long oldPathId, long pathID) {
+        Logger.i(TAG, "onChangeNaviPath oldPathId = ", oldPathId, " pathID = ", pathID);
+        ClusterRouteHelper.showSelectPatch(pathID);
+    }
 }
