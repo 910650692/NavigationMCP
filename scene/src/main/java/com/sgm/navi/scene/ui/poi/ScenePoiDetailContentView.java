@@ -158,7 +158,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setOnClickListener(v ->
                 handleAroundSearchClick());
         mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setOnClickListener(v ->{
-                if(!ConvertUtils.isEmpty(mPoiInfoEntity.getOperatorId())){
+                if(!ConvertUtils.isNull(mPoiInfoEntity) && !ConvertUtils.isEmpty(mPoiInfoEntity.getOperatorId())){
                     if(!mScreenViewModel.isSGMLogin()){
                         mScreenViewModel.startSGMLogin();
                     }else{
