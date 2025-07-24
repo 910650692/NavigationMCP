@@ -177,6 +177,8 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
                 text.setTextColor(
                         ResourceUtils.Companion.getInstance().
                                 getColor(R.color.navi_color_C73333_100));
+                text.setText(R.string.navi_via_charge_empty);
+                return;
             }
             text.setText(leftCharge + "%");
         }
