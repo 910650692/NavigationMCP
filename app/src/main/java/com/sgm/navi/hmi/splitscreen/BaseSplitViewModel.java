@@ -4,26 +4,23 @@ import android.app.Application;
 import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.patac.sgmsystemextendservicelib.PatacSESConstants;
+import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
-import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.calibration.PowerType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
-import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 
@@ -86,7 +83,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public Action goHome = () -> {
         Logger.i(TAG, "goHome");
         SplitScreenManager.getInstance().switchNaviToFullScreen();
-        startMapActivity(INaviConstant.OpenIntentPage.GO_HOME, null);
+        startMapActivity(INaviConstant.OpenIntentPage.GO_HOME);
     };
 
     /***
@@ -95,7 +92,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public Action goCompany = () -> {
         Logger.i(TAG, "goCompany");
         SplitScreenManager.getInstance().switchNaviToFullScreen();
-        startMapActivity(INaviConstant.OpenIntentPage.GO_COMPANY, null);
+        startMapActivity(INaviConstant.OpenIntentPage.GO_COMPANY);
     };
 
     /***
@@ -104,7 +101,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public Action doSearch = () -> {
         Logger.i(TAG, "doSearch");
         SplitScreenManager.getInstance().switchNaviToFullScreen();
-        startMapActivity(INaviConstant.OpenIntentPage.SEARCH_PAGE, null);
+        startMapActivity(INaviConstant.OpenIntentPage.SEARCH_PAGE);
     };
 
     /***
@@ -113,7 +110,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public Action chargeOrGas = () -> {
         Logger.i(TAG, "chargeOrGas");
         SplitScreenManager.getInstance().switchNaviToFullScreen();
-        startMapActivity(INaviConstant.OpenIntentPage.SEARCH_RESULT_PAGE, null);
+        startMapActivity(INaviConstant.OpenIntentPage.SEARCH_RESULT_PAGE);
     };
 
     /***
@@ -218,10 +215,15 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     /***
      * 启动Navi_App
      */
-    public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
-        Logger.i(TAG, "startMapActivity:" + pageCode);
-        ExportIntentParam.setIntentPage(pageCode);
-        ProcessManager.restartProcess(mApplication, FloatViewManager.getInstance().isNaviDeskBg());
+    public void startMapActivity(int pageCode) {
+        closeFragment(true);
+        if (FloatViewManager.getInstance().isNaviDeskBg()) {
+            ExportIntentParam.setIntentPage(pageCode);
+        } else {
+            MapActivity activity = (MapActivity) mView.getActivity();
+            assert activity != null;
+            activity.callPageCode(pageCode);
+        }
     }
 
     private void startImmersiveSchedule() {

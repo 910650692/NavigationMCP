@@ -40,11 +40,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListener {
-    private final int cardHeight = 330;
-    private int maxDistance = 0;
     private boolean cardWidgetIsOnShowing = false;
     public boolean mRemindDialogShow = false;
-    private int startY;
     private static final String TAG = "FloatViewManager";
     private boolean isServiceConnect = false;
     private ILauncherModeManager mLauncherModeManager;
@@ -155,7 +152,6 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         mContentResolver.registerContentObserver(uri, true, observer);
         getDesktopMode();
         ScreenTypeUtils.getInstance().addSplitScreenChangeListener(TAG, this);
-        maxDistance = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppCache.getInstance().getMApplication()) - cardHeight;
     }
 
     /**

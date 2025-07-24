@@ -6,6 +6,7 @@ import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -2180,12 +2181,20 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             mViewModel.toCompanyFragment();
         }
     }
-
+    private final ComponentName mLauncherComponentName = new ComponentName(
+            "com.patac.launcher",
+            "com.patac.launcher.Launcher");
     @Override
     public void onSplitScreenChanged() {
         if (mViewModel == null || mapPackage == null) {
             Logger.e(TAG, "mViewModel/mapPackage is null");
             return;
+        }
+        if (FloatViewManager.getInstance().isNaviDeskBg() && ScreenTypeUtils.getInstance().isFullScreen()) {
+            Intent intent = new Intent();
+            intent.setComponent(mLauncherComponentName);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mViewModel.getView().startActivity(intent);
         }
         mapPackage.changeMapViewParams(mViewModel.getMapView());
         mViewModel.initVisibleAreaPoint();
@@ -2196,7 +2205,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             Logger.d("screen_change_used", "打开1/3屏幕布局");
             checkStatusCloseAllFragmentAndClearAllLabel();
             mViewModel.syncFragment();
-            addFragment(SplitFragment.getInstance(), null);
+            addFragment(new SplitFragment(), null);
         } else {
             Logger.d("screen_change_used", "关闭1/3屏幕布局");
             mViewModel.closeSplitFragment();

@@ -36,6 +36,7 @@ import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
+import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.dialog.MsgTopDialog;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AppCache;
@@ -610,5 +611,26 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     public void syncFragment() {
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+    }
+
+    public void callPageCode(int pageCode) {
+        Logger.d(TAG, pageCode);
+        if (mViewModel == null) {
+            Logger.e(TAG, "callPageCode mViewModel is null");
+            return;
+        }
+        switch (pageCode) {
+            case INaviConstant.OpenIntentPage.SEARCH_PAGE:
+                mViewModel.openSearchFragment.call();
+                break;
+            case INaviConstant.OpenIntentPage.GO_HOME:
+                mViewModel.openHomeFragment.call();
+                break;
+            case INaviConstant.OpenIntentPage.GO_COMPANY:
+                mViewModel.openCompanyFragment.call();
+                break;
+            default:
+                break;
+        }
     }
 }
