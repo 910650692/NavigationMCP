@@ -292,6 +292,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             return;
         }
         if (mRemindDialogShow) {
+            hideAllCardWidgets(false);
             Logger.d(TAG, "mRemindDialogShow");
             return;
         }
