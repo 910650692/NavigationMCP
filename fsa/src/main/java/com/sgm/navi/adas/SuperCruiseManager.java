@@ -70,6 +70,7 @@ public final class SuperCruiseManager {
     private long mRouteLength = 10000;
     private long mRate = 5;
     private boolean mReRouting;
+    private long mPathId = -1;
 
     //region 单例
     public static SuperCruiseManager getInstance() {
@@ -343,6 +344,7 @@ public final class SuperCruiseManager {
             mRouteBuilder.setId("");
             mRouteBuilder.setLat(0);
             mRouteBuilder.setLon(0);
+            mAdasManager.removeRouteInfo(String.valueOf(mPathId));
         }
     };
 
@@ -765,6 +767,7 @@ public final class SuperCruiseManager {
         long pathId = 0;
         if (mScSegmentInfo != null) {
             pathId = mScSegmentInfo.getPathId();
+            mPathId = pathId;
         }
         ScSegmentInfo scSegmentInfo = L2Package.getInstance().getScSegmentInfo(pathId, mRouteLength);
         if (scSegmentInfo == null) {
@@ -802,6 +805,7 @@ public final class SuperCruiseManager {
             builder.setLength(scSegment.getLength());
             mSegments.add(builder.build());
         }
+        mAdasManager.removeRouteInfo(String.valueOf(mPathId));
         sendRouteData();
     }
 }
