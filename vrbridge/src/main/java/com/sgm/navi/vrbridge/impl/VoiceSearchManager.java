@@ -423,11 +423,7 @@ public final class VoiceSearchManager {
      * @return CallResponse, 语音执行结果.
      */
     private CallResponse disposeSingleDest(final String dest) {
-        final int type = switch (dest) {
-            case IVrBridgeConstant.DestType.HOME -> 1;
-            case IVrBridgeConstant.DestType.COMPANY -> 2;
-            default -> 0;
-        };
+        final int type = getDestType(dest);
         if (type == 1 || type == 2) {
             //回家或去公司需要要先结束当前导航
             if (MapStateManager.getInstance().isNaviStatus()) {
@@ -442,7 +438,7 @@ public final class VoiceSearchManager {
                 if (type == 1) {
                     return havaNoHomeAddress();
                 } else {
-                    return havaNoCompanyAddress();
+                    return haveNoCompanyAddress();
                 }
             }
         } else {
@@ -460,6 +456,15 @@ public final class VoiceSearchManager {
         }
 
         return CallResponse.createSuccessResponse();
+    }
+
+    private int getDestType(final String dest) {
+        final int type = switch (dest) {
+            case IVrBridgeConstant.DestType.HOME -> 1;
+            case IVrBridgeConstant.DestType.COMPANY -> 2;
+            default -> 0;
+        };
+        return type;
     }
 
     /**
@@ -612,7 +617,7 @@ public final class VoiceSearchManager {
      *
      * @return CallResponse, 语音指令回复.
      */
-    private CallResponse havaNoCompanyAddress() {
+    private CallResponse haveNoCompanyAddress() {
         return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ADD_COMPANY_WITH_SAY);
     }
 
@@ -801,7 +806,7 @@ public final class VoiceSearchManager {
             final PoiInfoEntity companyInfo = getHomeCompanyPoiInfo(2);
             if (null == companyInfo) {
                 Logger.w(IVrBridgeConstant.TAG, "MultipleDest contain company but info is empty");
-                return havaNoCompanyAddress();
+                return haveNoCompanyAddress();
             }
         }
 
@@ -1239,8 +1244,21 @@ public final class VoiceSearchManager {
 
         final String center = mSearchCondition.getCenter(); //中心点，没有则为当前位置
         if (!TextUtils.isEmpty(center)) {
-            //先搜索中心点
-            mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, center);
+            //先处理中心点
+            final int destType = getDestType(center);
+            if (destType == 1 || destType == 2) {
+                //中心点是家和公司
+                final PoiInfoEntity homeCompanyInfo = getHomeCompanyPoiInfo(destType);
+                if (null != homeCompanyInfo && null != homeCompanyInfo.getPoint()) {
+                    dealAfterConditionCenter(homeCompanyInfo.getPoint());
+                } else if (destType == 1) {
+                    return havaNoHomeAddress();
+                } else {
+                    return haveNoCompanyAddress();
+                }
+            } else {
+                mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, center);
+            }
         } else {
             if (!(VoiceConvertUtil.isNumber(distance))) {
                 //执行关键字搜索
@@ -1271,7 +1289,7 @@ public final class VoiceSearchManager {
      * @param centerInfo 搜索中心点Poi信息.
      */
     private void dealConditionCenterResult(final boolean success, final PoiInfoEntity centerInfo) {
-        if (!success && null == centerInfo || null == centerInfo.getPoint()) {
+        if (!success || null == centerInfo || null == centerInfo.getPoint()) {
             Logger.e(IVrBridgeConstant.TAG, "searchAround center is empty");
             mKeyword = mSearchCondition.getCenter();
             responseSearchEmptyWithKeyword();
