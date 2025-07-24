@@ -301,5 +301,6 @@
     <color name="text_route_button_title">#FFFFFFFF</color>
 
     <color name="dialog_title_color">#0C0C0C</color>
-
+    <color name="navi_btn_add_via">@color/navi_color_8E97B9_20</color>
+    <color name="image_add_58_stroke_color">@color/navi_color_4B535D_100</color>
 </resources>

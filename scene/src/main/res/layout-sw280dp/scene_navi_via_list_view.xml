@@ -75,7 +75,7 @@
                     android:gravity="center"
                     android:focusable="false"
                     android:text="@string/navi_add_via"
-                    android:textColor="@color/common_title_color"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/sp_46" />
             </com.sgm.navi.scene.ui.navi.view.ButtonLinearLayout>
 

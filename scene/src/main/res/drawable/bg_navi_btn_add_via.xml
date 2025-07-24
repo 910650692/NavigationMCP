@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <corners android:radius="@dimen/dp_12"/>
-    <solid android:color="@color/navi_color_8E97B9_20" />
+    <corners android:radius="@dimen/navi_btn_add_via_corner" />
+    <solid android:color="@color/navi_btn_add_via" />
 </shape>
