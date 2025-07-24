@@ -268,6 +268,19 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
         boolean result = mMapPackage.switchMapMode(mMapTypeId);
         MapMode switchedMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
         String modeText = mScreenView.updateCarModel(switchedMapMode);
+
+        final boolean isAutoSizeOpen = mSettingPackage.getAutoScale();
+        final boolean is3DDegree = mSettingPackage.getConfigKeyMapviewMode() == 2;
+        if (isAutoSizeOpen) {
+            mMapPackage.setZoomLevel(mMapTypeId, 15);
+        } else {
+            if (is3DDegree) {
+                mMapPackage.setZoomLevel(mMapTypeId, 17);
+            } else {
+                mMapPackage.setZoomLevel(mMapTypeId, 14);
+            }
+        }
+
         //如果切换前后模式一样，没有切换成功发toast提示
         if (!result || currentMapMode == switchedMapMode) {
             ToastUtils.Companion.getInstance().showCustomToastView(String.
