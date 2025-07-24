@@ -509,7 +509,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN_FAIL)
     public void popStartupExceptionDialog() {
         if (null == mStartExceptionDialog || !mStartExceptionDialog.isShowing()) {
-            mViewModel.showProtectView();
             mStartExceptionDialog = new StartupExceptionDialog(mViewModel.getView(), new IBaseDialogClickListener() {
                 @Override
                 public void onNetWorkConnect() {
@@ -530,6 +529,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                             mStartExceptionDialog.cancel();
                             mViewModel.showProtectView();
                             mViewModel.protectMap(AutoMapConstant.CANCEL_NET_EXCEPTION_DIALOG);
+                        }
+                        if (!isShowStartupException()) {
+                            Logger.d(TAG, "有网情况下弹窗依然存在");
+                            mViewModel.closeProtectView();
                         }
                     } else {
                         if (null != mViewModel) {

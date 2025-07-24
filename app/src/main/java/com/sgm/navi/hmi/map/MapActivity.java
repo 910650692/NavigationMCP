@@ -134,6 +134,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             case AutoMapConstant.CANCEL_NET_EXCEPTION_DIALOG:
                 mBinding.protectView.setOnClickListener(v -> {
                     Logger.d(TAG, "protectMap: 网络异常");
+                    closeProtectView();
                     mViewModel.checkPermission();
                     mBinding.protectView.setOnClickListener(null);
                 });
