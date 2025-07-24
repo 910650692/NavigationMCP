@@ -168,18 +168,19 @@ public final class VoiceSearchManager {
             }
 
             //获取本次搜索关键字
-            String keyword = "";
+            String keyword;
             if (null == searchResultEntity || TextUtils.isEmpty(searchResultEntity.getKeyword())) {
-                if(Logger.openLog) {
-                    Logger.d(IVrBridgeConstant.TAG, "search or keyword empty");
-                }
+                keyword = "";
             } else {
                 keyword = searchResultEntity.getKeyword();
             }
 
             //关键字和taskId是否匹配
             final boolean taskEqual = mSearchTaskId == taskId;
-            final boolean keywordEqual = Objects.equals(mKeyword, keyword) || keyword.contains(mKeyword);
+            boolean keywordEqual = false;
+            if (!TextUtils.isEmpty(mKeyword)) {
+                keywordEqual = Objects.equals(mKeyword, keyword) || keyword.contains(mKeyword);
+            }
             if(Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "taskEqual: ", taskEqual, ", keywordEqual: ", keywordEqual);
             }
