@@ -933,7 +933,7 @@ public class ChargeTipManager {
      * @param entity
      */
     private void notifyUi(final ChargeTipEntity entity, boolean isPlayTts) {
-        Logger.i(TAG, "notifyUi", "viewModel:" , (mViewModel == null));
+        Logger.i(TAG, "notifyUi", "viewModel:", (mViewModel == null), " isPlayTts:", isPlayTts);
         if (mViewModel != null && entity != null) {
             mViewModel.notifyBatteryWarning(entity);
             if (isPlayTts && !TextUtils.isEmpty(entity.getTtsContent())) {
@@ -947,8 +947,8 @@ public class ChargeTipManager {
      * @param msg
      */
     public void playTts(final String msg) {
-        Logger.i(TAG, "playTts:" , msg);
-        if (mSpeechPackage != null && !ConvertUtils.isEmpty(msg)) {
+        Logger.i(TAG, "playTts:", msg);
+        if (mSpeechPackage != null && !ConvertUtils.isEmpty(msg) && !mNaviPackage.isMute()) {
             mSpeechPackage.synthesize(msg);
         }
     }
