@@ -24,7 +24,6 @@ public class StartupExceptionDialog extends BaseFullScreenDialog<DialogStartupEx
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         networkCall = new NetWorkUtils.NetworkObserver() {
             @Override
             public void onNetConnectSuccess() {
@@ -66,6 +65,12 @@ public class StartupExceptionDialog extends BaseFullScreenDialog<DialogStartupEx
                 mDialogClickListener.onExit();
             }
         });
+    }
+
+    @Override
+    public void dismiss() {
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(networkCall);
+        super.dismiss();
     }
 
     @Override

@@ -66,6 +66,11 @@ public abstract class BaseFullScreenDialog<V extends ViewDataBinding> extends Al
         super.cancel();
     }
 
+    @Override
+    public void dismiss() {
+        super.dismiss();
+    }
+
     /**
      * 设置 Dialog 的宽度和高度，使其全屏显示
      */

@@ -395,12 +395,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onPermissionsSuccess() {
         Logger.d(TAG, "权限都申请成功 检测网络和数据缓存");
-        if (isShowStartupException()) {
-            Logger.d(TAG, "mStartExceptionDialog", "无网络和数据缓存");
-            popStartupExceptionDialog();
-        } else {
-            startInitEngine();
-        }
+        startInitEngine();
     }
 
     @Override
@@ -419,9 +414,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         StartService.getInstance().unregisterSdkCallback(this);
         setPackageAfterSdkInit();
         FloatViewManager.getInstance().showAllCardWidgets();
-        ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
         BroadcastManager.getInstance().init();
         BroadcastManager.getInstance().sendSpiCollectingBroadcast();
+        if (isShowStartupException()) {
+            popStartupExceptionDialog();
+        }else {
+            ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
+        }
     }
 
     @Override
@@ -479,12 +478,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void checkPermission() {
         Logger.i(TAG, "checkPermission");
         if (PermissionUtils.getInstance().checkoutPermission()) {
-            if (isShowStartupException()) {
-                Logger.d(TAG, "mStartExceptionDialog", "无网络和数据缓存");
-                popStartupExceptionDialog();
-            } else {
-                startInitEngine();
-            }
+            startInitEngine();
         } else {
             PermissionUtils.getInstance().requestPermission();
             FloatViewManager.getInstance().hideAllCardWidgets(false);
@@ -494,9 +488,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public boolean isShowStartupException() {
         boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
         boolean isOfflineData = "1".equals(mCommonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
-        boolean isCache = false;  //目前默认false
-        Logger.d(TAG, "mStartExceptionDialog", "is net connect: " + isNetConnect + ", is offline data: " + isOfflineData + ", is cached: " + isCache);
-        return !(isNetConnect || isOfflineData || isCache);
+        Logger.d(TAG, "mStartExceptionDialog", "is net connect", isNetConnect, "is offline data", isOfflineData);
+        boolean isShowException = !isNetConnect && !isOfflineData;
+        Logger.d(TAG, "mStartExceptionDialog", "检测网络和离线数据", isShowException);
+        return isShowException;
     }
 
     private boolean isCached() {
@@ -519,7 +514,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                         mStartExceptionDialog.dismiss();
                     }
                     mViewModel.closeProtectView();
-                    startInitEngine();
+                    ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
                 }
 
                 @Override
@@ -528,7 +523,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     if (FloatViewManager.getInstance().isNaviDeskBg()) {
                         if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
                             Logger.d(TAG, "桌面地图隐藏弹窗");
-                            mStartExceptionDialog.cancel();
+                            mStartExceptionDialog.dismiss();
                             mViewModel.showProtectView();
                             mViewModel.protectMap(AutoMapConstant.CANCEL_NET_EXCEPTION_DIALOG);
                         }

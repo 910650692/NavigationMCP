@@ -119,7 +119,9 @@ public final class CommonManager {
                 .where(CommonSettingDao.Properties.MName.eq(key))
                 .unique();
         if (commonSetting != null) {
-            return commonSetting.getMValue();
+            String value = commonSetting.getMValue();
+            Logger.i(TAG, key, value);
+            return value;
         } else {
             return "";
         }
