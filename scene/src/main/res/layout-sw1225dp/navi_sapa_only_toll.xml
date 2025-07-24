@@ -29,15 +29,15 @@
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_first_service_toll_name"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_74"
             android:ellipsize="end"
-            android:maxWidth="@dimen/dp_400"
             android:maxLines="1"
             android:text="@{naviSapa.mOnlyTollName}"
             android:textColor="@color/navi_color_FFFFFF_80"
             android:textSize="@dimen/sp_29"
+            app:layout_constraintEnd_toStartOf="@+id/siv_only_toll_tag"
             app:layout_constraintBottom_toBottomOf="@+id/skinImageView3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/skinImageView3"
