@@ -806,8 +806,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 if (isNightMode) {
                     customUpdatePairs.add(createUpdateStylePair("distance_text", "color:#ffffff;"));
                     customUpdatePairs.add(createUpdateStylePair("distance_text_penalty", "color:#ffffff;"));
-                    customUpdatePairs.add(createUpdateStylePair("speed_text2", "color:#ffffff;"));
-                    customUpdatePairs.add(createUpdateStylePair("speed_text3", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("speed_text2", "color:#000000;"));
+                    customUpdatePairs.add(createUpdateStylePair("speed_text3", "color:#000000;"));
                 }
             }
             case BizRoadFacilityType.BizRoadFacilityTypeCruiseCameraActive -> {
@@ -815,8 +815,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 if (isNightMode) {
                     customUpdatePairs.add(createUpdateStylePair("distance_text", "color:#ffffff;"));
                     customUpdatePairs.add(createUpdateStylePair("distance_text_penalty", "color:#ffffff;"));
-                    customUpdatePairs.add(createUpdateStylePair("speed_text2", "color:#ffffff;"));
-                    customUpdatePairs.add(createUpdateStylePair("speed_text3", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("speed_text2", "color:#000000;"));
+                    customUpdatePairs.add(createUpdateStylePair("speed_text3", "color:#000000;"));
                 }
             }
         }
