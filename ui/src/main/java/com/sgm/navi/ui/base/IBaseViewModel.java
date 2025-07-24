@@ -96,4 +96,6 @@ public interface IBaseViewModel extends LifecycleObserver {
      * @param className 目标Fragment的类名
      */
     void closeAllFragmentsUntilTargetFragment(String className);
+
+    void closeTrafficEventFragment(boolean nextShow);
 }
