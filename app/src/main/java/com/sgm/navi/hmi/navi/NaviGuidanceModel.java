@@ -442,7 +442,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             ChargeInfo chargeInfo = chargeInfoList == null ? null : chargeInfoList.get(0);
             int carType = OpenApiHelper.powerType();
             Logger.i(TAG, " carType = ", carType);
-            if (!ConvertUtils.isEmpty(chargeInfo) && carType == 1) {
+            if (!ConvertUtils.isEmpty(chargeInfo) && (carType == NumberUtils.NUM_1 ||
+                    carType == NumberUtils.NUM_2)) {
                 int slowTotal = chargeInfo.getMSlowTotal();
                 int slowFree = chargeInfo.getMSlowFree();
                 int fastTotal = chargeInfo.getMFastTotal();
@@ -1019,11 +1020,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         Boolean isNetConnected = mNetWorkUtils.checkNetwork();
         Logger.i(TAG, "getNetStatus isNetConnected:", isNetConnected);
         return Boolean.TRUE.equals(isNetConnected);
-    }
-
-    @Override
-    public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-
     }
 
     @Override
