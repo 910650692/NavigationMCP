@@ -1034,25 +1034,30 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onCommonPoiSet: sessionId = ", sessionId, ", poiType = ", poiType, ", poi = ", poi);
         }
+        final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
+        if (saveCommand) {
+            mCommandList.add(IVrBridgeConstant.VoiceCommandAction.COLLECT_COMMON);
+            final SingleCommandInfo singleCommandInfo = new SingleCommandInfo();
+            singleCommandInfo.setPoiName(poi);
+            singleCommandInfo.setPoiType(poiType);
+            singleCommandInfo.setPoiCallback(poiCallback);
+            mCommandParamList.add(singleCommandInfo);
+            return CallResponse.createSuccessResponse();
+        } else {
+            return processPoiSetCommand(sessionId, poiType, poi, poiCallback);
+        }
+    }
+
+    //处理poiSet指令
+    private CallResponse processPoiSetCommand(final String sessionId, final String poiType,
+                                              @NonNull final String poi, final PoiCallback poiCallback) {
         switch (poiType) {
             case IVrBridgeConstant.DestType.POI_COLLECT:
-                // 收藏指定poi
-                final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
-                if (saveCommand) {
-                    mCommandList.add(IVrBridgeConstant.VoiceCommandAction.COLLECT_COMMON);
-                    final SingleCommandInfo singleCommandInfo = new SingleCommandInfo();
-                    singleCommandInfo.setPoiCallback(poiCallback);
-                    singleCommandInfo.setPoiName(poi);
-                    singleCommandInfo.setPoiType(poiType);
-                    mCommandParamList.add(singleCommandInfo);
-                    return CallResponse.createSuccessResponse();
-                } else {
-                    return VoiceSearchManager.getInstance().searchForFavorite(poi, poiCallback);
-                }
+                //普通收藏点
+                return VoiceSearchManager.getInstance().searchForFavorite(poi, poiCallback);
             case IVrBridgeConstant.DestType.HOME:
             case IVrBridgeConstant.DestType.COMPANY:
                 //设置家/公司地址
-                MapStateManager.getInstance().openMapWhenBackground();
                 return VoiceSearchManager.getInstance().setHomeCompany(sessionId, poiType, poi, poiCallback);
             case IVrBridgeConstant.DestType.NAVI_TO_HOME:
             case IVrBridgeConstant.DestType.NAVI_TO_COMPANY:
@@ -2364,13 +2369,13 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 openHistoryPage();
                 break;
             case IVrBridgeConstant.VoiceCommandAction.COLLECT_COMMON:
-                //收藏普通点
+                //onCommonPoiSet
                 if (null == mCommandParamList || mCommandParamList.isEmpty()) {
                     return;
                 }
                 final SingleCommandInfo singleCommandInfo = mCommandParamList.remove(0);
                 if (null != singleCommandInfo) {
-                    VoiceSearchManager.getInstance().searchForFavorite(
+                    processPoiSetCommand("default", singleCommandInfo.getPoiType(),
                             singleCommandInfo.getPoiName(), singleCommandInfo.getPoiCallback());
                 }
                 break;
