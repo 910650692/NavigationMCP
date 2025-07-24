@@ -726,4 +726,12 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     private long getCurrentTime() {
         return System.currentTimeMillis();
     }
+
+    @Override
+    public void onDestroyView() {
+        if (mPopupWindow != null && mPopupWindow.isShowing()) {
+            mPopupWindow.dismiss();
+        }
+        super.onDestroyView();
+    }
 }
