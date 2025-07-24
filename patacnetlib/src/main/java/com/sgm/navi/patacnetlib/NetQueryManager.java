@@ -95,7 +95,7 @@ public class NetQueryManager implements NetMethodExportApi {
             public void onFailed(final ApiException e) {
                 Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
                 Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
-                callBack.onFailed();
+                callBack.onFailed(e.getCode());
             }
         };
 
@@ -131,7 +131,7 @@ public class NetQueryManager implements NetMethodExportApi {
             public void onFailed(final ApiException e) {
                 Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
                 Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
-                callBack.onFailed();
+                callBack.onFailed(e.getCode());
             }
         };
 
@@ -167,7 +167,7 @@ public class NetQueryManager implements NetMethodExportApi {
             public void onFailed(final ApiException e) {
                 Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
                 Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
-                callBack.onFailed();
+                callBack.onFailed(e.getCode());
             }
         };
 
@@ -202,7 +202,7 @@ public class NetQueryManager implements NetMethodExportApi {
             public void onFailed(final ApiException e) {
                 Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
                 Logger.d(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
-                callBack.onFailed();
+                callBack.onFailed(e.getCode());
             }
         };
 
@@ -226,7 +226,7 @@ public class NetQueryManager implements NetMethodExportApi {
         /**
          * 失败
          */
-        void onFailed();
+        void onFailed(final String errorCode);
     }
 
 }

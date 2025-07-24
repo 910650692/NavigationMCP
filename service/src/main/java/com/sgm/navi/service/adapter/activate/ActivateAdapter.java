@@ -29,10 +29,17 @@ public final class ActivateAdapter {
     }
 
     /**
+     * 开始激活服务
+     */
+    public void startActivate() {
+        mActivateApi.startActivate();
+    }
+
+    /**
      * 初始化激活服务
      */
-    public void initActivate() {
-        mActivateApi.initActivate();
+    public void init() {
+        mActivateApi.init();
     }
 
     /**

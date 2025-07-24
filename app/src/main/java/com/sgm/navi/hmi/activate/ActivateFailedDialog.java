@@ -102,7 +102,7 @@ public class ActivateFailedDialog {
             mViewBinding.activateDialogContent.setText(R.string.activation_net_error_hint);
         } else {
             StringBuilder errMsg = new StringBuilder();
-            errMsg.append("错误码: ").append(errCode).append(" ").append(mContext.getString(R.string.activation_hint));
+            errMsg.append("错误码: ").append(errCode).append(",").append(mContext.getString(R.string.activation_hint));
             mViewBinding.activateDialogContent.setText(errMsg);
         }
     }

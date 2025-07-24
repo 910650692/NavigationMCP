@@ -92,7 +92,6 @@ public final class ActivateHQ {
             @Override
             public void run() {
                 testAppKey();
-                //postUUID();
             }
         });
     }
@@ -109,7 +108,7 @@ public final class ActivateHQ {
             }
 
             @Override
-            public void onFailed() {
+            public void onFailed(final String errorCode) {
                 Logger.d(TAG, "获取AppKey失败");
                 if (mNetFailedRetryCount.incrementAndGet() < 3) {
                     Logger.d(TAG, "网络失败计数: ", mNetFailedRetryCount.get());
@@ -165,8 +164,13 @@ public final class ActivateHQ {
             }
 
             @Override
-            public void onFailed() {
+            public void onFailed(final String errorCode) {
                 Logger.d(TAG, "Uuid网络请求失败");
+                if (ConvertUtils.equals(errorCode, "0003")) {
+                    Logger.e(TAG, "错误码 0003 AppKey失效，重新请求");
+                    testAppKey();
+                    return;
+                }
                 if (mNetFailedRetryCount.incrementAndGet() < 3) {
                     int retryIndex = mNetFailedRetryCount.get() - 1;
                     if (retryIndex >= mDelays.length) {
@@ -212,8 +216,13 @@ public final class ActivateHQ {
                 }
 
                 @Override
-                public void onFailed() {
+                public void onFailed(final String errorCode) {
                     Logger.d(TAG, "firstCheckOrderStatus failed");
+                    if (ConvertUtils.equals(errorCode, "0003")) {
+                        Logger.e(TAG, "错误码 0003 AppKey失效，重新请求");
+                        testAppKey();
+                        return;
+                    }
                     if (mNetFailedRetryCount.incrementAndGet() < 3) {
                         int retryIndex = mNetFailedRetryCount.get() - 1;
                         if (retryIndex >= mDelays.length) {
@@ -269,7 +278,12 @@ public final class ActivateHQ {
             }
 
             @Override
-            public void onFailed() {
+            public void onFailed(final String errorCode) {
+                if (ConvertUtils.equals(errorCode, "0003")) {
+                    Logger.e(TAG, "错误码 0003 AppKey失效，重新请求");
+                    testAppKey();
+                    return;
+                }
                 if (mNetFailedRetryCount.incrementAndGet() < 3) {
                     Logger.d(TAG, "网络失败计数 : ", mNetFailedRetryCount.get());
                     int retryIndex = mNetFailedRetryCount.get() - 1;
@@ -352,10 +366,17 @@ public final class ActivateHQ {
                         }
 
                         @Override
-                        public void onFailed() {
+                        public void onFailed(final String errorCode) {
                             Logger.d(TAG, "查询订单网络请求失败");
-                            final int currentCount = retryCount.incrementAndGet();
+                            if (ConvertUtils.equals(errorCode, "0003")) {
+                                Logger.e(TAG, "错误码 0003 AppKey失效，重新请求");
+                                future.complete(false);
+                                executor.shutdownNow();
+                                testAppKey();
+                                return;
+                            }
 
+                            final int currentCount = retryCount.incrementAndGet();
                             Logger.d(TAG, "轮询次数 : ", currentCount);
                             if (currentCount > maxRetries) {
                                 future.complete(false);

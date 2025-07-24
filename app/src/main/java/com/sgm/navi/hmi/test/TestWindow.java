@@ -30,8 +30,10 @@ import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.LayoutTestBinding;
 import com.sgm.navi.hmi.utils.DeviceUtil;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.define.engine.GaodeLogLevel;
+import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.engine.EnginePackage;
 import com.sgm.navi.service.logicpaket.hud.HudPackage;
@@ -161,6 +163,16 @@ public class TestWindow {
     }
 
     private void initAction() {
+        mBinding.cleanActivate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.APP_KEY, null);
+                CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, null);
+                CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID, null);
+                CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID, null);
+            }
+        });
+
         mBinding.close.setOnClickListener(v -> removeViewFromWindow());
         mBinding.testCalibration.setOnClickListener(v -> {
             CalibrationPackage calibration = CalibrationPackage.getInstance();

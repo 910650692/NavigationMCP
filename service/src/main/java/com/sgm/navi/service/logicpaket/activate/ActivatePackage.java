@@ -1,8 +1,10 @@
 package com.sgm.navi.service.logicpaket.activate;
 
+import com.android.utils.log.Logger;
 import com.sgm.navi.patacnetlib.NetQueryManager;
 import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
 import com.sgm.navi.patacnetlib.response.activate.UuidResponse;
+import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.activate.ActivateAdapter;
 import com.sgm.navi.service.adapter.activate.ActivateObserver;
 
@@ -10,13 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ActivatePackage implements ActivateObserver {
-    private final ActivateAdapter mActivateAdapter;
-    private final List<IActivateObserver> mActObserverList;
+    private static final String TAG = MapDefaultFinalTag.ACTIVATE_SERVICE_TAG;
+    private ActivateAdapter mActivateAdapter;
+    private List<IActivateObserver> mActObserverList;
 
     private ActivatePackage() {
-        mActivateAdapter = ActivateAdapter.getInstance();
-        mActObserverList = new ArrayList<>();
-        mActivateAdapter.addActivateObserver(this);
+        Logger.i(TAG, "ActivatePackage init");
     }
 
     private static final class Helper {
@@ -32,10 +33,20 @@ public final class ActivatePackage implements ActivateObserver {
     }
 
     /**
+     * 初始化激活服务
+     */
+    public void init() {
+        mActivateAdapter = ActivateAdapter.getInstance();
+        mActObserverList = new ArrayList<>();
+        mActivateAdapter.init();
+        mActivateAdapter.addActivateObserver(this);
+    }
+
+    /**
      * 开始激活流程
      */
     public void startActivate() {
-        mActivateAdapter.initActivate();
+        mActivateAdapter.startActivate();
     }
 
     /**

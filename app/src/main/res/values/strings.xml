@@ -653,8 +653,8 @@
     <string name="startup_exception_exit">退出</string>
 
     <!-- 激活相关 -->
-    <string name="activating">SDK激活…</string>
-    <string name="activation_failed">SDK激活失败</string>
+    <string name="activating">地图服务激活中…</string>
+    <string name="activation_failed">地图服务激活失败</string>
     <string name="activation_failed_retry">重试</string>
     <string name="activation_finish">稍后激活</string>
     <string name="activation_manual">手动激活</string>

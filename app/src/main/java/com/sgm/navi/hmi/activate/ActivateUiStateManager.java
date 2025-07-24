@@ -21,7 +21,6 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
 
     private IActivateObserver mActObserver;
     private boolean mIsActivating = false;
-    private boolean mIsInited = false;
 
     private ActivateUiStateManager() {
 
@@ -65,7 +64,6 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
             }
         };
         ActivatePackage.getInstance().addActObserver(mActObserver);
-        mIsInited = true;
     }
 
     public void setLoadingViewCallBack(LoadingViewCallBack callBack) {
@@ -82,10 +80,6 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
 
     public boolean ismIsActivating() {
         return mIsActivating;
-    }
-
-    public boolean ismIsInited() {
-        return mIsInited;
     }
     /**
      * 显示激活失败弹窗
@@ -116,7 +110,7 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
                     public void run() {
                         StackManager.getInstance().exitApp();
                     }
-                }, 3, TimeUnit.MINUTES);
+                }, 2, TimeUnit.MINUTES);
             }
         });
 

@@ -340,10 +340,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
         // 注册媒体悬浮窗广播
         FloatWindowReceiver.registerCallback(TAG, this);
-
-        if (ActivateUiStateManager.getInstance().ismIsInited()) {
-            ActivateUiStateManager.getInstance().setLoadingViewCallBack(mActivateViewCallBack);
-        }
     }
 
     @Override
@@ -426,6 +422,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
         BroadcastManager.getInstance().init();
         BroadcastManager.getInstance().sendSpiCollectingBroadcast();
+    }
+
+    @Override
+    public void onSdkBaseLibInitSuccess() {
+        ActivateUiStateManager.getInstance().setLoadingViewCallBack(mActivateViewCallBack);
     }
 
     @Override

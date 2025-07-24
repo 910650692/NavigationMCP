@@ -50,7 +50,7 @@ public class MainSearchModel extends BaseModel<MainSearchViewModel> {
                     }
 
                     @Override
-                    public void onFailed() {
+                    public void onFailed(final String errorCode) {
                         if(BuildConfig.DEBUG){
                             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getAppKeyFromNet onFailed");
                         }

@@ -3,9 +3,6 @@ package com.sgm.navi.service.adapter.activate;
 import com.sgm.navi.patacnetlib.NetQueryManager;
 import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
 import com.sgm.navi.patacnetlib.response.activate.UuidResponse;
-import com.sgm.navi.service.AutoMapConstant;
-import com.sgm.navi.service.adapter.activate.bls.ActivationManager;
-import com.sgm.navi.service.greendao.CommonManager;
 
 public interface IActivateApi {
 
@@ -32,9 +29,14 @@ public interface IActivateApi {
     void manualActivate(String userCode, String loginCode);
 
     /**
+     * 开始激活服务
+     */
+    void startActivate();
+
+    /**
      * 初始化激活服务
      */
-    void initActivate();
+    void init();
 
     /**
      * 反初始化

@@ -465,6 +465,7 @@ public class StartService {
         @Override
         public void onInitBaseLibSuccess() {
             Logger.i(TAG, "Engine baseLib init success");
+            ActivatePackage.getInstance().init();
             ActivatePackage.getInstance().addActObserver(activateObserver);
             getInstance().conformBaseLibSuccessCallback();
             getInstance().checkActivation();
