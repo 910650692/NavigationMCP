@@ -16,7 +16,7 @@ public interface AutoMapConstant {
     float MAP_ZOOM_LEVEL_DEFAULT_3D = 17F;
     float MAP_ZOOM_LEVEL_CHANGE_FLAG = 1F;
     float MAP_DEFAULT_TEXT_SIZE = 1.3F;
-    float MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE = 40F;
+    float MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE = 65F;
 
     int PLUG_TYPE_SLOW = 7;
     int PLUG_TYPE_FAST = 9;

@@ -739,7 +739,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         }
         if (mapViewMode == MapMode.UP_3D) {
-            mapPackage.setPitchAngle(MapType.MAIN_SCREEN_MAIN_MAP, 40);
+            mapPackage.setPitchAngle(MapType.MAIN_SCREEN_MAIN_MAP,
+                    AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE);
         }
 
         if(mapViewMode != currentMode) {
