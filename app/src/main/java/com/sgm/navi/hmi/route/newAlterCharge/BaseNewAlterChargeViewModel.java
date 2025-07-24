@@ -48,6 +48,8 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     private RouteSupplementParams mRouteSupplementParams;
     private String mSearchPoi;
     private boolean mSearchDetail = false;
+    private boolean mCloseFragment = true;
+    private int mCurrentIndex = -1;
 
     public String getSearchPoi() {
         return mSearchPoi;
@@ -63,6 +65,22 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
 
     public void setSearchDetail(boolean mSearchDetail) {
         this.mSearchDetail = mSearchDetail;
+    }
+
+    public boolean isCloseFragment() {
+        return mCloseFragment;
+    }
+
+    public void setCloseFragment(boolean mCloseFragment) {
+        this.mCloseFragment = mCloseFragment;
+    }
+
+    public int getCurrentIndex() {
+        return mCurrentIndex;
+    }
+
+    public void setCurrentIndex(int mCurrentIndex) {
+        this.mCurrentIndex = mCurrentIndex;
     }
 
     public RouteSupplementParams getRouteSupplementParams() {
@@ -322,8 +340,14 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     }
 
     private final Action mClosePage = () -> {
-        StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
-        mModel.clearLayerItem();
+        if (mCloseFragment) {
+            StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
+            mModel.clearLayerItem();
+        } else {
+            mCloseFragment = true;
+            setSearchDetail(false);
+            mShowAlterChargeType.set(1);
+        }
     };
 
     public Action getClosePage() {
@@ -331,10 +355,17 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     }
 
     private final Action mCloseDetail = () -> {
-        setSearchDetail(false);
-        if (mRouteSupplementParams != null && mView != null) {
-            mView.getSupplementList(mRouteSupplementParams);
+        if (mCloseFragment) {
+            setSearchDetail(false);
+            if (mRouteSupplementParams != null && mView != null) {
+                mView.getSupplementList(mRouteSupplementParams);
+            }
+        } else {
+            mCloseFragment = true;
+            setSearchDetail(false);
+            mShowAlterChargeType.set(1);
         }
+
     };
 
     public Action getCloseDetail() {

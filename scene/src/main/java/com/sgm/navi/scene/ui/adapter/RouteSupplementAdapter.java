@@ -34,13 +34,31 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
     private ArrayList<PoiInfoEntity> mPoiInfoEntities;
     private ConcurrentHashMap<Integer, RouteAlterChargeStationParam> mAlterChargeStation;
     private ConcurrentHashMap<Integer, RouteAlterChargeStationParam> mAlterChargeStationShow;
+    private ConcurrentHashMap<Integer, RouteReplaceSupplementAdapter> mSupplementAdapter;
     private OnItemClickListener mItemClickListener;
+    private int mCurrentSelectedIndex = -1;
 
     public RouteSupplementAdapter() {
         mRouteSupplementInfos = new ArrayList<>();
         mPoiInfoEntities = new ArrayList<>();
         mAlterChargeStation = new ConcurrentHashMap<>();
         mAlterChargeStationShow = new ConcurrentHashMap<>();
+        mSupplementAdapter = new ConcurrentHashMap<>();
+    }
+
+    public int getCurrentSelectedIndex() {
+        return mCurrentSelectedIndex;
+    }
+
+    /***
+     * 设置选中自动展开
+     * @param mCurrentSelectedIndex 下标
+     */
+    public void setCurrentSelectedIndex(int mCurrentSelectedIndex) {
+        this.mCurrentSelectedIndex = mCurrentSelectedIndex;
+        if (mPoiInfoEntities.size() > mCurrentSelectedIndex) {
+            notifyItemChanged(mCurrentSelectedIndex);
+        }
     }
 
     /***
@@ -75,6 +93,14 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
                 notifyItemChanged(index);
             }
         });
+    }
+
+    /***
+     * 获取可替换补能点数据
+     * @param index index
+     */
+    public RouteAlterChargeStationParam getAlterChargeStation(final int index) {
+        return mAlterChargeStation.get(index);
     }
 
     /***
@@ -118,7 +144,7 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
 
         if (position < mRouteSupplementInfos.size()) {
             final RouteSupplementInfo routeSupplementInfo = mRouteSupplementInfos.get(position);
-            setRouteSupplementInfoView(holder, routeSupplementInfo);
+            setRouteSupplementInfoView(holder, routeSupplementInfo, position);
         }
 
     }
@@ -129,7 +155,7 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        private RouteSupplementItemBinding mRouteSupplementItemBinding;
+        public RouteSupplementItemBinding mRouteSupplementItemBinding;
 
         public Holder(@NonNull final RouteSupplementItemBinding routeSupplementItemBinding) {
             super(routeSupplementItemBinding.getRoot());
@@ -210,7 +236,7 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
      * @param holder holder
      * @param routeSupplementInfo 补能点参数
      */
-    public void setRouteSupplementInfoView(@NonNull final Holder holder, final RouteSupplementInfo routeSupplementInfo) {
+    public void setRouteSupplementInfoView(@NonNull final Holder holder, final RouteSupplementInfo routeSupplementInfo, final int position) {
         holder.mRouteSupplementItemBinding.tvSupplementDistance.setText(routeSupplementInfo.getMUnitDistance());
         if (routeSupplementInfo.getMType() == AutoMapConstant.SupplementType.SUPPLEMENT_POINT) {
             RouteChargeStationDetailInfo routeChargeStationDetailInfo = routeSupplementInfo.getMRouteChargeStationDetailInfo();
@@ -228,6 +254,14 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
             holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.setVisibility(View.GONE);
             holder.mRouteSupplementItemBinding.tvSupplementReplaceTitle.setVisibility(View.VISIBLE);
         }
+        holder.mRouteSupplementItemBinding.viewDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onDetailsClick(routeSupplementInfo , position);
+                }
+            }
+        });
     }
 
     /**
@@ -265,10 +299,30 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
                 holder.mRouteSupplementItemBinding.ivSupplementReplace.setVisibility(View.VISIBLE);
                 holder.mRouteSupplementItemBinding.tvSupplementReplaceTitle.setVisibility(View.VISIBLE);
                 holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.setVisibility(View.GONE);
-                RouteReplaceSupplementAdapter routeReplaceSupplementAdapter = new RouteReplaceSupplementAdapter();
+                RouteReplaceSupplementAdapter routeReplaceSupplementAdapter;
+                if (!mSupplementAdapter.containsKey(position)) {
+                    routeReplaceSupplementAdapter = new RouteReplaceSupplementAdapter();
+                    mSupplementAdapter.put(position, routeReplaceSupplementAdapter);
+                } else {
+                    routeReplaceSupplementAdapter = mSupplementAdapter.get(position);
+                }
+                if (routeReplaceSupplementAdapter == null) {
+                    routeReplaceSupplementAdapter = new RouteReplaceSupplementAdapter();
+                    mSupplementAdapter.put(position, routeReplaceSupplementAdapter);
+                }
                 routeReplaceSupplementAdapter.setRouteSupplementInfos(routeAlterChargeStationInfos);
                 holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.setLayoutManager(new LinearLayoutManager(AppCache.getInstance().getMContext()));
                 holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.setAdapter(routeReplaceSupplementAdapter);
+                if (mAlterChargeStationShow != null && mAlterChargeStationShow.containsKey(position)) {
+                    holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.setVisibility(View.VISIBLE);
+                    holder.mRouteSupplementItemBinding.ivSupplementReplace.setBackground(ResourceUtils
+                            .Companion.getInstance().getDrawable(R.drawable.img_route_up));
+                } else {
+                    holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.setVisibility(View.GONE);
+                    holder.mRouteSupplementItemBinding.ivSupplementReplace.setBackground(ResourceUtils
+                            .Companion.getInstance().getDrawable(R.drawable.img_route_down));
+                }
+                RouteReplaceSupplementAdapter finalRouteReplaceSupplementAdapter = routeReplaceSupplementAdapter;
                 holder.mRouteSupplementItemBinding.ivSupplementReplace.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -281,9 +335,10 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
                             holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.setVisibility(View.VISIBLE);
                             holder.mRouteSupplementItemBinding.ivSupplementReplace.setBackground(ResourceUtils
                                     .Companion.getInstance().getDrawable(R.drawable.img_route_up));
-                            ArrayList<PoiInfoEntity> replaceSupplementPoi =  routeReplaceSupplementAdapter.getPoiInfoEntities();
+                            ArrayList<PoiInfoEntity> replaceSupplementPoi =  finalRouteReplaceSupplementAdapter.getPoiInfoEntities();
                             if ((replaceSupplementPoi == null || replaceSupplementPoi.isEmpty()) && mItemClickListener != null) {
-                                mItemClickListener.onExpandClick(routeReplaceSupplementAdapter, routeReplaceSupplementAdapter.getRouteAlterChargeStationInfo());
+                                mItemClickListener.onExpandClick(finalRouteReplaceSupplementAdapter,
+                                        finalRouteReplaceSupplementAdapter.getRouteAlterChargeStationInfo());
                             }
                             RouteAlterChargeStationParam alterCharge = mAlterChargeStation.get(position);
                             if (mAlterChargeStationShow.get(position) == null && alterCharge != null) {
@@ -306,6 +361,12 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
                         }
                     }
                 });
+                if (mCurrentSelectedIndex != -1 && mCurrentSelectedIndex == position) {
+                    mCurrentSelectedIndex = -1;
+                    if (holder.mRouteSupplementItemBinding.tvSupplementReplaceItem.getVisibility() != View.VISIBLE) {
+                        holder.mRouteSupplementItemBinding.ivSupplementReplace.performClick();
+                    }
+                }
 
                 routeReplaceSupplementAdapter.setItemClickListener(new RouteReplaceSupplementAdapter.OnItemClickListener() {
                     @Override
@@ -363,6 +424,13 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
          * @param oldPoiInfoEntity 被替换充电站
          */
         void onItemDetailsClick(PoiInfoEntity newPoiInfoEntity, PoiInfoEntity oldPoiInfoEntity);
+
+        /***
+         * 详情点击事件
+         * @param routeSupplementInfo 充电站数据
+         * @param position 下标
+         */
+        void onDetailsClick(RouteSupplementInfo routeSupplementInfo, int position);
 
     }
 }

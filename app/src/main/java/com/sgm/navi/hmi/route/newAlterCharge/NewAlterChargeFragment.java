@@ -34,6 +34,8 @@ import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author  LiuChang
@@ -50,6 +52,8 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
     private RouteSearchLoadingDialog mSearchLoadingDialog;
     private ValueAnimator mAnimator;
     private float mAngelTemp = 0;
+    private CountDownLatch mRequestAlterLock;
+    private boolean isAutoExpand = false;
     private final Runnable mTimeoutTask = new Runnable() {
         @Override
         public void run() {
@@ -78,15 +82,17 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
             @Override
             public void onExpandClick(RouteReplaceSupplementAdapter routeReplaceSupplementAdapter,
                                       ArrayList<RouteAlterChargeStationInfo> routeAlterChargeStationInfos) {
-                if (routeAlterChargeStationInfos != null && !routeAlterChargeStationInfos.isEmpty()) {
-                    ArrayList<String> pidList = new ArrayList<>();
-                    for (RouteAlterChargeStationInfo routeAlterChargeStationInfo : routeAlterChargeStationInfos) {
-                        pidList.add(routeAlterChargeStationInfo.getMPoiId());
+                ThreadManager.getInstance().postUi(() -> {
+                    if (routeAlterChargeStationInfos != null && !routeAlterChargeStationInfos.isEmpty()) {
+                        ArrayList<String> pidList = new ArrayList<>();
+                        for (RouteAlterChargeStationInfo routeAlterChargeStationInfo : routeAlterChargeStationInfos) {
+                            pidList.add(routeAlterChargeStationInfo.getMPoiId());
+                        }
+                        showSearchProgressUI();
+                        mViewModel.getAlterPoiListSearch(pidList);
                     }
-                    showSearchProgressUI();
-                    mViewModel.getAlterPoiListSearch(pidList);
-                }
-                mCurrentAlterAdapter = routeReplaceSupplementAdapter;
+                    mCurrentAlterAdapter = routeReplaceSupplementAdapter;
+                });
             }
 
             @Override
@@ -105,7 +111,18 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
 
             @Override
             public void onItemDetailsClick(PoiInfoEntity newPoiInfoEntity, PoiInfoEntity oldPoiInfoEntity) {
+                mViewModel.setCloseFragment(false);
                 showAlterSupplementDetails(newPoiInfoEntity, oldPoiInfoEntity);
+            }
+
+            @Override
+            public void onDetailsClick(RouteSupplementInfo routeSupplementInfo, int position) {
+                mViewModel.setCurrentIndex(position);
+                mViewModel.setCloseFragment(false);
+                mViewModel.setSearchDetail(true);
+                isAutoExpand = true;
+                mAdapter.setCurrentSelectedIndex(position);
+                showSupplementDetails(routeSupplementInfo);
             }
         });
     }
@@ -130,6 +147,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
             mViewModel.setSearchDetail(true);
             showSupplementDetails(routeChargeStationDetailInfo);
             mViewModel.setRouteSupplementParams(routeSupplementParams);
+            mViewModel.setCurrentIndex(routeSupplementParams.getMRouteSupplementInfos().indexOf(routeChargeStationDetailInfo));
         }else if (routeSupplementParams != null) {
             mViewModel.setSearchDetail(false);
             mViewModel.setRouteSupplementParams(routeSupplementParams);
@@ -148,6 +166,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         super.onNewIntent(bundle);
         final RouteSupplementInfo routeChargeStationDetailInfo = (RouteSupplementInfo)
                 bundle.getParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
+        mViewModel.setSearchDetail(true);
         showSupplementDetails(routeChargeStationDetailInfo);
 
     }
@@ -158,6 +177,9 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
             mSearchLoadingDialog.dismiss();
             mSearchLoadingDialog = null;
+        }
+        if (mRequestAlterLock != null) {
+            mRequestAlterLock = null;
         }
     }
 
@@ -217,15 +239,61 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         }
 
         if (!pidList.isEmpty()) {
+            mRequestAlterLock = new CountDownLatch(pidList.size());
             mViewModel.clearAlterChargeStation();
             for (int i = 0 ; i < pidList.size(); i++) {
                 mViewModel.requestAlterChargeStation(pidList.get(i), i);
             }
             mViewModel.getPoiListSearch(pidList);
             mRouteSupplementInfos = routeSupplementParams.getMRouteSupplementInfos();
+            ThreadManager.getInstance().execute(() -> {
+                try {
+                    boolean completed = mRequestAlterLock.await(10, TimeUnit.SECONDS);
+                    if (!completed) {
+                        // 超时处理
+                        Logger.e(TAG, "Request alter lock timeout");
+                        return;
+                    }
+                } catch (InterruptedException e) {
+                    Logger.e(TAG, e);
+                }
+                autoExpand();
+            });
         }
-
     }
+
+    /**
+     * 自动展开查看的备选充电站
+     */
+    public void autoExpand() {
+        ThreadManager.getInstance().postDelay(() -> {
+            if (mAdapter != null && mCurrentAlterAdapter == null && mBinding != null && getContext() != null) {
+                mBinding.rvSupplement.post(() -> {
+                    int currentIndex = mViewModel.getCurrentIndex();
+                    if (currentIndex != -1) {
+                        Logger.d(TAG, "autoExpand currentIndex:" + currentIndex);
+                        LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding.rvSupplement.getLayoutManager();
+                        if (layoutManager != null) {
+                            layoutManager.scrollToPositionWithOffset(currentIndex, 0);
+                        }
+                        RouteAlterChargeStationParam routeAlterChargeStationParam = mAdapter.getAlterChargeStation(currentIndex);
+                        if (routeAlterChargeStationParam == null ||
+                                routeAlterChargeStationParam.getMRouteAlterChargeStationInfos() == null ||
+                                routeAlterChargeStationParam.getMRouteAlterChargeStationInfos().isEmpty()) {
+                            mViewModel.setCurrentIndex(-1);
+                        } else {
+                            isAutoExpand = true;
+                            mAdapter.setCurrentSelectedIndex(currentIndex);
+                        }
+                    }
+                });
+            } else {
+                Logger.d(TAG, "autoExpand fail");
+                mViewModel.setCurrentIndex(-1);
+            }
+        }, 500);
+    }
+
     /**
      * 点击事件初始话
      */
@@ -251,6 +319,9 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
         if (mAdapter != null) {
             mAdapter.setAlterChargeStation(routeAlterChargeStationParam, index);
         }
+        if (mRequestAlterLock != null) {
+            mRequestAlterLock.countDown();
+        }
     }
 
     /**
@@ -263,10 +334,6 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            if (mViewModel.isSearchDetail()) {
-                mViewModel.getShowAlterChargeType().set(2);
-                ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
-            }
             mViewModel.getRouteSearchName().set(poiInfoEntities.getName());
             mViewModel.getRouteSearchAddress().set(poiInfoEntities.getAddress());
             ViewAdapterKt.loadImageUrl(mBinding.scenePoiDetailsChargingStationView.poiChargeImg,
@@ -362,6 +429,10 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                 mBinding.stvAlter.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_check_alter));
             }
 
+            if (mViewModel.isSearchDetail()) {
+                mViewModel.getShowAlterChargeType().set(2);
+                ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+            }
         });
     }
 
@@ -414,11 +485,30 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
     }
 
     public void setAlterSilentSearchResult(final ArrayList<PoiInfoEntity> poiInfoEntities) {
-        hideSearchProgressUI();
         if (poiInfoEntities == null || poiInfoEntities.isEmpty() || mCurrentAlterAdapter == null) {
             return;
         }
         mCurrentAlterAdapter.setPoiInfoEntities(poiInfoEntities);
+        int currentIndex = mViewModel.getCurrentIndex();
+        if (currentIndex != -1 && isAutoExpand) {
+            ThreadManager.getInstance().postDelay(() -> {
+                if (mBinding == null && getContext() == null) {
+                    return;
+                }
+                mBinding.rvSupplement.post(() -> {
+                    Logger.d(TAG, "setAlterSilentSearchResult currentIndex:" + currentIndex);
+                    LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding.rvSupplement.getLayoutManager();
+                    if (layoutManager != null) {
+                        layoutManager.scrollToPositionWithOffset(currentIndex, 0);
+                    }
+                    isAutoExpand = false;
+                    mViewModel.setCurrentIndex(-1);
+                });
+                hideSearchProgressUI();
+            }, 500);
+        } else {
+            hideSearchProgressUI();
+        }
     }
 
     /***
@@ -434,7 +524,9 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
             return;
         }
         if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
-            mSearchLoadingDialog = new RouteSearchLoadingDialog(context);
+            if (mSearchLoadingDialog == null) {
+                mSearchLoadingDialog = new RouteSearchLoadingDialog(context);
+            }
             if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
                 mSearchLoadingDialog.show();
             }

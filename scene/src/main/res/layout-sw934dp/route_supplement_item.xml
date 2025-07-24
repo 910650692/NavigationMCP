@@ -18,6 +18,11 @@
         android:layout_height="wrap_content">
 
         <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/view_detail"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_218"/>
+
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/view_supplement_start"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_37"
