@@ -104,6 +104,24 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
     }
 
     /***
+     * 判断是否已经存在替换充电站数据
+     * @param position position
+     */
+    public boolean hasAlterData(int position) {
+        RouteReplaceSupplementAdapter routeReplaceSupplementAdapter;
+        if (!mSupplementAdapter.containsKey(position)) {
+            return false;
+        } else {
+            routeReplaceSupplementAdapter = mSupplementAdapter.get(position);
+        }
+        if (routeReplaceSupplementAdapter == null) {
+            return false;
+        }
+        ArrayList<PoiInfoEntity> replaceSupplementPoi =  routeReplaceSupplementAdapter.getPoiInfoEntities();
+        return replaceSupplementPoi != null && !replaceSupplementPoi.isEmpty();
+    }
+
+    /***
      * 清除可替换补能点数据
      */
     public void clearAlterChargeStation() {

@@ -343,6 +343,7 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
         if (mCloseFragment) {
             StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
             mModel.clearLayerItem();
+            mCurrentIndex = -1;
         } else {
             mCloseFragment = true;
             setSearchDetail(false);

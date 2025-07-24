@@ -120,8 +120,6 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                 mViewModel.setCurrentIndex(position);
                 mViewModel.setCloseFragment(false);
                 mViewModel.setSearchDetail(true);
-                isAutoExpand = true;
-                mAdapter.setCurrentSelectedIndex(position);
                 showSupplementDetails(routeSupplementInfo);
             }
         });
@@ -304,6 +302,18 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                 if (mViewModel.getAlterButton()) {
                     mViewModel.detailReplaceClick();
                 } else {
+                    int currentIndex = mViewModel.getCurrentIndex();
+                    if (currentIndex != -1 && mAdapter != null) {
+                        if (mAdapter.hasAlterData(currentIndex)) {
+                            Logger.d(TAG, "stl Alter click");
+                            LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding.rvSupplement.getLayoutManager();
+                            if (layoutManager != null) {
+                                layoutManager.scrollToPositionWithOffset(currentIndex, 0);
+                            }
+                        }
+                        isAutoExpand = true;
+                        mAdapter.setCurrentSelectedIndex(currentIndex);
+                    }
                     mViewModel.getCloseDetail().call();
                 }
             }
