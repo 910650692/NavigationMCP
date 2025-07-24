@@ -102,8 +102,8 @@ public final class SuperCruiseManager {
 
         mAdasManager = adasManager;
         initData();
-        initObserver();
         initScheduler();
+        initObserver();
         mInitialized = true;
         Logger.i(TAG, "init end");
     }
