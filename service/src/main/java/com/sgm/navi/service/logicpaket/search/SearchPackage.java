@@ -1491,22 +1491,24 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
-     * 搜索结果列表扎标
-     * @param poiList 搜索结果列表
+     * 终点停车场列表扎标
+     * @param poiList 结果列表
      * @param index 当前选中下标
      */
     public void createTerminalParkPoiMarker(final List<PoiInfoEntity> poiList, final int index, final boolean isNeedPreview) {
         if (ConvertUtils.isEmpty(poiList) || isNaviStatus()) {
             return;
         }
-        final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
-        layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
-        final LayerPointItemType layerPointItemType = LayerPointItemType.SEARCH_PARENT_PARK;
-        sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
-        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
-                layerItemSearchResult, false);
-        if (isNeedPreview) {
-            showPreview(poiList);
+        if (isRouteStatus()) {
+            final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
+            layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
+            final LayerPointItemType layerPointItemType = LayerPointItemType.SEARCH_PARENT_PARK;
+            sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
+                    layerItemSearchResult, false);
+            if (isNeedPreview) {
+                showPreview(poiList);
+            }
         }
     }
 
@@ -1960,6 +1962,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final Set<String> validStatuses = new HashSet<>(Set.of(
                 NaviStatus.NaviStatusType.NAVING,
                 NaviStatus.NaviStatusType.LIGHT_NAVING
+        ));
+        return validStatuses.contains(currentNaviStatus);
+    }
+
+    public boolean isRouteStatus() {
+        final String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();
+        final Set<String> validStatuses = new HashSet<>(Set.of(
+                NaviStatus.NaviStatusType.ROUTING,
+                NaviStatus.NaviStatusType.SELECT_ROUTE
         ));
         return validStatuses.contains(currentNaviStatus);
     }

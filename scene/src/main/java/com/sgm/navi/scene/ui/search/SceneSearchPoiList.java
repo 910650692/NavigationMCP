@@ -1017,6 +1017,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
             if (ConvertUtils.equals(name, "RouteFragment")) {
                 mScreenViewModel.addPoiMarker(mResultEntity.getPoiList(), 0);
+                updatePoiMarkerVisibleState();
             } else {
                 updatePoiMarkerVisibleState();
             }

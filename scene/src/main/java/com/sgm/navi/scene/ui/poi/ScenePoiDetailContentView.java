@@ -1900,7 +1900,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * 退回到详情页面时，重新按照POI详情页数据进行扎标
      */
     public void reloadPoiLabelMarker() {
-        mScreenViewModel.createLabelMarker(mSearchResultEntity);
+        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK || mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
+            mScreenViewModel.createLabelMarker(mSearchResultEntity);
+        } else {
+            if (mSearchResultEntity != null) {
+                mScreenViewModel.getCurPoiListAndSetInvisible(mSearchResultEntity);
+            }
+        }
     }
 
     /**

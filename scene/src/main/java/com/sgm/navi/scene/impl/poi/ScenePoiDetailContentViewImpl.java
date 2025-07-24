@@ -247,6 +247,12 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         }
     }
 
+    public void getCurPoiListAndSetInvisible(final SearchResultEntity searchResultEntity) {
+        if (!ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
+            mSearchPackage.getCurPoiListAndSetInvisible(searchResultEntity.getPoiList(), searchResultEntity.getSearchType());
+        }
+    }
+
     /**
      * 清除POI点所有相关扎标
      */
