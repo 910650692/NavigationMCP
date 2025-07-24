@@ -229,6 +229,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         styleParam.time = isNight ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
         getMapview().getOperatorStyle().setMapStyle(styleParam, false);
+        getMapview().resetTickCount(1);
     }
 
 
