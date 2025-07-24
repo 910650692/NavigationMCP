@@ -75,22 +75,27 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
     }
 
     public void setHudZoomLevel() {
-        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-        if (NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)) {
-            NaviEtaInfo currentNaviEtaInfo = NaviPackage.getInstance().getCurrentNaviEtaInfo();
-            if (currentNaviEtaInfo == null) return;
-            int nextDist = currentNaviEtaInfo.getNextDist();
-            int curRoadClass = currentNaviEtaInfo.getCurRoadClass();
-            Logger.d(TAG, "当前导航信息 下个路口距离:" ,nextDist, " 当前道路等级:" , curRoadClass);
-            float zoomLevel;
-            if (curRoadClass == CITY_SPEEDWAY || curRoadClass == MAIN_ROAD || curRoadClass == FREEWAY) {
-                zoomLevel = nextDist < FIVE_HUNDRED_METERS ? FIFTEEN : FOURTEEN;
+        try {
+            String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+            if (NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)) {
+                NaviEtaInfo currentNaviEtaInfo = NaviPackage.getInstance().getCurrentNaviEtaInfo();
+                if (currentNaviEtaInfo == null) return;
+                //int nextDist = currentNaviEtaInfo.getNextDist();
+                int nextDist = currentNaviEtaInfo.getNaviInfoData().get(currentNaviEtaInfo.NaviInfoFlag).segmentRemain.dist;
+                int curRoadClass = currentNaviEtaInfo.getCurRoadClass();
+                Logger.d(TAG, "当前导航信息 下个路口距离:" ,nextDist, " 当前道路等级:" , curRoadClass);
+                float zoomLevel;
+                if (curRoadClass == CITY_SPEEDWAY || curRoadClass == MAIN_ROAD || curRoadClass == FREEWAY) {
+                    zoomLevel = nextDist < FIVE_HUNDRED_METERS ? FIFTEEN : FOURTEEN;
+                } else {
+                    zoomLevel = nextDist < TWO_HUNDRED_METERS ? SIXTEEN : FIFTEEN;
+                }
+                updateZoomLevel(zoomLevel);
             } else {
-                zoomLevel = nextDist < TWO_HUNDRED_METERS ? SIXTEEN : FIFTEEN;
+                updateZoomLevel(FIFTEEN);
             }
-            updateZoomLevel(zoomLevel);
-        } else {
-            updateZoomLevel(FIFTEEN);
+        }catch (Exception e){
+            Logger.e(TAG, "setHudZoomLevel error: " , e.getMessage());
         }
     }
 
