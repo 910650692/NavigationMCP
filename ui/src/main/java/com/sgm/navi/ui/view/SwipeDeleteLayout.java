@@ -127,10 +127,8 @@ public class SwipeDeleteLayout extends LinearLayout {
                 int scrollX = getScrollX();
                 int marginLeft = ((MarginLayoutParams) (mDeleteChildView.getLayoutParams())).leftMargin;
                 if (scrollX > mDeleteChildViewWidth + marginLeft && scrollX < 0.5 * mContentViewWidth) {
-                    // 松手后卡片复原
-                    mScroller.startScroll(scrollX, 0, -scrollX, 0);
-                    // 删除按钮区域 < 滑动距离 < 50% 卡片宽度，松手后删除按钮区域固定：去掉此效果
-                    // mScroller.startScroll(0, 0, scrollX, 0, 0);
+                    // 删除按钮区域 < 滑动距离 < 50% 卡片宽度，松手后删除按钮区域固定
+                    mScroller.startScroll(0, 0, scrollX, 0, 0);
                 } else if (scrollX >= 0.5 * mContentViewWidth) {
                     // 50% 卡片宽度 < 滑动距离，直接删除卡片
                     if (mOnActionListener != null) {
