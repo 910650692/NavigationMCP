@@ -7,6 +7,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -702,7 +703,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
         Logger.i(TAG, "setMapCenterInScreen type:" , type);
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        if(baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment ||
+        if(baseFragment instanceof MainSearchFragment ||
+                (baseFragment instanceof SettingFragment &&
+                        !NaviPackage.getInstance().getFixedOverViewStatus()) ||
                 ((baseFragment instanceof NaviGuidanceFragment) &&
                         !NaviPackage.getInstance().getPreviewStatus()) ){
             mModel.goToCarPosition();
