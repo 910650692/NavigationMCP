@@ -6,7 +6,11 @@ import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
 import com.android.utils.thread.ThreadManager;
+import com.baidu.bridge.BridgeSdk;
+import com.baidu.oneos.protocol.IStateManager;
+import com.baidu.oneos.protocol.SystemStateCons;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
@@ -19,6 +23,8 @@ import com.sgm.navi.service.define.route.RoutePreferenceID;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
+import com.sgm.navi.service.greendao.CommonManager;
+import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
 import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
@@ -30,6 +36,7 @@ import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
+import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.sgm.navi.service.logicpaket.user.account.AccountCallBack;
 import com.sgm.navi.service.logicpaket.user.account.AccountPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -38,6 +45,7 @@ import com.sgm.navi.vrbridge.bean.MapState;
 import com.sgm.navi.vrbridge.impl.VoiceSearchManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public final class MapStateManager {
@@ -53,8 +61,9 @@ public final class MapStateManager {
 
     private boolean mMapStateInitiated = false; //地图状态是否已初始化
 
-
     private final MapState.Builder mBuilder;
+
+    private HashMap<String, Object> mVrStatusMap;
 
     public static MapStateManager getInstance() {
         return MapStateManager.Holder.INSTANCE;
@@ -67,6 +76,7 @@ public final class MapStateManager {
     private MapStateManager() {
         mBuilder = new MapState.Builder();
         mRouteList = new ArrayList<>();
+        mVrStatusMap = new HashMap<>();
     }
 
     /**
@@ -78,7 +88,7 @@ public final class MapStateManager {
             Logger.d(IVrBridgeConstant.TAG, "MapStateInit, foreground: ", foregroundStatus);
         }
         updateForegroundStatus(foregroundStatus);
-        mBuilder.setHasPrivacyPermission(true);
+        mBuilder.setHasPrivacyPermission(getVoicePrivacyStatus());
         mBuilder.setMaxZoomLevel(20);
         mBuilder.setMinZoomLevel(3);
         mBuilder.setViaPointsMaxCount(5);
@@ -135,6 +145,32 @@ public final class MapStateManager {
         mMapStateInitiated = true;
     }
 
+    //大协议状态
+    private final AgreementPackage.AgreementCallback mAgreementCallback = new AgreementPackage.AgreementCallback() {
+        @Override
+        public void agreementCallback(final boolean isSGMAgreed) {
+            updatePrivacy();
+        }
+    };
+
+    //高德条款
+    private final CommonManager.ISettingDaoChangeListener mSettingDaoChangeListener = new CommonManager.ISettingDaoChangeListener() {
+        @Override
+        public void onFirstLauncherChanged(String value) {
+            updatePrivacy();
+        }
+    };
+
+    //位置权限
+    private final SettingUpdateObservable.SettingUpdateObserver mSettingUpdateObserver = new SettingUpdateObservable.SettingUpdateObserver() {
+        @Override
+        public void onUpdateSetting(String key, boolean value) {
+            updatePrivacy();
+        }
+    };
+
+
+    //Map状态
     private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
         @Override
         public void onNaviStatusChange(final String naviStatus) {
@@ -153,6 +189,7 @@ public final class MapStateManager {
         }
     };
 
+    //主图
     private final IMapPackageCallback mIMapPackageCallback = new IMapPackageCallback() {
 
         @Override
@@ -178,6 +215,7 @@ public final class MapStateManager {
         }
     };
 
+    //路线规划
     private final IRouteResultObserver mIRouteResultObserver = new IRouteResultObserver() {
 
         @Override
@@ -226,6 +264,7 @@ public final class MapStateManager {
         }
     };
 
+    //设置项
     private final SettingPackage.SettingChangeCallback mSettingChangeCallback = new SettingPackage.SettingChangeCallback() {
         @Override
         public void onSettingChanged(final String key, final String value) {
@@ -266,6 +305,7 @@ public final class MapStateManager {
         }
     };
 
+    //账号
     private final AccountCallBack mAccountCallBack = new AccountCallBack() {
         @Override
         public void notifyMobileLogin(final int errCode, final int taskId, final AccountUserInfo result) {
@@ -288,6 +328,7 @@ public final class MapStateManager {
         }
     };
 
+    //定位
     private final IPositionPackageCallback mIPositionPackageCallback = new IPositionPackageCallback() {
 
         @Override
@@ -310,7 +351,7 @@ public final class MapStateManager {
         }
     };
 
-
+    //导航
     private final IGuidanceObserver mGuidanceObserver = new IGuidanceObserver() {
         @Override
         public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
@@ -331,6 +372,7 @@ public final class MapStateManager {
         }
     };
 
+    //导航界面全览状态
     private final NaviPackage.OnPreViewStatusChangeListener mPreViewStatusChangeListener = new NaviPackage.OnPreViewStatusChangeListener() {
         @Override
         public void onPreViewStatusChange(final boolean isPreView) {
@@ -339,6 +381,7 @@ public final class MapStateManager {
         }
     };
 
+    //运行状态
     private final ProcessManager.ProcessForegroundStatus mForeGroundCallback = new ProcessManager.ProcessForegroundStatus() {
         @Override
         public void isAppInForeground(final boolean appInForegroundStatus) {
@@ -350,21 +393,7 @@ public final class MapStateManager {
         }
     };
 
-    /**
-     * 根据Activity状态更新应用前后台状态.
-     *
-     * @param foregroundStatus activity运行状态.
-     */
-    private void updateForegroundStatus(final boolean foregroundStatus) {
-        if (foregroundStatus) {
-            mBuilder.setOpenStatus(true);
-            mBuilder.setFront(true);
-        } else {
-            mBuilder.setOpenStatus(false);
-            mBuilder.setFront(false);
-        }
-    }
-
+    //收藏-家和公司
     private final FavoriteStatusCallback mFavoriteStatusCallback = new FavoriteStatusCallback() {
         @Override
         public void notifyFavoriteHomeChanged(final boolean isSet) {
@@ -383,7 +412,9 @@ public final class MapStateManager {
      * 注册回调
      */
     private void registerCallback() {
-
+        AgreementPackage.getInstance().setAgreementCallback(TAG, mAgreementCallback);
+        CommonManager.getInstance().registerObserver(TAG, mSettingDaoChangeListener);
+        SettingUpdateObservable.getInstance().addObserver(TAG, mSettingUpdateObserver);
         MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
         RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
         SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
@@ -394,6 +425,70 @@ public final class MapStateManager {
         NaviPackage.getInstance().addOnPreviewStatusChangeListener(mPreViewStatusChangeListener);
         NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
         BehaviorPackage.getInstance().registerFavoriteStatusCallback(mFavoriteStatusCallback);
+    }
+
+    /**
+     * 获取隐私协议状态.
+     *
+     *@return  true:大协议、高德条款和位置权限都同意  false:至少有一项不同意.
+     */
+    private boolean getVoicePrivacyStatus() {
+        final boolean sgmAgreement = AgreementPackage.getInstance().isAllowSGMAgreement();
+        CommonManager.getInstance().init();
+        final boolean firstLauncher = TextUtils.isEmpty(
+                CommonManager.getInstance().getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH));
+        final boolean locationStatus = SettingPackage.getInstance().getPrivacyStatus();
+        if (Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "sgmAgreement", sgmAgreement, "firstLauncher", firstLauncher, "locationStatus", locationStatus);
+        }
+
+        return sgmAgreement && firstLauncher && locationStatus;
+    }
+
+    //更新语音隐私协议端状态
+    private void updatePrivacy() {
+        final boolean agreePrivacy = getVoicePrivacyStatus();
+        mVrStatusMap.clear();
+        mVrStatusMap.put(SystemStateCons.NaviStateCons.KEY_PRIVACY_ACCEPTED, agreePrivacy);
+        updateVrMapStatus();
+    }
+
+    /**
+     * 更新语音Map端状态.
+     */
+    private void updateVrMapStatus() {
+        if (null == mVrStatusMap || mVrStatusMap.isEmpty()) {
+            return;
+        }
+
+        ThreadManager.getInstance().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final IStateManager bdStateManager = BridgeSdk.getInstance().getRemote(IStateManager.class);
+                    if (null != bdStateManager) {
+                        bdStateManager.updateNaviState(mVrStatusMap);
+                    }
+                } catch (ClassCastException | NullPointerException exception) {
+                    Logger.e(IVrBridgeConstant.TAG, "updateNaviState: " + exception.getMessage());
+                }
+            }
+        });
+    }
+
+    /**
+     * 根据Activity状态更新应用前后台状态.
+     *
+     * @param foregroundStatus activity运行状态.
+     */
+    private void updateForegroundStatus(final boolean foregroundStatus) {
+        if (foregroundStatus) {
+            mBuilder.setOpenStatus(true);
+            mBuilder.setFront(true);
+        } else {
+            mBuilder.setOpenStatus(false);
+            mBuilder.setFront(false);
+        }
     }
 
     /**
