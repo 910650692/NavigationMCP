@@ -208,6 +208,11 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
         });
         // 常用收藏夹
         mViewBinding.naviBroadcastStandard.setOnClickListener(view -> {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"naviBroadcastStandard click" + mIsChargingCollect);
+            if (!mIsChargingCollect) {
+                //如果已经选中，不刷新列表
+                return;
+            }
             mIsChargingCollect = false;
             hideEmptyView();
             mAdapter.notifyList(new ArrayList<>());
@@ -226,7 +231,10 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
 
         // 专属充电站
         mViewBinding.naviBroadcastLarge.setOnClickListener(view -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"naviBroadcastLarge click");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"naviBroadcastLarge click" + mIsChargingCollect);
+            if (mIsChargingCollect) {
+                return;
+            }
             mIsChargingCollect = true;
             hideEmptyView();
             mAdapter.notifyList(new ArrayList<>());
