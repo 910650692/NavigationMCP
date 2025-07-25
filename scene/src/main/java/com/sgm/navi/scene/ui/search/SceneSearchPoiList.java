@@ -1126,10 +1126,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.searchLabelFilter.setVisibility(GONE);
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mSearchType: ",mSearchType,"code: ",searchResultEntity.getCode());
             if (searchResultEntity != null
                     && searchResultEntity.getPoiType() == 0
                     && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mSearchType: ",mSearchType,"code: ",searchResultEntity.getCode());
                 // 顺路搜不支持离线搜索，当顺路搜无网络时提醒网络异常
                 if(mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH && searchResultEntity.getCode() == 33554433){
                     ToastUtils.Companion.getInstance().showCustomToastView("网络异常，请检查网络后重试");
@@ -1758,9 +1758,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            final ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mViewBinding.routeChargeExhaustionPoint.getLayoutParams();
-            layoutParams.horizontalBias = progress;
-            mViewBinding.routeChargeExhaustionPoint.setLayoutParams(layoutParams);
+            if(!ConvertUtils.isNull(mViewBinding)){
+                final ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mViewBinding.routeChargeExhaustionPoint.getLayoutParams();
+                layoutParams.horizontalBias = progress;
+                mViewBinding.routeChargeExhaustionPoint.setLayoutParams(layoutParams);
+            }
         });
     }
 

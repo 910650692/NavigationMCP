@@ -326,7 +326,7 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
      */
     private void showKeyboard() {
         final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
+        if (imm != null && !ConvertUtils.isNull(mViewBinding)) {
             imm.showSoftInput(mViewBinding.offlineSearchTopView.searchBarEditView, InputMethodManager.SHOW_IMPLICIT);
         }
     }
