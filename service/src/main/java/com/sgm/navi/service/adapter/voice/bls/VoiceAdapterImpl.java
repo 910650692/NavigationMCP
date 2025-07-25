@@ -154,6 +154,10 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
 
     @Override
     public HashMap<Integer, VoiceInfo> getRecommendVoiceList() {
+        if (voiceService == null) {
+            Logger.e("voiceService is null");
+            return new HashMap<>();
+        }
         if(recommendVoiceList == null || recommendVoiceList.isEmpty()){
             HashMap<Integer, VoiceInfo> voiceList = new HashMap<>();
             ArrayList<Integer> voiceIdList = getVoiceIdList(DownLoadMode.DOWNLOAD_MODE_NET.ordinal());
