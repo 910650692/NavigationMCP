@@ -4023,11 +4023,23 @@
     <dimen name="navi_main_tap_margin_bottom">@dimen/dp_128</dimen>
     <dimen name="navi_main_tap_height">@dimen/dp_86</dimen>
 
+    <dimen name="navi_fragment_margin_botton">@dimen/dp_95</dimen>
+
     <dimen name="navi_main_fragment_margin_start">29.5dp</dimen>
     <dimen name="navi_main_fragment_margin_top">46.5dp</dimen>
     <dimen name="navi_setting_fragment_height">@dimen/dp_893</dimen>
 
     <dimen name="navi_main_float_window_width">@dimen/dp_624</dimen>
+    <dimen name="navi_guide_road_name_height">@dimen/dp_74</dimen>
+    <dimen name="navi_guide_road_name_text_size">@dimen/sp_29</dimen>
+    <dimen name="navi_guide_road_name_padding_horizontal">@dimen/dp_22</dimen>
+    <dimen name="navi_guide_road_name_padding_vertical">@dimen/dp_34</dimen>
+    <dimen name="navi_guide_road_name_button_padding_horizontal">@dimen/dp_20</dimen>
+    <dimen name="navi_guide_continue_button_width">@dimen/dp_264</dimen>
+    <dimen name="navi_guide_continue_button_height">@dimen/dp_78</dimen>
+    <dimen name="navi_guide_area_margin_end">@dimen/dp_132</dimen>
+    <dimen name="navi_guide_area_continue_margin_end">@dimen/dp_194</dimen>
+    <dimen name="navi_guide_area_margin_bottom">@dimen/dp_34</dimen>
 
     <dimen name="bg_downloading_city_corner">@dimen/dp_8</dimen>
     <dimen name="navi_btn_add_via_corner">@dimen/dp_12</dimen>

@@ -238,9 +238,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_shadow_navi_buick"
-                android:layout_marginEnd="@dimen/dp_141"
-                android:paddingHorizontal="@dimen/dp_29"
-                android:paddingVertical="@dimen/dp_29"
+                android:layout_marginEnd="@dimen/navi_guide_area_margin_end"
+                android:paddingHorizontal="@dimen/navi_guide_road_name_padding_horizontal"
+                android:paddingVertical="@dimen/navi_guide_road_name_padding_vertical"
                 android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/line_view_roads"
@@ -249,13 +249,13 @@
                 <com.sgm.navi.scene.ui.navi.view.ButtonText
                     android:id="@+id/stv_navi_route_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_92"
+                    android:layout_height="@dimen/navi_guide_road_name_height"
                     android:background="@drawable/bg_navi_control"
                     android:clickable="false"
                     android:gravity="center"
-                    android:paddingHorizontal="@dimen/dp_26"
+                    android:paddingHorizontal="@dimen/navi_guide_road_name_button_padding_horizontal"
                     android:textColor="@color/common_title_purple_color"
-                    android:textSize="@dimen/sp_34"
+                    android:textSize="@dimen/navi_guide_road_name_text_size"
                     tools:text="申港大道" />
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
@@ -322,10 +322,10 @@
         <!--继续导航按钮-->
         <com.sgm.navi.scene.ui.navi.SceneNaviContinueView
             android:id="@+id/scene_navi_continue"
-            android:layout_width="@dimen/dp_310"
-            android:layout_height="@dimen/dp_92"
-            android:layout_marginBottom="@dimen/dp_29"
-            android:layout_marginEnd="@dimen/dp_141"
+            android:layout_width="@dimen/navi_guide_continue_button_width"
+            android:layout_height="@dimen/navi_guide_continue_button_height"
+            android:layout_marginBottom="@dimen/navi_guide_area_margin_bottom"
+            android:layout_marginEnd="@dimen/navi_guide_area_continue_margin_end"
             android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/line_views"
