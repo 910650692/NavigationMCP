@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:anedroid="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="ViewModel"
+            type="com.sgm.navi.hmi.favorite.FavoriteViewModel" />
+    </data>
+
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/favorite_layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_24">
+
+        <!--设置家-->
+        <com.sgm.navi.ui.view.SkinRelativeLayout
+            android:id="@+id/rl_favorite_home"
+            clickCommand="@{ViewModel.mGoSettingHome}"
+            android:layout_width="@dimen/dp_418"
+            android:layout_height="@dimen/dp_130"
+            android:background="@drawable/bg_setting_voice"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/favorite_title">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_14"
+                android:src="@drawable/img_favorite_home" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/favorite_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_96"
+                android:layout_marginTop="@dimen/dp_22"
+                android:text="@string/favorite_home"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_34" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/favorite_home_name"
+                android:layout_width="@dimen/dp_210"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/favorite_home"
+                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginStart="@dimen/dp_96"
+                android:text="@string/favorite_setting"
+                android:maxLines="1"
+                android:textColor="@color/color_black_70"
+                android:textSize="@dimen/sp_30" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.mMoreHome}"
+                android:id="@+id/more_Home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_24"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/img_favorite_more" />
+        </com.sgm.navi.ui.view.SkinRelativeLayout>
+
+        <!--设置公司-->
+        <com.sgm.navi.ui.view.SkinRelativeLayout
+            android:id="@+id/rl_favorite_company"
+            clickCommand="@{ViewModel.mGoSettingCompany}"
+            android:layout_width="@dimen/dp_418"
+            android:layout_height="@dimen/dp_130"
+            android:background="@drawable/bg_setting_voice"
+            android:layout_marginStart="@dimen/dp_24"
+            app:layout_constraintLeft_toRightOf="@+id/rl_favorite_home"
+            app:layout_constraintTop_toBottomOf="@+id/favorite_title">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_14"
+                android:src="@drawable/img_favorite_company" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/favorite_company"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_96"
+                android:layout_marginTop="@dimen/dp_22"
+                android:text="@string/favorite_company"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_34" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/favorite_company_name"
+                android:layout_width="@dimen/dp_210"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/favorite_company"
+                android:layout_marginStart="@dimen/dp_96"
+                android:layout_marginTop="@dimen/dp_2"
+                android:text="@string/favorite_setting"
+                android:maxLines="1"
+                android:textColor="@color/color_black_70"
+                android:textSize="@dimen/sp_30" />
+
+            <com.sgm.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.mMoreCompany}"
+                android:id="@+id/more_company"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_24"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/img_favorite_more" />
+        </com.sgm.navi.ui.view.SkinRelativeLayout>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            clickCommand="@{ViewModel.mShowHomeCompanyDisplayed}"
+            android:id="@+id/switch_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_41"
+            android:background="@{ViewModel.mIsHomeCompanyDisplayed ? @drawable/img_setting_switch_on : @drawable/img_setting_switch_off}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rl_favorite_home" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            clickCommand="@{ViewModel.mShowHomeCompanyDisplayed}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favorite_favorite_switch"
+            android:textColor="@color/color_black_70"
+            android:textSize="@dimen/sp_30"
+            android:layout_marginStart="@dimen/dp_24"
+            app:layout_constraintStart_toEndOf="@+id/switch_favorite"
+            app:layout_constraintTop_toTopOf="@+id/switch_favorite" />
+
+        <!--常去地址-->
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/favorite_frequent_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favorite_frequent_address"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_34"
+            android:layout_marginTop="@dimen/dp_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/switch_favorite" />
+
+        <com.sgm.navi.ui.view.SkinGridLayout
+            android:id="@+id/frequent_address_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:layout_marginTop="@dimen/dp_20"
+            android:useDefaultMargins="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/favorite_frequent_address"/>
+        <!--常去地址列表-->
+        <com.sgm.navi.ui.view.SkinRecyclerView
+            android:id="@+id/rv_frequent_address_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_20"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/favorite_frequent_address" />
+
+        <!--收藏夹-->
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/tv_favorite_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favorite_title"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_34"
+            android:layout_marginTop="@dimen/dp_28"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frequent_address_container" />
+
+        <com.sgm.navi.ui.view.SkinLinearLayout
+            clickCommand="@{ViewModel.mAddFavorite}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{ViewModel.mAddVisibility ? View.VISIBLE : View.GONE}"
+            android:layout_marginEnd="@dimen/dp_41"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_favorite_title" >
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/img_favorite_add" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/item_favorite_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/favorite_add"
+                android:layout_marginStart="@dimen/dp_8"
+                android:textColor="@color/color_black_70"
+                android:textSize="@dimen/sp_30" />
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+
+        <com.sgm.navi.ui.view.SkinLinearLayout
+            android:id="@+id/tv_favorite_switch"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_90"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:orientation="horizontal"
+            android:visibility="@{ViewModel.mIsEVCar ? View.VISIBLE : View.GONE}"
+            android:background="@drawable/bg_setting_checkbox"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_favorite_title">
+
+            <com.sgm.navi.ui.view.SkinRadioGroup
+                android:id="@+id/navi_broadcast"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <com.sgm.navi.ui.view.SkinRadioButton
+                    clickCommand="@{ViewModel.mFavoriteInfoClick}"
+                    android:id="@+id/navi_broadcast_standard"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:checked="@{ViewModel.mFavoriteListChecked}"
+                    android:background="@drawable/bg_setting_checkbox_selector"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_34"
+                    android:textColor="@drawable/color_setting_checkbox_selector"
+                    android:text="@string/favorite_switch_common" />
+
+                <com.sgm.navi.ui.view.SkinRadioButton
+                    clickCommand="@{ViewModel.mChargingInfoClick}"
+                    android:id="@+id/navi_broadcast_large"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:background="@drawable/bg_setting_checkbox_selector"
+                    android:checked="@{!ViewModel.mFavoriteListChecked}"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_34"
+                    android:textColor="@drawable/color_setting_checkbox_selector"
+                    android:text="@string/favorite_switch_charge" />
+            </com.sgm.navi.ui.view.SkinRadioGroup>
+
+        </com.sgm.navi.ui.view.SkinLinearLayout>
+
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+</layout>

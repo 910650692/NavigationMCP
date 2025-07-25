@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableField;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 
@@ -48,17 +49,17 @@ import java.util.Objects;
 
 public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, FavoriteModel> {
     public static final String TAG = BaseFavoriteViewModel.class.getName();
-    public MutableLiveData<Boolean> mDataVisibility;
-    public MutableLiveData<Boolean> mTipVisibility;
-    public MutableLiveData<Boolean> mAddVisibility;
-    public MutableLiveData<Boolean> mChargingVisibility;
-    public MutableLiveData<Boolean> mChargingNoDataVisibility;
-    public MutableLiveData<Boolean> mChargingRequestFailedVisibility;
-    public MutableLiveData<Boolean> mChargingOfflineVisibility;
-    public MutableLiveData<Boolean> mIsHomeCompanyDisplayed;
-    public MutableLiveData<Boolean> mIsEVCar;
-    public MutableLiveData<String> mSyncTime;
-    public MutableLiveData<Boolean> mFavoriteListChecked = new MutableLiveData<>(true);
+    public ObservableField<Boolean> mDataVisibility;
+    public ObservableField<Boolean> mTipVisibility;
+    public ObservableField<Boolean> mAddVisibility;
+    public ObservableField<Boolean> mChargingVisibility;
+    public ObservableField<Boolean> mChargingNoDataVisibility;
+    public ObservableField<Boolean> mChargingRequestFailedVisibility;
+    public ObservableField<Boolean> mChargingOfflineVisibility;
+    public ObservableField<Boolean> mIsHomeCompanyDisplayed;
+    public ObservableField<Boolean> mIsEVCar;
+    public ObservableField<String> mSyncTime;
+    public ObservableField<Boolean> mFavoriteListChecked = new MutableLiveData<>(true);
     private final ArrayList<PoiInfoEntity> mStationList = new ArrayList<>();
     private PoiInfoEntity mHome;
     private PoiInfoEntity mCompany;
@@ -66,16 +67,16 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
 
     public BaseFavoriteViewModel(final @NonNull Application application) {
         super(application);
-        mDataVisibility = new MutableLiveData<>(false);
-        mTipVisibility = new MutableLiveData<>(true);
-        mAddVisibility = new MutableLiveData<>(false);
-        mChargingVisibility = new MutableLiveData<>(false);
-        mChargingNoDataVisibility = new MutableLiveData<>(false);
-        mChargingRequestFailedVisibility = new MutableLiveData<>(false);
-        mChargingOfflineVisibility = new MutableLiveData<>(false);
-        mIsHomeCompanyDisplayed = new MutableLiveData<>(true);
-        mIsEVCar = new MutableLiveData<>(false);
-        mSyncTime = new MutableLiveData<>();
+        mDataVisibility = new ObservableField<>(false);
+        mTipVisibility = new ObservableField<>(true);
+        mAddVisibility = new ObservableField<>(false);
+        mChargingVisibility = new ObservableField<>(false);
+        mChargingNoDataVisibility = new ObservableField<>(false);
+        mChargingRequestFailedVisibility = new ObservableField<>(false);
+        mChargingOfflineVisibility = new ObservableField<>(false);
+        mIsHomeCompanyDisplayed = new ObservableField<>(true);
+        mIsEVCar = new ObservableField<>(false);
+        mSyncTime = new ObservableField<>();
     }
 
     @Override
@@ -90,8 +91,8 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     @Override
     public void onResume() {
         super.onResume();
-        if (Boolean.FALSE.equals(mFavoriteListChecked.getValue())) {
-            mChargingVisibility.setValue(!mModel.isSGMLogin());
+        if (Boolean.FALSE.equals(mFavoriteListChecked.get())) {
+            mChargingVisibility.set(!mModel.isSGMLogin());
         }
     }
 
@@ -103,10 +104,10 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     public void dualChoiceControl(final String key, final boolean isTrue) {
         switch (key) {
             case SettingController.KEY_SETTING_IS_EV_CAR:
-                mIsEVCar.setValue(isTrue);
+                mIsEVCar.set(isTrue);
                 break;
             case SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED:
-                mIsHomeCompanyDisplayed.setValue(isTrue);
+                mIsHomeCompanyDisplayed.set(isTrue);
                 break;
             default:
                 break;
@@ -188,9 +189,9 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         @Override
         @HookMethod(eventName = BuryConstant.EventName.AMAP_SETTING_HOMEWORKSWITCH)
         public void call() {
-            final boolean value = Boolean.FALSE.equals(mIsHomeCompanyDisplayed.getValue());
+            final boolean value = Boolean.FALSE.equals(mIsHomeCompanyDisplayed.get());
             SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED, value);
-            mIsHomeCompanyDisplayed.setValue(value);
+            mIsHomeCompanyDisplayed.set(value);
             mModel.setHomeCompanyDisplay(value);
 
             BuryProperty property = new BuryProperty.Builder().setParams(BuryConstant.ProperType.BURY_KEY_SETTING_CONTENT, value ? BuryConstant.Number.SECOND : BuryConstant.Number.ONE).build();
@@ -229,29 +230,29 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     };
 
     public Action mFavoriteInfoClick = () -> {
-        if (Boolean.TRUE.equals(mFavoriteListChecked.getValue())) {
+        if (Boolean.TRUE.equals(mFavoriteListChecked.get())) {
             return;
         }
-        mFavoriteListChecked.setValue(true);
-        mChargingVisibility.setValue(false);
-        mChargingNoDataVisibility.setValue(false);
-        mChargingOfflineVisibility.setValue(false);
+        mFavoriteListChecked.set(true);
+        mChargingVisibility.set(false);
+        mChargingNoDataVisibility.set(false);
+        mChargingOfflineVisibility.set(false);
         mModel.getSimpleFavoriteList();
     };
 
     public Action mChargingInfoClick = () -> {
-        if (Boolean.FALSE.equals(mFavoriteListChecked.getValue())) {
+        if (Boolean.FALSE.equals(mFavoriteListChecked.get())) {
             return;
         }
-        mFavoriteListChecked.setValue(false);
+        mFavoriteListChecked.set(false);
         refreshCollectStation();
     };
 
     public void refreshCollectStation() {
-        mChargingVisibility.setValue(!mModel.isSGMLogin());
-        mTipVisibility.setValue(false);
-        mDataVisibility.setValue(false);
-        mAddVisibility.setValue(false);
+        mChargingVisibility.set(!mModel.isSGMLogin());
+        mTipVisibility.set(false);
+        mDataVisibility.set(false);
+        mAddVisibility.set(false);
         mModel.queryCollectStation(mView.getActivity());
     }
 
@@ -259,7 +260,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
      * 获取收藏点列表(普通POI点)
      */
     public void getSimpleFavoriteList() {
-        if (Boolean.TRUE.equals(mFavoriteListChecked.getValue())) {
+        if (Boolean.TRUE.equals(mFavoriteListChecked.get())) {
             mModel.getSimpleFavoriteList();
         } else {
             if (mModel.isSGMLogin()) {
@@ -332,7 +333,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
      * @param isHomeCompanyDisplayed
      */
     public void setIsHomeCompanyDisplayed(final boolean isHomeCompanyDisplayed) {
-        this.mIsHomeCompanyDisplayed.setValue(isHomeCompanyDisplayed);
+        this.mIsHomeCompanyDisplayed.set(isHomeCompanyDisplayed);
     }
 
     /**
@@ -346,20 +347,18 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         ThreadManager.getInstance().postUi(() -> {
             if (type == 0) {
                 //常用收藏夹
-                if (Boolean.TRUE.equals(mFavoriteListChecked.getValue())) {
+                if (Boolean.TRUE.equals(mFavoriteListChecked.get())) {
                     final boolean hasData = !ConvertUtils.isEmpty(list);
-                    mTipVisibility.setValue(!hasData);
-                    mAddVisibility.setValue(hasData);
-                    mDataVisibility.setValue(hasData);
-                    if (hasData) {
-                        mView.updateFavoriteView(list, type);
-                    }
+                    mTipVisibility.set(!hasData);
+                    mAddVisibility.set(hasData);
+                    mDataVisibility.set(hasData);
+                    mView.updateFavoriteView(list, type);
                 }
-            }else {
+            } else {
                 //专属充电站
-                if (Boolean.FALSE.equals(mFavoriteListChecked.getValue())) {
-                    mDataVisibility.setValue(!list.isEmpty());
-                    mChargingNoDataVisibility.setValue(list.isEmpty());
+                if (Boolean.FALSE.equals(mFavoriteListChecked.get())) {
+                    mDataVisibility.set(!list.isEmpty());
+                    mChargingNoDataVisibility.set(list.isEmpty());
                     mView.updateFavoriteView(list, type);
                 }
             }
@@ -368,6 +367,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
 
     /**
      * 移除收藏点
+     *
      * @param poiInfo
      */
     public void removeFavorite(final PoiInfoEntity poiInfo) {
@@ -406,6 +406,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
 
     /**
      * 不同车型获取不同数据
+     *
      * @return
      */
     public Map<String, Integer> getPopupData() {
@@ -450,17 +451,18 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
      * 网络错误，未获取到数据
      */
     public void notifyConnectStationError() {
-        if (Boolean.TRUE.equals(mFavoriteListChecked.getValue())) {
+        if (Boolean.TRUE.equals(mFavoriteListChecked.get())) {
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            mDataVisibility.setValue(false);
-            mChargingOfflineVisibility.setValue(true);
+            mDataVisibility.set(false);
+            mChargingOfflineVisibility.set(true);
         });
     }
 
     /**
      * parseNetworkResult
+     *
      * @param result
      */
     private void parseStationListResult(BaseRep result) {

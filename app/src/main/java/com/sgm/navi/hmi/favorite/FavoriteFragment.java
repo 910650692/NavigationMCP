@@ -13,7 +13,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -28,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -36,6 +34,8 @@ import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentFavoriteBinding;
+import com.sgm.navi.hmi.databinding.ItemFavoriteEmptyBinding;
+import com.sgm.navi.hmi.databinding.ItemFavoriteHeaderBinding;
 import com.sgm.navi.hmi.favorite.adapter.FavoriteDataAdapter;
 import com.sgm.navi.hmi.favorite.adapter.FrequentAddressAdapter;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
@@ -46,7 +46,6 @@ import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.view.SkinEditText;
 import com.sgm.navi.ui.view.SkinGridLayout;
 import com.sgm.navi.ui.view.SkinImageView;
-import com.sgm.navi.ui.view.SkinNestedScrollView;
 import com.sgm.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ import java.util.Map;
 import java.util.Objects;
 
 
-public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, FavoriteViewModel> implements ViewTreeObserver.OnScrollChangedListener {
+public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, FavoriteViewModel> {
 
     private final static String TAG = FavoriteFragment.class.getSimpleName();
     private ArrayList<PoiInfoEntity> mFavoriteList = new ArrayList<>();
@@ -78,6 +77,10 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     private boolean mIsStopScroll;
     private boolean mIsTouchEvent;
     private long mFlingTime = 0;    //惯性滑动时间
+
+    // 滑动距离
+    private int scrollY = 0;
+    private int scrollX = 0;
     private final static String PATAC_ACTION_LOGIN = "patac.hmi.user.intent.action.LOGIN";
 
     @Override
@@ -95,18 +98,11 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         Logger.d(TAG, "onInitView: ");
         initFavoriteList();
         backToTop();
-//        initFrequentAddress();
     }
 
     @Override
     public void onInitData() {
         mViewModel.getSimpleFavoriteList();
-        mViewModel.getHomeFavoriteInfo();
-        mViewModel.getCompanyFavoriteInfo();
-        mViewModel.initView();
-        initPopupWindow();
-        initFrequentPopupWindow();
-        initFrequentAddressList();
     }
 
     BroadcastReceiver mAccountReceiver = new BroadcastReceiver() {
@@ -144,6 +140,33 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     @HookMethod(eventName = BuryConstant.EventName.AMAP_FAVORITE_LIST)
     private void initFavoriteList() {
         mFavoriteDataAdapter = new FavoriteDataAdapter();
+        mFavoriteDataAdapter.setItemHeaderOnCreate(new FavoriteDataAdapter.OnItemOnCreateView() {
+            @Override
+            public void onCreateHeaderView(ItemFavoriteHeaderBinding itemFavoriteHeaderBinding) {
+                itemFavoriteHeaderBinding.setViewModel(mViewModel);
+                mViewModel.initView();
+                initPopupWindow();
+                initFrequentPopupWindow();
+            }
+
+            @Override
+            public void onResumeHeaderView(ItemFavoriteHeaderBinding itemFavoriteHeaderBinding) {
+                initFrequentAddressList();
+                mViewModel.getHomeFavoriteInfo();
+                mViewModel.getCompanyFavoriteInfo();
+            }
+
+            @Override
+            public void onCreateEmptyView(ItemFavoriteEmptyBinding itemFavoriteEmptyBinding) {
+                itemFavoriteEmptyBinding.setViewModel(mViewModel);
+            }
+
+            @Override
+            public void onResumeEmptyView(ItemFavoriteEmptyBinding itemFavoriteEmptyBinding) {
+
+            }
+        });
+
         mFavoriteDataAdapter.setItemClickListener(new FavoriteDataAdapter.OnItemClickListener() {
             @Override
             public void onItemNaviClick(final int index) {
@@ -177,14 +200,14 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             @Override
             public void onItemCancelTopClick(final int index) {
                 Logger.d(TAG, "on item cancel top click");
-                mBinding.favoriteScroll.setEnabled(false);
+                mBinding.rvFavoriteList.setEnabled(false);
                 if (mFavoriteList != null && !mFavoriteList.isEmpty()) {
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     mViewModel.topFavorite(mFavoriteList.get(index), false);
                     mViewModel.getSimpleFavoriteList();
                     ToastUtils.Companion.getInstance().showCustomToastView("已取消置顶");
                 }
-                mBinding.favoriteScroll.setEnabled(true);
+                mBinding.rvFavoriteList.setEnabled(true);
             }
 
             @Override
@@ -209,10 +232,14 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * @param home 家
      */
     public void updateHomeView(final PoiInfoEntity home) {
+        ItemFavoriteHeaderBinding bindingHeader = mFavoriteDataAdapter.getBindingHeader();
+        if (bindingHeader == null) {
+            return;
+        }
         if (home != null) {
-            mBinding.favoriteHomeName.setText(home.getName());
+            bindingHeader.favoriteHomeName.setText(home.getName());
         } else {
-            mBinding.favoriteHomeName.setText(R.string.favorite_setting);
+            bindingHeader.favoriteHomeName.setText(R.string.favorite_setting);
         }
     }
 
@@ -221,10 +248,14 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * @param company 公司
      */
     public void updateCompanyView(final PoiInfoEntity company) {
+        ItemFavoriteHeaderBinding bindingHeader = mFavoriteDataAdapter.getBindingHeader();
+        if (bindingHeader == null) {
+            return;
+        }
         if (company != null) {
-            mBinding.favoriteCompanyName.setText(company.getName());
+            bindingHeader.favoriteCompanyName.setText(company.getName());
         } else {
-            mBinding.favoriteCompanyName.setText(R.string.favorite_setting);
+            bindingHeader.favoriteCompanyName.setText(R.string.favorite_setting);
         }
     }
 
@@ -234,10 +265,14 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * @return view
      */
     public View getHomeOrCompanyEditView(final boolean isHome) {
+        ItemFavoriteHeaderBinding bindingHeader = mFavoriteDataAdapter.getBindingHeader();
+        if (bindingHeader == null) {
+            return null;
+        }
         if (isHome) {
-            return mBinding.moreHome;
+            return bindingHeader.moreHome;
         } else {
-            return mBinding.moreCompany;
+            return bindingHeader.moreCompany;
         }
     }
 
@@ -250,7 +285,11 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         if (getActivity() == null) {
             return;
         }
-        mFreqAddressLayout = mBinding.frequentAddressContainer;
+        ItemFavoriteHeaderBinding bindingHeader = mFavoriteDataAdapter.getBindingHeader();
+        if (bindingHeader == null) {
+            return;
+        }
+        mFreqAddressLayout = bindingHeader.frequentAddressContainer;
         mFreqAddressLayout.removeAllViews();
 
         mFrequentAddressList = mViewModel.getFavoriteAddressInfo();
@@ -304,9 +343,6 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             params.rightMargin = margin;
             mFreqAddressLayout.addView(itemView, params);
         }
-
-
-
 
         // 添加按钮逻辑
         if (addressCount <= 3) {
@@ -484,13 +520,19 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         if (Logger.openLog) {
             Logger.i(TAG, "setFavoriteData -> ", mFavoriteList);
         }
-        mFavoriteDataAdapter.setData(mFavoriteList, type);
+        ThreadManager.getInstance().postUi(() -> {
+            mFavoriteDataAdapter.setData(mFavoriteList, type);
+        });
     }
 
     /**
      * 初始化常去地址列表
      */
     private void initFrequentAddress() {
+        ItemFavoriteHeaderBinding bindingHeader = mFavoriteDataAdapter.getBindingHeader();
+        if (bindingHeader == null) {
+            return;
+        }
         mFrequentAddressAdapter = new FrequentAddressAdapter(getActivity());
         mFrequentAddressAdapter.setItemClickListener(new FrequentAddressAdapter.OnItemClickListener() {
             @Override
@@ -513,16 +555,16 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         final GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2); // 例如，每行4列
         // 添加间距装饰
         final int spacingInPixels = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_20);
-        mBinding.rvFrequentAddressList.addItemDecoration(new RecyclerView.ItemDecoration() {
+        bindingHeader.rvFrequentAddressList.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(final @NonNull Rect outRect, final @NonNull View view, final @NonNull RecyclerView parent,
                                        final @NonNull RecyclerView.State state) {
                 outRect.bottom = spacingInPixels; // 设置底部间距
             }
         });
-        mBinding.rvFrequentAddressList.setNestedScrollingEnabled(false);
-        mBinding.rvFrequentAddressList.setLayoutManager(layoutManager);
-        mBinding.rvFrequentAddressList.setAdapter(mFrequentAddressAdapter);
+        bindingHeader.rvFrequentAddressList.setNestedScrollingEnabled(false);
+        bindingHeader.rvFrequentAddressList.setLayoutManager(layoutManager);
+        bindingHeader.rvFrequentAddressList.setAdapter(mFrequentAddressAdapter);
     }
 
     /**
@@ -653,8 +695,8 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     @SuppressLint("ClickableViewAccessibility")
     private void backToTop() {
 
-        mThreeScreenHeight = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_714)  * 3;
-        mBinding.favoriteScroll.setOnTouchListener(new View.OnTouchListener() {
+        mThreeScreenHeight = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_714) * 3;
+        mBinding.rvFavoriteList.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View v, final MotionEvent event) {
                 switch (event.getAction()) {
@@ -674,54 +716,53 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         });
 
 
-        // 设置滚动监听
-        SkinNestedScrollView favoriteScroll = mBinding.favoriteScroll;
-        if (null != favoriteScroll) {
-            favoriteScroll.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                @Override
-                public void onViewAttachedToWindow(@NonNull View v) {
-                    ViewTreeObserver observer = v.getViewTreeObserver();
-                    observer.addOnScrollChangedListener(FavoriteFragment.this);//attach时注册
-                }
+        mBinding.rvFavoriteList.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(@NonNull View v) {
+                // 设置滚动监听
+                mBinding.rvFavoriteList.addOnScrollListener(onScrollListener);
+            }
 
-                @Override
-                public void onViewDetachedFromWindow(@NonNull View v) {
-                    ViewTreeObserver viewTreeObserver = v.getViewTreeObserver();
-                    viewTreeObserver.removeOnScrollChangedListener(FavoriteFragment.this);//detach时反注册
-                }
-            });
-        }
+            @Override
+            public void onViewDetachedFromWindow(@NonNull View v) {
+                // 设置滚动监听
+                mBinding.rvFavoriteList.removeOnScrollListener(onScrollListener);
+            }
+        });
 
         // 按钮点击事件
         mBinding.layoutTop.setOnClickListener(v -> {
             mIsStopScroll = false;
-            mBinding.favoriteScroll.smoothScrollTo(0, 0); // 平滑滚动
+            mBinding.rvFavoriteList.smoothScrollToPosition(0); // 平滑滚动
         });
     }
 
     /**
      * 只需要实现滚动监听
      */
-    @Override
-    public void onScrollChanged() {
-        final int scrollY = mBinding.favoriteScroll.getScrollY();
-        final int scrollX = mBinding.favoriteScroll.getScrollX();
-        if (scrollY == 0 && mIsStopScroll && !(mIsTouchEvent || getCurrentTime() - mFlingTime < 300)) {
-            mBinding.favoriteScroll.scrollTo(scrollX, mOldScrollY);
-            return;
-        }
-        mOldScrollY = Math.max(scrollY, 0);
-        mIsStopScroll = true;
-        int visibility = mBinding.layoutTop.getVisibility();
-        if (scrollY >= mThreeScreenHeight && (visibility == View.INVISIBLE || visibility == View.GONE)) {
-            mBinding.layoutTop.setVisibility(View.VISIBLE);
-            return;
-        }
+    private final RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            scrollY = scrollY + dy;
+            scrollX = scrollX + dx;
+            if (scrollY == 0 && mIsStopScroll && !(mIsTouchEvent || getCurrentTime() - mFlingTime < 300)) {
+                recyclerView.scrollTo(scrollX, mOldScrollY);
+                return;
+            }
+            mOldScrollY = Math.max(scrollY, 0);
+            mIsStopScroll = true;
+            int visibility = mBinding.layoutTop.getVisibility();
+            if (scrollY >= mThreeScreenHeight && (visibility == View.INVISIBLE || visibility == View.GONE)) {
+                mBinding.layoutTop.setVisibility(View.VISIBLE);
+                return;
+            }
 
-        if (scrollY < mThreeScreenHeight && visibility == View.VISIBLE) {
-            mBinding.layoutTop.setVisibility(View.INVISIBLE);
+            if (scrollY < mThreeScreenHeight && visibility == View.VISIBLE) {
+                mBinding.layoutTop.setVisibility(View.INVISIBLE);
+            }
         }
-    }
+    };
 
     private long getCurrentTime() {
         return System.currentTimeMillis();

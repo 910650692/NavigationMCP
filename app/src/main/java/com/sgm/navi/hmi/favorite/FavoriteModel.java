@@ -107,7 +107,9 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         if (mViewModel == null) {
             return;
         }
-        mViewModel.updateFavoriteView(mBehaviorPackage.getFavoritePoiData(), 0);
+        ThreadManager.getInstance().runAsync(() -> {
+            mViewModel.updateFavoriteView(mBehaviorPackage.getFavoritePoiData(), 0);
+        });
     }
 
     /**
