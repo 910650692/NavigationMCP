@@ -13,7 +13,7 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1110"
-        android:layout_height="@dimen/dp_1078"
+        android:layout_height="@dimen/navi_setting_fragment_height"
         android:clickable="true"
         android:padding="@dimen/dp_34"
         android:background="@drawable/bg_shadow_navi_ndlc_8155">

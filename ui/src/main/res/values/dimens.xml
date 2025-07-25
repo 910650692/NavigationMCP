@@ -4141,11 +4141,14 @@
     <dimen name="navi_main_tap_margin_top">@dimen/dp_85</dimen>
     <dimen name="navi_main_tap_margin_bottom">@dimen/dp_130</dimen>
     <dimen name="navi_main_tap_height">@dimen/dp_95</dimen>
+    <dimen name="navi_main_parking_margin_end">@dimen/dp_m_73</dimen>
+    <dimen name="navi_main_parking_gone_margin_start">@dimen/dp_225</dimen>
 
     <dimen name="navi_main_fragment_margin_start">@dimen/dp_5</dimen>
     <dimen name="navi_main_fragment_margin_top">@dimen/dp_51</dimen>
     <dimen name="navi_btn_add_via_corner">@dimen/dp_12</dimen>
     <dimen name="navi_setting_fragment_height">@dimen/dp_1078</dimen>
+    <dimen name="navi_we_chat_fragment_height">@dimen/dp_1010</dimen>
 
     <dimen name="navi_main_float_window_width">@dimen/dp_571</dimen>
     <dimen name="navi_guide_road_name_height">@dimen/dp_92</dimen>

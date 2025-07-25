@@ -4022,12 +4022,15 @@
     <dimen name="navi_main_tap_margin_top">@dimen/dp_80</dimen>
     <dimen name="navi_main_tap_margin_bottom">@dimen/dp_128</dimen>
     <dimen name="navi_main_tap_height">@dimen/dp_86</dimen>
+    <dimen name="navi_main_parking_margin_end">@dimen/dp_132</dimen>
+    <dimen name="navi_main_parking_gone_margin_start">@dimen/dp_608</dimen>
 
     <dimen name="navi_fragment_margin_botton">@dimen/dp_95</dimen>
 
     <dimen name="navi_main_fragment_margin_start">29.5dp</dimen>
     <dimen name="navi_main_fragment_margin_top">46.5dp</dimen>
     <dimen name="navi_setting_fragment_height">@dimen/dp_893</dimen>
+    <dimen name="navi_we_chat_fragment_height">@dimen/dp_893</dimen>
 
     <dimen name="navi_main_float_window_width">@dimen/dp_624</dimen>
     <dimen name="navi_guide_road_name_height">@dimen/dp_74</dimen>
