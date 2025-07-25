@@ -46,9 +46,9 @@ public final class BinderPool extends IBinderPool.Stub {
 
     @Override
     public boolean getEngineInitStatus(final String pckName) {
-        final int initStatus = StartService.getInstance().getSdkActivation();
-        Logger.d(TAG, pckName + "getEngineInit: " + initStatus);
-        return -1 != initStatus;
+        final boolean initStatus = StartService.getInstance().checkSdkIsAvailable();
+        Logger.d(TAG, pckName, "getEngineInit", initStatus);
+        return initStatus;
     }
 
     @Override
