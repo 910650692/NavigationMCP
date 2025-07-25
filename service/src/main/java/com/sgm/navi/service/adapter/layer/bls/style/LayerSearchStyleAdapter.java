@@ -35,7 +35,8 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     private BizSearchControl mSearchControl;
     //沿途搜-自定义充电站扎标
     private static final String KEY_SEARCH_POINT_ALONG_WAY_CHARGE = "search_point_along_way_charge";
-    private static final String KEY_SEARCH_ALONG_WAY_CHARGE = "search_along_way_charge";
+    //悬挂卡-充电站闪电标
+    private static final String KEY_SEARCH_HANGING_CARD_CHARGE = "search_charge_point";
     //终点可停车-自定义停车场扎标
     private static final String KEY_SEARCH_PARK_ROUTE = "search_park_route";
     private static final String KEY_SEARCH_PARK_POINT = "search_park_point";
@@ -77,7 +78,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                         case LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE -> {
                             if (isHangingCardChargeStationType) {
                                 Logger.d(TAG, "沿途搜-悬挂卡充电站默认闪电扎标");
-                                return super.provideLayerItemStyleJson(layer, item);
+                                return KEY_SEARCH_HANGING_CARD_CHARGE;
                             } else {
                                 Logger.d(TAG, "沿途搜-自定义充电站扎标");
                                 return KEY_SEARCH_POINT_ALONG_WAY_CHARGE;
