@@ -64,6 +64,7 @@ import com.sgm.navi.service.define.search.SearchRetainParamInfo;
 import com.sgm.navi.service.define.search.SearchTipsCityLocalInfo;
 import com.sgm.navi.service.define.search.SearchTipsLocalInfo;
 import com.sgm.navi.service.define.search.ServiceAreaInfo;
+import com.sgm.navi.service.logicpaket.search.SearchPackage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -575,16 +576,23 @@ public final class SearchResultMapper {
                     .setMType(searchLabelInfo.type);
             labelInfos.add(labelInfo);
         }
-        Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "typeCode is: " + searchPoiInfo.basicInfo.typeCode
-                + " ;name is: " + searchPoiInfo.basicInfo.name + " ;searchPoiInfo.basicInfo.pid:" + searchPoiInfo.basicInfo.poiId
-                + " :isFastest: " + searchPoiInfo.basicInfo.isFastest + " ;isClosest: " + searchPoiInfo.basicInfo.isClosest);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, " typeCode is: " + searchPoiInfo.basicInfo.typeCode
+                + " ;name is: " + searchPoiInfo.basicInfo.name + " ;pid:" + searchPoiInfo.basicInfo.poiId
+                + " :isFastest: " + searchPoiInfo.basicInfo.isFastest + " ;isClosest: " + searchPoiInfo.basicInfo.isClosest
+                + " ;distance: " + searchPoiInfo.basicInfo.distance);
+        int distanceInt = ConvertUtils.str2Int(searchPoiInfo.basicInfo.distance);
+        if (distanceInt <= 0 && searchPoiInfo.basicInfo.location != null) {
+            final GeoPoint geoPoint = new GeoPoint();
+            geoPoint.setLon(searchPoiInfo.basicInfo.location.lon);
+            geoPoint.setLat(searchPoiInfo.basicInfo.location.lat);
+            distanceInt = SearchPackage.getInstance().calcStraightDistanceWithInt(geoPoint);
+        }
         return new PoiInfoEntity()
                 .setPointTypeCode(searchPoiInfo.basicInfo.typeCode)
                 .setPid(searchPoiInfo.basicInfo.poiId)
                 .setName(searchPoiInfo.basicInfo.name)
                 .setAddress(searchPoiInfo.basicInfo.address)
-                .setDistance(formatDistanceArrayInternal(ConvertUtils.double2int(ConvertUtils.str2Double(searchPoiInfo.basicInfo.distance))))
-
+                .setDistance(formatDistanceArrayInternal(distanceInt))
                 .setPoint(point)
                 .setAdCode(searchPoiInfo.basicInfo.adcode)
                 .setMCityCode(searchPoiInfo.basicInfo.cityCode)
@@ -1175,8 +1183,8 @@ public final class SearchResultMapper {
                 , " current_service_price: " , poiInfo.chargingStationInfo.currentPrice.service
                 , " parkPrice: " , poiInfo.chargingStationInfo.parkPrice
                 , " name is: ", poiInfo.basicInfo.name
-                , " searchPoiInfo.basicInfo.distance: ", poiInfo.basicInfo.distance
-                , " searchPoiInfo.basicInfo.tag: ", poiInfo.basicInfo.tag);
+                , " distance: ", poiInfo.basicInfo.distance
+                , " tag: ", poiInfo.basicInfo.tag);
         for (ChargingPlugInfo chargingPlugInfo : poiInfo.chargingStationInfo.plugsInfo) {
             if (chargingPlugInfo.plugType == AutoMapConstant.PLUG_TYPE_SLOW) {
                 chargeInfo.setSlowVolt(chargingPlugInfo.slowVoltage)
@@ -1204,13 +1212,19 @@ public final class SearchResultMapper {
                     .setMSubType(searchLabelInfo.subType);
             labelInfos.add(labelInfo);
         }
-
+        int distanceInt = ConvertUtils.str2Int(poiInfo.basicInfo.distance);
+        if (distanceInt <= 0 && poiInfo.basicInfo.location != null) {
+            final GeoPoint geoPoint = new GeoPoint();
+            geoPoint.setLon(poiInfo.basicInfo.location.lon);
+            geoPoint.setLat(poiInfo.basicInfo.location.lat);
+            distanceInt = SearchPackage.getInstance().calcStraightDistanceWithInt(geoPoint);
+        }
         return new PoiInfoEntity()
                 .setPointTypeCode(poiInfo.basicInfo.typeCode)
                 .setPid(poiInfo.basicInfo.poiId)
                 .setName(poiInfo.basicInfo.name)
                 .setAddress(poiInfo.basicInfo.address)
-                .setDistance(formatDistanceArrayInternal(ConvertUtils.str2Int(poiInfo.basicInfo.distance)))
+                .setDistance(formatDistanceArrayInternal(distanceInt))
                 .setSort_distance(ConvertUtils.str2Int(poiInfo.basicInfo.distance))
                 .setPoint(new GeoPoint(poiInfo.basicInfo.location.lon, poiInfo.basicInfo.location.lat))
                 .setStationList(gasStationInfos)
