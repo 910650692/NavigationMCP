@@ -155,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_24"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textColor="@color/poi_details_bottom_ff_00"
                 android:textSize="@dimen/sp_42"
                 app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"

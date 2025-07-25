@@ -155,14 +155,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_26"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textColor="@color/poi_details_bottom_ff_00"
                 android:textSize="@dimen/sp_32"
                 app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
                 app:layout_constraintStart_toEndOf="@+id/poi_type_text"
                 app:layout_constraintTop_toBottomOf="@+id/poi_offline_hint"
                 app:layout_goneMarginTop="@dimen/dp_34"
-                tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
+                tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/poi_type_icon"

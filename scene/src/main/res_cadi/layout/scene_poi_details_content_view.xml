@@ -160,7 +160,7 @@
                 android:layout_marginTop="@dimen/dp_52"
                 android:ellipsize="end"
                 android:focusable="false"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textColor="@color/poi_details_bottom_ff_00"
                 android:textSize="@dimen/sp_52"
                 app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
