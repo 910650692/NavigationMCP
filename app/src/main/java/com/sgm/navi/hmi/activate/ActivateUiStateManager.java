@@ -44,6 +44,7 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
                 if (mLoadingViewCallBack != null) {
                     mLoadingViewCallBack.showActivatingView(false);
                 }
+                dismissActivateFailedDialog();
                 ActivatePackage.getInstance().removeActObserver(this);
                 mIsActivating = false;
             }
@@ -115,6 +116,16 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
         });
 
         mFailedDialog.show();
+    }
+
+    /**
+     * 关闭弹窗
+     */
+    public void dismissActivateFailedDialog() {
+        if (mFailedDialog != null && mFailedDialog.isShowing()) {
+            mFailedDialog.dismiss();
+            mFailedDialog = null;
+        }
     }
 
     public interface LoadingViewCallBack {

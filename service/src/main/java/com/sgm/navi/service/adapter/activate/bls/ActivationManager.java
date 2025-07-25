@@ -316,7 +316,8 @@ public final class ActivationManager {
                                     future.complete(false);
                                     executor.shutdownNow();
                                 } else {
-                                    executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.MINUTES);
+                                    final int delayIndex = Math.min(currentCount - 1, delays.length - 1);
+                                    executor.schedule(taskRef.get(), delays[delayIndex], TimeUnit.MINUTES);
                                 }
                             } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
                                 Logger.e(TAG, "下单失败");
@@ -342,7 +343,8 @@ public final class ActivationManager {
                                 executor.shutdownNow();
                                 mActivateListener.onNetFailed();
                             } else {
-                                executor.schedule(taskRef.get(), delays[currentCount - 1], TimeUnit.MINUTES);
+                                final int delayIndex = Math.min(currentCount - 1, delays.length - 1);
+                                executor.schedule(taskRef.get(), delays[delayIndex], TimeUnit.MINUTES);
                             }
                         }
                     };
@@ -355,11 +357,11 @@ public final class ActivationManager {
             }
         };
         taskRef.set(task);
-        executor.schedule(task, 5, TimeUnit.SECONDS);
+        executor.schedule(task, delays[0], TimeUnit.SECONDS);
 
         try {
             // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
-            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 2+5+5 +1=13分钟
+            final long totalTimeout = Arrays.stream(delays).sum() + 5; // 2+5+5 +1=13分钟
             return future.get(totalTimeout, TimeUnit.MINUTES);
         } catch (CancellationException e) {
             executor.shutdownNow();

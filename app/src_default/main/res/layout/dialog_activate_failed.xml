@@ -2,99 +2,191 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1300"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_475"
             android:background="@drawable/bg_setting_dialog"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/activate_dialog_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_70"
-                android:focusable="false"
-                android:text="@string/activation_failed"
-                android:textColor="@color/search_color_ffffff"
-                android:textSize="@dimen/sp_42"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/activate_dialog_content"
-                android:layout_width="@dimen/dp_1100"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_50"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="@string/activation_hint"
-                android:textColor="@color/color_black_80"
-                android:textSize="@dimen/sp_36"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/activate_dialog_title" />
-            <com.sgm.navi.ui.view.SkinLinearLayout
-                android:id="@+id/activate_dialog_location"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginTop="@dimen/dp_20"
-                android:focusable="false"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/activate_dialog_content"/>
-            <View
-                android:id="@+id/activate_line"
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/activate_dialog_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:layout_marginStart="@dimen/dp_48"
-                android:layout_marginTop="@dimen/dp_50"
-                android:layout_marginEnd="@dimen/dp_48"
-                android:background="#4D818199"
-                android:focusable="false"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/activate_dialog_location" />
-            <com.sgm.navi.ui.view.SkinLinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_128"
-                android:focusable="false"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/activate_line">
+                app:layout_constraintTop_toTopOf="parent">
+
                 <com.sgm.navi.ui.view.SkinTextView
-                    android:id="@+id/activate_dialog_confirm"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:focusable="true"
-                    android:focusedByDefault="true"
+                    android:id="@+id/activate_dialog_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_70"
+                    android:focusable="false"
+                    android:text="@string/activation_failed"
+                    android:textColor="@color/search_color_ffffff"
+                    android:textSize="@dimen/sp_42"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/activate_dialog_content"
+                    android:layout_width="@dimen/dp_1100"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_50"
+                    android:focusable="false"
                     android:gravity="center"
-                    android:text="@string/activation_failed_retry"
-                    android:textColor="#3377FF"
-                    android:textSize="@dimen/sp_36" />
+                    android:text="@string/activation_hint"
+                    android:textColor="@color/color_black_80"
+                    android:textSize="@dimen/sp_36"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/activate_dialog_title" />
+
+                <com.sgm.navi.ui.view.SkinLinearLayout
+                    android:id="@+id/activate_dialog_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:focusable="false"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/activate_dialog_content" />
+
                 <View
-                    android:layout_width="@dimen/dp_2"
-                    android:layout_height="match_parent"
+                    android:id="@+id/activate_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_2"
+                    android:layout_marginStart="@dimen/dp_48"
+                    android:layout_marginTop="@dimen/dp_50"
+                    android:layout_marginEnd="@dimen/dp_48"
                     android:background="#4D818199"
-                    android:focusable="false" />
-                <com.sgm.navi.ui.view.SkinTextView
-                    android:id="@+id/activate_dialog_cancel"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:focusable="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/activate_dialog_location" />
+
+                <com.sgm.navi.ui.view.SkinLinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_128"
+                    android:focusable="false"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/activate_line">
+
+                    <com.sgm.navi.ui.view.SkinTextView
+                        android:id="@+id/activate_dialog_confirm"
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:focusable="true"
+                        android:focusedByDefault="true"
+                        android:gravity="center"
+                        android:text="@string/activation_failed_retry"
+                        android:textColor="#3377FF"
+                        android:textSize="@dimen/sp_36" />
+
+                    <View
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="match_parent"
+                        android:background="#4D818199"
+                        android:focusable="false" />
+
+                    <com.sgm.navi.ui.view.SkinTextView
+                        android:id="@+id/activate_dialog_cancel"
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:text="@string/activation_finish"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_36" />
+                </com.sgm.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/back_door_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.sgm.navi.ui.view.SkinEditText
+                    android:id="@+id/user_code"
+                    android:layout_width="@dimen/dp_1200"
+                    android:layout_height="@dimen/dp_100"
+                    android:layout_marginHorizontal="@dimen/dp_60"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:background="@drawable/bg_favorite_rename_edittext"
                     android:focusable="true"
-                    android:gravity="center"
-                    android:text="@string/activation_finish"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_36" />
-            </com.sgm.navi.ui.view.SkinLinearLayout>
+                    android:focusableInTouchMode="true"
+                    android:gravity="center_vertical"
+                    android:hint="序列号"
+                    android:textColor="@color/search_color_ffffff"
+                    android:textColorHint="@color/setting_text_gray"
+                    android:textCursorDrawable="@drawable/shape_edittext_cursor"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.sgm.navi.ui.view.SkinEditText
+                    android:id="@+id/login_code"
+                    android:layout_width="@dimen/dp_1200"
+                    android:layout_height="@dimen/dp_100"
+                    android:layout_marginTop="@dimen/dp_50"
+                    android:background="@drawable/bg_favorite_rename_edittext"
+                    android:cursorVisible="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center_vertical"
+                    android:hint="激活码"
+                    android:textColor="@color/search_color_ffffff"
+                    android:textColorHint="@color/setting_text_gray"
+                    android:textCursorDrawable="@drawable/shape_edittext_cursor"
+                    app:layout_constraintStart_toStartOf="@id/user_code"
+                    app:layout_constraintTop_toBottomOf="@id/user_code" />
+
+                <com.sgm.navi.ui.view.SkinButton
+                    android:id="@+id/back_door_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_100"
+                    android:text="尝试手动激活(成功后弹窗会消失)"
+                    android:textColor="@color/search_color_ffffff"
+                    app:layout_constraintStart_toStartOf="@id/login_code"
+                    app:layout_constraintTop_toBottomOf="@id/login_code" />
+
+                <com.sgm.navi.ui.view.SkinButton
+                    android:id="@+id/back_door_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_200"
+                    android:layout_marginTop="@dimen/dp_100"
+                    android:text="取消尝试(回到上一个界面吗)"
+                    android:textColor="@color/search_color_ffffff"
+                    app:layout_constraintStart_toEndOf="@id/back_door_confirm"
+                    app:layout_constraintTop_toBottomOf="@id/login_code" />
+
+
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+
         </com.sgm.navi.ui.view.SkinConstraintLayout>
+
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
