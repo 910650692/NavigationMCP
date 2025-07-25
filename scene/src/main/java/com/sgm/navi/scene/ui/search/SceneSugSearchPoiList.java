@@ -330,12 +330,15 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                     mClearEditTextListener.onEditTextChanged(editable.toString().trim());
                 }
                 if (!editable.toString().trim().isEmpty()) {
+                    showLoading(true);
                     mViewBinding.sclSearchTopView.ivEditClear.setVisibility(VISIBLE);
-                    mViewBinding.recyclerSearchResult.setVisibility(VISIBLE);
+                    mViewBinding.recyclerNoHint.setVisibility(GONE);
+                    mViewBinding.recyclerSearchResult.setVisibility(GONE);
                     mViewBinding.recyclerSearchHistory.setVisibility(GONE);
                     suggestionSearch(editable.toString().trim());
                 } else {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Text is empty");
+                    showLoading(false);
                     mViewBinding.sclSearchTopView.ivEditClear.setVisibility(GONE);
                     mViewBinding.recyclerSearchResult.setVisibility(GONE);
                     mViewBinding.recyclerSearchHistory.setVisibility(VISIBLE);
@@ -394,8 +397,8 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
      * @param isRestore 是否是切换日夜模式导致的更新回调
      */
     public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity, final boolean isRestore) {
-        showLoading(false);
         if ((searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) && !getEditText().isEmpty()) {
+            showLoading(false);
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             mViewBinding.recyclerSearchResult.setVisibility(GONE);
             mViewBinding.recyclerNoHint.setVisibility(VISIBLE);
@@ -415,6 +418,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             }
         }
         if (mAdapter != null && !getEditText().isEmpty()) {
+            showLoading(false);
             mViewBinding.recyclerSearchResult.setVisibility(VISIBLE);
             mViewBinding.recyclerNoHint.setVisibility(GONE);
             mAdapter.notifyList(searchResultEntity);
