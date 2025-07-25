@@ -678,9 +678,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     public void onNetStatusChange(boolean isConnected) {
         mBinding.sceneNaviPreference.onNetStatusChange(isConnected);
-        if (mSceneNaviControlMoreView != null) {
-            mSceneNaviControlMoreView.onNetStatusChange(isConnected);
-        }
     }
 
     /**

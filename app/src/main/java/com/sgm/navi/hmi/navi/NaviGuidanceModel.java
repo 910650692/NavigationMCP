@@ -207,6 +207,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onCreate() {
         super.onCreate();
+        Logger.i(TAG, "onCreate");
         NaviSceneManager.getInstance().onCreateSceneView();
         ImmersiveStatusScene.getInstance().registerCallback("NaviGuidanceModel", this);
         mNaviPackage.registerObserver(NaviConstant.KEY_NAVI_MODEL, this);
@@ -671,6 +672,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Logger.i(TAG, "onDestroy");
         cancelClusterOverViewTimer();
         NaviSceneManager.getInstance().destroySceneView();
         mNetWorkUtils.unRegisterNetworkObserver(this);
@@ -1102,10 +1104,30 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                         for (OnNetStatusChangeListener listener : mNetStatusChangeListeners) {
                             listener.onNetStatusChange(Boolean.TRUE.equals(isNetConnected));
                         }
+                        refreshRouteByNetChange(Boolean.TRUE.equals(mCurrentNetStatus));
                     }
                 }
             }
         }, ONE_SECOND);
+    }
+
+    private void refreshRouteByNetChange(boolean netStatus) {
+        // 离线转在线直接刷新,在线转离线不用管
+        if (netStatus) {
+            requestReRoute();
+        }
+    }
+
+    private void requestReRoute() {
+        Logger.i(TAG, "requestReRoute");
+        ThreadManager.getInstance().execute(() -> {
+            final RouteRequestParam param = new RouteRequestParam();
+            param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+            param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
+            param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
+            // 算路那边在线刷新失败后会自动调用离线刷新，所以这边就调用一个接口就好
+            RoutePackage.getInstance().requestRoute(param);
+        });
     }
 
     /**

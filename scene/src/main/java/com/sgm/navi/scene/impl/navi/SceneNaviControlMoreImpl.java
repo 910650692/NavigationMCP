@@ -141,27 +141,6 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     }
 
     /**
-     * 网络状态导致的刷新
-     */
-    public void refreshRouteCauseNet() {
-        boolean isCanRefresh = TimerHelper.isCanRefreshRoute();
-        if (!isCanRefresh) {
-            boolean currentNetStatus = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
-            ThreadManager.getInstance().postDelay(new Runnable() {
-                @Override
-                public void run() {
-                    boolean netStatus = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
-                    if (currentNetStatus != netStatus) {
-                        requestReRoute();
-                    }
-                }
-            }, NumberUtils.NUM_3000);
-            return;
-        }
-        requestReRoute();
-    }
-
-    /**
      * 请求路线刷新
      */
     private void requestReRoute() {

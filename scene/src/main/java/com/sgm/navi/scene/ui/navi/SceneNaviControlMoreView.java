@@ -223,13 +223,6 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
         // 默认写的是混动
     }
 
-    /**
-     * @param isConnected isConnected
-     */
-    public void onNetStatusChange(boolean isConnected) {
-        Logger.i(TAG, "onNetStatusChange isConnected:", isConnected);
-        mScreenViewModel.refreshRouteCauseNet();
-    }
 
     public void setSwipeListener(SwipeView.DownSwipeAndClickListener downSwipeListener) {
         if (mViewBinding != null && mViewBinding.svBarArea != null) {
