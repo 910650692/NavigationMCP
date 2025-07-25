@@ -27,10 +27,10 @@
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/poi_child_expand_collapse"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
             android:src="@drawable/img_under_the_48"
-            android:layout_marginTop="@dimen/dp_23"
+            android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintTop_toTopOf="@+id/poi_child_list"
             app:layout_constraintStart_toEndOf="@+id/poi_child_list"/>
 
