@@ -124,6 +124,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private static final int IS_CADILLAC = 2;
     private boolean isInitSuccess = false;
 
+    public boolean isShowHud = false;
     private ExportEventCallBack mEventCallBack;
 
     private final Map<Integer, Set<String>> mSubscriberMap = new HashMap<>();
@@ -408,6 +409,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             case FsaConstant.FsaEventPayload.HUD_HINT:
                 //属于CLEA平台 接收信号 去关闭HUD
                 Logger.d(FsaConstant.FSA_TAG,"hud NO");
+                isShowHud = false;
                 ThreadManager.getInstance().postUi(() -> {
                     switchHudActivity(false);
                 });
@@ -417,6 +419,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             case FsaConstant.FsaEventPayload.HUD_LEFT_HALF:
                 //属于CLEA平台 接收信号 去开启HUD
                 Logger.d(FsaConstant.FSA_TAG,"hud OK");
+                isShowHud = true;
                 ThreadManager.getInstance().postUi(() -> {
                     switchHudActivity(true);
                 });

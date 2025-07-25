@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
+import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.ActivityHudBinding;
@@ -56,7 +57,10 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
     protected void onResume() {
         super.onResume();
         Logger.d(TAG, "onResume");
-        mBinding.hudMapview.setVisibility(View.VISIBLE);
+        Logger.d(TAG, "isShowHud:", MyFsaService.getInstance().isShowHud);
+        if (MyFsaService.getInstance().isShowHud) {
+            mBinding.hudMapview.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
