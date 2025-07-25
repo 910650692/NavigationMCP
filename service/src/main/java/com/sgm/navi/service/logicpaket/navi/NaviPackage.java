@@ -130,6 +130,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private LayerItemRouteEndPoint mEndPoint;
 
     private AppFocusHelper mAppFocusHelper;
+    @Getter
+    private boolean hasSetCrossRect = false;
     private NaviPackage() {
         StartService.getInstance().registerSdkCallback(TAG, this);
         mGuidanceObservers = new ConcurrentHashMap<>();
@@ -647,6 +649,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             }
         });
         mManager.updateUncompletedNavi();
+        hasSetCrossRect = false;
     }
 
     @Override
@@ -1009,9 +1012,10 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * @param rect          路口矩形区域.
      */
     public void setRoadCrossRect(final MapType surfaceViewId, final Rect rect) {
-        Logger.i(TAG, "setRoadCrossRect");
+        Logger.d(TAG, "setRoadCrossRect", rect.toShortString());
         mLayerAdapter.updateRoadCrossRect(surfaceViewId, rect);
         mapPackage.updateScreenshotRect(surfaceViewId, rect);
+        hasSetCrossRect = true;
     }
 
     /**

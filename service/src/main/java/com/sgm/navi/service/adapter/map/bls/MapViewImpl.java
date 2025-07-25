@@ -121,7 +121,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     private IMapAdapterCallback callback;
     private Rect crossImgScreenshotRect;
-
+    private boolean screenShotSwitch = false;
     public MapViewImpl(Context context, MapType mapType, MapService mapService) {
         this(context, null);
         this.mapType = mapType;
@@ -710,7 +710,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
         boolean openScreen = mapViewParams.isOpenScreen();
         Logger.d(TAG, mapType, "deviceId", deviceId, "onSurfaceChanged", "openScreen", openScreen);
-        if (openScreen) startScreenshot();
+        if (openScreen && screenShotSwitch) startScreenshot();
         if (mapType == MapType.HUD_MAP){
             getMapview().getOperatorBusiness().setMapZoomScaleAdaptive((int) mapViewParams.getScreenWidth(), (int)mapViewParams.getScreenHeight(),mapViewParams.getDensityDpi());
         }
@@ -954,6 +954,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     public void openOrCloseScreenshot(boolean isOpen) {
         Logger.i(TAG, mapType, "openOrCloseScreenshot", isOpen);
+        this.screenShotSwitch = isOpen;
         if (isOpen) {
             getDefaultDevice().setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, this);
             getDefaultDevice().setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);

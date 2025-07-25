@@ -186,7 +186,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     @Override
     public void onEGLScreenshot(MapType mapType, byte[] bytes, MapScreenShotDataInfo info) {
-        if (mapType == MAP_TYPE && !ConvertUtils.isNull(mView) && !ConvertUtils.isEmpty(bytes) && mCrossImgIsOnShowing) {
+        if (mapType == MAP_TYPE && !ConvertUtils.isNull(mView) && !ConvertUtils.isEmpty(bytes) && mCrossImgIsOnShowing && mNaviPackage.isHasSetCrossRect()) {
             captureScreenUtils.processPicture(bytes, info);
         }
     }
