@@ -136,6 +136,24 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private ValueAnimator mAnimator;
     private float mAngelTemp = 0;
 
+    private Runnable mOfflineRunnable = new Runnable() {
+        @Override
+        public void run() {
+            //需要等toast消失候再跳转离线城市页面
+            if (mSearchResultEntity != null
+                    && mSearchResultEntity.getPoiType() == 0
+                    && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())
+                    && mSearchType != AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
+                //离线搜索无数据时，跳转城市列表搜索界面
+                final Fragment fragment = (Fragment) ARouter.getInstance()
+                        .build(RoutePath.Search.OFFLINE_SEARCH_FRAGMENT)
+                        .navigation();
+                closeCurrentFragment(false);
+                addFragment((BaseFragment) fragment, SearchFragmentFactory.createOfflineFragment(mSearchResultEntity.getKeyword()));
+            }
+        }
+    };
+
     public SceneSearchPoiList(@NonNull final Context context) {
         super(context);
     }
@@ -1057,6 +1075,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if(mIsFilterViewShow){
             hideFilterPage();
         }
+        if(!searchResultEntity.getIsNetData()){
+            mSearchResultEntity = searchResultEntity;
+        }
         final String chargeType = ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
         final String gasType = ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_station);
         mChildQuickList = new ArrayList<>();
@@ -1146,23 +1167,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mAdapter.clearList();
             }
             if (mViewBinding != null) {
-                mViewBinding.searchResultNoData.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //需要等toast消失候再跳转离线城市页面
-                        if (searchResultEntity != null
-                                && searchResultEntity.getPoiType() == 0
-                                && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())
-                                && mSearchType != AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
-                            //离线搜索无数据时，跳转城市列表搜索界面
-                            final Fragment fragment = (Fragment) ARouter.getInstance()
-                                    .build(RoutePath.Search.OFFLINE_SEARCH_FRAGMENT)
-                                    .navigation();
-                            closeCurrentFragment(false);
-                            addFragment((BaseFragment) fragment, SearchFragmentFactory.createOfflineFragment(searchResultEntity.getKeyword()));
-                        }
-                    }
-                }, 3500);
+                ThreadManager.getInstance().postDelay(mOfflineRunnable, 3500);
                 //搜索无数据时，展示无结果页面
                 mViewBinding.searchResultNoData.setVisibility(VISIBLE);
                 if ((searchResultEntity != null && searchResultEntity.getPoiType() == 0 && ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) || mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
@@ -1259,9 +1264,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         setMaxPageNum(searchResultEntity.getMaxPageNum());
         if (mAdapter != null) {
-            if(!searchResultEntity.getIsNetData()){
-                mSearchResultEntity = searchResultEntity;
-            }
             mAdapter.notifyList(searchResultEntity);
             updatePoiMarkerVisibleState();
             mViewBinding.recyclerSearchResult.scrollToPosition(0);
@@ -1589,6 +1591,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mAnimator.cancel();
         }
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+        ThreadManager.getInstance().removeHandleTask(mOfflineRunnable);
     }
 
     /**
