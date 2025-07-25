@@ -97,9 +97,6 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         //设置异常数据监听观察者
         mMapDataService.setErrorDataObserver(this);
         mMapDataService.setIMergedStatusInfoObserver(this);
-        final ArrayList<Integer> list = mMapDataService.getDownLoadAdcodeList();
-        final String value = ConvertUtils.isEmpty(list) ? "0" : "1";
-        mCommonManager.insertOrReplace(UserDataCode.SETTING_DOWNLOAD_LIST, value);
     }
 
     /**
@@ -912,6 +909,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         if (opCode == Service.ErrorCodeOK) {
             // 初始化成功，继续操作
             Logger.d(TAG, "MapDataService 初始化成功");
+            final ArrayList<Integer> list = mMapDataService.getDownLoadAdcodeList();
+            final String value = ConvertUtils.isEmpty(list) ? "0" : "1";
+            mCommonManager.insertOrReplace(UserDataCode.SETTING_DOWNLOAD_LIST, value);
         } else {
             // 初始化失败，其他处理
             Logger.d(TAG, "MapDataService 初始化失败");
@@ -1005,6 +1005,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
             }
         });
 
+        final ArrayList<Integer> list = mMapDataService.getDownLoadAdcodeList();
+        final String value = ConvertUtils.isEmpty(list) ? "0" : "1";
+        mCommonManager.insertOrReplace(UserDataCode.SETTING_DOWNLOAD_LIST, value);
         /** 通知全部数据变更,获取城市数据信息更新UI控件文案信息 */
         updateDownloadStatus(id); // 备注：如果不想全部更新，可以获取只更新参数 id 中的城市数据项
     }
