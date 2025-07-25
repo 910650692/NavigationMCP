@@ -9,10 +9,11 @@ import com.sgm.navi.scene.ui.navi.hangingcard.CardManager;
 import com.sgm.navi.scene.ui.navi.hangingcard.CardStatus;
 import com.sgm.navi.scene.ui.navi.hangingcard.NaviSceneHangingCard;
 import com.sgm.navi.scene.ui.navi.hangingcard.OnCardChangeListener;
-import com.sgm.navi.service.define.navi.HandCardType;
+import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.sgm.navi.scene.util.PowerMonitorService;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -45,9 +46,9 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     private int mGasSearchId;
     // 停车场搜索请求ID, mParkEndSearchId仅当终点是停车场的时候会用到,有一个先后顺序：先请求一次查看终点是否是停车场，然后根据结果再周边搜索
     private int mParkSearchId, mParkEndSearchId;
-    private ArrayList<PoiInfoEntity> mChargeList;
-    private ArrayList<PoiInfoEntity> mGasList;
-    private ArrayList<PoiInfoEntity> mParkList;
+    private final ArrayList<PoiInfoEntity> mChargeList;
+    private final ArrayList<PoiInfoEntity> mGasList;
+    private final ArrayList<PoiInfoEntity> mParkList;
     private PoiInfoEntity mEndPoiInfoEntity;// 终点信息
     private RouteParam mEndRouteParam; // 终点
     private NaviEtaInfo mNaviEtaInfo;
@@ -104,14 +105,17 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     @Override
     public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
         SearchResultCallback.super.onSilentSearchResult(taskId, errorCode, message, searchResultEntity);
-        Logger.d(TAG, "onSilentSearchResult:", taskId);
         if (taskId == mChargeSearchId) {
+            Logger.d(TAG, "mChargeSearchId:", taskId, "errorCode:", errorCode, "message:", message);
             assembleChargeList(searchResultEntity);
         } else if (taskId == mGasSearchId) {
+            Logger.d(TAG, "mGasSearchId:", taskId, "errorCode:", errorCode, "message:", message);
             assembleGasList(searchResultEntity);
         } else if (taskId == mParkSearchId) {
+            Logger.d(TAG, "mParkSearchId:", taskId, "errorCode:", errorCode, "message:", message);
             assembleParkList(searchResultEntity);
         } else if (taskId == mParkEndSearchId) {
+            Logger.d(TAG, "mParkEndSearchId:", taskId, "errorCode:", errorCode, "message:", message);
             assembleParkEnd(searchResultEntity);
         } else {
             // 不是自己的，无需处理
@@ -134,6 +138,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
         mParkList.clear();
         //-终点是停车场但停车位紧张导致的推荐，【当前终点】放在列表第二位。
         mParkList.addAll(CardManager.getInstance().getParkList(searchResultEntity, mEndPoiInfoEntity));
+        Logger.d(TAG, "showParkList", "size:", mParkList.size(), "parkTipFinished:", parkTipFinished);
         showParkList();
     }
 
@@ -154,6 +159,10 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
      * 获取充电站列表
      */
     private void getChargeStationList() {
+        if (NaviSceneManager.getInstance().isForbidHandingCard()) {
+            Logger.d(TAG, "目的地已更改 ，无需推荐充电站列表！");
+            return;
+        }
         mChargeSearchId = mSearchPackage.enRouteKeywordSearch(KEY_WORD_CHARGE_STATION, true);
         Logger.d(TAG, "mChargeSearchId:", mChargeSearchId);
     }
@@ -162,6 +171,10 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
      * 获取加油站列表
      */
     private void getGasStationList() {
+        if (NaviSceneManager.getInstance().isForbidHandingCard()) {
+            Logger.d(TAG, "目的地已更改 ，无需推荐加油站列表！");
+            return;
+        }
         mGasSearchId = mSearchPackage.enRouteKeywordSearch(KEY_WORD_GAS_STATION, true);
     }
 
@@ -173,6 +186,10 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
      * d.目的地为非停车场，或者目的地是停车场但停车位紧张
      */
     private void getParkList() {
+        if (NaviSceneManager.getInstance().isForbidHandingCard()) {
+            Logger.d(TAG, "目的地已更改 ，无需推荐停车场列表！");
+            return;
+        }
         // 是否小于3000m
         if (!CardManager.getInstance().isEligible(mNaviEtaInfo.getRemainDist(), 3000)) {
             Logger.d(TAG, "getParkList failed, 距离超过3000米！");
@@ -204,8 +221,6 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     }
 
     private void showParkList() {
-        Logger.d(TAG, "showParkList", "size:", mParkList.size(), "parkTipFinished:",
-                parkTipFinished);
         if (!CardManager.getInstance().isEligible(mNaviEtaInfo.getRemainDist(), 2000)) {
             return;
         }
@@ -273,7 +288,12 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
         } else if (ConvertUtils.isEmpty(mParkList)) {
             getParkList();
         } else {
-            showParkList();
+            if (NaviSceneManager.getInstance().isForbidHandingCard()) {
+                //Logger.d(TAG, "目的地已更改 ，无需显示停车场列表！");
+            } else {
+                Logger.d(TAG, "终点信息已存在 showParkList", "size:", mParkList.size(), "parkTipFinished:", parkTipFinished);
+                showParkList();
+            }
         }
     }
 
@@ -322,6 +342,18 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
 
     @Override
     public void onChangeDestinationSuccess(HandCardType type) {
+        //更改目的地成功后，清除悬挂卡
+        Logger.i(TAG, "更改目的地成功后，清除悬挂卡", "type:", type.name());
+        NaviSceneManager.getInstance().setForbidHandingCard(true);
+        if (mChargeList != null) {
+            mChargeList.clear();
+        }
+        if (mGasList != null) {
+            mGasList.clear();
+        }
+        if (mParkList != null) {
+            mParkList.clear();
+        }
         uiList.clear();
         mScreenView.notifyDataChanged();
     }

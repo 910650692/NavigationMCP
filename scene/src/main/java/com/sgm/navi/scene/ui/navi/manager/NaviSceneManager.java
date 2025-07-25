@@ -28,6 +28,7 @@ public class NaviSceneManager implements INaviSceneEvent {
     private final CopyOnWriteArrayList<NaviSceneBase> hideSceneList;
     private final Runnable mRunnable;
     private boolean mIsCanAddScene;
+    private boolean mIsForbidHandingCard; // 是否禁止悬挂卡展示
 
     private NaviSceneManager() {
         sceneViewList = new ConcurrentHashMap<>();
@@ -472,6 +473,20 @@ public class NaviSceneManager implements INaviSceneEvent {
                 hideSceneList.add(base);
             }
         }
+    }
+
+    /**
+     * 设置是否禁止悬挂卡展示
+     *
+     * @param forbidHandingCard true:禁止悬挂卡展示，false:允许悬挂卡展示
+     */
+    public void setForbidHandingCard(boolean forbidHandingCard) {
+        Logger.i(TAG, "forbidHandingCard:", forbidHandingCard);
+        mIsForbidHandingCard = forbidHandingCard;
+    }
+
+    public boolean isForbidHandingCard() {
+        return mIsForbidHandingCard;
     }
 
     @Override

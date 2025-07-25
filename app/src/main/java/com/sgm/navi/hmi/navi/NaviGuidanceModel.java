@@ -1420,6 +1420,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mViewModel.onNaviStop();
         mRoutePackage.removeAllRouteInfo(MapType.MAIN_SCREEN_MAIN_MAP);
         clearAllViaChargeStation();
+        NaviSceneManager.getInstance().setForbidHandingCard(false);
     }
 
     @Override

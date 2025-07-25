@@ -91,10 +91,10 @@ public class NaviSceneHandingCardDetailImpl extends BaseSceneModel<NaviSceneHand
         IRouteResultObserver.super.onRouteSuccess(successMsg);
         Map<MapType, Long> ids = mRoutePackage.getRequestIds();
         if (!ConvertUtils.isEmpty(ids) && ids.containsValue(requestId)) {
+            NaviSceneManager.getInstance().setForbidHandingCard(true);
             mScreenView.notifySceneStateChange(false, true);
             NaviSceneManager.getInstance().notifySceneStateChange(
-                    INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SUSPEND_CARD
-            );
+                    INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SUSPEND_CARD);
         }
     }
 
