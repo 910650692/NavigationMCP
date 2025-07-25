@@ -2,22 +2,30 @@ package com.sgm.navi.hmi.splitscreen;
 
 import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 
+import android.text.TextUtils;
+import android.view.MotionEvent;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.IDeskBackgroundChangeListener;
+import com.sgm.navi.hmi.map.SpeedMonitor;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
+import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.sgm.navi.service.logicpaket.cruise.CruisePackage;
+import com.sgm.navi.service.logicpaket.cruise.ICruiseObserver;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
@@ -25,7 +33,9 @@ import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
+import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.base.BaseModel;
+import com.sgm.navi.ui.base.StackManager;
 
 /**
  * @author: QiuYaWei
@@ -34,7 +44,8 @@ import com.sgm.navi.ui.base.BaseModel;
  * Description: [在这里描述文件功能]
  */
 public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPackageCallback, IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack,
-        ISceneCallback, INaviStatusCallback, IDeskBackgroundChangeListener, StartService.ISdkInitCallback {
+        ISceneCallback, INaviStatusCallback, IDeskBackgroundChangeListener, StartService.ISdkInitCallback, SpeedMonitor.CallBack, ICruiseObserver,
+        SettingPackage.SettingChangeCallback {
     private static final String TAG = "SplitModel";
     private MapPackage mMapPackage;
     private NaviPackage mNaviPackage;
@@ -47,8 +58,14 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     private ImersiveStatus mImmersiveStatus;
     private String mNaviStatus;
     private boolean isParameterInited = false;
+    private CruisePackage mCruisePackage;
+    private SpeedMonitor mSpeedMonitor;
+    private StackManager stackManager;
+    private SettingPackage mSettingPackage;
     public SplitModel() {
         StartService.getInstance().registerSdkCallback(CALLBACK_KEY, this);
+        // 初始化 StackManager
+        stackManager = StackManager.getInstance();
         if (StartService.getInstance().checkSdkIsNeedInit()) {
             Logger.e(TAG, "sdk not init!");
             return;
@@ -76,6 +93,10 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
                 mLayerPackage.hideCross(MapType.MAIN_SCREEN_MAIN_MAP, mNaviPackage.getLastCrossEntity().getType());
             }
             initListener();
+            mSpeedMonitor = new SpeedMonitor();
+            mSpeedMonitor.registerCallBack(this);
+            mSpeedMonitor.registerSpeedCallBack();
+            mSettingPackage = SettingPackage.getInstance();
         }
         isParameterInited = true;
     }
@@ -95,6 +116,11 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
             mNaviStatus = mNaviStatusAdapter.getCurrentNaviStatus();
             mImmersiveStatus = ImmersiveStatusScene.getInstance().getCurrentImersiveStatus(MAP_TYPE);
             lockMapSomeActions(true);
+            mCruisePackage = CruisePackage.getInstance();
+            mCruisePackage.registerObserver(TAG, this);
+            mMapPackage.registerCallback(MAP_TYPE, this);
+            mSettingPackage.setSettingChangeCallback(CALLBACK_KEY, this);
+
         }
     }
 
@@ -106,6 +132,14 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
             mMapPackage.unRegisterCallback(MAP_TYPE, this);
             mNaviStatusAdapter.unRegisterCallback(this);
             FloatViewManager.getInstance().removeDeskBackgroundChangeListener(this);
+            mSettingPackage.unRegisterCallBack(CALLBACK_KEY);
+            if (mSpeedMonitor != null) {
+                mSpeedMonitor.unInit();
+                mSpeedMonitor = null;
+            }
+            if (mCruisePackage != null) {
+                mCruisePackage.unregisterObserver(TAG);
+            }
         }
         StartService.getInstance().unregisterSdkCallback(this);
     }
@@ -245,5 +279,68 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         if (mNaviPackage.getPreviewStatus()) {
             closePreview();
         }
+    }
+
+    @Override
+    public void startCruise() {
+        Logger.d(TAG, "准备开启巡航");
+        final boolean isSuccess = mCruisePackage.startCruise();
+        if (isSuccess){
+            mViewModel.mCruisebg.set(true);
+
+            mViewModel.mSlStationVisibility.set(false);
+            mViewModel.mTopNaviBarVisibility.set(false);
+            mViewModel.setCruiseMuteOrUnMute(
+                    Boolean.parseBoolean(mSettingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
+            );
+        }
+    }
+
+    /***
+     * 巡航下设置是否播报
+     * @param isOpen
+     */
+    public void setCruiseVoice(boolean isOpen) {
+        mSettingPackage.setCruiseBroadcastOpen(isOpen);
+    }
+
+    @Override
+    public void onSettingChanged(String key, String value) {
+        Logger.d(TAG,"onSettingChanged key value = " + value);
+        if (key.equals(SettingController.KEY_SETTING_CRUISE_BROADCAST)) {
+            final boolean isOpen = Boolean.parseBoolean(value);
+            Logger.d(TAG,"onSettingChanged isOpen = " + isOpen);
+            mViewModel.setCruiseMuteOrUnMute(isOpen);
+        }
+    }
+
+    @Override
+    public void onUpdateCruiseInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
+        ICruiseObserver.super.onUpdateCruiseInfo(isShowLane, laneInfoEntity);
+        Logger.w(TAG, "onUpdateCruiseInfo:" + isShowLane);
+        // 巡航-车道信息
+        mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+    }
+
+    public String getCurrentNaviStatus() {
+        if (mNaviStatusAdapter != null) {
+            String currentNaviStatus = mNaviStatusAdapter.getCurrentNaviStatus();
+            Logger.d(TAG,"getCurrentNaviStatus = " + currentNaviStatus);
+            return currentNaviStatus;
+        } else {
+            return NaviStatus.NaviStatusType.NO_STATUS;
+        }
+    }
+
+    @Override
+    public void onShowCruiseCameraExt(CruiseInfoEntity cruiseInfoEntity) {
+        ICruiseObserver.super.onShowCruiseCameraExt(cruiseInfoEntity);
+        // 巡航下的电子眼信息
+        mViewModel.updateCruiseCameraInfo(cruiseInfoEntity);
+    }
+
+
+    @Override
+    public void onNaviStop() {
     }
 }

@@ -98,6 +98,7 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/sl_station"
             clickCommand="@{ViewModel.chargeOrGas}"
+            android:visibility="@{ViewModel.mSlStationVisibility ? View.VISIBLE : View.GONE}"
             android:layout_width="@dimen/dp_162"
             android:layout_height="@dimen/dp_192"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
@@ -389,6 +390,119 @@
                 android:background="@drawable/bg_navi_tbt_bottom" />
 
         </com.sgm.navi.ui.view.SkinLinearLayout>
+
+        <!--巡航车道线-->
+        <com.sgm.navi.scene.ui.navi.SceneNaviLanesView
+            android:id="@+id/cruise_scene_navi_lanes"
+            android:layout_width="@dimen/dp_543"
+            android:layout_height="@dimen/dp_86"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_search_main_tab_sw1225"
+            android:visibility="@{ViewModel.mCruiseLanesVisibility ? View.VISIBLE : View.GONE}"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_21"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--巡航播报-->
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/cruise_bg"
+            clickCommand="@{ViewModel.muteOrUnMute}"
+            android:visibility="@{ViewModel.mCruisebg ? View.VISIBLE : View.GONE}"
+            android:layout_width="@dimen/dp_162"
+            android:layout_height="@dimen/dp_192"
+            android:layout_marginBottom="@dimen/dp_96"
+            android:layout_marginStart="@dimen/dp_115"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:padding="@dimen/dp_34"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_voice"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:src="@drawable/cruise_broad_image_select"
+                app:layout_constraintBottom_toTopOf="@id/tv_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="播报"
+                android:textColor="@color/main_route_home_text"
+                android:textSize="@dimen/sp_26"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_voice" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        <!--巡航限速摄像头-->
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/cruise_layout"
+            android:layout_width="@dimen/dp_291"
+            android:layout_height="@dimen/dp_103"
+            android:background="@drawable/bg_launcher_cruise_camera"
+            android:minWidth="@dimen/dp_342"
+            android:visibility="@{ViewModel.cruiseUiVisibility ? View.VISIBLE:View.GONE}"
+            android:layout_marginTop="@dimen/dp_125"
+            android:layout_marginStart="@dimen/dp_34"
+            android:paddingHorizontal="@dimen/dp_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_90"
+                android:layout_margin="@dimen/dp_16"
+                android:src="@drawable/img_rate_limiting_90"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/widget_title_color"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintStart_toEndOf="@id/iv_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintBottom_toTopOf="@id/tv_camera_desc"
+                tools:text="15.5" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_6"
+                android:text="公里后"
+                android:textColor="@color/widget_sub_title_color"
+                android:textSize="@dimen/sp_30"
+                app:layout_constraintBottom_toBottomOf="@id/tv_distance"
+                app:layout_constraintStart_toEndOf="@id/tv_distance" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_camera_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:text="限速摄像头"
+                android:textColor="@color/widget_sub_title_color"
+                android:textSize="@dimen/sp_30"
+                app:layout_constraintBottom_toBottomOf="@id/iv_icon"
+                app:layout_constraintTop_toBottomOf="@id/tv_distance"
+                app:layout_constraintStart_toStartOf="@id/tv_distance" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

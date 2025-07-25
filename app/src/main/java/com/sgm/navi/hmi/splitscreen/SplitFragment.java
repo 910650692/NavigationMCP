@@ -9,6 +9,7 @@ import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentSplitBinding;
 import com.sgm.navi.hmi.map.MapActivity;
+import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
@@ -64,6 +65,27 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
         mBinding.sceneNaviTbt.onNaviInfo(naviETAInfo);
         mBinding.sceneNaviTmc.onNaviInfo(naviETAInfo);
         calculatePreviewRect();
+    }
+
+    public void cruiseMuteOrUnMute(boolean isOpen) {
+        mBinding.ivVoice.setSelected(isOpen);
+        mBinding.tvTitle.setText(isOpen ? R.string.cruise_unmute : R.string.cruise_mute);
+    }
+
+    public void updateCruiseLanInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
+        mBinding.cruiseSceneNaviLanes.onLaneInfo(isShowLane, laneInfoEntity);
+    }
+
+    public void updateCruiseCameraInfo(CruiseInfoEntity cruiseInfoEntity) {
+        if (cruiseInfoEntity == null) return;
+        // cruiseInfoEntity.distance 单位是米，需求：数字最多3位(不含小数点)， 如999米， 12.5公里
+        if (cruiseInfoEntity.distance >= 1000) {
+            mBinding.tvDistance.setText(String.format(getString(R.string.format_one_point_num), cruiseInfoEntity.distance / 1000f));
+            mBinding.tvDesc.setText(R.string.kilometer);
+        } else {
+            mBinding.tvDistance.setText(String.valueOf(cruiseInfoEntity.distance));
+            mBinding.tvDesc.setText(R.string.meter);
+        }
     }
 
     @SuppressWarnings("SWAPPED_ARGUMENTS")

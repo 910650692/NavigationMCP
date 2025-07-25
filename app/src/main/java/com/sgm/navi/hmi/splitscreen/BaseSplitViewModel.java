@@ -2,6 +2,7 @@ package com.sgm.navi.hmi.splitscreen;
 
 import android.app.Application;
 import android.graphics.Rect;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -11,6 +12,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.patac.sgmsystemextendservicelib.PatacSESConstants;
 import com.sgm.navi.hmi.map.MapActivity;
+import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.mapservice.bean.INaviConstant;
@@ -55,11 +57,23 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public ObservableField<Boolean> mIsOnShowPreview = new ObservableField<>(false);
     public ObservableField<Boolean> mLanesVisibility = new ObservableField<>(false);
     public ObservableField<Boolean> mNextManeuverVisible = new ObservableField<>(false);
+    public ObservableField<Boolean> mCruiseLanesVisibility = new ObservableField<>(false);
+    public ObservableField<Boolean> mCruisebg = new ObservableField<>(false);
+    public ObservableField<Boolean> mSlStationVisibility = new ObservableField<>(true);
+    public ObservableField<Boolean> muteVisibility = new ObservableField<>(true);
+    public ObservableField<Boolean> cruiseUiVisibility = new ObservableField<>(true);
+
     // 触摸态后开启倒计时，8秒后进入沉浸态
     private final long TOTAL_TIME = 8;
     private ScheduledFuture immersiveScheduledFuture;
     // 全览后开启倒计时，8秒退出全览
     private ScheduledFuture previewScheduledFuture;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        cruiseUiVisibility.set(TextUtils.equals(mModel.getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE));
+    }
 
     public void initView() {
         if (ConvertUtils.isNull(mView) || ConvertUtils.isNull(mModel)) return;
@@ -174,10 +188,28 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action muteOrUnMute = () -> {
         Logger.i(TAG, "muteOrUnMute");
-        mModel.muteOrUnMute();
-        mNaviBroadIsMute.set(mModel.isMute());
-        mNaviVoicePic.set(mModel.isMute() ? com.sgm.navi.scene.R.drawable.img_mute_broadcast_black_58 : com.sgm.navi.scene.R.drawable.img_navi_broadcast);
+        mModel.setCruiseVoice(Boolean.FALSE.equals(muteVisibility.get()));
     };
+
+    public void setCruiseMuteOrUnMute(boolean isOpen) {
+        muteVisibility.set(isOpen);
+        mView.cruiseMuteOrUnMute(isOpen);
+    }
+
+    // 更新巡航态下的车道信息
+    public void updateCruiseLanInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
+        Logger.d(TAG,"updateCruiseLanInfo");
+        mView.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+        mCruiseLanesVisibility.set(!ConvertUtils.isNull(laneInfoEntity) && !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
+    }
+
+    /***
+     * 判断巡航UI是否正在显示
+     * @return
+     */
+    public boolean isCruiseUiVisible() {
+        return mCruiseLanesVisibility.get();
+    }
 
     /***
      * 继续导航
@@ -283,7 +315,20 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public void updateUiStateAfterNaviStatusChanged(String naviStatus) {
         Logger.d(TAG, "updateUiStateAfterNaviStatusChanged:" + naviStatus);
         mNaviActionBarVisibility.set(naviStatus.equals(NaviStatus.NaviStatusType.NAVING));
-        mTopNaviBarVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.NAVING));
+        mTopNaviBarVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
+
+        mCruiseLanesVisibility.set(naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
+        mCruisebg.set(naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
+        cruiseUiVisibility.set(naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
+        mSlStationVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
+        mTopNaviBarVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
+    }
+
+    public void updateCruiseCameraInfo(CruiseInfoEntity cruiseInfoEntity) {
+        mView.updateCruiseCameraInfo(cruiseInfoEntity);
+        if (TextUtils.equals(mModel.getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE)){
+            cruiseUiVisibility.set(cruiseInfoEntity != null);
+        }
     }
 
     /***
