@@ -4,7 +4,6 @@ package com.sgm.navi.service.adapter.route.bls;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.TimeUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.aosclient.BLAosService;
@@ -1036,13 +1035,8 @@ public class RouteAdapterImplHelper {
      */
     private void handlerChargingStation(final RequestRouteResult requestRouteResult,
                                         final ArrayList<PathInfo> pathInfoList, final long requestId, final MapType mapTypeId) {
-        List<RouteParam> chargeParams = new ArrayList<>();
         List<RouteParam> routeParams = requestRouteResult.getMRouteParams();
-        for (RouteParam routeParam : routeParams) {
-            if (routeParam.getMAddressType() == AutoMapConstant.ParamPoiType.SUPPLEMENT_POINT) {
-                chargeParams.add(routeParam);
-            }
-        }
+        List<RouteParam> chargeParams = new ArrayList<>(routeParams);
         RouteChargeStationParam routeChargeStationParam = requestRouteResult.getMRouteChargeStationParam();
         routeChargeStationParam.setMRequestId(requestId);
         routeChargeStationParam.setMMapTypeId(mapTypeId);
@@ -1050,7 +1044,6 @@ public class RouteAdapterImplHelper {
         final ArrayList<RouteSupplementParams> mRouteSupplementParams = new ArrayList<>();
         routeChargeStationParam.setMPathInfoList(pathInfoList);
         for (PathInfo pathInfo : pathInfoList) {
-            List<RouteParam> chargeParamList = new ArrayList<>(chargeParams);
             final RouteChargeStationInfo routeChargeStationInfo = new RouteChargeStationInfo();
             final RouteSupplementParams routeSupplementInfo = new RouteSupplementParams();
             final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfos = new ArrayList<>();
@@ -1064,19 +1057,15 @@ public class RouteAdapterImplHelper {
                 continue;
             }
             Logger.d("handlerChargingStation " + pathInfo.getChargeStationInfo().size());
-            for (ChargeStationInfo chargeStationInfo : pathInfo.getChargeStationInfo()) {
+            for (int i = 0 ; i < pathInfo.getChargeStationInfo().size() ; i++) {
+                ChargeStationInfo chargeStationInfo = pathInfo.getChargeStationInfo().get(i);
                 final RouteChargeStationDetailInfo routeChargeStationDetailInfo = getRouteChargeStationDetailInfo(chargeStationInfo);
                 final RouteSupplementInfo routeSupplementParam = getRouteSupplementParam(chargeStationInfo);
-                removeRouteParam(chargeParamList, routeSupplementParam);
+                routeSupplementParam.setMSupplementIndex(i);
+                changeRouteParam(chargeParams, routeSupplementParam);
                 routeSupplementParam.setMRouteChargeStationDetailInfo(routeChargeStationDetailInfo);
                 routeChargeStationDetailInfos.add(routeChargeStationDetailInfo);
                 routeSupplementInfos.add(routeSupplementParam);
-            }
-            if (!chargeParamList.isEmpty()) {
-                for (RouteParam chargeParam : chargeParamList) {
-                    final RouteSupplementInfo routeSupplementParam = getRouteSupplementParam(chargeParam.getMPoiInfoEntity());
-                    routeSupplementInfos.add(routeSupplementParam);
-                }
             }
             routeChargeStationInfo.setMRouteChargeStationDetailInfo(routeChargeStationDetailInfos);
             routeSupplementInfo.setMRouteSupplementInfos(routeSupplementInfos);
@@ -1096,18 +1085,20 @@ public class RouteAdapterImplHelper {
     }
 
     /**
-     * 删除相同的点
+     * 判断途径点是否在补能规划中
      *
      * @param routeParams   点集合
      * @param routeSupplementParam 补能点信息
      */
-    public void removeRouteParam(final List<RouteParam> routeParams,final RouteSupplementInfo routeSupplementParam) {
+    public void changeRouteParam(final List<RouteParam> routeParams, final RouteSupplementInfo routeSupplementParam) {
         if (ConvertUtils.isEmpty(routeSupplementParam) || routeParams == null || routeParams.isEmpty()) {
             return;
         }
-        for (RouteParam routeParam : routeParams) {
+        for (int i = 0; i < routeParams.size(); i++) {
+            RouteParam routeParam = routeParams.get(i);
             if (isTheSamePoi(routeParam, routeSupplementParam)) {
-                routeParams.remove(routeParam);
+                routeParam.setMAddressType(AutoMapConstant.ParamPoiType.SUPPLEMENT_POINT);
+                routeSupplementParam.setMViaIndex(i);
                 return;
             }
         }

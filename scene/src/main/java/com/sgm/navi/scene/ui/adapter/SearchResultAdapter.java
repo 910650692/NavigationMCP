@@ -24,6 +24,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -110,15 +111,19 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     }
 
     public void updateAlongList(final List<RouteParam> gasChargeAlongList, final int index) {
-        mGasChargeAlongList.clear();
-        mGasChargeAlongList.addAll(gasChargeAlongList);
-        notifyItemChanged(index);
+        ThreadManager.getInstance().postUi(() ->{
+            mGasChargeAlongList.clear();
+            mGasChargeAlongList.addAll(gasChargeAlongList);
+            notifyItemChanged(index);
+        });
     }
 
     public void poiDetailsUpdate(final List<RouteParam> gasChargeAlongList) {
-        mGasChargeAlongList.clear();
-        mGasChargeAlongList.addAll(gasChargeAlongList);
-        notifyDataSetChanged();
+        ThreadManager.getInstance().postUi(() -> {
+            mGasChargeAlongList.clear();
+            mGasChargeAlongList.addAll(gasChargeAlongList);
+            notifyDataSetChanged();
+        });
     }
 
     /**

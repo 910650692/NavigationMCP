@@ -1184,7 +1184,11 @@ public final class SearchResultMapper {
                 , " parkPrice: " , poiInfo.chargingStationInfo.parkPrice
                 , " name is: ", poiInfo.basicInfo.name
                 , " distance: ", poiInfo.basicInfo.distance
-                , " tag: ", poiInfo.basicInfo.tag);
+                , " tag: ", poiInfo.basicInfo.tag
+                , " searchPoiInfo.basicInfo.distance: ", poiInfo.basicInfo.distance
+                , " distance1: " , poiInfo.driveInfo.totalDistance
+                , " distance2: ", poiInfo.driveInfo.toViaDistance
+                , " searchPoiInfo.basicInfo.tag: ", poiInfo.basicInfo.tag);
         for (ChargingPlugInfo chargingPlugInfo : poiInfo.chargingStationInfo.plugsInfo) {
             if (chargingPlugInfo.plugType == AutoMapConstant.PLUG_TYPE_SLOW) {
                 chargeInfo.setSlowVolt(chargingPlugInfo.slowVoltage)
@@ -1212,20 +1216,22 @@ public final class SearchResultMapper {
                     .setMSubType(searchLabelInfo.subType);
             labelInfos.add(labelInfo);
         }
-        int distanceInt = ConvertUtils.str2Int(poiInfo.basicInfo.distance);
-        if (distanceInt <= 0 && poiInfo.basicInfo.location != null) {
+        int distance = poiInfo.driveInfo.toViaDistance != -1 ? poiInfo.driveInfo.toViaDistance
+                : ConvertUtils.str2Int(poiInfo.basicInfo.distance);
+        if (distance <= 0 && poiInfo.basicInfo.location != null) {
             final GeoPoint geoPoint = new GeoPoint();
             geoPoint.setLon(poiInfo.basicInfo.location.lon);
             geoPoint.setLat(poiInfo.basicInfo.location.lat);
-            distanceInt = SearchPackage.getInstance().calcStraightDistanceWithInt(geoPoint);
+            distance = SearchPackage.getInstance().calcStraightDistanceWithInt(geoPoint);
         }
         return new PoiInfoEntity()
                 .setPointTypeCode(poiInfo.basicInfo.typeCode)
                 .setPid(poiInfo.basicInfo.poiId)
                 .setName(poiInfo.basicInfo.name)
                 .setAddress(poiInfo.basicInfo.address)
-                .setDistance(formatDistanceArrayInternal(distanceInt))
                 .setSort_distance(ConvertUtils.str2Int(poiInfo.basicInfo.distance))
+                .setDistance(formatDistanceArrayInternal(distance))
+                .setSort_distance(distance)
                 .setPoint(new GeoPoint(poiInfo.basicInfo.location.lon, poiInfo.basicInfo.location.lat))
                 .setStationList(gasStationInfos)
                 .setParkingInfoList(parkingInfoList)
@@ -1238,7 +1244,6 @@ public final class SearchResultMapper {
                 .setAverageCost(poiInfo.basicInfo.averageCost)
                 .setMLableList(labelInfos)
                 .setPoiTag(isParking(poiInfo.basicInfo.typeCode) ? "停车场" : poiInfo.basicInfo.tag)
-                .setSort_distance(ConvertUtils.str2Int(poiInfo.basicInfo.distance))
                 .setMIndex(index)
                 .setChargeInfoList(chargeInfos);
     }

@@ -35,6 +35,10 @@ public class RouteSupplementInfo implements Parcelable {
     private RouteChargeStationDetailInfo mRouteChargeStationDetailInfo;
     //替换补能点信息
     private PoiInfoEntity mPoiInfoEntity;
+    //补能点顺序
+    private int mSupplementIndex = -1;
+    //该补能点是途经点时对应途经点的index
+    private int mViaIndex = -1;
 
 
     protected RouteSupplementInfo(Parcel in) {

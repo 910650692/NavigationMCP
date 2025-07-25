@@ -2003,7 +2003,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             constraintSet.connect(customViewItem.getId(), ConstraintSet.TOP, routeChargeProgressLayout.getId(), ConstraintSet.TOP);
             constraintSet.setHorizontalBias(customViewItem.getId(), progress);
             constraintSet.applyTo(routeChargeProgressLayout);
-            mRouteChargeProgressViews.put(poiInfoEntity, customViewItem);
+            PoiInfoEntity savePoiInfo = new PoiInfoEntity();
+            savePoiInfo.setPid(poiInfoEntity.getPid());
+            savePoiInfo.setSort_distance(poiInfoEntity.getSort_distance());
+            savePoiInfo.setName(poiInfoEntity.getName());
+            savePoiInfo.setAddress(poiInfoEntity.getAddress());
+            savePoiInfo.setDistance(poiInfoEntity.getDistance());
+            savePoiInfo.setPoint(poiInfoEntity.getPoint());
+            mRouteChargeProgressViews.put(savePoiInfo, customViewItem);
             mChargePoiDistanceList.add(poiInfoEntity.getSort_distance());
             viewCollision();
             updateExhaustDistance();
@@ -2044,6 +2051,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     mRouteChargeProgressViews.remove(poiInfoEntity);
                 }
             }
+            mChargePoiDistanceList.clear();
         });
     }
 
@@ -2182,47 +2190,49 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             Logger.e(TAG, "viewCollision is null");
             return;
         }
-        List<Integer> viewCollisionList = new ArrayList<>(mChargePoiDistanceList);
-        final float displayProgress = ((float) viewWidth /totalWidth) * mRouteTotalDistance;
-        float totalDisplayProgress = mRouteTotalDistance;
-        if (totalWidth - viewWidth > 0) {
-            totalDisplayProgress  = ((float) (totalWidth - viewWidth)/totalWidth) * mRouteTotalDistance;
-        }
+        ThreadManager.getInstance().postUi(() -> {
+            List<Integer> viewCollisionList = new ArrayList<>(mChargePoiDistanceList);
+            final float displayProgress = ((float) viewWidth /totalWidth) * mRouteTotalDistance;
+            float totalDisplayProgress = mRouteTotalDistance;
+            if (totalWidth - viewWidth > 0) {
+                totalDisplayProgress  = ((float) (totalWidth - viewWidth)/totalWidth) * mRouteTotalDistance;
+            }
 
-        for (Map.Entry<PoiInfoEntity, View> entry : mRouteChargeProgressViews.entrySet()) {
-            if (entry.getKey() != null && entry.getValue() != null) {
-                final SkinTextView distanceText = entry.getValue().findViewById(R.id.tv_route_charge);
-                int distance = entry.getKey().getSort_distance();
-                int index = viewCollisionList.indexOf(distance);
-                if (distanceText == null || index == -1) {
-                    Logger.e(TAG, "distanceText view is null");
-                    continue;
-                }
-                if (distance > totalDisplayProgress) {
-                    distanceText.setVisibility(View.GONE);
-                    viewCollisionList.remove(index);
-                    continue;
-                }
-                boolean isShow = true;
-                for (int i = 0; i < viewCollisionList.size(); i++) {
-                    if (i == index) {
+            for (Map.Entry<PoiInfoEntity, View> entry : mRouteChargeProgressViews.entrySet()) {
+                if (entry.getKey() != null && entry.getValue() != null) {
+                    final SkinTextView distanceText = entry.getValue().findViewById(R.id.tv_route_charge);
+                    int distance = entry.getKey().getSort_distance();
+                    int index = viewCollisionList.indexOf(distance);
+                    if (distanceText == null || index == -1) {
+                        Logger.e(TAG, "distanceText view is null");
                         continue;
                     }
-                    Integer distanceValue = viewCollisionList.get(i);
-                    if (distanceValue != null
-                            && distanceValue > distance - displayProgress
-                            && distanceValue < distance + displayProgress) {
-                        isShow = false;
+                    if (distance > totalDisplayProgress) {
                         distanceText.setVisibility(View.GONE);
                         viewCollisionList.remove(index);
-                        break;
+                        continue;
+                    }
+                    boolean isShow = true;
+                    for (int i = 0; i < viewCollisionList.size(); i++) {
+                        if (i == index) {
+                            continue;
+                        }
+                        Integer distanceValue = viewCollisionList.get(i);
+                        if (distanceValue != null
+                                && distanceValue > distance - displayProgress
+                                && distanceValue < distance + displayProgress) {
+                            isShow = false;
+                            distanceText.setVisibility(View.GONE);
+                            viewCollisionList.remove(index);
+                            break;
+                        }
+                    }
+                    if (isShow) {
+                        distanceText.setVisibility(View.VISIBLE);
                     }
                 }
-                if (isShow) {
-                    distanceText.setVisibility(View.VISIBLE);
-                }
             }
-        }
+        });
     }
 
 

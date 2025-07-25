@@ -457,7 +457,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             Logger.d(TAG, "routeChargeStation is null");
             return;
         }
-        updateChargeStationDistance(routeChargeStation);
+//        updateChargeStationDistance(routeChargeStation);
         mRouteChargeStation = routeChargeStation;
     }
 

@@ -101,6 +101,16 @@ public class SceneRouteSupplementPointsView extends BaseSceneView<SceneRouteSupp
 
                 for (int i = 0; i < routeSupplementInfos.size(); i++) {
                     final RouteSupplementInfo routeSupplementInfo = routeSupplementInfos.get(i);
+                    if (routeSupplementInfo.getMDistance() == 0 && i == 0) {
+                        routeSupplementInfo.setMDistance(routeSupplementInfo.getMInterval());
+                        routeSupplementInfo.setMUnitDistance(TimeUtils.getInstance()
+                                .getDistanceMsg(routeSupplementInfo.getMInterval()));
+                    } else if (routeSupplementInfo.getMDistance() == 0) {
+                        int distance = routeSupplementInfo.getMInterval() + routeSupplementInfos.get(i -1).getMDistance();
+                        routeSupplementInfo.setMDistance(distance);
+                        routeSupplementInfo.setMUnitDistance(TimeUtils.getInstance()
+                                .getDistanceMsg(distance));
+                    }
                     final LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     final View customViewItem = inflater.inflate(R.layout.scene_route_supplement_point, routeChargeProgressLayout, false);
                     customViewItem.setId(View.generateViewId());

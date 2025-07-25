@@ -370,30 +370,52 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 final AtomicInteger paramTotal = new AtomicInteger(0);
                 for (int j = 0; j< routeSupplementInfo.size(); j++) {
                     final int currentIndex = j;
-                    getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeSupplementInfo.get(currentIndex).getMShow().getLon(),
-                            routeSupplementInfo.get(currentIndex).getMShow().getLat()))
-                            .thenAccept(etaInfo -> {
-                                routeSupplementInfo.get(currentIndex).setMDistance(etaInfo.getDistance());
-                                routeSupplementInfo.get(currentIndex).setMUnitDistance(TimeUtils.getInstance()
-                                        .getDistanceMsg(etaInfo.getDistance()));
-                                paramTotal.getAndIncrement();
-                                if (paramTotal.get() == routeSupplementInfo.size()) {
-                                    infoTotal.getAndIncrement();
-                                    if (infoTotal.get() == routeSupplementParams.size()) {
-                                        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
-                                            if (ConvertUtils.isEmpty(routeResultObserver)) {
-                                                continue;
+                    if (j == 0) {
+                        getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeSupplementInfo.get(currentIndex).getMShow().getLon(),
+                                routeSupplementInfo.get(currentIndex).getMShow().getLat()))
+                                .thenAccept(etaInfo -> {
+                                    routeSupplementInfo.get(currentIndex).setMInterval(etaInfo.getDistance());
+                                    paramTotal.getAndIncrement();
+                                    if (paramTotal.get() == routeSupplementInfo.size()) {
+                                        infoTotal.getAndIncrement();
+                                        if (infoTotal.get() == routeSupplementParams.size()) {
+                                            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+                                                if (ConvertUtils.isEmpty(routeResultObserver)) {
+                                                    continue;
+                                                }
+                                                routeResultObserver.onRouteChargeStationInfo(routeChargeStationParam);
                                             }
-                                            routeSupplementInfo.sort(Comparator.comparingInt(RouteSupplementInfo::getMDistance));
-                                            routeResultObserver.onRouteChargeStationInfo(routeChargeStationParam);
                                         }
                                     }
-                                }
-                            })
-                            .exceptionally(error -> {
-                                Logger.d(TAG, "showChargeStationDetail error:" + error);
-                                return null;
-                            });
+                                })
+                                .exceptionally(error -> {
+                                    Logger.d(TAG, "showChargeStationDetail error:" + error);
+                                    return null;
+                                });
+                    } else {
+                        getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeSupplementInfo.get(currentIndex).getMShow().getLon(),
+                                routeSupplementInfo.get(currentIndex).getMShow().getLat()) , new GeoPoint(routeSupplementInfo.get(currentIndex - 1).getMShow().getLon(),
+                                routeSupplementInfo.get(currentIndex - 1).getMShow().getLat()))
+                                .thenAccept(etaInfo -> {
+                                    routeSupplementInfo.get(currentIndex).setMInterval(etaInfo.getDistance());
+                                    paramTotal.getAndIncrement();
+                                    if (paramTotal.get() == routeSupplementInfo.size()) {
+                                        infoTotal.getAndIncrement();
+                                        if (infoTotal.get() == routeSupplementParams.size()) {
+                                            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+                                                if (ConvertUtils.isEmpty(routeResultObserver)) {
+                                                    continue;
+                                                }
+                                                routeResultObserver.onRouteChargeStationInfo(routeChargeStationParam);
+                                            }
+                                        }
+                                    }
+                                })
+                                .exceptionally(error -> {
+                                    Logger.d(TAG, "showChargeStationDetail error:" + error);
+                                    return null;
+                                });
+                    }
                 }
             }
         }
