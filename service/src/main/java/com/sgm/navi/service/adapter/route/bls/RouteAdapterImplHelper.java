@@ -141,6 +141,7 @@ public class RouteAdapterImplHelper {
     private PoiInfoEntity mPoiInfoEntityEnd;
     private RequestRouteResult mRequestRouteResult;
     private CountDownLatch mRouteResultLock;
+    private RouteOption mLastRouteOption;
 
     protected RouteAdapterImplHelper(final BLAosService blAosService) {
         mRouteResultObserverHashtable = new ConcurrentHashMap<>();
@@ -2124,6 +2125,7 @@ public class RouteAdapterImplHelper {
 
         @Override
         public void onRerouteInfo(BLRerouteRequestInfo info) {
+            mLastRouteOption = info.option;
             initRouteResultLock();
             Logger.i(TAG, "onRerouteInfo: ", info.errCode, info.requestId ,info.option.getRouteType(), info.option.getRouteReqId());
             if (mLastSuccessRequsetId == -1 || info.requestId == 0 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
@@ -2205,5 +2207,13 @@ public class RouteAdapterImplHelper {
     public void requestRouteRestArea(int index) {
         handlerRestArea(mRequestRouteResult.getMRouteRestAreaParam(),mPathInfoList, mRequestRouteResult.getMRequestId()
                 , mRequestRouteResult.getMMapTypeId(), mRequestRouteResult.isMIsOnlineRoute(),index);
+    }
+
+    public void setLastRouteOption(RouteOption lastRouteOption) {
+        mLastRouteOption = lastRouteOption;
+    }
+
+    public RouteOption getLastRouteOption() {
+        return mLastRouteOption;
     }
 }

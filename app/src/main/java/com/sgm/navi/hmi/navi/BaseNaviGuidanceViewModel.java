@@ -591,6 +591,7 @@ public class BaseNaviGuidanceViewModel extends
     @Override
     public void onNetStatusChange(boolean isConnected) {
         // 离线隐藏光柱图，在线显示
+        Logger.d(TAG, "离线隐藏光柱图，在线显示 isConnected:", isConnected);
         mNaviTmcVisibility.set(isConnected);
         mView.onNetStatusChange(isConnected);
     }

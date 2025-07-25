@@ -11,9 +11,7 @@ import com.sgm.navi.service.adapter.position.PositionConstant;
 import com.sgm.navi.service.adapter.signal.SignalAdapter;
 import com.sgm.navi.service.adapter.signal.SignalAdapterCallback;
 import com.sgm.navi.service.define.bean.GeoPoint;
-import com.sgm.navi.service.define.position.DrBean;
 import com.sgm.navi.service.define.position.LocInfoBean;
-import com.sgm.navi.service.define.position.LocMMInfo;
 import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.setting.SettingConstant;
 import com.sgm.navi.service.define.user.usertrack.GpsTrackPointBean;
@@ -99,7 +97,7 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
      * @param roadId 通常从onParallelRoadUpdate回调中获取  在线算路时，可以传入0 离线算路时，必须传入正确的道路ID
      * */
     public void switchParallelRoad(int switchRoadType, BigInteger roadId) {
-        Logger.i(TAG, "平行路切换switchParallelRoad switchRoadType: " + switchRoadType + " roadId: " + roadId);
+        Logger.i(TAG, "平行路切换 switchRoadType: ", switchRoadType, switchRoadStr(switchRoadType), " roadId: ", roadId);
         mPositionAdapter.switchParallelRoad(switchRoadType, roadId);
     }
 
@@ -253,5 +251,16 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
             CommonManager.getInstance().insertOrReplace(AutoMapConstant.PosLastLocation.LAST_LAT,String.valueOf(locInfoBean.getLatitude()));
             CommonManager.getInstance().insertOrReplace(AutoMapConstant.PosLastLocation.LAST_LNG,String.valueOf(locInfoBean.getLongitude()));
         }
+    }
+
+    private String switchRoadStr(int switchRoadType) {
+        return switch (switchRoadType) {
+            case -1 -> "不切换";
+            case 0 -> "切换到辅路";
+            case 1 -> "切换到主路";
+            case 2 -> "切换到高架下";
+            case 3 -> "切换到高架上";
+            default -> "未知切换类型";
+        };
     }
 }
