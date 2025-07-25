@@ -4366,4 +4366,6 @@
     <dimen name="navi_guide_area_margin_bottom">@dimen/dp_29</dimen>
 
     <dimen name="bg_downloading_city_corner">@dimen/dp_6</dimen>
+    <dimen name="route_preference_nol_corner">@dimen/dp_10</dimen>
+    <dimen name="navi_preference_nol_corner">@dimen/dp_12</dimen>
 </resources>
