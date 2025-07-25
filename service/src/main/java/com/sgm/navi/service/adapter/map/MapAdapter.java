@@ -291,4 +291,8 @@ public class MapAdapter {
     public void setPitchAngle(MapType mapTypeId, float pitchAngle) {
         mIMapApi.setPitchAngle(mapTypeId,pitchAngle);
     }
+
+    public int getScaleLineLength(MapType mapType) {
+        return mIMapApi.getScaleLineLength(mapType);
+    }
 }

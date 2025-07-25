@@ -956,4 +956,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
             startScreenshot();
         }
     }
+
+    public int getScaleLineLength() {
+        return getMapview().getOperatorScale().getScaleLineLength();
+    }
 }

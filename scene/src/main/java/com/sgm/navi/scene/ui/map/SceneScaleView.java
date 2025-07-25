@@ -59,7 +59,7 @@ public class SceneScaleView extends BaseSceneView<SceneScaleBinding, SceneScaleI
      * 更新当前比例尺
      * @param scale current scale
      */
-    public void updateOnMapLevelChanged(String scale) {
+    public void updateOnMapLevelChanged(String scale, int scaleLineVaule) {
         Logger.d("updateOnMapLevelChanged", "scale:" , scale);
         ThreadManager.getInstance().postUi(() -> {
             if (ConvertUtils.isNull(mViewBinding) || ConvertUtils.isNull(mViewBinding.screenScaleSize)) {
@@ -67,6 +67,9 @@ public class SceneScaleView extends BaseSceneView<SceneScaleBinding, SceneScaleI
                 return;
             }
             mViewBinding.screenScaleSize.setText(scale);
+            ViewGroup.LayoutParams layoutParams = mViewBinding.screenBgSampleScale.getLayoutParams();
+            layoutParams.width = scaleLineVaule;
+            mViewBinding.screenBgSampleScale.setLayoutParams(layoutParams);
 
             if (scale.equals("1000公里")) {
                 mViewBinding.screenScaleReduceImg.setAlpha(0.5f);

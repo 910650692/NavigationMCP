@@ -334,4 +334,9 @@ public class MapAdapterImpl implements IMapApi {
     public void setPitchAngle(MapType mapTypeId,float pitchAngle) {
         mapViewPoolManager.getMapViewImpl(mapTypeId).setPitchAngle(pitchAngle);
     }
+
+    @Override
+    public int getScaleLineLength(MapType mapType) {
+        return mapViewPoolManager.getMapViewImpl(mapType).getScaleLineLength();
+    }
 }

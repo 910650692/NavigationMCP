@@ -80,6 +80,7 @@ import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.greendao.CommonManager;
+import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
@@ -902,7 +903,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 kilometer = scale;
             }
             final String result = String.format(format, kilometer);
-            mView.updateOnMapScaleChanged(result);
+            mView.updateOnMapScaleChanged(result, MapPackage.getInstance().getScaleLineLength(MapType.MAIN_SCREEN_MAIN_MAP));
             Logger.d(TAG,"scale: ",scale,", result: ",result);
         } catch (Exception exception) {
             Logger.e(TAG, "updateOnMapScaleChanged, format error:" + exception.getMessage());

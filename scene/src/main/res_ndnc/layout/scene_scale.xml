@@ -80,7 +80,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/bg_sample_scale"
             app:layout_constraintEnd_toEndOf="@id/screen_scale_size"
-            app:layout_constraintStart_toStartOf="@id/screen_scale_size"
+
             app:layout_constraintTop_toBottomOf="@id/screen_scale_size" />
 
         <com.sgm.navi.ui.view.SkinImageView

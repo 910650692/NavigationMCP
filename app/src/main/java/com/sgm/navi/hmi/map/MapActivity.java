@@ -464,8 +464,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     // 更新当前的比例尺数值
-    public void updateOnMapScaleChanged(String scale) {
-        mBinding.sceneScaleView.updateOnMapLevelChanged(scale);
+    public void updateOnMapScaleChanged(String scale, int scaleLineVaule) {
+        mBinding.sceneScaleView.updateOnMapLevelChanged(scale, scaleLineVaule);
     }
 
     public void setMessageImg(int res) {

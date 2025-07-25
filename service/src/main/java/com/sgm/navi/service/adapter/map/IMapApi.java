@@ -184,4 +184,6 @@ public interface IMapApi {
     void updateScreenshotRect(MapType mapTypeId, Rect rect);
 
     void setPitchAngle(MapType mapTypeId, float pitchAngle);
+
+    int getScaleLineLength(MapType mapType);
 }

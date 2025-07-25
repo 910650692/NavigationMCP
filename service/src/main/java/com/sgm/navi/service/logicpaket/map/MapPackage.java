@@ -624,4 +624,8 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         return isSearchPoiDetailsFragment;
     }
 
+    public int getScaleLineLength(MapType mapTypeId) {
+        return mMapAdapter.getScaleLineLength(mapTypeId);
+    }
+
 }
