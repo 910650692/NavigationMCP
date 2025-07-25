@@ -43,7 +43,7 @@
             <TextView
                 android:id="@+id/tv_exit"
                 android:layout_width="@dimen/dp_432"
-                android:layout_height="@dimen/dp_110"
+                android:layout_height="@dimen/dp_100"
                 android:layout_marginBottom="@dimen/dp_80"
                 android:background="@drawable/bg_shape_commit_button"
                 android:gravity="center"
