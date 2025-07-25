@@ -949,7 +949,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
         if (mIsFirstRequest) {
             Logger.i(TAG, "第一次进入算路失败");
-            closeFragment(true);
+            if (mViewModel != null) {
+                closeFragment(true);
+            }
             mRoutePackage.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
             NaviStatusPackage.getInstance().setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
         }
