@@ -62,6 +62,7 @@
                 android:id="@+id/poi_business_icon"
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
+                android:visibility="gone"
                 android:src="@drawable/img_under_the_48" />
 
         </com.sgm.navi.ui.view.SkinLinearLayout>
@@ -84,6 +85,7 @@
             android:id="@+id/poi_phone_icon"
             android:layout_width="@dimen/dp_54"
             android:layout_height="@dimen/dp_54"
+            android:visibility="gone"
             android:src="@drawable/img_under_the_48"
             app:layout_constraintStart_toEndOf="@+id/poi_wash_car_phone"
             app:layout_constraintTop_toTopOf="@+id/poi_wash_car_phone"/>
