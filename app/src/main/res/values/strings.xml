@@ -547,7 +547,7 @@
     <string name="setting_others_help_tab_broadcast_three">3、如何更新语音?</string>
     <string name="setting_others_help_tab_broadcast_three_answer">进入【离线数据】—【导航语音】，可在线下载语音。也可在官网下载语音文件，将文件复制到车机内amapauto9—data—voice文件夹下。</string>
     <string name="setting_others_help_tab_broadcast_four">4、语音播报和音乐如何兼容?</string>
-    <string name="setting_others_help_tab_broadcast_four_answer">5、进入【设置】—【声音播报】—【混音模式】，可选择压低音乐或暂停音乐。</string>
+    <string name="setting_others_help_tab_broadcast_four_answer">进入【设置】—【声音播报】—【混音模式】，可选择压低音乐或暂停音乐。</string>
 
     <string name="setting_others_help_tab_data_one">1、离线地图有什么用?</string>
     <string name="setting_others_help_tab_data_one_answer">下载离线地图后，无网或弱网情况下软件将自动使用离线地图进行搜索、导航，部分城市离线地图还支持路口大图和三维路口大图功能。</string>
