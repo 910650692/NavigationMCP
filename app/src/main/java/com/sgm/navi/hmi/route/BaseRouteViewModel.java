@@ -1257,7 +1257,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param routeWayID 算路类别
      */
     public void setViaListUI(final List<RouteParam> routeParams,final RouteWayID routeWayID) {
-        if (routeParams.isEmpty()) {
+        if (routeParams == null || routeParams.isEmpty()) {
             mViaPoiListVisibility.set(false);
             mViaPoiListAllVisibility.set(false);
             mTitle.set(mEndName.get());

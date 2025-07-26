@@ -569,6 +569,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * @param movePosition 移动的索引
      */
     public void changeParamListMode(final int currentPosition, final int movePosition) {
+        if (ConvertUtils.isEmpty(mRouteParams)) {
+            return;
+        }
         if (mRouteParams.size() < 2) {
             return;
         }
@@ -576,9 +579,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             return;
         }
         if (movePosition < 0) {
-            return;
-        }
-        if (ConvertUtils.isEmpty(mRouteParams)) {
             return;
         }
         if (mRouteParams.size() <= currentPosition || mRouteParams.size() <= movePosition) {
@@ -924,10 +924,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     @Override
     public void onRouteAllRoutePoiInfo(final RequestRouteResult requestRouteResult) {
         mRouteParams = requestRouteResult.getMRouteParams();
-        if (mRouteParams == null || mRouteParams.isEmpty()) {
-            Logger.e(TAG, "routeParams is null");
-            return;
-        }
         mViewModel.getEndName().set(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getName());
         if (!ConvertUtils.isEmpty(mViewModel)) {
             ThreadManager.getInstance().postUi(() -> mViewModel.setViaListUI(mRouteParams, requestRouteResult.getMRouteWay()));
@@ -1471,10 +1467,8 @@ public void setPoint() {
                 onRouteRestrictionInfo(mRequestRouteResults.getMRouteRestrictionParam());
                 onRouteChargeStationInfo(mRequestRouteResults.getMRouteChargeStationParam());
 
-                if (mRouteParams != null) {
-                    mViewModel.getEndName().set(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getName());
-                    mViewModel.setViaListUI(mRouteParams, mRequestRouteResults.getMRouteWay());
-                }
+                mViewModel.getEndName().set(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getName());
+                mViewModel.setViaListUI(mRouteParams, mRequestRouteResults.getMRouteWay());
 
                 PoiInfoEntity endPoiEntity = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getMPoiInfoEntity();
                 if (endPoiEntity.getMChildType() != AutoMapConstant.ChildType.DEFAULT
