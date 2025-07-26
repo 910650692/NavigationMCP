@@ -296,6 +296,11 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             Logger.d(TAG, "mRemindDialogShow");
             return;
         }
+        // 非无状态下不可操作显示
+        if (!NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)){
+            Logger.d(TAG, "NaviStatusType not NO_STATUS");
+            return;
+        }
         if (StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) > 0) {
             return;
         }
