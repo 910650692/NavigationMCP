@@ -384,6 +384,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mIsContinueNaviNotified.set(true);
                 mModel.checkContinueNavi();
             }
+            mFirstLaunch = mModel.isFirstLauncher();
             if (mModel.isAllowSGMAgreement() && !mFirstLaunch) {
                 mModel.checkAuthorizationExpired();
             }
