@@ -629,6 +629,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             case INaviConstant.OpenIntentPage.GO_COMPANY:
                 mViewModel.openCompanyFragment.call();
                 break;
+            case INaviConstant.OpenIntentPage.SEARCH_RESULT_PAGE:
+                mViewModel.searchForChargeStation.call();
+                break;
             default:
                 break;
         }
