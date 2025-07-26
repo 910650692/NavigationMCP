@@ -197,6 +197,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         musicTabVisibility = new ObservableField<>(false);
         mIsChangingConfigurations = new ObservableField<>(false);
         mIsContinueNaviNotified = new ObservableField<>(false);
+        Logger.d(TAG,"BaseMapViewModel = " + bottomNaviVisibility.get());
     }
 
     @Override
@@ -1732,6 +1733,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             Logger.d(TAG, "judgedBottomNaviVisibility",  "如果容器里面有Fragment,隐藏");
             return false;
         }
+        Logger.d(TAG, "judgedBottomNaviVisibility",  "底部导航按钮当前状态为显示");
        return true;
     }
 
