@@ -51,6 +51,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public ObservableField<Boolean> mGroupMoreSetupVisible;
     private boolean mIsMute;
     private int mVehicleType;
+    private Runnable mClickToPreview;
 
     public SceneNaviControlImpl(final SceneNaviControlView screenView) {
         super(screenView);
@@ -66,7 +67,27 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     @Override
     protected void onCreate() {
         super.onCreate();
-        showMain();
+        if (mNaviPackage.getPreviewStatus() &&
+                !mNaviPackage.getFixedOverViewStatus() &&
+                !mNaviPackage.getClusterFixOverViewStatus()) {
+            if (mClickToPreview == null) {
+                mClickToPreview = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            clickToShowOverview();
+                            initTimer();
+                        } catch (Exception e) {
+                            Logger.e(TAG, e.getMessage());
+                        }
+                    }
+                };
+            }
+            // 实测不加延时全览会有问题，所以这里加上500ms延时
+            ThreadManager.getInstance().postDelay(mClickToPreview, NumberUtils.NUM_500);
+        } else {
+            showMain();
+        }
         setScreenId(MapType.MAIN_SCREEN_MAIN_MAP);
         init();
         if (null != mSignalPackage) {
@@ -308,6 +329,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             mSignalPackage.unregisterObserver(this.getClass().getSimpleName());
         }
         mImmersiveStatusScene = null;
+        ThreadManager.getInstance().removeHandleTask(mClickToPreview);
     }
 
     /**
