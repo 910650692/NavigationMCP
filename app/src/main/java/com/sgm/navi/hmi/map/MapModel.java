@@ -1943,7 +1943,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     mViewModel.protectMap(AutoMapConstant.CANCEL_LOCATION_PROTOCOL);
                 } else {
                     mViewModel.moveToBack();
-                    ThreadManager.getInstance().asyncDelay(() -> StackManager.getInstance().exitApp(), 800, TimeUnit.MILLISECONDS);
+                    ThreadManager.getInstance().asyncDelay(() -> {
+                        if (mViewModel != null) {
+                            mViewModel.closeAllFragment();
+                        }
+                        StackManager.getInstance().exitApp();
+                    }, 800, TimeUnit.MILLISECONDS);
                 }
             }
         });
