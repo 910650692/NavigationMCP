@@ -308,7 +308,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
 
     // 大字号
     public Action mNaviTextSizeLargeClick = () -> {
-        MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1.5f);
+        MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1.7f);
         mModel.setMapViewTextSize(false);
 
         sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_WORD_SIZE, BuryConstant.MapFontSize.BIG);
