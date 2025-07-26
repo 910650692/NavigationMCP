@@ -193,7 +193,8 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public void onVariation() {
         initTimer();
         Logger.i(TAG, "onVariation isPreViewShowing：", mNaviPackage.getPreviewStatus());
-        if (mNaviPackage.getPreviewStatus() && !mNaviPackage.getFixedOverViewStatus()) {//固定全览
+        if (mNaviPackage.getPreviewStatus() && !mNaviPackage.getFixedOverViewStatus() &&
+                Boolean.FALSE.equals(mGroupMoreSetupVisible.get())) {//固定全览
             onFixedOverView();
         } else {
             changeMuteStatus();
