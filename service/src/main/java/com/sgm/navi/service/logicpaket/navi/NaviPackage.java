@@ -674,6 +674,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 }
                 //如果NOP打开并且是不播报的类型则不播报  soundType废弃 换成rangeType
                 if (nop == 1 && !TTSPlayHelper.allowToPlayWithNopOpen(info.getRangeType())) {
+                    Logger.d(TAG, "此类型下不支持播报");
                     return;
                 }
                 mSpeechAdapter.synthesize(!info.isHighPriority(), info.getText());

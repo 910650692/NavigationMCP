@@ -54,7 +54,8 @@ public class TTSPlayHelper {
             RangeType.RANGETYPE_NAVIGATION_END,//3017
             RangeType.RANGETYPE_NAVIGATION_START_REPLACE,//3018
             RangeType.RANGETYPE_REFRESH_TURN,//3024
-            RangeType.RANGETYPE_ETC_CAMERA_EDUCATION//4000
+            RangeType.RANGETYPE_ETC_CAMERA_EDUCATION,//4000
+            RangeType.RANGETYPE_REMOTEAHEAD//0
     );
 
     public static boolean allowToPlayWithNopOpen(int soundType){
