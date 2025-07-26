@@ -64,7 +64,7 @@ public final class ActivationManager {
 
         final int releaseStatus = SystemProperties.getInt(RELEASE_STATUS, 0);
         Logger.d(TAG, "当前车机环境 : "
-               , releaseStatus, " : ", (releaseStatus == 1 ? "生产环境" : "测试环境"));
+                , releaseStatus, " : ", (releaseStatus == 1 ? "生产环境" : "测试环境"));
     }
 
     /**
@@ -147,6 +147,7 @@ public final class ActivationManager {
             }
         });
     }
+
     /**
      * 网络请求uuid
      */
@@ -287,9 +288,9 @@ public final class ActivationManager {
         final AtomicInteger retryCount = new AtomicInteger(0);
         final int maxRetries = 3;
         final long[] delays = {
+                AutoMapConstant.DELAY_MINUTE,
                 AutoMapConstant.DELAY_MINUTE * 2,
-                AutoMapConstant.DELAY_MINUTE * 5,
-                AutoMapConstant.DELAY_MINUTE * 5
+                AutoMapConstant.DELAY_MINUTE * 2
         };
         final AtomicReference<Runnable> taskRef = new AtomicReference<>();
 
@@ -357,11 +358,11 @@ public final class ActivationManager {
             }
         };
         taskRef.set(task);
-        executor.schedule(task, delays[0], TimeUnit.SECONDS);
+        executor.schedule(task, 8, TimeUnit.SECONDS);
 
         try {
             // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
-            final long totalTimeout = Arrays.stream(delays).sum() + 5; // 2+5+5 +1=13分钟
+            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 1+2+2 +1=6分钟
             return future.get(totalTimeout, TimeUnit.MINUTES);
         } catch (CancellationException e) {
             executor.shutdownNow();
@@ -407,6 +408,7 @@ public final class ActivationManager {
         NetQueryManager.getInstance().queryOrder(queryOrderRequest, callBack);
 
     }
+
     /**
      * 手动激活
      *
