@@ -242,7 +242,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         styleParam.time = isNight ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
         getMapview().getOperatorStyle().setMapStyle(styleParam, false);
-        getMapview().resetTickCount(1);
+        getMapview().resetTickCount(10);
     }
 
 
@@ -256,7 +256,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
             mapSkyboxParam.is3DRes = false; // 是否使用3D资源，*.data资源为2D天空卷轴，传false
             mapSkyboxParam.DataBuff = new BinaryStream(buffer);
             getMapview().getOperatorBusiness().setMapSkyboxParam(mapSkyboxParam);
-            getMapview().resetTickCount(1);
+            getMapview().resetTickCount(10);
             Logger.d(TAG, mapType, " initSkyBox");
         }
     }
