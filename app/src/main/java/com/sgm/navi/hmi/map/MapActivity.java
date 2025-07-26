@@ -271,6 +271,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             Logger.d(TAG, "registerHomeActionReceiver");
             HomeActionBroadcastReceiver.registerHomeActionReceiver();
         }
+
+        if (mViewModel.getGoHomeView()) {
+            mViewModel.loadNdGoHomeData();
+            addSceneGoHomeCallBack();
+        }
     }
 
     @Override

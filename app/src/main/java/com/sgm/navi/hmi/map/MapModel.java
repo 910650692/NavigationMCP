@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.core.app.ActivityCompat;
@@ -1720,6 +1721,32 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                         mViewModel.loadNdOfficeTmc(true);
                     }
                 }
+            }
+        }
+    }
+
+    public void loadNdGoHomeData() {
+        //是否在上班时间段内  在家附近
+        LocInfoBean locInfoBean = positionPackage.getLastCarLocation();
+        boolean workHours = TimeUtils.isCurrentTimeInSpecialRange(true);
+        GeoPoint nearByHome = mViewModel.nearByHome(true);
+        GeoPoint nearByCompany = mViewModel.nearByHome(false);
+        if (workHours && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
+            //判断距离是否大于等于1km 小于等于50km 去公司
+            boolean distanceCompany = calcStraightDistance(nearByCompany, locInfoBean);
+            if (distanceCompany) {
+                mViewModel.loadNdOfficeTmc(false);
+            }
+            return;
+        }
+
+        //是否在下班时间段内  在公司附近
+        boolean endofWorkHours = TimeUtils.isCurrentTimeInSpecialRange(false);
+        if (endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(locInfoBean)) {
+            //判断距离是否大于等于1km 小于等于50km 回家
+            boolean distanceHome = calcStraightDistance(nearByHome, locInfoBean);
+            if (distanceHome) {
+                mViewModel.loadNdOfficeTmc(true);
             }
         }
     }

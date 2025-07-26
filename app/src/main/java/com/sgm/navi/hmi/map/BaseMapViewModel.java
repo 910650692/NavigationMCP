@@ -826,6 +826,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.refreshHomeOfficeTMC(home);
     }
 
+    public void loadNdGoHomeData() {
+        mModel.loadNdGoHomeData();
+    }
+
     /***
      * 页面倒计时
      */
@@ -1816,5 +1820,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         } else {
             Logger.e(TAG, "syncFragment mView is null");
         }
+    }
+
+    public boolean getGoHomeView() {
+        return mGoHomeVisible.get();
     }
 }
