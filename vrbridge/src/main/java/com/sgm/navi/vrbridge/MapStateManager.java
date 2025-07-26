@@ -442,7 +442,7 @@ public final class MapStateManager {
             Logger.d(IVrBridgeConstant.TAG, "sgmAgreement", sgmAgreement, "firstLauncher", firstLauncher, "locationStatus", locationStatus);
         }
 
-        return sgmAgreement && firstLauncher && locationStatus;
+        return sgmAgreement && !firstLauncher && locationStatus;
     }
 
     //更新语音隐私协议端状态

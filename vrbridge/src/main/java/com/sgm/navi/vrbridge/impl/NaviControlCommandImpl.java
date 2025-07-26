@@ -2736,7 +2736,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             case 4 -> orgTtsContent + IVrBridgeConstant.ResponseString.SEVER_BLOCK;
             case 5 -> orgTtsContent + IVrBridgeConstant.ResponseString.SEVER_SMOOTH;
             case -1 -> IVrBridgeConstant.ResponseString.NO_ROAD_CONDITION;
-            case 0 -> IVrBridgeConstant.ResponseString.UNKNOWN_ROAD_CONDITION;
+            //case 0 -> IVrBridgeConstant.ResponseString.UNKNOWN_ROAD_CONDITION;
+            case 0 -> null;
             default -> IVrBridgeConstant.ResponseString.UNKNOWN_SEARCH_PARAM;
         };
     }
