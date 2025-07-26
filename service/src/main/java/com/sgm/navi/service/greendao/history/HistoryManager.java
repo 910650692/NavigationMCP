@@ -161,6 +161,7 @@ public class HistoryManager {
     public List<History> getValueByType(final int type) {
         return mSearchHistoryDao.queryBuilder()
                 .where(HistoryDao.Properties.MType.eq(type))
+                .orderDesc(HistoryDao.Properties.MStartTime)
                 .list();
     }
 
