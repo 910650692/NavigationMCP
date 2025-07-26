@@ -1409,7 +1409,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void openCollectFragment() {
         final Bundle bundle = new Bundle();
-        bundle.putInt(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB, 3);
+        bundle.putInt(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB, 2);
         addFragment(new SettingFragment(), bundle);
     }
 

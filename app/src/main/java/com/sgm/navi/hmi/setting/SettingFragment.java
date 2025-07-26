@@ -1,7 +1,6 @@
 package com.sgm.navi.hmi.setting;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.android.utils.ConvertUtils;
+import com.google.android.material.tabs.TabLayout;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentSettingBinding;
@@ -21,7 +22,6 @@ import com.sgm.navi.hmi.setting.others.SettingOthersFragment;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.view.SkinLinearLayout;
-import com.google.android.material.tabs.TabLayout;
 
 import java.lang.ref.WeakReference;
 
@@ -49,11 +49,6 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
 
     @Override
     public void onInitData() {
-        final Bundle bundle = getArguments();
-        if (bundle != null) {
-            final int id = bundle.getInt(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB);
-            showFragment(id - 1);
-        }
         mBinding.tabLayout.addTab(mBinding.tabLayout.newTab().setCustomView(getCustomView(
                 R.string.setting_tab_guide, R.drawable.bg_setting_tab_navi)));
         mBinding.tabLayout.addTab(mBinding.tabLayout.newTab().setCustomView(getCustomView(
@@ -150,12 +145,14 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
     @Override
     public void onStart() {
         super.onStart();
-        showFragment(mBinding.tabLayout.getSelectedTabPosition());
         final Bundle bundle = getArguments();
-        if (bundle != null) {
+        if (!ConvertUtils.isEmpty(bundle)) {
             final int id = bundle.getInt(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB);
-            showFragment(id - 1);
-            mBinding.tabLayout.selectTab(mBinding.tabLayout.getTabAt(id - 1));
+            showFragment(id);
+        }else {
+            int position = mBinding.tabLayout.getSelectedTabPosition();
+            if(0 > position) position = 0;
+            showFragment(position);
         }
     }
 
