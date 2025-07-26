@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableBoolean;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.ResourceUtils;
@@ -24,11 +25,11 @@ import java.util.ArrayList;
 
 public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecordLoginFragment, DrivingRecordLoginModel> {
 
-    public MutableLiveData<Boolean> mQRCodeLoadingVisible = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> mQRCodeLoadFailedVisible = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> mQRCodeVisible = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> mLoginVisible = new MutableLiveData<>(false);
-    private MutableLiveData<Boolean> mIsMergeDivingRecordDialog = new MutableLiveData<>(false);
+    public ObservableBoolean mQRCodeLoadingVisible = new ObservableBoolean(true);
+    public ObservableBoolean mQRCodeLoadFailedVisible = new ObservableBoolean(false);
+    public ObservableBoolean mQRCodeVisible = new ObservableBoolean(false);
+    public ObservableBoolean mLoginVisible = new ObservableBoolean(false);
+    private ObservableBoolean mIsMergeDivingRecordDialog = new ObservableBoolean(false);
     private boolean isLoading;
     private CountDownTimer mCountDownTimer = new CountDownTimer(10000, 1000) {
         public void onTick(long millisUntilFinished) {
@@ -127,9 +128,9 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
      */
     public void updateLoadingVisible(final boolean isVisibleLoading, final boolean isVisibleFailed, final boolean isVisibleQRCode){
         ThreadManager.getInstance().postUi(() -> {
-            mQRCodeLoadingVisible.setValue(isVisibleLoading);
-            mQRCodeLoadFailedVisible.setValue(isVisibleFailed);
-            mQRCodeVisible.setValue(isVisibleQRCode);
+            mQRCodeLoadingVisible.set(isVisibleLoading);
+            mQRCodeLoadFailedVisible.set(isVisibleFailed);
+            mQRCodeVisible.set(isVisibleQRCode);
         });
         if (isVisibleFailed || isVisibleQRCode) {
             mCountDownTimer.cancel();
@@ -173,7 +174,7 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
      */
     public void setLoginVisible(final boolean isVisible) {
         ThreadManager.getInstance().postUi(() -> {
-            mLoginVisible.setValue(isVisible);
+            mLoginVisible.set(isVisible);
         });
     }
 
@@ -192,7 +193,7 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
      * @param isMergeDivingRecordDialog 一个布尔值，指示是否应该显示合并记录对话框
      */
     public void setIsMergeDivingRecordDialog(final boolean isMergeDivingRecordDialog) {
-        mIsMergeDivingRecordDialog.setValue(isMergeDivingRecordDialog);
+        mIsMergeDivingRecordDialog.set(isMergeDivingRecordDialog);
     }
 
     /**
@@ -201,6 +202,6 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
      * @return 一个布尔值，指示是否应该显示合并记录对话框
      */
     public boolean getIsMergeDivingRecordDialog() {
-        return Boolean.TRUE.equals(mIsMergeDivingRecordDialog.getValue());
+        return Boolean.TRUE.equals(mIsMergeDivingRecordDialog.get());
     }
 }
