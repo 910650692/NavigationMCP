@@ -160,7 +160,7 @@
     <string name="route_preference_avoiding_congestion_and_not_highway">不走高速+躲避拥堵</string>
     <string name="route_preference_avoiding_congestion_and_first_highway">躲避拥堵+高速优先</string>
     <string name="route_preference_less_charge_and_not_highway">少收费+不走高速</string>
-    <string name="route_preference_avoiding_congestion_and_less_charge_not_highway">不走高速+躲避拥…</string>
+    <string name="route_preference_avoiding_congestion_and_less_charge_not_highway">躲避拥堵+少收费+不走高速</string>
     <string name="route_preference_avoiding_congestion_and_first_main_road">躲避拥堵+大路优先</string>
     <string name="route_preference_avoiding_congestion_and_fastest_speed">躲避拥堵+时间优先</string>
     <string name="route_start_navi">开始导航</string>
