@@ -9,7 +9,6 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -19,7 +18,6 @@ import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.limit.LimitCitySelectionFragment;
 import com.sgm.navi.hmi.limit.LimitDriveFragment;
-import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
 import com.sgm.navi.hmi.search.parking.TerminalParkingFragment;
 import com.sgm.navi.scene.RoutePath;
@@ -76,7 +74,6 @@ import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
-import com.sgm.navi.ui.base.StackManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -119,6 +116,8 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private boolean mWeatherLabel = false;
     private boolean mRestAreaLabel = false;
     private int mSearchLoadingType = AutoMapConstant.RouteSearchType.NULL;
+    //是否需要更改子节点数据
+    private boolean mChildChange = true;
 
     public RouteModel() {
         mLayerPackage = LayerPackage.getInstance();
@@ -186,6 +185,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * @param poiInfoEntity 终点数据
      */
     public void requestChangeEnd(final PoiInfoEntity poiInfoEntity) {
+        mChildChange = false;
         ThreadManager.getInstance().execute(() -> mRoutePackage.requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity));
     }
 
@@ -754,6 +754,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
         mRequestRouteResults = requestRouteResult;
         mRouteLineInfos = requestRouteResult.getMRouteLineInfos();
+        RouteParam endRouteParam = mRoutePackage.getEndPoint(requestRouteResult.getMMapTypeId());
         if (!mRoutePackage.isRouteState()) {
             return;
         }
@@ -762,12 +763,15 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.setRouteResultListUI(mRouteLineInfos, !requestRouteResult.isMStartNavi());
+            if (mChildChange && requestRouteResult.getMRouteWay() == RouteWayID.ROUTE_WAY_CHANGE_END) {
+                showSecondaryPoiInfo(endRouteParam.getMPoiInfoEntity());
+            }
+            mChildChange = true;
         }
         if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.ROUTING) ) {
             NaviStatusPackage.getInstance().setNaviStatus(NaviStatus.NaviStatusType.SELECT_ROUTE);
         }
         showUIOnlineOffline(requestRouteResult.isMIsOnlineRoute());
-        RouteParam endRouteParam = mRoutePackage.getEndPoint(requestRouteResult.getMMapTypeId());
         if (endRouteParam == null) {
             Logger.e(TAG, "error endParam");
             return;
@@ -1471,15 +1475,34 @@ public void setPoint() {
                 mViewModel.setViaListUI(mRouteParams, mRequestRouteResults.getMRouteWay());
 
                 PoiInfoEntity endPoiEntity = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getMPoiInfoEntity();
-                if (endPoiEntity.getMChildType() != AutoMapConstant.ChildType.DEFAULT
-                        && endPoiEntity.getMChildType() != AutoMapConstant.ChildType.CHILD_NO_GRAND) {
-                    mViewModel.setSecondaryPoiInfo(endPoiEntity);
-                    mViewModel.setRouteSecondaryPoiUI(endPoiEntity.getMChildType() , endPoiEntity);
-                    mViewModel.setSecondaryPoi(true);
-                    mViewModel.showSecondaryPoi();
-                }
+                showSecondaryPoiInfo(endPoiEntity);
             }
         });
+    }
+
+
+    /***
+     * 子poi展示
+     * @param endPoiEntity poi信息
+     */
+    public void showSecondaryPoiInfo(final PoiInfoEntity endPoiEntity) {
+        Logger.d(TAG, "showSecondaryPoiInfo");
+        ThreadManager.getInstance().postUi(() -> {
+            if (endPoiEntity != null && endPoiEntity.getMChildType() != AutoMapConstant.ChildType.DEFAULT
+                    && endPoiEntity.getMChildType() != AutoMapConstant.ChildType.CHILD_NO_GRAND) {
+                Logger.d(TAG, "showSecondaryPoiInfo show");
+                mViewModel.setSecondaryPoiInfo(endPoiEntity);
+                mViewModel.setRouteSecondaryPoiUI(endPoiEntity.getMChildType() , endPoiEntity);
+                mViewModel.setSecondaryPoi(true);
+                mViewModel.showSecondaryPoi();
+            } else {
+                mViewModel.mHideSecondaryPoi.run();
+                mViewModel.setSecondaryPoiInfo(null);
+                mViewModel.setRouteSecondaryPoiUI(AutoMapConstant.ChildType.DEFAULT , null);
+                mViewModel.setSecondaryPoi(false);
+            }
+        });
+
     }
 
     public void requestRouteDetails(int index) {

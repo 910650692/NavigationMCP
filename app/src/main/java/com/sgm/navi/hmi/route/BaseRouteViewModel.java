@@ -476,7 +476,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
 
-    private Runnable mHideSecondaryPoi = new Runnable() {
+    public Runnable mHideSecondaryPoi = new Runnable() {
         @Override
         public void run() {
             if (mSecondaryPoiVisibility != null) {
