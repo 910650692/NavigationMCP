@@ -188,6 +188,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action muteOrUnMute = () -> {
         Logger.i(TAG, "muteOrUnMute");
+        mNaviBroadIsMute.set(!mNaviBroadIsMute.get());
         mModel.setCruiseVoice(Boolean.FALSE.equals(muteVisibility.get()));
     };
 
