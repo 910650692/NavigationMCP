@@ -37,13 +37,7 @@ public class RouteChildPoiAdapter extends RecyclerView.Adapter<RouteChildPoiAdap
             return;
         }
         mChildInfoList.clear();
-        List<ChildInfo> tempChildInfoList = new ArrayList<>();
-        if (childInfoList.size() > 3) {
-            tempChildInfoList.addAll(childInfoList.subList(0,3));
-        } else {
-            tempChildInfoList.addAll(childInfoList);
-        }
-        mChildInfoList.addAll(tempChildInfoList);
+        mChildInfoList.addAll(childInfoList);
         mPoiInfoEntity = poiInfoEntity;
         notifyDataSetChanged();
     }
