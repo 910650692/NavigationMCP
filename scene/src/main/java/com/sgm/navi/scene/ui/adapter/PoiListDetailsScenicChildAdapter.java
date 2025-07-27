@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableField;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
@@ -94,8 +95,10 @@ public class PoiListDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiLi
         // 交通枢纽且无推荐数据，隐藏
         if(ratio <= 0){
             holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setVisibility(View.GONE);
+            holder.mSubTitleVisibility.set(false);
         }else{
             holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setVisibility(View.VISIBLE);
+            holder.mSubTitleVisibility.set(true);
             holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setText(subTitle);
             final ColorStateList subTitleList = ContextCompat.getColorStateList(holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.getContext(),
                     R.color.custom_filter_sub_item_text_bg_selector_day);
@@ -135,10 +138,11 @@ public class PoiListDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiLi
 
     public static class Holder extends RecyclerView.ViewHolder {
         private final ListScenePoiDetailsScenicChildSpotBinding mScenePoiDetailsScenicChildSpotBinding;
-
+        public ObservableField<Boolean> mSubTitleVisibility;
         public Holder(final ListScenePoiDetailsScenicChildSpotBinding scenePoiDetailsScenicChildSpotBinding) {
             super(scenePoiDetailsScenicChildSpotBinding.getRoot());
             this.mScenePoiDetailsScenicChildSpotBinding = scenePoiDetailsScenicChildSpotBinding;
+            mSubTitleVisibility = new ObservableField<>(true);
             scenePoiDetailsScenicChildSpotBinding.setHolder(this);
         }
     }
