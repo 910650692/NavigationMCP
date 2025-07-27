@@ -4,11 +4,11 @@ package com.sgm.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.layer.BizControlService;
+import com.autonavi.gbl.layer.SearchAlongWayLayerItem;
 import com.autonavi.gbl.layer.model.AlongWayLabelType;
 import com.autonavi.gbl.layer.model.BizLineBusinessInfo;
 import com.autonavi.gbl.layer.model.BizPointBusinessInfo;
@@ -42,7 +42,6 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
 
     private static final String LINE_TYPE_ROAD = "Road";
     private static final String LINE_TYPE_PARK = "Park";
-    private static final int MAX_NUM = 20; // 沿途搜最大扎标数量
     private boolean isShowParkPoint = false;
 
     private static final int MARKER_STYLE_DEFAULT = 0;  // 比例尺 <=12 时的样式
@@ -139,6 +138,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                     Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT:" + result);
                 }
                 case SEARCH_POI_ALONG_ROUTE_ADD -> {
+                    clearFocus(LayerPointItemType.SEARCH_POI_ALONG_ROUTE);
                     LayerItem item = getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiAlongRoute).getItem(String.valueOf(index));
                     if (item != null) {
                         int result = getLayerSearchControl().setFocus(
@@ -175,11 +175,13 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         if (getLayerSearchControl() != null) {
             switch (type) {
                 case SEARCH_POI_ALONG_ROUTE_ADD -> {
+                    getStyleAdapter().updateSearchResult(poiInfoEntities);
                     LayerItem item = getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiAlongRoute).getItem(String.valueOf(index));
                     if (item != null) {
                         Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_ADD index ", index);
                         item.updateStyle();
                     }
+                    getLayerSearchControl().updateStyle(BizSearchType.BizSearchTypePoiAlongRoute);
                 }
                 default -> {
                 }
@@ -191,13 +193,6 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
         int index = 0;
         LayerPointItemType type = LayerPointItemType.NULL;
-        if (clickViewIds != null && "icon_add_click".equals(clickViewIds.poiMarkerClickViewId)) {
-            Logger.d(TAG, "icon_add_click");
-            index = Integer.parseInt(item.getID());
-            type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD;
-            // 统一从搜索列表走选中/未选中状态，避免调用两次
-//            setSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, index);
-        } else {
             switch (item.getBusinessType()) {
                 // 搜索图层内容点击
                 case BizSearchType.BizSearchTypePoiParentPoint -> {
@@ -218,13 +213,22 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 }
                 case BizSearchType.BizSearchTypePoiAlongRoute -> {
                     index = Integer.parseInt(item.getID());
-                    type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE;
+                    SearchAlongWayLayerItem alongWayLayerItem = (SearchAlongWayLayerItem) item;
+                    if (!ConvertUtils.isEmpty(alongWayLayerItem)) {
+                        int searchType = alongWayLayerItem.getMSearchType();
+                        if (searchType == LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE) {
+                            type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD;
+                        } else {
+                            type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE;
+                        }
+                    } else {
+                        type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE;
+                    }
                 }
                 default -> {
                     // TODO 扩展新的需求
                 }
             }
-        }
         Logger.d(TAG, "dispatchItemClickEvent type = " + type + " ; index = " + index);
         if (getCallBack() != null) {
             getCallBack().onSearchItemClick(getMapType(), type, index);
@@ -548,65 +552,15 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             return result;
         }
 
+        getStyleAdapter().updateSearchResult(parentPoints);
         Logger.d(TAG, "updateSearchAlongRoutePoi  parentPoints size " + parentPoints.size());
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoute, true);
 
         ArrayList<BizSearchAlongWayPoint> alongWayPoints = new ArrayList<>();
-
-        if (parentPoints.size() <= MAX_NUM) {
-            int index = 0;
-            for (PoiInfoEntity poiInfoEntity : parentPoints) {
-                alongWayPoints.add(convertAlongWayPoint(poiInfoEntity, index));
-                index++;
-            }
-        } else {
-            // 1. 添加前4个点
-            int totalSize = parentPoints.size();
-            ArrayList<BizSearchAlongWayPoint> alongWayPointsHead = new ArrayList<>();
-            for (int i = 0; i < 4; i++) {
-                PoiInfoEntity poiInfoEntity = parentPoints.get(i);
-                alongWayPointsHead.add(convertAlongWayPoint(poiInfoEntity, i));
-            }
-            for (BizSearchAlongWayPoint point : alongWayPointsHead) {
-                alongWayPoints.add(point);
-            }
-
-            // 2. 添加后3个点
-            ArrayList<BizSearchAlongWayPoint> alongWayPointsTail = new ArrayList<>();
-            for (int i = totalSize - 3; i < totalSize; i++) {
-                if (i >= 4) { // 避免与前4个点重复
-                    PoiInfoEntity poiInfoEntity = parentPoints.get(i);
-                    alongWayPointsTail.add(convertAlongWayPoint(poiInfoEntity, i));
-                }
-            }
-            for (BizSearchAlongWayPoint point : alongWayPointsTail) {
-                alongWayPoints.add(point);
-            }
-
-            // 3. 计算剩余需要抽取的点数和可分配的区间
-            ArrayList<BizSearchAlongWayPoint> alongWayPointsMiddle = new ArrayList<>();
-            int remainingPoints = MAX_NUM - alongWayPoints.size();
-            int availableRangeStart = 4;
-            int availableRangeEnd = totalSize - 4;
-            int availableRangeSize = availableRangeEnd - availableRangeStart;
-            Logger.d(TAG, "updateSearchAlongRoutePoi alongWayPoints.size ", alongWayPoints.size(), " availableRangeSize ", availableRangeSize);
-
-            if (remainingPoints > 0) {
-                // 计算平均间隔
-                double interval = (double) availableRangeSize / (remainingPoints + 1);
-
-                // 均匀间隔采样
-                for (int i = 1; i <= remainingPoints; i++) {
-                    int index = availableRangeStart + (int) Math.round(i * interval);
-                    if (index < availableRangeEnd) {
-                        PoiInfoEntity poiInfoEntity = parentPoints.get(index);
-                        alongWayPointsMiddle.add(convertAlongWayPoint(poiInfoEntity, index));
-                    }
-                }
-            }
-            for (BizSearchAlongWayPoint point : alongWayPointsMiddle) {
-                alongWayPoints.add(point);
-            }
+        int index = 0;
+        for (PoiInfoEntity poiInfoEntity : parentPoints) {
+            alongWayPoints.add(convertAlongWayPoint(poiInfoEntity, index));
+            index++;
         }
         getLayerSearchControl().updateSearchAlongRoutePoi(alongWayPoints);
         Logger.d(TAG, "updateSearchAlongRoutePoi  alongWayPoints size " + alongWayPoints.size());

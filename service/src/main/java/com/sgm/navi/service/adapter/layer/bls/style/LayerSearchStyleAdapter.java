@@ -386,10 +386,9 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     } else {
                         customUpdatePairs.add(createUpdateValuePair("id_slow", "慢"+slowFree + "/" + slowTotal));
                     }
-                    if (fastTotal == 0 && slowTotal == 0) {
-                        customUpdatePairs.add(createUpdateStylePair("search_charge_label", "display:none;"));
-                    }
                     List<PoiInfoEntity> poiInfoEntityList = mPoiInfoList.get();
+                    boolean focus = item.getFocus();
+                    String id = item.getID();
                     if (!ConvertUtils.isEmpty(poiInfoEntityList) && index < poiInfoEntityList.size()) {
                         PoiInfoEntity poiInfo = poiInfoEntityList.get(index);
                         if (!ConvertUtils.isEmpty(poiInfo)) {
@@ -401,8 +400,17 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                             }
                         }
                     }
+                    if (focus) {
+                        customUpdatePairs.add(createUpdateStylePair("search_charge_label", "background-image:layer_image_search_along_way_charge_focus_bg.9.png;"));
+                    } else {
+                        customUpdatePairs.add(createUpdateStylePair("search_charge_label", "background-image:layer_image_search_along_way_charge_normal_bg.9.png;"));
+                    }
                     if (isNightMode) {
-                        customUpdatePairs.add(createUpdateStylePair("search_charge_label", "background-image:layer_image_search_along_way_charge_bg_night.9.png;"));
+                        if (focus) {
+                            customUpdatePairs.add(createUpdateStylePair("search_charge_label", "background-image:layer_image_search_along_way_charge_focus_bg_night.9.png;"));
+                        } else {
+                            customUpdatePairs.add(createUpdateStylePair("search_charge_label", "background-image:layer_image_search_along_way_charge_normal_bg_night.9.png;"));
+                        }
                         customUpdatePairs.add(createUpdateStylePair("div_position", "background-image:layer_image_charge_index_bg_night.png;"));
                         if (isVisible) {
                             customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_focus_night.png"));
@@ -410,6 +418,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                             customUpdatePairs.add(createUpdateValuePair("icon_add_click", "layer_image_charge_add_night.png"));
                         }
                     }
+                    Logger.d(TAG, "BizSearchTypePoiAlongRoute focus ", focus, " id ", id, " visible ", isVisible);
                 }
                 break;
             case BizSearchType.BizSearchTypeChargeStation: {
