@@ -25,7 +25,4 @@ public class MapViewModel extends BaseMapViewModel {
         return false;
     }
 
-    public void addSceneGoHomeCallBack(int type){
-        mModel.addSceneGoHomeCallBack(type);
-    }
 }
