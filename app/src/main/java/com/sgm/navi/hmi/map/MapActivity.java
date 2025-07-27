@@ -641,4 +641,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 break;
         }
     }
+
+    public void hideOrShowFragmentContainer(boolean isShow) {
+        mBinding.layoutFragment.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+    }
 }

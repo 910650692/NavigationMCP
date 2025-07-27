@@ -4048,4 +4048,6 @@
     <dimen name="bg_downloading_city_corner">@dimen/dp_5</dimen>
     <dimen name="route_preference_nol_corner">@dimen/dp_10</dimen>
     <dimen name="navi_preference_nol_corner">@dimen/dp_12</dimen>
+    <dimen name="traffic_big_pic_margin_hor">@dimen/dp_160</dimen>
+    <dimen name="traffic_big_pic_margin_vertical">@dimen/dp_251</dimen>
 </resources>

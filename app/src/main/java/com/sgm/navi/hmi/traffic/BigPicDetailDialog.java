@@ -1,5 +1,7 @@
 package com.sgm.navi.hmi.traffic;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -9,7 +11,12 @@ import android.view.WindowManager;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.android.utils.ScreenUtils;
 import com.sgm.navi.hmi.databinding.DialogTrafficBigPicBinding;
+import com.sgm.navi.hmi.map.MapActivity;
+import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.ui.base.BaseActivity;
+import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
 
 import java.util.List;
@@ -23,11 +30,12 @@ public class BigPicDetailDialog extends BaseFullScreenDialog<DialogTrafficBigPic
     private List<String> mPics;
     private PicPageAdapter picPageAdapter;
     private FragmentActivity fragmentActivity;
-
+    private int dialogWidth, dialogHeight;
     protected BigPicDetailDialog(FragmentActivity activity, List<String> pics) {
         super(activity);
         this.mPics = pics;
         this.fragmentActivity = activity;
+        calculateSize();
     }
 
     @Override
@@ -35,15 +43,50 @@ public class BigPicDetailDialog extends BaseFullScreenDialog<DialogTrafficBigPic
         return DialogTrafficBigPicBinding.inflate(LayoutInflater.from(getContext()));
     }
 
+    private void calculateSize() {
+        final Context context = ScreenUtils.Companion.getInstance().getTargetDisplayContext(getContext(), 0);
+        final Resources resources = context.getResources();
+        final float marginHor = resources.getDimension(com.sgm.navi.ui.R.dimen.traffic_big_pic_margin_hor)*2;
+        final float marginVertical = resources.getDimension(com.sgm.navi.ui.R.dimen.traffic_big_pic_margin_vertical)*2;
+        dialogWidth = (int) (ScreenUtils.Companion.getInstance().getRealScreenWidth(context) - marginHor);
+        dialogHeight = (int) (ScreenUtils.Companion.getInstance().getRealScreenHeight(context) -marginVertical);
+    }
+
     @Override
     public void show() {
         super.show();
+        // 隐藏
+        BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if (baseActivity instanceof MapActivity) {
+            MapActivity activity = (MapActivity) baseActivity;
+            activity.hideOrShowFragmentContainer(false);
+        }
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
-        layoutParams.width = 1780;
-        layoutParams.height = 800;
-        layoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-        layoutParams.y = 212;
+        layoutParams.width = dialogWidth;
+        layoutParams.height = dialogHeight;
+        layoutParams.gravity = Gravity.CENTER;
         getWindow().setAttributes(layoutParams);
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        // 显示
+        BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if (baseActivity instanceof MapActivity) {
+            MapActivity activity = (MapActivity) baseActivity;
+            activity.hideOrShowFragmentContainer(true);
+        }
+    }
+
+    @Override
+    public void cancel() {
+        super.cancel();
+        BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if (baseActivity instanceof MapActivity) {
+            MapActivity activity = (MapActivity) baseActivity;
+            activity.hideOrShowFragmentContainer(true);
+        }
     }
 
     @Override

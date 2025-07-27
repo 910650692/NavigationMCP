@@ -4048,4 +4048,6 @@
     <dimen name="navi_btn_add_via_corner">@dimen/dp_12</dimen>
     <dimen name="route_preference_nol_corner">@dimen/dp_10</dimen>
     <dimen name="navi_preference_nol_corner">@dimen/dp_12</dimen>
+    <dimen name="traffic_big_pic_margin_hor">@dimen/dp_670</dimen>
+    <dimen name="traffic_big_pic_margin_vertical">@dimen/dp_115</dimen>
 </resources>
