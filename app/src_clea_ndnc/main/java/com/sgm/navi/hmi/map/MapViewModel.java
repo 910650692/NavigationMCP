@@ -8,7 +8,6 @@ import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
-import com.sgm.navi.service.define.screen.ScreenType;
 import com.sgm.navi.ui.action.Action;
 
 /**
@@ -39,10 +38,6 @@ public class MapViewModel extends BaseMapViewModel {
 
     public boolean showNdGoHomeView() {
         return true;
-    }
-
-    public void addSceneGoHomeCallBack(int type) {
-        mModel.addSceneGoHomeCallBack(type);
     }
 
     public Action switchSr = () -> {

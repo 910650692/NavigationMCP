@@ -273,8 +273,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
 
         if (mViewModel.getGoHomeView()) {
+            mViewModel.setGoHomeView(false);
             mViewModel.loadNdGoHomeData();
-            addSceneGoHomeCallBack();
         }
     }
 
@@ -297,7 +297,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             ThreadManager.getInstance().removeHandleTask(mOpenGuideRunnable);
         }
 
-        if(mMsgTopDialog != null && mMsgTopDialog.isShowing()){
+        if (mMsgTopDialog != null && mMsgTopDialog.isShowing()) {
             mMsgTopDialog.dismiss();
         }
         mMsgTopDialog = null;
@@ -317,8 +317,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         setChargeGasImage();
         mBinding.includeMessageCenter.setViewModel(mViewModel);
 
-        //initObserver
-        addSceneGoHomeCallBack();
 
         //initData
         mViewModel.startListenMsg();
@@ -327,11 +325,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (!mStackManager.isExistFragment(mScreenId, "AccountQRCodeLoginFragment")) {
             mViewModel.checkPopGuideLogin();
         }
-        if(Boolean.FALSE.equals(mViewModel.mIsChangingConfigurations.get())) mViewModel.getOnlineForecastArrivedData();
+        if (Boolean.FALSE.equals(mViewModel.mIsChangingConfigurations.get()))
+            mViewModel.getOnlineForecastArrivedData();
     }
 
-    public void setChargeGasImage(){
-        if(!ConvertUtils.isNull(mViewModel) && !ConvertUtils.isNull(mBinding)){
+    public void setChargeGasImage() {
+        if (!ConvertUtils.isNull(mViewModel) && !ConvertUtils.isNull(mBinding)) {
             final int powerType = mViewModel.powerType();
             // 油车
             if (powerType == 0) {
@@ -339,8 +338,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             } else {
                 mBinding.skIvBasicRouting.setImageResource(R.drawable.img_basic_ic_gas_charging);
             }
-        }else{
-            Logger.d(TAG,"mViewModel or mBinding is null");
+        } else {
+            Logger.d(TAG, "mViewModel or mBinding is null");
         }
     }
 
@@ -396,7 +395,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
 
-
     @Override
     protected void onMoveMapCenter() {
         Logger.i(TAG, "onMoveMapCenter");
@@ -433,7 +431,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         });
     }
 
-    public boolean isFragmentStackNull(){
+    public boolean isFragmentStackNull() {
         return mStackManager.isFragmentStackNull(mScreenId);
     }
 
@@ -530,13 +528,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     public void setNdGoHomeView(RouteTMCParam routeTMCParam) {
         mBinding.sceneGoHome.setNdGoHomeView(routeTMCParam);
-    }
-
-    private void addSceneGoHomeCallBack() {
         mBinding.sceneGoHome.setCallback(new ISceneCallback() {
             @Override
             public void clickGoHomeBtn(int type) {
-                mViewModel.addSceneGoHomeCallBack(type);
+                mViewModel.goHomeOrCompany(type);
             }
         });
     }
@@ -561,6 +556,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     /**
      * 监听触摸事件，当焦点不在exitText中时隐藏软键盘
+     *
      * @param ev
      * @return
      */
@@ -576,6 +572,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
         return super.dispatchTouchEvent(ev);
     }
+
     public void notifyStepOneThirdScreen() {
         mViewModel.notifyStepOneThirdScreen();
     }
@@ -589,7 +586,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
     }
 
-    public void openGuideFragment(){
+    public void openGuideFragment() {
         Logger.i(TAG, "closeSplitFragment openGuideFragment");
         mViewModel.openGuideFragment();
     }
@@ -598,15 +595,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.updateUiOnHomeKeyClick();
     }
 
-    private final Observable.OnPropertyChangedCallback propertyChangedCallback =new Observable.OnPropertyChangedCallback() {
+    private final Observable.OnPropertyChangedCallback propertyChangedCallback = new Observable.OnPropertyChangedCallback() {
         @Override
         public void onPropertyChanged(Observable sender, int propertyId) {
             boolean value = ((ObservableBoolean) sender).get();
-            ConstraintLayout.LayoutParams layoutParams =  (ConstraintLayout.LayoutParams)mBinding.includeMessageCenter.getRoot().getLayoutParams();
-            if(!value){
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mBinding.includeMessageCenter.getRoot().getLayoutParams();
+            if (!value) {
                 layoutParams.startToEnd = mBinding.layoutFragment.getId();
                 layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_m_17));
-            }else{
+            } else {
                 layoutParams.startToEnd = mBinding.searchMainTab.getId();
                 layoutParams.setMarginStart(ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_17));
             }

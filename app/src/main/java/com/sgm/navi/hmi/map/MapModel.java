@@ -13,7 +13,6 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.core.app.ActivityCompat;
@@ -73,7 +72,6 @@ import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
-import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.aos.RestrictedEndNumberParam;
 import com.sgm.navi.service.define.aos.RestrictedParam;
 import com.sgm.navi.service.define.aos.TrafficRestrictResponseParam;
@@ -154,10 +152,8 @@ import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.BuildConfig;
-import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
-import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
@@ -2069,10 +2065,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, msg)
                 .build();
         BuryPointController.getInstance().setBuryProps(property);
-    }
-
-    public void addSceneGoHomeCallBack(int type) {
-        mViewModel.addSceneGoHomeCallBackVieModel(type);
     }
 
     public void addGestureListening() {
