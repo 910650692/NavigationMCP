@@ -83,6 +83,7 @@ import java.util.stream.IntStream;
 public final class SearchResultMapper {
     private static final String NUMBER_FORMAT_EXCEPTION = "NumberFormatException :";
     private static final String PARKINGERROR = "parkings is null";
+    private static final int MAX_NUM = 50; // 沿途搜充电站最大数量
     private final static class Holder {
         private static final SearchResultMapper INSTANCE = new SearchResultMapper();
     }
@@ -987,7 +988,7 @@ public final class SearchResultMapper {
      */
     public SearchResultEntity mapFromSearchEnRouteResult(final SearchRequestParameter requestParameterBuilder, final SearchEnrouteResult result) {
         final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.errorCode, result.errorMessage);
-        final List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiInfos)
+        List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiInfos)
                 .map(list -> IntStream.range(0, list.size())
                         .mapToObj(index -> {
                             SearchEnroutePoiInfo searchPoi = list.get(index);
@@ -996,6 +997,8 @@ public final class SearchResultMapper {
                         .sorted(Comparator.comparingInt(PoiInfoEntity::getSort_distance))
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
+        // 过滤充电站沿途搜
+        poiList = filterChargeList(poiList);
         searchResultEntity.setPoiList(poiList);
         searchResultEntity.setTotal(poiList.size());
         searchResultEntity.setPoiType(Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork()) ? 1 : 0);//0=离线数据，1=在线数据
@@ -1042,6 +1045,33 @@ public final class SearchResultMapper {
 
         }
         return searchResultEntity;
+    }
+
+    private List<PoiInfoEntity> filterChargeList(List<PoiInfoEntity> list){
+        List<PoiInfoEntity> filterList = new ArrayList<>();
+        if(!ConvertUtils.isEmpty(list)
+                && list.get(0).getPointTypeCode().startsWith("0111")){
+            if(list.size() <= MAX_NUM){
+                return list;
+            }else{
+                int totalSize = list.size();
+                // 计算步长
+                float step = (float) totalSize / MAX_NUM;
+                for (int i = 0; i < MAX_NUM; i++) {
+                    // 计算当前索引位置
+                    int index = Math.round(i * step);
+                    // 确保不超过列表范围
+                    index = Math.min(index, totalSize - 1);
+                    filterList.add(list.get(index));
+                }
+                for (int i = 0; i < filterList.size(); i++) {
+                    filterList.get(i).setMIndex(i);
+                }
+                return filterList;
+            }
+        }else{
+            return list;
+        }
     }
 
     /**

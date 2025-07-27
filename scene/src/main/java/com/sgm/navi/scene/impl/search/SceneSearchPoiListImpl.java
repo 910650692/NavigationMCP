@@ -3,6 +3,8 @@ package com.sgm.navi.scene.impl.search;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
@@ -487,5 +489,9 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             }
         }
         return keyword;
+    }
+
+    public Fragment getCurrentFragment(){
+        return StackManager.getInstance().getCurrentFragment(mMapTypeId.name());
     }
 }

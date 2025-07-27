@@ -291,6 +291,17 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, true);
                     }
                 }
+                if(SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd && mScreenViewModel.getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.CHARGING_STATION){
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"need add via");
+                    for (int i = 0; i < mGasChargeAlongList.size(); i++) {
+                        for (int j = 0; j < mResultEntity.getPoiList().size(); j++) {
+                            if(Objects.equals(mGasChargeAlongList.get(i).getPoiID(), mResultEntity.getPoiList().get(j).getPid())){
+                                mResultEntity.getPoiList().get(j).setMIsVisible(true);
+                            }
+                        }
+                    }
+                    addRemoveClick(position,poiInfoEntity);
+                }
                 final int poiType = getPoiType(mAdapter.getHomeCompanyType());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " , poiType , " homeCompany: " , mAdapter.getHomeCompanyType());
                 final Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
@@ -408,7 +419,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     if (!ConvertUtils.isEmpty(poiInfoEntities)) {
                         // 遍历所有可见的item
                         for (int i = 0; i < poiInfoEntities.size(); i++) {
-                            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                            if (!ConvertUtils.isEmpty(poiInfoEntities) && !mScreenViewModel.isAlongWaySearch()) {
                                 final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
                                 poiInfoEntity.setMIsVisible(i >= firstVisiblePosition && i <= lastVisiblePosition);
                             }
@@ -1814,7 +1825,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         } else {
             gasChargeAddMode(poiInfoEntity);
-            poiInfoEntity.setMIsVisible(true);
             mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         }
         if (mAdapter != null) {
@@ -1855,6 +1865,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         mGasChargeAlongList.add(mRoutePackage.getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY));
         mRoutePackage.setGasChargeAlongList(mGasChargeAlongList);
+        poiInfoEntity.setMIsVisible(true);
         updateChargeList();
     }
 
@@ -2178,8 +2189,20 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     public void onSearchItemClick(int index) {
         List<PoiInfoEntity> poiInfoEntities = mSearchResultEntity.getPoiList();
         if (poiInfoEntities != null && !poiInfoEntities.isEmpty() && index < poiInfoEntities.size() && index != -1) {
-            addRemoveClick(index, poiInfoEntities.get(index));
-            mViewBinding.recyclerSearchResult.scrollToPosition(index);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"index: "+index);
+            if(!ConvertUtils.isNull(mScreenViewModel.getCurrentFragment()) && mScreenViewModel.getCurrentFragment().getClass().getName().contains("PoiDetailsFragment")){
+                closeCurrentFragment();
+            }
+            mViewBinding.recyclerSearchResult.post(new Runnable() {
+                @Override
+                public void run() {
+                    addRemoveClick(index, poiInfoEntities.get(index));
+                    LinearLayoutManager layoutManager = (LinearLayoutManager) mViewBinding.recyclerSearchResult.getLayoutManager();
+                    if(!ConvertUtils.isNull(layoutManager)){
+                        layoutManager.scrollToPositionWithOffset(index,0);
+                    }
+                }
+            });
         }
     }
 
