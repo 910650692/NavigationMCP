@@ -4024,6 +4024,10 @@
     <dimen name="navi_main_tap_height">@dimen/dp_95</dimen>
     <dimen name="navi_main_parking_margin_end">@dimen/dp_m_73</dimen>
     <dimen name="navi_main_parking_gone_margin_start">@dimen/dp_225</dimen>
+    <dimen name="navi_main_message_margin_start">@dimen/dp_17</dimen>
+
+    <dimen name="navi_phone_address_dialog_width">@dimen/dp_417</dimen>
+    <dimen name="navi_phone_address_dialog_width_main_btn">@dimen/dp_600</dimen>
 
     <dimen name="navi_fragment_margin_botton">@dimen/dp_96</dimen>
 

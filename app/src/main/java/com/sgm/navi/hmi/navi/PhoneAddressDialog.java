@@ -67,11 +67,11 @@ public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
         final WindowManager.LayoutParams params = window.getAttributes();
         if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
             if (isMainBTNVisible) {
-                params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_417);
+                params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_phone_address_dialog_width);
             } else {
-                params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_600);
+                params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_phone_address_dialog_width_main_btn);
             }
-            params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_85);
+            params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top);
         }else{
             params.x = 517;
             params.y = 85;

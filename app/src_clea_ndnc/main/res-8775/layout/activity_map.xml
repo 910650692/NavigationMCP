@@ -381,8 +381,8 @@
             app:viewModel="@{ViewModel}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_17"
-            android:layout_marginTop="@dimen/dp_85"
+            android:layout_marginStart="@dimen/navi_main_message_margin_start"
+            android:layout_marginTop="@dimen/navi_main_tap_margin_top"
             app:layout_constraintStart_toEndOf="@id/search_main_tab"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -416,9 +416,9 @@
             android:layout_width="@dimen/dp_545"
             android:layout_height="@dimen/dp_271"
             android:layout_marginTop="@dimen/dp_188"
-            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginStart="@dimen/navi_main_tap_margin_start"
             android:background="@drawable/bg_guide_login"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.sgm.navi.ui.view.SkinTextView

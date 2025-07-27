@@ -9,7 +9,7 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/float_window"
-            android:layout_width="@dimen/dp_571"
+            android:layout_width="@dimen/navi_main_float_window_width"
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
@@ -19,7 +19,7 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/card_navi_view"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_95"
+            android:layout_height="@dimen/navi_main_tap_height"
             android:minWidth="@dimen/dp_366"
             android:background="@drawable/bg_search_main_tab_sw1225"
             app:layout_constraintStart_toEndOf="@id/float_window"

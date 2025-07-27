@@ -3995,8 +3995,8 @@
     <dimen name="one_third_screen_cross_pic_height">349dp</dimen>
     <dimen name="one_third_screen_car_logo_bottom">827dp</dimen>
     <!--桌面悬浮窗的位置-->
-    <dimen name="launcher_position_top">22dp</dimen>
-    <dimen name="launcher_position_left">34dp</dimen>
+    <dimen name="launcher_position_top">16dp</dimen>
+    <dimen name="launcher_position_left">64dp</dimen>
 
     <dimen name="navi_cadillac_cluster_navi_text_size">52px</dimen>
     <dimen name="navi_cadillac_cluster_navi_unit_size">44px</dimen>
@@ -4024,6 +4024,10 @@
     <dimen name="navi_main_tap_height">@dimen/dp_86</dimen>
     <dimen name="navi_main_parking_margin_end">@dimen/dp_132</dimen>
     <dimen name="navi_main_parking_gone_margin_start">@dimen/dp_608</dimen>
+    <dimen name="navi_main_message_margin_start">@dimen/dp_30</dimen>
+
+    <dimen name="navi_phone_address_dialog_width">@dimen/dp_462</dimen>
+    <dimen name="navi_phone_address_dialog_width_main_btn">@dimen/dp_640</dimen>
 
     <dimen name="navi_fragment_margin_botton">@dimen/dp_95</dimen>
 
