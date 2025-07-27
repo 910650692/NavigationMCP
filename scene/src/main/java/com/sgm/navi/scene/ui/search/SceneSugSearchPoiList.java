@@ -406,6 +406,10 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             mAdapter.clearList();
             return;
         }
+        if(ConvertUtils.isNull(mScreenViewModel)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mScreenViewModel is null");
+            return;
+        }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " , taskId
                 , " currentId: " , mScreenViewModel.getMTaskId());
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
