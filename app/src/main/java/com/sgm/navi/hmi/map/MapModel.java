@@ -2243,8 +2243,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
             Logger.d("screen_change_used", "打开1/3屏幕布局");
             checkStatusCloseAllFragmentAndClearAllLabel();
-            mViewModel.syncFragment();
-            addFragment(new SplitFragment(), null);
+            ThreadManager.getInstance().postDelay(() -> {
+                mViewModel.syncFragment();
+                addFragment(new SplitFragment(), null);
+            }, 500);
         } else {
             Logger.d("screen_change_used", "关闭1/3屏幕布局");
             mViewModel.closeSplitFragment();
