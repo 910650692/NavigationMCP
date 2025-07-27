@@ -146,13 +146,18 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
     public void onStart() {
         super.onStart();
         final Bundle bundle = getArguments();
-        if (!ConvertUtils.isEmpty(bundle)) {
+        if (!ConvertUtils.isEmpty(bundle) && bundle.containsKey(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB)) {
             final int id = bundle.getInt(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB);
+            mBinding.tabLayout.selectTab(mBinding.tabLayout.getTabAt(id));
             showFragment(id);
-        }else {
+        } else {
             int position = mBinding.tabLayout.getSelectedTabPosition();
-            if(0 > position) position = 0;
-            showFragment(position);
+            if (position == -1) {
+                mBinding.tabLayout.selectTab(mBinding.tabLayout.getTabAt(0));
+                showFragment(0);
+            } else {
+                showFragment(position);
+            }
         }
     }
 
