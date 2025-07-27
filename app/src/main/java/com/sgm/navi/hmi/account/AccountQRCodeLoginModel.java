@@ -8,6 +8,7 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
@@ -65,7 +66,7 @@ public class AccountQRCodeLoginModel extends BaseModel<AccountQRCodeLoginViewMod
                 qrCodeLoginRequest(QRCodeType.QR_CODE_TYPE_DEFAULT);
             } else if (errCode == ERROR_CODE_LOGIN_SUCCESS && result.getCode() == 1) {
                 Logger.i(TAG,"QRCodeLogin Success");
-                closeFragment(true);
+                ThreadManager.getInstance().postUi(() -> closeFragment(true));
             }
         }
     }
