@@ -1475,6 +1475,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         });
     }
 
+    @Override
+    public void notifyQuitNaviPushMessage() {
+        Logger.i(TAG, "notifyQuitNaviPushMessage: 手机推送消息-退出当前导航");
+    }
+
     /**
      * 预测服务
      * result result

@@ -15,6 +15,9 @@ public interface MsgPushCallBack {
     default void notifyAimRoutePushMessage(RouteMsgPushInfo routeMsgPushInfo) {
     }
 
+    default void notifyQuitNaviPushMessage() {
+    }
+
     default void notifyMobileLinkPushMessage(MsgPushInfo msg) {
     }
 

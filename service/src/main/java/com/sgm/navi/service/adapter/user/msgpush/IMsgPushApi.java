@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.user.msgpush;
 
 
 import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.define.user.msgpush.MsgCarInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushRequestInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushResponseInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushInfo;
@@ -86,9 +87,9 @@ public interface IMsgPushApi {
 
     /**
      * 执行一个网络请求,车机互联的通用上报接口(除去导航上报)
-     * @param aosRequest
+     * @param msgCarInfo
      * @return long
      */
-    long sendReqWsTserviceInternalLinkAutoReport(MsgPushRequestInfo aosRequest);
+    long sendReqWsTserviceInternalLinkAutoReport(MsgCarInfo msgCarInfo);
 
 }

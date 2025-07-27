@@ -32,6 +32,7 @@ import com.autonavi.gbl.user.msgpush.model.MobileRouteParam;
 import com.autonavi.gbl.user.msgpush.model.MobileRouteViaPoint;
 import com.autonavi.gbl.user.msgpush.model.MsgPushInitParam;
 import com.autonavi.gbl.user.msgpush.model.MsgPushItem;
+import com.autonavi.gbl.user.msgpush.model.QuitNaviPushMsg;
 import com.autonavi.gbl.user.msgpush.observer.IMobileLinkObserver;
 import com.autonavi.gbl.user.msgpush.observer.IMsgPushServiceObserver;
 import com.autonavi.gbl.util.model.SingleServiceID;
@@ -52,6 +53,7 @@ import com.sgm.navi.service.define.user.msgpush.MobileLocation;
 import com.sgm.navi.service.define.user.msgpush.MobileRouteParamInfo;
 import com.sgm.navi.service.define.user.msgpush.MobileRouteViaPointInfo;
 import com.sgm.navi.service.define.user.msgpush.MobileVehicleInfo;
+import com.sgm.navi.service.define.user.msgpush.MsgCarInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushRequestInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushResponseInfo;
@@ -98,6 +100,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      */
     @Override
     public void startListen(final String userId) {
+        Logger.d(TAG, "startListen: userId = " + userId);
         final UserLoginInfo userLoginInfo= new UserLoginInfo();
         userLoginInfo.userId = userId;
         if (msgPushService != null) {
@@ -421,21 +424,41 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
 
     /**
      * 执行一个网络请求,车机互联的通用上报接口(除去导航上报)
-     * @param aosRequest 网络请求, 内存由HMI管理 ,车机互联的通用上报接口(除去导航上报)
+     * @param msgCarInfo 网络请求, 内存由HMI管理 ,车机互联的通用上报接口(除去导航上报)
      * @return 整数 >0:网络请求的标识用于AbortRequest() ; =0:网络请求未发起，无回调。
      */
     @Override
-    public long sendReqWsTserviceInternalLinkAutoReport(final MsgPushRequestInfo aosRequest) {
-
-        final GWsTserviceInternalLinkAutoReportRequestParam gwsTserviceInternalLinkAutoReportRequestParam =
-            GsonUtils.convertToT(aosRequest, GWsTserviceInternalLinkAutoReportRequestParam.class);
+    public long sendReqWsTserviceInternalLinkAutoReport(final MsgCarInfo msgCarInfo) {
+        final GWsTserviceInternalLinkAutoReportRequestParam gWsTserviceInternalLinkAutoReportRequestParam =
+                new GWsTserviceInternalLinkAutoReportRequestParam();
+        gWsTserviceInternalLinkAutoReportRequestParam.bizType = 1;//业务类型；必填，目前只需要填写1，代表停车位置。
+        gWsTserviceInternalLinkAutoReportRequestParam.data = GsonUtils.toJson(msgCarInfo);
 
         if (mBLAosService != null) {
-            return mBLAosService.sendReqWsTserviceInternalLinkAutoReport(gwsTserviceInternalLinkAutoReportRequestParam, this);
+            return mBLAosService.sendReqWsTserviceInternalLinkAutoReport(gWsTserviceInternalLinkAutoReportRequestParam, this);
         } else {
             Logger.d(TAG,"sendReqWsTserviceInternalLinkAutoReport:MsgPush service is not initialized.");
         }
         return -1;
+    }
+
+    @Override
+    public void notifyStatus(int status) {
+        Logger.d(TAG, "notifyStatus: status = " + status);
+    }
+
+    @Override
+    public void notifyMessage(QuitNaviPushMsg msg) {
+        if (msg == null) {
+            Logger.e(TAG, "notifyMessage: QuitNaviPushMsg is null");
+            return;
+        }
+        if (Logger.openLog) {
+            Logger.d(TAG, "notifyMessage: ", msg.id);
+        }
+        for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
+            callBack.notifyQuitNaviPushMessage();
+        }
     }
 
     /**

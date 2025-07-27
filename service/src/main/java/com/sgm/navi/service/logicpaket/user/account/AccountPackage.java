@@ -11,11 +11,15 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.adapter.user.account.AccountAdapter;
 import com.sgm.navi.service.adapter.user.account.AccountAdapterCallBack;
 import com.sgm.navi.service.define.code.UserDataCode;
+import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
+import com.sgm.navi.service.define.user.msgpush.MsgCarInfo;
 import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.greendao.history.HistoryManager;
+import com.sgm.navi.service.logicpaket.position.IPositionPackageCallback;
+import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 
@@ -59,8 +63,12 @@ public final class AccountPackage implements AccountAdapterCallBack {
             if (info != null) {
                 if (!TextUtils.isEmpty(info.getUid())) {
                     mIsLogin = true;
+                    Logger.i("getUserInfo mIsLogin = true");
+                    PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
                 } else {
                     mIsLogin = false;
+                    Logger.i("getUserInfo mIsLogin = false");
+                    PositionPackage.getInstance().unregisterCallBack(mIPositionPackageCallback);
                 }
             }
         }
@@ -117,6 +125,8 @@ public final class AccountPackage implements AccountAdapterCallBack {
         if (result != null && result.getCode() == 1) {
             // 手机号登录成功后，用户登录信息保存到数据库
             mIsLogin = true;
+            Logger.i("notifyMobileLogin mIsLogin = true");
+            PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
             final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
             mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
         }
@@ -132,11 +142,25 @@ public final class AccountPackage implements AccountAdapterCallBack {
             observer.notifyQRCodeLogin(errCode, taskId, result);
         }
     }
+
+    IPositionPackageCallback mIPositionPackageCallback = new IPositionPackageCallback() {
+        @Override
+        public void onLocationInfo(LocInfoBean locationInfo) {
+            MsgCarInfo msgCarInfo = new MsgCarInfo();
+            msgCarInfo.naviLocInfo.lon = locationInfo.getLongitude();
+            msgCarInfo.naviLocInfo.lat = locationInfo.getLatitude();
+            MsgPushPackage.getInstance().sendReqWsTserviceInternalLinkAutoReport(msgCarInfo);
+        }
+    };
+
     @Override
     public void notifyQRCodeLoginConfirm(final int errCode, final int taskId, final AccountUserInfo result) {
         if (result != null && result.getCode() == 1) {
             mIsLogin = true;
-            MsgPushPackage.getInstance().startListen(result.getUid());
+            Logger.i("notifyQRCodeLoginConfirm mIsLogin = true",
+                    "result.getProfileInfo().getUid() = " + result.getProfileInfo().getUid());
+            PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
+            MsgPushPackage.getInstance().startListen(result.getProfileInfo().getUid());
             final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
             mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
             BehaviorPackage.getInstance().setLoginInfo();
@@ -168,6 +192,8 @@ public final class AccountPackage implements AccountAdapterCallBack {
             // 退出登录后，清除数据库中的用户信息
             mCommonManager.deleteValue(UserDataCode.SETTING_GET_USERINFO);
             mIsLogin = false;
+            Logger.i("notifyAccountLogout mIsLogin = false");
+            PositionPackage.getInstance().unregisterCallBack(mIPositionPackageCallback);
             MsgPushPackage.getInstance().stopListen();
             BehaviorPackage.getInstance().setLoginInfo();
             mHistoryManager.deleteValueByKey(2);

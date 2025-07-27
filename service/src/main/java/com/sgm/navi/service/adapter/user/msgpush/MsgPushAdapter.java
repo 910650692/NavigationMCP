@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.user.msgpush;
 
 import com.sgm.navi.service.AdapterConfig;
 import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.define.user.msgpush.MsgCarInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushRequestInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushResponseInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushInfo;
@@ -111,11 +112,11 @@ final public class MsgPushAdapter {
 
     /**
      * sendReqWsTserviceInternalLinkAutoReport
-     * @param aosRequest
+     * @param msgCarInfo
      * @return long
      */
-    public long sendReqWsTserviceInternalLinkAutoReport(final MsgPushRequestInfo aosRequest) {
-        return mMsgPushApi.sendReqWsTserviceInternalLinkAutoReport(aosRequest);
+    public long sendReqWsTserviceInternalLinkAutoReport(final MsgCarInfo msgCarInfo) {
+        return mMsgPushApi.sendReqWsTserviceInternalLinkAutoReport(msgCarInfo);
     }
 
     private static final class Helper {

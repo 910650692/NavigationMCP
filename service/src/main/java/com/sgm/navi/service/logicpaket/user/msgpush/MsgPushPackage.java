@@ -4,6 +4,7 @@ import com.sgm.navi.service.adapter.user.msgpush.MsgPushAdapter;
 import com.sgm.navi.service.adapter.user.msgpush.MsgPushAdapterCallback;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.route.RouteMsgPushInfo;
+import com.sgm.navi.service.define.user.msgpush.MsgCarInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushRequestInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushResponseInfo;
@@ -67,10 +68,9 @@ public class MsgPushPackage implements MsgPushAdapterCallback{
         msgPushAdapter.abort(taskId);
     }
 
-    public long sendReqWsTserviceInternalLinkAutoReport(MsgPushRequestInfo pAosRequest) {
-        return msgPushAdapter.sendReqWsTserviceInternalLinkAutoReport(pAosRequest);
+    public long sendReqWsTserviceInternalLinkAutoReport(MsgCarInfo msgCarInfo) {
+        return msgPushAdapter.sendReqWsTserviceInternalLinkAutoReport(msgCarInfo);
     }
-
 
     @Override
     public void initService() {
@@ -106,6 +106,13 @@ public class MsgPushPackage implements MsgPushAdapterCallback{
     public void notifyAimRoutePushMessage(RouteMsgPushInfo routeMsgPushInfo) {
         for (MsgPushCallBack callBack : callBacks.values()) {
             callBack.notifyAimRoutePushMessage(routeMsgPushInfo);
+        }
+    }
+
+    @Override
+    public void notifyQuitNaviPushMessage() {
+        for (MsgPushCallBack callBack : callBacks.values()) {
+            callBack.notifyQuitNaviPushMessage();
         }
     }
 

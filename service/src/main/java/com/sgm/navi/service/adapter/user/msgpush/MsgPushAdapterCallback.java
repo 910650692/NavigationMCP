@@ -30,6 +30,11 @@ public interface MsgPushAdapterCallback {
     void notifyAimRoutePushMessage(RouteMsgPushInfo routeMsgPushInfo);
 
     /**
+     * 手机发送退出路线
+     */
+    void notifyQuitNaviPushMessage();
+
+    /**
      * 手机端推送发现可连接车机消息
      * @param msg
      */
