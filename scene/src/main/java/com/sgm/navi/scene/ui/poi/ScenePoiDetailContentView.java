@@ -118,6 +118,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     private Integer mViaType = -1;
     private Boolean mViaUserAdd = true;
+    private SearchPhoneDialog mSearchDialogBuild;
+    private SearchConfirmDialog mSearchConfirmBuild;
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -822,7 +824,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone: " , phoneString.get(0));
                         phoneProp.append(phoneString.get(0));
                         if(phoneString.size() > 1){
-                            new SearchPhoneDialog.Build(getContext()).setDialogObserver(new IBaseDialogClickListener() {
+                            mSearchDialogBuild = new SearchPhoneDialog.Build(getContext()).setDialogObserver(new IBaseDialogClickListener() {
                                 @Override
                                 public void onCancelClick() {
                                 }
@@ -845,10 +847,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             .setContent(phoneString)
                             .setTitle(getContext().getString(R.string.text_dial_phone_title))
                             .setConfirmTitle(getContext().getString(R.string.cancel))
-                            .build().show();
+                            .build();
+                            mSearchDialogBuild.show();
                         }else{
-                            new SearchConfirmDialog.Build(getContext())
-                                    .setDialogObserver(new IBaseDialogClickListener() {
+                            mSearchConfirmBuild = new SearchConfirmDialog.Build(getContext()).setDialogObserver(new IBaseDialogClickListener() {
                                         @Override
                                         public void onCommitClick() {
                                             try {
@@ -869,7 +871,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                     })
                                     .setContent(getContext().getString(R.string.text_dial_phone_content, phoneString.get(0)))
                                     .setConfirmTitle(getContext().getString(R.string.text_dial))
-                                    .build().show();
+                                    .build();
+                            mSearchConfirmBuild.show();
                         }
                     } else {
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone is null ");
@@ -1755,6 +1758,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         mChildSelectInfo = null;
         mGrandChildSelectInfo = null;
+        closeAllDialog();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onDestroy");
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
     }
@@ -2310,6 +2314,15 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     public void setJumpPoiInfo(PoiInfoEntity poiInfo) {
         mJumpPoiInfo = poiInfo;
+    }
+
+    public void closeAllDialog(){
+        if(!ConvertUtils.isNull(mSearchDialogBuild) && mSearchDialogBuild.isShowing()){
+            mSearchDialogBuild.dismiss();
+        }
+        if(!ConvertUtils.isNull(mSearchConfirmBuild) && mSearchConfirmBuild.isShowing()){
+            mSearchConfirmBuild.dismiss();
+        }
     }
 
 }
