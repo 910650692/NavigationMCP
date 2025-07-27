@@ -1,11 +1,8 @@
 package com.sgm.navi.ui.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.SoundEffectConstants;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -80,7 +77,7 @@ public class SkinConstraintLayout extends ConstraintLayout {
         } else if (isPressed && mIsClickChangeColor) {
             // 触屏按压态
             setAlpha(0.6f);
-        } else {
+        } else if (mIsClickChangeColor) {
             // 恢复默认透明度
             setAlpha(1.0f);
         }
