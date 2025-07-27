@@ -187,7 +187,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 final String identifier = entry.getKey();
                 mCurrentCallbackId.set(identifier);
                 final SearchResultCallback callback = entry.getValue();
-                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchResult=> key: " + identifier + " ,value: " + callback.getClass().getSimpleName());
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "taskId:", taskId, " onSearchResult=> key: " + identifier + " ,value: " + callback.getClass().getSimpleName());
                 callback.onSilentSearchResult(taskId, errorCode, message, searchResultEntity);
             });
         }
