@@ -24,10 +24,8 @@ import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
-import com.sgm.navi.service.define.calibration.CalibConst;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
-import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
@@ -210,7 +208,10 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
      * @param canvas canvas
      */
     private void drawTmcContainer(final Canvas canvas) {
-        // 没有光柱图信息时不显示途径点几充电站信息
+        if (mTotalDistance <= 0) {
+            Logger.i(TAG, " mTotalDistance <= 0, return");
+            return;
+        }
         // 光主图高度
         final int height = getTmcHeight();
         final int width = getTmcWidth();
@@ -227,8 +228,16 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 
         final float rateDistanceToView;
         if (mIsHorizontal) {
+            if (width <= 0) {
+                Logger.i(TAG, "width <= 0, return");
+                return;
+            }
             rateDistanceToView = (width * 1.0f) / (mTotalDistance * 1.0f);
         } else {
+            if (height <= 0) {
+                Logger.i(TAG, "height <= 0, return");
+                return;
+            }
             //距离和View高度的比率,用于在view高度和实际距离之间进行转换,单位:像素/米
             rateDistanceToView = (height * 1.0f) / (mTotalDistance * 1.0f);
         }
@@ -383,7 +392,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
             if (viaShowIndex > mLastChargeShowIndex) {
                 mLastViaShowIndex = viaShowIndex;
                 if (Logger.openLog) {
-                    Logger.d(TAG, "绘制途径点 viaShowIndex:", viaShowIndex, " mLastChargeShowIndex:", mLastChargeShowIndex, logBuilder);
+                    Logger.d(TAG, "绘制途经点 viaShowIndex:", viaShowIndex, " mLastChargeShowIndex:", mLastChargeShowIndex, logBuilder);
                 }
             }
         } else {
