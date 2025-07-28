@@ -18,6 +18,7 @@ import com.baidu.oneos.protocol.bean.param.NaviControlParam;
 import com.baidu.oneos.protocol.callback.PoiCallback;
 import com.baidu.oneos.protocol.callback.RespCallback;
 import com.baidu.oneos.protocol.listener.NaviControlCommandListener;
+import com.baidu.oneos.protocol.result.NaviSubCallResult;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -50,7 +51,6 @@ import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 import com.sgm.navi.vrbridge.MapStateManager;
 import com.sgm.navi.vrbridge.VoiceConvertUtil;
-import com.sgm.navi.vrbridge.bean.MapState;
 import com.sgm.navi.vrbridge.bean.SingleCommandInfo;
 
 import java.util.ArrayList;
@@ -1845,7 +1845,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         }
 
         if (targetMode == curMapMode) {
-            return CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.ALREADY_IS + respTts);
+            final CallResponse alreadyResponse = CallResponse.createFailResponse(respTts);
+            alreadyResponse.setSubCallResult(NaviSubCallResult.NO_ACTION);
+            return alreadyResponse;
         } else {
             if (saveCommand) {
                 mCommandList.add(IVrBridgeConstant.VoiceCommandAction.CHANGE_VIEW);
