@@ -505,6 +505,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onNaviInfo(final NaviEtaInfo naviInfoBean) {
         if (ConvertUtils.isEmpty(naviInfoBean)) return;
+        int viaCount = naviInfoBean.viaRemain.size();
+        updateViaList(viaCount);
         checkShowViaDetail(naviInfoBean);
         mNaviEtaInfo = naviInfoBean;
         if (mIsNeedUpdateViaList && !ConvertUtils.isNull(mViewModel)) {
@@ -525,6 +527,34 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViewModel.onCrossProgress(moveDistance);
         } else {
             mMoveStartDistance = naviInfoBean.getRemainDist();
+        }
+    }
+
+    private void updateViaList(int viaCount) {
+        List<RouteParam> allPoiParamList = OpenApiHelper.getAllPoiParamList(
+                MapType.MAIN_SCREEN_MAIN_MAP);
+        if (ConvertUtils.isEmpty(allPoiParamList)) {
+            Logger.e(TAG, "updateViaList allPoiParamList is null or empty");
+            return;
+        }
+        Logger.i(TAG, "viaCount = " + viaCount + " allPoi = " + allPoiParamList.size());
+        // 经过途经点后删除途经点
+        if (allPoiParamList.size() > 2) {
+            int currentViaCount = allPoiParamList.size() - 2;
+            if (currentViaCount > viaCount) {
+                for (int i = 0; i < currentViaCount - viaCount; i++) {
+                    List<RouteParam> currentAllPoiParamList = OpenApiHelper.getAllPoiParamList(
+                            MapType.MAIN_SCREEN_MAIN_MAP);
+                    PoiInfoEntity poiInfo = currentAllPoiParamList.get(1).getMPoiInfoEntity();
+                    boolean isDeleteSuccess = mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
+                            poiInfo, false);
+                    Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = ", isDeleteSuccess);
+                }
+                // 删除后更新途经点列表信息
+                if (!ConvertUtils.isNull(mViewModel)) {
+                    mViewModel.updateViaListImm();
+                }
+            }
         }
     }
 
@@ -621,21 +651,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViewModel.onUpdateViaPass(viaIndex);
         }
         mCurrentViaIndex = viaIndex + 1;
-        List<RouteParam> allPoiParamList = OpenApiHelper.getAllPoiParamList(
-                MapType.MAIN_SCREEN_MAIN_MAP);
-        // 删除途经点扎标
         mNaviPackage.removeViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, viaIndex + "");
-        // 经过途经点后删除途经点
-        if (allPoiParamList.size() > 2) {
-            PoiInfoEntity poiInfo = allPoiParamList.get(1).getMPoiInfoEntity();
-            boolean isDeleteSuccess = mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
-                    poiInfo, false);
-            // 删除后更新途经点列表信息
-            if (!ConvertUtils.isNull(mViewModel)) {
-                mViewModel.updateViaListImm();
-            }
-            Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = ", isDeleteSuccess);
-        }
     }
 
     @Override
