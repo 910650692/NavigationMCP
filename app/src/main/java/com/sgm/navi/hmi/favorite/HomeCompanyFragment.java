@@ -23,6 +23,7 @@ import com.sgm.navi.ui.base.BaseFragment;
 public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding, HomeCompanyViewModel> {
     private int mHomeCompany = -1;
     private String mKeyword = "";
+    private boolean mIsFirstInit = true;
     @Override
     public int onLayoutId() {
         return R.layout.fragment_home_company;
@@ -57,6 +58,16 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
                 mBinding.getRoot().setVisibility(View.GONE);
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mIsFirstInit) {
+            //首次进入界面，主动拉起键盘
+            mBinding.homeCompanyView.requestFocusAndShowKeyboard();
+        }
+        mIsFirstInit = false;
     }
 
     @Override
@@ -150,5 +161,6 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mIsFirstInit = false;
     }
 }

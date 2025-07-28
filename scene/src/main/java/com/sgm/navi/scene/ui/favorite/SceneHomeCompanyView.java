@@ -236,6 +236,7 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      */
     public void onClickEditText() {
         mViewBinding.searchBarTextView.post(() -> {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClickEditText: ");
             mViewBinding.searchBarTextView.requestFocus();
             showKeyboard();
         });
@@ -250,6 +251,20 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
         if (imm != null) {
             imm.showSoftInput(mViewBinding.searchBarTextView, InputMethodManager.SHOW_IMPLICIT);
         }
+    }
+
+    /**
+     * 请求焦点并显示软键盘
+     */
+    public void requestFocusAndShowKeyboard() {
+        // 确保视图已经附加到窗口
+        mViewBinding.searchBarTextView.postDelayed(() -> {
+            if (mViewBinding != null) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "requestFocusAndShowKeyboard: ");
+                mViewBinding.searchBarTextView.requestFocus();
+                showKeyboard();
+            }
+        }, 300);
     }
 
     /**
