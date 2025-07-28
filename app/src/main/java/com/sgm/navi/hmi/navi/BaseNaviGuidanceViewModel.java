@@ -763,6 +763,7 @@ public class BaseNaviGuidanceViewModel extends
             Logger.i(TAG, "mModelSaveEntity is null");
             return;
         }
+        Logger.i(TAG, "restoreNavigation");
         final SpeedOverallEntity speedOverallEntity = mModelSaveEntity.getSpeedOverallEntity();
         boolean isNeedShowSpeedCameraInfo = !ConvertUtils.isNull(mNaviSpeedVisibility) &&
                 Boolean.TRUE.equals(mNaviSpeedVisibility.get()) && speedOverallEntity != null;

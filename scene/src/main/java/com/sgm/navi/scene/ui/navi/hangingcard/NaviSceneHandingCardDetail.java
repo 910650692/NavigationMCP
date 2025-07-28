@@ -70,7 +70,9 @@ public class NaviSceneHandingCardDetail extends NaviSceneBase<NaviSceneHandingCa
 
     @Override
     protected void initObserver() {
-        mAdapter = new HandingCardDetailAdapter(getContext(), mScreenViewModel);
+        if (mAdapter == null) {
+            mAdapter = new HandingCardDetailAdapter(getContext(), mScreenViewModel);
+        }
         mViewBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mViewBinding.recyclerView.setAdapter(mAdapter);
         mViewBinding.ivClose.setOnClickListener(v -> {
@@ -104,6 +106,9 @@ public class NaviSceneHandingCardDetail extends NaviSceneBase<NaviSceneHandingCa
     public void updateUi(List<PoiInfoEntity> list, HandCardType type) {
         mViewBinding.recyclerView.scrollToPosition(0);
         mScreenViewModel.updateUi(list, type);
+        if (mAdapter == null) {
+            mAdapter = new HandingCardDetailAdapter(getContext(), mScreenViewModel);
+        }
         mAdapter.notifyDataChanged(list, type);
         notifySceneStateChange(true,false);
     }
