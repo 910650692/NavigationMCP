@@ -163,9 +163,14 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().drawOnlyOneRouteLine(routeResult);
     }
 
-    /* 途经点扎标设置是否选中 */
-    public void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index) {
-        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setRouteViaPointSelectStatus(isSelect, index);
+    /* 设置路线图层扎标是否选中 */
+    public void setRoutePointSelect(MapType mapTypeId, LayerPointItemType type, boolean isSelect, int index) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().setSelect(type, isSelect, index);
+    }
+
+    /* 清除路线图层扎标focus */
+    public void clearRoutePointFocus(MapType mapTypeId, LayerPointItemType type) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().clearFocus(type);
     }
 
     /* 设置起点扎标是否显示 */

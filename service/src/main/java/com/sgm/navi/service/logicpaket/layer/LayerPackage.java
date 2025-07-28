@@ -155,9 +155,14 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.initGuideRouteHUDMode(mapTypeId);
     }
 
-    /* 途经点扎标设置是否选中 */
-    public void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index) {
-        mLayerAdapter.setRouteViaPointSelectStatus(mapTypeId, isSelect, index);
+    /* 设置路线图层扎标是否选中 */
+    public void setRoutePointSelect(MapType mapTypeId, LayerPointItemType type, boolean isSelect, int index) {
+        mLayerAdapter.setRoutePointSelect(mapTypeId, type, isSelect, index);
+    }
+
+    /* 清除路线图层扎标focus */
+    public void clearRoutePointFocus(MapType mapTypeId, LayerPointItemType type) {
+        mLayerAdapter.clearRoutePointFocus(mapTypeId, type);
     }
 
     /**

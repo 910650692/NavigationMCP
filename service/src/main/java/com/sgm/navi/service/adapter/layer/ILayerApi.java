@@ -132,7 +132,10 @@ public interface ILayerApi {
     void setStartPointVisible(MapType mapTypeId, boolean visible);
 
     /* 途经点扎标设置是否选中 */
-    void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index);
+    void setRoutePointSelect(MapType mapTypeId, LayerPointItemType type, boolean isSelect, int index);
+
+    /* 清除路线图层扎标focus */
+    void clearRoutePointFocus(MapType mapTypeId, LayerPointItemType type);
 
     /* 设置能量耗尽点扎标是否显示 只在全览态展示 */
     void setRouteEnergyEmptyPointVisible(MapType mapTypeId, boolean isShow);

@@ -375,8 +375,8 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         AccountPackage.getInstance().sendSGMLoginRequest(mScreenView.getContext());
     }
 
-    public void setRouteViaPointSelect(boolean isSelect,int index){
-        mLayerPackage.setRouteViaPointSelectStatus(MapType.MAIN_SCREEN_MAIN_MAP,isSelect,index);
+    public void setRoutePointSelect(LayerPointItemType type, boolean isSelect, int index){
+        mLayerPackage.setRoutePointSelect(MapType.MAIN_SCREEN_MAIN_MAP, type, isSelect, index);
     }
 
     /**

@@ -221,8 +221,13 @@ public class LayerAdapter {
     }
 
     /* 途经点扎标设置是否选中 */
-    public void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index) {
-        mLayerApi.setRouteViaPointSelectStatus(mapTypeId, isSelect, index);
+    public void setRoutePointSelect(MapType mapTypeId, LayerPointItemType type, boolean isSelect, int index) {
+        mLayerApi.setRoutePointSelect(mapTypeId, type, isSelect, index);
+    }
+
+    /* 清除路线图层扎标focus */
+    public void clearRoutePointFocus(MapType mapTypeId, LayerPointItemType type) {
+        mLayerApi.clearRoutePointFocus(mapTypeId, type);
     }
 
     /* HUD样式初始化 */

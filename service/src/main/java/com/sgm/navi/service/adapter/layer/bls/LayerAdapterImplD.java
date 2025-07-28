@@ -180,7 +180,12 @@ public class LayerAdapterImplD implements ILayerApi {
     }
 
     @Override
-    public void setRouteViaPointSelectStatus(MapType mapTypeId, boolean isSelect, int index) {
+    public void setRoutePointSelect(MapType mapTypeId, LayerPointItemType type, boolean isSelect, int index) {
+
+    }
+
+    @Override
+    public void clearRoutePointFocus(MapType mapTypeId, LayerPointItemType type) {
 
     }
 

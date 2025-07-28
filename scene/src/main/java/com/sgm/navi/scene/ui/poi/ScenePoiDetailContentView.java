@@ -2304,7 +2304,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if(!ConvertUtils.isNull(mScreenViewModel) && index != -1){
             mViaType = index;
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"setViaIndexSelect: ",index,"isSelect: ", isSelect);
-            mScreenViewModel.setRouteViaPointSelect(isSelect,index);
+            mScreenViewModel.setRoutePointSelect(LayerPointItemType.ROUTE_POINT_VIA, isSelect, index);
         }
     }
 
