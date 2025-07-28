@@ -1534,7 +1534,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 ProcessManager.restartProcess(mApplication);
             }, 800, TimeUnit.MILLISECONDS);
         }
-        closeAllFragment();
+        //closeAllFragment();
         moveToBack();
         ThreadManager.getInstance().asyncDelay(() -> {
             Logger.d(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 finish mapActivity");
