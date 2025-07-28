@@ -32,6 +32,7 @@
                 android:layout_marginStart="@dimen/dp_22"
                 android:src="@drawable/img_setting_back"
                 app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/app_currency_back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 

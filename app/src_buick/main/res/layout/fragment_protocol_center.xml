@@ -36,6 +36,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/img_setting_back"
                     android:layout_marginStart="@dimen/dp_30"
+                    android:contentDescription="@string/app_currency_back"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>

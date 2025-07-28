@@ -3,6 +3,7 @@ package com.sgm.navi.ui.base;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -110,9 +111,12 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Logger.i(getClass().getSimpleName(), "阻止返回键");
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (KeyEvent.KEYCODE_BACK == keyCode) {
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "阻止返回键");
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

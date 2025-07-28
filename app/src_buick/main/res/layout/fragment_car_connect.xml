@@ -29,6 +29,7 @@
                 android:layout_height="@dimen/dp_58"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/dp_26"
+                android:contentDescription="@string/app_currency_back"
                 android:src="@drawable/img_setting_back"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

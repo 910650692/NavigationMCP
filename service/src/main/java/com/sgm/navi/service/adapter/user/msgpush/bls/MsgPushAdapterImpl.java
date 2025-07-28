@@ -610,7 +610,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
 
         final MsgPushInfo mobileLinkPushMsgInfo = getMsgPushInfo(msg);
 
-        Logger.d(TAG,"MobileLinkPushMsgInfo: " + mobileLinkPushMsgInfo.toString());
+        Logger.d(TAG,"MobileLinkPushMsgInfo: ", mobileLinkPushMsgInfo);
 
         for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyMobileLinkPushMessage(mobileLinkPushMsgInfo);

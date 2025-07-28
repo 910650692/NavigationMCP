@@ -223,7 +223,7 @@ public class CarConnectAdapterImpl implements ICarConnectApi, IMobileLinkObserve
         mobileLinkPushMsgInfo.traceId = msg.traceId;
         mobileLinkPushMsgInfo.linkMode = msg.linkMode;
 
-        Logger.d("MobileLinkPushMsgInfo: " + mobileLinkPushMsgInfo.toString());
+        Logger.d("MobileLinkPushMsgInfo: ", mobileLinkPushMsgInfo);
 
         for (CarConnectAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyMobileLinkPushMessage(mobileLinkPushMsgInfo);

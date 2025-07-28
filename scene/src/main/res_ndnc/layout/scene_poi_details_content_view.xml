@@ -172,6 +172,7 @@
                 android:layout_marginTop="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_22"
                 android:src="@drawable/icon_poi_close"
+                android:contentDescription="@string/app_currency_close"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

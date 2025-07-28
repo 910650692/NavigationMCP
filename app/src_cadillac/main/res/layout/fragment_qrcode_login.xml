@@ -46,6 +46,7 @@
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_gravity="center"
+                    android:contentDescription="@string/app_currency_back"
                     android:layout_marginStart="@dimen/dp_32"
                     android:src="@drawable/img_setting_back" />
             </com.android.car.ui.FocusArea>

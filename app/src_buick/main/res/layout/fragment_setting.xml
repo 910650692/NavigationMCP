@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_26"
             android:layout_marginTop="@dimen/dp_38"
+            android:contentDescription="@string/app_currency_close"
             android:src="@drawable/img_setting_close"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

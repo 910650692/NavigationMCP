@@ -32,6 +32,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/dp_22"
+                android:contentDescription="@string/app_currency_back"
                 android:src="@drawable/img_setting_back" />
 
             <com.sgm.navi.ui.view.SkinTextView

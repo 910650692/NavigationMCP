@@ -50,6 +50,7 @@
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
+                android:contentDescription="@string/app_currency_back"
                 android:src="@drawable/img_basic_ic_back"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -34,6 +34,7 @@
                 clickCommand="@{MainSearchView.closeSearch}"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
+                android:contentDescription="@string/app_currency_back"
                 android:src="@drawable/img_basic_ic_back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

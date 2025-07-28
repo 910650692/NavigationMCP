@@ -17,6 +17,7 @@
             android:layout_marginTop="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_23"
             android:layout_marginStart="@dimen/dp_12"
+            android:contentDescription="@string/app_currency_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

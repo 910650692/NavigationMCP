@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">NaviApp</string>
+    <string name="app_currency_close">关闭</string>
+    <string name="app_currency_back">返回</string>
+
     <string name="delete">删除</string>
     <string name="quick">快</string>
     <string name="slow">慢</string>

@@ -177,6 +177,7 @@
                 android:layout_marginTop="@dimen/dp_48"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:focusable="true"
+                android:contentDescription="@string/app_currency_close"
                 android:src="@drawable/icon_poi_details_close"
                 app:layout_constraintEnd_toEndOf="@+id/end_guideline"
                 app:layout_constraintTop_toBottomOf="@+id/poi_offline_hint"

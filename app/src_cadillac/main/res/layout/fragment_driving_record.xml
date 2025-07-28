@@ -33,6 +33,7 @@
                 android:src="@drawable/img_setting_back"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
+                android:contentDescription="@string/app_currency_close"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

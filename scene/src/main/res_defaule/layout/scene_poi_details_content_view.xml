@@ -98,6 +98,7 @@
                     android:layout_height="@dimen/dp_58"
                     android:layout_marginTop="@dimen/dp_38"
                     android:layout_marginEnd="@dimen/dp_26"
+                    android:contentDescription="@string/app_currency_close"
                     android:src="@drawable/icon_poi_details_close"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

@@ -37,6 +37,7 @@
                 android:focusable="true"
                 android:src="@drawable/img_basic_ic_back"
                 android:focusedByDefault="true"
+                android:contentDescription="@string/app_currency_back"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
