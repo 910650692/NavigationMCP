@@ -1565,6 +1565,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         } else {
             mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         }
+        if (mViaListManager != null) {
+            mViaListManager.updateViaPointList();
+        }
         if (!mIsAutoReRoute) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             ImmersiveStatusScene.getInstance().setImmersiveStatus(

@@ -25,6 +25,7 @@ public class ViaListManager {
     private int mChargeStationTaskId;
     private List<String> viaIdList;
     private List<NaviViaEntity> naviViaList;
+    private List<PoiInfoEntity> guideRouteViaList;
 
     public ViaListManager(final NaviGuidanceModel naviGuidanceModel) {
         mGuidanceModel = naviGuidanceModel;
@@ -68,7 +69,14 @@ public class ViaListManager {
             return;
         }
         List<PoiInfoEntity> tempPoiInfos = sortPoiInfosByIds(poiInfos, viaIdList, naviViaList);
+        guideRouteViaList = tempPoiInfos;
         mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, tempPoiInfos);
+    }
+
+    public void updateViaPointList() {
+        if (guideRouteViaList != null) {
+            mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, guideRouteViaList);
+        }
     }
 
     /**
