@@ -286,6 +286,7 @@
     <string name="quick_charge_pre_content">预约充电站5分钟后超时</string>
 
     <string name="car_connect_title">手车互联</string>
+    <string name="car_connect_binding_user_name">绑定高德账号</string>
     <string name="car_connect_unLogin_function_1">遥控导航</string>
     <string name="car_connect_unLogin_function_1_tip">导航路线自动投射至车机大屏，手机变为遥控器</string>
     <string name="car_connect_unLogin_function_2">无感互联</string>
