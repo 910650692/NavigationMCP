@@ -174,7 +174,6 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
      */
     public void hideWidgetsOnMapTouch(MotionEvent touchEvent) {
         if (!isNaviDeskBg()) return;
-
         if (!ScreenTypeUtils.getInstance().isFullScreen()) return;
         if (touchEvent.getAction() == MotionEvent.ACTION_DOWN || touchEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             return;
@@ -328,9 +327,7 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         if (isNeedStartTimer) {
             starTimer();
         }
-        if (!cardWidgetIsOnShowing) {
-            return;
-        }
+
         ThreadManager.getInstance().execute(() -> {
             try {
                 mLauncherModeManager.setLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE, PatacLauncherModeConfig.HIDE_APP_WIDGET_AND_WEATHER);
