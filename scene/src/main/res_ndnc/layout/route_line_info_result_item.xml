@@ -27,7 +27,7 @@
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_num"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_14"
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="0"

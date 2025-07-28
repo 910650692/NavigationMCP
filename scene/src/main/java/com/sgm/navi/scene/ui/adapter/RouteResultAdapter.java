@@ -173,8 +173,6 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
 
         holder.mRouteLineInfoResultItemBinding.itemRootView.setBackgroundColor(
                 AppCache.getInstance().getMContext().getResources().getColor(contextColor));
-        holder.mRouteLineInfoResultItemBinding.routeItemDistance.setTextColor(
-                AppCache.getInstance().getMContext().getResources().getColor(select ? R.color.text_color_route_item_select : R.color.text_color_route_item_no_select));
         holder.mRouteLineInfoResultItemBinding.routeItemPrice.setTextColor(
                 AppCache.getInstance().getMContext().getResources().getColor(select ? R.color.text_color_route_item_select : R.color.text_color_route_item_no_select));
         holder.mRouteLineInfoResultItemBinding.routeItemTrafficLightValue.setTextColor(

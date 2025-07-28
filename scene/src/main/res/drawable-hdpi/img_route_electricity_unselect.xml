@@ -1,31 +1,24 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/dp_40"
-    android:height="@dimen/dp_40"
-    android:autoMirrored="true"
-    android:viewportWidth="40"
-    android:viewportHeight="40">
-
+    android:width="@dimen/dp_42"
+    android:height="@dimen/dp_42"
+    android:viewportWidth="42"
+    android:viewportHeight="42">
     <path
+        android:pathData="M13.222,11.291C13.53,10.937 13.756,10.869 14,10.869L28,10.869C28.244,10.869 28.47,10.937 28.632,11.065L28.778,33.605C28.47,33.96 28.244,34.028 28,34.028L14,34.028C13.756,34.028 13.53,33.96 13.368,33.831Z"
+        android:strokeWidth="1.94444444"
         android:fillColor="#00000000"
-        android:fillType="evenOdd"
-        android:pathData="M13.2,12.051L13.2,31.507C13.2,32.179 13.809,32.723 14.56,32.723L25.44,32.723C26.191,32.723 26.8,32.179 26.8,31.507L26.8,12.051C26.8,11.38 26.191,10.835 25.44,10.835L14.56,10.835C13.809,10.835 13.2,11.38 13.2,12.051Z"
-        android:strokeWidth="2"
-        android:strokeColor="@color/route_icon_color"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-
+        android:strokeColor="@color/img_route_lingt_unselect"
+        android:fillType="evenOdd"/>
     <path
-        android:fillColor="@color/route_icon_color"
+        android:pathData="M18.083,9.897L18.083,8.448C18.083,7.648 18.736,7 19.542,7L22.458,7C23.264,7 23.917,7.648 23.917,8.448L23.917,9.897L18.083,9.897Z"
+        android:strokeWidth="1"
+        android:fillColor="@color/img_route_lingt_unselect"
         android:fillType="nonZero"
-        android:pathData="M17.423,9.854L17.423,8.566C17.423,7.854 18,7.277 18.711,7.277L21.289,7.277C22,7.277 22.577,7.854 22.577,8.566L22.577,9.854L17.423,9.854Z"
-        android:strokeWidth="1"
-        android:strokeColor="#00000000" />
-
+        android:strokeColor="#00000000"/>
     <path
-        android:fillColor="@color/route_icon_color"
-        android:fillType="evenOdd"
-        android:pathData="M15.12,31.128l0,-10.761l9.678,-0l0,10.761z"
+        android:pathData="M15.167,32.103l0,-11l11.667,-0l0,11z"
         android:strokeWidth="1"
-        android:strokeColor="#00000000" />
-
+        android:fillColor="@color/img_route_lingt_unselect"
+        android:fillType="evenOdd"
+        android:strokeColor="#00000000"/>
 </vector>

@@ -338,9 +338,9 @@
 
             <com.sgm.navi.ui.view.SkinSwitch
                 android:id="@+id/route_line_info_switch_energy"
-                android:layout_width="@dimen/dp_90"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_26"
                 android:background="@android:color/transparent"
                 android:button="@drawable/switch_route_button"
                 android:checked="false"
@@ -348,7 +348,7 @@
                 android:track="@null"
                 android:visibility="@{ViewModel.getBatterCheckBoxVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
-                app:layout_constraintEnd_toEndOf="@+id/route_line_info_bg_prefer"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/route_line_info_bg_prefer" />
 
             <com.sgm.navi.ui.view.SkinTextView

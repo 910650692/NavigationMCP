@@ -4376,4 +4376,5 @@
     <dimen name="navi_preference_nol_corner">@dimen/dp_14</dimen>
     <dimen name="traffic_big_pic_margin_hor">@dimen/dp_670</dimen>
     <dimen name="traffic_big_pic_margin_vertical">@dimen/dp_160</dimen>
+    <dimen name="bg_route_detail_corner">@dimen/dp_8</dimen>
 </resources>

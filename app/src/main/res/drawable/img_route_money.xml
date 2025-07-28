@@ -1,44 +1,12 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/dp_40"
-    android:height="@dimen/dp_40"
-    android:autoMirrored="true"
-    android:viewportWidth="40"
-    android:viewportHeight="40">
-
-    <path
-        android:fillColor="#00000000"
-        android:fillType="evenOdd"
-        android:pathData="M12.105,16.961L27.895,16.961"
-        android:strokeWidth="3"
-        android:strokeColor="@color/text_color_route_item_select"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-
-    <path
-        android:fillColor="#00000000"
-        android:fillType="evenOdd"
-        android:pathData="M12.105,24.855L27.895,24.855"
-        android:strokeWidth="3"
-        android:strokeColor="@color/text_color_route_item_select"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-
-    <path
-        android:fillColor="#00000000"
-        android:fillType="evenOdd"
-        android:pathData="M20.011,16.961L20.011,32.75"
-        android:strokeWidth="3"
-        android:strokeColor="@color/text_color_route_item_select"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-
-    <path
-        android:fillColor="#00000000"
-        android:fillType="evenOdd"
-        android:pathData="M27.895,7.75l-7.895,7.895l-7.895,-7.895"
-        android:strokeWidth="3"
-        android:strokeColor="@color/text_color_route_item_select"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-
+    android:width="@dimen/dp_29"
+    android:height="@dimen/dp_29"
+    android:viewportWidth="29"
+    android:viewportHeight="29">
+  <path
+      android:pathData="M10.105,5.722L14.499,10.146L18.895,5.722C19.272,5.343 19.882,5.343 20.259,5.722C20.636,6.101 20.636,6.716 20.259,7.095L15.982,11.399L19.577,11.4C20.11,11.4 20.542,11.834 20.542,12.371C20.542,12.907 20.11,13.342 19.577,13.342L15.471,13.341L15.471,16.509L19.577,16.51C20.11,16.51 20.542,16.945 20.542,17.481C20.542,18.017 20.11,18.452 19.577,18.452L15.471,18.451L15.472,22.592C15.472,23.128 15.04,23.563 14.507,23.563C13.974,23.563 13.542,23.128 13.542,22.592L13.542,18.451L9.423,18.452C8.89,18.452 8.458,18.017 8.458,17.481C8.458,16.945 8.89,16.51 9.423,16.51L13.542,16.509L13.542,13.341L9.423,13.342C8.89,13.342 8.458,12.907 8.458,12.371C8.458,11.834 8.89,11.4 9.423,11.4L13.016,11.399L8.741,7.095C8.364,6.716 8.364,6.101 8.741,5.722C9.118,5.343 9.728,5.343 10.105,5.722Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/img_route_lingt_select"
+      android:fillType="nonZero"
+      android:strokeColor="#00000000"/>
 </vector>
