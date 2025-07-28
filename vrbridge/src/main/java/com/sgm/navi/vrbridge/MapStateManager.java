@@ -149,6 +149,9 @@ public final class MapStateManager {
     private final AgreementPackage.AgreementCallback mAgreementCallback = new AgreementPackage.AgreementCallback() {
         @Override
         public void agreementCallback(final boolean isSGMAgreed) {
+            if (Logger.openLog) {
+                Logger.d(IVrBridgeConstant.TAG, "agreement", isSGMAgreed);
+            }
             updatePrivacy();
         }
     };
@@ -157,6 +160,9 @@ public final class MapStateManager {
     private final CommonManager.ISettingDaoChangeListener mSettingDaoChangeListener = new CommonManager.ISettingDaoChangeListener() {
         @Override
         public void onFirstLauncherChanged(String value) {
+            if (Logger.openLog) {
+                Logger.d(IVrBridgeConstant.TAG, "firstLauncher", value);
+            }
             updatePrivacy();
         }
     };
@@ -166,6 +172,9 @@ public final class MapStateManager {
         @Override
         public void onUpdateSetting(String key, boolean value) {
             if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
+                if (Logger.openLog) {
+                    Logger.d(IVrBridgeConstant.TAG, "locationStatus", value);
+                }
                 updatePrivacy();
             }
         }
@@ -450,9 +459,8 @@ public final class MapStateManager {
     //更新语音隐私协议端状态
     private void updatePrivacy() {
         final boolean agreePrivacy = getVoicePrivacyStatus();
-        mVrStatusMap.clear();
-        mVrStatusMap.put(SystemStateCons.NaviStateCons.KEY_PRIVACY_ACCEPTED, agreePrivacy);
-        updateVrMapStatus();
+        mBuilder.setHasPrivacyPermission(agreePrivacy);
+        AMapStateUtils.saveMapState(mBuilder.build());
     }
 
     /**
