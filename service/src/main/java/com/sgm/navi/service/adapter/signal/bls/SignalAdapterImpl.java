@@ -681,16 +681,17 @@ public class SignalAdapterImpl implements SignalApi {
         if (!VehicleController.isCleaArch()) {
             return -1;
         }
-        final VehicleController.Result<Integer> result;
+        final Integer result;
         try {
-            result = DriveAssistController.getInstance().getNavigationOnAdasTextToSpeachStatus();
+            CarPropertyValue<Integer> property = mPropertyManager.getProperty(Integer.class, PatacProperty.NAVIGATION_ON_ADAS_INDICATION_REQUEST
+                    , VehicleArea.GLOBAL);
+            result = property.getValue();
         } catch (Exception e) {
             Logger.i(TAG, "getNavigationOnAdasTextToSpeachStatus: " + e.getMessage());
             return -1;
         }
-        final Integer value = result.getValue(-1);
-        Logger.d(TAG, "getNavigationOnAdasTextToSpeachStatus: " + value);
-        return value;
+        Logger.d(TAG, "getNavigationOnAdasTextToSpeachStatus: " + result);
+        return result;
     }
 
     //region 音量相关接口

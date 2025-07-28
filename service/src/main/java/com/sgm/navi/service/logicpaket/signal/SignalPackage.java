@@ -299,9 +299,9 @@ public final class SignalPackage implements SignalAdapterCallback {
     }
 
     /**
-     * 智慧领航播报开关
+     * l2++ nop播报开关
      *
-     * @return 0:关闭 1:开启
+     * @return 2:开启 other:关闭
      */
     public int getNavigationOnAdasTextToSpeachStatus() {
         return mSignalAdapter.getNavigationOnAdasTextToSpeachStatus();
