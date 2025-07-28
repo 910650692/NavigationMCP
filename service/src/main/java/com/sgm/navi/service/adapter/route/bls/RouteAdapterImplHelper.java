@@ -1684,30 +1684,29 @@ public class RouteAdapterImplHelper {
      */
     public void sendL2SData(final RouteCurrentPathParam routeCurrentPathParam) {
         try {
-            ThreadManager.getInstance().runAsync(() -> {
-                if (routeCurrentPathParam == null) {
-                    Logger.e(TAG, "sendL2SData: routeCurrentPathParam == null");
-                    return;
+            if (routeCurrentPathParam == null) {
+                Logger.e(TAG, "sendL2SData: routeCurrentPathParam == null");
+                return;
+            }
+            final PathInfo pathInfo = (PathInfo) routeCurrentPathParam.getMPathInfo();
+            long startTime = System.currentTimeMillis();
+            if (pathInfo == null) {
+                Logger.e(TAG, "sendL2SData: pathInfo == null");
+                return;
+            }
+            final RouteL2Data routeL2Data = getRouteL2Data(pathInfo);
+            long middleTime = System.currentTimeMillis();
+            for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
+                if (resultObserver == null) {
+                    continue;
                 }
-                final PathInfo pathInfo = (PathInfo) routeCurrentPathParam.getMPathInfo();
-                long startTime = System.currentTimeMillis();
-                if (pathInfo == null) {
-                    Logger.e(TAG, "sendL2SData: pathInfo == null");
-                    return;
-                }
-                final RouteL2Data routeL2Data = getRouteL2Data(pathInfo);
-                long middleTime = System.currentTimeMillis();
-                for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
-                    if (resultObserver == null) {
-                        continue;
-                    }
-                    resultObserver.onRouteL2Info(routeL2Data);
-                }
-                long endTime = System.currentTimeMillis();
-                Logger.d(TAG, "getRouteL2Data time: ", middleTime - startTime, endTime - middleTime);
-            });
+                resultObserver.onRouteL2Info(routeL2Data);
+            }
+            long endTime = System.currentTimeMillis();
+            Logger.d(TAG, "getRouteL2Data time: ", middleTime - startTime, endTime - middleTime);
         } catch (Exception e) {
-            Logger.e(TAG, "sendL2SData: ", e);
+            Logger.e(TAG, "sendL2SData: ", e.getMessage());
+            e.printStackTrace();
         }
     }
 

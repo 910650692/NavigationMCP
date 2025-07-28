@@ -2,6 +2,7 @@ package com.sgm.navi.service.adapter.route;
 
 import com.android.utils.ConvertUtils;
 import com.sgm.navi.service.AdapterConfig;
+import com.sgm.navi.service.adapter.l2.L2Adapter;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.position.LocInfoBean;
@@ -234,9 +235,11 @@ final public class RouteAdapter {
     }
 
     public void sendL2Data(final MapType mapTypeId) {
-        if (!ConvertUtils.isEmpty(mRouteCurrentPathParamMap.get(mapTypeId))) {
-            mRouteApi.sendL2Data(mRouteCurrentPathParamMap.get(mapTypeId));
-        }
+        L2Adapter.getInstance().postL2Thread(() -> {
+            if (!ConvertUtils.isEmpty(mRouteCurrentPathParamMap.get(mapTypeId))) {
+                mRouteApi.sendL2Data(mRouteCurrentPathParamMap.get(mapTypeId));
+            }
+        });
     }
 
     public void requestRouteDetails(int index) {

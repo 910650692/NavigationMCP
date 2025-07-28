@@ -1192,4 +1192,11 @@ public class L2Adapter {
         roadGroupDatas.add(roadGroupData);
         return roadGroupDatas;
     }
+
+    public void postL2Thread(Runnable runnable) {
+        if (mScheduler == null) {
+            return;
+        }
+        mScheduler.execute(runnable);
+    }
 }
