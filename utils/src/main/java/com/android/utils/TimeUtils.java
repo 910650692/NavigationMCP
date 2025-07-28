@@ -2,6 +2,7 @@ package com.android.utils;
 
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.android.utils.log.Logger;
 
@@ -1008,7 +1009,7 @@ public class TimeUtils {
             LocalTime startTime = LocalTime.parse(times[0], formatter);
             LocalTime endTime = LocalTime.parse(times[1], formatter);
             // 获取当前时间
-            LocalTime currentTime = LocalTime.now();
+            LocalTime currentTime = LocalTime.now().truncatedTo(java.time.temporal.ChronoUnit.MINUTES);
             // 判断当前时间是否在范围内
             if (endTime.isAfter(startTime)) {
                 // 正常时间范围（不跨午夜）
