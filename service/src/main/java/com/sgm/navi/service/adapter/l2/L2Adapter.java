@@ -1039,7 +1039,7 @@ public class L2Adapter {
         }
         ArrayList<Coord2DInt32> points = linkInfo.getPoints();
         Coord2DInt32 coord2DInt32 = points.get(points.size() - 1);
-        return new GeoPoint(coord2DInt32.lon, coord2DInt32.lat);
+        return new GeoPoint(coord2DInt32.lon / 3600000.0, coord2DInt32.lat / 3600000.0);
     }
 
     public ScSegmentInfo getScSegmentList(long curPathId, long maxLength) {
@@ -1069,6 +1069,19 @@ public class L2Adapter {
                 ScSegmentInfo.ScSegment scSegment = new ScSegmentInfo.ScSegment();
                 scSegment.setIndex(index++);
                 scSegment.setLength(linkInfo.getLength());
+
+                ArrayList<Coord2DInt32> points = linkInfo.getPoints();
+                if (points != null) {
+                    for (Coord2DInt32 coord2DInt32 : points) {
+                        if (coord2DInt32 == null) {
+                            continue;
+                        }
+                        GeoPoint geoPoint = new GeoPoint(coord2DInt32.lon / 3600000.0, coord2DInt32.lat / 3600000.0);
+                        scSegment.addScPoints(geoPoint);
+                    }
+                }
+
+                scSegment.addScRealTimeSpds((double) linkInfo.getSpeed());
 
                 ArrayList<CameraExt> cameraExt = linkInfo.getCameraExt();
                 if (cameraExt != null) {
@@ -1107,7 +1120,7 @@ public class L2Adapter {
             SegmentInfo segmentInfo = pathInfo.getSegmentInfo(curSegIdx);
             LinkInfo linkInfo = segmentInfo.getLinkInfo(curLinkIdx);
             Coord2DInt32 coord2DInt32 = linkInfo.getPoints().get(curPointIdx);
-            return new GeoPoint(coord2DInt32.lon, coord2DInt32.lat);
+            return new GeoPoint(coord2DInt32.lon / 3600000.0, coord2DInt32.lat / 3600000.0);
         } catch (Exception e) {
             Logger.e(TAG, "getScSegmentList error");
             e.printStackTrace();

@@ -707,19 +707,21 @@ public final class SuperCruiseManager {
 
     private void sendRouteData() {
         boolean active = Objects.equals(mNaviStatus, NaviStatus.NaviStatusType.NAVING);
+        if (!active) {
+            return;
+        }
         RouteInfo.RouteProto route = generateRouteProto(active);
         try {
             String routeInfo = JsonFormat.printer().printingEnumsAsInts().omittingInsignificantWhitespace().print(route);
-            if (!Logger.isDebugLevel()) {
-                return;
+            if (Logger.isDebugLevel()) {
+//                JsonLog.print("sendRouteData", routeInfo);
+                JsonLog.saveJsonToCache(routeInfo, "sc.json", "sendRouteData");
             }
-//            JsonLog.print("sendRouteData", routeInfo);
-            Logger.d(TAG, "sendRouteData: ", routeInfo);
-            JsonLog.saveJsonToCache(routeInfo, "sc.json", "sendRouteData");
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
         mAdasManager.sendRouteInfo(route);
+        Logger.d(TAG, "sendRouteData: success");
     }
 
     public RouteInfo.RouteProto generateRouteProto(boolean active) {
@@ -793,14 +795,31 @@ public final class SuperCruiseManager {
                 default:
                     builder.setRoadclass(RouteInfo.RoadClassType.LOCAL_ROAD);
             }
-            List<RouteInfo.Spdlmt> pointsList = new ArrayList<>();
-            scSegment.getScSpeedLimits().forEach(scPoint -> {
+            List<RouteInfo.Spdlmt> spdlmtList = new ArrayList<>();
+            scSegment.getScSpeedLimits().forEach(scSpeedLimit -> {
                 RouteInfo.Spdlmt.Builder spdlmtBuilder = RouteInfo.Spdlmt.newBuilder();
-                spdlmtBuilder.setDist(scPoint.getOffset());
-                spdlmtBuilder.setSpeed(scPoint.getSpeed());
-                pointsList.add(spdlmtBuilder.build());
+                spdlmtBuilder.setDist(scSpeedLimit.getOffset());
+                spdlmtBuilder.setSpeed(scSpeedLimit.getSpeed());
+                spdlmtList.add(spdlmtBuilder.build());
             });
-            builder.addAllSpdlmt(pointsList);
+            builder.addAllSpdlmt(spdlmtList);
+
+//            List<RouteInfo.Point> pointList = new ArrayList<>();
+//            scSegment.getScPoints().forEach(scPoint -> {
+//                RouteInfo.Point.Builder pointBuilder = RouteInfo.Point.newBuilder();
+//                pointBuilder.setLat(scPoint.getLat());
+//                pointBuilder.setLon(scPoint.getLon());
+//                pointList.add(pointBuilder.build());
+//            });
+//            builder.addAllPoints(pointList);
+
+            List<RouteInfo.Livespd> livespdList = new ArrayList<>();
+            scSegment.getScRealTimeSpds().forEach(scRealTimeSpd -> {
+                RouteInfo.Livespd.Builder livespdBuilder = RouteInfo.Livespd.newBuilder();
+                livespdBuilder.setSpeed(scRealTimeSpd);
+                livespdList.add(livespdBuilder.build());
+            });
+            builder.addAllLivespd(livespdList);
 
             builder.setLength(scSegment.getLength());
             mSegments.add(builder.build());
