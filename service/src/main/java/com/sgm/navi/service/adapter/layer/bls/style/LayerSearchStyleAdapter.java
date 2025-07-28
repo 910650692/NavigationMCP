@@ -101,9 +101,21 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                                     if (mSpaceTotal > 0) {
                                         Logger.d(TAG, "自定义停车场扎标");
                                         return KEY_SEARCH_PARK_ROUTE;
+                                    } else {
+                                        Logger.d(TAG, "默认停车场扎标");
+                                        return KEY_SEARCH_PARK_POINT;
                                     }
+                                } else {
+                                    Logger.d(TAG, "默认停车场扎标");
+                                    return KEY_SEARCH_PARK_POINT;
                                 }
+                            } else {
+                                Logger.d(TAG, "默认停车场扎标");
+                                return KEY_SEARCH_PARK_POINT;
                             }
+                        } else {
+                            Logger.d(TAG, "默认停车场扎标");
+                            return KEY_SEARCH_PARK_POINT;
                         }
                     } else {
                         Logger.d(TAG, "默认停车场扎标");
