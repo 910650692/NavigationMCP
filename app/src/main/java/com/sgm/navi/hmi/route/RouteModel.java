@@ -1114,6 +1114,13 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     @Override
+    public void cancelTimer() {
+        if (mViewModel != null) {
+            mViewModel.cancelTimer();
+        }
+    }
+
+    @Override
     public void onRouteItemClick(final MapType mapTypeId, final LayerPointItemType type, final LayerItemRoutePointClickResult item) {
         Logger.e(TAG, "onRouteItemClick-RouteModel");
         if (item == null || ConvertUtils.isEmpty(item)) {

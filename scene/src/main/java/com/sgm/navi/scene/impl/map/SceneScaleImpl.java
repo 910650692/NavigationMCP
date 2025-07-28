@@ -17,6 +17,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
 /**
  * @Description TODO
@@ -42,6 +43,7 @@ public class SceneScaleImpl extends BaseSceneModel<SceneScaleView> implements IS
         mapPackage.reduceLevel(MapType.MAIN_SCREEN_MAIN_MAP);
         naviScaleClick();
         if(NaviStatusPackage.getInstance().isGuidanceActive()) sendBuryPointForZoomByClick(BuryConstant.ZoomAction.ZOOM_OUT);
+        if(RoutePackage.getInstance().isRouteState()) RoutePackage.getInstance().cancelTimer();
     }
 
     @Override
@@ -50,6 +52,7 @@ public class SceneScaleImpl extends BaseSceneModel<SceneScaleView> implements IS
         mapPackage.amplifyLevel(MapType.MAIN_SCREEN_MAIN_MAP);
         naviScaleClick();
         if(NaviStatusPackage.getInstance().isGuidanceActive()) sendBuryPointForZoomByClick(BuryConstant.ZoomAction.ZOOM_IN);
+        if(RoutePackage.getInstance().isRouteState()) RoutePackage.getInstance().cancelTimer();
     }
 
     @HookMethod

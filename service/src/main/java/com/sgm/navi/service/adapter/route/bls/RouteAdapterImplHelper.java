@@ -2140,6 +2140,7 @@ public class RouteAdapterImplHelper {
             Logger.d(TAG, "onRerouteInfo: " + info.option.getPOIForRequest().getPointSize(PointType.PointTypeVia));
             routeLineLayerParam.setMRouteType(info.option.getRouteType());
             routeLineLayerParam.setMPoiForRequest(info.option.getPOIForRequest());
+            requestRouteResult.setMRouteType(info.option.getRouteType());
             requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
             requestRouteResult.setMFastNavi(true);
             requestRouteResult.setMAutoRouting(true);

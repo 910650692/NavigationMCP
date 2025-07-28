@@ -211,4 +211,10 @@ public interface IRouteResultObserver {
      * 语音选路后发起导航
      */
     default void onVoiceStartNavigation() {}
+
+    /**
+     * 取消倒计时
+     */
+    default void cancelTimer() {
+    }
 }

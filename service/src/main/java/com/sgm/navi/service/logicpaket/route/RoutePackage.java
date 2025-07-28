@@ -2070,6 +2070,22 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mRouteAdapter.clearRouteResultData();
     }
 
+    /**
+     * 取消倒计时
+     *
+     */
+    public void cancelTimer() {
+        if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
+            return;
+        }
+        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+            if (ConvertUtils.isEmpty(routeResultObserver)) {
+                continue;
+            }
+            routeResultObserver.cancelTimer();
+        }
+    }
+
     private static final class Helper {
         private static final RoutePackage EP = new RoutePackage();
     }
