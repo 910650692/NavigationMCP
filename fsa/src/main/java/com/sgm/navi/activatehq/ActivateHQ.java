@@ -100,7 +100,7 @@ public final class ActivateHQ {
         ActivatePackage.getInstance().getAppKeyFromNet(new NetQueryManager.INetResultCallBack<AppKeyResponse>() {
             @Override
             public void onSuccess(AppKeyResponse response) {
-                Logger.d(TAG, response.toString());
+                Logger.e(TAG, response.toString());
                 final String appKey = response.getMAppKey();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.APP_KEY, appKey);
                 NetQueryManager.getInstance().saveAppSecurity(appKey);
@@ -109,9 +109,9 @@ public final class ActivateHQ {
 
             @Override
             public void onFailed(final String errorCode) {
-                Logger.d(TAG, "获取AppKey失败");
+                Logger.e(TAG, "获取AppKey失败");
                 if (mNetFailedRetryCount.incrementAndGet() < 3) {
-                    Logger.d(TAG, "网络失败计数: ", mNetFailedRetryCount.get());
+                    Logger.e(TAG, "网络失败计数: ", mNetFailedRetryCount.get());
                     int retryIndex = mNetFailedRetryCount.get() - 1;
                     if (retryIndex >= mDelays.length) {
                         retryIndex = mDelays.length - 1;
@@ -123,7 +123,7 @@ public final class ActivateHQ {
                         }
                     }, mDelays[retryIndex], TimeUnit.MINUTES);
                 } else {
-                    Logger.d(TAG, "请求网络失败重试次数用完，等待下次点火");
+                    Logger.e(TAG, "请求网络失败重试次数用完，等待下次点火");
                     if (!mNetRetryExecutor.isShutdown()) {
                         mNetRetryExecutor.shutdown();
                     }
@@ -136,36 +136,36 @@ public final class ActivateHQ {
      * 网络请求uuid
      */
     private void postUUID() {
-        Logger.d(TAG, "postUUID: ");
+        Logger.e(TAG, "postUUID: ");
 //        CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, "");
 //        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
 //            UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
-//            Logger.d(TAG, "UUID静态变量为空，数据库存有UUID = ", UUID);
+//            Logger.e(TAG, "UUID静态变量为空，数据库存有UUID = ", UUID);
 //            mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
 //            readyCreateOrder();
 //            return;
 //        }
 
         final UuidRequest uuidRequest = new UuidRequest(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
-        Logger.d(TAG, "uuid req : ", uuidRequest);
+        Logger.e(TAG, "uuid req : ", uuidRequest);
         NetQueryManager.getInstance().queryUuid(uuidRequest, new NetQueryManager.INetResultCallBack<UuidResponse>() {
             @Override
             public void onSuccess(final UuidResponse response) {
                 if (Logger.openLog) {
-                    Logger.d(TAG, response.toString());
+                    Logger.e(TAG, response.toString());
                 }
                 UUID = response.getMVin();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, UUID);
                 //todo adas要测试，直接传下单成功与uuid
                 mAdasManager.setUUID(UUID, UuidSubStatus.Subscribed);
-                Logger.d(TAG, "！！！！！成功发送UUID到ADAS服务 : ", UUID);
+                Logger.e(TAG, "！！！！！成功发送UUID到ADAS服务 : ", UUID);
                 //mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
                 //readyCreateOrder();
             }
 
             @Override
             public void onFailed(final String errorCode) {
-                Logger.d(TAG, "Uuid网络请求失败");
+                Logger.e(TAG, "Uuid网络请求失败");
                 if (ConvertUtils.equals(errorCode, "0003")) {
                     Logger.e(TAG, "错误码 0003 AppKey失效，重新请求");
                     testAppKey();
@@ -176,7 +176,7 @@ public final class ActivateHQ {
                     if (retryIndex >= mDelays.length) {
                         retryIndex = mDelays.length - 1;
                     }
-                    Logger.d(TAG, "网络失败计数: ", mNetFailedRetryCount.get());
+                    Logger.e(TAG, "网络失败计数: ", mNetFailedRetryCount.get());
                     mNetRetryExecutor.schedule(new Runnable() {
                         @Override
                         public void run() {
@@ -184,7 +184,7 @@ public final class ActivateHQ {
                         }
                     }, mDelays[retryIndex], TimeUnit.MINUTES);
                 } else {
-                    Logger.d(TAG, "uuid请求网络失败重试次数用完，等待下次点火");
+                    Logger.e(TAG, "uuid请求网络失败重试次数用完，等待下次点火");
                     if (!mNetRetryExecutor.isShutdown()) {
                         mNetRetryExecutor.shutdown();
                     }
@@ -200,13 +200,13 @@ public final class ActivateHQ {
         CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID, "");
         final String orderId = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID);
         if (!ConvertUtils.isEmpty(orderId)) {
-            Logger.d(TAG, "有订单号记录，直接查询订单 : ", orderId);
+            Logger.e(TAG, "有订单号记录，直接查询订单 : ", orderId);
             getInstance().queryOrderStatus(new NetQueryManager.INetResultCallBack<QueryOrderResponse>() {
                 @Override
                 public void onSuccess(final QueryOrderResponse statusBean) {
-                    Logger.d(TAG, "firstCheckOrderStatus success");
+                    Logger.e(TAG, "firstCheckOrderStatus success");
                     if (Logger.openLog) {
-                        Logger.d(TAG, statusBean.toString());
+                        Logger.e(TAG, statusBean.toString());
                     }
                     handleStatus(statusBean.getMOrderStatus());
                     if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
@@ -217,7 +217,7 @@ public final class ActivateHQ {
 
                 @Override
                 public void onFailed(final String errorCode) {
-                    Logger.d(TAG, "firstCheckOrderStatus failed");
+                    Logger.e(TAG, "firstCheckOrderStatus failed");
                     if (ConvertUtils.equals(errorCode, "0003")) {
                         Logger.e(TAG, "错误码 0003 AppKey失效，重新请求");
                         testAppKey();
@@ -228,7 +228,7 @@ public final class ActivateHQ {
                         if (retryIndex >= mDelays.length) {
                             retryIndex = mDelays.length - 1;
                         }
-                        Logger.d(TAG, "网络失败计数 : ", mNetFailedRetryCount.get());
+                        Logger.e(TAG, "网络失败计数 : ", mNetFailedRetryCount.get());
                         mNetRetryExecutor.schedule(new Runnable() {
                             @Override
                             public void run() {
@@ -236,7 +236,7 @@ public final class ActivateHQ {
                             }
                         }, mDelays[retryIndex], TimeUnit.MINUTES);
                     } else {
-                        Logger.d(TAG, "网络失败重试次数用完，等待下次点火");
+                        Logger.e(TAG, "网络失败重试次数用完，等待下次点火");
                         if (!mNetRetryExecutor.isShutdown()) {
                             mNetRetryExecutor.shutdown();
                         }
@@ -253,7 +253,7 @@ public final class ActivateHQ {
      * 云对云下单
      */
     public void createCloudOrder() {
-        Logger.d(TAG, "createCloudOrder");
+        Logger.e(TAG, "createCloudOrder");
         final String uuid = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
         if (ConvertUtils.isEmpty(UUID) && ConvertUtils.isEmpty(uuid)) {
             Logger.e(TAG, "uuid信息缺失");
@@ -262,16 +262,16 @@ public final class ActivateHQ {
         }
 
         if (!ConvertUtils.equals(UUID, uuid) && !ConvertUtils.isEmpty(uuid)) {
-            Logger.d(TAG, "UUID constant = ", UUID, " ; UUID in database = ", uuid);
+            Logger.e(TAG, "UUID constant = ", UUID, " ; UUID in database = ", uuid);
             UUID = uuid;
         }
-        Logger.i(TAG, "UUID = ", UUID);
+        Logger.e(TAG, "UUID = ", UUID);
         final CreateOrderRequest createOrderReq = new CreateOrderRequest(API_VERSION, TEST_APP_ID, UUID, HQ);
-        Logger.d(TAG, "createOrderReq  : ", createOrderReq);
+        Logger.e(TAG, "createOrderReq  : ", createOrderReq);
         NetQueryManager.getInstance().createOrder(createOrderReq, new NetQueryManager.INetResultCallBack<CreateOrderResponse>() {
             @Override
             public void onSuccess(final CreateOrderResponse response) {
-                Logger.d(TAG, response.toString());
+                Logger.e(TAG, response.toString());
                 ORDER_ID = response.getMCusOrderId();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID, response.getMCusOrderId());
                 pollOrderStatusWithRetry();
@@ -285,7 +285,7 @@ public final class ActivateHQ {
                     return;
                 }
                 if (mNetFailedRetryCount.incrementAndGet() < 3) {
-                    Logger.d(TAG, "网络失败计数 : ", mNetFailedRetryCount.get());
+                    Logger.e(TAG, "网络失败计数 : ", mNetFailedRetryCount.get());
                     int retryIndex = mNetFailedRetryCount.get() - 1;
                     if (retryIndex >= mDelays.length) {
                         retryIndex = mDelays.length - 1;
@@ -297,7 +297,7 @@ public final class ActivateHQ {
                         }
                     }, mDelays[retryIndex], TimeUnit.MINUTES);
                 } else {
-                    Logger.d(TAG, "下单网络失败重试次数用完，等待下次点火");
+                    Logger.e(TAG, "下单网络失败重试次数用完，等待下次点火");
                     if (!mNetRetryExecutor.isShutdown()) {
                         mNetRetryExecutor.shutdown();
                     }
@@ -335,17 +335,17 @@ public final class ActivateHQ {
                     final NetQueryManager.INetResultCallBack<QueryOrderResponse> callBack = new NetQueryManager.INetResultCallBack<QueryOrderResponse>() {
                         @Override
                         public void onSuccess(final QueryOrderResponse statusBean) {
-                            Logger.d(TAG, "checkOrderStatus success");
-                            Logger.d(TAG, statusBean.toString());
+                            Logger.e(TAG, "checkOrderStatus success");
+                            Logger.e(TAG, statusBean.toString());
 
                             handleStatus(statusBean.getMOrderStatus());
                             if (ConvertUtils.equals(statusBean.getMOrderStatus(), "2")) {
                                 future.complete(true);
                                 executor.shutdownNow();
                             } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "1")) {
-                                Logger.d(TAG, "已下单/等待交付");
+                                Logger.e(TAG, "已下单/等待交付");
                                 final int currentCount = retryCount.incrementAndGet();
-                                Logger.d(TAG, "轮询次数 : ", currentCount);
+                                Logger.e(TAG, "轮询次数 : ", currentCount);
                                 if (currentCount > maxRetries) {
                                     future.complete(false);
                                     executor.shutdownNow();
@@ -367,7 +367,7 @@ public final class ActivateHQ {
 
                         @Override
                         public void onFailed(final String errorCode) {
-                            Logger.d(TAG, "查询订单网络请求失败");
+                            Logger.e(TAG, "查询订单网络请求失败");
                             if (ConvertUtils.equals(errorCode, "0003")) {
                                 Logger.e(TAG, "错误码 0003 AppKey失效，重新请求");
                                 future.complete(false);
@@ -377,11 +377,11 @@ public final class ActivateHQ {
                             }
 
                             final int currentCount = retryCount.incrementAndGet();
-                            Logger.d(TAG, "轮询次数 : ", currentCount);
+                            Logger.e(TAG, "轮询次数 : ", currentCount);
                             if (currentCount > maxRetries) {
                                 future.complete(false);
                                 executor.shutdownNow();
-                                Logger.d(TAG, "最后一次查询网络请求失败，等待下次汽车启动重新激活HQ");
+                                Logger.e(TAG, "最后一次查询网络请求失败，等待下次汽车启动重新激活HQ");
                             } else {
                                 executor.schedule(taskRef.get(), delays[currentCount - 1], TimeUnit.MINUTES);
                             }
@@ -427,7 +427,7 @@ public final class ActivateHQ {
      * @param callBack 网络结果回调
      */
     public void queryOrderStatus(final NetQueryManager.INetResultCallBack<QueryOrderResponse> callBack) {
-        Logger.d(TAG, "checkOrderStatus");
+        Logger.e(TAG, "checkOrderStatus");
         final String orderId = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID);
 
         if (ConvertUtils.isEmpty(ORDER_ID) && ConvertUtils.isEmpty(orderId)) {
@@ -436,12 +436,12 @@ public final class ActivateHQ {
         }
 
         if (!ConvertUtils.equals(ORDER_ID, orderId) && !ConvertUtils.isEmpty(orderId)) {
-            Logger.d(TAG, "ORDER_ID constant = ", ORDER_ID, " ; orderId in database = ", orderId);
+            Logger.e(TAG, "ORDER_ID constant = ", ORDER_ID, " ; orderId in database = ", orderId);
             ORDER_ID = orderId;
         }
-        Logger.i(TAG, "ORDER_ID = ", ORDER_ID);
+        Logger.e(TAG, "ORDER_ID = ", ORDER_ID);
         final QueryOrderRequest queryOrderRequest = new QueryOrderRequest(SYS_VERSION, TEST_APP_ID, UUID, ORDER_ID);
-        Logger.d(TAG, "queryOrderRequest  : ", queryOrderRequest);
+        Logger.e(TAG, "queryOrderRequest  : ", queryOrderRequest);
         NetQueryManager.getInstance().queryOrder(queryOrderRequest, callBack);
 
     }
@@ -452,7 +452,7 @@ public final class ActivateHQ {
      * @param status statusBean
      */
     private void handleStatus(final String status) {
-        Logger.i(TAG, "status = ", status);
+        Logger.e(TAG, "status = ", status);
         if (ConvertUtils.equals(status, "1")) {
             mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
         } else if (ConvertUtils.equals(status, "2")) {

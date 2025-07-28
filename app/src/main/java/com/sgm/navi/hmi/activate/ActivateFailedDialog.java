@@ -111,7 +111,7 @@ public class ActivateFailedDialog {
                     loginCode = mViewBinding.loginCode.getText().toString();
                 }
 
-                Logger.d("NaviApp_Activate_Service_BackDoor", "userCode: ", userCode, " loginCode: ", loginCode);
+                Logger.e("NaviApp_Activate_Service_BackDoor", "userCode: ", userCode, " loginCode: ", loginCode);
 
                 ActivationManager.getInstance().manualActivate(userCode, loginCode);
             }
@@ -153,7 +153,7 @@ public class ActivateFailedDialog {
 
     public void dismiss() {
         if (mDialogView != null && mWindowManager != null) {
-            Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "Dismissing dialog view");
+            Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "Dismissing dialog view");
             try {
                 mWindowManager.removeView(mDialogView);
             } catch (Exception e) {

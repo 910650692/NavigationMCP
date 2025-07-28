@@ -27,11 +27,11 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
     }
 
     public void init() {
-        Logger.d(TAG, "ActivateUiStateManager init");
+        Logger.e(TAG, "ActivateUiStateManager init");
         mActObserver = new IActivateObserver() {
             @Override
             public void onActivating() {
-                Logger.d(TAG, "onActivating...");
+                Logger.e(TAG, "onActivating...");
                 if (mLoadingViewCallBack != null) {
                     mLoadingViewCallBack.showActivatingView(true);
                 }
@@ -40,7 +40,7 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
 
             @Override
             public void onActivated() {
-                Logger.d(TAG, "onActivated!");
+                Logger.e(TAG, "onActivated!");
                 if (mLoadingViewCallBack != null) {
                     mLoadingViewCallBack.showActivatingView(false);
                 }
@@ -89,23 +89,23 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
      */
     public void showActivateFailedDialog(final int errCode, final String msg) {
         if (mFailedDialog != null && mFailedDialog.isShowing()) {
-            Logger.d(TAG, "dialog showing");
+            Logger.e(TAG, "dialog showing");
             return;
         }
-        Logger.d(TAG, "context: ", AppCache.getInstance().getMContext());
+        Logger.e(TAG, "context: ", AppCache.getInstance().getMContext());
         mFailedDialog = new ActivateFailedDialog(AppCache.getInstance().getMContext());
         mFailedDialog.changeDialogContent(errCode, ConvertUtils.equals(20008, errCode));
 
         mFailedDialog.setDialogClickListener(new ActivateFailedDialog.IDialogClickListener() {
             @Override
             public void onCommitClick() {
-                Logger.d(TAG, "重试激活");
+                Logger.e(TAG, "重试激活");
                 StartService.getInstance().startActivation();
             }
 
             @Override
             public void onCancelClick() {
-                Logger.d(TAG, "激活失败,手动退出应用");
+                Logger.e(TAG, "激活失败,手动退出应用");
                 ThreadManager.getInstance().asyncDelay(new Runnable() {
                     @Override
                     public void run() {

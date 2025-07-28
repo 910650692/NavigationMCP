@@ -59,11 +59,11 @@ public final class ActivationManager {
         resetVar();
         mActivationService = ActivationModule.getInstance();
         DEVICES_ID = CalibrationPackage.getInstance().getDeviceId();
-        Logger.d(TAG, "ActivationManager: devicesId = ", DEVICES_ID);
-        Logger.d(TAG, "                  sysVersion = ", SYS_VERSION);
+        Logger.e(TAG, "ActivationManager: devicesId = ", DEVICES_ID);
+        Logger.e(TAG, "                  sysVersion = ", SYS_VERSION);
 
         final int releaseStatus = SystemProperties.getInt(RELEASE_STATUS, 0);
-        Logger.d(TAG, "当前车机环境 : "
+        Logger.e(TAG, "当前车机环境 : "
                 , releaseStatus, " : ", (releaseStatus == 1 ? "生产环境" : "测试环境"));
     }
 
@@ -87,7 +87,7 @@ public final class ActivationManager {
         if (!mIsInit) {
             return;
         }
-        Logger.d(TAG, "unInit: ");
+        Logger.e(TAG, "unInit: ");
         mActivationService.setNetActivateObserver(null);
         mActivationService.unInit();
         mActivateListener = null;
@@ -114,10 +114,10 @@ public final class ActivationManager {
      * 获取三方UUID
      */
     public void getThirdPartyUUID() {
-        Logger.d(TAG, "getThirdPartyUUID: ");
+        Logger.e(TAG, "getThirdPartyUUID: ");
         if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY))) {
             APP_KEY = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY);
-            Logger.d(TAG, "数据库存有APP_KEY = ", APP_KEY);
+            Logger.e(TAG, "数据库存有APP_KEY = ", APP_KEY);
             NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
             postUUID();
             return;
@@ -129,11 +129,11 @@ public final class ActivationManager {
      * appKey生成
      */
     private void genAppKey() {
-        Logger.d(TAG, "genAppKey: ");
+        Logger.e(TAG, "genAppKey: ");
         getAppKeyFromNet(new NetQueryManager.INetResultCallBack<AppKeyResponse>() {
             @Override
             public void onSuccess(final AppKeyResponse response) {
-                Logger.i(TAG, response.toString());
+                Logger.e(TAG, response.toString());
                 APP_KEY = response.getMAppKey();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.APP_KEY, APP_KEY);
                 NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
@@ -152,11 +152,11 @@ public final class ActivationManager {
      * 网络请求uuid
      */
     private void postUUID() {
-        Logger.d(TAG, "postUUID: ");
+        Logger.e(TAG, "postUUID: ");
 
         if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
             UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
-            Logger.d(TAG, "数据库存有UUID = ", UUID);
+            Logger.e(TAG, "数据库存有UUID = ", UUID);
             mActivateListener.onUUIDGet(UUID);
             return;
         }
@@ -164,7 +164,7 @@ public final class ActivationManager {
         getUuidFromNet(new NetQueryManager.INetResultCallBack<UuidResponse>() {
             @Override
             public void onSuccess(final UuidResponse response) {
-                Logger.i(TAG, response.toString());
+                Logger.e(TAG, response.toString());
                 UUID = response.getMVin();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, UUID);
                 mActivateListener.onUUIDGet(response.getMVin());
@@ -189,7 +189,7 @@ public final class ActivationManager {
      * @return 是否成功
      */
     public boolean initActivationService(final String uuid) {
-        Logger.d(TAG, "initActivationService: ");
+        Logger.e(TAG, "initActivationService: ");
 
         final ActivationInitParam actInitParam = new ActivationInitParam();
 
@@ -207,11 +207,11 @@ public final class ActivationManager {
         actInitParam.szDeviceID = uuid;
         // 激活文件保存路径
         actInitParam.szUserDataFileDir = GBLCacheFilePath.ACTIVATE_USER_DATA;
-        Logger.i(TAG, "actInitParam.szUserDataFileDir = ", actInitParam.szUserDataFileDir);
+        Logger.e(TAG, "actInitParam.szUserDataFileDir = ", actInitParam.szUserDataFileDir);
 
         if (null == mActivationService) mActivationService = ActivationModule.getInstance();
         final int initResult = mActivationService.init(actInitParam);
-        Logger.i(TAG, "initActivateParam: initResult = ", initResult);
+        Logger.e(TAG, "initActivateParam: initResult = ", initResult);
         final boolean initSuccess = ConvertUtils.equals(0, initResult);
         mIsInit = initSuccess;
         return initSuccess;
@@ -224,16 +224,16 @@ public final class ActivationManager {
      */
     public boolean checkActivationStatus() {
         if (mActivationService == null) {
-            Logger.d(TAG, "mActivationService == null");
+            Logger.e(TAG, "mActivationService == null");
             return false;
         }
         if (!mIsInit) {
-            Logger.d(TAG, "mActivationService 未初始化");
+            Logger.e(TAG, "mActivationService 未初始化");
             return false;
         }
 
         final int activateStatus = mActivationService.getActivateStatus();
-        Logger.i(TAG, "激活状态码 = ", activateStatus);
+        Logger.e(TAG, "激活状态码 = ", activateStatus);
         return ConvertUtils.equals(0, activateStatus);
     }
 
@@ -241,23 +241,23 @@ public final class ActivationManager {
      * 云对云下单
      */
     public void createCloudOrder() {
-        Logger.d(TAG, "createCloudOrder");
+        Logger.e(TAG, "createCloudOrder");
         final String uuid = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
         if (ConvertUtils.isEmpty(uuid)) {
             Logger.e(TAG, "uuid信息缺失");
             postUUID();
             return;
         } else {
-            Logger.d(TAG, "UUID in database = ", uuid);
+            Logger.e(TAG, "UUID in database = ", uuid);
             UUID = uuid;
         }
 
         final CreateOrderRequest createOrderReq = new CreateOrderRequest(API_VERSION, TEST_APP_ID, UUID, SD);
-        Logger.d(TAG, "createOrderReq  : ", createOrderReq);
+        Logger.e(TAG, "createOrderReq  : ", createOrderReq);
         NetQueryManager.getInstance().createOrder(createOrderReq, new NetQueryManager.INetResultCallBack<CreateOrderResponse>() {
             @Override
             public void onSuccess(final CreateOrderResponse response) {
-                Logger.i(TAG, response.toString());
+                Logger.e(TAG, response.toString());
                 ORDER_ID = response.getMCusOrderId();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID, response.getMCusOrderId());
                 mActivateListener.onOrderCreated(true);
@@ -304,15 +304,15 @@ public final class ActivationManager {
                     final NetQueryManager.INetResultCallBack<QueryOrderResponse> callBack = new NetQueryManager.INetResultCallBack<QueryOrderResponse>() {
                         @Override
                         public void onSuccess(final QueryOrderResponse statusBean) {
-                            Logger.i(TAG, statusBean.toString());
+                            Logger.e(TAG, statusBean.toString());
                             if (ConvertUtils.equals(statusBean.getMOrderStatus(), "2")) {
                                 future.complete(true);
                                 executor.shutdownNow();
                                 manualActivate(statusBean.getMSerialNumber(), statusBean.getMActiveCode());
                             } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "1")) {
-                                Logger.d(TAG, "已下单/等待交付");
+                                Logger.e(TAG, "已下单/等待交付");
                                 final int currentCount = retryCount.incrementAndGet();
-                                Logger.d(TAG, "轮询次数 : ", currentCount);
+                                Logger.e(TAG, "轮询次数 : ", currentCount);
                                 if (currentCount > maxRetries) {
                                     future.complete(false);
                                     executor.shutdownNow();
@@ -338,7 +338,7 @@ public final class ActivationManager {
                                 return;
                             }
                             final int currentCount = retryCount.incrementAndGet();
-                            Logger.d(TAG, "轮询次数 : ", currentCount);
+                            Logger.e(TAG, "轮询次数 : ", currentCount);
                             if (currentCount > maxRetries) {
                                 future.complete(false);
                                 executor.shutdownNow();
@@ -390,7 +390,7 @@ public final class ActivationManager {
      * @param callBack 网络结果回调
      */
     public void queryOrderStatus(final NetQueryManager.INetResultCallBack<QueryOrderResponse> callBack) {
-        Logger.d(TAG, "checkOrderStatus");
+        Logger.e(TAG, "checkOrderStatus");
         final String orderId = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID);
 
         if (ConvertUtils.isEmpty(ORDER_ID) && ConvertUtils.isEmpty(orderId)) {
@@ -399,12 +399,12 @@ public final class ActivationManager {
         }
 
         if (!ConvertUtils.equals(ORDER_ID, orderId) && !ConvertUtils.isEmpty(orderId)) {
-            Logger.d(TAG, "ORDER_ID constant = ", ORDER_ID, " ; orderId in database = ", orderId);
+            Logger.e(TAG, "ORDER_ID constant = ", ORDER_ID, " ; orderId in database = ", orderId);
             ORDER_ID = orderId;
         }
-        Logger.d(TAG, "ORDER_ID = ", ORDER_ID);
+        Logger.e(TAG, "ORDER_ID = ", ORDER_ID);
         final QueryOrderRequest queryOrderRequest = new QueryOrderRequest(SYS_VERSION, TEST_APP_ID, UUID, ORDER_ID);
-        Logger.d(TAG, "queryOrderRequest  : ", queryOrderRequest);
+        Logger.e(TAG, "queryOrderRequest  : ", queryOrderRequest);
         NetQueryManager.getInstance().queryOrder(queryOrderRequest, callBack);
 
     }
@@ -416,21 +416,21 @@ public final class ActivationManager {
      * @param loginCode 激活码
      */
     public void manualActivate(final String userCode, final String loginCode) {
-        Logger.d(TAG, "userCode = ", userCode, "; loginCode = ", loginCode);
+        Logger.e(TAG, "userCode = ", userCode, "; loginCode = ", loginCode);
         if (mActivationService == null) {
-            Logger.d(TAG, "mActivationService == null");
+            Logger.e(TAG, "mActivationService == null");
             return;
         }
         if (!mIsInit) {
-            Logger.d(TAG, "mActivationService 未初始化");
+            Logger.e(TAG, "mActivationService 未初始化");
             return;
         }
         final ActivateReturnParam activateReturnParam = mActivationService.manualActivate(userCode, loginCode);
         if (activateReturnParam == null) {
-            Logger.d(TAG, "activateReturnParam == null");
+            Logger.e(TAG, "activateReturnParam == null");
             return;
         }
-        Logger.i(TAG, "activateReturnParam.iErrorCode = ", activateReturnParam.iErrorCode);
+        Logger.e(TAG, "activateReturnParam.iErrorCode = ", activateReturnParam.iErrorCode);
         mActivateListener.onManualActivated(ConvertUtils.equals(0, activateReturnParam.iErrorCode));
     }
 
@@ -456,7 +456,7 @@ public final class ActivationManager {
      */
     public void getUuidFromNet(final NetQueryManager.INetResultCallBack<UuidResponse> callBack) {
         final UuidRequest uuidRequest = new UuidRequest(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
-        Logger.d(TAG, "uuid req : ", uuidRequest);
+        Logger.e(TAG, "uuid req : ", uuidRequest);
         NetQueryManager.getInstance().queryUuid(uuidRequest, callBack);
     }
 

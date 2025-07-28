@@ -28,26 +28,26 @@ public class ActivateAdapterImpl implements IActivateApi {
     private static final String ERR_MSG = "Error Massage : ";
 
     public ActivateAdapterImpl() {
-        Logger.i(TAG, "ActivateAdapterImpl init");
+        Logger.e(TAG, "ActivateAdapterImpl init");
     }
 
     @Override
     public void startActivate() {
-        Logger.d(TAG, "startActivate : ");
+        Logger.e(TAG, "startActivate : ");
         onActivating();
         ActivationManager.getInstance().getThirdPartyUUID();
     }
 
     @Override
     public void init() {
-        Logger.d(TAG, "init activate");
+        Logger.e(TAG, "init activate");
         mActObserverList = new ArrayList<>();
         codeManager = CodeManager.getInstance();
 
         manualActivateListener = new ActivationManager.IActivateHelper() {
             @Override
             public void onUUIDGet(final String uuid) {
-                Logger.d(TAG, "uuid获取成功 : ", uuid);
+                Logger.e(TAG, "uuid获取成功 : ", uuid);
                 if (ConvertUtils.isEmpty(uuid)) {
                     logResult(20005);
                     onActivatedError(20005, codeManager.getActivateMsg(20005));
@@ -63,7 +63,7 @@ public class ActivateAdapterImpl implements IActivateApi {
                     onActivatedError(20009,  codeManager.getActivateMsg(20009));
                     return;
                 }
-                Logger.d(TAG, "手动激活成功，开始BL初始化");
+                Logger.e(TAG, "手动激活成功，开始BL初始化");
                 onActivated();
             }
 
@@ -91,7 +91,7 @@ public class ActivateAdapterImpl implements IActivateApi {
         };
         final String uuid = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
         if (!ConvertUtils.isEmpty(uuid)) {
-            Logger.i(TAG, "并非第一次启动，数据库UUID: ", uuid);
+            Logger.e(TAG, "并非第一次启动，数据库UUID: ", uuid);
             if (!ActivationManager.getInstance().initActivationService(uuid)) {
                 logResult(20003);
                 onActivatedError(20003, codeManager.getActivateMsg(20003));
@@ -106,7 +106,7 @@ public class ActivateAdapterImpl implements IActivateApi {
 
     @Override
     public boolean checkActivation() {
-        Logger.d(TAG, "checkActivation need to activate: ", BuildConfig.SDK_ACTIVATE);
+        Logger.e(TAG, "checkActivation need to activate: ", BuildConfig.SDK_ACTIVATE);
         if(!BuildConfig.SDK_ACTIVATE) return true;
         return ActivationManager.getInstance().checkActivationStatus();
     }
@@ -127,7 +127,7 @@ public class ActivateAdapterImpl implements IActivateApi {
      */
     private void beginInitActivateService(final String uuid) {
         //初始化激活服务
-        Logger.d(TAG, "uuid = ", uuid);
+        Logger.e(TAG, "uuid = ", uuid);
         if (!ActivationManager.getInstance().initActivationService(uuid)) {
             logResult(20003);
             onActivatedError(20003, codeManager.getActivateMsg(20003));
@@ -136,15 +136,15 @@ public class ActivateAdapterImpl implements IActivateApi {
         //查询激活状态
         //自动检查激活文件是否存在，如果有会自动激活
         if (!ActivationManager.getInstance().checkActivationStatus()) {
-            Logger.d(TAG, "无激活文件，或uuid不正确");
+            Logger.e(TAG, "无激活文件，或uuid不正确");
             //先查询订单
             if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID))) {
-                Logger.d(TAG, "有订单号记录，直接查询订单");
+                Logger.e(TAG, "有订单号记录，直接查询订单");
                 ActivationManager.getInstance().queryOrderStatus(new NetQueryManager.INetResultCallBack<QueryOrderResponse>() {
                     @Override
                     public void onSuccess(final QueryOrderResponse statusBean) {
-                        Logger.d(TAG, "firstCheckOrderStatus success");
-                        Logger.i(TAG, statusBean.toString());
+                        Logger.e(TAG, "firstCheckOrderStatus success");
+                        Logger.e(TAG, statusBean.toString());
                         manualActivate(statusBean.getMSerialNumber(), statusBean.getMActiveCode());
                     }
 
@@ -163,7 +163,7 @@ public class ActivateAdapterImpl implements IActivateApi {
                 ActivationManager.getInstance().createCloudOrder();
             }
         } else {
-            Logger.d(TAG, "已经激活了");
+            Logger.e(TAG, "已经激活了");
             onActivated();
         }
 
@@ -171,7 +171,7 @@ public class ActivateAdapterImpl implements IActivateApi {
 
     @Override
     public void manualActivate(final String userCode, final String loginCode) {
-        Logger.d(TAG, "manualActivate...");
+        Logger.e(TAG, "manualActivate...");
         ActivationManager.getInstance().manualActivate(userCode, loginCode);
     }
 
@@ -240,6 +240,6 @@ public class ActivateAdapterImpl implements IActivateApi {
      * @param code 错误码
      */
     private void logResult(final int code) {
-        Logger.d(TAG, ERR_MSG, "  ", code, " :", codeManager.getActivateMsg(code));
+        Logger.e(TAG, ERR_MSG, "  ", code, " :", codeManager.getActivateMsg(code));
     }
 }

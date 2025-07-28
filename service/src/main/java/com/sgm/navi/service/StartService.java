@@ -434,7 +434,7 @@ public class StartService {
 
         @Override
         public void onActivated() {
-            Logger.i(TAG, "onActivated in startService...");
+            Logger.e(TAG, "onActivated in startService...");
             EnginePackage.getInstance().initBL();
         }
 
