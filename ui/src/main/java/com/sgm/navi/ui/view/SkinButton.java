@@ -33,6 +33,7 @@ public class SkinButton extends AppCompatButton {
                 R.styleable.SkinClickChangeColor);
         mIsClickChangeColor = typedArray.getBoolean(
                 R.styleable.SkinClickChangeColor_click_color_change, false);
+        typedArray.recycle();
     }
 
     @Override
