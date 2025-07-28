@@ -400,8 +400,6 @@ public class RouteAdapterImpl implements IRouteApi {
         if(mRequestRouteId != -1){
             mRouteService.abortRequest(mRequestRouteId);
         }
-        mAdapterImplHelper.getLastRouteOption().setRouteType(RouteType.RouteTypeParallelRoad);
-
         // 设置行程点信息poiForRequest
         // 对于平行路切换来说终点和途径点一般保持上一次的不变，但是起点需要重新设置，且必须设置起点的道路ID
         // 起点信息poiInfo，来源于定位回调 IPosLocInfoObserver.onLocInfoUpdate
@@ -410,7 +408,6 @@ public class RouteAdapterImpl implements IRouteApi {
             Logger.i(TAG, "平行路切换重算路: poiForRequest == null");
             return -1;
         }
-
         // 起点设置
         POIInfo startPoiInfo = new POIInfo();
         startPoiInfo.realPos.lon = locInfoBean.getLongitude();
@@ -425,7 +422,6 @@ public class RouteAdapterImpl implements IRouteApi {
         } else {
             Logger.i(TAG, "平行路切换重算路 endInfo null start.lon:", locInfoBean.getLongitude(), " lat:", locInfoBean.getLatitude());
         }
-
         poiForRequest.setDirection(locInfoBean.getMatchRoadCourse());
         poiForRequest.setReliability(locInfoBean.getCourseAcc());
         poiForRequest.setAngleType(locInfoBean.getStartDirType());
@@ -445,6 +441,14 @@ public class RouteAdapterImpl implements IRouteApi {
         poiForRequest.setPointRoadID(PointTypeStart, 0, roadID);
         // 更新行程点信息
         mAdapterImplHelper.getLastRouteOption().setPOIForRequest(poiForRequest);
+
+        mAdapterImplHelper.getLastRouteOption().setRouteType(RouteType.RouteTypeParallelRoad);
+        mLastRequestRouteResult.setMRouteType(RouteType.RouteTypeParallelRoad);
+        mLastRequestRouteResult.getMLineLayerParam().setMRouteType(RouteType.RouteTypeParallelRoad);
+        mLastRequestRouteResult.getMLineLayerParam().setMPoiForRequest(poiForRequest);
+        mLastRequestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
+        mLastRequestRouteResult.setMFastNavi(true);
+        mLastRequestRouteResult.setMAutoRouting(true);
 
         // 设置当前导航位置信息
         CurrentPositionInfo curLocation = new CurrentPositionInfo();

@@ -147,6 +147,10 @@ public class NaviApiImplHelper {
 
     //设置开启导航路线
     protected void updateNaviPathParam(final RouteLineLayerParam routeLineLayerParam) {
+        if (ConvertUtils.isEmpty(routeLineLayerParam)) {
+            Logger.w(TAG, "routeLineLayerParam is null");
+            return;
+        }
         checkNaviService();
         //导航中更新路线发送加热数据
         mNaviObserver.onBatterHotTime();
@@ -157,6 +161,7 @@ public class NaviApiImplHelper {
         naviPath.type = routeLineLayerParam.getMRouteType(); // 设置算路类型
         naviPath.point = (POIForRequest) routeLineLayerParam.getMPoiForRequest(); // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
         naviPath.strategy = routeLineLayerParam.getMStrategy(); // 设置算路策略
+        Logger.i(TAG, "mainIdx:", naviPath.mainIdx, "type:", naviPath.type, "strategy:", naviPath.strategy);
         mGuideService.setNaviPath(naviPath);
     }
 
