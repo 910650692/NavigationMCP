@@ -5,6 +5,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.route.RouteAvoidInfo;
 import com.sgm.navi.service.define.route.RouteCurrentPathParam;
+import com.sgm.navi.service.define.route.RouteLineSegmentInfo;
 import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
@@ -145,6 +146,8 @@ public interface IRouteApi {
     void requestRouteDetails(int index);
 
     void requestRouteRestArea(int index);
+
+    List<RouteLineSegmentInfo> voicePersonalizationRoute(int index);
 
     /**
      * 清除缓存数据

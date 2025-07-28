@@ -7,6 +7,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.route.RouteAvoidInfo;
 import com.sgm.navi.service.define.route.RouteCurrentPathParam;
+import com.sgm.navi.service.define.route.RouteLineSegmentInfo;
 import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
@@ -244,6 +245,10 @@ final public class RouteAdapter {
 
     public void requestRouteRestArea(int index) {
         mRouteApi.requestRouteRestArea(index);
+    }
+
+    public List<RouteLineSegmentInfo> voicePersonalizationRoute(final int index) {
+        return mRouteApi.voicePersonalizationRoute(index);
     }
 
     public void clearRouteResultData() {

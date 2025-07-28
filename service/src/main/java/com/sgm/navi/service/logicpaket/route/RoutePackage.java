@@ -2156,5 +2156,35 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
     }
 
+    /**
+     * 返回路线详情数据，语音
+     * @param mRouteLineInfos 路线数据
+     * @param index index
+     * @return 路线详情数据
+     */
+    public List<RouteLineSegmentInfo> voicePersonalizationRoute(final List<RouteLineInfo> mRouteLineInfos, final int index) {
+        if (mRouteLineInfos == null || mRouteLineInfos.isEmpty()) {
+            Logger.e(TAG, "voice Personalization Route null data");
+            return null;
+        }
+        if (index == -1 || index >= mRouteLineInfos.size()){
+            Logger.e(TAG, "voice Personalization Route out of bounds " + index);
+            return null;
+        }
+        RouteLineInfo routeLineInfo = mRouteLineInfos.get(index);
+        if (routeLineInfo == null) {
+            Logger.e(TAG, "voice Personalization Route null data");
+            return null;
+        }
+        List<RouteLineSegmentInfo> routeLineSegmentInfos = routeLineInfo.getMRouteLineSegmentInfos();
+        //数据已解析
+        if (routeLineSegmentInfos != null && !routeLineSegmentInfos.isEmpty()) {
+            return routeLineSegmentInfos;
+        } else {
+            routeLineInfo.setMRouteLineSegmentInfos(mRouteAdapter.voicePersonalizationRoute(index));
+            return routeLineInfo.getMRouteLineSegmentInfos();
+        }
+    }
+
 
 }

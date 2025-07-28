@@ -2200,6 +2200,14 @@ public class RouteAdapterImplHelper {
                 , mRequestRouteResult.getMMapTypeId(), mRequestRouteResult.isMIsOnlineRoute(),index);
     }
 
+    public List<RouteLineSegmentInfo> voicePersonalizationRoute(int index) {
+        if (ConvertUtils.isEmpty(mPathInfoList) || index < 0 || mPathInfoList.size() <= index) {
+            Logger.e(TAG, "error");
+            return null;
+        }
+        return getRouteLineDetail(mPathInfoList.get(index));
+    }
+
     public void setLastRouteOption(RouteOption lastRouteOption) {
         mLastRouteOption = lastRouteOption;
     }

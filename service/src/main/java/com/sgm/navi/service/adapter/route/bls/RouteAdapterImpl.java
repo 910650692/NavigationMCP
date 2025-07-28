@@ -45,6 +45,7 @@ import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAvoidInfo;
 import com.sgm.navi.service.define.route.RouteCurrentPathParam;
+import com.sgm.navi.service.define.route.RouteLineSegmentInfo;
 import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
@@ -345,6 +346,11 @@ public class RouteAdapterImpl implements IRouteApi {
     @Override
     public void requestRouteRestArea(int index) {
         mAdapterImplHelper.requestRouteRestArea(index);
+    }
+
+    @Override
+    public List<RouteLineSegmentInfo> voicePersonalizationRoute(int index) {
+        return mAdapterImplHelper.voicePersonalizationRoute(index);
     }
 
     /**
