@@ -280,7 +280,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
                 Logger.d(TAG, "poiIdSearch getPoiID:", currentParam.getPoiID(), " mParkEndSearchId:", mParkEndSearchId);
             } else if (!ConvertUtils.isNull(currentParam.getRealPos())) {
                 isGetParkEndRequesting = true;
-                mParkEndSearchId = mSearchPackage.geoSearch(currentParam.getRealPos());
+                mParkEndSearchId = mSearchPackage.geoSearch(currentParam.getRealPos(), true);
                 Logger.d(TAG, "geoSearch mParkEndSearchId:", mParkEndSearchId);
             } else {
                 Logger.e(TAG, "终点信息获取失败,POID和终点坐标都为空!");
