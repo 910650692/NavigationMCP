@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/search_park_route_img"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/layer_icon_search_poi_parking_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/search_park_route_park_category"
+        app:layout_constraintTop_toBottomOf="@+id/search_park_route_img"
+        app:layout_constraintStart_toStartOf="@+id/search_park_route_img"
+        app:layout_constraintEnd_toEndOf="@+id/search_park_route_img"
+        android:textSize="@dimen/sp_24"
+        android:textColor="@color/layer_search_park_route_category_color"
+        tools:text="地上停车场"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

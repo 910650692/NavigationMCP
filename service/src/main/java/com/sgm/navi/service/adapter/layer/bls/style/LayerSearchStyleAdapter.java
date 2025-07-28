@@ -1,8 +1,10 @@
 package com.sgm.navi.service.adapter.layer.bls.style;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -231,17 +233,29 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                         Logger.e(TAG, "自定义终点停车场扎标 parkingInfo == null");
                         return;
                     }
-                    TextView titleTextView = rootView.findViewById(R.id.search_park_route_title_text);
-                    TextView detailTotalTextView = rootView.findViewById(R.id.search_park_route_detail_total_text);
-
-                    Context context = rootView.getContext();
+                    String category = parkingInfo.getCategory();
+                    // 地上地下类型处理
+                    if (!ConvertUtils.isEmpty(category)) {
+                        TextView parkCategory = rootView.findViewById(R.id.search_park_route_park_category);
+                        if (!ConvertUtils.isEmpty(parkCategory) && (TextUtils.equals(category, "地上") || TextUtils.equals(category, "地下"))) {
+                            safetySetText(parkCategory, TextUtils.equals(category, "地上") ? "地上停车场" : "地下停车场");
+                            parkCategory.setVisibility(VISIBLE);
+                        } else {
+                            if (!ConvertUtils.isEmpty(parkCategory)) {
+                                parkCategory.setVisibility(GONE);
+                            }
+                        }
+                    }
+                    // 停车场数量处理
                     int spaceTotal = parkingInfo.getSpaceTotal();
-                    //暂无动态数据  仅显示总车位数
-                    Logger.d(TAG, "自定义终点停车场扎标 spaceTotal " + spaceTotal);
-                    String result = context.getResources().getString(R.string.layer_search_park_route_resource_enough);
-                    safetySetText(titleTextView, context.getString(R.string.layer_search_park_route_title, result));
-                    String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
-                    safetySetText(detailTotalTextView, detailTotalString);
+                    if (spaceTotal > 0) {
+                        TextView detailTotalTextView = rootView.findViewById(R.id.search_park_route_detail_total_text);
+                        Context context = rootView.getContext();
+                        //暂无动态数据  仅显示总车位数
+                        Logger.d(TAG, "自定义终点停车场扎标 spaceTotal " + spaceTotal);
+                        String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
+                        safetySetText(detailTotalTextView, detailTotalString);
+                    }
                 }
 
                 @Override
@@ -257,18 +271,29 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                         Logger.e(TAG, "自定义终点停车场扎标 parkingInfo == null");
                         return;
                     }
-                    TextView titleTextView = rootView.findViewById(R.id.search_park_route_title_text);
-                    TextView detailTotalTextView = rootView.findViewById(R.id.search_park_route_detail_total_text);
-
-                    Context context = rootView.getContext();
+                    String category = parkingInfo.getCategory();
+                    // 地上地下类型处理
+                    if (!ConvertUtils.isEmpty(category)) {
+                        TextView parkCategory = rootView.findViewById(R.id.search_park_route_park_category);
+                        if (!ConvertUtils.isEmpty(parkCategory) && (TextUtils.equals(category, "地上") || TextUtils.equals(category, "地下"))) {
+                            safetySetText(parkCategory, TextUtils.equals(category, "地上") ? "地上停车场" : "地下停车场");
+                            parkCategory.setVisibility(VISIBLE);
+                        } else {
+                            if (!ConvertUtils.isEmpty(parkCategory)) {
+                                parkCategory.setVisibility(GONE);
+                            }
+                        }
+                    }
+                    // 停车场数量处理
                     int spaceTotal = parkingInfo.getSpaceTotal();
-                    //暂无动态数据  仅显示总车位数
-                    Logger.d(TAG, "自定义终点停车场扎标 spaceTotal " + spaceTotal);
-                    String result = context.getResources().getString(R.string.layer_search_park_route_resource_enough);
-                    safetySetText(titleTextView, context.getString(R.string.layer_search_park_route_title, result));
-                    String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
-                    safetySetText(detailTotalTextView, detailTotalString);
-
+                    if (spaceTotal > 0) {
+                        TextView detailTotalTextView = rootView.findViewById(R.id.search_park_route_detail_total_text);
+                        Context context = rootView.getContext();
+                        //暂无动态数据  仅显示总车位数
+                        Logger.d(TAG, "自定义终点停车场扎标 spaceTotal " + spaceTotal);
+                        String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
+                        safetySetText(detailTotalTextView, detailTotalString);
+                    }
                 }
             };
         }
