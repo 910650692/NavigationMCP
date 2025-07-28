@@ -230,6 +230,7 @@
                         android:id="@+id/recycler_search_result"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
                         android:layout_marginBottom="@dimen/dp_20" />
                 </com.sgm.navi.ui.view.PullToRefreshLayout>
 
