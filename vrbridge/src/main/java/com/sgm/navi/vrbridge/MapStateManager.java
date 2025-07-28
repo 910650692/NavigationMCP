@@ -165,7 +165,9 @@ public final class MapStateManager {
     private final SettingUpdateObservable.SettingUpdateObserver mSettingUpdateObserver = new SettingUpdateObservable.SettingUpdateObserver() {
         @Override
         public void onUpdateSetting(String key, boolean value) {
-            updatePrivacy();
+            if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
+                updatePrivacy();
+            }
         }
     };
 

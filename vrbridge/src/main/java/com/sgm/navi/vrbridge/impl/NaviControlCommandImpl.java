@@ -54,6 +54,7 @@ import com.sgm.navi.vrbridge.bean.MapState;
 import com.sgm.navi.vrbridge.bean.SingleCommandInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -529,13 +530,19 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             final int size = routeLineList.size();
             outLoop:
             for (int i = 0; i < size; i++) {
+
                 final RouteLineInfo lineInfo = routeLineList.get(i);
-                if (null == lineInfo || null == lineInfo.getMRouteLineSegmentInfos()
-                        || lineInfo.getMRouteLineSegmentInfos().isEmpty()) {
+                if (null == lineInfo ) {
                     continue;
                 }
+                List<RouteLineSegmentInfo> segmentList = lineInfo.getMRouteLineSegmentInfos();
+                if (null == segmentList || segmentList.isEmpty()) {
+                    segmentList = RoutePackage.getInstance().voicePersonalizationRoute(routeLineList, i);
+                }
+                if (null == segmentList || segmentList.isEmpty()) {
+                    return;
+                }
 
-                final List<RouteLineSegmentInfo> segmentList = lineInfo.getMRouteLineSegmentInfos();
                 for (RouteLineSegmentInfo segmentInfo : segmentList) {
                     if (segmentInfo.getMLoadName().contains(roadName)) {
                         hasMatched = true;
@@ -545,9 +552,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 }
             }
         } catch (NullPointerException exception) {
-            Logger.e(IVrBridgeConstant.TAG, "match road error: " + exception.getMessage());
+            Logger.e(IVrBridgeConstant.TAG, "match road error", exception.getMessage(), Arrays.toString(exception.getStackTrace()));
         } catch (IndexOutOfBoundsException outOfBoundsException) {
-            Logger.e(IVrBridgeConstant.TAG, "match road index error: " + outOfBoundsException.getMessage());
+            Logger.e(IVrBridgeConstant.TAG, "match road index error", outOfBoundsException.getMessage(), Arrays.toString(outOfBoundsException.getStackTrace()));
         }
         if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "assignRoad chooseRoute: ", chooseIndex);
@@ -574,9 +581,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
                 }
             } catch (NullPointerException nullException) {
-                Logger.w(IVrBridgeConstant.TAG, "match road, getSelect index empty: " + nullException.getMessage());
+                Logger.w(IVrBridgeConstant.TAG, "match road, getSelect index empty", nullException.getMessage(), Arrays.toString(nullException.getStackTrace()));
             } catch (IndexOutOfBoundsException iobException) {
-                Logger.w(IVrBridgeConstant.TAG, "match road, getSelect index outOfBound: " + iobException.getMessage());
+                Logger.w(IVrBridgeConstant.TAG, "match road, getSelect index outOfBound", iobException.getMessage(), Arrays.toString(iobException.getStackTrace()));
             }
         } else {
             final CallResponse response = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.CANT_FIND_WAY_TO_GO + roadName + IVrBridgeConstant.ResponseString.RATIONAL_ROUTE);
@@ -720,8 +727,19 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             final List<Boolean> matchedStatusList = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 boolean matched = false;
+
                 final RouteLineInfo lineInfo = routeLineList.get(i);
-                final List<RouteLineSegmentInfo> segmentList = lineInfo.getMRouteLineSegmentInfos();
+                if (null == lineInfo) {
+                    continue;
+                }
+                List<RouteLineSegmentInfo> segmentList = lineInfo.getMRouteLineSegmentInfos();
+                if (null == segmentList || segmentList.isEmpty()) {
+                    segmentList = RoutePackage.getInstance().voicePersonalizationRoute(routeLineList, i);
+                }
+                if (null == segmentList || segmentList.isEmpty()) {
+                    return;
+                }
+
                 for (RouteLineSegmentInfo segmentInfo : segmentList) {
                     if (segmentInfo.getMLoadName().contains(road)) {
                         matched = true;
@@ -771,9 +789,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
             }
         } catch (NullPointerException exception) {
-            Logger.e(IVrBridgeConstant.TAG, "avoid road error: " + exception.getMessage());
+            Logger.e(IVrBridgeConstant.TAG, "avoid road error,", exception.getMessage(), Arrays.toString(exception.getStackTrace()));
         } catch (IndexOutOfBoundsException outOfBoundsException) {
-            Logger.e(IVrBridgeConstant.TAG, "avoid road index error: " + outOfBoundsException.getMessage());
+            Logger.e(IVrBridgeConstant.TAG, "avoid road index error", outOfBoundsException.getMessage(), Arrays.toString(outOfBoundsException.getStackTrace()));
         }
     }
 
@@ -2640,9 +2658,6 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             }
             final HashMap<String, Integer> roadMap = roadInfo.getRoadNameMap();
             Logger.d(IVrBridgeConstant.TAG, "PathId = " + roadInfo.getPathId());
-//            for (Map.Entry<String, Integer> entry : roadMap.entrySet()) {
-//                Logger.d(IVrBridgeConstant.TAG, "roadName = " + entry.getKey() + " roadID = " + entry.getValue());
-//            }
             for (Map.Entry<String, Integer> entry : roadMap.entrySet()) {
                 if (!ConvertUtils.isEmpty(entry.getKey()) && entry.getKey().contains(strPoi)) {
                     Logger.d(IVrBridgeConstant.TAG, "某道路的路况");
