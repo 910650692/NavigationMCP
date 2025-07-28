@@ -110,6 +110,15 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
         });
     }
 
+    public void closeSearchFragment() {
+        if (mIsOpenFromNavi) {
+            mScreenViewModel.closeSearchOpenFromNavi();
+        } else {
+            mScreenViewModel.closeSearch(mSearchType);
+            showCurrentFragment();
+        }
+    }
+
     /**
      * 初始化recyclerView
      */

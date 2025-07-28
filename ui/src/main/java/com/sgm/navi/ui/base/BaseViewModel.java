@@ -133,4 +133,8 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
     }
 
     protected abstract M initModel();
+
+    protected void onBackPressed() {
+
+    }
 }

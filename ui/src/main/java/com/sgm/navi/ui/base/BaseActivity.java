@@ -2,7 +2,6 @@ package com.sgm.navi.ui.base;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -113,8 +112,16 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (KeyEvent.KEYCODE_BACK == keyCode) {
-            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "阻止返回键");
-            return true;
+           int fragmentSize = mStackManager.getFragmentSize(mScreenId);
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "阻止返回键", "fragmentSize", fragmentSize);
+            if (fragmentSize > 0) {
+                // closeFragment(true);// 无法直接closFragment,因为无法保证地图状态统一
+                BaseFragment currentFragment = mStackManager.getCurrentFragment(mScreenId);
+                if (!ConvertUtils.isEmpty(currentFragment)) {
+                    currentFragment.onBackPressed();
+                }
+                return true;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }

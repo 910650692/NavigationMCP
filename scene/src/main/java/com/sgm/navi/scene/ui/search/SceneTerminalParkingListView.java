@@ -294,4 +294,8 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
             mAnimator.cancel();
         }
     }
+
+    public void onBackPressed() {
+        if (null != mScreenViewModel) mScreenViewModel.closeSearch();
+    }
 }

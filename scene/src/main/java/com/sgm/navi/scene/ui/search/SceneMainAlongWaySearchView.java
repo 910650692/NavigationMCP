@@ -143,4 +143,8 @@ public class SceneMainAlongWaySearchView extends BaseSceneView<SceneMainAlongWay
             }
         }
     }
+
+    public void closeSearchFragment(){
+        if(null != mScreenViewModel) mScreenViewModel.closeSearch();
+    }
 }

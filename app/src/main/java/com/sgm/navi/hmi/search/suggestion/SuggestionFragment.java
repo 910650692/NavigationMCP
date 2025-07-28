@@ -108,4 +108,8 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
         mBinding.sceneSugPoiList.setSearchType(searchType);
 //        String sourceFragmentTag = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
     }
+
+    public void onBackPressed(){
+        mBinding.sceneSugPoiList.clearEditText();
+    }
 }

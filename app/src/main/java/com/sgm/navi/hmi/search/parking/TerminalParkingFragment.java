@@ -93,4 +93,9 @@ public class TerminalParkingFragment extends BaseFragment<FragmentTerminalParkin
     public void onMarkTerminalParkClickCallBack(final int index) {
         mBinding.sceneTerminalParkingListView.onMarkTerminalParkClickCallBack(index);
     }
+
+    @Override
+    protected void onBackPressed() {
+        mBinding.sceneTerminalParkingListView.onBackPressed();
+    }
 }

@@ -77,4 +77,9 @@ public class OfflineSearchFragment extends BaseFragment<OfflineSearchFragmentLay
         final String keyword = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD);
         mBinding.offlineCityList.setSearchText(keyword);
     }
+
+    @Override
+    protected void onBackPressed() {
+        mBinding.offlineCityList.closeSearchFragment();
+    }
 }

@@ -685,23 +685,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mSecondaryPoiVisibility = new ObservableField<>(0);
         mBatterCheckBoxVisibility = new ObservableField<>(false);
 
-        mCloseRouteClick = () -> {
-            Logger.i(TAG, "closeRoute: ==>");
-            if (Boolean.TRUE.equals(mRoutePreferenceVisibility.get())) {
-                mRoutePreferenceVisibility.set(false);
-                mRoutePreferenceDrawableVisibility.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
-                return;
-            }
-            cancelTimer();
-            if (mModel == null || mView == null || !mViewSurvival) {
-                Logger.e(TAG, "mModel or mView is null");
-                return;
-            }
-            mModel.clearRouteLine();
-            mModel.clearRestrictionView();
-            mView.hideTrip();
-            closeFragment(true);
-        };
+        mCloseRouteClick = this::closeRouteFragment;
 
         mRestrictionClick = () -> {
             cancelTimer();
@@ -1042,6 +1026,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     @Override
     protected RouteModel initModel() {
         return new RouteModel();
+    }
+
+    @Override
+    protected void onBackPressed() {
+        closeRouteFragment();
     }
 
 
@@ -2125,5 +2114,23 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 mView.setDetailsResult(routeLineDetail);
             }
         });
+    }
+
+    private void closeRouteFragment() {
+        Logger.i(TAG, "closeRoute: ==>");
+        if (Boolean.TRUE.equals(mRoutePreferenceVisibility.get())) {
+            mRoutePreferenceVisibility.set(false);
+            mRoutePreferenceDrawableVisibility.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
+            return;
+        }
+        cancelTimer();
+        if (mModel == null || mView == null || !mViewSurvival) {
+            Logger.e(TAG, "mModel or mView is null");
+            return;
+        }
+        mModel.clearRouteLine();
+        mModel.clearRestrictionView();
+        mView.hideTrip();
+        closeFragment(true);
     }
 }

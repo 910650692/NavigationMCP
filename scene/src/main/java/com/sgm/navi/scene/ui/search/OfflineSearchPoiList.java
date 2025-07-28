@@ -330,4 +330,8 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
             imm.showSoftInput(mViewBinding.offlineSearchTopView.searchBarEditView, InputMethodManager.SHOW_IMPLICIT);
         }
     }
+
+    public void closeSearchFragment(){
+       if(null != mScreenViewModel) mScreenViewModel.closeSearch();
+    }
 }

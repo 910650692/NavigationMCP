@@ -2348,11 +2348,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         return false;
     }
 
-    public void updateSearchEntity(){
-        if(!ConvertUtils.isEmpty(mGasChargeAlongList) && !ConvertUtils.isEmpty(mResultEntity)){
+    public void updateSearchEntity() {
+        if (!ConvertUtils.isEmpty(mGasChargeAlongList) && !ConvertUtils.isEmpty(mResultEntity)) {
             for (int i = 0; i < mGasChargeAlongList.size(); i++) {
                 for (int j = 0; j < mResultEntity.getPoiList().size(); j++) {
-                    if(Objects.equals(mGasChargeAlongList.get(i).getPoiID(), mResultEntity.getPoiList().get(j).getPid())){
+                    if (Objects.equals(mGasChargeAlongList.get(i).getPoiID(), mResultEntity.getPoiList().get(j).getPid())) {
                         mResultEntity.getPoiList().get(j).setMIsVisible(true);
                     }
                 }
@@ -2360,4 +2360,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
     }
 
+    public void onBackPressed() {
+        if (null == mScreenViewModel) return;
+        if (mIsOpenFromNavi) {
+            mScreenViewModel.closeSearchOpenFromNavi();
+        } else {
+            mScreenViewModel.closeSearch();
+        }
+    }
 }

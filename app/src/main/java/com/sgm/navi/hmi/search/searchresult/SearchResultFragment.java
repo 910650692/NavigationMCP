@@ -258,4 +258,8 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         mBinding.scenePoiList.performSearch(target, mSearchResultEntity.getKeyword(), false);
     }
 
+    @Override
+    protected void onBackPressed() {
+        mBinding.scenePoiList.onBackPressed();
+    }
 }

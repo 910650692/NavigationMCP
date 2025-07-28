@@ -85,7 +85,7 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
         }
     }
 
-    public void onClickCollectSearch(){
+    public void onClickCollectSearch() {
         final Fragment fragment = (Fragment) ARouter.getInstance()
                 .build(RoutePath.Search.COLLECT_FRAGMENT)
                 .navigation();
@@ -159,5 +159,9 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
             }
         }
         iconArray.recycle();
+    }
+
+    public void closeSearchFragment() {
+        mScreenViewModel.closeSearch();
     }
 }

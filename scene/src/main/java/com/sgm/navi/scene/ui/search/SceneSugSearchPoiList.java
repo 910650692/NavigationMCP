@@ -616,4 +616,9 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             mAnimator.cancel();
         }
     }
+
+    public void onBackPressed() {
+        if (null == mScreenViewModel) return;
+        mScreenViewModel.closeSearch();
+    }
 }

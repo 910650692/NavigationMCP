@@ -259,6 +259,10 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         return null;
     }
 
+    protected void onBackPressed() {
+        if(null != mViewModel) mViewModel.onBackPressed();
+    }
+
     /**
      * 创建ViewModel
      */
