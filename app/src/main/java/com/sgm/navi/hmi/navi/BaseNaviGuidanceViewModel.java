@@ -11,6 +11,7 @@ import androidx.databinding.ObservableField;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
@@ -63,7 +64,7 @@ import java.util.Objects;
 public class BaseNaviGuidanceViewModel extends
         BaseViewModel<NaviGuidanceFragment, NaviGuidanceModel> implements
         ISceneRoutePreferenceCallBack, NaviGuidanceModel.OnNetStatusChangeListener,
-        IBaseDialogClickListener {
+        IBaseDialogClickListener, FloatWindowReceiver.FloatWindowCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_VIEW_MODEL;
     public ObservableField<Boolean> mNaviLanesVisibility;//车道线
     public ObservableField<Boolean> mNaviViaListVisibility;//途径点列表
@@ -95,6 +96,7 @@ public class BaseNaviGuidanceViewModel extends
     public ObservableField<Boolean> mHandingCardDetailVisibility;// 悬挂卡-详情
     public ObservableField<Boolean> mNaviViaDetailVisibility;// 途经点-详情
     public ObservableField<Boolean> mNaviLeftContentVisibility;// 引导左侧部分布局内容
+    public ObservableField<Boolean> musicTabVisibility;
     //车牌信息
     private String mCurrentPlateNumber;
     //限行信息
@@ -140,6 +142,7 @@ public class BaseNaviGuidanceViewModel extends
         mHandingCardDetailVisibility = new ObservableField<>(false);
         mNaviViaDetailVisibility = new ObservableField<>(false);
         mNaviLeftContentVisibility = new ObservableField<>(true);
+        musicTabVisibility = new ObservableField<>(false);
         mModelSaveEntity = new NaviModelSaveEntity();
         mSceneStatus = new HashMap<>();
     }
@@ -153,6 +156,8 @@ public class BaseNaviGuidanceViewModel extends
     public void onCreate() {
         super.onCreate();
         mModel.addOnNetStatusChangeListener(this);
+        // 注册媒体悬浮窗广播
+        FloatWindowReceiver.registerCallback(TAG, this);
     }
 
     @Override
@@ -160,6 +165,7 @@ public class BaseNaviGuidanceViewModel extends
         super.onDestroy();
         mModel.removeOnNetStatusChangeListener(this);
         NaviMediaPlayer.getInstance().releaseMediaPlayer();
+        FloatWindowReceiver.unregisterCallback(TAG);
     }
 
     //显示/隐藏 添加途径点页面
@@ -169,6 +175,12 @@ public class BaseNaviGuidanceViewModel extends
         for (NaviSceneId sceneId : sceneIds) {
             NaviSceneManager.getInstance().initShowScene(sceneId);
         }
+    }
+
+    @Override
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        Logger.d(TAG, "悬浮窗开关：" + isOpenFloat);
+        musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
     }
 
     /**

@@ -4021,10 +4021,14 @@
     <dimen name="navi_main_tap_margin_start">@dimen/dp_34</dimen>
     <dimen name="navi_main_tap_margin_top">@dimen/dp_85</dimen>
     <dimen name="navi_main_tap_margin_bottom">@dimen/dp_130</dimen>
+    <dimen name="navi_main_tap_margin_end">@dimen/dp_34</dimen>
+    <dimen name="navi_main_limit_margin_end">@dimen/dp_40</dimen>
     <dimen name="navi_main_tap_height">@dimen/dp_95</dimen>
     <dimen name="navi_main_parking_margin_end">@dimen/dp_m_73</dimen>
     <dimen name="navi_main_parking_gone_margin_start">@dimen/dp_225</dimen>
     <dimen name="navi_main_message_margin_start">@dimen/dp_17</dimen>
+    <dimen name="navi_guide_widget_margin_start">@dimen/dp_1</dimen>
+    <dimen name="navi_guide_line_views">@dimen/dp_608</dimen>
 
     <dimen name="navi_phone_address_dialog_width">@dimen/dp_417</dimen>
     <dimen name="navi_phone_address_dialog_width_main_btn">@dimen/dp_600</dimen>
@@ -4048,6 +4052,7 @@
     <dimen name="navi_guide_area_margin_end">@dimen/dp_141</dimen>
     <dimen name="navi_guide_area_continue_margin_end">@dimen/dp_141</dimen>
     <dimen name="navi_guide_area_margin_bottom">@dimen/dp_29</dimen>
+    <dimen name="navi_page_max_height">@dimen/dp_762</dimen>
 
     <dimen name="bg_downloading_city_corner">@dimen/dp_5</dimen>
     <dimen name="route_preference_nol_corner">@dimen/dp_10</dimen>

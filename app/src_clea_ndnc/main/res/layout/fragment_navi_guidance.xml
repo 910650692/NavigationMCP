@@ -230,9 +230,17 @@
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/line_view_roads"
-                android:layout_width="@dimen/dp_609"
+                android:layout_width="@dimen/navi_guide_line_views"
                 android:layout_height="@dimen/dp_1"
                 app:layout_constraintStart_toStartOf="parent"/>
+
+            <com.sgm.navi.ui.view.SkinView
+                android:id="@+id/line_widget_views_roads"
+                android:layout_width="@dimen/navi_guide_widget_margin_start"
+                android:layout_height="@dimen/dp_1"
+                android:visibility="@{ViewModel.musicTabVisibility?View.GONE:View.VISIBLE}"
+                app:layout_constraintStart_toEndOf="@id/line_view_roads"/>
+
             <!--当前路名-->
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
@@ -243,7 +251,7 @@
                 android:paddingVertical="@dimen/navi_guide_road_name_padding_vertical"
                 android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/line_view_roads"
+                app:layout_constraintStart_toEndOf="@id/line_widget_views_roads"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.sgm.navi.scene.ui.navi.view.ButtonText
@@ -315,9 +323,16 @@
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/line_views"
-            android:layout_width="@dimen/dp_609"
+            android:layout_width="@dimen/navi_guide_line_views"
             android:layout_height="@dimen/dp_1"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/line_widget_views"
+            android:layout_width="@dimen/navi_guide_widget_margin_start"
+            android:layout_height="@dimen/dp_1"
+            android:visibility="@{ViewModel.musicTabVisibility?View.GONE:View.VISIBLE}"
+            app:layout_constraintStart_toEndOf="@id/line_views"/>
 
         <!--继续导航按钮-->
         <com.sgm.navi.scene.ui.navi.SceneNaviContinueView
@@ -328,7 +343,7 @@
             android:layout_marginEnd="@dimen/navi_guide_area_continue_margin_end"
             android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/line_views"
+            app:layout_constraintStart_toEndOf="@+id/line_widget_views"
             app:layout_constraintEnd_toEndOf="parent"/>
 
 

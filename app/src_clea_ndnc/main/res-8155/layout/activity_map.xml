@@ -332,7 +332,7 @@
             android:id="@+id/scene_scale_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_34"
+            android:layout_marginEnd="@dimen/navi_main_tap_margin_end"
             android:layout_marginBottom="@dimen/dp_30"
             app:layout_goneMarginBottom="@dimen/dp_130"
             android:visibility="@{ViewModel.mScaleViewVisibility ? View.VISIBLE : View.GONE}"
@@ -385,7 +385,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_80"
-            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/navi_main_limit_margin_end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
