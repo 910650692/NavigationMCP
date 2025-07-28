@@ -418,4 +418,9 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }
+
+    @Override
+    protected void onBackPressed() {
+
+    }
 }

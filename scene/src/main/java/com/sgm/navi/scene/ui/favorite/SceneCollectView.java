@@ -435,4 +435,8 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                 null,
                 null);
     }
+
+    public void onBackPressed(){
+        mScreenViewModel.closeSearch();
+    }
 }

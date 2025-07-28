@@ -75,4 +75,8 @@ public class BaseCarConnectViewModel extends BaseViewModel<CarConnectFragment, C
         closeFragment(true);
     }
 
+    @Override
+    protected void onBackPressed() {
+        closeFragment(true);
+    }
 }

@@ -278,4 +278,8 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
             mNearDownloadBtnVisibility.setValue(downloadedCount == nearList.size());
         }
     }
+
+    public void onBackPressed() {
+        closeFragment(true);
+    }
 }

@@ -218,4 +218,9 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
         lastClickTime = currentTime;
         return isFast;
     }
+
+    @Override
+    protected void onBackPressed() {
+
+    }
 }

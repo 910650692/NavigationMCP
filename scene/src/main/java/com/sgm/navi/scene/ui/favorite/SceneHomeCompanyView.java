@@ -417,4 +417,7 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
         }
     }
 
+    public void onBackPressed(){
+        if(null != mScreenViewModel) mScreenViewModel.closeSearch();
+    }
 }

@@ -319,6 +319,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onDestroy();
     }
 
+    @Override
+    protected boolean isBackPressed() {
+        return true;
+    }
+
     public void doAfterInitSdk() {
         //initData
         mViewModel.loadMapView(mBinding.mainMapview);

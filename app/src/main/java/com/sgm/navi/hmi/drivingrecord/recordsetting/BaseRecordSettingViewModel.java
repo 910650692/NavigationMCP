@@ -102,4 +102,9 @@ public class BaseRecordSettingViewModel extends BaseViewModel<RecordSettingFragm
     public boolean getIsClearDivingRecordDialog() {
         return Boolean.TRUE.equals(mIsClearDivingRecordDialog.getValue());
     }
+
+    @Override
+    protected void onBackPressed() {
+        closeFragment(true);
+    }
 }

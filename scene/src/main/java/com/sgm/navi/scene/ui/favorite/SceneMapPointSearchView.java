@@ -359,4 +359,8 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
         mAnimator.cancel();
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
     }
+
+    public void onBackPressed(){
+     if(null != mScreenViewModel) mScreenViewModel.closeFragment();
+    }
 }

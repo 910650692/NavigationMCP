@@ -2332,4 +2332,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
     }
 
+    public void onBackPressed() {
+        if(null != mScreenViewModel) mScreenViewModel.closeFragment();
+    }
 }

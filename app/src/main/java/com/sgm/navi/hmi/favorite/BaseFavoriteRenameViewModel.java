@@ -32,4 +32,9 @@ public class BaseFavoriteRenameViewModel extends BaseViewModel<FavoriteRenameFra
         mView.renameFinished();
     };
 
+    @Override
+    protected void onBackPressed() {
+        closeFragment(true);
+        mView.renameFinished();
+    }
 }

@@ -248,4 +248,9 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
                 null,
                 null);
     }
+
+    @Override
+    protected void onBackPressed() {
+        mBinding.scenePoiDetailContentView.onBackPressed();
+    }
 }

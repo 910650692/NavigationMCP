@@ -185,4 +185,9 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
     public boolean getIstDeleteDivingRecordDialog() {
         return Boolean.TRUE.equals(mIsDeleteDivingRecordDialog.getValue());
     }
+
+    @Override
+    protected void onBackPressed() {
+        closeFragment(true);
+    }
 }

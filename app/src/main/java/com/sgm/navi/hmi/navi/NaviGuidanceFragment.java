@@ -1076,4 +1076,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mBinding.sceneNaviCardDetail.updateUi(hangingCardPoiList, handCardType);
         }
     }
+
+    @Override
+    protected void onBackPressed() {
+
+    }
 }

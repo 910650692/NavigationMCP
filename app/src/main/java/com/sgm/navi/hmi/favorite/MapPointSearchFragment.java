@@ -110,4 +110,9 @@ public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchB
         bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL,poiInfoEntity);
         return bundle;
     }
+
+    @Override
+    protected void onBackPressed() {
+        mBinding.mapPointSearchView.onBackPressed();
+    }
 }

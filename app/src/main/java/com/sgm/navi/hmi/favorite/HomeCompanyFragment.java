@@ -163,4 +163,9 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
         super.onDestroy();
         mIsFirstInit = false;
     }
+
+    @Override
+    protected void onBackPressed() {
+        mBinding.homeCompanyView.onBackPressed();
+    }
 }

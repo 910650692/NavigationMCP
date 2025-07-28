@@ -204,4 +204,10 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
     public boolean getIsMergeDivingRecordDialog() {
         return Boolean.TRUE.equals(mIsMergeDivingRecordDialog.get());
     }
+
+    @Override
+    protected void onBackPressed() {
+        mView.stopAnimation();
+        closeFragment(true);
+    }
 }

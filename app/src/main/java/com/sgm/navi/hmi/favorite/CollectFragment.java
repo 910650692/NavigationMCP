@@ -128,4 +128,9 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
     public void notifySearchResultByNetError(int taskId,String message){
         mBinding.collectView.notifySearchResultByNetError(taskId,message);
     }
+
+    @Override
+    protected void onBackPressed() {
+        mBinding.collectView.onBackPressed();
+    }
 }

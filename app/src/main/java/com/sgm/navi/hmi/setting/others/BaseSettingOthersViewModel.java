@@ -279,4 +279,9 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
     public void setLogoutAccountDialogShown(final boolean isLogoutAccountDialogShown) {
         mLogoutAccountDialogShown.setValue(isLogoutAccountDialogShown);
     }
+
+    @Override
+    protected void onBackPressed() {
+
+    }
 }

@@ -84,4 +84,10 @@ public class BaseDrivingRecordDetailsViewModel extends BaseViewModel<DrivingReco
     public void setIsDeleteDrivingRecordDialog(Boolean isDeleteDrivingRecordDialog) {
         this.isDeleteDivingRecordDialog.setValue(isDeleteDrivingRecordDialog);
     }
+
+    @Override
+    protected void onBackPressed() {
+        mView.showDialog();
+        setIsDeleteDrivingRecordDialog(true);
+    }
 }

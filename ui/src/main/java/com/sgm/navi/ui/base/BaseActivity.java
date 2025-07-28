@@ -1,11 +1,15 @@
 package com.sgm.navi.ui.base;
 
+import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +21,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 
@@ -109,18 +114,24 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         mStackManager.popActivity(mScreenId);
     }
 
+    protected boolean isBackPressed() {
+        return false;
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (!isBackPressed()) return true;
+        hideInput();
         if (KeyEvent.KEYCODE_BACK == keyCode) {
-           int fragmentSize = mStackManager.getFragmentSize(mScreenId);
-            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "阻止返回键", "fragmentSize", fragmentSize);
+            int fragmentSize = mStackManager.getFragmentSize(mScreenId);
+            Logger.i(LIFE_CYCLE_TAG, getClass().getSimpleName(), "物理返回键拦截", "fragmentSize", fragmentSize);
             if (fragmentSize > 0) {
                 // closeFragment(true);// 无法直接closFragment,因为无法保证地图状态统一
                 BaseFragment currentFragment = mStackManager.getCurrentFragment(mScreenId);
                 if (!ConvertUtils.isEmpty(currentFragment)) {
                     currentFragment.onBackPressed();
+                    return true;
                 }
-                return true;
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -388,4 +399,11 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         this.mLastClosedFragmentName = lastClosedFragmentName;
     }
 
+    public void hideInput() {
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        Window window = getWindow();
+        if (imm != null && null != window) {
+            imm.hideSoftInputFromWindow(window.getDecorView().getWindowToken(), 0);
+        }
+    }
 }

@@ -255,4 +255,9 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }
+
+    @Override
+    protected void onBackPressed() {
+        closeTrafficEventFragment(true);
+    }
 }

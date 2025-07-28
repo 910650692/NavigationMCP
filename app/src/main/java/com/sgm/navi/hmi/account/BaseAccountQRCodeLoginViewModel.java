@@ -107,4 +107,10 @@ public class BaseAccountQRCodeLoginViewModel extends BaseViewModel<AccountQRCode
     public void stopAnimation(){
         mView.stopAnimation();
     }
+
+    @Override
+    protected void onBackPressed() {
+        mView.stopAnimation();
+        closeFragment(true);
+    }
 }

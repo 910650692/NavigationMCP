@@ -100,20 +100,8 @@ public class BaseLimitDriverViewModel extends BaseViewModel<LimitDriveFragment, 
         return mRootClick;
     }
 
-    private final Action mClosePage = () -> {
-        StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
 
-        final LimitDriverHelper limitDriverHelper = LimitDriverHelper.getInstance();
-        if (limitDriverHelper.isNeedClearRestriction()) {
-            RoutePackage.getInstance().clearRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP);
-        } else if (limitDriverHelper.getRoundParam() != null) {
-            RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
-                    limitDriverHelper.getRoundParam().getMReStrictedAreaResponseParam(), 0);
-        }
-        MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP, new GeoPoint(
-                PositionPackage.getInstance().getLastCarLocation().getLongitude(),
-                PositionPackage.getInstance().getLastCarLocation().getLatitude()));
-    };
+    private final Action mClosePage = this::finishFragment;
 
     public Action getClosePage() {
         return mClosePage;
@@ -144,5 +132,25 @@ public class BaseLimitDriverViewModel extends BaseViewModel<LimitDriveFragment, 
 
     public Action getOtherCitySelection() {
         return mOtherCitySelection;
+    }
+
+    @Override
+    protected void onBackPressed() {
+        finishFragment();
+    }
+
+    private void finishFragment() {
+        StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
+
+        final LimitDriverHelper limitDriverHelper = LimitDriverHelper.getInstance();
+        if (limitDriverHelper.isNeedClearRestriction()) {
+            RoutePackage.getInstance().clearRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP);
+        } else if (limitDriverHelper.getRoundParam() != null) {
+            RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
+                    limitDriverHelper.getRoundParam().getMReStrictedAreaResponseParam(), 0);
+        }
+        MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP, new GeoPoint(
+                PositionPackage.getInstance().getLastCarLocation().getLongitude(),
+                PositionPackage.getInstance().getLastCarLocation().getLatitude()));
     }
 }

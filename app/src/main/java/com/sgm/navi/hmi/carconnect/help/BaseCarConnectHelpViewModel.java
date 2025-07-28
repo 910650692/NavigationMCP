@@ -32,4 +32,9 @@ public class BaseCarConnectHelpViewModel extends BaseViewModel<CarConnectHelpFra
     public Action mClickBack = () -> {
         closeFragment(true);
     };
+
+    @Override
+    protected void onBackPressed() {
+        closeFragment(true);
+    }
 }
