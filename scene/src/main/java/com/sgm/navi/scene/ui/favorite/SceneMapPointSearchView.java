@@ -199,7 +199,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
                 if (mAnimator != null) {
                     mAnimator.cancel();
                 }
-                mScreenViewModel.flyLineVisible(true);
+//                mScreenViewModel.flyLineVisible(true);
                 mViewBinding.noResultButton.setOnClickListener((view) -> {
                     doSearch(mPoiInfoEntity);
                     if (mAnimator != null) {
@@ -215,7 +215,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
      * @param isShow 是否需要显示
      */
     private void showLoading(final boolean isShow) {
-        mScreenViewModel.flyLineVisible(!isShow);
+//        mScreenViewModel.flyLineVisible(!isShow);
         mViewBinding.csPoiNoResult.setVisibility(isShow ? View.VISIBLE : View.GONE);
         mViewBinding.noResultHint.setText(getContext().getString(R.string.address_loading));
         mViewBinding.ivLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
