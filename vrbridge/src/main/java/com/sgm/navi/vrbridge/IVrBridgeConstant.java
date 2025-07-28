@@ -426,8 +426,6 @@ public interface IVrBridgeConstant {
         String UNKNOWN_ROAD_CONDITION = "未知状态，请稍后再试";
         String UNKNOWN_SEARCH_PARAM = "未知查询条件，请稍后再试";
 
-
-
         String EMPTY_SEARCH_CALLBACK = "空的搜索结果回调";
         String EMPTY_DEST = "目的地为空";
         String NOT_SUPPORT_INTENTION = "不支持的搜索/导航意图";
@@ -464,6 +462,10 @@ public interface IVrBridgeConstant {
         String ALREADY_LAST_PAGE = "当前已是最后一页";
         String ALREADY_CURRENT_PAGE = "已显示此页面";
         String PAGE_ERROR_PARAM = "错误的参数";
+
+        String ROUTE_CHARGE_NO_SUPPORT = "当前无补能规划相关信息";
+        String ROUTE_CHARGE_SEARCH = "已搜索补能点";
+        String ROUTE_CHARGE_REFRESH = "已刷新路线";
     }
 
     interface PoiPageType {
@@ -482,6 +484,10 @@ public interface IVrBridgeConstant {
         int ZOOM_LEVEL = 9; //地图缩放
     }
 
-
+    String CHANGING_ROUTE_CONFIRM = "UPDATE_CHANGING_ROUTE";
+    interface RouteChargeType {
+        int SEARCH = 3;
+        int REFRESH = 5;
+    }
 
 }

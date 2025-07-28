@@ -1,5 +1,7 @@
 package com.sgm.navi.vrbridge;
 
+import android.text.TextUtils;
+
 import java.util.HashMap;
 
 import org.json.JSONException;
@@ -237,6 +239,26 @@ final public class AMapStateUtils {
         final double tempLon = z * Math.cos(theta) + 0.0065;
         final double tempLat = z * Math.sin(theta) + 0.006;
         return new double[]{tempLat, tempLon};
+    }
+
+    /**
+     * 更新补能规划提醒数据.
+     *
+     * @param tips 播报内容.
+     */
+    public static void updateChargingTip(final String tips) {
+        if (TextUtils.isEmpty(tips)) {
+            return;
+        }
+
+        try {
+            final IStateManager bdStateManager = BridgeSdk.getInstance().getRemote(IStateManager.class);
+            if (null != bdStateManager) {
+                bdStateManager.updateChangingRoute(tips);
+            }
+        } catch (ClassCastException | NullPointerException exception) {
+            Logger.e(IVrBridgeConstant.TAG, "updateChargingTip: " + exception.getMessage());
+        }
     }
 
 }

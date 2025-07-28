@@ -13,6 +13,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.baidu.oneos.protocol.bean.ArrivalBean;
 import com.baidu.oneos.protocol.bean.CallResponse;
+import com.baidu.oneos.protocol.bean.PoiBean;
 import com.baidu.oneos.protocol.bean.TrafficAskBean;
 import com.baidu.oneos.protocol.bean.param.NaviControlParam;
 import com.baidu.oneos.protocol.callback.PoiCallback;
@@ -2297,9 +2298,41 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     }
 
     @Override
+    public CallResponse onNaviToSpecifiedLocation(PoiBean poiBean, RespCallback respCallback) {
+        return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_OPERATE);
+    }
+
+    @Override
     public CallResponse onRouteSelectInMapView(final int index, final boolean isAutoNavi) {
         Logger.d(IVrBridgeConstant.TAG, "onRouteSelectInMapView: index = ", index, "isAutoNavi = ", isAutoNavi);
         return NaviControlCommandListener.super.onRouteSelectInMapView(index, isAutoNavi);
+    }
+
+    @Override
+    public CallResponse onUpdateChangingRoute(String confirm, RespCallback respCallback) {
+        if (Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "receiveChargingRoute", confirm);
+        }
+
+        final int routeChargeType = MapStateManager.getInstance().getRouteChargeType();
+        if (-1 == routeChargeType) {
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.ROUTE_CHARGE_NO_SUPPORT);
+        }
+
+        final CallResponse chargingResponse;
+        if (IVrBridgeConstant.CHANGING_ROUTE_CONFIRM.equals(confirm)) {
+            if (routeChargeType == IVrBridgeConstant.RouteChargeType.SEARCH) {
+                chargingResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ROUTE_CHARGE_SEARCH);
+            } else {
+                chargingResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ROUTE_CHARGE_REFRESH);
+            }
+            MapStateManager.getInstance().responseRouteCharging();
+        } else {
+            chargingResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.OK);
+        }
+        chargingResponse.setNeedPlayMessage(true);
+        respCallback.onResponse(chargingResponse);
+        return CallResponse.createSuccessResponse();
     }
 
     /**

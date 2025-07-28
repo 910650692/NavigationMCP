@@ -65,6 +65,8 @@ public final class MapStateManager {
 
     private HashMap<String, Object> mVrStatusMap;
 
+    private int mChargingRouteType = -1;
+
     public static MapStateManager getInstance() {
         return MapStateManager.Holder.INSTANCE;
     }
@@ -376,6 +378,12 @@ public final class MapStateManager {
         }
 
         @Override
+        public void onPlayChargeTips(String tts, int type) {
+            mChargingRouteType = type;
+            AMapStateUtils.updateChargingTip(tts);
+        }
+
+        @Override
         public void onNaviStop() {
             mLimitSpeed = 0;
             mEtaInfo = null;
@@ -426,13 +434,13 @@ public final class MapStateManager {
         AgreementPackage.getInstance().setAgreementCallback(TAG, mAgreementCallback);
         CommonManager.getInstance().registerObserver(TAG, mSettingDaoChangeListener);
         SettingUpdateObservable.getInstance().addObserver(TAG, mSettingUpdateObserver);
-        MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
-        RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
-        SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
-        AccountPackage.getInstance().registerCallBack(TAG, mAccountCallBack);
-        PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
-        NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);
         ProcessManager.addIsAppInForegroundCallback(mForeGroundCallback);
+        AccountPackage.getInstance().registerCallBack(TAG, mAccountCallBack);
+        MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
+        PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
+        SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
+        RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
+        NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);
         NaviPackage.getInstance().addOnPreviewStatusChangeListener(mPreViewStatusChangeListener);
         NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
         BehaviorPackage.getInstance().registerFavoriteStatusCallback(mFavoriteStatusCallback);
@@ -889,6 +897,23 @@ public final class MapStateManager {
      */
     public void setLauncherDeskMode(final int launcherDeskMode) {
         mLauncherDeskMode = launcherDeskMode;
+    }
+
+    /**
+     * 分发语音同步结果.
+     */
+    public void responseRouteCharging() {
+        NaviPackage.getInstance().chargeTipsCallBack(mChargingRouteType);
+        mChargingRouteType = -1;
+    }
+
+    /**
+     * 返回路线补能规划类型.
+     *
+     * @return 3:搜索新补能点  5:刷新路线  -1:不需要执行(默认).
+     */
+    public int getRouteChargeType() {
+        return mChargingRouteType;
     }
 
 }
