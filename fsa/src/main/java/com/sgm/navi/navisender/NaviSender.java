@@ -1,6 +1,5 @@
 package com.sgm.navi.navisender;
 
-import com.android.utils.BuildConfig;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.StartService;
@@ -204,6 +203,10 @@ public class NaviSender {
             mRoadConditionGroup.setRemainDistance(naviETAInfo.getRemainDist() * 50 / 1000);
             mRoadConditionGroup.setRemainTime(naviETAInfo.getRemainTime());
 
+            if (mRoadGroupDatas.isEmpty()) {
+                mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
+            }
+
             int chargeStationRemainDist = 0;
             int chargeStationRemainTime = 0;
             ArrayList<NaviEtaInfo.NaviTimeAndDist> chargeStationRemain = naviETAInfo.getChargeStationRemain();
@@ -262,7 +265,6 @@ public class NaviSender {
                     int distance = 0;
                     for (int i = 0; i < tmcInfoData.size(); i++) {
                         NaviTmcInfo.NaviTmcInfoData naviTmcInfoData = tmcInfoData.get(i);
-                        if (BuildConfig.DEBUG)
                             Logger.d(TAG, PREFIX, "拥堵路段原始", naviTmcInfoData);
                         if (naviTmcInfoData == null) {
                             continue;
@@ -364,7 +366,15 @@ public class NaviSender {
                 if (mScheduledFuture != null) {
                     mScheduledFuture.cancel(true);
                 }
-                sendRoadConditionGroupInvalid();
+                mRoadConditionGroup.setRoadSegmentIndex(0);
+                mRoadConditionGroup.setSegmentLength(0);
+                mRoadConditionGroup.setSegmentTime(0);
+                mRoadConditionGroup.setSegmentCondition(0);
+                mRoadConditionGroup.setRoadSegmentCount(0);
+                mRoadConditionGroup.setRemainDistance(0);
+                mRoadConditionGroup.setRemainTime(0);
+                mRoadConditionGroup.setDataInvalid(0);
+                mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
             }
         }
     };
@@ -431,8 +441,6 @@ public class NaviSender {
         mRoadConditionGroup.setSegmentCondition(0);
         mRoadConditionGroup.setRoadSegmentCount(0);
         mRoadConditionGroup.setRemainDistance(0);
-        mRoadConditionGroup.setRemainTime(0);
-        mRoadConditionGroup.setDataInvalid(0);
         mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
     }
 
